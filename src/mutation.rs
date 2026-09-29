@@ -1,0 +1,203 @@
+use std::{
+    fs,
+    ops::Range,
+    path::{Path, PathBuf},
+    sync::Arc,
+};
+
+use anyhow::{Context, Result, ensure};
+use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
+use tree_sitter::{Node, Parser};
+
+pub struct Scope {
+    include: GlobSet,
+    exclude: GlobSet,
+}
+
+impl Scope {
+    pub fn new(include: &[String], exclude: &[String]) -> Result<Self> {
+        fn compile(patterns: &[String]) -> Result<GlobSet> {
+            let mut builder = GlobSetBuilder::new();
+            for pattern in patterns {
+                builder.add(
+                    GlobBuilder::new(pattern)
+                        .literal_separator(true)
+                        .build()
+                        .with_context(|| format!("invalid glob {pattern:?}"))?,
+                );
+            }
+            Ok(builder.build()?)
+        }
+        Ok(Self {
+            include: compile(include)?,
+            exclude: compile(exclude)?,
+        })
+    }
+
+    fn matches(&self, path: &Path) -> bool {
+        (self.include.is_empty() || self.include.is_match(path)) && !self.exclude.is_match(path)
+    }
+}
+
+#[derive(Debug)]
+pub struct SourceFile {
+    pub path: PathBuf,
+    source: String,
+}
+
+#[derive(Clone, Debug)]
+pub struct Mutation {
+    pub file: Arc<SourceFile>,
+    pub range: Range<usize>,
+    pub replacement: &'static str,
+    pub line: usize,
+    pub column: usize,
+}
+
+impl Mutation {
+    pub fn description(&self) -> String {
+        format!(
+            "{}:{}:{}: {:?} -> {:?}",
+            self.file.path.display(),
+            self.line,
+            self.column,
+            &self.file.source[self.range.clone()],
+            self.replacement
+        )
+    }
+
+    pub fn apply(&self, root: &Path) -> Result<()> {
+        let path = root.join(&self.file.path);
+        let mut source = fs::read_to_string(&path)?;
+        ensure!(
+            source == self.file.source,
+            "{} changed after discovery",
+            path.display()
+        );
+        source.replace_range(self.range.clone(), self.replacement);
+        fs::write(&path, source).with_context(|| format!("mutating {}", path.display()))
+    }
+}
+
+pub fn discover(root: &Path, mut files: Vec<PathBuf>, scope: &Scope) -> Result<Vec<Mutation>> {
+    let mut parser = Parser::new();
+    parser.set_language(&tree_sitter_go::LANGUAGE.into())?;
+    let mut mutations = Vec::new();
+    files.sort();
+    files.dedup();
+    for path in files {
+        if !scope.matches(&path) || path.to_string_lossy().ends_with("_test.go") {
+            continue;
+        }
+        let source = fs::read_to_string(root.join(&path))
+            .with_context(|| format!("reading {}", path.display()))?;
+        if source
+            .lines()
+            .any(|line| line.starts_with("// Code generated ") && line.ends_with(" DO NOT EDIT."))
+        {
+            continue;
+        }
+        let tree = parser
+            .parse(&source, None)
+            .context("Go parser did not return a tree")?;
+        ensure!(
+            !tree.root_node().has_error(),
+            "could not parse {} as Go",
+            path.display()
+        );
+        let file = Arc::new(SourceFile { path, source });
+        visit(tree.root_node(), &file, &mut mutations);
+    }
+    Ok(mutations)
+}
+
+fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
+    let candidate = match node.kind() {
+        "binary_expression" | "unary_expression" => node.child_by_field_name("operator"),
+        "true" | "false" => Some(node),
+        _ => None,
+    };
+    if let Some(token) = candidate {
+        let original = &file.source[token.byte_range()];
+        let replacements: &[&'static str] = match (node.kind(), original) {
+            ("binary_expression", "==") => &["!="],
+            ("binary_expression", "!=") => &["=="],
+            ("binary_expression", "<") => &[">=", "<="],
+            ("binary_expression", "<=") => &[">", "<"],
+            ("binary_expression", ">") => &["<=", ">="],
+            ("binary_expression", ">=") => &["<", ">"],
+            ("binary_expression", "+") => &["-"],
+            ("binary_expression", "-") => &["+"],
+            ("binary_expression", "*") => &["/"],
+            ("binary_expression", "/") => &["*"],
+            ("binary_expression", "%") => &["*"],
+            ("binary_expression", "&&") => &["||"],
+            ("binary_expression", "||") => &["&&"],
+            ("unary_expression", "!") => &[""],
+            ("true", _) => &["false"],
+            ("false", _) => &["true"],
+            _ => &[],
+        };
+        let position = token.start_position();
+        mutations.extend(replacements.iter().map(|replacement| Mutation {
+            file: Arc::clone(file),
+            range: token.byte_range(),
+            replacement,
+            line: position.row + 1,
+            column: position.column + 1,
+        }));
+    }
+    let mut cursor = node.walk();
+    for child in node.named_children(&mut cursor) {
+        visit(child, file, mutations);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn discovers_syntax_not_comments_or_strings_and_applies_utf8_byte_ranges() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = "package p\n// true + false\nvar text = \"é true + false\"\nfunc f(a, b int) bool { return a < b && !false }\n";
+        fs::write(root.path().join("code.go"), source)?;
+        let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
+        assert_eq!(mutations.len(), 5);
+        assert!(mutations.iter().all(|m| m.line == 4));
+        mutations[0].apply(root.path())?;
+        assert_eq!(
+            fs::read_to_string(root.path().join("code.go"))?,
+            source.replace("&&", "||")
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn scope_excludes_tests_generated_files_and_unselected_paths() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("sub"))?;
+        for path in ["code.go", "code_test.go", "sub/code.go", "generated.go"] {
+            let prefix = if path == "generated.go" {
+                "// Code generated by tool. DO NOT EDIT.\n"
+            } else {
+                ""
+            };
+            fs::write(
+                root.path().join(path),
+                format!("{prefix}package p\nvar b = true\n"),
+            )?;
+        }
+        let files = vec![
+            "code.go".into(),
+            "code_test.go".into(),
+            "sub/code.go".into(),
+            "generated.go".into(),
+        ];
+        let scope = Scope::new(&["**/*.go".into()], &["sub/**".into()])?;
+        let mutations = discover(root.path(), files, &scope)?;
+        assert_eq!(mutations.len(), 1);
+        assert_eq!(mutations[0].file.path, Path::new("code.go"));
+        Ok(())
+    }
+}
