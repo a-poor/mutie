@@ -6,17 +6,30 @@ use std::{
 use anyhow::{Context, Result, bail, ensure};
 use tempfile::TempDir;
 
+use crate::cancellation::Cancellation;
+
 /// Owns only temporary data. The input working tree is never a mutation target.
 pub struct Workspace {
     directory: TempDir,
 }
 
 impl Workspace {
+    #[cfg(test)]
     pub fn new(source: &Path) -> Result<Self> {
         Self::new_excluding(source, &[])
     }
 
+    #[cfg(test)]
     pub fn new_excluding(source: &Path, excluded: &[PathBuf]) -> Result<Self> {
+        Self::create(source, excluded, &Cancellation::default())
+    }
+
+    pub fn create(
+        source: &Path,
+        excluded: &[PathBuf],
+        cancellation: &Cancellation,
+    ) -> Result<Self> {
+        cancellation.check()?;
         let directory = tempfile::Builder::new().prefix("mutie-").tempdir()?;
         ensure!(
             !directory.path().canonicalize()?.starts_with(source),
@@ -24,7 +37,14 @@ impl Workspace {
         );
         let workspace = Self { directory };
         let destination = workspace.path();
-        copy_directory(source, &destination, source, &destination, excluded)?;
+        copy_directory(
+            source,
+            &destination,
+            source,
+            &destination,
+            excluded,
+            cancellation,
+        )?;
         Ok(workspace)
     }
 
@@ -33,12 +53,20 @@ impl Workspace {
     }
 
     /// Restore the entire workspace, including files changed or created by tests.
-    pub fn reset(&self, source: &Path) -> Result<()> {
+    pub fn reset(&self, source: &Path, cancellation: &Cancellation) -> Result<()> {
+        cancellation.check()?;
         let destination = self.path();
         if destination.exists() {
             fs::remove_dir_all(&destination).context("could not reset temporary workspace")?;
         }
-        copy_directory(source, &destination, source, &destination, &[])
+        copy_directory(
+            source,
+            &destination,
+            source,
+            &destination,
+            &[],
+            cancellation,
+        )
     }
 }
 
@@ -48,10 +76,13 @@ fn copy_directory(
     root: &Path,
     copy_root: &Path,
     excluded: &[PathBuf],
+    cancellation: &Cancellation,
 ) -> Result<()> {
+    cancellation.check()?;
     fs::create_dir_all(destination)?;
     for entry in fs::read_dir(source).with_context(|| format!("reading {}", source.display()))? {
         let entry = entry?;
+        cancellation.check()?;
         if entry.file_name() == ".git" {
             continue;
         }
@@ -62,7 +93,7 @@ fn copy_directory(
         let to = destination.join(entry.file_name());
         let kind = entry.file_type()?;
         if kind.is_dir() {
-            copy_directory(&from, &to, root, copy_root, excluded)?;
+            copy_directory(&from, &to, root, copy_root, excluded, cancellation)?;
         } else if kind.is_file() {
             reflink_copy::reflink_or_copy(&from, &to)
                 .with_context(|| format!("copying {}", from.display()))?;
@@ -153,7 +184,7 @@ mod tests {
             fs::read_to_string(source.path().join("code.go"))?,
             "original"
         );
-        workspace.reset(source.path())?;
+        workspace.reset(source.path(), &Cancellation::default())?;
         assert_eq!(
             fs::read_to_string(workspace.path().join("code.go"))?,
             "original"

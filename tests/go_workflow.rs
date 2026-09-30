@@ -38,15 +38,25 @@ fn stdout(output: &Output) -> String {
     String::from_utf8_lossy(&output.stdout).into_owned()
 }
 
-fn saved_report(output: &Output) -> (PathBuf, serde_json::Value) {
+fn saved_report(
+    output: &Output,
+) -> (
+    PathBuf,
+    serde_json::Value,
+    serde_json::Value,
+    serde_json::Value,
+) {
     let text = String::from_utf8_lossy(&output.stdout);
     let directory = text
         .lines()
         .find_map(|line| line.strip_prefix("Saving report to "))
         .unwrap_or_else(|| panic!("missing report path: {text}"));
     let directory = PathBuf::from(directory);
-    let report = serde_json::from_slice(&fs::read(directory.join("report.json")).unwrap()).unwrap();
-    (directory, report)
+    let read = |name| serde_json::from_slice(&fs::read(directory.join(name)).unwrap()).unwrap();
+    let run = read("run.json");
+    let inventory = read("mutants.json");
+    let outcomes = read("outcomes.json");
+    (directory, run, inventory, outcomes)
 }
 
 #[test]
@@ -74,10 +84,12 @@ fn go_workflow() {
         results.contains("4 mutations: 1 killed, 1 missed, 1 timed out, 1 failed to compile"),
         "{results}"
     );
-    let (first_directory, report) = saved_report(&output);
+    let (first_directory, metadata, inventory, report) = saved_report(&output);
     assert_eq!(report["schema_version"], 1);
+    assert_eq!(metadata["checkpoint"], report["checkpoint"]);
+    assert_eq!(inventory["complete"], true);
     assert_eq!(report["status"], "completed");
-    assert_eq!(report["planned_mutations"], 4);
+    assert_eq!(metadata["planned_mutations"], 4);
     assert_eq!(report["summary"]["killed"], 1);
     assert_eq!(report["summary"]["missed"], 1);
     assert_eq!(report["summary"]["timeout"], 1);
@@ -90,7 +102,7 @@ fn go_workflow() {
         assert!(mutation["duration_seconds"].as_f64().unwrap() > 0.0);
         assert!(
             first_directory
-                .join(mutation["diff"].as_str().unwrap())
+                .join(inventory["mutations"][index]["diff"].as_str().unwrap())
                 .is_file()
         );
         for kind in ["text", "stdout", "stderr"] {
@@ -112,7 +124,7 @@ fn go_workflow() {
     let summary = fs::read_to_string(first_directory.join("summary.txt")).unwrap();
     assert!(summary.contains("Missed mutations:"));
     assert!(summary.contains("missed.go:4:"));
-    let first_json = fs::read(first_directory.join("report.json")).unwrap();
+    let first_json = fs::read(first_directory.join("run.json")).unwrap();
 
     // Multiple mutations on one worker also prove that test side effects reset.
     let custom = root.join("artifacts/reports");
@@ -137,12 +149,12 @@ fn go_workflow() {
         scoped.contains("3 mutations: 1 killed, 1 missed, 0 timed out, 1 failed to compile"),
         "{scoped}"
     );
-    let (custom_directory, custom_report) = saved_report(&scoped_output);
+    let (custom_directory, _, _, custom_report) = saved_report(&scoped_output);
     assert!(custom_directory.starts_with(&custom));
     assert_eq!(custom_report["status"], "completed");
     assert_eq!(custom_report["mutations"].as_array().unwrap().len(), 3);
     assert_eq!(
-        fs::read(first_directory.join("report.json")).unwrap(),
+        fs::read(first_directory.join("run.json")).unwrap(),
         first_json
     );
     assert_eq!(
@@ -169,11 +181,13 @@ fn go_workflow() {
         ],
     );
     stdout(&empty);
-    let (_, empty_report) = saved_report(&empty);
+    let (_, empty_metadata, empty_inventory, empty_report) = saved_report(&empty);
     assert_eq!(empty_report["status"], "completed");
-    assert_eq!(empty_report["planned_mutations"], 0);
-    assert_eq!(empty_report["workers"], 0);
+    assert_eq!(empty_metadata["planned_mutations"], 0);
+    assert_eq!(empty_metadata["workers"], 0);
     assert!(empty_report["mutations"].as_array().unwrap().is_empty());
+    assert_eq!(empty_inventory["complete"], true);
+    assert!(empty_inventory["mutations"].as_array().unwrap().is_empty());
 
     fs::write(root.join("fail_test.go"), "package fixture\nimport \"testing\"\nfunc TestFail(t *testing.T) { t.Fatal(\"baseline fails\") }\n").unwrap();
     // Keep using the custom output root so it remains excluded from snapshots.
@@ -185,12 +199,13 @@ fn go_workflow() {
     );
     assert!(!String::from_utf8_lossy(&failed.stdout).contains("Running 1 worker"));
     assert!(!root.join("test-artifact").exists());
-    let (failed_directory, failed_report) = saved_report(&failed);
+    let (failed_directory, _, failed_inventory, failed_report) = saved_report(&failed);
     assert_eq!(failed_report["status"], "failed");
+    assert_eq!(failed_inventory["complete"], false);
     assert_eq!(failed_report["baseline"]["outcome"], "failed");
     assert!(failed_report["mutations"].as_array().unwrap().is_empty());
     assert!(
-        fs::read_to_string(failed_directory.join("baseline.log"))
+        fs::read_to_string(failed_directory.join("logs/baseline.log"))
             .unwrap()
             .contains("baseline fails")
     );
@@ -207,7 +222,7 @@ fn go_workflow() {
     );
     assert!(!timed_out.status.success());
     assert!(String::from_utf8_lossy(&timed_out.stderr).contains("baseline timed out"));
-    let (_, timeout_report) = saved_report(&timed_out);
+    let (_, _, _, timeout_report) = saved_report(&timed_out);
     assert_eq!(timeout_report["status"], "failed");
     assert_eq!(timeout_report["baseline"]["outcome"], "timeout");
 }
@@ -254,22 +269,26 @@ exit 1
         .output()
         .unwrap();
     assert!(!output.status.success());
-    let (directory, report) = saved_report(&output);
+    let (directory, metadata, inventory, report) = saved_report(&output);
     assert_eq!(report["status"], "failed");
-    assert_eq!(report["planned_mutations"], 3);
-    assert_eq!(report["mutations"].as_array().unwrap().len(), 2);
+    assert_eq!(metadata["planned_mutations"], 3);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 3);
+    assert_eq!(report["mutations"].as_array().unwrap().len(), 3);
+    assert_eq!(report["mutations"][2]["state"], "pending");
+    assert!(report["mutations"][2]["outcome"].is_null());
+    assert!(directory.join("diff/000003.diff").is_file());
     assert_eq!(report["mutations"][0]["outcome"], "missed");
     assert_eq!(report["mutations"][1]["outcome"], "error");
     assert_eq!(report["summary"]["killed"], 0);
     assert_eq!(report["summary"]["missed"], 1);
     assert_eq!(report["summary"]["errors"], 1);
     assert!(
-        fs::read_to_string(directory.join("mutations/000002.stderr.log"))
+        fs::read_to_string(directory.join("logs/000002.stderr.log"))
             .unwrap()
             .contains("go tool failed unexpectedly")
     );
     assert!(
-        fs::read_to_string(directory.join("mutations/000002.diff"))
+        fs::read_to_string(directory.join("diff/000002.diff"))
             .unwrap()
             .contains("+var ready = false")
     );

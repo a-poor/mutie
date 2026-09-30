@@ -29,9 +29,39 @@ impl fmt::Display for Outcome {
 pub struct MutationResult {
     pub id: usize,
     pub mutation: Mutation,
-    pub outcome: Outcome,
-    pub output: CommandOutput,
+    pub state: ExecutionState,
+    pub outcome: Option<Outcome>,
+    pub output: Option<CommandOutput>,
     pub error: Option<String>,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum ExecutionState {
+    Pending,
+    Running,
+    Completed,
+    Interrupted,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RunStatus {
+    Running,
+    Completed,
+    Failed,
+    Interrupted,
+}
+
+impl fmt::Display for RunStatus {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Self::Running => "running",
+            Self::Completed => "completed",
+            Self::Failed => "failed",
+            Self::Interrupted => "interrupted",
+        })
+    }
 }
 
 #[derive(Default, Serialize)]
@@ -46,11 +76,12 @@ pub struct Summary {
 impl Summary {
     pub fn record(&mut self, result: &MutationResult) {
         match result.outcome {
-            Outcome::Killed => self.killed += 1,
-            Outcome::Missed => self.missed += 1,
-            Outcome::Timeout => self.timeout += 1,
-            Outcome::BuildFailed => self.build_failed += 1,
-            Outcome::Error => self.errors += 1,
+            Some(Outcome::Killed) => self.killed += 1,
+            Some(Outcome::Missed) => self.missed += 1,
+            Some(Outcome::Timeout) => self.timeout += 1,
+            Some(Outcome::BuildFailed) => self.build_failed += 1,
+            Some(Outcome::Error) => self.errors += 1,
+            None => {}
         }
     }
 

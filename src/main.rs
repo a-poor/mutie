@@ -1,3 +1,4 @@
+mod cancellation;
 mod cli;
 mod go;
 mod mutation;
@@ -7,21 +8,20 @@ mod saved_report;
 mod workspace;
 
 use std::{
-    path::Path,
-    sync::{
-        Arc,
-        atomic::{AtomicUsize, Ordering},
-    },
+    collections::VecDeque,
+    path::{Path, PathBuf},
+    sync::Arc,
     time::Duration,
 };
 
 use anyhow::{Context, Result, bail, ensure};
 use clap::Parser;
-use tokio::{sync::mpsc, task::JoinSet};
+use tokio::task::JoinSet;
 
+use cancellation::{Cancellation, Interrupted};
 use cli::{Cli, Lang};
 use mutation::{Mutation, Scope};
-use report::{MutationResult, Outcome, Summary};
+use report::{ExecutionState, MutationResult, Outcome, Summary};
 use saved_report::SavedReport;
 use workspace::Workspace;
 
@@ -42,6 +42,10 @@ async fn main() -> Result<()> {
         root.display()
     );
     let scope = Scope::new(&cli.include, &cli.exclude)?;
+    let cancellation = Cancellation::default();
+    let _signals = cancellation
+        .listen()
+        .context("installing cancellation handlers")?;
     let mut saved = if cli.list {
         None
     } else {
@@ -50,7 +54,7 @@ async fn main() -> Result<()> {
     if let Some(report) = &saved {
         println!("Saving report to {}", report.path().display());
     }
-    let result = execute(&cli, &root, &scope, saved.as_mut()).await;
+    let result = execute(&cli, &root, scope, saved.as_mut(), &cancellation).await;
     if let Some(report) = &mut saved {
         if let Err(save_error) = report.finish(result.as_ref().err()) {
             return Err(match result {
@@ -68,29 +72,47 @@ async fn main() -> Result<()> {
     result
 }
 
+async fn create_workspace(
+    source: PathBuf,
+    excluded: Vec<PathBuf>,
+    cancellation: Cancellation,
+) -> Result<Workspace> {
+    tokio::task::spawn_blocking(move || Workspace::create(&source, &excluded, &cancellation))
+        .await
+        .context("workspace preparation panicked")?
+}
+
 async fn execute(
     cli: &Cli,
     root: &Path,
-    scope: &Scope,
+    scope: Scope,
     mut saved: Option<&mut SavedReport>,
+    cancellation: &Cancellation,
 ) -> Result<()> {
     let baseline_limit = Duration::from_secs(cli.baseline_timeout.get());
-
     println!("Snapshotting {}", root.display());
     let mut excluded = vec![root.join(".mutie")];
     if let Some(report) = &saved {
         excluded.push(report.output_root().to_owned());
     }
-    let snapshot = Arc::new(Workspace::new_excluding(root, &excluded)?);
-    let baseline_workspace = Workspace::new(&snapshot.path())?;
+    let snapshot =
+        Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
+    let baseline_workspace =
+        create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
     let mut timeout = cli
         .timeout
         .map(|seconds| Duration::from_secs(seconds.get()));
     if !cli.list {
-        println!("Running baseline: go test ./... (test caching disabled)");
-        let baseline = go::test(&baseline_workspace.path(), baseline_limit).await?;
         if let Some(report) = saved.as_deref_mut() {
-            report.baseline(&baseline)?;
+            report.phase("baseline")?;
+        }
+        println!("Running baseline: go test ./... (test caching disabled)");
+        let baseline = go::test(&baseline_workspace.path(), baseline_limit, cancellation).await?;
+        if let Some(report) = saved.as_deref_mut() {
+            report.command("baseline", &baseline)?;
+        }
+        if baseline.interrupted {
+            return Err(Interrupted.into());
         }
         if baseline.timed_out {
             bail!(
@@ -110,15 +132,54 @@ async fn execute(
         if cli.verbose {
             print!("{}", go::text(&baseline));
         }
-        // Package discovery must see the pristine input, not baseline side effects.
-        baseline_workspace.reset(&snapshot.path())?;
     }
-    let files = go::files(&baseline_workspace.path(), baseline_limit).await?;
-    let mutations = mutation::discover(&snapshot.path(), files, scope)?;
+    cancellation.check()?;
+    if let Some(report) = saved.as_deref_mut() {
+        report.phase("discovery")?;
+    }
+    // Package discovery must see the pristine input, not baseline side effects.
+    let baseline_workspace = if cli.list {
+        baseline_workspace
+    } else {
+        let source = snapshot.path();
+        let cancellation = cancellation.clone();
+        tokio::task::spawn_blocking(move || {
+            baseline_workspace.reset(&source, &cancellation)?;
+            Ok::<_, anyhow::Error>(baseline_workspace)
+        })
+        .await
+        .context("baseline workspace reset panicked")??
+    };
+    let discovery = process::run(
+        "go",
+        &["list", "-json", "./..."],
+        &baseline_workspace.path(),
+        baseline_limit,
+        cancellation,
+    )
+    .await?;
+    if let Some(report) = saved.as_deref_mut() {
+        report.command("discovery", &discovery)?;
+    }
+    if discovery.interrupted {
+        return Err(Interrupted.into());
+    }
+    let mut files = go::files(&baseline_workspace.path(), &discovery)?;
     drop(baseline_workspace);
+    let mutations = {
+        let snapshot = Arc::clone(&snapshot);
+        let cancellation = cancellation.clone();
+        tokio::task::spawn_blocking(move || {
+            mutation::discover_cancellable(&snapshot.path(), &mut files, &scope, &cancellation)
+        })
+        .await
+        .context("mutation discovery panicked")??
+    };
+    cancellation.check()?;
     println!("Found {} mutations", mutations.len());
     if cli.list {
         for mutation in &mutations {
+            cancellation.check()?;
             println!("{}", mutation.description());
         }
         return Ok(());
@@ -126,54 +187,95 @@ async fn execute(
     let timeout = timeout.context("missing mutation timeout")?;
     let jobs = cli.jobs.get().min(mutations.len());
     if let Some(report) = saved.as_deref_mut() {
-        report.plan(mutations.len(), jobs, timeout)?;
+        report.phase("inventory")?;
+        report.plan(&mutations, jobs, timeout, cancellation)?;
     }
+    cancellation.check()?;
     if mutations.is_empty() {
         println!("No eligible mutations matched the selected scope.");
         return Ok(());
+    }
+    if let Some(report) = saved.as_deref_mut() {
+        report.phase("mutations")?;
     }
     println!(
         "Running {jobs} worker(s), {:.2}s timeout per mutation",
         timeout.as_secs_f64()
     );
-    let summary = run_workers(snapshot, mutations, jobs, timeout, cli.verbose, saved).await?;
+    let context = WorkerContext {
+        snapshot,
+        timeout,
+        cancellation: cancellation.clone(),
+    };
+    let summary = run_workers(context, mutations, jobs, cli.verbose, saved).await?;
     println!("\n{summary}");
     Ok(())
 }
 
-async fn run_workers(
+#[derive(Clone)]
+struct WorkerContext {
     snapshot: Arc<Workspace>,
-    mutations: Vec<Mutation>,
-    jobs: usize,
     timeout: Duration,
-    verbose: bool,
-    mut saved: Option<&mut SavedReport>,
-) -> Result<Summary> {
-    let mutations = Arc::new(mutations);
-    let next = Arc::new(AtomicUsize::new(0));
-    let (sender, mut receiver) = mpsc::unbounded_channel();
-    let mut workers = JoinSet::new();
-    for _ in 0..jobs {
-        let (snapshot, mutations, next, sender) = (
-            Arc::clone(&snapshot),
-            Arc::clone(&mutations),
-            Arc::clone(&next),
-            sender.clone(),
-        );
-        workers.spawn(async move {
-            let workspace = Workspace::new(&snapshot.path())?;
-            let mut first = true;
-            loop {
-                let index = next.fetch_add(1, Ordering::Relaxed);
-                let Some(mutation) = mutations.get(index) else {
-                    break;
+    cancellation: Cancellation,
+}
+
+struct WorkerJob {
+    context: WorkerContext,
+    id: usize,
+    worker: usize,
+    mutation: Mutation,
+    workspace: Option<Workspace>,
+}
+
+impl WorkerJob {
+    async fn run(self) -> (usize, Option<Workspace>, MutationResult) {
+        let Self {
+            context,
+            id,
+            worker,
+            mutation,
+            workspace,
+        } = self;
+        let prepared = {
+            let context = context.clone();
+            let mutation = mutation.clone();
+            tokio::task::spawn_blocking(move || {
+                context.cancellation.check()?;
+                let workspace = match workspace {
+                    Some(workspace) => {
+                        workspace.reset(&context.snapshot.path(), &context.cancellation)?;
+                        workspace
+                    }
+                    None => {
+                        Workspace::create(&context.snapshot.path(), &[], &context.cancellation)?
+                    }
                 };
-                if !first {
-                    workspace.reset(&snapshot.path())?;
-                }
-                first = false;
+                context.cancellation.check()?;
                 mutation.apply(&workspace.path())?;
-                let output = go::test(&workspace.path(), timeout).await?;
+                Ok::<_, anyhow::Error>(workspace)
+            })
+            .await
+            .context("worker workspace preparation panicked")
+            .and_then(|result| result)
+        };
+        let mut workspace = None;
+        let output = match prepared {
+            Ok(prepared) => {
+                workspace = Some(prepared);
+                go::test(
+                    &workspace.as_ref().unwrap().path(),
+                    context.timeout,
+                    &context.cancellation,
+                )
+                .await
+            }
+            Err(error) => Err(error),
+        };
+        let (state, outcome, output, error) = match output {
+            Ok(output) if output.interrupted => {
+                (ExecutionState::Interrupted, None, Some(output), None)
+            }
+            Ok(output) => {
                 let (outcome, error) = match go::classify(&output) {
                     Ok(outcome) => (outcome, None),
                     Err(error) => (
@@ -181,55 +283,110 @@ async fn run_workers(
                         Some(format!("running {}: {error:#}", mutation.description())),
                     ),
                 };
-                let failed = error.is_some();
-                let result = MutationResult {
-                    id: index + 1,
-                    mutation: mutation.clone(),
-                    outcome,
-                    output,
+                (
+                    ExecutionState::Completed,
+                    Some(outcome),
+                    Some(output),
                     error,
-                };
-                sender.send(result).context("result receiver closed")?;
-                if failed {
-                    break;
-                }
+                )
             }
-            Ok::<_, anyhow::Error>(())
-        });
+            Err(error) if error.is::<Interrupted>() => {
+                (ExecutionState::Interrupted, None, None, None)
+            }
+            Err(error) => (
+                ExecutionState::Completed,
+                Some(Outcome::Error),
+                None,
+                Some(format!("running {}: {error:#}", mutation.description())),
+            ),
+        };
+        // Stop peers immediately on a tool failure, before the coordinator persists it.
+        if outcome == Some(Outcome::Error) {
+            context.cancellation.cancel();
+        }
+        (
+            worker,
+            workspace,
+            MutationResult {
+                id,
+                mutation,
+                state,
+                outcome,
+                output,
+                error,
+            },
+        )
     }
-    drop(sender);
+}
+
+async fn run_workers(
+    context: WorkerContext,
+    mutations: Vec<Mutation>,
+    jobs: usize,
+    verbose: bool,
+    mut saved: Option<&mut SavedReport>,
+) -> Result<Summary> {
+    let mut workers = JoinSet::new();
+    let mut available: VecDeque<_> = (1..=jobs).map(|worker| (worker, None)).collect();
+    let mut next = 0;
     let mut summary = Summary::default();
+    let mut failure = None;
     let total = mutations.len();
-    let result: Result<()> = async {
-        while !workers.is_empty() {
-            tokio::select! {
-                Some(result) = receiver.recv() => record(&mut summary, &result, total, verbose, saved.as_deref_mut())?,
-                Some(finished) = workers.join_next() => {
-                    finished.context("mutation worker panicked")??;
-                }
-            }
-        }
-        while let Some(result) = receiver.recv().await {
-            record(&mut summary, &result, total, verbose, saved.as_deref_mut())?;
-        }
-        ensure!(summary.total() == total, "workers did not report every mutation");
-        Ok(())
-    }.await;
-    if let Err(mut error) = result {
-        workers.abort_all();
-        while workers.join_next().await.is_some() {}
-        // A worker can fail while other completed results are still queued.
-        while let Ok(result) = receiver.try_recv() {
-            if let Err(save_error) =
-                record(&mut summary, &result, total, verbose, saved.as_deref_mut())
+    loop {
+        while failure.is_none() && !context.cancellation.is_cancelled() && next < total {
+            let Some((worker, workspace)) = available.pop_front() else {
+                break;
+            };
+            let id = next + 1;
+            if let Some(report) = saved.as_deref_mut()
+                && let Err(error) = report.started(id, worker)
             {
-                error = error.context(format!(
-                    "while collecting remaining results: {save_error:#}"
-                ));
+                failure = Some(error);
+                context.cancellation.cancel();
+                break;
             }
+            workers.spawn(
+                WorkerJob {
+                    context: context.clone(),
+                    id,
+                    worker,
+                    mutation: mutations[next].clone(),
+                    workspace,
+                }
+                .run(),
+            );
+            next += 1;
         }
+        let Some(finished) = workers.join_next().await else {
+            break;
+        };
+        let result = match finished {
+            Ok((worker, workspace, result)) => {
+                available.push_back((worker, workspace));
+                record(&mut summary, &result, total, verbose, saved.as_deref_mut())
+            }
+            Err(error) => Err(anyhow::Error::new(error).context("mutation worker panicked")),
+        };
+        if let Err(error) = result {
+            failure = Some(match failure {
+                Some(previous) => {
+                    previous.context(format!("while collecting remaining results: {error:#}"))
+                }
+                None => error,
+            });
+            context.cancellation.cancel();
+        }
+        // Always drain every worker, even after errors or cancellation. Dropping
+        // their futures here would discard active output and skip process reaping.
+    }
+    if let Some(error) = failure {
         return Err(error);
     }
+    context.cancellation.check()?;
+    ensure!(
+        summary.total() == total,
+        "workers did not report every mutation"
+    );
     Ok(summary)
 }
 
@@ -244,16 +401,25 @@ fn record(
         report.record(result)?;
     }
     summary.record(result);
+    let outcome = result
+        .outcome
+        .map(|outcome| outcome.to_string())
+        .unwrap_or_else(|| "interrupted".into());
+    let duration = result
+        .output
+        .as_ref()
+        .map(|output| format!(" ({:.2}s)", output.elapsed.as_secs_f64()))
+        .unwrap_or_default();
     println!(
-        "[{}/{}] {}: {} ({:.2}s)",
+        "[{}/{}] {}: {}{}",
         summary.total(),
         total,
-        result.outcome,
+        outcome,
         result.mutation.description(),
-        result.output.elapsed.as_secs_f64()
+        duration
     );
-    if verbose {
-        let text = go::text(&result.output);
+    if verbose && let Some(output) = &result.output {
+        let text = go::text(output);
         if !text.is_empty() {
             println!("{}", text.trim_end());
         }

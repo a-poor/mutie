@@ -11,6 +11,10 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
 - `tests/go_workflow.rs` contains integration tests; `tests/fixtures/go/` provides the sample Go module.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 
+## Development Status & Versioning
+
+Mutie is still in local development and has no external users. Breaking changes are acceptable at this stage. Do not bump project versions (including the package, report schema, and operator catalog versions) unless explicitly requested; version bumps for ordinary development changes are unnecessary noise for now.
+
 ## Build, Test, and Development Commands
 
 Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go build cache.

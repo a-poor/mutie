@@ -5,12 +5,15 @@ use std::{
     time::{Duration, Instant},
 };
 
-use anyhow::{Context, Result, bail};
+use anyhow::{Context, Result};
 use tokio::process::Command;
+
+use crate::cancellation::Cancellation;
 
 pub struct CommandOutput {
     pub status: ExitStatus,
     pub timed_out: bool,
+    pub interrupted: bool,
     pub elapsed: Duration,
     pub stdout: String,
     pub stderr: String,
@@ -22,7 +25,9 @@ pub async fn run(
     args: &[&str],
     root: &Path,
     limit: Duration,
+    cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
+    cancellation.check()?;
     let mut stdout = tempfile::tempfile()?;
     let mut stderr = tempfile::tempfile()?;
     let mut command = Command::new(program);
@@ -45,7 +50,9 @@ pub async fn run(
         .with_context(|| format!("could not start {program}; is it installed and on PATH?"))?;
     let mut group = ProcessGroup { id: child.id() };
     let mut timed_out = false;
+    let mut interrupted = false;
     let status = tokio::select! {
+        biased;
         result = tokio::time::timeout(limit, child.wait()) => match result {
             Ok(status) => status.context("waiting for child process")?,
             Err(_) => {
@@ -55,12 +62,11 @@ pub async fn run(
                 child.wait().await?
             }
         },
-        signal = tokio::signal::ctrl_c() => {
-            signal?;
+        _ = cancellation.cancelled() => {
+            interrupted = true;
             group.kill();
             child.start_kill()?;
-            child.wait().await?;
-            bail!("interrupted");
+            child.wait().await?
         }
     };
     group.kill();
@@ -74,6 +80,7 @@ pub async fn run(
     Ok(CommandOutput {
         status,
         timed_out,
+        interrupted,
         elapsed,
         stdout: read(&mut stdout)?,
         stderr: read(&mut stderr)?,
@@ -110,6 +117,61 @@ mod tests {
     use super::*;
 
     #[tokio::test]
+    async fn cancellation_retains_output_and_kills_descendants() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let cancellation = Cancellation::default();
+        let command = run(
+            "sh",
+            &[
+                "-c",
+                "printf 'before cancellation\\n'; printf 'diagnostic\\n' >&2; (sleep 0.5; touch leaked) & touch ready; wait",
+            ],
+            root.path(),
+            Duration::from_secs(10),
+            &cancellation,
+        );
+        let stop = async {
+            tokio::time::timeout(Duration::from_secs(5), async {
+                while !root.path().join("ready").exists() {
+                    tokio::time::sleep(Duration::from_millis(5)).await;
+                }
+            })
+            .await
+            .expect("child did not start");
+            cancellation.cancel();
+        };
+        let (output, ()) = tokio::join!(command, stop);
+        let output = output?;
+        assert!(output.interrupted);
+        assert!(!output.timed_out);
+        assert_eq!(output.stdout, "before cancellation\n");
+        assert_eq!(output.stderr, "diagnostic\n");
+        tokio::time::sleep(Duration::from_millis(600)).await;
+        assert!(!root.path().join("leaked").exists());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn cancellation_before_start_does_not_spawn_a_process() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let cancellation = Cancellation::default();
+        cancellation.cancel();
+        let error = run(
+            "sh",
+            &["-c", "touch started"],
+            root.path(),
+            Duration::from_secs(1),
+            &cancellation,
+        )
+        .await
+        .err()
+        .unwrap();
+        assert!(error.is::<crate::cancellation::Interrupted>());
+        assert!(!root.path().join("started").exists());
+        Ok(())
+    }
+
+    #[tokio::test]
     async fn timeout_kills_descendants_before_they_can_write() -> Result<()> {
         let root = tempfile::tempdir()?;
         let output = run(
@@ -117,6 +179,7 @@ mod tests {
             &["-c", "(sleep 0.5; touch leaked) & wait"],
             root.path(),
             Duration::from_millis(100),
+            &Cancellation::default(),
         )
         .await?;
         assert!(output.timed_out);

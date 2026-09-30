@@ -24,7 +24,8 @@ report artifacts, without requiring compatibility with its CLI or file formats.
 The current implementation supports one Go module, selected through its `go.mod`.
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
 executes them in isolated worker copies. It already has file filters, configurable
-workers and timeouts, plain terminal output, and saved reports.
+workers and timeouts, plain terminal output, complete mutation inventories, saved
+reports, and coordinated cancellation with retained command diagnostics.
 
 The fixture and tests exercise killed and missed mutations, compilation failures,
 timeouts, failed baselines, workspace restoration, and preservation of partial
@@ -32,9 +33,8 @@ results. This establishes the basic mechanics. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
 The prototype does not yet read `mutie.toml`, provide an interactive terminal
-view, persist the complete mutation inventory, or support focused reruns. Its
-report layout is also different from the target below. Rust appears in the CLI
-language enum but is not implemented.
+view, or support focused reruns. Rust appears in the CLI language enum but is not
+implemented.
 
 ## Minimal MVP
 
@@ -95,11 +95,14 @@ the whole-command timeout, including compilation. Start with the current default
 mutation, with explicit overrides. Scope filters select mutated files; they do
 not narrow the tests that run.
 
-Cancellation must stop scheduling, terminate active process groups on supported
-platforms, collect completed results, finalize an interrupted run, clean up
-workspaces, and restore the terminal. Currently interruption is represented as a
-failed run and active command output may be lost. Explicit interrupted state and
-better preservation of active diagnostics remain implementation work. An abrupt
+Cancellation stops scheduling, terminates active process groups on Unix, collects
+completed results and active command diagnostics, finalizes an interrupted run,
+and cleans up workspaces. Signal handlers are installed before snapshot creation;
+copying and discovery check a shared stop request, and workspace copying and
+source parsing run on blocking threads. Workers are drained rather than aborted so
+command output can be returned and saved. Ctrl-C and Unix SIGTERM use this path.
+Tool failures also stop peers but retain a failed run status and the original
+error. Terminal restoration will be added with the interactive view. An abrupt
 process kill can leave the last checkpoint incomplete; it must never be presented
 as a successful completed run.
 
@@ -123,11 +126,15 @@ MVP reports counts without enforcing a mutation-score threshold. Completed local
 runs can succeed with missed mutations; baseline/tool failures exit unsuccessfully.
 CI score definitions and exit policies are later work.
 
-Inventory records should contain the run-local ID, relative source path, named
-operator, byte range, line/column range, original text, replacement, and source
-fingerprint. Record the operator catalog version as part of run metadata.
-Execution records refer to these IDs and carry outcome, duration, exit status,
-diagnostics, and artifact paths. IDs must not depend on worker completion order.
+Inventory records contain the run-local ID, relative source path, named operator,
+byte range, line/column range, original text, replacement, and source fingerprint.
+Fingerprints use SHA-256 over the complete original file, encoded as `sha256:`
+plus lowercase hex. Operator catalog version 1 groups edits as arithmetic
+replacement, comparison inversion/boundary changes, logical swaps, boolean flips,
+and negation removal. The catalog version is recorded in run metadata and the
+inventory. Execution records refer to these IDs and carry state, optional outcome,
+duration, exit status, diagnostics, and artifact paths. Pending/running/interrupted
+executions have no outcome. IDs do not depend on worker completion order.
 
 Run-local IDs are not stable identities across edits. Later reruns must rediscover
 mutations against the current source and validate the match. Do not replay stale
@@ -226,15 +233,16 @@ outcome lists from the
 Use a mutie-specific, versioned schema for now. Elements-compatible JSON, HTML,
 and other interchange formats are possible future exporters.
 
-Proposed contents of a single run directory:
+Current contents of a single run directory (schema version 1):
 
 ```text
-run.json           effective config, versions, command, timing, run state
+run.json           resolved CLI settings, versions, command, timing, run state
 mutants.json       complete inventory, written before mutation execution
 outcomes.json      baseline result, mutation outcomes, summary counts
 summary.txt        readable summary and artifact references
 diff/<id>.diff     one source diff per planned mutation
 logs/baseline.log  readable baseline output
+logs/discovery.log readable package-discovery output
 logs/<id>.log      readable output for a mutation
 killed.txt         outcome lists containing IDs and source descriptions
 missed.txt
@@ -254,10 +262,13 @@ summaries as execution progresses, using atomic replacement for JSON snapshots.
 The structured inventory/results are authoritative; text summaries are derived.
 Report failures must be surfaced instead of claiming that output was saved.
 
-The current implementation saves a new `.mutie/run-.../` directory every time,
-with a combined `report.json` and artifacts under `mutations/`. Moving to the
-layout above is planned work, including a schema change and README updates.
-Keep existing reports intact during that transition.
+The implementation saves a new `.mutie/run-.../` directory every time using the
+layout above. Each JSON file is individually atomic. `run.json` and `outcomes.json`
+carry matching checkpoint numbers once an update finishes; a mismatch identifies
+a partial update. There is no multi-file transaction. Text outputs are derived
+and may lag the JSON snapshots after a forced kill. Before discovery/publication,
+`mutants.json` has `complete: false`; a complete empty inventory is distinguishable
+from discovery that never finished. Repository-config merging remains future work.
 
 Retention is a separate policy from report format. For the minimal MVP, retain
 isolated run directories as today. Bounded retention, such as latest plus previous
@@ -344,9 +355,9 @@ design. No runtime or plugin ABI is selected now.
 
 ## Implementation checkpoints
 
-1. Preserve the tested prototype as the starting point.
+1. Preserve the tested prototype as the starting point — completed.
 2. Establish the inventory/outcome model and reporting layout, including pending
-   work and explicit interruption semantics.
+   work and explicit interruption semantics — completed.
 3. Add `mutie.toml` merging and effective-config reporting.
 4. Add the coordinator state boundary and minimal default terminal status view,
    retaining plain mode and testing terminal restoration.

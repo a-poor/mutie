@@ -7,6 +7,7 @@ use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;
 
 use crate::{
+    cancellation::Cancellation,
     process::{self, CommandOutput},
     report::Outcome,
 };
@@ -15,12 +16,16 @@ use crate::{
 // deadline covers compilation too, and replaces Go's per-binary timeout.
 pub const TEST_ARGS: &[&str] = &["test", "-json", "-count=1", "-timeout=0", "./..."];
 
-pub async fn test(root: &Path, limit: Duration) -> Result<CommandOutput> {
-    process::run("go", TEST_ARGS, root, limit).await
+pub async fn test(
+    root: &Path,
+    limit: Duration,
+    cancellation: &Cancellation,
+) -> Result<CommandOutput> {
+    process::run("go", TEST_ARGS, root, limit, cancellation).await
 }
 
-pub async fn files(root: &Path, limit: Duration) -> Result<Vec<PathBuf>> {
-    let output = process::run("go", &["list", "-json", "./..."], root, limit).await?;
+pub fn files(root: &Path, output: &CommandOutput) -> Result<Vec<PathBuf>> {
+    ensure!(!output.interrupted, "Go package discovery interrupted");
     ensure!(!output.timed_out, "Go package discovery timed out");
     ensure!(
         output.status.success(),
@@ -68,6 +73,10 @@ struct Event {
 }
 
 pub fn classify(output: &CommandOutput) -> Result<Outcome> {
+    ensure!(
+        !output.interrupted,
+        "cannot classify an interrupted command"
+    );
     if output.timed_out {
         return Ok(Outcome::Timeout);
     }
@@ -132,6 +141,7 @@ mod tests {
         CommandOutput {
             status: std::process::ExitStatus::from_raw(code << 8),
             timed_out: false,
+            interrupted: false,
             elapsed: Duration::ZERO,
             stdout: stdout.into(),
             stderr: String::new(),
@@ -171,6 +181,9 @@ mod tests {
         let mut timed_out = output("", 1);
         timed_out.timed_out = true;
         assert_eq!(classify(&timed_out)?, Outcome::Timeout);
+        let mut interrupted = output("", 0);
+        interrupted.interrupted = true;
+        assert!(classify(&interrupted).is_err());
         Ok(())
     }
 }

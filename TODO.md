@@ -17,21 +17,21 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Add unit tests and a Go fixture covering outcomes, isolation, and reports.
 - [x] Document the MVP and longer-term direction in `DESIGN.md`.
 
-## Remaining MVP work
+## MVP milestones
 
-### 1. Mutation inventory and reports — next
+### 1. Mutation inventory and reports — completed
 
-- [ ] Add named operators, source fingerprints, and operator catalog versioning.
-- [ ] Save the complete mutation inventory and diffs before workers start.
-- [ ] Separate run metadata, inventory, and outcomes using the design's report
+- [x] Add named operators, source fingerprints, and operator catalog versioning.
+- [x] Save the complete mutation inventory and diffs before workers start.
+- [x] Separate run metadata, inventory, and outcomes using the design's report
   layout; add text lists grouped by outcome.
-- [ ] Represent pending/running mutations and interrupted runs explicitly.
-- [ ] Preserve active diagnostics and completed results during cancellation;
+- [x] Represent pending/running mutations and interrupted runs explicitly.
+- [x] Preserve active diagnostics and completed results during cancellation;
   coordinate worker shutdown and cleanup across run phases.
-- [ ] Test incomplete runs and the new report contract; update usage docs while
+- [x] Test incomplete runs and the new report contract; update usage docs while
   preserving existing saved reports.
 
-### 2. Repository configuration
+### 2. Repository configuration — next
 
 - [ ] Load `mutie.toml` from the selected project root.
 - [ ] Merge defaults, repository config, and explicit CLI overrides in that order.

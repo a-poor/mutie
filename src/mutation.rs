@@ -7,7 +7,24 @@ use std::{
 
 use anyhow::{Context, Result, ensure};
 use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
+use serde::Serialize;
+use sha2::{Digest, Sha256};
 use tree_sitter::{Node, Parser};
+
+use crate::cancellation::Cancellation;
+
+pub const OPERATOR_CATALOG_VERSION: u32 = 1;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Operator {
+    ArithmeticReplace,
+    ComparisonInvert,
+    ComparisonBoundary,
+    LogicalSwap,
+    BooleanFlip,
+    NegationRemove,
+}
 
 pub struct Scope {
     include: GlobSet,
@@ -42,16 +59,20 @@ impl Scope {
 #[derive(Debug)]
 pub struct SourceFile {
     pub path: PathBuf,
+    pub fingerprint: String,
     source: String,
 }
 
 #[derive(Clone, Debug)]
 pub struct Mutation {
     pub file: Arc<SourceFile>,
+    pub operator: Operator,
     pub range: Range<usize>,
     pub replacement: &'static str,
     pub line: usize,
     pub column: usize,
+    pub end_line: usize,
+    pub end_column: usize,
 }
 
 impl Mutation {
@@ -123,14 +144,25 @@ impl Mutation {
     }
 }
 
+#[cfg(test)]
 pub fn discover(root: &Path, mut files: Vec<PathBuf>, scope: &Scope) -> Result<Vec<Mutation>> {
+    discover_cancellable(root, &mut files, scope, &Cancellation::default())
+}
+
+pub fn discover_cancellable(
+    root: &Path,
+    files: &mut Vec<PathBuf>,
+    scope: &Scope,
+    cancellation: &Cancellation,
+) -> Result<Vec<Mutation>> {
     let mut parser = Parser::new();
     parser.set_language(&tree_sitter_go::LANGUAGE.into())?;
     let mut mutations = Vec::new();
     files.sort();
     files.dedup();
     for path in files {
-        if !scope.matches(&path) || path.to_string_lossy().ends_with("_test.go") {
+        cancellation.check()?;
+        if !scope.matches(path) || path.to_string_lossy().ends_with("_test.go") {
             continue;
         }
         let source = fs::read_to_string(root.join(&path))
@@ -149,7 +181,12 @@ pub fn discover(root: &Path, mut files: Vec<PathBuf>, scope: &Scope) -> Result<V
             "could not parse {} as Go",
             path.display()
         );
-        let file = Arc::new(SourceFile { path, source });
+        let fingerprint = format!("sha256:{:x}", Sha256::digest(source.as_bytes()));
+        let file = Arc::new(SourceFile {
+            path: path.clone(),
+            source,
+            fingerprint,
+        });
         visit(tree.root_node(), &file, &mut mutations);
     }
     Ok(mutations)
@@ -183,12 +220,29 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
             _ => &[],
         };
         let position = token.start_position();
+        let end = token.end_position();
         mutations.extend(replacements.iter().map(|replacement| Mutation {
             file: Arc::clone(file),
+            operator: match original {
+                "true" | "false" => Operator::BooleanFlip,
+                "!" => Operator::NegationRemove,
+                "&&" | "||" => Operator::LogicalSwap,
+                "==" | "!=" => Operator::ComparisonInvert,
+                "<" | "<=" | ">" | ">=" => {
+                    if original.starts_with('<') == replacement.starts_with('<') {
+                        Operator::ComparisonBoundary
+                    } else {
+                        Operator::ComparisonInvert
+                    }
+                }
+                _ => Operator::ArithmeticReplace,
+            },
             range: token.byte_range(),
             replacement,
             line: position.row + 1,
             column: position.column + 1,
+            end_line: end.row + 1,
+            end_column: end.column + 1,
         }));
     }
     let mut cursor = node.walk();
@@ -227,11 +281,55 @@ mod tests {
         let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
         assert_eq!(mutations.len(), 5);
         assert!(mutations.iter().all(|m| m.line == 4));
+        assert_eq!(
+            mutations.iter().map(|m| m.operator).collect::<Vec<_>>(),
+            vec![
+                Operator::LogicalSwap,
+                Operator::ComparisonInvert,
+                Operator::ComparisonBoundary,
+                Operator::NegationRemove,
+                Operator::BooleanFlip,
+            ]
+        );
+        for mutation in &mutations {
+            assert_eq!(mutation.end_line, mutation.line);
+            assert_eq!(
+                mutation.end_column - mutation.column,
+                mutation.original().len()
+            );
+        }
         mutations[0].apply(root.path())?;
         assert_eq!(
             fs::read_to_string(root.path().join("code.go"))?,
             source.replace("&&", "||")
         );
+        Ok(())
+    }
+
+    #[test]
+    fn fingerprints_identify_full_source_and_discovery_order_is_deterministic() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = "package p\nvar a = true\n";
+        fs::write(root.path().join("a.go"), source)?;
+        fs::write(root.path().join("b.go"), source)?;
+        let scope = Scope::new(&[], &[])?;
+        let mutations = discover(
+            root.path(),
+            vec!["b.go".into(), "a.go".into(), "a.go".into()],
+            &scope,
+        )?;
+        assert_eq!(mutations.len(), 2);
+        assert_eq!(mutations[0].file.path, Path::new("a.go"));
+        assert_eq!(mutations[0].file.fingerprint, mutations[1].file.fingerprint);
+        assert!(mutations[0].file.fingerprint.starts_with("sha256:"));
+        assert_eq!(mutations[0].file.fingerprint.len(), 71);
+        fs::write(
+            root.path().join("a.go"),
+            format!("{source}// changed elsewhere\n"),
+        )?;
+        let changed = discover(root.path(), vec!["a.go".into()], &scope)?;
+        assert_ne!(mutations[0].file.fingerprint, changed[0].file.fingerprint);
+        assert_eq!(mutations[0].range, changed[0].range);
         Ok(())
     }
 

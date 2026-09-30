@@ -1,0 +1,347 @@
+#![cfg(unix)]
+
+use std::{
+    fs,
+    os::unix::{fs::PermissionsExt, process::CommandExt},
+    path::{Path, PathBuf},
+    process::{Child, Command, Output, Stdio},
+    thread,
+    time::{Duration, Instant},
+};
+
+use serde_json::Value;
+
+struct Fixture {
+    _temp: tempfile::TempDir,
+    root: PathBuf,
+    bin: PathBuf,
+    state: PathBuf,
+    workspaces: PathBuf,
+}
+
+impl Fixture {
+    fn new() -> Self {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("module");
+        let bin = temp.path().join("bin");
+        let state = temp.path().join("state");
+        let workspaces = temp.path().join("workspaces");
+        for directory in [&root, &bin, &state, &workspaces] {
+            fs::create_dir(directory).unwrap();
+        }
+        fs::write(root.join("go.mod"), "module example.com/cancellation\n").unwrap();
+        for name in ["a", "b", "c", "z"] {
+            fs::write(
+                root.join(format!("{name}.go")),
+                format!("package p\nvar {name} = true\n"),
+            )
+            .unwrap();
+        }
+        let go = bin.join("go");
+        fs::write(
+            &go,
+            r#"#!/bin/sh
+set -eu
+hang() {
+    label="$1"
+    printf 'active %s\n' "$label"
+    printf 'diagnostic %s\n' "$label" >&2
+    printf '%s\n' "$$" > "$MUTIE_TEST_STATE/$label.pid"
+    printf '%s\n' "$PWD" > "$MUTIE_TEST_STATE/$label.workspace"
+    (sleep 30; touch "$MUTIE_TEST_STATE/leaked") &
+    printf '%s\n' "$!" > "$MUTIE_TEST_STATE/$label.child.pid"
+    touch "$MUTIE_TEST_STATE/$label.ready"
+    if [ "$MUTIE_TEST_MODE" = tool_error ] && [ "$label" = c ]; then
+        while [ ! -f "$MUTIE_TEST_STATE/fail" ]; do sleep 0.01; done
+        printf 'go tool failed unexpectedly\n' >&2
+        exit 2
+    fi
+    wait
+}
+if [ "$1" = list ]; then
+    if [ "$MUTIE_TEST_MODE" = discovery ]; then hang discovery; fi
+    printf '{"Dir":"%s","GoFiles":["z.go","c.go","a.go","b.go"]}\n' "$PWD"
+    exit 0
+fi
+if grep -q false a.go; then
+    printf '{"Action":"output","Output":"completed a\n"}\n'
+    exit 0
+fi
+for name in b c; do
+    if grep -q false "$name.go"; then hang "$name"; fi
+done
+if grep -q false z.go; then touch "$MUTIE_TEST_STATE/unexpected"; fi
+if [ "$MUTIE_TEST_MODE" = baseline ]; then hang baseline; fi
+printf '{"Action":"output","Output":"PASS\n"}\n'
+"#,
+        )
+        .unwrap();
+        fs::set_permissions(&go, fs::Permissions::from_mode(0o755)).unwrap();
+        Self {
+            _temp: temp,
+            root,
+            bin,
+            state,
+            workspaces,
+        }
+    }
+
+    fn start(&self, mode: &str) -> Running {
+        let mut paths = vec![self.bin.clone()];
+        paths.extend(std::env::split_paths(
+            &std::env::var_os("PATH").unwrap_or_default(),
+        ));
+        let stdout = self.state.join("stdout");
+        let stderr = self.state.join("stderr");
+        let child = Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .arg(&self.root)
+            .args(["--jobs", "2", "--timeout", "60"])
+            .env("PATH", std::env::join_paths(paths).unwrap())
+            .env("TMPDIR", &self.workspaces)
+            .env("MUTIE_TEST_STATE", &self.state)
+            .env("MUTIE_TEST_MODE", mode)
+            .stdin(Stdio::null())
+            .stdout(fs::File::create(&stdout).unwrap())
+            .stderr(fs::File::create(&stderr).unwrap())
+            .process_group(0)
+            .spawn()
+            .unwrap();
+        Running {
+            child,
+            state: self.state.clone(),
+            stdout,
+            stderr,
+        }
+    }
+
+    fn ready(&self, name: &str) {
+        wait_until(|| self.state.join(format!("{name}.ready")).exists());
+    }
+
+    fn report(&self) -> PathBuf {
+        let directories: Vec<_> = fs::read_dir(self.root.join(".mutie"))
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .collect();
+        assert_eq!(directories.len(), 1);
+        directories[0].clone()
+    }
+
+    fn assert_cleanup(&self) {
+        assert!(
+            fs::read_dir(&self.workspaces).unwrap().next().is_none(),
+            "temporary workspace leaked"
+        );
+        assert!(
+            !self.state.join("unexpected").exists(),
+            "scheduled pending mutation after cancellation"
+        );
+        assert!(!self.state.join("leaked").exists());
+        for name in ["a", "b", "c", "z"] {
+            assert_eq!(
+                fs::read_to_string(self.root.join(format!("{name}.go"))).unwrap(),
+                format!("package p\nvar {name} = true\n")
+            );
+        }
+        for entry in fs::read_dir(&self.state).unwrap() {
+            let path = entry.unwrap().path();
+            if path.extension().is_some_and(|extension| extension == "pid") {
+                let pid: i32 = fs::read_to_string(path).unwrap().trim().parse().unwrap();
+                wait_until(|| !process_running(pid));
+            }
+        }
+    }
+}
+
+struct Running {
+    child: Child,
+    state: PathBuf,
+    stdout: PathBuf,
+    stderr: PathBuf,
+}
+
+impl Running {
+    fn signal(&self, signal: i32) {
+        // SAFETY: signal only the child CLI owned by this test.
+        assert_eq!(unsafe { libc::kill(self.child.id() as i32, signal) }, 0);
+    }
+
+    fn finish(&mut self) -> Output {
+        let mut status = None;
+        wait_until(|| {
+            status = self.child.try_wait().unwrap();
+            status.is_some()
+        });
+        Output {
+            status: status.unwrap(),
+            stdout: fs::read(&self.stdout).unwrap(),
+            stderr: fs::read(&self.stderr).unwrap(),
+        }
+    }
+}
+
+impl Drop for Running {
+    fn drop(&mut self) {
+        // Cleanup also on assertion failure; Go children have separate groups.
+        if self.child.try_wait().ok().flatten().is_none() {
+            let _ = self.child.kill();
+            let _ = self.child.wait();
+            for entry in fs::read_dir(&self.state).into_iter().flatten().flatten() {
+                let path = entry.path();
+                if path.extension().is_some_and(|extension| extension == "pid")
+                    && let Ok(text) = fs::read_to_string(path)
+                    && let Ok(pid) = text.trim().parse::<i32>()
+                {
+                    // SAFETY: these PIDs were recorded by this test's children.
+                    unsafe {
+                        libc::kill(-pid, libc::SIGKILL);
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn wait_until(mut predicate: impl FnMut() -> bool) {
+    let deadline = Instant::now() + Duration::from_secs(15);
+    while !predicate() {
+        assert!(
+            Instant::now() < deadline,
+            "timed out waiting for test process"
+        );
+        thread::sleep(Duration::from_millis(10));
+    }
+}
+
+fn process_running(pid: i32) -> bool {
+    // A killed grandchild may briefly be a zombie until its adopter reaps it.
+    #[cfg(target_os = "linux")]
+    if let Ok(status) = fs::read_to_string(format!("/proc/{pid}/status"))
+        && status
+            .lines()
+            .any(|line| line.starts_with("State:") && line.contains('Z'))
+    {
+        return false;
+    }
+    // SAFETY: signal 0 only checks whether this test's process still exists.
+    unsafe { libc::kill(pid, 0) == 0 }
+}
+
+fn read(directory: &Path, name: &str) -> Value {
+    serde_json::from_slice(&fs::read(directory.join(name)).unwrap()).unwrap()
+}
+
+#[test]
+fn interrupt_parallel_run_retains_inventory_results_and_active_diagnostics() {
+    let fixture = Fixture::new();
+    let mut child = fixture.start("mutations");
+    fixture.ready("b");
+    fixture.ready("c");
+    let directory = fixture.report();
+    let inventory_bytes = fs::read(directory.join("mutants.json")).unwrap();
+    let inventory = read(&directory, "mutants.json");
+    assert_eq!(inventory["complete"], true);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 4);
+    for mutation in inventory["mutations"].as_array().unwrap() {
+        assert!(directory.join(mutation["diff"].as_str().unwrap()).is_file());
+    }
+    let before = read(&directory, "outcomes.json");
+    assert_eq!(before["mutations"][0]["state"], "completed");
+    assert_eq!(before["mutations"][1]["state"], "running");
+    assert_eq!(before["mutations"][2]["state"], "running");
+    assert_eq!(before["mutations"][3]["state"], "pending");
+    child.signal(libc::SIGINT);
+    let output = child.finish();
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("interrupted"));
+    let metadata = read(&directory, "run.json");
+    let outcomes = read(&directory, "outcomes.json");
+    assert_eq!(metadata["status"], "interrupted");
+    assert_eq!(metadata["checkpoint"], outcomes["checkpoint"]);
+    assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
+    assert_eq!(outcomes["mutations"][3]["state"], "pending");
+    for (index, name) in [(1, "b"), (2, "c")] {
+        let mutation = &outcomes["mutations"][index];
+        assert_eq!(mutation["state"], "interrupted");
+        assert!(mutation["outcome"].is_null());
+        assert!(
+            fs::read_to_string(directory.join(mutation["logs"]["stdout"].as_str().unwrap()))
+                .unwrap()
+                .contains(&format!("active {name}"))
+        );
+        assert!(
+            fs::read_to_string(directory.join(mutation["logs"]["stderr"].as_str().unwrap()))
+                .unwrap()
+                .contains(&format!("diagnostic {name}"))
+        );
+    }
+    assert_eq!(
+        outcomes["summary"],
+        serde_json::json!({"killed":0,"missed":1,"timeout":0,"build_failed":0,"errors":0})
+    );
+    assert_eq!(
+        fs::read(directory.join("mutants.json")).unwrap(),
+        inventory_bytes
+    );
+    assert_eq!(
+        fs::read_to_string(directory.join("missed.txt"))
+            .unwrap()
+            .lines()
+            .count(),
+        1
+    );
+    fixture.assert_cleanup();
+}
+
+#[test]
+fn interruption_during_baseline_and_discovery_preserves_command_output() {
+    for (phase, signal) in [("baseline", libc::SIGINT), ("discovery", libc::SIGTERM)] {
+        let fixture = Fixture::new();
+        let mut child = fixture.start(phase);
+        fixture.ready(phase);
+        child.signal(signal);
+        let output = child.finish();
+        assert!(!output.status.success());
+        let directory = fixture.report();
+        let metadata = read(&directory, "run.json");
+        let outcomes = read(&directory, "outcomes.json");
+        assert_eq!(metadata["status"], "interrupted");
+        assert_eq!(metadata["phase"], phase);
+        assert_eq!(outcomes[phase]["outcome"], "interrupted");
+        assert!(outcomes["mutations"].as_array().unwrap().is_empty());
+        assert_eq!(read(&directory, "mutants.json")["complete"], false);
+        assert!(
+            fs::read_to_string(directory.join(outcomes[phase]["logs"]["text"].as_str().unwrap()))
+                .unwrap()
+                .contains(&format!("active {phase}"))
+        );
+        fixture.assert_cleanup();
+    }
+}
+
+#[test]
+fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
+    let fixture = Fixture::new();
+    let mut child = fixture.start("tool_error");
+    fixture.ready("b");
+    fixture.ready("c");
+    fs::write(fixture.state.join("fail"), "").unwrap();
+    let output = child.finish();
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("go tool failed unexpectedly"));
+    let directory = fixture.report();
+    let outcomes = read(&directory, "outcomes.json");
+    assert_eq!(outcomes["status"], "failed");
+    assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
+    assert_eq!(outcomes["mutations"][1]["state"], "interrupted");
+    assert_eq!(outcomes["mutations"][2]["outcome"], "error");
+    assert_eq!(outcomes["mutations"][3]["state"], "pending");
+    assert!(
+        fs::read_to_string(directory.join("logs/000002.log"))
+            .unwrap()
+            .contains("active b")
+    );
+    assert_eq!(outcomes["summary"]["errors"], 1);
+    assert_eq!(outcomes["summary"]["missed"], 1);
+    fixture.assert_cleanup();
+}
