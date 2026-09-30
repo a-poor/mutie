@@ -2,7 +2,8 @@
 
 Status: working design, 2026-09-30. This document records the direction for the
 project, including work that is not implemented yet. [README.md](README.md)
-documents the current CLI and behavior. Update this reference as decisions change.
+documents the current CLI and behavior; [TODO.md](TODO.md) tracks implementation
+progress. Update this reference as decisions change.
 
 ## Goal
 

@@ -6,8 +6,9 @@ The first prototype supports Go modules. It runs a passing baseline, finds small
 source mutations with Tree-sitter, and runs the full test suite for each mutation
 in an isolated temporary workspace. Rust and other languages are planned.
 
-See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap. Features
-described there as planned are not necessarily available in the current CLI.
+See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
+[TODO.md](TODO.md) for implementation progress. Features described as planned are
+not necessarily available in the current CLI.
 
 ## Try it
 
