@@ -6,6 +6,9 @@ The first prototype supports Go modules. It runs a passing baseline, finds small
 source mutations with Tree-sitter, and runs the full test suite for each mutation
 in an isolated temporary workspace. Rust and other languages are planned.
 
+See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap. Features
+described there as planned are not necessarily available in the current CLI.
+
 ## Try it
 
 Requires Rust/Cargo and Go 1.24+ on `PATH`. The prototype is tested on Linux.
@@ -16,6 +19,7 @@ cargo run -- /path/to/go/module --jobs 4
 cargo run -- /path/to/go/module --list
 cargo run -- /path/to/go/module --include 'internal/**/*.go' --exclude '**/generated_*'
 cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
+cargo run -- /path/to/go/module --output-dir ./mutation-reports
 ```
 
 The path defaults to the current directory and must contain `go.mod`. Glob
@@ -29,6 +33,47 @@ The bundled fixture deliberately produces all four outcomes:
 ```sh
 cargo run -- tests/fixtures/go --jobs 2 --timeout 5
 ```
+
+## Saved reports
+
+Every test run saves a new directory under `<module>/.mutie/`. The CLI prints its
+location when the run starts and the summary path when it finishes. Earlier runs
+are preserved. Use `--output-dir DIR` to choose the parent directory instead;
+relative paths are resolved from your current working directory. The output
+directory cannot be the module root or an ancestor of it. `--list` writes no
+reports and cannot be combined with `--output-dir`.
+
+Each run contains:
+
+- `summary.txt`: counts, baseline status, missed mutations, and paths to each
+  mutation's diff and output.
+- `report.json`: versioned structured results, including the command, scope,
+  timeouts, run status, source locations, replacements, outcomes, and durations.
+- `baseline.log`, `baseline.stdout.jsonl`, and `baseline.stderr.log`: readable
+  baseline output and the separately captured Go output streams.
+- `mutations/000001.diff`, `.log`, `.stdout.jsonl`, and `.stderr.log`: the unified
+  source diff and captured output for each reported mutation. Logs are saved
+  even without `--verbose`; that flag only controls terminal output.
+
+Mutation IDs are local to each run, assigned in discovery order. JSON results are
+sorted by ID regardless of worker completion order. Source paths are relative to
+the module; artifact paths are relative to the report directory. Source line and
+column numbers are one-based (columns count bytes); byte ranges are zero-based
+with an exclusive end. Durations are in seconds, timestamps in Unix seconds, and
+`schema_version` is currently `1`.
+
+Reports are updated after the baseline and after each result, using atomic file
+replacement. Completed results remain available after failures or interruption.
+The run status is `running`, `completed`, or `failed`; a failed run includes its
+error. Command failures that cannot be classified as test/build failures are
+recorded as `error` and abort the run. Mutations still in progress when interrupted
+may be absent. If the process is forcibly terminated, its last checkpoint can
+still say `running`; `planned_mutations` and the recorded results show progress.
+
+The module's `.mutie` directory and the selected output directory are omitted
+from snapshots so saved reports do not affect tests or discovery. Keep output
+directories separate from source files, and add `.mutie/` (or your custom output
+directory) to your project's `.gitignore`.
 
 ## Behavior
 
@@ -53,14 +98,14 @@ cargo run -- tests/fixtures/go --jobs 2 --timeout 5
   tests. Copies use [reflink-copy](https://docs.rs/reflink-copy/latest/reflink_copy/)
   where supported, with ordinary copies as a fallback. This costs extra copying
   compared with reverting just the mutated file, but avoids test-state leakage.
-- The snapshot includes current local edits and untracked files; `.git` is
-  omitted. Input files are not edited. Internal symlinks are kept within the
+- The snapshot includes current local edits and untracked files; `.git` and
+  report directories are omitted. Input source files are not edited. Internal symlinks are kept within the
   copied tree; dangling or external symlinks are rejected. Temporary workspaces
   are removed on completion. On Unix, timeouts and interruption kill the child
   process group, including test binaries.
 - A completed run exits successfully even if mutations survive. Baseline and
-  tool failures exit unsuccessfully. CI thresholds and machine-readable reports
-  are future work; result types are separate from terminal rendering.
+  tool failures exit unsuccessfully. CI thresholds and focused reruns are future
+  work; saved JSON reports can already be consumed by other tools.
 
 The initial scope is one self-contained Go module. `GOWORK` is set to `off` for
 child Go commands. Workspaces, local replacements outside the module, and tests
@@ -77,7 +122,7 @@ cargo clippy --all-targets -- -D warnings
 ```
 
 The Go integration test checks all four outcomes, configurable scope, baseline
-failure and timeout, workspace resets, and preservation of input files. It needs
+failure and timeout, workspace resets, saved reports, and preservation of input files. It needs
 Go on `PATH` and a writable Go build cache, and is opt-in because it runs real
 builds and deliberately waits for a timeout.
 

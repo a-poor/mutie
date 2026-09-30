@@ -13,14 +13,10 @@ use crate::{
 
 // Disable result caching so each mutation really executes tests. The outer
 // deadline covers compilation too, and replaces Go's per-binary timeout.
+pub const TEST_ARGS: &[&str] = &["test", "-json", "-count=1", "-timeout=0", "./..."];
+
 pub async fn test(root: &Path, limit: Duration) -> Result<CommandOutput> {
-    process::run(
-        "go",
-        &["test", "-json", "-count=1", "-timeout=0", "./..."],
-        root,
-        limit,
-    )
-    .await
+    process::run("go", TEST_ARGS, root, limit).await
 }
 
 pub async fn files(root: &Path, limit: Duration) -> Result<Vec<PathBuf>> {

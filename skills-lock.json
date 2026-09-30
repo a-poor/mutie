@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "ratatui": {
+      "source": "a-poor/skills",
+      "sourceType": "github",
+      "skillPath": "skills/ratatui/SKILL.md",
+      "computedHash": "1a08724acd364d10f51733a0b582020cc262a4c256c987b6074387220d7c6dfc"
+    }
+  }
+}

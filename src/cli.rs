@@ -39,6 +39,10 @@ pub struct Cli {
     #[arg(long)]
     pub list: bool,
 
+    /// Parent directory for saved runs (default: <module>/.mutie)
+    #[arg(long, value_name = "DIR", conflicts_with = "list")]
+    pub output_dir: Option<PathBuf>,
+
     /// Show captured test/build output for every mutation
     #[arg(short, long)]
     pub verbose: bool,

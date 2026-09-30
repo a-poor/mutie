@@ -3,9 +3,11 @@ mod go;
 mod mutation;
 mod process;
 mod report;
+mod saved_report;
 mod workspace;
 
 use std::{
+    path::Path,
     sync::{
         Arc,
         atomic::{AtomicUsize, Ordering},
@@ -19,7 +21,8 @@ use tokio::{sync::mpsc, task::JoinSet};
 
 use cli::{Cli, Lang};
 use mutation::{Mutation, Scope};
-use report::{MutationResult, Summary};
+use report::{MutationResult, Outcome, Summary};
+use saved_report::SavedReport;
 use workspace::Workspace;
 
 #[tokio::main]
@@ -39,10 +42,46 @@ async fn main() -> Result<()> {
         root.display()
     );
     let scope = Scope::new(&cli.include, &cli.exclude)?;
+    let mut saved = if cli.list {
+        None
+    } else {
+        Some(SavedReport::create(&root, &cli)?)
+    };
+    if let Some(report) = &saved {
+        println!("Saving report to {}", report.path().display());
+    }
+    let result = execute(&cli, &root, &scope, saved.as_mut()).await;
+    if let Some(report) = &mut saved {
+        if let Err(save_error) = report.finish(result.as_ref().err()) {
+            return Err(match result {
+                Err(run_error) => {
+                    run_error.context(format!("could not finish saved report: {save_error:#}"))
+                }
+                Ok(()) => save_error,
+            });
+        }
+        println!(
+            "Report saved: {}",
+            report.path().join("summary.txt").display()
+        );
+    }
+    result
+}
+
+async fn execute(
+    cli: &Cli,
+    root: &Path,
+    scope: &Scope,
+    mut saved: Option<&mut SavedReport>,
+) -> Result<()> {
     let baseline_limit = Duration::from_secs(cli.baseline_timeout.get());
 
     println!("Snapshotting {}", root.display());
-    let snapshot = Arc::new(Workspace::new(&root)?);
+    let mut excluded = vec![root.join(".mutie")];
+    if let Some(report) = &saved {
+        excluded.push(report.output_root().to_owned());
+    }
+    let snapshot = Arc::new(Workspace::new_excluding(root, &excluded)?);
     let baseline_workspace = Workspace::new(&snapshot.path())?;
     let mut timeout = cli
         .timeout
@@ -50,6 +89,9 @@ async fn main() -> Result<()> {
     if !cli.list {
         println!("Running baseline: go test ./... (test caching disabled)");
         let baseline = go::test(&baseline_workspace.path(), baseline_limit).await?;
+        if let Some(report) = saved.as_deref_mut() {
+            report.baseline(&baseline)?;
+        }
         if baseline.timed_out {
             bail!(
                 "baseline timed out after {:.1}s; no mutations were run\n{}",
@@ -72,7 +114,7 @@ async fn main() -> Result<()> {
         baseline_workspace.reset(&snapshot.path())?;
     }
     let files = go::files(&baseline_workspace.path(), baseline_limit).await?;
-    let mutations = mutation::discover(&snapshot.path(), files, &scope)?;
+    let mutations = mutation::discover(&snapshot.path(), files, scope)?;
     drop(baseline_workspace);
     println!("Found {} mutations", mutations.len());
     if cli.list {
@@ -81,17 +123,20 @@ async fn main() -> Result<()> {
         }
         return Ok(());
     }
+    let timeout = timeout.context("missing mutation timeout")?;
+    let jobs = cli.jobs.get().min(mutations.len());
+    if let Some(report) = saved.as_deref_mut() {
+        report.plan(mutations.len(), jobs, timeout)?;
+    }
     if mutations.is_empty() {
         println!("No eligible mutations matched the selected scope.");
         return Ok(());
     }
-    let timeout = timeout.context("missing mutation timeout")?;
-    let jobs = cli.jobs.get().min(mutations.len());
     println!(
         "Running {jobs} worker(s), {:.2}s timeout per mutation",
         timeout.as_secs_f64()
     );
-    let summary = run_workers(snapshot, mutations, jobs, timeout, cli.verbose).await?;
+    let summary = run_workers(snapshot, mutations, jobs, timeout, cli.verbose, saved).await?;
     println!("\n{summary}");
     Ok(())
 }
@@ -102,6 +147,7 @@ async fn run_workers(
     jobs: usize,
     timeout: Duration,
     verbose: bool,
+    mut saved: Option<&mut SavedReport>,
 ) -> Result<Summary> {
     let mutations = Arc::new(mutations);
     let next = Arc::new(AtomicUsize::new(0));
@@ -117,25 +163,36 @@ async fn run_workers(
         workers.spawn(async move {
             let workspace = Workspace::new(&snapshot.path())?;
             let mut first = true;
-            while let Some(mutation) = mutations.get(next.fetch_add(1, Ordering::Relaxed)) {
+            loop {
+                let index = next.fetch_add(1, Ordering::Relaxed);
+                let Some(mutation) = mutations.get(index) else {
+                    break;
+                };
                 if !first {
                     workspace.reset(&snapshot.path())?;
                 }
                 first = false;
                 mutation.apply(&workspace.path())?;
                 let output = go::test(&workspace.path(), timeout).await?;
+                let (outcome, error) = match go::classify(&output) {
+                    Ok(outcome) => (outcome, None),
+                    Err(error) => (
+                        Outcome::Error,
+                        Some(format!("running {}: {error:#}", mutation.description())),
+                    ),
+                };
+                let failed = error.is_some();
                 let result = MutationResult {
+                    id: index + 1,
                     mutation: mutation.clone(),
-                    outcome: go::classify(&output)
-                        .with_context(|| format!("running {}", mutation.description()))?,
-                    duration: output.elapsed,
-                    output: if verbose {
-                        go::text(&output)
-                    } else {
-                        String::new()
-                    },
+                    outcome,
+                    output,
+                    error,
                 };
                 sender.send(result).context("result receiver closed")?;
+                if failed {
+                    break;
+                }
             }
             Ok::<_, anyhow::Error>(())
         });
@@ -143,29 +200,49 @@ async fn run_workers(
     drop(sender);
     let mut summary = Summary::default();
     let total = mutations.len();
-    while !workers.is_empty() {
-        tokio::select! {
-            Some(result) = receiver.recv() => display(&mut summary, &result, total, verbose),
-            Some(finished) = workers.join_next() => {
-                if let Err(error) = finished.context("mutation worker panicked").and_then(|result| result) {
-                    workers.abort_all();
-                    while workers.join_next().await.is_some() {}
-                    return Err(error);
+    let result: Result<()> = async {
+        while !workers.is_empty() {
+            tokio::select! {
+                Some(result) = receiver.recv() => record(&mut summary, &result, total, verbose, saved.as_deref_mut())?,
+                Some(finished) = workers.join_next() => {
+                    finished.context("mutation worker panicked")??;
                 }
             }
         }
+        while let Some(result) = receiver.recv().await {
+            record(&mut summary, &result, total, verbose, saved.as_deref_mut())?;
+        }
+        ensure!(summary.total() == total, "workers did not report every mutation");
+        Ok(())
+    }.await;
+    if let Err(mut error) = result {
+        workers.abort_all();
+        while workers.join_next().await.is_some() {}
+        // A worker can fail while other completed results are still queued.
+        while let Ok(result) = receiver.try_recv() {
+            if let Err(save_error) =
+                record(&mut summary, &result, total, verbose, saved.as_deref_mut())
+            {
+                error = error.context(format!(
+                    "while collecting remaining results: {save_error:#}"
+                ));
+            }
+        }
+        return Err(error);
     }
-    while let Some(result) = receiver.recv().await {
-        display(&mut summary, &result, total, verbose);
-    }
-    ensure!(
-        summary.total() == total,
-        "workers did not report every mutation"
-    );
     Ok(summary)
 }
 
-fn display(summary: &mut Summary, result: &MutationResult, total: usize, verbose: bool) {
+fn record(
+    summary: &mut Summary,
+    result: &MutationResult,
+    total: usize,
+    verbose: bool,
+    saved: Option<&mut SavedReport>,
+) -> Result<()> {
+    if let Some(report) = saved {
+        report.record(result)?;
+    }
     summary.record(result);
     println!(
         "[{}/{}] {}: {} ({:.2}s)",
@@ -173,9 +250,16 @@ fn display(summary: &mut Summary, result: &MutationResult, total: usize, verbose
         total,
         result.outcome,
         result.mutation.description(),
-        result.duration.as_secs_f64()
+        result.output.elapsed.as_secs_f64()
     );
-    if verbose && !result.output.is_empty() {
-        println!("{}", result.output.trim_end());
+    if verbose {
+        let text = go::text(&result.output);
+        if !text.is_empty() {
+            println!("{}", text.trim_end());
+        }
     }
+    if let Some(error) = &result.error {
+        bail!("{error}");
+    }
+    Ok(())
 }

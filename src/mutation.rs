@@ -55,15 +55,59 @@ pub struct Mutation {
 }
 
 impl Mutation {
+    pub fn original(&self) -> &str {
+        &self.file.source[self.range.clone()]
+    }
+
     pub fn description(&self) -> String {
         format!(
             "{}:{}:{}: {:?} -> {:?}",
             self.file.path.display(),
             self.line,
             self.column,
-            &self.file.source[self.range.clone()],
+            self.original(),
             self.replacement
         )
+    }
+
+    /// All current operators replace a token on one line. Include three lines
+    /// of context, preserving CRLF and the final-newline marker in unified diffs.
+    pub fn diff(&self) -> String {
+        let lines: Vec<_> = self.file.source.split_inclusive('\n').collect();
+        let index = self.line - 1;
+        let offset = self.range.start - lines[..index].iter().map(|line| line.len()).sum::<usize>();
+        let mut changed = lines[index].to_owned();
+        changed.replace_range(offset..offset + self.original().len(), self.replacement);
+        let start = index.saturating_sub(3);
+        let end = (index + 4).min(lines.len());
+        let path = self
+            .file
+            .path
+            .to_string_lossy()
+            .replace(std::path::MAIN_SEPARATOR, "/");
+        let mut diff = format!(
+            "--- a/{path}\n+++ b/{path}\n@@ -{},{} +{},{} @@\n",
+            start + 1,
+            end - start,
+            start + 1,
+            end - start
+        );
+        fn append(diff: &mut String, prefix: char, line: &str) {
+            diff.push(prefix);
+            diff.push_str(line);
+            if !line.ends_with('\n') {
+                diff.push_str("\n\\ No newline at end of file\n");
+            }
+        }
+        for (position, line) in lines.iter().enumerate().take(end).skip(start) {
+            if position == index {
+                append(&mut diff, '-', line);
+                append(&mut diff, '+', &changed);
+            } else {
+                append(&mut diff, ' ', line);
+            }
+        }
+        diff
     }
 
     pub fn apply(&self, root: &Path) -> Result<()> {
@@ -156,6 +200,24 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn diff_preserves_unicode_crlf_and_missing_final_newline() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = "package p\r\n\r\nfunc f() string { return \"é\" + \"x\" }";
+        fs::write(root.path().join("code.go"), source)?;
+        let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
+        assert_eq!(
+            mutations[0].diff(),
+            concat!(
+                "--- a/code.go\n+++ b/code.go\n@@ -1,3 +1,3 @@\n",
+                " package p\r\n \r\n",
+                "-func f() string { return \"é\" + \"x\" }\n\\ No newline at end of file\n",
+                "+func f() string { return \"é\" - \"x\" }\n\\ No newline at end of file\n"
+            )
+        );
+        Ok(())
+    }
 
     #[test]
     fn discovers_syntax_not_comments_or_strings_and_applies_utf8_byte_ranges() -> Result<()> {

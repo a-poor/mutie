@@ -1,4 +1,7 @@
-use std::{fs, path::Path};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use anyhow::{Context, Result, bail, ensure};
 use tempfile::TempDir;
@@ -10,13 +13,18 @@ pub struct Workspace {
 
 impl Workspace {
     pub fn new(source: &Path) -> Result<Self> {
+        Self::new_excluding(source, &[])
+    }
+
+    pub fn new_excluding(source: &Path, excluded: &[PathBuf]) -> Result<Self> {
         let directory = tempfile::Builder::new().prefix("mutie-").tempdir()?;
         ensure!(
             !directory.path().canonicalize()?.starts_with(source),
             "temporary directory is inside the module; set TMPDIR to a directory outside it"
         );
         let workspace = Self { directory };
-        workspace.reset(source)?;
+        let destination = workspace.path();
+        copy_directory(source, &destination, source, &destination, excluded)?;
         Ok(workspace)
     }
 
@@ -30,11 +38,17 @@ impl Workspace {
         if destination.exists() {
             fs::remove_dir_all(&destination).context("could not reset temporary workspace")?;
         }
-        copy_directory(source, &destination, source, &destination)
+        copy_directory(source, &destination, source, &destination, &[])
     }
 }
 
-fn copy_directory(source: &Path, destination: &Path, root: &Path, copy_root: &Path) -> Result<()> {
+fn copy_directory(
+    source: &Path,
+    destination: &Path,
+    root: &Path,
+    copy_root: &Path,
+    excluded: &[PathBuf],
+) -> Result<()> {
     fs::create_dir_all(destination)?;
     for entry in fs::read_dir(source).with_context(|| format!("reading {}", source.display()))? {
         let entry = entry?;
@@ -42,15 +56,24 @@ fn copy_directory(source: &Path, destination: &Path, root: &Path, copy_root: &Pa
             continue;
         }
         let from = entry.path();
+        if excluded.contains(&from) {
+            continue;
+        }
         let to = destination.join(entry.file_name());
         let kind = entry.file_type()?;
         if kind.is_dir() {
-            copy_directory(&from, &to, root, copy_root)?;
+            copy_directory(&from, &to, root, copy_root, excluded)?;
         } else if kind.is_file() {
             reflink_copy::reflink_or_copy(&from, &to)
                 .with_context(|| format!("copying {}", from.display()))?;
             fs::set_permissions(&to, entry.metadata()?.permissions())?;
         } else if kind.is_symlink() {
+            if from
+                .canonicalize()
+                .is_ok_and(|target| excluded.iter().any(|path| target.starts_with(path)))
+            {
+                continue;
+            }
             copy_symlink(&from, &to, root, copy_root)?;
         } else {
             bail!(
@@ -93,6 +116,28 @@ fn copy_symlink(from: &Path, to: &Path, root: &Path, copy_root: &Path) -> Result
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn report_directories_are_omitted_from_snapshots() -> Result<()> {
+        let source = tempfile::tempdir()?;
+        fs::write(source.path().join("code.go"), "original")?;
+        let excluded = vec![
+            source.path().join(".mutie"),
+            source.path().join("artifacts/reports"),
+        ];
+        for directory in &excluded {
+            fs::create_dir_all(directory)?;
+            fs::write(directory.join("previous-run"), "report")?;
+        }
+        #[cfg(unix)]
+        std::os::unix::fs::symlink("artifacts/reports", source.path().join("report-link"))?;
+        let workspace = Workspace::new_excluding(source.path(), &excluded)?;
+        assert!(workspace.path().join("code.go").is_file());
+        assert!(!workspace.path().join(".mutie").exists());
+        assert!(!workspace.path().join("artifacts/reports").exists());
+        assert!(!workspace.path().join("report-link").exists());
+        Ok(())
+    }
 
     #[test]
     fn reset_restores_files_and_removes_test_artifacts_without_touching_input() -> Result<()> {

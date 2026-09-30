@@ -1,13 +1,17 @@
-use std::{fmt, time::Duration};
+use std::fmt;
 
-use crate::mutation::Mutation;
+use serde::Serialize;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+use crate::{mutation::Mutation, process::CommandOutput};
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
 pub enum Outcome {
     Killed,
     Missed,
     Timeout,
     BuildFailed,
+    Error,
 }
 
 impl fmt::Display for Outcome {
@@ -17,23 +21,26 @@ impl fmt::Display for Outcome {
             Self::Missed => "missed",
             Self::Timeout => "timeout",
             Self::BuildFailed => "build failed",
+            Self::Error => "error",
         })
     }
 }
 
 pub struct MutationResult {
+    pub id: usize,
     pub mutation: Mutation,
     pub outcome: Outcome,
-    pub duration: Duration,
-    pub output: String,
+    pub output: CommandOutput,
+    pub error: Option<String>,
 }
 
-#[derive(Default)]
+#[derive(Default, Serialize)]
 pub struct Summary {
     pub killed: usize,
     pub missed: usize,
     pub timeout: usize,
     pub build_failed: usize,
+    pub errors: usize,
 }
 
 impl Summary {
@@ -43,11 +50,12 @@ impl Summary {
             Outcome::Missed => self.missed += 1,
             Outcome::Timeout => self.timeout += 1,
             Outcome::BuildFailed => self.build_failed += 1,
+            Outcome::Error => self.errors += 1,
         }
     }
 
     pub fn total(&self) -> usize {
-        self.killed + self.missed + self.timeout + self.build_failed
+        self.killed + self.missed + self.timeout + self.build_failed + self.errors
     }
 }
 
@@ -61,6 +69,10 @@ impl fmt::Display for Summary {
             self.missed,
             self.timeout,
             self.build_failed
-        )
+        )?;
+        if self.errors > 0 {
+            write!(f, ", {} errors", self.errors)?;
+        }
+        Ok(())
     }
 }
