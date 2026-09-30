@@ -24,17 +24,17 @@ report artifacts, without requiring compatibility with its CLI or file formats.
 The current implementation supports one Go module, selected through its `go.mod`.
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
 executes them in isolated worker copies. It already has file filters, configurable
-workers and timeouts, plain terminal output, complete mutation inventories, saved
-reports, and coordinated cancellation with retained command diagnostics.
+workers and timeouts, repository configuration, plain terminal output, complete
+mutation inventories, saved reports, and coordinated cancellation with retained
+command diagnostics.
 
 The fixture and tests exercise killed and missed mutations, compilation failures,
 timeouts, failed baselines, workspace restoration, and preservation of partial
 results. This establishes the basic mechanics. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
-The prototype does not yet read `mutie.toml`, provide an interactive terminal
-view, or support focused reruns. Rust appears in the CLI language enum but is not
-implemented.
+The prototype does not yet provide an interactive terminal view or support
+focused reruns. Rust appears in the CLI language enum but is not implemented.
 
 ## Minimal MVP
 
@@ -169,17 +169,20 @@ over generating the largest possible number of mutations.
 
 ## Repository configuration
 
-Look for `mutie.toml` at the selected project root. For the Go MVP this is the
-selected module root; parent-directory inheritance and workspace configuration
-are deferred. No config file should be required for the default workflow.
+Mutie reads optional `mutie.toml` at the selected Go module root; parent-directory
+inheritance and workspace configuration are deferred. Missing or empty files
+retain the default workflow.
 
 Precedence is built-in defaults, then repository config, then explicitly supplied
-CLI arguments. The CLI parser must preserve which arguments were supplied; its
-default values must not accidentally overwrite repository settings. Validate the
-merged result, reject unknown keys and invalid values, and record the effective
-configuration in the report.
+CLI arguments. The CLI parser preserves optional scalar arguments; `config.rs`
+produces a resolved run configuration consumed by execution and reporting. Unknown
+keys, malformed TOML, and incorrect types are rejected before merging. The merged
+settings are validated before creating reports or invoking Go, including globs,
+supported language, positive worker counts/timeouts, representable deadlines, and
+output paths. `run.json` records every resolved setting in `effective_config`,
+including absolute module/output paths and the optional config file path.
 
-Illustrative target syntax, not supported by the current CLI:
+Supported configuration syntax (all keys are optional):
 
 ```toml
 lang = "go"
@@ -189,18 +192,30 @@ exclude = ["internal/legacy/**"]
 timeout = 30
 baseline_timeout = 300
 output_dir = ".mutie"
-ui = "auto"
+verbose = false
 ```
 
-Timeout values are seconds. File-selection globs are always relative to the
-project root. Paths supplied in the repository config are relative to that root;
-paths supplied through CLI arguments are relative to the invocation directory.
+Timeout values are positive integer seconds. File-selection globs are always
+relative to the project root. Paths supplied in the repository config are relative
+to that root; paths supplied through CLI arguments are relative to the invocation
+directory. Absolute paths are supported. Output resolution follows existing
+symlinks and normalizes `.`/`..` in order without creating directories; the module
+root, its ancestors, files, and dangling symlinks are invalid output destinations.
+Paths are not shell-expanded.
 
-Explicit CLI lists replace their configured counterparts rather than append to
-them. Provide a way to clear a configured list. Every MVP repository setting
-should have a CLI override; exact flags for new settings are chosen when adding
-config support. A separate environment-variable configuration layer is unnecessary
-for the MVP, although child tools still use their normal language environment.
+Explicit CLI lists replace their configured counterparts. `--clear-include` and
+`--clear-exclude` remove the respective configured patterns. `--clear-timeout`
+restores the automatic timeout and `--no-verbose` disables configured verbosity.
+Reset flags conflict with their corresponding value flags. Automatic language
+selection currently resolves to Go; a missing mutation timeout remains `null` in
+effective settings, with the actual duration recorded after the baseline.
+
+`--list` is invocation-only. It uses the resolved settings and excludes both
+`.mutie` and the selected report directory without creating reports. An explicit
+CLI `--output-dir` conflicts with `--list`; a configured output directory does
+not. UI settings will be added with the terminal view. A separate environment
+configuration layer is unnecessary for the MVP, although child tools still use
+their normal language environment.
 
 ## Terminal experience
 
@@ -236,7 +251,7 @@ and other interchange formats are possible future exporters.
 Current contents of a single run directory (schema version 1):
 
 ```text
-run.json           resolved CLI settings, versions, command, timing, run state
+run.json           effective configuration, versions, command, timing, run state
 mutants.json       complete inventory, written before mutation execution
 outcomes.json      baseline result, mutation outcomes, summary counts
 summary.txt        readable summary and artifact references
@@ -268,7 +283,7 @@ carry matching checkpoint numbers once an update finishes; a mismatch identifies
 a partial update. There is no multi-file transaction. Text outputs are derived
 and may lag the JSON snapshots after a forced kill. Before discovery/publication,
 `mutants.json` has `complete: false`; a complete empty inventory is distinguishable
-from discovery that never finished. Repository-config merging remains future work.
+from discovery that never finished.
 
 Retention is a separate policy from report format. For the minimal MVP, retain
 isolated run directories as today. Bounded retention, such as latest plus previous
@@ -358,7 +373,7 @@ design. No runtime or plugin ABI is selected now.
 1. Preserve the tested prototype as the starting point — completed.
 2. Establish the inventory/outcome model and reporting layout, including pending
    work and explicit interruption semantics — completed.
-3. Add `mutie.toml` merging and effective-config reporting.
+3. Add `mutie.toml` merging and effective-config reporting — completed.
 4. Add the coordinator state boundary and minimal default terminal status view,
    retaining plain mode and testing terminal restoration.
 5. Validate the MVP's complete workflow, including config precedence, parallel
@@ -366,7 +381,7 @@ design. No runtime or plugin ABI is selected now.
    preservation. Then begin focused reruns and real-project validation.
 
 Open implementation choices include the precise UI layout and Ratatui backend,
-CLI syntax for clearing list settings, report retention policy, cross-run mutation
-matching rules, and which language to add next. Resolve these when working on the
-corresponding milestone and update this document; they do not require expanding
+report retention policy, cross-run mutation matching rules, and which language to
+add next. Resolve these when working on the corresponding milestone and update
+this document; they do not require expanding
 the initial MVP.

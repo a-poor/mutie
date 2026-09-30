@@ -1,6 +1,7 @@
 use std::{num::NonZeroU64, num::NonZeroUsize, path::PathBuf};
 
 use clap::{Parser, ValueEnum};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Parser)]
 #[command(
@@ -12,28 +13,41 @@ pub struct Cli {
     #[arg(default_value = ".")]
     pub path: PathBuf,
 
-    #[arg(long, value_enum, default_value_t = Lang::Auto)]
-    pub lang: Lang,
+    /// Project language (default: auto)
+    #[arg(long, value_enum)]
+    pub lang: Option<Lang>,
 
-    /// Number of mutation workers (each runs the full test suite)
-    #[arg(short, long, default_value = "1")]
-    pub jobs: NonZeroUsize,
+    /// Number of mutation workers (default: 1; each runs the full test suite)
+    #[arg(short, long)]
+    pub jobs: Option<NonZeroUsize>,
 
     /// Only mutate files matching these module-relative globs (repeatable)
     #[arg(long, value_name = "GLOB")]
     pub include: Vec<String>,
 
+    /// Clear configured include patterns, allowing all eligible files
+    #[arg(long, conflicts_with = "include")]
+    pub clear_include: bool,
+
     /// Exclude files matching these module-relative globs (repeatable)
     #[arg(long, value_name = "GLOB")]
     pub exclude: Vec<String>,
+
+    /// Clear configured exclude patterns
+    #[arg(long, conflicts_with = "exclude")]
+    pub clear_exclude: bool,
 
     /// Timeout per mutation in seconds (default: max(10, 5 * baseline duration))
     #[arg(long, value_name = "SECONDS")]
     pub timeout: Option<NonZeroU64>,
 
-    /// Timeout for the baseline and package discovery, in seconds
-    #[arg(long, default_value = "300", value_name = "SECONDS")]
-    pub baseline_timeout: NonZeroU64,
+    /// Use the automatic mutation timeout instead of the configured value
+    #[arg(long, conflicts_with = "timeout")]
+    pub clear_timeout: bool,
+
+    /// Timeout for the baseline and package discovery, in seconds (default: 300)
+    #[arg(long, value_name = "SECONDS")]
+    pub baseline_timeout: Option<NonZeroU64>,
 
     /// List mutations without running tests
     #[arg(long)]
@@ -46,9 +60,14 @@ pub struct Cli {
     /// Show captured test/build output for every mutation
     #[arg(short, long)]
     pub verbose: bool,
+
+    /// Disable configured verbose output
+    #[arg(long, conflicts_with = "verbose")]
+    pub no_verbose: bool,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, Debug, ValueEnum)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
 pub enum Lang {
     Auto,
     Go,

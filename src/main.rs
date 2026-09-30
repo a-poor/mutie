@@ -1,5 +1,6 @@
 mod cancellation;
 mod cli;
+mod config;
 mod go;
 mod mutation;
 mod process;
@@ -7,19 +8,15 @@ mod report;
 mod saved_report;
 mod workspace;
 
-use std::{
-    collections::VecDeque,
-    path::{Path, PathBuf},
-    sync::Arc,
-    time::Duration,
-};
+use std::{collections::VecDeque, path::PathBuf, sync::Arc, time::Duration};
 
 use anyhow::{Context, Result, bail, ensure};
 use clap::Parser;
 use tokio::task::JoinSet;
 
 use cancellation::{Cancellation, Interrupted};
-use cli::{Cli, Lang};
+use cli::Cli;
+use config::RunConfig;
 use mutation::{Mutation, Scope};
 use report::{ExecutionState, MutationResult, Outcome, Summary};
 use saved_report::SavedReport;
@@ -27,34 +24,21 @@ use workspace::Workspace;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let cli = Cli::parse();
-    ensure!(
-        cli.lang != Lang::Rust,
-        "Rust support is planned; only Go is supported for now"
-    );
-    let root = cli
-        .path
-        .canonicalize()
-        .with_context(|| format!("opening {}", cli.path.display()))?;
-    ensure!(
-        root.join("go.mod").is_file(),
-        "{} must be a Go module root containing go.mod",
-        root.display()
-    );
-    let scope = Scope::new(&cli.include, &cli.exclude)?;
+    let config = RunConfig::resolve(Cli::parse())?;
+    let scope = Scope::new(&config.include, &config.exclude)?;
     let cancellation = Cancellation::default();
     let _signals = cancellation
         .listen()
         .context("installing cancellation handlers")?;
-    let mut saved = if cli.list {
+    let mut saved = if config.list {
         None
     } else {
-        Some(SavedReport::create(&root, &cli)?)
+        Some(SavedReport::create(&config)?)
     };
     if let Some(report) = &saved {
         println!("Saving report to {}", report.path().display());
     }
-    let result = execute(&cli, &root, scope, saved.as_mut(), &cancellation).await;
+    let result = execute(&config, scope, saved.as_mut(), &cancellation).await;
     if let Some(report) = &mut saved {
         if let Err(save_error) = report.finish(result.as_ref().err()) {
             return Err(match result {
@@ -83,26 +67,23 @@ async fn create_workspace(
 }
 
 async fn execute(
-    cli: &Cli,
-    root: &Path,
+    config: &RunConfig,
     scope: Scope,
     mut saved: Option<&mut SavedReport>,
     cancellation: &Cancellation,
 ) -> Result<()> {
-    let baseline_limit = Duration::from_secs(cli.baseline_timeout.get());
+    let root = &config.module_root;
+    let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
     println!("Snapshotting {}", root.display());
-    let mut excluded = vec![root.join(".mutie")];
-    if let Some(report) = &saved {
-        excluded.push(report.output_root().to_owned());
-    }
+    let excluded = vec![root.join(".mutie"), config.output_dir.clone()];
     let snapshot =
         Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
     let baseline_workspace =
         create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
-    let mut timeout = cli
+    let mut timeout = config
         .timeout
         .map(|seconds| Duration::from_secs(seconds.get()));
-    if !cli.list {
+    if !config.list {
         if let Some(report) = saved.as_deref_mut() {
             report.phase("baseline")?;
         }
@@ -129,7 +110,7 @@ async fn execute(
         }
         timeout.get_or_insert_with(|| (baseline.elapsed * 5).max(Duration::from_secs(10)));
         println!("Baseline passed in {:.2}s", baseline.elapsed.as_secs_f64());
-        if cli.verbose {
+        if config.verbose {
             print!("{}", go::text(&baseline));
         }
     }
@@ -138,7 +119,7 @@ async fn execute(
         report.phase("discovery")?;
     }
     // Package discovery must see the pristine input, not baseline side effects.
-    let baseline_workspace = if cli.list {
+    let baseline_workspace = if config.list {
         baseline_workspace
     } else {
         let source = snapshot.path();
@@ -177,7 +158,7 @@ async fn execute(
     };
     cancellation.check()?;
     println!("Found {} mutations", mutations.len());
-    if cli.list {
+    if config.list {
         for mutation in &mutations {
             cancellation.check()?;
             println!("{}", mutation.description());
@@ -185,7 +166,7 @@ async fn execute(
         return Ok(());
     }
     let timeout = timeout.context("missing mutation timeout")?;
-    let jobs = cli.jobs.get().min(mutations.len());
+    let jobs = config.jobs.get().min(mutations.len());
     if let Some(report) = saved.as_deref_mut() {
         report.phase("inventory")?;
         report.plan(&mutations, jobs, timeout, cancellation)?;
@@ -207,7 +188,7 @@ async fn execute(
         timeout,
         cancellation: cancellation.clone(),
     };
-    let summary = run_workers(context, mutations, jobs, cli.verbose, saved).await?;
+    let summary = run_workers(context, mutations, jobs, config.verbose, saved).await?;
     println!("\n{summary}");
     Ok(())
 }

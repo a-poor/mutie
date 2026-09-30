@@ -131,28 +131,25 @@ fn go_workflow() {
     fs::create_dir_all(&custom).unwrap();
     // This would break the baseline if reports were copied into workspaces.
     fs::write(custom.join("poison.go"), "this is not Go").unwrap();
-    let scoped_output = run(
-        &root,
-        &[
-            "--include",
-            "*.go",
-            "--exclude",
-            "ready.go",
-            "--timeout",
-            "10",
-            "--output-dir",
-            custom.to_str().unwrap(),
-        ],
-    );
+    fs::write(root.join("mutie.toml"), "include = ['*.go']\nexclude = ['ready.go']\ntimeout = 10\noutput_dir = 'artifacts/reports'\n").unwrap();
+    let scoped_output = run(&root, &[]);
     let scoped = stdout(&scoped_output);
     assert!(
         scoped.contains("3 mutations: 1 killed, 1 missed, 0 timed out, 1 failed to compile"),
         "{scoped}"
     );
-    let (custom_directory, _, _, custom_report) = saved_report(&scoped_output);
+    let (custom_directory, custom_metadata, _, custom_report) = saved_report(&scoped_output);
     assert!(custom_directory.starts_with(&custom));
     assert_eq!(custom_report["status"], "completed");
     assert_eq!(custom_report["mutations"].as_array().unwrap().len(), 3);
+    assert_eq!(
+        custom_metadata["effective_config"]["exclude"],
+        serde_json::json!(["ready.go"])
+    );
+    assert_eq!(
+        custom_metadata["effective_config"]["output_dir"],
+        custom.to_str().unwrap()
+    );
     assert_eq!(
         fs::read(first_directory.join("run.json")).unwrap(),
         first_json

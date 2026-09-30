@@ -35,10 +35,57 @@ The bundled fixture deliberately produces all four outcomes:
 cargo run -- tests/fixtures/go --jobs 2 --timeout 5
 ```
 
+## Repository configuration
+
+Mutie reads an optional `mutie.toml` beside the selected module's `go.mod`.
+Settings apply in this order: built-in defaults, then the file, then explicitly
+supplied CLI arguments. Parent directories are not searched.
+
+```toml
+lang = "go"
+jobs = 2
+include = ["**/*.go"]
+exclude = ["internal/legacy/**"]
+timeout = 30
+baseline_timeout = 300
+output_dir = ".mutie"
+verbose = false
+```
+
+All keys are optional. Defaults are `lang = "auto"` (currently Go), one worker,
+empty include/exclude lists, a 300-second baseline/discovery timeout, `.mutie`
+under the module root for reports, and no verbose output. Omit `timeout` for the
+automatic policy: `max(10 seconds, 5 * baseline duration)`. Worker counts and
+timeouts must be positive integers; timeouts are in seconds. Unknown keys,
+malformed TOML, and incorrect value types are rejected even if CLI options would
+override them. The merged settings are validated before creating reports or
+running Go, including globs, supported language, and output paths.
+
+Globs are always module-relative. A configured `output_dir` is relative to the
+module root; a CLI `--output-dir` is relative to the invocation directory.
+Absolute paths are also accepted. Existing symlinks are resolved, and `.`/`..`
+components are normalized before use. Paths are not shell-expanded.
+
+Each CLI list replaces its configured counterpart. To clear a configured list,
+use `--clear-include` (all eligible files) or `--clear-exclude` (no additional
+exclusions). `--clear-timeout` restores the automatic timeout; `--no-verbose`
+overrides `verbose = true`. Each reset flag conflicts with the corresponding
+value flag. For example:
+
+```sh
+cargo run -- /path/to/go/module --include 'internal/payments/**' --jobs 1
+cargo run -- /path/to/go/module --clear-include --clear-exclude --list
+cargo run -- /path/to/go/module --clear-timeout --no-verbose
+```
+
+`--list` is invocation-only. It uses the same configuration and excludes the
+configured report directory from its snapshot, but creates no report directory
+or artifacts. An explicit `--output-dir` still conflicts with `--list`.
+
 ## Saved reports
 
-Every test run saves a new directory under `<module>/.mutie/`. The CLI prints its
-location when the run starts and the summary path when it finishes. Earlier runs
+By default, every test run saves a new directory under `<module>/.mutie/`. The CLI
+prints its location when the run starts and the summary path when it finishes. Earlier runs
 are preserved. Use `--output-dir DIR` to choose the parent directory instead;
 relative paths are resolved from your current working directory. The output
 directory cannot be the module root or an ancestor of it. `--list` writes no
@@ -46,8 +93,8 @@ reports and cannot be combined with `--output-dir`.
 
 Each run contains:
 
-- `run.json`: versioned run metadata, command, scope, timeouts, worker counts,
-  phase, status, and any run-level error.
+- `run.json`: versioned run metadata, effective configuration, command, scope,
+  timeouts, worker counts, phase, status, and any run-level error.
 - `mutants.json`: the complete mutation inventory, including IDs, named operators,
   source locations, original text, replacements, source fingerprints, and diff
   paths. The inventory and every diff are published before workers start.
@@ -62,6 +109,14 @@ Each run contains:
   events. Logs are saved even without `--verbose`.
 - `killed.txt`, `missed.txt`, `timeout.txt`, `build_failed.txt`, and `errors.txt`:
   outcome lists containing IDs and source descriptions, sorted by ID.
+
+`run.json` includes `effective_config` with all merged settings, the resolved Go
+language, absolute module/output paths, and the config file path (`null` when
+absent). Its `timeout` is `null` when using the automatic policy; the actual
+deadline, once determined, is in `mutation_timeout_seconds`. Configured `jobs`
+and `requested_workers` describe the requested concurrency; `workers` records the
+number used, capped by the mutation count. Configuration timeout values use
+seconds, matching the TOML file.
 
 Mutation IDs are local to each run, assigned in deterministic discovery order.
 Inventory and execution records are sorted by ID regardless of completion order;
@@ -155,13 +210,16 @@ cargo test --test go_workflow -- --ignored
 cargo clippy --all-targets -- -D warnings
 ```
 
-The Go integration test checks all four outcomes, configurable scope, baseline
-failure and timeout, workspace resets, saved reports, and preservation of input
-files. It needs Go on `PATH` and a writable Go build cache, and is opt-in because
-it runs real builds and deliberately waits for a timeout. Non-ignored Unix tests
-use a fake Go command to verify SIGINT/SIGTERM during baseline, discovery, and
+The Go integration test checks all four outcomes, repository configuration and
+scope, baseline failure and timeout, workspace resets, saved reports, and
+preservation of input files. It needs Go on `PATH` and a writable Go build cache,
+and is opt-in because it runs real builds and deliberately waits for a timeout.
+Non-ignored Unix tests use a fake Go command to verify SIGINT/SIGTERM during baseline, discovery, and
 parallel execution, preserved diagnostics, pending work, process cleanup, and
 source preservation. They require an environment that delivers those signals.
+Configuration tests also cover defaults, explicit overrides, list clearing,
+invalid settings, path resolution, listing without reports, and saved effective
+settings using a fake Go command.
 
 ## Original plan
 

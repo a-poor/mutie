@@ -31,15 +31,15 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Test incomplete runs and the new report contract; update usage docs while
   preserving existing saved reports.
 
-### 2. Repository configuration — next
+### 2. Repository configuration — completed
 
-- [ ] Load `mutie.toml` from the selected project root.
-- [ ] Merge defaults, repository config, and explicit CLI overrides in that order.
-- [ ] Define path resolution, list replacement, and CLI list-clearing behavior.
-- [ ] Validate unknown keys and invalid values; save the effective configuration.
-- [ ] Test precedence and defaults, and document working configuration examples.
+- [x] Load `mutie.toml` from the selected project root.
+- [x] Merge defaults, repository config, and explicit CLI overrides in that order.
+- [x] Define path resolution, list replacement, and CLI list-clearing behavior.
+- [x] Validate unknown keys and invalid values; save the effective configuration.
+- [x] Test precedence and defaults, and document working configuration examples.
 
-### 3. Default terminal status view
+### 3. Default terminal status view — next
 
 - [ ] Introduce shared coordinator state/events for reports and presentation.
 - [ ] Select the terminal implementation and backend; Ratatui is the candidate.

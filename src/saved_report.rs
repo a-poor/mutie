@@ -10,7 +10,7 @@ use serde::Serialize;
 
 use crate::{
     cancellation::{Cancellation, Interrupted},
-    cli::Cli,
+    config::RunConfig,
     go,
     mutation::{Mutation, OPERATOR_CATALOG_VERSION, Operator},
     process::CommandOutput,
@@ -26,6 +26,7 @@ struct RunReport {
     mutie_version: &'static str,
     operator_catalog_version: u32,
     module_root: PathBuf,
+    effective_config: RunConfig,
     started_at_unix_seconds: u64,
     finished_at_unix_seconds: Option<u64>,
     duration_seconds: f64,
@@ -108,7 +109,6 @@ struct Execution {
 
 pub struct SavedReport {
     directory: PathBuf,
-    output_root: PathBuf,
     started: Instant,
     run: RunReport,
     inventory: Inventory,
@@ -116,12 +116,10 @@ pub struct SavedReport {
 }
 
 impl SavedReport {
-    pub fn create(root: &Path, cli: &Cli) -> Result<Self> {
-        let output_root = cli
-            .output_dir
-            .clone()
-            .unwrap_or_else(|| root.join(".mutie"));
-        fs::create_dir_all(&output_root)
+    pub fn create(config: &RunConfig) -> Result<Self> {
+        let root = &config.module_root;
+        let output_root = &config.output_dir;
+        fs::create_dir_all(output_root)
             .with_context(|| format!("creating report directory {}", output_root.display()))?;
         let output_root = output_root.canonicalize()?;
         ensure!(
@@ -136,7 +134,6 @@ impl SavedReport {
         fs::create_dir(directory.path().join("logs"))?;
         let mut report = Self {
             directory: directory.path().to_owned(),
-            output_root,
             started: Instant::now(),
             run: RunReport {
                 schema_version: SCHEMA_VERSION,
@@ -144,6 +141,10 @@ impl SavedReport {
                 mutie_version: env!("CARGO_PKG_VERSION"),
                 operator_catalog_version: OPERATOR_CATALOG_VERSION,
                 module_root: root.to_owned(),
+                effective_config: RunConfig {
+                    output_dir: output_root,
+                    ..config.clone()
+                },
                 started_at_unix_seconds: started_at,
                 finished_at_unix_seconds: None,
                 duration_seconds: 0.0,
@@ -153,12 +154,12 @@ impl SavedReport {
                 command: std::iter::once("go")
                     .chain(go::TEST_ARGS.iter().copied())
                     .collect(),
-                include: cli.include.clone(),
-                exclude: cli.exclude.clone(),
-                requested_workers: cli.jobs.get(),
+                include: config.include.clone(),
+                exclude: config.exclude.clone(),
+                requested_workers: config.jobs.get(),
                 workers: None,
-                baseline_timeout_seconds: cli.baseline_timeout.get(),
-                mutation_timeout_seconds: cli.timeout.map(|value| value.get() as f64),
+                baseline_timeout_seconds: config.baseline_timeout.get(),
+                mutation_timeout_seconds: config.timeout.map(|value| value.get() as f64),
                 planned_mutations: None,
             },
             inventory: Inventory {
@@ -188,10 +189,6 @@ impl SavedReport {
 
     pub fn path(&self) -> &Path {
         &self.directory
-    }
-
-    pub fn output_root(&self) -> &Path {
-        &self.output_root
     }
 
     pub fn phase(&mut self, phase: &'static str) -> Result<()> {
@@ -524,9 +521,20 @@ fn unix_seconds() -> Result<u64> {
 #[cfg(all(test, unix))]
 mod tests {
     use super::*;
-    use crate::mutation::{self, Scope};
+    use crate::{
+        cli::Cli,
+        mutation::{self, Scope},
+    };
     use clap::Parser;
     use std::os::unix::process::ExitStatusExt;
+
+    fn config(root: &Path) -> Result<RunConfig> {
+        fs::write(root.join("go.mod"), "module example.com/test\n")?;
+        RunConfig::resolve(Cli::parse_from([
+            std::ffi::OsStr::new("mutie"),
+            root.as_os_str(),
+        ]))
+    }
 
     fn read(report: &SavedReport, name: &str) -> serde_json::Value {
         serde_json::from_slice(&fs::read(report.path().join(name)).unwrap()).unwrap()
@@ -552,8 +560,8 @@ mod tests {
         )?;
         let mutations =
             mutation::discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
-        let cli = Cli::parse_from(["mutie"]);
-        let mut report = SavedReport::create(root.path(), &cli)?;
+        let config = config(root.path())?;
+        let mut report = SavedReport::create(&config)?;
         assert_eq!(read(&report, "mutants.json")["complete"], false);
         report.command("baseline", &output())?;
         report.plan(
@@ -641,7 +649,7 @@ mod tests {
         assert!(fs::read_to_string(report.path().join("summary.txt"))?.contains("Interrupted: 1"));
         assert_eq!(fs::read(report.path().join("mutants.json"))?, inventory);
         let previous = fs::read(report.path().join("run.json"))?;
-        let next = SavedReport::create(root.path(), &cli)?;
+        let next = SavedReport::create(&config)?;
         assert_ne!(report.path(), next.path());
         assert_eq!(fs::read(report.path().join("run.json"))?, previous);
         let next_path = next.path().to_owned();
@@ -656,7 +664,7 @@ mod tests {
         fs::write(root.path().join("code.go"), "package p\nvar a = true\n")?;
         let mutations =
             mutation::discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
-        let mut report = SavedReport::create(root.path(), &Cli::parse_from(["mutie"]))?;
+        let mut report = SavedReport::create(&config(root.path())?)?;
         assert!(report.started(1, 1).is_err());
         // Force an artifact write failure without permission-dependent behavior.
         fs::create_dir(report.path().join("diff/000001.diff"))?;
@@ -680,13 +688,13 @@ mod tests {
     #[test]
     fn rejects_output_paths_that_would_hide_the_module_or_overwrite_a_file() -> Result<()> {
         let root = tempfile::tempdir()?;
-        let mut cli = Cli::parse_from(["mutie"]);
-        cli.output_dir = Some(root.path().to_owned());
-        assert!(SavedReport::create(root.path(), &cli).is_err());
+        let mut config = config(root.path())?;
+        config.output_dir = root.path().to_owned();
+        assert!(SavedReport::create(&config).is_err());
         let sentinel = root.path().join("existing");
         fs::write(&sentinel, "keep me")?;
-        cli.output_dir = Some(sentinel.clone());
-        assert!(SavedReport::create(root.path(), &cli).is_err());
+        config.output_dir = sentinel.clone();
+        assert!(SavedReport::create(&config).is_err());
         assert_eq!(fs::read_to_string(sentinel)?, "keep me");
         Ok(())
     }

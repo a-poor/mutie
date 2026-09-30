@@ -1,0 +1,409 @@
+use std::{
+    fs,
+    io::ErrorKind,
+    num::{NonZeroU64, NonZeroUsize},
+    path::{Component, Path, PathBuf},
+    time::{Duration, Instant},
+};
+
+use anyhow::{Context, Result, ensure};
+use serde::{Deserialize, Serialize};
+
+use crate::cli::{Cli, Lang};
+
+/// Parsed file values have no defaults; only explicitly supplied CLI values
+/// replace them. Invocation-only options such as `list` are not file settings.
+#[derive(Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct RepositoryConfig {
+    lang: Option<Lang>,
+    jobs: Option<NonZeroUsize>,
+    include: Option<Vec<String>>,
+    exclude: Option<Vec<String>>,
+    timeout: Option<NonZeroU64>,
+    baseline_timeout: Option<NonZeroU64>,
+    output_dir: Option<PathBuf>,
+    verbose: Option<bool>,
+}
+
+/// The resolved settings used by both execution and saved reports. Paths are
+/// absolute, `auto` language selection is resolved, and `None` timeout means
+/// the automatic policy, whose duration is determined after the baseline.
+#[derive(Clone, Debug, Serialize)]
+pub struct RunConfig {
+    pub module_root: PathBuf,
+    pub config_file: Option<PathBuf>,
+    pub lang: Lang,
+    pub jobs: NonZeroUsize,
+    pub include: Vec<String>,
+    pub exclude: Vec<String>,
+    pub timeout: Option<NonZeroU64>,
+    pub baseline_timeout: NonZeroU64,
+    pub output_dir: PathBuf,
+    pub verbose: bool,
+    pub list: bool,
+}
+
+impl RunConfig {
+    pub fn resolve(cli: Cli) -> Result<Self> {
+        Self::resolve_from(
+            cli,
+            &std::env::current_dir().context("reading working directory")?,
+        )
+    }
+
+    fn resolve_from(cli: Cli, invocation: &Path) -> Result<Self> {
+        let root = invocation
+            .join(&cli.path)
+            .canonicalize()
+            .with_context(|| format!("opening {}", cli.path.display()))?;
+        ensure!(
+            root.join("go.mod").is_file(),
+            "{} must be a Go module root containing go.mod",
+            root.display()
+        );
+        let path = root.join("mutie.toml");
+        let (file, config_file) = match fs::symlink_metadata(&path) {
+            Ok(_) => {
+                let source = fs::read_to_string(&path)
+                    .with_context(|| format!("reading configuration {}", path.display()))?;
+                let file = toml::from_str::<RepositoryConfig>(&source)
+                    .with_context(|| format!("parsing configuration {}", path.display()))?;
+                (file, Some(path))
+            }
+            Err(error) if error.kind() == ErrorKind::NotFound => {
+                (RepositoryConfig::default(), None)
+            }
+            Err(error) => {
+                return Err(error)
+                    .with_context(|| format!("opening configuration {}", path.display()));
+            }
+        };
+        let lang = cli.lang.or(file.lang).unwrap_or(Lang::Auto);
+        ensure!(
+            lang != Lang::Rust,
+            "Rust support is planned; only Go is supported for now"
+        );
+        let output_dir = match cli.output_dir {
+            Some(path) => nonempty_path(invocation, path)?,
+            None => nonempty_path(&root, file.output_dir.unwrap_or_else(|| ".mutie".into()))?,
+        };
+        let output_dir = resolve_output_path(&output_dir)?;
+        ensure!(
+            !root.starts_with(&output_dir),
+            "the report directory must not be the module root or one of its ancestors"
+        );
+        let config = Self {
+            module_root: root,
+            config_file,
+            lang: Lang::Go,
+            jobs: cli
+                .jobs
+                .or(file.jobs)
+                .unwrap_or(NonZeroUsize::new(1).unwrap()),
+            include: merge_patterns(cli.include, cli.clear_include, file.include),
+            exclude: merge_patterns(cli.exclude, cli.clear_exclude, file.exclude),
+            timeout: if cli.clear_timeout {
+                None
+            } else {
+                cli.timeout.or(file.timeout)
+            },
+            baseline_timeout: cli
+                .baseline_timeout
+                .or(file.baseline_timeout)
+                .unwrap_or(NonZeroU64::new(300).unwrap()),
+            output_dir,
+            verbose: if cli.no_verbose {
+                false
+            } else {
+                cli.verbose || file.verbose.unwrap_or(false)
+            },
+            list: cli.list,
+        };
+        for (name, timeout) in [
+            ("timeout", config.timeout),
+            ("baseline_timeout", Some(config.baseline_timeout)),
+        ] {
+            if let Some(seconds) = timeout {
+                ensure!(
+                    Instant::now()
+                        .checked_add(Duration::from_secs(seconds.get()))
+                        .is_some(),
+                    "{name} is too large for a command deadline"
+                );
+            }
+        }
+        Ok(config)
+    }
+}
+
+fn merge_patterns(cli: Vec<String>, clear: bool, configured: Option<Vec<String>>) -> Vec<String> {
+    if clear || !cli.is_empty() {
+        cli
+    } else {
+        configured.unwrap_or_default()
+    }
+}
+
+fn nonempty_path(base: &Path, path: PathBuf) -> Result<PathBuf> {
+    ensure!(!path.as_os_str().is_empty(), "output_dir must not be empty");
+    Ok(base.join(path))
+}
+
+/// Resolve existing symlinks and normalize missing path components without
+/// creating report directories. Listing and invalid configurations have no
+/// filesystem side effects. Walk in order so `link/..` respects the link target.
+fn resolve_output_path(path: &Path) -> Result<PathBuf> {
+    let mut resolved = PathBuf::new();
+    for component in path.components() {
+        match component {
+            Component::CurDir => continue,
+            Component::ParentDir => {
+                resolved.pop();
+            }
+            other => resolved.push(other.as_os_str()),
+        }
+        match fs::symlink_metadata(&resolved) {
+            Ok(_) => {
+                resolved = resolved
+                    .canonicalize()
+                    .with_context(|| format!("resolving report directory {}", path.display()))?;
+                ensure!(
+                    resolved.is_dir(),
+                    "report directory {} is not a directory",
+                    resolved.display()
+                );
+            }
+            Err(error) if error.kind() == ErrorKind::NotFound => {}
+            Err(error) => {
+                return Err(error)
+                    .with_context(|| format!("resolving report directory {}", path.display()));
+            }
+        }
+    }
+    Ok(resolved)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use clap::Parser;
+
+    fn project() -> Result<tempfile::TempDir> {
+        let temp = tempfile::tempdir()?;
+        fs::create_dir(temp.path().join("module"))?;
+        fs::write(
+            temp.path().join("module/go.mod"),
+            "module example.com/test\n",
+        )?;
+        Ok(temp)
+    }
+
+    fn resolve(base: &Path, args: &[&str]) -> Result<RunConfig> {
+        RunConfig::resolve_from(
+            Cli::try_parse_from(["mutie", "module"].into_iter().chain(args.iter().copied()))?,
+            base,
+        )
+    }
+
+    #[test]
+    fn defaults_work_without_a_file_and_do_not_inherit_parent_config() -> Result<()> {
+        let temp = project()?;
+        fs::write(temp.path().join("mutie.toml"), "unknown = true")?;
+        let config = resolve(temp.path(), &[])?;
+        assert_eq!(config.lang, Lang::Go);
+        assert_eq!(config.jobs.get(), 1);
+        assert_eq!(config.baseline_timeout.get(), 300);
+        assert_eq!(config.timeout, None);
+        assert!(config.include.is_empty() && config.exclude.is_empty());
+        assert!(!config.verbose && !config.list);
+        assert!(config.config_file.is_none());
+        assert_eq!(config.output_dir, temp.path().join("module/.mutie"));
+        assert!(!config.output_dir.exists());
+        fs::write(temp.path().join("module/mutie.toml"), "")?;
+        let empty = resolve(temp.path(), &[])?;
+        assert_eq!(empty.jobs, config.jobs);
+        assert_eq!(empty.output_dir, config.output_dir);
+        assert_eq!(
+            empty.config_file,
+            Some(temp.path().join("module/mutie.toml"))
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn explicit_cli_values_replace_repository_values_including_defaults() -> Result<()> {
+        let temp = project()?;
+        fs::write(
+            temp.path().join("module/mutie.toml"),
+            r#"
+lang = "go"
+jobs = 4
+include = ["internal/**"]
+exclude = ["legacy/**"]
+timeout = 17
+baseline_timeout = 90
+output_dir = "reports"
+verbose = true
+"#,
+        )?;
+        let from_file = resolve(temp.path(), &[])?;
+        assert_eq!(from_file.jobs.get(), 4);
+        assert_eq!(from_file.include, ["internal/**"]);
+        assert_eq!(from_file.exclude, ["legacy/**"]);
+        assert_eq!(from_file.timeout.unwrap().get(), 17);
+        assert_eq!(from_file.baseline_timeout.get(), 90);
+        assert!(from_file.verbose);
+        assert_eq!(from_file.output_dir, temp.path().join("module/reports"));
+        let overrides = resolve(
+            temp.path(),
+            &[
+                "--lang",
+                "auto",
+                "--jobs",
+                "1",
+                "--include",
+                "a.go",
+                "--include",
+                "b.go",
+                "--exclude",
+                "b.go",
+                "--timeout",
+                "10",
+                "--baseline-timeout",
+                "300",
+                "--output-dir",
+                "reports",
+                "--no-verbose",
+            ],
+        )?;
+        assert_eq!(overrides.lang, Lang::Go);
+        assert_eq!(overrides.jobs.get(), 1);
+        assert_eq!(overrides.include, ["a.go", "b.go"]);
+        assert_eq!(overrides.exclude, ["b.go"]);
+        assert_eq!(overrides.timeout.unwrap().get(), 10);
+        assert_eq!(overrides.baseline_timeout.get(), 300);
+        assert_eq!(overrides.output_dir, temp.path().join("reports"));
+        assert!(!overrides.verbose);
+        let cleared = resolve(
+            temp.path(),
+            &[
+                "--clear-include",
+                "--clear-exclude",
+                "--clear-timeout",
+                "--no-verbose",
+                "--list",
+            ],
+        )?;
+        assert!(cleared.include.is_empty() && cleared.exclude.is_empty());
+        assert_eq!(cleared.timeout, None);
+        assert!(!cleared.verbose);
+        assert!(cleared.list);
+        assert!(!cleared.output_dir.exists());
+        fs::write(
+            temp.path().join("module/mutie.toml"),
+            "lang = 'rust'\nverbose = false",
+        )?;
+        assert!(resolve(temp.path(), &[]).is_err());
+        assert!(resolve(temp.path(), &["--lang", "go", "--verbose"])?.verbose);
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_bad_files_values_and_conflicting_overrides() -> Result<()> {
+        let temp = project()?;
+        for contents in [
+            "unknown = 1",
+            "[nested]\njobs = 1",
+            "jobs = 0",
+            "jobs = -1",
+            "jobs = 1.5",
+            "jobs = '2'",
+            "timeout = 0",
+            "baseline_timeout = 0",
+            "lang = 'python'",
+            "include = '*.go'",
+            "exclude = [1]",
+            "verbose = 'yes'",
+            "list = true",
+            "jobs =",
+            "jobs = 1\njobs = 2",
+        ] {
+            fs::write(temp.path().join("module/mutie.toml"), contents)?;
+            let error = resolve(temp.path(), &[]).unwrap_err();
+            assert!(
+                format!("{error:#}").contains("mutie.toml"),
+                "{contents}: {error:#}"
+            );
+        }
+        fs::remove_file(temp.path().join("module/mutie.toml"))?;
+        fs::create_dir(temp.path().join("module/mutie.toml"))?;
+        assert!(
+            format!("{:#}", resolve(temp.path(), &[]).unwrap_err())
+                .contains("reading configuration")
+        );
+        for args in [
+            vec!["--include", "a.go", "--clear-include"],
+            vec!["--exclude", "a.go", "--clear-exclude"],
+            vec!["--timeout", "1", "--clear-timeout"],
+            vec!["--verbose", "--no-verbose"],
+            vec!["--list", "--output-dir", "reports"],
+            vec!["--jobs", "0"],
+            vec!["--timeout", "0"],
+            vec!["--baseline-timeout", "0"],
+        ] {
+            assert!(Cli::try_parse_from(["mutie"].into_iter().chain(args)).is_err());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn output_validation_has_no_side_effects_and_normalizes_paths() -> Result<()> {
+        let temp = project()?;
+        fs::write(temp.path().join("sentinel"), "keep me")?;
+        for path in [
+            "",
+            ".",
+            "module",
+            "module/missing/..",
+            "sentinel",
+            "sentinel/reports",
+        ] {
+            assert!(
+                resolve(temp.path(), &["--output-dir", path]).is_err(),
+                "{path}"
+            );
+        }
+        assert_eq!(fs::read_to_string(temp.path().join("sentinel"))?, "keep me");
+        assert!(!temp.path().join("module/missing").exists());
+        let config = resolve(
+            temp.path(),
+            &["--output-dir", "module/missing/../reports/new"],
+        )?;
+        assert_eq!(config.output_dir, temp.path().join("module/reports/new"));
+        assert!(!config.output_dir.exists());
+        assert!(resolve(temp.path(), &["--timeout", "18446744073709551615"]).is_err());
+        Ok(())
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn resolves_symlinks_before_parent_components_and_rejects_dangling_links() -> Result<()> {
+        use std::os::unix::fs::symlink;
+        let temp = project()?;
+        fs::create_dir_all(temp.path().join("other/nested"))?;
+        symlink(temp.path().join("other/nested"), temp.path().join("link"))?;
+        let config = resolve(temp.path(), &["--output-dir", "link/../reports"])?;
+        assert_eq!(config.output_dir, temp.path().join("other/reports"));
+        symlink(temp.path().join("module"), temp.path().join("root-link"))?;
+        assert!(resolve(temp.path(), &["--output-dir", "root-link"]).is_err());
+        symlink(temp.path().join("missing"), temp.path().join("dangling"))?;
+        assert!(resolve(temp.path(), &["--output-dir", "dangling"]).is_err());
+        symlink(
+            temp.path().join("missing.toml"),
+            temp.path().join("module/mutie.toml"),
+        )?;
+        assert!(resolve(temp.path(), &[]).is_err());
+        Ok(())
+    }
+}
