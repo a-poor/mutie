@@ -39,18 +39,20 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Validate unknown keys and invalid values; save the effective configuration.
 - [x] Test precedence and defaults, and document working configuration examples.
 
-### 3. Default terminal status view — next
+### 3. Default terminal status view — completed
 
-- [ ] Introduce shared coordinator state/events for reports and presentation.
-- [ ] Select the terminal implementation and backend; Ratatui is the candidate.
-- [ ] Add automatic interactive/plain mode selection and an explicit override.
-- [ ] Show phase, elapsed time, progress, outcome counts, active workers, and
-  recent results in the minimal interactive view.
-- [ ] Handle resizing, small terminals, cancellation, and terminal restoration;
+- [x] Introduce shared coordinator state/events for reports and presentation.
+- [x] Choose Ratatui for a live, in-place status view inspired by the Vitest CLI.
+- [x] Integrate Ratatui 0.30.1 with Crossterm 0.29 and an inline viewport.
+- [x] Add automatic interactive/plain mode selection and an explicit override.
+- [x] Show phase, elapsed time, progress, outcome counts, active workers, and
+  recent results in the minimal interactive view; redraw in place and keep time
+  and activity indicators updating while commands run, not just on completion.
+- [x] Handle resizing, small terminals, cancellation, and terminal restoration;
   print a final plain summary and report path.
-- [ ] Test rendering and terminal lifecycle, including non-interactive use.
+- [x] Test rendering and terminal lifecycle, including non-interactive use.
 
-### 4. MVP validation
+### 4. MVP validation — next
 
 - [ ] Verify the complete workflow with config, parallel execution, both terminal
   modes, empty/failed/interrupted runs, saved artifacts, and source preservation.

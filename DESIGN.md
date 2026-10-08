@@ -1,6 +1,6 @@
 # mutie design
 
-Status: working design, 2026-09-30. This document records the direction for the
+Status: working design, 2026-10-08. This document records the direction for the
 project, including work that is not implemented yet. [README.md](README.md)
 documents the current CLI and behavior; [TODO.md](TODO.md) tracks implementation
 progress. Update this reference as decisions change.
@@ -24,7 +24,7 @@ report artifacts, without requiring compatibility with its CLI or file formats.
 The current implementation supports one Go module, selected through its `go.mod`.
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
 executes them in isolated worker copies. It already has file filters, configurable
-workers and timeouts, repository configuration, plain terminal output, complete
+workers and timeouts, repository configuration, live and plain terminal output, complete
 mutation inventories, saved reports, and coordinated cancellation with retained
 command diagnostics.
 
@@ -33,8 +33,8 @@ timeouts, failed baselines, workspace restoration, and preservation of partial
 results. This establishes the basic mechanics. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
-The prototype does not yet provide an interactive terminal view or support
-focused reruns. Rust appears in the CLI language enum but is not implemented.
+The prototype does not yet support focused reruns or interactive result browsing.
+Rust appears in the CLI language enum but is not implemented.
 
 ## Minimal MVP
 
@@ -193,6 +193,7 @@ timeout = 30
 baseline_timeout = 300
 output_dir = ".mutie"
 verbose = false
+ui = "auto"
 ```
 
 Timeout values are positive integer seconds. File-selection globs are always
@@ -213,32 +214,51 @@ effective settings, with the actual duration recorded after the baseline.
 `--list` is invocation-only. It uses the resolved settings and excludes both
 `.mutie` and the selected report directory without creating reports. An explicit
 CLI `--output-dir` conflicts with `--list`; a configured output directory does
-not. UI settings will be added with the terminal view. A separate environment
+not. `ui` selects `auto`, `interactive`, or `plain`, with an explicit `--ui`
+override; `--list` always uses plain output. A separate environment
 configuration layer is unnecessary for the MVP, although child tools still use
 their normal language environment.
 
 ## Terminal experience
 
-The default target is an interactive status view when the terminal supports it.
-[Ratatui](https://ratatui.rs/) is the leading implementation candidate, not a
-required engine dependency. Use plain output when output is redirected, in CI,
-or when the user explicitly disables the UI. A proposed `ui` setting and matching
-CLI override select `auto`, `interactive`, or `plain`.
+Use [Ratatui](https://ratatui.rs/) for the default live status view when the
+terminal supports it. Take visual inspiration from the
+[Vitest default CLI reporter](https://vitest.dev/guide/reporters.html#default-reporter):
+a compact inline display with active work and a running summary. Redraw the status
+region in place as work progresses; appending log lines alone does not satisfy
+the interactive view. Keep Ratatui in the presentation layer, independent of the
+execution engine. Use plain output when output is redirected, in CI, or when the
+user explicitly disables the UI. The `ui` setting and matching `--ui` override
+select `auto`, `interactive`, or `plain`. Auto mode requires terminal stdin and
+stdout, a `TERM` other than `dumb`, and no `CI` environment variable; terminal
+initialization failure falls back to plain output. Forced interactive mode
+requires a compatible terminal even when running in CI.
 
 The minimal view shows the current phase, elapsed time, completed/total mutations,
-outcome counts, active worker locations, and recent results. Support small
-terminals and resizing. Cancellation is the only necessary control initially;
-pause/resume and changing the work queue interactively are later features.
+outcome counts, active worker locations, and recent results. Update elapsed time
+and activity indicators while commands are running, even between completed
+mutations. Support small terminals and resizing. Cancellation is the only
+necessary control initially; pause/resume and changing the work queue
+interactively are later features. The implementation uses Ratatui 0.30.1 with
+Crossterm 0.29 and an inline viewport. Rendering runs at most ten times per second,
+coalescing snapshots while keeping timers and activity indicators moving. It
+shows up to four workers and three recent results, reducing detail to fit small
+terminals. Text labels accompany semantic colors.
 
 Keep noisy test output in artifacts rather than interleaving it with screen
 updates. After completion, restore the terminal and print a durable plain summary
-and report path. A later view can support selecting a result, scrolling its diff
+and report path. Verbose captured output is printed only in plain mode. The live
+view leaves input in normal mode between cursor-position queries and uses the
+existing signal-driven cancellation path. A terminal write failure cancels and
+drains execution before finalizing the report; terminal cleanup also runs on
+errors and panics. A later view can support selecting a result, scrolling its diff
 and logs, filtering missed mutations, and requesting focused reruns.
 
-The UI renders coordinator state and sends control requests. It does not own
-workers or decide outcomes. Plain output and the interactive view consume the
-same state; report saving must work independently of either. Terminal refreshes
-can be coalesced, but completed results cannot be dropped.
+The UI renders coordinator state; it does not own workers or decide outcomes.
+Typed events feed the report writer, plain output, and a compact run-state
+projection. A watch channel shares the latest snapshot with the renderer; it
+retains counts and bounds recent display history without dropping persisted
+results. Report saving works independently of presentation.
 
 ## Saved reports
 
@@ -304,10 +324,13 @@ Keep the implementation modular without building a plugin framework up front.
 | Report writer | Persist inventory, results, metadata, diffs, and logs. |
 | Terminal presentation | Show state and forward user control requests. |
 
-Introduce a small event/state boundary as the UI is added: phase changes, mutation
-starts, mutation completions, and run termination. Keep process output in files and
-avoid an unbounded backlog of log contents in the UI. Use typed domain records
-rather than parsing human-readable progress messages.
+`coordinator.rs` owns a small event/state boundary: phase changes, command results,
+inventory publication, mutation starts and completions, and run termination.
+`status.rs` owns presentation and terminal lifetime. The execution task processes
+every event and persists reports; the renderer reads compact snapshots without
+blocking on worker operations. Process output stays in artifacts, keeping it out
+of the redraw channel. Domain records drive both modes without parsing progress
+messages.
 
 Some Go-specific responsibilities currently live directly in `mutation.rs` and
 `go.rs`. Keep a clear boundary now, and extract a shared language interface when
@@ -375,13 +398,13 @@ design. No runtime or plugin ABI is selected now.
    work and explicit interruption semantics — completed.
 3. Add `mutie.toml` merging and effective-config reporting — completed.
 4. Add the coordinator state boundary and minimal default terminal status view,
-   retaining plain mode and testing terminal restoration.
+   retaining plain mode and testing terminal restoration — completed.
 5. Validate the MVP's complete workflow, including config precedence, parallel
    execution, failed/empty runs, cancellation, output persistence, and source-tree
    preservation. Then begin focused reruns and real-project validation.
 
-Open implementation choices include the precise UI layout and Ratatui backend,
-report retention policy, cross-run mutation matching rules, and which language to
+Open implementation choices include richer result browsing, report retention
+policy, cross-run mutation matching rules, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
 the initial MVP.

@@ -17,7 +17,7 @@ struct Fixture {
 
 impl Fixture {
     fn new(config: &str) -> Self {
-        let temp = tempfile::tempdir().unwrap();
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
         let root = temp.path().join("project");
         let invocation = temp.path().join("invocation");
         let bin = temp.path().join("bin");
@@ -125,7 +125,8 @@ verbose = true
             "module_root": fixture.root, "config_file": fixture.root.join("mutie.toml"),
             "lang": "go", "jobs": 2, "include": ["*.go"], "exclude": ["b.go"],
             "timeout": 4, "baseline_timeout": 30,
-            "output_dir": fixture.temp.path().join("repository-reports"), "verbose": true, "list": false
+            "output_dir": fixture.temp.path().join("repository-reports"), "verbose": true, "list": false,
+            "ui": "auto"
         })
     );
     assert_eq!(metadata["requested_workers"], 2);
@@ -231,4 +232,26 @@ fn invalid_config_fails_before_running_go_or_creating_reports() {
     }
     fs::write(fixture.root.join("mutie.toml"), "include = ['[']").unwrap();
     success(&fixture.run(&["--list", "--clear-include"]));
+}
+
+#[test]
+fn ui_modes_preserve_plain_output_and_listing_without_a_terminal() {
+    let fixture = Fixture::new("ui = 'interactive'");
+    let rejected = fixture.run(&[]);
+    assert!(!rejected.status.success());
+    assert!(String::from_utf8_lossy(&rejected.stderr).contains("requires terminal"));
+    assert!(!fixture.root.join(".mutie").exists());
+    assert!(!fixture.temp.path().join("calls").exists());
+    for mode in ["plain", "auto"] {
+        let output = fixture.run(&["--ui", mode]);
+        let text = success(&output);
+        assert!(text.contains("Running baseline"));
+        assert!(text.contains("2 mutations: 0 killed, 2 missed"));
+        assert!(!output.stdout.contains(&0x1b));
+        let (_, metadata, _) = report(&output);
+        assert_eq!(metadata["effective_config"]["ui"], mode);
+    }
+    let listed = success(&fixture.run(&["--list"]));
+    assert!(listed.contains("Found 2 mutations"));
+    assert!(!listed.contains('\x1b'));
 }

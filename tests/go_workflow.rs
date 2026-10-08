@@ -62,7 +62,7 @@ fn saved_report(
 #[test]
 #[ignore = "requires Go 1.24+ on PATH; runs real builds and a deliberate timeout"]
 fn go_workflow() {
-    let temp = tempfile::tempdir().unwrap();
+    let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
     let root = temp.path().join("module");
     copy_tree(
         &Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/go"),
@@ -229,7 +229,7 @@ fn go_workflow() {
 fn saves_partial_results_when_a_later_command_fails() {
     use std::os::unix::fs::PermissionsExt;
 
-    let temp = tempfile::tempdir().unwrap();
+    let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
     let root = temp.path().join("module");
     let bin = temp.path().join("bin");
     fs::create_dir(&root).unwrap();

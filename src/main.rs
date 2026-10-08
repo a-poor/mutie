@@ -1,11 +1,13 @@
 mod cancellation;
 mod cli;
 mod config;
+mod coordinator;
 mod go;
 mod mutation;
 mod process;
 mod report;
 mod saved_report;
+mod status;
 mod workspace;
 
 use std::{collections::VecDeque, path::PathBuf, sync::Arc, time::Duration};
@@ -15,44 +17,49 @@ use clap::Parser;
 use tokio::task::JoinSet;
 
 use cancellation::{Cancellation, Interrupted};
-use cli::Cli;
+use cli::{Cli, UiMode};
 use config::RunConfig;
+use coordinator::{Coordinator, Phase, RunEvent};
 use mutation::{Mutation, Scope};
-use report::{ExecutionState, MutationResult, Outcome, Summary};
-use saved_report::SavedReport;
+use report::{ExecutionState, MutationResult, Outcome};
 use workspace::Workspace;
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let config = RunConfig::resolve(Cli::parse())?;
     let scope = Scope::new(&config.include, &config.exclude)?;
+    let interactive = status::select(&config)?;
     let cancellation = Cancellation::default();
     let _signals = cancellation
         .listen()
         .context("installing cancellation handlers")?;
-    let mut saved = if config.list {
-        None
-    } else {
-        Some(SavedReport::create(&config)?)
-    };
-    if let Some(report) = &saved {
-        println!("Saving report to {}", report.path().display());
-    }
-    let result = execute(&config, scope, saved.as_mut(), &cancellation).await;
-    if let Some(report) = &mut saved {
-        if let Err(save_error) = report.finish(result.as_ref().err()) {
-            return Err(match result {
-                Err(run_error) => {
-                    run_error.context(format!("could not finish saved report: {save_error:#}"))
-                }
-                Ok(()) => save_error,
-            });
+    let (mut coordinator, updates) = Coordinator::new(&config, interactive)?;
+    let mut terminal = if interactive {
+        match status::LiveTerminal::start(config.jobs.get(), cancellation.clone()) {
+            Ok(terminal) => Some(terminal),
+            Err(error) if config.ui == UiMode::Auto => {
+                eprintln!("Live status unavailable: {error:#}; using plain output.");
+                coordinator.use_plain_output();
+                None
+            }
+            Err(error) => {
+                let result = coordinator.finish(Err(error));
+                status::print_summary(&coordinator);
+                return result;
+            }
         }
-        println!(
-            "Report saved: {}",
-            report.path().join("summary.txt").display()
-        );
-    }
+    } else {
+        None
+    };
+    let engine_cancellation = cancellation.clone();
+    let engine = tokio::spawn(async move {
+        let result = execute(&config, scope, &mut coordinator, &engine_cancellation).await;
+        (coordinator, result)
+    });
+    let (mut coordinator, result) =
+        status::drive(engine, updates, &mut terminal, &cancellation).await?;
+    let result = coordinator.finish(result);
+    status::print_summary(&coordinator);
     result
 }
 
@@ -69,12 +76,12 @@ async fn create_workspace(
 async fn execute(
     config: &RunConfig,
     scope: Scope,
-    mut saved: Option<&mut SavedReport>,
+    coordinator: &mut Coordinator,
     cancellation: &Cancellation,
 ) -> Result<()> {
     let root = &config.module_root;
     let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
-    println!("Snapshotting {}", root.display());
+    coordinator.line(format!("Snapshotting {}", root.display()));
     let excluded = vec![root.join(".mutie"), config.output_dir.clone()];
     let snapshot =
         Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
@@ -84,14 +91,15 @@ async fn execute(
         .timeout
         .map(|seconds| Duration::from_secs(seconds.get()));
     if !config.list {
-        if let Some(report) = saved.as_deref_mut() {
-            report.phase("baseline")?;
-        }
-        println!("Running baseline: go test ./... (test caching disabled)");
+        coordinator.emit(RunEvent::Phase(Phase::Baseline), cancellation)?;
         let baseline = go::test(&baseline_workspace.path(), baseline_limit, cancellation).await?;
-        if let Some(report) = saved.as_deref_mut() {
-            report.command("baseline", &baseline)?;
-        }
+        coordinator.emit(
+            RunEvent::Command {
+                phase: Phase::Baseline,
+                output: &baseline,
+            },
+            cancellation,
+        )?;
         if baseline.interrupted {
             return Err(Interrupted.into());
         }
@@ -109,15 +117,9 @@ async fn execute(
             );
         }
         timeout.get_or_insert_with(|| (baseline.elapsed * 5).max(Duration::from_secs(10)));
-        println!("Baseline passed in {:.2}s", baseline.elapsed.as_secs_f64());
-        if config.verbose {
-            print!("{}", go::text(&baseline));
-        }
     }
     cancellation.check()?;
-    if let Some(report) = saved.as_deref_mut() {
-        report.phase("discovery")?;
-    }
+    coordinator.emit(RunEvent::Phase(Phase::Discovery), cancellation)?;
     // Package discovery must see the pristine input, not baseline side effects.
     let baseline_workspace = if config.list {
         baseline_workspace
@@ -139,9 +141,13 @@ async fn execute(
         cancellation,
     )
     .await?;
-    if let Some(report) = saved.as_deref_mut() {
-        report.command("discovery", &discovery)?;
-    }
+    coordinator.emit(
+        RunEvent::Command {
+            phase: Phase::Discovery,
+            output: &discovery,
+        },
+        cancellation,
+    )?;
     if discovery.interrupted {
         return Err(Interrupted.into());
     }
@@ -157,7 +163,7 @@ async fn execute(
         .context("mutation discovery panicked")??
     };
     cancellation.check()?;
-    println!("Found {} mutations", mutations.len());
+    coordinator.line(format!("Found {} mutations", mutations.len()));
     if config.list {
         for mutation in &mutations {
             cancellation.check()?;
@@ -167,30 +173,31 @@ async fn execute(
     }
     let timeout = timeout.context("missing mutation timeout")?;
     let jobs = config.jobs.get().min(mutations.len());
-    if let Some(report) = saved.as_deref_mut() {
-        report.phase("inventory")?;
-        report.plan(&mutations, jobs, timeout, cancellation)?;
-    }
+    coordinator.emit(RunEvent::Phase(Phase::Inventory), cancellation)?;
+    coordinator.emit(
+        RunEvent::Plan {
+            mutations: &mutations,
+            workers: jobs,
+            timeout,
+        },
+        cancellation,
+    )?;
     cancellation.check()?;
     if mutations.is_empty() {
-        println!("No eligible mutations matched the selected scope.");
+        coordinator.line("No eligible mutations matched the selected scope.");
         return Ok(());
     }
-    if let Some(report) = saved.as_deref_mut() {
-        report.phase("mutations")?;
-    }
-    println!(
+    coordinator.emit(RunEvent::Phase(Phase::Mutations), cancellation)?;
+    coordinator.line(format!(
         "Running {jobs} worker(s), {:.2}s timeout per mutation",
         timeout.as_secs_f64()
-    );
+    ));
     let context = WorkerContext {
         snapshot,
         timeout,
         cancellation: cancellation.clone(),
     };
-    let summary = run_workers(context, mutations, jobs, config.verbose, saved).await?;
-    println!("\n{summary}");
-    Ok(())
+    run_workers(context, mutations, jobs, coordinator).await
 }
 
 #[derive(Clone)]
@@ -304,13 +311,11 @@ async fn run_workers(
     context: WorkerContext,
     mutations: Vec<Mutation>,
     jobs: usize,
-    verbose: bool,
-    mut saved: Option<&mut SavedReport>,
-) -> Result<Summary> {
+    coordinator: &mut Coordinator,
+) -> Result<()> {
     let mut workers = JoinSet::new();
     let mut available: VecDeque<_> = (1..=jobs).map(|worker| (worker, None)).collect();
     let mut next = 0;
-    let mut summary = Summary::default();
     let mut failure = None;
     let total = mutations.len();
     loop {
@@ -319,9 +324,14 @@ async fn run_workers(
                 break;
             };
             let id = next + 1;
-            if let Some(report) = saved.as_deref_mut()
-                && let Err(error) = report.started(id, worker)
-            {
+            if let Err(error) = coordinator.emit(
+                RunEvent::Started {
+                    id,
+                    worker,
+                    mutation: &mutations[next],
+                },
+                &context.cancellation,
+            ) {
                 failure = Some(error);
                 context.cancellation.cancel();
                 break;
@@ -344,7 +354,18 @@ async fn run_workers(
         let result = match finished {
             Ok((worker, workspace, result)) => {
                 available.push_back((worker, workspace));
-                record(&mut summary, &result, total, verbose, saved.as_deref_mut())
+                coordinator
+                    .emit(
+                        RunEvent::Finished {
+                            worker,
+                            result: &result,
+                        },
+                        &context.cancellation,
+                    )
+                    .and_then(|()| match result.error {
+                        Some(error) => Err(anyhow::anyhow!(error)),
+                        None => Ok(()),
+                    })
             }
             Err(error) => Err(anyhow::Error::new(error).context("mutation worker panicked")),
         };
@@ -365,48 +386,8 @@ async fn run_workers(
     }
     context.cancellation.check()?;
     ensure!(
-        summary.total() == total,
+        coordinator.state.summary.total() == total,
         "workers did not report every mutation"
     );
-    Ok(summary)
-}
-
-fn record(
-    summary: &mut Summary,
-    result: &MutationResult,
-    total: usize,
-    verbose: bool,
-    saved: Option<&mut SavedReport>,
-) -> Result<()> {
-    if let Some(report) = saved {
-        report.record(result)?;
-    }
-    summary.record(result);
-    let outcome = result
-        .outcome
-        .map(|outcome| outcome.to_string())
-        .unwrap_or_else(|| "interrupted".into());
-    let duration = result
-        .output
-        .as_ref()
-        .map(|output| format!(" ({:.2}s)", output.elapsed.as_secs_f64()))
-        .unwrap_or_default();
-    println!(
-        "[{}/{}] {}: {}{}",
-        summary.total(),
-        total,
-        outcome,
-        result.mutation.description(),
-        duration
-    );
-    if verbose && let Some(output) = &result.output {
-        let text = go::text(output);
-        if !text.is_empty() {
-            println!("{}", text.trim_end());
-        }
-    }
-    if let Some(error) = &result.error {
-        bail!("{error}");
-    }
     Ok(())
 }

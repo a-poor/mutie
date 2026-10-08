@@ -64,7 +64,7 @@ impl fmt::Display for RunStatus {
     }
 }
 
-#[derive(Default, Serialize)]
+#[derive(Clone, Debug, Default, Serialize)]
 pub struct Summary {
     pub killed: usize,
     pub missed: usize,

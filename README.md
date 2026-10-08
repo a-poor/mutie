@@ -12,7 +12,7 @@ not necessarily available in the current CLI.
 
 ## Try it
 
-Requires Rust/Cargo and Go 1.24+ on `PATH`. The prototype is tested on Linux.
+Requires Rust/Cargo and Go 1.24+ on `PATH`. The prototype is tested on Linux and macOS.
 
 ```sh
 cargo run -- /path/to/go/module
@@ -21,6 +21,7 @@ cargo run -- /path/to/go/module --list
 cargo run -- /path/to/go/module --include 'internal/**/*.go' --exclude '**/generated_*'
 cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
 cargo run -- /path/to/go/module --output-dir ./mutation-reports
+cargo run -- /path/to/go/module --ui plain
 ```
 
 The path defaults to the current directory and must contain `go.mod`. Glob
@@ -50,12 +51,13 @@ timeout = 30
 baseline_timeout = 300
 output_dir = ".mutie"
 verbose = false
+ui = "auto"
 ```
 
 All keys are optional. Defaults are `lang = "auto"` (currently Go), one worker,
 empty include/exclude lists, a 300-second baseline/discovery timeout, `.mutie`
-under the module root for reports, and no verbose output. Omit `timeout` for the
-automatic policy: `max(10 seconds, 5 * baseline duration)`. Worker counts and
+under the module root for reports, `ui = "auto"`, and no verbose output. Omit
+`timeout` for the automatic policy: `max(10 seconds, 5 * baseline duration)`. Worker counts and
 timeouts must be positive integers; timeouts are in seconds. Unknown keys,
 malformed TOML, and incorrect value types are rejected even if CLI options would
 override them. The merged settings are validated before creating reports or
@@ -81,6 +83,47 @@ cargo run -- /path/to/go/module --clear-timeout --no-verbose
 `--list` is invocation-only. It uses the same configuration and excludes the
 configured report directory from its snapshot, but creates no report directory
 or artifacts. An explicit `--output-dir` still conflicts with `--list`.
+
+## Live terminal status
+
+Interactive terminals get a live, inline Ratatui display inspired by the Vitest
+CLI. The status region updates in place up to ten times per second, including
+elapsed time and activity while commands run. It shows the current phase,
+completed/total mutations, outcome counts, active worker locations and durations,
+and recent results. For example, during mutation execution:
+
+```text
+ | mutie mutations  2.0s
+   killed       add.go:3:2: + -> - (0.2s)
+ | worker 1 #000004 (2.0s) calc.go:8:3: + -> -
+ | worker 2 #000005 (2.0s) ready.go:4:2: true -> false
+
+ Mutations 3/8  |  Workers 2/2
+ 2 killed | 1 missed | 0 timeout | 0 build failed | 0 errors
+ Ctrl-C to stop  |  Test output saved in report logs
+```
+
+Set `ui` in `mutie.toml` or override it with `--ui auto|interactive|plain`:
+
+- `auto` (default): use the live view when stdin and stdout are terminals,
+  `TERM` is not `dumb`, and the `CI` environment variable is absent. Fall back to
+  plain output if terminal initialization fails.
+- `interactive`: request the live view, including in CI. Requires terminal stdin
+  and stdout and a `TERM` other than `dumb`; unsupported terminals produce an error.
+- `plain`: print progress lines without terminal control sequences.
+
+`--list` always uses plain output. The live view adapts to resizing and small
+terminals, showing up to four active workers and three recent results when space
+permits, with an additional-worker count when needed. All results remain in the
+saved report. It uses the normal terminal screen and keeps input in normal mode
+between cursor-position queries. Ctrl-C uses the same cancellation and cleanup
+path as plain mode; SIGTERM also works on Unix. On completion or interruption,
+the status area is cleared, the cursor restored, and a final plain summary and
+report path are printed. Interrupted summaries include pending/interrupted counts.
+
+Test output stays in saved logs while the live view is active, including with
+`--verbose`. Use `--ui plain --verbose` to print captured test output during a run.
+Filtering, diff/log browsing, and focused reruns are future work.
 
 ## Saved reports
 
@@ -180,7 +223,7 @@ directory) to your project's `.gitignore`.
 - Results are **killed** (tests failed), **missed** (tests passed), **timeout**, or
   **build failed** (the mutation could not compile or failed Go's build checks).
   Tool/setup failures abort the run instead of counting as killed mutations.
-  `--verbose` shows captured test and build output.
+  `--verbose` shows captured test and build output in plain mode.
 - There is one worker by default. Each worker restores its entire workspace from
   a pristine snapshot between mutations, including files changed or created by
   tests. Copies use [reflink-copy](https://docs.rs/reflink-copy/latest/reflink_copy/)
@@ -220,6 +263,11 @@ source preservation. They require an environment that delivers those signals.
 Configuration tests also cover defaults, explicit overrides, list clearing,
 invalid settings, path resolution, listing without reports, and saved effective
 settings using a fake Go command.
+Renderer tests check complete frames, styles, clipping, elapsed-time updates, and
+resizing. Unix pseudo-terminal tests exercise live redraws during a blocked
+baseline, Ctrl-C, resizing, terminal initialization failure, empty/failed runs,
+terminal restoration, and plain output in CI. Temporary workspace paths are
+canonicalized so macOS path aliases agree with Go discovery and internal symlinks.
 
 ## Original plan
 

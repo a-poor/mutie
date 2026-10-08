@@ -21,7 +21,7 @@ struct Fixture {
 
 impl Fixture {
     fn new() -> Self {
-        let temp = tempfile::tempdir().unwrap();
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
         let root = temp.path().join("module");
         let bin = temp.path().join("bin");
         let state = temp.path().join("state");

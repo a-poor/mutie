@@ -30,7 +30,14 @@ impl Workspace {
         cancellation: &Cancellation,
     ) -> Result<Self> {
         cancellation.check()?;
-        let directory = tempfile::Builder::new().prefix("mutie-").tempdir()?;
+        // Go and symlink resolution return physical paths. Keep workspace paths
+        // physical too (not macOS's /var alias for /private/var).
+        let temporary_root = std::env::temp_dir()
+            .canonicalize()
+            .context("resolving temporary workspace directory")?;
+        let directory = tempfile::Builder::new()
+            .prefix("mutie-")
+            .tempdir_in(temporary_root)?;
         ensure!(
             !directory.path().canonicalize()?.starts_with(source),
             "temporary directory is inside the module; set TMPDIR to a directory outside it"
@@ -150,7 +157,7 @@ mod tests {
 
     #[test]
     fn report_directories_are_omitted_from_snapshots() -> Result<()> {
-        let source = tempfile::tempdir()?;
+        let source = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
         fs::write(source.path().join("code.go"), "original")?;
         let excluded = vec![
             source.path().join(".mutie"),
@@ -172,7 +179,7 @@ mod tests {
 
     #[test]
     fn reset_restores_files_and_removes_test_artifacts_without_touching_input() -> Result<()> {
-        let source = tempfile::tempdir()?;
+        let source = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
         fs::write(source.path().join("code.go"), "original")?;
         fs::create_dir(source.path().join(".git"))?;
         fs::write(source.path().join(".git/config"), "private")?;
@@ -196,10 +203,13 @@ mod tests {
     #[cfg(unix)]
     #[test]
     fn internal_symlinks_stay_in_copy_and_external_links_are_rejected() -> Result<()> {
-        let source = tempfile::tempdir()?;
+        let source = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
         fs::write(source.path().join("data"), "original")?;
         std::os::unix::fs::symlink(source.path().join("data"), source.path().join("link"))?;
         let workspace = Workspace::new(source.path())?;
+        assert_eq!(workspace.path(), workspace.path().canonicalize()?);
+        let worker = Workspace::new(&workspace.path())?;
+        assert_eq!(fs::read_to_string(worker.path().join("link"))?, "original");
         fs::write(workspace.path().join("link"), "changed")?;
         assert_eq!(fs::read_to_string(source.path().join("data"))?, "original");
         assert_eq!(

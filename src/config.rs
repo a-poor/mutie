@@ -9,7 +9,7 @@ use std::{
 use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
 
-use crate::cli::{Cli, Lang};
+use crate::cli::{Cli, Lang, UiMode};
 
 /// Parsed file values have no defaults; only explicitly supplied CLI values
 /// replace them. Invocation-only options such as `list` are not file settings.
@@ -24,6 +24,7 @@ struct RepositoryConfig {
     baseline_timeout: Option<NonZeroU64>,
     output_dir: Option<PathBuf>,
     verbose: Option<bool>,
+    ui: Option<UiMode>,
 }
 
 /// The resolved settings used by both execution and saved reports. Paths are
@@ -42,6 +43,7 @@ pub struct RunConfig {
     pub output_dir: PathBuf,
     pub verbose: bool,
     pub list: bool,
+    pub ui: UiMode,
 }
 
 impl RunConfig {
@@ -119,6 +121,7 @@ impl RunConfig {
                 cli.verbose || file.verbose.unwrap_or(false)
             },
             list: cli.list,
+            ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
         for (name, timeout) in [
             ("timeout", config.timeout),
@@ -190,7 +193,7 @@ mod tests {
     use clap::Parser;
 
     fn project() -> Result<tempfile::TempDir> {
-        let temp = tempfile::tempdir()?;
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
         fs::create_dir(temp.path().join("module"))?;
         fs::write(
             temp.path().join("module/go.mod"),
@@ -217,6 +220,7 @@ mod tests {
         assert_eq!(config.timeout, None);
         assert!(config.include.is_empty() && config.exclude.is_empty());
         assert!(!config.verbose && !config.list);
+        assert_eq!(config.ui, UiMode::Auto);
         assert!(config.config_file.is_none());
         assert_eq!(config.output_dir, temp.path().join("module/.mutie"));
         assert!(!config.output_dir.exists());
@@ -228,6 +232,19 @@ mod tests {
             empty.config_file,
             Some(temp.path().join("module/mutie.toml"))
         );
+        Ok(())
+    }
+
+    #[test]
+    fn ui_preference_merges_explicit_overrides_and_rejects_unknown_modes() -> Result<()> {
+        let temp = project()?;
+        fs::write(temp.path().join("module/mutie.toml"), "ui = 'interactive'")?;
+        assert_eq!(resolve(temp.path(), &[])?.ui, UiMode::Interactive);
+        assert_eq!(resolve(temp.path(), &["--ui", "plain"])?.ui, UiMode::Plain);
+        assert_eq!(resolve(temp.path(), &["--ui", "auto"])?.ui, UiMode::Auto);
+        assert!(resolve(temp.path(), &["--ui", "unknown"]).is_err());
+        fs::write(temp.path().join("module/mutie.toml"), "ui = 'unknown'")?;
+        assert!(resolve(temp.path(), &["--ui", "plain"]).is_err());
         Ok(())
     }
 

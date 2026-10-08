@@ -57,13 +57,26 @@ pub struct Cli {
     #[arg(long, value_name = "DIR", conflicts_with = "list")]
     pub output_dir: Option<PathBuf>,
 
-    /// Show captured test/build output for every mutation
+    /// Show captured test/build output in plain mode
     #[arg(short, long)]
     pub verbose: bool,
 
     /// Disable configured verbose output
     #[arg(long, conflicts_with = "verbose")]
     pub no_verbose: bool,
+
+    /// Terminal status view (default: auto; --list always uses plain output)
+    #[arg(long, value_enum)]
+    pub ui: Option<UiMode>,
+}
+
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum UiMode {
+    #[default]
+    Auto,
+    Interactive,
+    Plain,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]
