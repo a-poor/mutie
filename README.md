@@ -114,8 +114,10 @@ Set `ui` in `mutie.toml` or override it with `--ui auto|interactive|plain`:
 
 `--list` always uses plain output. The live view adapts to resizing and small
 terminals, showing up to four active workers and three recent results when space
-permits, with an additional-worker count when needed. All results remain in the
-saved report. It uses the normal terminal screen and keeps input in normal mode
+permits, with an additional-worker count when needed. Narrow terminals use shorter
+outcome labels (`kill`, `miss`, `time`, `build`, `err`; initials at smaller widths)
+and worker prefixes to keep counts and source locations visible. All results
+remain in the saved report. It uses the normal terminal screen and keeps input in normal mode
 between cursor-position queries. Ctrl-C uses the same cancellation and cleanup
 path as plain mode; SIGTERM also works on Unix. On completion or interruption,
 the status area is cleared, the cursor restored, and a final plain summary and
@@ -124,6 +126,12 @@ report path are printed. Interrupted summaries include pending/interrupted count
 Test output stays in saved logs while the live view is active, including with
 `--verbose`. Use `--ui plain --verbose` to print captured test output during a run.
 Filtering, diff/log browsing, and focused reruns are future work.
+
+The MVP has been validated on `godotenv` v1.5.1 as well as the bundled fixture.
+Plain and live runs produced identical results for 77 mutations, and added tests
+in an isolated copy caught four previously missed mutations. See the
+[validation notes](DESIGN.md#mvp-validation-evidence) for runtime, artifact sizes,
+terminal checks, and the limits of this small-project validation.
 
 ## Saved reports
 

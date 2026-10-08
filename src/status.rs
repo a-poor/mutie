@@ -230,6 +230,30 @@ fn outcome_style(outcome: Option<Outcome>) -> Style {
     })
 }
 
+fn outcome_counts(state: &RunState, labels: [&str; 5], separator: &str) -> Line<'static> {
+    let mut spans = vec![Span::raw(" ")];
+    for (index, ((count, outcome), label)) in [
+        (state.summary.killed, Outcome::Killed),
+        (state.summary.missed, Outcome::Missed),
+        (state.summary.timeout, Outcome::Timeout),
+        (state.summary.build_failed, Outcome::BuildFailed),
+        (state.summary.errors, Outcome::Error),
+    ]
+    .into_iter()
+    .zip(labels)
+    .enumerate()
+    {
+        if index > 0 {
+            spans.push(Span::raw(separator.to_owned()));
+        }
+        spans.push(Span::styled(
+            format!("{count} {label}"),
+            outcome_style(Some(outcome)),
+        ));
+    }
+    Line::from(spans)
+}
+
 fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
     let area = frame.area();
     if area.is_empty() {
@@ -256,28 +280,31 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
         state.active.len(),
         state.workers
     ));
-    let counts = Line::from(vec![
-        Span::raw(" "),
-        Span::styled(
-            format!("{} killed", state.summary.killed),
-            outcome_style(Some(Outcome::Killed)),
-        ),
-        Span::raw(" | "),
-        Span::styled(
-            format!("{} missed", state.summary.missed),
-            outcome_style(Some(Outcome::Missed)),
-        ),
-        Span::raw(format!(
-            " | {} timeout | {} build failed | {} errors",
-            state.summary.timeout, state.summary.build_failed, state.summary.errors
-        )),
-    ]);
-    let hint = Line::from(if cancelling {
+    let mut counts = outcome_counts(
+        state,
+        ["killed", "missed", "timeout", "build failed", "errors"],
+        " | ",
+    );
+    if counts.width() > area.width as usize {
+        counts = outcome_counts(state, ["kill", "miss", "time", "build", "err"], " ");
+    }
+    if counts.width() > area.width as usize {
+        counts = outcome_counts(state, ["K", "M", "T", "B", "E"], " ");
+    }
+    let mut hint = Line::from(if cancelling {
         " Stopping workers and saving results..."
     } else {
         " Ctrl-C to stop  |  Test output saved in report logs"
     })
     .dim();
+    if hint.width() > area.width as usize {
+        hint = Line::from(if cancelling {
+            " Stopping; saving results..."
+        } else {
+            " Ctrl-C to stop | Logs saved"
+        })
+        .dim();
+    }
     if area.height <= 4 {
         frame.render_widget(Paragraph::new(vec![header, progress, counts, hint]), area);
         return;
@@ -292,12 +319,13 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
     frame.render_widget(Paragraph::new(vec![progress, counts, hint]), footer);
     let available = body.height as usize;
     let worker_slots = state.active.len().min(4).min(available);
-    let hidden_workers = state.active.len().saturating_sub(worker_slots);
-    let worker_slots = if hidden_workers > 0 {
+    // Reserve an overflow row only when it would otherwise displace a worker.
+    let worker_slots = if state.active.len() > worker_slots && worker_slots == available {
         worker_slots.saturating_sub(1)
     } else {
         worker_slots
     };
+    let hidden_workers = state.active.len().saturating_sub(worker_slots);
     let active_rows = worker_slots + usize::from(hidden_workers > 0 && available > 0);
     let recent_slots = available.saturating_sub(active_rows).min(3);
     let mut lines = Vec::new();
@@ -324,14 +352,29 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
         ]));
     }
     for (worker, active) in state.active.iter().take(worker_slots) {
+        let elapsed = now.saturating_duration_since(active.started).as_secs_f64();
+        let (label, details) = if area.width < 70 {
+            (
+                format!(" {spinner} w{worker} "),
+                format!(
+                    "#{} {elapsed:.1}s {}",
+                    active.id,
+                    safe_text(&active.description)
+                ),
+            )
+        } else {
+            (
+                format!(" {spinner} worker {worker} "),
+                format!(
+                    "#{:06} ({elapsed:.1}s) {}",
+                    active.id,
+                    safe_text(&active.description)
+                ),
+            )
+        };
         lines.push(Line::from(vec![
-            Span::styled(format!(" {spinner} worker {worker} "), Style::new().cyan()),
-            Span::raw(format!(
-                "#{:06} ({:.1}s) {}",
-                active.id,
-                now.saturating_duration_since(active.started).as_secs_f64(),
-                safe_text(&active.description)
-            )),
+            Span::styled(label, Style::new().cyan()),
+            Span::raw(details),
         ]));
     }
     if hidden_workers > 0 && available > 0 {
@@ -543,6 +586,46 @@ mod tests {
         offset.draw(|frame| render(frame, &state, state.started, false))?;
         assert_eq!(offset.backend().buffer()[(6, 3)].symbol(), "|");
         assert_eq!(offset.backend().buffer()[(0, 0)].symbol(), " ");
+        Ok(())
+    }
+
+    #[test]
+    fn narrow_summary_keeps_every_outcome_visible_and_wide_view_uses_four_worker_rows() -> Result<()>
+    {
+        let mut state = state();
+        state.total = Some(77);
+        state.workers = 6;
+        state.summary.killed = 53;
+        state.summary.missed = 18;
+        state.summary.timeout = 3;
+        state.summary.build_failed = 2;
+        state.summary.errors = 1;
+        for worker in 3..=6 {
+            state.active.insert(
+                worker,
+                ActiveWorker {
+                    id: worker,
+                    description: "parser.go:245:7: == -> !=".into(),
+                    started: state.started,
+                },
+            );
+        }
+        let mut terminal = Terminal::new(TestBackend::new(48, 7))?;
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let narrow = text(terminal.backend().buffer());
+        assert!(
+            narrow.contains("53 kill 18 miss 3 time 2 build 1 err"),
+            "{narrow}"
+        );
+        assert!(narrow.contains("Ctrl-C to stop | Logs saved"));
+        assert!(narrow.contains("w1 #4 0.0s calc.go:8:3"));
+        assert!(narrow.contains("+ 4 more active workers"));
+        terminal.backend_mut().resize(100, 12);
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let wide = text(terminal.backend().buffer());
+        assert!(wide.contains("worker 4 #000004"), "{wide}");
+        assert!(wide.contains("+ 2 more active workers"));
+        assert!(!wide.contains("worker 5"));
         Ok(())
     }
 

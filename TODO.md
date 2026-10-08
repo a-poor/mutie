@@ -52,19 +52,34 @@ checklist as work lands, checking items off after appropriate verification.
   print a final plain summary and report path.
 - [x] Test rendering and terminal lifecycle, including non-interactive use.
 
-### 4. MVP validation — next
+### 4. MVP validation — completed
 
-- [ ] Verify the complete workflow with config, parallel execution, both terminal
+- [x] Verify the complete workflow with config, parallel execution, both terminal
   modes, empty/failed/interrupted runs, saved artifacts, and source preservation.
-- [ ] Reconcile README examples and design status with the completed MVP.
+- [x] Reconcile README examples and design status with the completed MVP.
+- [x] Validate on `godotenv` v1.5.1: 77 mutations with identical outcomes in plain
+  and interactive modes; verify four surviving mutations become test failures
+  after adding tests to an isolated copy. See `DESIGN.md` for evidence and limits.
+- [x] Fix narrow-terminal outcome clipping and use all four worker rows when
+  space permits; verify the fixes against the real-project run and frame tests.
 
 ## Follow-up work
 
-- [ ] Select and rerun mutations by saved-run ID, file/operator, or missed outcome.
+- [ ] Select and rerun mutations by saved-run ID, file/operator, or missed outcome
+  — next; start with rerunning missed mutations from a saved run.
 - [ ] Rediscover and validate rerun targets against current source, reject stale
   or ambiguous matches, and require a fresh baseline.
 - [ ] Add interactive result filtering and diff/log browsing.
-- [ ] Validate findings and practical runtime on a real Go project.
+- [ ] Add persistent per-mutation dismissals with required reasons and optional
+  notes in repository-owned metadata; support inspecting, changing, and removing them.
+- [ ] Match dismissals against rediscovered mutations using source-aware identity;
+  surface stale, missing, or ambiguous matches for review after source changes.
+- [ ] Show dismissal reasons separately from actual execution outcomes in reports
+  and result views; allow dismissed findings to be included in inspection and reruns.
+- [ ] Test dismissal persistence, matching/invalidation, removal, and preservation
+  of execution outcomes and counts.
+- [x] Validate findings and practical runtime on a small real Go project.
+- [ ] Extend validation to a larger Go project before drawing scaling conclusions.
 - [ ] Measure workspace and command costs before choosing performance changes.
 - [ ] Make reflink use observable: count successful CoW clones and ordinary-copy
   fallbacks, and record snapshot/reset timings. Compare representative runs with

@@ -30,7 +30,8 @@ command diagnostics.
 
 The fixture and tests exercise killed and missed mutations, compilation failures,
 timeouts, failed baselines, workspace restoration, and preservation of partial
-results. This establishes the basic mechanics. It does not yet establish useful
+results. MVP validation on `godotenv` v1.5.1 also demonstrates actionable test gaps
+and practical runtime on a small library. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
 The prototype does not yet support focused reruns or interactive result browsing.
@@ -347,6 +348,27 @@ missing or ambiguous matches explicitly. A prior report supplies a selection, no
 proof that an old result remains valid. Add interactive diff/log browsing on top of
 the same report and run-state model.
 
+Add persistent dismissals for individual mutations as part of result review.
+Require a reason, such as "equivalent behavior" or "accepted test gap", with room
+for an explanatory note. Store these decisions in repository-owned metadata that
+can be version-controlled, independently of generated run reports. Users must be
+able to inspect, change, and remove dismissals.
+
+A dismissal needs a source-aware identity, not just a run-local mutation ID or
+line number. Reuse the rediscovery and matching rules for focused reruns, taking
+the source path, operator, original/replacement text, and source context into
+account. Revalidate matches after source changes. Surface stale, missing, or
+ambiguous matches for review instead of silently applying the old decision to a
+different mutation. Choose the exact storage format and matching policy when
+implementing this feature.
+
+Keep review disposition separate from execution state and outcome: a dismissed
+missed mutation still has a missed outcome. Reports and result views should show
+the dismissal and its reason, distinguish dismissed findings from outstanding
+ones, and allow dismissed findings to be included when inspecting or selecting
+reruns. A dismissal records a human judgment; it is not automatic proof of
+equivalent behavior or a passing test result.
+
 ### 2. Real-project validation and measured performance work
 
 Try a modest real Go project and measure runtime, invalid/equivalent-looking
@@ -401,10 +423,76 @@ design. No runtime or plugin ABI is selected now.
    retaining plain mode and testing terminal restoration — completed.
 5. Validate the MVP's complete workflow, including config precedence, parallel
    execution, failed/empty runs, cancellation, output persistence, and source-tree
-   preservation. Then begin focused reruns and real-project validation.
+   preservation — completed on the fixture and `godotenv` v1.5.1. Next: focused
+   reruns, followed by validation on larger projects.
 
 Open implementation choices include richer result browsing, report retention
 policy, cross-run mutation matching rules, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
 the initial MVP.
+
+## MVP validation evidence
+
+Validated on 2026-10-08 using the locally cached `github.com/joho/godotenv` v1.5.1
+source, Go 1.27.2, and macOS arm64. The starting Mutie commit was `cc92822`; the
+validation also produced the compact-layout fix described below. Runs used a
+writable temporary copy, a dedicated Go build cache, a five-second mutation
+deadline, and the full module test suite. Repository configuration set two
+workers and plain output; explicit CLI overrides selected six workers and the
+interactive view. The source copy and cached original retained matching SHA-256
+file manifests after execution. No external project was edited.
+
+| Run | Workers | Baseline | Total | Result |
+| --- | ---: | ---: | ---: | --- |
+| Configured plain mode | 2 | 9.85 s | 54.88 s | 77 completed |
+| Interactive mode | 6 | 1.60 s | 25.45 s | 77 completed |
+| Interactive after layout fix | 6 | 2.07 s | 29.15 s | 77 completed |
+| Ctrl-C during parallel work | 6 | 1.38 s | 4.52 s | 2 completed, 6 interrupted, 69 pending |
+| Empty include scope | 0 | 2.19 s | 3.08 s | Complete empty inventory |
+| Deliberately failing baseline, separate copy | — | 2.00 s | 2.24 s | Failed run, incomplete inventory, retained logs |
+
+All three full runs matched mutation-by-mutation: **53 killed, 18 missed, 3 timed
+out, 3 build failed, 0 tool errors**. Runtime numbers are observations, not a
+controlled concurrency benchmark: the first run used a cold build cache, and
+other validation work also ran on this machine. Each complete report occupied
+about 3.56 MB in 323 files; structured test output accounted for about 2.94 MB.
+Report checks covered inventory fingerprints, diff/log existence, checkpoint
+agreement, summary/outcome-list counts, and absence of running mutations in a
+finalized run. Listing created no reports.
+
+The interactive CLI ran in a pseudo-terminal with captured ANSI output and text
+screen reconstructions. The capture included 100×24 and 48×7 sizes, real Go
+workers, progress between completions, and actual Ctrl-C input. Terminal settings
+were restored on exit. At 48 columns, the original view clipped the error count;
+shorter outcome labels and worker prefixes fixed this. The wider view also now
+shows four workers plus an overflow count when space permits. Regression frame
+tests and another complete real-project run verify both changes. This validates
+the exercised terminal protocol and layouts, not every terminal emulator.
+
+Inspecting saved missed-result lists, diffs, and logs yielded concrete test gaps:
+
+| Surviving mutation | Missing behavior check | Verification in an isolated copy |
+| --- | --- | --- |
+| `godotenv.go:56`, invert `Load`'s early-return condition | Successful loading continues to the second file | Added two-file test kills the mutation |
+| `godotenv.go:79`, invert `Overload`'s early-return condition | Both files override existing environment values | Added two-file test kills the mutation |
+| `godotenv.go:147`, return early after successful serialization | `Write` actually creates the output file | Added file-content test kills the mutation |
+| `godotenv.go:151`, return early after successful file creation | `Write` writes content into the created file | The same file-content test kills the mutation |
+
+The full suite with those added tests passed against unchanged source. Each
+selected mutation then caused the expected new test to fail. This replay was a
+validation script that checked saved source fingerprints and byte ranges before
+editing the temporary copy; it is not an implemented Mutie rerun command.
+
+Missed mutations still require interpretation. All six mutations in the CLI
+package survived, and that package has no tests. The `parser.go:146` boundary
+change from `i >= 0` to `i > 0` is equivalent: its loop body already gates changes
+on `i > 0`. Build failures included two invalid string-subtraction mutations and
+one contradictory condition rejected by Go vet. These observations support
+focused reruns and clearer inspection before adding more mutation operators.
+
+The next useful workflow improvement is selecting the missed results of a saved
+run, rediscovering their targets against current source, rejecting stale matches,
+and requiring a fresh baseline. Performance tuning and report-retention decisions
+need larger-project measurements; this validation establishes the small-project
+MVP, not general scaling claims.
