@@ -6,6 +6,7 @@ mod go;
 mod mutation;
 mod process;
 mod report;
+mod rerun;
 mod saved_report;
 mod status;
 mod workspace;
@@ -28,6 +29,11 @@ use workspace::Workspace;
 async fn main() -> Result<()> {
     let config = RunConfig::resolve(Cli::parse())?;
     let scope = Scope::new(&config.include, &config.exclude)?;
+    let rerun = config
+        .rerun_missed
+        .as_deref()
+        .map(rerun::RerunSelection::load)
+        .transpose()?;
     let interactive = status::select(&config)?;
     let cancellation = Cancellation::default();
     let _signals = cancellation
@@ -53,7 +59,14 @@ async fn main() -> Result<()> {
     };
     let engine_cancellation = cancellation.clone();
     let engine = tokio::spawn(async move {
-        let result = execute(&config, scope, &mut coordinator, &engine_cancellation).await;
+        let result = execute(
+            &config,
+            scope,
+            rerun,
+            &mut coordinator,
+            &engine_cancellation,
+        )
+        .await;
         (coordinator, result)
     });
     let (mut coordinator, result) =
@@ -76,13 +89,15 @@ async fn create_workspace(
 async fn execute(
     config: &RunConfig,
     scope: Scope,
+    rerun: Option<rerun::RerunSelection>,
     coordinator: &mut Coordinator,
     cancellation: &Cancellation,
 ) -> Result<()> {
     let root = &config.module_root;
     let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
     coordinator.line(format!("Snapshotting {}", root.display()));
-    let excluded = vec![root.join(".mutie"), config.output_dir.clone()];
+    let mut excluded = vec![root.join(".mutie"), config.output_dir.clone()];
+    excluded.extend(config.rerun_missed.iter().cloned());
     let snapshot =
         Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
     let baseline_workspace =
@@ -163,6 +178,22 @@ async fn execute(
         .context("mutation discovery panicked")??
     };
     cancellation.check()?;
+    let (mutations, rerun) = match rerun {
+        Some(selection) => {
+            let cancellation = cancellation.clone();
+            let (selected, provenance) =
+                tokio::task::spawn_blocking(move || selection.select(mutations, &cancellation))
+                    .await
+                    .context("rerun selection panicked")??;
+            coordinator.line(format!(
+                "Selected {} previously missed mutations from {}",
+                selected.len(),
+                provenance.source_run.display()
+            ));
+            (selected, Some(provenance))
+        }
+        None => (mutations, None),
+    };
     coordinator.line(format!("Found {} mutations", mutations.len()));
     if config.list {
         for mutation in &mutations {
@@ -179,12 +210,17 @@ async fn execute(
             mutations: &mutations,
             workers: jobs,
             timeout,
+            rerun: rerun.as_ref(),
         },
         cancellation,
     )?;
     cancellation.check()?;
     if mutations.is_empty() {
-        coordinator.line("No eligible mutations matched the selected scope.");
+        coordinator.line(if rerun.is_some() {
+            "The saved run has no completed missed mutations to rerun."
+        } else {
+            "No eligible mutations matched the selected scope."
+        });
         return Ok(());
     }
     coordinator.emit(RunEvent::Phase(Phase::Mutations), cancellation)?;

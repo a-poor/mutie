@@ -53,6 +53,10 @@ pub struct Cli {
     #[arg(long)]
     pub list: bool,
 
+    /// Rerun only completed missed mutations from a saved run directory
+    #[arg(long, value_name = "RUN_DIR")]
+    pub rerun_missed: Option<PathBuf>,
+
     /// Parent directory for saved runs (default: <module>/.mutie)
     #[arg(long, value_name = "DIR", conflicts_with = "list")]
     pub output_dir: Option<PathBuf>,

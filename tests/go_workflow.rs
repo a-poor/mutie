@@ -186,6 +186,37 @@ fn go_workflow() {
     assert_eq!(empty_inventory["complete"], true);
     assert!(empty_inventory["mutations"].as_array().unwrap().is_empty());
 
+    // Adding a test changes the missed mutation's outcome without changing its
+    // source identity. A focused rerun still gets a baseline and clean workspaces.
+    fs::write(root.join("difference_test.go"), "package fixture\nimport \"testing\"\nfunc TestDifference(t *testing.T) { if Difference(5, 2) != 3 { t.Fatal(\"wrong difference\") } }\n").unwrap();
+    let rerun = run(
+        &root,
+        &["--rerun-missed", first_directory.to_str().unwrap()],
+    );
+    assert!(stdout(&rerun).contains("1 mutations: 1 killed, 0 missed"));
+    let (rerun_directory, rerun_metadata, rerun_inventory, rerun_outcomes) = saved_report(&rerun);
+    assert_eq!(rerun_inventory["mutations"][0]["file"], "missed.go");
+    assert_eq!(rerun_outcomes["baseline"]["outcome"], "passed");
+    assert_eq!(rerun_outcomes["mutations"].as_array().unwrap().len(), 1);
+    assert_eq!(
+        rerun_metadata["rerun"]["mutations"],
+        serde_json::json!([{"id": 1, "source_id": 3}])
+    );
+    assert!(
+        fs::read_to_string(rerun_directory.join("logs/000001.log"))
+            .unwrap()
+            .contains("wrong difference")
+    );
+    assert_eq!(
+        fs::read(first_directory.join("run.json")).unwrap(),
+        first_json
+    );
+    assert!(!root.join("test-artifact").exists());
+    assert_eq!(
+        fs::read_to_string(root.join("testdata/state.txt")).unwrap(),
+        "pristine\n"
+    );
+
     fs::write(root.join("fail_test.go"), "package fixture\nimport \"testing\"\nfunc TestFail(t *testing.T) { t.Fatal(\"baseline fails\") }\n").unwrap();
     // Keep using the custom output root so it remains excluded from snapshots.
     let failed = run(&root, &["--output-dir", custom.to_str().unwrap()]);

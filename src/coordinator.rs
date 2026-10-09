@@ -16,6 +16,7 @@ use crate::{
     mutation::Mutation,
     process::CommandOutput,
     report::{ExecutionState, MutationResult, Outcome, RunStatus, Summary},
+    rerun::RerunProvenance,
     saved_report::SavedReport,
 };
 
@@ -50,6 +51,7 @@ pub enum RunEvent<'a> {
         mutations: &'a [Mutation],
         workers: usize,
         timeout: Duration,
+        rerun: Option<&'a RerunProvenance>,
     },
     Started {
         id: usize,
@@ -225,7 +227,8 @@ impl Coordinator {
                     mutations,
                     workers,
                     timeout,
-                } => report.plan(mutations, *workers, *timeout, cancellation)?,
+                    rerun,
+                } => report.plan(mutations, *workers, *timeout, *rerun, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
                 RunEvent::Finished { result, .. } => report.record(result)?,
             }
@@ -330,6 +333,7 @@ mod tests {
                 mutations: &mutations,
                 workers: 2,
                 timeout: Duration::from_secs(10),
+                rerun: None,
             },
             &cancellation,
         )?;

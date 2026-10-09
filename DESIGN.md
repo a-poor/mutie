@@ -24,9 +24,9 @@ report artifacts, without requiring compatibility with its CLI or file formats.
 The current implementation supports one Go module, selected through its `go.mod`.
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
 executes them in isolated worker copies. It already has file filters, configurable
-workers and timeouts, repository configuration, live and plain terminal output, complete
-mutation inventories, saved reports, and coordinated cancellation with retained
-command diagnostics.
+workers and timeouts, repository configuration, live and plain terminal output,
+complete mutation inventories, saved reports, missed-only reruns, and coordinated
+cancellation with retained command diagnostics.
 
 The fixture and tests exercise killed and missed mutations, compilation failures,
 timeouts, failed baselines, workspace restoration, and preservation of partial
@@ -34,7 +34,8 @@ results. MVP validation on `godotenv` v1.5.1 also demonstrates actionable test g
 and practical runtime on a small library. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
-The prototype does not yet support focused reruns or interactive result browsing.
+The prototype supports rerunning missed outcomes from a saved run; selecting
+individual saved IDs or operators and interactive result browsing remain planned.
 Rust appears in the CLI language enum but is not implemented.
 
 ## Minimal MVP
@@ -57,10 +58,9 @@ every outcome after the workspaces have been removed. They should also be able t
 commit repeatable project settings and override them for a single invocation.
 The same execution engine must work without an interactive terminal.
 
-Focused reruns complete the longer-term feedback loop, but are the first follow-up
-to this smaller MVP. Rich report browsing, advanced mutations, coverage-driven
-execution, additional languages, multi-module projects, and plugins are not MVP
-requirements.
+Missed-only reruns are the first implemented follow-up to this smaller MVP.
+Rich report browsing, advanced mutations, coverage-driven execution, additional
+languages, multi-module projects, and plugins are not MVP requirements.
 
 ## Execution model and guarantees
 
@@ -137,9 +137,12 @@ inventory. Execution records refer to these IDs and carry state, optional outcom
 duration, exit status, diagnostics, and artifact paths. Pending/running/interrupted
 executions have no outcome. IDs do not depend on worker completion order.
 
-Run-local IDs are not stable identities across edits. Later reruns must rediscover
-mutations against the current source and validate the match. Do not replay stale
-byte offsets or silently reuse an old outcome after the source or tests change.
+Run-local IDs are not stable identities across edits. Reruns rediscover mutations
+against the current snapshot and validate the match. The initial conservative
+policy requires the same relative path, whole-file fingerprint, operator,
+original/replacement text, byte range, and line/column range. Tests may change;
+changes anywhere in a selected source file require a new full scan. Saved offsets
+and replacements are never applied directly, and prior outcomes are never reused.
 
 ## Mutation catalog
 
@@ -323,6 +326,7 @@ Keep the implementation modular without building a plugin framework up front.
 | Coordinator | Baseline gate, mutation inventory, scheduling, cancellation, and authoritative run state. |
 | Workspace and process runner | Snapshot/copy/reset, apply edits, execute commands, enforce deadlines, and capture output. |
 | Report writer | Persist inventory, results, metadata, diffs, and logs. |
+| Rerun selection | Validate saved reports and match missed outcomes to current discovery. |
 | Terminal presentation | Show state and forward user control requests. |
 
 `coordinator.rs` owns a small event/state boundary: phase changes, command results,
@@ -342,11 +346,32 @@ working implementation.
 
 ### 1. Focused reruns and richer inspection
 
-Select mutations by ID within a saved run, by file/operator, or by previous missed
-outcomes. Rediscover them on the current checkout, run a fresh baseline, and reject
-missing or ambiguous matches explicitly. A prior report supplies a selection, not
-proof that an old result remains valid. Add interactive diff/log browsing on top of
-the same report and run-state model.
+`--rerun-missed RUN_DIR` now selects completed missed outcomes from a finalized
+saved run. The reader validates schema/catalog versions, final status, matching
+checkpoints, a complete inventory, counts, IDs, source paths, and execution states
+before creating a new run. Finalized failed/interrupted reports are usable when
+they have a complete inventory; pending/interrupted executions are not selected.
+The prior module root need not match the current checkout's location.
+
+Execution uses current settings and the ordinary snapshot, fresh baseline,
+discovery, and worker lifecycle. Scope filters apply before matching; every saved
+missed target must match uniquely or the run fails before any mutation executes.
+New mutations are not implicitly added. `--list` validates and previews without a
+baseline or report, as for normal listing. Empty selections produce a completed
+empty run after baseline and discovery.
+
+New reports preserve the source run. After inventory publication, `run.json.rerun`
+records the source path/checkpoint/status and old-to-new ID mapping, also shown in
+the text summary. The source path is recorded in effective configuration even if
+execution fails before inventory publication. Snapshot copying excludes the source
+run directory; output paths inside that run are rejected. The report and operator
+catalog versions remain unchanged during local development.
+
+Extend selection to individual saved IDs and operators, and add interactive
+diff/log browsing on top of the same report and run-state model. A prior report
+supplies a selection, not proof that an old result remains valid. More flexible
+matching across source edits needs an explicit policy and validation before it
+can replace the current strict identity check.
 
 Add persistent dismissals for individual mutations as part of result review.
 Require a reason, such as "equivalent behavior" or "accepted test gap", with room
@@ -423,11 +448,13 @@ design. No runtime or plugin ABI is selected now.
    retaining plain mode and testing terminal restoration — completed.
 5. Validate the MVP's complete workflow, including config precedence, parallel
    execution, failed/empty runs, cancellation, output persistence, and source-tree
-   preservation — completed on the fixture and `godotenv` v1.5.1. Next: focused
-   reruns, followed by validation on larger projects.
+   preservation — completed on the fixture and `godotenv` v1.5.1.
+6. Add missed-only saved-run selection, source validation, fresh execution, and
+   report provenance — completed and verified with improved tests on the fixture
+   and `godotenv`. Broader selection and richer result review remain follow-ups.
 
 Open implementation choices include richer result browsing, report retention
-policy, cross-run mutation matching rules, and which language to
+policy, mutation matching across source edits, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
 the initial MVP.
@@ -480,9 +507,19 @@ Inspecting saved missed-result lists, diffs, and logs yielded concrete test gaps
 | `godotenv.go:151`, return early after successful file creation | `Write` writes content into the created file | The same file-content test kills the mutation |
 
 The full suite with those added tests passed against unchanged source. Each
-selected mutation then caused the expected new test to fail. This replay was a
-validation script that checked saved source fingerprints and byte ranges before
-editing the temporary copy; it is not an implemented Mutie rerun command.
+selected mutation then caused the expected new test to fail. The initial replay
+used a validation script that checked saved source fingerprints and byte ranges
+before editing the temporary copy.
+
+The implemented `--rerun-missed` command was subsequently verified against that
+original saved run and the copy with improved tests. It selected all 18 missed
+mutations, ran a fresh passing baseline, and produced **4 killed, 14 missed** with
+no timeouts, build failures, or tool errors. Source IDs 9, 11, 14, and 15 were the
+four newly killed mutations above. With six workers and the warm dedicated cache,
+the baseline took 1.29 s and the run took 7.73 s; this is an observation, not a
+controlled benchmark. SHA-256 manifests confirmed that the input project and all
+original report files were unchanged. The new report contains only the selected
+mutations and their old-to-new ID mapping.
 
 Missed mutations still require interpretation. All six mutations in the CLI
 package survived, and that package has no tests. The `parser.go:146` boundary
@@ -491,8 +528,7 @@ on `i > 0`. Build failures included two invalid string-subtraction mutations and
 one contradictory condition rejected by Go vet. These observations support
 focused reruns and clearer inspection before adding more mutation operators.
 
-The next useful workflow improvement is selecting the missed results of a saved
-run, rediscovering their targets against current source, rejecting stale matches,
-and requiring a fresh baseline. Performance tuning and report-retention decisions
-need larger-project measurements; this validation establishes the small-project
-MVP, not general scaling claims.
+Missed-only reruns now complete this tested feedback loop. Richer result review
+and selection remain workflow improvements. Performance tuning and
+report-retention decisions need larger-project measurements; this validation
+establishes the small-project workflow, not general scaling claims.

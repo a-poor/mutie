@@ -22,6 +22,7 @@ cargo run -- /path/to/go/module --include 'internal/**/*.go' --exclude '**/gener
 cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
 cargo run -- /path/to/go/module --output-dir ./mutation-reports
 cargo run -- /path/to/go/module --ui plain
+cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
 ```
 
 The path defaults to the current directory and must contain `go.mod`. Glob
@@ -80,9 +81,10 @@ cargo run -- /path/to/go/module --clear-include --clear-exclude --list
 cargo run -- /path/to/go/module --clear-timeout --no-verbose
 ```
 
-`--list` is invocation-only. It uses the same configuration and excludes the
-configured report directory from its snapshot, but creates no report directory
-or artifacts. An explicit `--output-dir` still conflicts with `--list`.
+`--list` and `--rerun-missed` are invocation-only. Listing uses the same
+configuration and excludes the configured report directory from its snapshot,
+but creates no report directory or artifacts. An explicit `--output-dir` still
+conflicts with `--list`.
 
 ## Live terminal status
 
@@ -125,13 +127,55 @@ report path are printed. Interrupted summaries include pending/interrupted count
 
 Test output stays in saved logs while the live view is active, including with
 `--verbose`. Use `--ui plain --verbose` to print captured test output during a run.
-Filtering, diff/log browsing, and focused reruns are future work.
+Interactive result filtering and diff/log browsing are future work.
 
 The MVP has been validated on `godotenv` v1.5.1 as well as the bundled fixture.
 Plain and live runs produced identical results for 77 mutations, and added tests
 in an isolated copy caught four previously missed mutations. See the
 [validation notes](DESIGN.md#mvp-validation-evidence) for runtime, artifact sizes,
 terminal checks, and the limits of this small-project validation.
+
+## Rerun missed mutations
+
+After improving tests, use a saved run directory to select just its completed
+`missed` mutations:
+
+```sh
+cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
+cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run --list
+```
+
+`RUN_DIR` is relative to the invocation directory, or absolute. It must contain
+`run.json`, `mutants.json`, and `outcomes.json`; text lists, diffs, and logs are not
+selection inputs. Finalized failed or interrupted runs also work when their
+inventory is complete: only completed missed outcomes are selected, never pending
+or interrupted work. Running, incomplete, inconsistent, or incompatible reports
+are rejected before running Go or creating a new report.
+
+Execution always runs a fresh baseline, rediscovers mutations from the current
+snapshot, and validates every selected target before starting workers. Matching
+requires the same module-relative source path, complete source-file fingerprint,
+operator, original/replacement text, and source coordinates. Editing or adding
+tests is supported; any change to a selected mutation's source file, including
+comments or moved lines, requires a new full scan. Missing, excluded, inactive,
+or ambiguous targets fail the entire selection rather than silently being skipped.
+Current include/exclude settings still apply; clear configured filters if needed.
+
+The current module can be a moved or copied checkout. Current configuration,
+tests, worker count, and timeouts apply; old outcomes are never reused. Newly
+discovered mutations and previous killed/timeout/build-failed/error outcomes are
+not selected. With no missed outcomes, execution saves a completed empty run after
+baseline and discovery. `--list` previews and validates the selection without
+running tests or writing a report.
+
+Every execution creates a separate report. Once its inventory is published,
+`run.json` contains a `rerun` object with `source_run`, `source_checkpoint`,
+`source_status`, `selection: "missed"`, and `mutations` mapping each new `id` to its
+`source_id`. IDs are assigned in current discovery order. `summary.txt` includes
+the mapping too; `effective_config.rerun_missed` records the input path even if the
+baseline or matching fails. The source report is preserved, excluded from the
+snapshot, and cannot contain the new output directory. Selecting individual saved
+IDs or operators is still planned.
 
 ## Saved reports
 
@@ -209,8 +253,9 @@ planned work once published. Structured inventory and outcomes are authoritative
 text summaries and outcome lists are derived and can lag after a forced kill.
 Report write failures are surfaced as errors.
 
-The module's `.mutie` directory and the selected output directory are omitted
-from snapshots so saved reports do not affect tests or discovery. Keep output
+The module's `.mutie` directory, the selected output directory, and the source
+rerun directory are omitted from snapshots so saved reports do not affect tests
+or discovery. Keep output
 directories separate from source files, and add `.mutie/` (or your custom output
 directory) to your project's `.gitignore`.
 
@@ -244,8 +289,8 @@ directory) to your project's `.gitignore`.
   process group, including test binaries. Cancellation is also checked during
   workspace copying and between discovery/publication steps.
 - A completed run exits successfully even if mutations survive. Baseline and
-  tool failures exit unsuccessfully. CI thresholds and focused reruns are future
-  work; saved JSON reports can already be consumed by other tools.
+  tool failures exit unsuccessfully. CI thresholds are future work; saved JSON
+  reports can already be consumed by other tools.
 
 The initial scope is one self-contained Go module. `GOWORK` is set to `off` for
 child Go commands. Workspaces, local replacements outside the module, and tests
@@ -271,6 +316,9 @@ source preservation. They require an environment that delivers those signals.
 Configuration tests also cover defaults, explicit overrides, list clearing,
 invalid settings, path resolution, listing without reports, and saved effective
 settings using a fake Go command.
+Rerun tests cover saved-report validation, stale/missing/ambiguous targets, fresh
+baselines, selection previews, new ID mappings, empty selections, source report
+preservation, and improved tests turning a previous missed result into killed.
 Renderer tests check complete frames, styles, clipping, elapsed-time updates, and
 resizing. Unix pseudo-terminal tests exercise live redraws during a blocked
 baseline, Ctrl-C, resizing, terminal initialization failure, empty/failed runs,

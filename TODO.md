@@ -65,10 +65,13 @@ checklist as work lands, checking items off after appropriate verification.
 
 ## Follow-up work
 
-- [ ] Select and rerun mutations by saved-run ID, file/operator, or missed outcome
-  — next; start with rerunning missed mutations from a saved run.
-- [ ] Rediscover and validate rerun targets against current source, reject stale
+- [x] Rerun completed missed mutations from a saved run with `--rerun-missed`;
+  preserve the source report and record old-to-new ID mappings.
+- [x] Rediscover and validate rerun targets against current source, reject stale
   or ambiguous matches, and require a fresh baseline.
+- [x] Test rerun report validation, source matching, previews, empty selections,
+  baseline failures, source preservation, and missed-to-killed results after test changes.
+- [ ] Extend focused reruns to individual saved IDs and operator selection.
 - [ ] Add interactive result filtering and diff/log browsing.
 - [ ] Add persistent per-mutation dismissals with required reasons and optional
   notes in repository-owned metadata; support inspecting, changing, and removing them.

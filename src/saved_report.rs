@@ -15,9 +15,10 @@ use crate::{
     mutation::{Mutation, OPERATOR_CATALOG_VERSION, Operator},
     process::CommandOutput,
     report::{ExecutionState, MutationResult, Outcome, RunStatus, Summary},
+    rerun::RerunProvenance,
 };
 
-const SCHEMA_VERSION: u32 = 1;
+pub(crate) const SCHEMA_VERSION: u32 = 1;
 
 #[derive(Serialize)]
 struct RunReport {
@@ -41,6 +42,8 @@ struct RunReport {
     baseline_timeout_seconds: u64,
     mutation_timeout_seconds: Option<f64>,
     planned_mutations: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rerun: Option<RerunProvenance>,
 }
 
 #[derive(Serialize)]
@@ -161,6 +164,7 @@ impl SavedReport {
                 baseline_timeout_seconds: config.baseline_timeout.get(),
                 mutation_timeout_seconds: config.timeout.map(|value| value.get() as f64),
                 planned_mutations: None,
+                rerun: None,
             },
             inventory: Inventory {
                 schema_version: SCHEMA_VERSION,
@@ -228,6 +232,7 @@ impl SavedReport {
         mutations: &[Mutation],
         workers: usize,
         timeout: Duration,
+        rerun: Option<&RerunProvenance>,
         cancellation: &Cancellation,
     ) -> Result<()> {
         ensure!(
@@ -275,6 +280,7 @@ impl SavedReport {
             })
             .collect();
         self.run.planned_mutations = Some(mutations.len());
+        self.run.rerun = rerun.cloned();
         self.run.workers = Some(workers);
         self.run.mutation_timeout_seconds = Some(timeout.as_secs_f64());
         self.flush()
@@ -439,6 +445,19 @@ impl SavedReport {
             self.run.duration_seconds,
             self.outcomes.summary
         );
+        if let Some(rerun) = &self.run.rerun {
+            text.push_str(&format!(
+                "Rerun: missed mutations from {} (checkpoint {})\n",
+                rerun.source_run.display(),
+                rerun.source_checkpoint
+            ));
+            for mapping in &rerun.mutations {
+                text.push_str(&format!(
+                    "  [{:06}] <- source [{:06}]\n",
+                    mapping.id, mapping.source_id
+                ));
+            }
+        }
         if let Some(planned) = self.run.planned_mutations {
             text.push_str(&format!(
                 "Reported: {}/{planned}\n",
@@ -568,6 +587,7 @@ mod tests {
             &mutations,
             2,
             Duration::from_secs(10),
+            None,
             &Cancellation::default(),
         )?;
         let inventory = fs::read(report.path().join("mutants.json"))?;
@@ -674,6 +694,7 @@ mod tests {
                     &mutations,
                     1,
                     Duration::from_secs(10),
+                    None,
                     &Cancellation::default()
                 )
                 .is_err()

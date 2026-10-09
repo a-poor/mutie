@@ -43,6 +43,8 @@ pub struct RunConfig {
     pub output_dir: PathBuf,
     pub verbose: bool,
     pub list: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rerun_missed: Option<PathBuf>,
     pub ui: UiMode,
 }
 
@@ -95,6 +97,33 @@ impl RunConfig {
             !root.starts_with(&output_dir),
             "the report directory must not be the module root or one of its ancestors"
         );
+        let rerun_missed = cli
+            .rerun_missed
+            .map(|path| {
+                ensure!(
+                    !path.as_os_str().is_empty(),
+                    "rerun_missed must not be empty"
+                );
+                let path = invocation
+                    .join(&path)
+                    .canonicalize()
+                    .with_context(|| format!("opening saved run {}", path.display()))?;
+                ensure!(
+                    path.is_dir(),
+                    "saved run {} is not a directory",
+                    path.display()
+                );
+                ensure!(
+                    !root.starts_with(&path),
+                    "the saved run directory must not be the module root or one of its ancestors"
+                );
+                ensure!(
+                    !output_dir.starts_with(&path),
+                    "the output directory must not be inside the saved run being rerun"
+                );
+                Ok(path)
+            })
+            .transpose()?;
         let config = Self {
             module_root: root,
             config_file,
@@ -121,6 +150,7 @@ impl RunConfig {
                 cli.verbose || file.verbose.unwrap_or(false)
             },
             list: cli.list,
+            rerun_missed,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
         for (name, timeout) in [
@@ -343,6 +373,7 @@ verbose = true
             "exclude = [1]",
             "verbose = 'yes'",
             "list = true",
+            "rerun_missed = 'previous-run'",
             "jobs =",
             "jobs = 1\njobs = 2",
         ] {

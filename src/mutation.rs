@@ -7,7 +7,7 @@ use std::{
 
 use anyhow::{Context, Result, ensure};
 use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tree_sitter::{Node, Parser};
 
@@ -15,7 +15,7 @@ use crate::cancellation::Cancellation;
 
 pub const OPERATOR_CATALOG_VERSION: u32 = 1;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Operator {
     ArithmeticReplace,
