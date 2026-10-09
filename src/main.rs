@@ -30,8 +30,8 @@ async fn main() -> Result<()> {
     let config = RunConfig::resolve(Cli::parse())?;
     let scope = Scope::new(&config.include, &config.exclude)?;
     let rerun = config
-        .rerun_missed
-        .as_deref()
+        .rerun
+        .as_ref()
         .map(rerun::RerunSelection::load)
         .transpose()?;
     let interactive = status::select(&config)?;
@@ -97,7 +97,12 @@ async fn execute(
     let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
     coordinator.line(format!("Snapshotting {}", root.display()));
     let mut excluded = vec![root.join(".mutie"), config.output_dir.clone()];
-    excluded.extend(config.rerun_missed.iter().cloned());
+    excluded.extend(
+        config
+            .rerun
+            .iter()
+            .map(|request| request.source_run.clone()),
+    );
     let snapshot =
         Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
     let baseline_workspace =
@@ -186,19 +191,39 @@ async fn execute(
                     .await
                     .context("rerun selection panicked")??;
             coordinator.line(format!(
-                "Selected {} previously missed mutations from {}",
+                "Selected {} mutations from {} ({})",
                 selected.len(),
-                provenance.source_run.display()
+                provenance.source_run.display(),
+                provenance.filter.description(),
             ));
             (selected, Some(provenance))
         }
         None => (mutations, None),
     };
     coordinator.line(format!("Found {} mutations", mutations.len()));
+    if mutations.is_empty() {
+        coordinator.line(match &rerun {
+            Some(provenance) => format!(
+                "No saved mutations matched the rerun selection: {}.",
+                provenance.filter.description()
+            ),
+            None => "No eligible mutations matched the selected scope.".to_owned(),
+        });
+    }
     if config.list {
-        for mutation in &mutations {
+        for (index, mutation) in mutations.iter().enumerate() {
             cancellation.check()?;
-            println!("{}", mutation.description());
+            if let Some(provenance) = &rerun {
+                println!(
+                    "[{:06}] (source [{:06}]) {} {}",
+                    index + 1,
+                    provenance.mutations[index].source_id,
+                    mutation.operator,
+                    mutation.description()
+                );
+            } else {
+                println!("{}", mutation.description());
+            }
         }
         return Ok(());
     }
@@ -216,11 +241,6 @@ async fn execute(
     )?;
     cancellation.check()?;
     if mutations.is_empty() {
-        coordinator.line(if rerun.is_some() {
-            "The saved run has no completed missed mutations to rerun."
-        } else {
-            "No eligible mutations matched the selected scope."
-        });
         return Ok(());
     }
     coordinator.emit(RunEvent::Phase(Phase::Mutations), cancellation)?;

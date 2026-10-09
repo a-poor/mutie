@@ -23,6 +23,7 @@ cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
 cargo run -- /path/to/go/module --output-dir ./mutation-reports
 cargo run -- /path/to/go/module --ui plain
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
+cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9,11
 ```
 
 The path defaults to the current directory and must contain `go.mod`. Glob
@@ -81,7 +82,8 @@ cargo run -- /path/to/go/module --clear-include --clear-exclude --list
 cargo run -- /path/to/go/module --clear-timeout --no-verbose
 ```
 
-`--list` and `--rerun-missed` are invocation-only. Listing uses the same
+`--list`, `--rerun`, `--rerun-missed`, `--id`, and `--operator` are invocation-only;
+they cannot be set in `mutie.toml`. Listing uses the same
 configuration and excludes the configured report directory from its snapshot,
 but creates no report directory or artifacts. An explicit `--output-dir` still
 conflicts with `--list`.
@@ -150,7 +152,7 @@ in an isolated copy caught four previously missed mutations. See the
 [validation notes](DESIGN.md#mvp-validation-evidence) for runtime, artifact sizes,
 terminal checks, and the limits of this small-project validation.
 
-## Rerun missed mutations
+## Focused reruns
 
 After improving tests, use a saved run directory to select just its completed
 `missed` mutations:
@@ -160,12 +162,37 @@ cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run --list
 ```
 
+Use `--rerun` to select mutations regardless of their previous outcome, and
+`--id` or `--operator` to narrow either rerun mode:
+
+```sh
+cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9,11
+cargo run -- /path/to/go/module --rerun /path/to/saved/run --operator arithmetic_replace,comparison_boundary --list
+cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run --id 9,11 --operator arithmetic_replace
+```
+
+IDs refer to the **source run's** inventory, not a fresh scan or an earlier run
+in a chain of reruns. They must be positive integers. Both filters accept repeated
+flags or comma-separated values; duplicate values select work only once.
+Multiple IDs or operators select any listed value within that filter. Combining
+IDs, operators, and missed-only selection takes their intersection. For example,
+`--rerun-missed RUN_DIR --id 9,11 --operator arithmetic_replace` selects only IDs
+9 or 11 that were missed arithmetic mutations. A valid ID excluded by another
+filter selects nothing; an unknown ID is an error even if other filters would
+exclude it. Operator names match the [saved operator catalog](#saved-reports).
+
+`--rerun` and `--rerun-missed` conflict. `--id` and `--operator` require one of
+them; operator filtering for a fresh scan is not implemented. With no filters,
+`--rerun` selects the entire saved inventory, including previously killed,
+timed-out, build-failed, error, pending, or interrupted mutations.
+
 `RUN_DIR` is relative to the invocation directory, or absolute. It must contain
 `run.json`, `mutants.json`, and `outcomes.json`; text lists, diffs, and logs are not
 selection inputs. Finalized failed or interrupted runs also work when their
-inventory is complete: only completed missed outcomes are selected, never pending
-or interrupted work. Running, incomplete, inconsistent, or incompatible reports
-are rejected before running Go or creating a new report.
+inventory is complete. `--rerun-missed` selects only completed missed outcomes;
+`--rerun` can retry unfinished work. Running, incomplete, inconsistent, or
+incompatible reports and invalid selectors are rejected before running Go or
+creating a new report.
 
 Execution always runs a fresh baseline, rediscovers mutations from the current
 snapshot, and validates every selected target before starting workers. Matching
@@ -178,19 +205,22 @@ Current include/exclude settings still apply; clear configured filters if needed
 
 The current module can be a moved or copied checkout. Current configuration,
 tests, worker count, and timeouts apply; old outcomes are never reused. Newly
-discovered mutations and previous killed/timeout/build-failed/error outcomes are
-not selected. With no missed outcomes, execution saves a completed empty run after
-baseline and discovery. `--list` previews and validates the selection without
-running tests or writing a report.
+discovered mutations are not added to the saved selection. If the filters match
+nothing, execution saves a completed empty run after baseline and discovery.
+`--list` previews and validates the selection without running tests or writing a
+report. Each preview row shows its new ID, source ID, operator, and source change;
+an empty preview prints an explicit message.
 
 Every execution creates a separate report. Once its inventory is published,
 `run.json` contains a `rerun` object with `source_run`, `source_checkpoint`,
-`source_status`, `selection: "missed"`, and `mutations` mapping each new `id` to its
-`source_id`. IDs are assigned in current discovery order. `summary.txt` includes
-the mapping too; `effective_config.rerun_missed` records the input path even if the
-baseline or matching fails. The source report is preserved, excluded from the
-snapshot, and cannot contain the new output directory. Selecting individual saved
-IDs or operators is still planned.
+`source_status`, `selection` (`"all"` or `"missed"`), optional `source_ids` and
+`operators` filters, and `mutations` mapping each new `id` to its `source_id`.
+Filters are deduplicated and sorted; new IDs follow current discovery order.
+`summary.txt` includes the filters and mapping too. `effective_config.rerun`
+records the source path, selection mode, and filters even if the baseline or
+matching fails. This replaces the earlier `effective_config.rerun_missed` path;
+previously saved reports remain usable. The source report is preserved, excluded
+from the snapshot, and cannot contain the new output directory.
 
 ## Saved reports
 
@@ -332,8 +362,10 @@ Configuration tests also cover defaults, explicit overrides, list clearing,
 invalid settings, path resolution, listing without reports, and saved effective
 settings using a fake Go command.
 Rerun tests cover saved-report validation, stale/missing/ambiguous targets, fresh
-baselines, selection previews, new ID mappings, empty selections, source report
-preservation, and improved tests turning a previous missed result into killed.
+baselines, ID/operator/outcome intersections, invalid selectors, selection
+previews, new ID mappings, empty selections, source report preservation, and
+improved tests turning a previous missed result into killed. The opt-in real-Go
+test also selects a killed and a missed mutation by ID and operator.
 Renderer tests check complete frames, styles, clipping, elapsed-time updates, and
 resizing, stable idle/busy rows, and results ordering. Progress tests cover partial
 output lines, interleaved packages, stale events after worker reuse, full capture

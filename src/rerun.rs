@@ -1,4 +1,4 @@
-//! Saved outcomes select work; only freshly discovered mutations can be executed.
+//! Saved IDs, operators, and outcomes select work; only freshly discovered mutations execute.
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     fs,
@@ -14,6 +14,76 @@ use crate::{
     report::{ExecutionState, Outcome, RunStatus},
     saved_report::SCHEMA_VERSION,
 };
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RerunMode {
+    All,
+    Missed,
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct RerunFilter {
+    pub selection: RerunMode,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub source_ids: Vec<usize>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub operators: Vec<Operator>,
+}
+
+impl RerunFilter {
+    pub fn new(
+        selection: RerunMode,
+        mut source_ids: Vec<usize>,
+        mut operators: Vec<Operator>,
+    ) -> Self {
+        source_ids.sort_unstable();
+        source_ids.dedup();
+        operators.sort_unstable();
+        operators.dedup();
+        Self {
+            selection,
+            source_ids,
+            operators,
+        }
+    }
+
+    pub fn description(&self) -> String {
+        let mut text = match self.selection {
+            RerunMode::All => "all saved mutations",
+            RerunMode::Missed => "completed missed mutations",
+        }
+        .to_owned();
+        if !self.source_ids.is_empty() {
+            text.push_str(&format!(
+                "; source IDs: {}",
+                self.source_ids
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ));
+        }
+        if !self.operators.is_empty() {
+            text.push_str(&format!(
+                "; operators: {}",
+                self.operators
+                    .iter()
+                    .map(ToString::to_string)
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            ));
+        }
+        text
+    }
+}
+
+#[derive(Clone, Debug, Serialize)]
+pub struct RerunRequest {
+    pub source_run: PathBuf,
+    #[serde(flatten)]
+    pub filter: RerunFilter,
+}
 
 // Read only the fields needed for selection. Older reports need not contain
 // effective configuration or presentation settings, and artifacts are never read.
@@ -85,7 +155,8 @@ pub struct RerunProvenance {
     pub source_run: PathBuf,
     pub source_checkpoint: u64,
     pub source_status: RunStatus,
-    pub selection: &'static str,
+    #[serde(flatten)]
+    pub filter: RerunFilter,
     pub mutations: Vec<MutationMapping>,
 }
 
@@ -101,12 +172,16 @@ pub struct RerunSelection {
 }
 
 impl RerunSelection {
-    pub fn load(directory: &Path) -> Result<Self> {
-        Self::read(directory)
-            .with_context(|| format!("loading missed mutations from {}", directory.display()))
+    pub fn load(request: &RerunRequest) -> Result<Self> {
+        Self::read(&request.source_run, &request.filter).with_context(|| {
+            format!(
+                "loading saved mutations from {}",
+                request.source_run.display()
+            )
+        })
     }
 
-    fn read(directory: &Path) -> Result<Self> {
+    fn read(directory: &Path, filter: &RerunFilter) -> Result<Self> {
         let run: SavedRun = read_json(directory, "run.json")?;
         let inventory: SavedInventory = read_json(directory, "mutants.json")?;
         let outcomes: SavedOutcomes = read_json(directory, "outcomes.json")?;
@@ -194,17 +269,27 @@ impl RerunSelection {
                 missed.insert(id);
             }
         }
+        // Validate IDs against the entire inventory before intersecting filters;
+        // an operator or outcome filter must never hide a mistyped ID.
+        for id in &filter.source_ids {
+            ensure!(
+                inventory_by_id.contains_key(id),
+                "unknown source mutation ID {id}"
+            );
+        }
         Ok(Self {
             provenance: RerunProvenance {
                 source_run: directory.to_owned(),
                 source_checkpoint: run.checkpoint,
                 source_status: run.status,
-                selection: "missed",
+                filter: filter.clone(),
                 mutations: Vec::new(),
             },
             targets: inventory_by_id
                 .into_values()
-                .filter(|m| missed.contains(&m.id))
+                .filter(|m| filter.selection == RerunMode::All || missed.contains(&m.id))
+                .filter(|m| filter.source_ids.is_empty() || filter.source_ids.contains(&m.id))
+                .filter(|m| filter.operators.is_empty() || filter.operators.contains(&m.operator))
                 .collect(),
         })
     }
@@ -227,7 +312,7 @@ impl RerunSelection {
             cancellation.check()?;
             let candidates = by_file.get(target.file.as_path()).with_context(|| {
                 format!(
-                    "missed mutation {} in {} is missing from current discovery (file removed, excluded, or inactive); no mutations were run",
+                    "saved mutation {} in {} is missing from current discovery (file removed, excluded, or inactive); no mutations were run",
                     target.id, target.file.display()
                 )
             })?;
@@ -235,25 +320,25 @@ impl RerunSelection {
                 candidates
                     .iter()
                     .all(|(_, m)| m.file.fingerprint == target.source_fingerprint),
-                "missed mutation {} in {} is stale: source fingerprint changed; run a new full scan; no mutations were run",
+                "saved mutation {} in {} is stale: source fingerprint changed; run a new full scan; no mutations were run",
                 target.id,
                 target.file.display()
             );
             let mut matches = candidates.iter().filter(|(_, m)| target.matches(m));
             let (index, _) = matches.next().with_context(|| {
                 format!(
-                    "missed mutation {} in {} no longer matches a discovered mutation; no mutations were run",
+                    "saved mutation {} in {} no longer matches a discovered mutation; no mutations were run",
                     target.id, target.file.display()
                 )
             })?;
             ensure!(
                 matches.next().is_none(),
-                "ambiguous match for missed mutation {}; no mutations were run",
+                "ambiguous match for saved mutation {}; no mutations were run",
                 target.id
             );
             ensure!(
                 selected.insert(*index, target.id).is_none(),
-                "ambiguous saved selection: multiple missed IDs match the same mutation in {}; no mutations were run",
+                "ambiguous saved selection: multiple source IDs match the same mutation in {}; no mutations were run",
                 target.file.display()
             );
         }
@@ -353,7 +438,20 @@ mod tests {
         }
 
         fn select(&self, current: Vec<Mutation>) -> Result<(Vec<Mutation>, RerunProvenance)> {
-            RerunSelection::load(self.directory.path())?.select(current, &Cancellation::default())
+            RerunSelection::load(&self.request(RerunMode::Missed, vec![], vec![]))?
+                .select(current, &Cancellation::default())
+        }
+
+        fn request(
+            &self,
+            mode: RerunMode,
+            ids: Vec<usize>,
+            operators: Vec<Operator>,
+        ) -> RerunRequest {
+            RerunRequest {
+                source_run: self.directory.path().to_owned(),
+                filter: RerunFilter::new(mode, ids, operators),
+            }
         }
     }
 
@@ -486,13 +584,59 @@ mod tests {
         ] {
             let fixture = Fixture::new()?;
             fixture.edit(file, pointer, value)?;
-            let error = RerunSelection::load(fixture.directory.path())
+            let error = RerunSelection::load(&fixture.request(RerunMode::Missed, vec![], vec![]))
                 .err()
                 .context("invalid report accepted")?;
             assert!(
                 format!("{error:#}").contains(expected),
                 "{file} {pointer}: {error:#}"
             );
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn explicit_ids_can_select_every_outcome_and_unfinished_work_from_finalized_runs() -> Result<()>
+    {
+        let fixture = Fixture::new()?;
+        for (state, outcome) in [
+            ("completed", json!("killed")),
+            ("completed", json!("missed")),
+            ("completed", json!("timeout")),
+            ("completed", json!("build_failed")),
+            ("completed", json!("error")),
+            ("pending", Value::Null),
+            ("interrupted", Value::Null),
+        ] {
+            fixture.edit("run.json", "/status", json!("interrupted"))?;
+            fixture.edit("outcomes.json", "/status", json!("interrupted"))?;
+            fixture.edit("outcomes.json", "/mutations/0/state", json!(state))?;
+            fixture.edit("outcomes.json", "/mutations/0/outcome", outcome.clone())?;
+            for mode in [RerunMode::All, RerunMode::Missed] {
+                let request = fixture.request(mode, vec![1, 1], vec![Operator::BooleanFlip]);
+                let (selected, provenance) = RerunSelection::load(&request)?
+                    .select(fixture.mutations.clone(), &Cancellation::default())?;
+                let expected = usize::from(mode == RerunMode::All || outcome == json!("missed"));
+                assert_eq!(selected.len(), expected, "{state} {outcome} {mode:?}");
+                assert_eq!(provenance.filter.source_ids, [1]);
+                if expected == 1 {
+                    assert_eq!(selected[0].range, fixture.mutations[0].range);
+                    assert_eq!(provenance.mutations[0].source_id, 1);
+                }
+            }
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn unknown_ids_are_rejected_even_if_other_filters_would_select_nothing() -> Result<()> {
+        let fixture = Fixture::new()?;
+        for id in [0, 3, usize::MAX] {
+            let request = fixture.request(RerunMode::Missed, vec![id], vec![Operator::LogicalSwap]);
+            let error = RerunSelection::load(&request)
+                .err()
+                .context("unknown ID accepted")?;
+            assert!(format!("{error:#}").contains(&format!("unknown source mutation ID {id}")));
         }
         Ok(())
     }

@@ -9,7 +9,10 @@ use std::{
 use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
 
-use crate::cli::{Cli, Lang, UiMode};
+use crate::{
+    cli::{Cli, Lang, UiMode},
+    rerun::{RerunFilter, RerunMode, RerunRequest},
+};
 
 /// Parsed file values have no defaults; only explicitly supplied CLI values
 /// replace them. Invocation-only options such as `list` are not file settings.
@@ -44,7 +47,7 @@ pub struct RunConfig {
     pub verbose: bool,
     pub list: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub rerun_missed: Option<PathBuf>,
+    pub rerun: Option<RerunRequest>,
     pub ui: UiMode,
 }
 
@@ -97,12 +100,18 @@ impl RunConfig {
             !root.starts_with(&output_dir),
             "the report directory must not be the module root or one of its ancestors"
         );
-        let rerun_missed = cli
-            .rerun_missed
+        let selection = if cli.rerun_missed.is_some() {
+            RerunMode::Missed
+        } else {
+            RerunMode::All
+        };
+        let rerun = cli
+            .rerun
+            .or(cli.rerun_missed)
             .map(|path| {
                 ensure!(
                     !path.as_os_str().is_empty(),
-                    "rerun_missed must not be empty"
+                    "saved run path must not be empty"
                 );
                 let path = invocation
                     .join(&path)
@@ -121,7 +130,14 @@ impl RunConfig {
                     !output_dir.starts_with(&path),
                     "the output directory must not be inside the saved run being rerun"
                 );
-                Ok(path)
+                Ok(RerunRequest {
+                    source_run: path,
+                    filter: RerunFilter::new(
+                        selection,
+                        cli.ids.into_iter().map(NonZeroUsize::get).collect(),
+                        cli.operators,
+                    ),
+                })
             })
             .transpose()?;
         let config = Self {
@@ -150,7 +166,7 @@ impl RunConfig {
                 cli.verbose || file.verbose.unwrap_or(false)
             },
             list: cli.list,
-            rerun_missed,
+            rerun,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
         for (name, timeout) in [
@@ -374,6 +390,9 @@ verbose = true
             "verbose = 'yes'",
             "list = true",
             "rerun_missed = 'previous-run'",
+            "rerun = 'previous-run'",
+            "ids = [1]",
+            "operators = ['boolean_flip']",
             "jobs =",
             "jobs = 1\njobs = 2",
         ] {
@@ -401,6 +420,61 @@ verbose = true
             vec!["--baseline-timeout", "0"],
         ] {
             assert!(Cli::try_parse_from(["mutie"].into_iter().chain(args)).is_err());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn rerun_filters_require_a_source_and_resolve_to_normalized_invocation_settings() -> Result<()>
+    {
+        use crate::mutation::Operator;
+
+        for args in [
+            vec!["--id", "1"],
+            vec!["--operator", "boolean_flip"],
+            vec!["--rerun", "a", "--rerun-missed", "b"],
+            vec!["--rerun", "a", "--id", "0"],
+            vec!["--rerun", "a", "--id", "-1"],
+            vec!["--rerun", "a", "--id", "1,nope"],
+            vec!["--rerun", "a", "--id", "1,"],
+            vec!["--rerun", "a", "--operator", "unknown"],
+        ] {
+            assert!(
+                Cli::try_parse_from(["mutie"].into_iter().chain(args.clone())).is_err(),
+                "{args:?}"
+            );
+        }
+        let temp = project()?;
+        let source = temp.path().join("previous");
+        fs::create_dir(&source)?;
+        for (arg, selection) in [
+            ("--rerun", RerunMode::All),
+            ("--rerun-missed", RerunMode::Missed),
+        ] {
+            let config = resolve(
+                temp.path(),
+                &[
+                    arg,
+                    "previous",
+                    "--id",
+                    "3,1",
+                    "--id",
+                    "3",
+                    "--operator",
+                    "boolean_flip,arithmetic_replace",
+                    "--operator",
+                    "boolean_flip",
+                ],
+            )?;
+            let rerun = config.rerun.context("missing rerun request")?;
+            assert_eq!(rerun.source_run, source);
+            assert_eq!(rerun.filter.selection, selection);
+            assert_eq!(rerun.filter.source_ids, [1, 3]);
+            assert_eq!(
+                rerun.filter.operators,
+                [Operator::ArithmeticReplace, Operator::BooleanFlip]
+            );
+            assert!(!config.output_dir.exists());
         }
         Ok(())
     }

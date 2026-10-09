@@ -3,6 +3,8 @@ use std::{num::NonZeroU64, num::NonZeroUsize, path::PathBuf};
 use clap::{Parser, ValueEnum};
 use serde::{Deserialize, Serialize};
 
+use crate::mutation::Operator;
+
 #[derive(Debug, Parser)]
 #[command(
     version,
@@ -53,9 +55,31 @@ pub struct Cli {
     #[arg(long)]
     pub list: bool,
 
+    /// Rerun saved mutations regardless of their previous outcome
+    #[arg(long, value_name = "RUN_DIR", group = "rerun_source")]
+    pub rerun: Option<PathBuf>,
+
     /// Rerun only completed missed mutations from a saved run directory
-    #[arg(long, value_name = "RUN_DIR")]
+    #[arg(long, value_name = "RUN_DIR", group = "rerun_source")]
     pub rerun_missed: Option<PathBuf>,
+
+    /// Select these source-run mutation IDs (repeatable or comma-separated)
+    #[arg(
+        long = "id",
+        value_name = "ID",
+        value_delimiter = ',',
+        requires = "rerun_source"
+    )]
+    pub ids: Vec<NonZeroUsize>,
+
+    /// Select these saved operators (repeatable or comma-separated; intersects --id)
+    #[arg(
+        long = "operator",
+        value_enum,
+        value_delimiter = ',',
+        requires = "rerun_source"
+    )]
+    pub operators: Vec<Operator>,
 
     /// Parent directory for saved runs (default: <module>/.mutie)
     #[arg(long, value_name = "DIR", conflicts_with = "list")]

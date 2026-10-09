@@ -126,6 +126,48 @@ fn go_workflow() {
     assert!(summary.contains("missed.go:4:"));
     let first_json = fs::read(first_directory.join("run.json")).unwrap();
 
+    // Select a killed and a missed arithmetic mutation by their source IDs.
+    // The build failure and timeout from the same report must not run again.
+    let focused = run(
+        &root,
+        &[
+            "--rerun",
+            first_directory.to_str().unwrap(),
+            "--id",
+            "3,1",
+            "--operator",
+            "arithmetic_replace",
+            "--jobs",
+            "2",
+            "--timeout",
+            "5",
+        ],
+    );
+    assert!(
+        stdout(&focused)
+            .contains("2 mutations: 1 killed, 1 missed, 0 timed out, 0 failed to compile")
+    );
+    let (_, focused_metadata, focused_inventory, focused_outcomes) = saved_report(&focused);
+    assert_eq!(focused_inventory["mutations"].as_array().unwrap().len(), 2);
+    assert_eq!(focused_outcomes["baseline"]["outcome"], "passed");
+    assert_eq!(
+        focused_metadata["rerun"]["mutations"],
+        serde_json::json!([
+            {"id": 1, "source_id": 1}, {"id": 2, "source_id": 3}
+        ])
+    );
+    let preview = stdout(&run(
+        &root,
+        &[
+            "--rerun-missed",
+            first_directory.to_str().unwrap(),
+            "--operator",
+            "arithmetic_replace",
+            "--list",
+        ],
+    ));
+    assert!(preview.contains("Found 1 mutations") && preview.contains("(source [000003])"));
+
     // Multiple mutations on one worker also prove that test side effects reset.
     let custom = root.join("artifacts/reports");
     fs::create_dir_all(&custom).unwrap();

@@ -25,7 +25,7 @@ The current implementation supports one Go module, selected through its `go.mod`
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
 executes them in isolated worker copies. It already has file filters, configurable
 workers and timeouts, repository configuration, live and plain terminal output,
-complete mutation inventories, saved reports, missed-only reruns, and coordinated
+complete mutation inventories, saved reports, focused reruns, and coordinated
 cancellation with retained command diagnostics.
 
 The fixture and tests exercise killed and missed mutations, compilation failures,
@@ -34,8 +34,8 @@ results. MVP validation on `godotenv` v1.5.1 also demonstrates actionable test g
 and practical runtime on a small library. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
-The prototype supports rerunning missed outcomes from a saved run; selecting
-individual saved IDs or operators and interactive result browsing remain planned.
+The prototype supports rerunning saved mutations by ID, operator, or missed
+outcome. Interactive result browsing remains planned.
 Rust appears in the CLI language enum but is not implemented.
 
 ## Minimal MVP
@@ -364,7 +364,7 @@ Keep the implementation modular without building a plugin framework up front.
 | Coordinator | Baseline gate, mutation inventory, scheduling, cancellation, and authoritative run state. |
 | Workspace and process runner | Snapshot/copy/reset, apply edits, execute commands, enforce deadlines, and capture output. |
 | Report writer | Persist inventory, results, metadata, diffs, and logs. |
-| Rerun selection | Validate saved reports and match missed outcomes to current discovery. |
+| Rerun selection | Validate saved reports, intersect ID/operator/outcome filters, and match selected targets to current discovery. |
 | Terminal presentation | Show state and forward user control requests. |
 
 `coordinator.rs` owns a small event/state boundary: phase changes, command results,
@@ -384,30 +384,43 @@ working implementation.
 
 ### 1. Focused reruns and richer inspection
 
-`--rerun-missed RUN_DIR` now selects completed missed outcomes from a finalized
-saved run. The reader validates schema/catalog versions, final status, matching
+`--rerun RUN_DIR` selects a finalized saved inventory, regardless of previous
+outcome; `--rerun-missed RUN_DIR` restricts it to completed missed outcomes.
+Repeatable or comma-separated `--id` and `--operator` filters narrow either mode.
+IDs always belong to the immediate source run. Values within a filter form a
+union; different filters intersect. Normalize and deduplicate filters, reject
+unknown IDs before applying other filters, and reject unknown operators during
+CLI parsing. The source options conflict; filters require a source. All rerun
+settings are invocation-only.
+
+The reader validates schema/catalog versions, final status, matching
 checkpoints, a complete inventory, counts, IDs, source paths, and execution states
 before creating a new run. Finalized failed/interrupted reports are usable when
-they have a complete inventory; pending/interrupted executions are not selected.
+they have a complete inventory; general reruns can retry pending/interrupted
+executions, while missed-only reruns exclude them.
 The prior module root need not match the current checkout's location.
 
 Execution uses current settings and the ordinary snapshot, fresh baseline,
 discovery, and worker lifecycle. Scope filters apply before matching; every saved
-missed target must match uniquely or the run fails before any mutation executes.
+selected target must match uniquely or the run fails before any mutation executes.
 New mutations are not implicitly added. `--list` validates and previews without a
-baseline or report, as for normal listing. Empty selections produce a completed
-empty run after baseline and discovery.
+baseline or report, showing new IDs, source IDs, operators, and descriptions.
+Empty selections print an explicit message and produce a completed empty run
+after baseline and discovery when executing.
 
 New reports preserve the source run. After inventory publication, `run.json.rerun`
-records the source path/checkpoint/status and old-to-new ID mapping, also shown in
-the text summary. The source path is recorded in effective configuration even if
-execution fails before inventory publication. Snapshot copying excludes the source
-run directory; output paths inside that run are rejected. The report and operator
+records the source path/checkpoint/status, selection mode (`all` or `missed`),
+optional normalized `source_ids` and `operators` filters, and old-to-new ID
+mapping. The text summary includes the filters and mapping. The full request is
+recorded in `effective_config.rerun` even if execution fails before inventory
+publication; it replaces the earlier `effective_config.rerun_missed` path field.
+Reading prior reports does not depend on either effective configuration format.
+Snapshot copying excludes the source run directory; output paths inside that run
+are rejected. The report and operator
 catalog versions remain unchanged during local development.
 
-Extend selection to individual saved IDs and operators, and add interactive
-diff/log browsing on top of the same report and run-state model. A prior report
-supplies a selection, not proof that an old result remains valid. More flexible
+Add interactive diff/log browsing on top of the same report and run-state model.
+A prior report supplies a selection, not proof that an old result remains valid. More flexible
 matching across source edits needs an explicit policy and validation before it
 can replace the current strict identity check.
 
@@ -586,7 +599,8 @@ on `i > 0`. Build failures included two invalid string-subtraction mutations and
 one contradictory condition rejected by Go vet. These observations support
 focused reruns and clearer inspection before adding more mutation operators.
 
-Missed-only reruns now complete this tested feedback loop. Richer result review
-and selection remain workflow improvements. Performance tuning and
-report-retention decisions need larger-project measurements; this validation
+Missed-only reruns complete this tested feedback loop. Focused ID/operator reruns
+are additionally covered by deterministic selection tests and the real-Go
+fixture; interactive result review remains a workflow improvement. Performance
+tuning and report-retention decisions need larger-project measurements; this validation
 establishes the small-project workflow, not general scaling claims.

@@ -6,6 +6,7 @@ use std::{
 };
 
 use anyhow::{Context, Result, ensure};
+use clap::ValueEnum;
 use globset::{GlobBuilder, GlobSet, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -15,8 +16,9 @@ use crate::cancellation::Cancellation;
 
 pub const OPERATOR_CATALOG_VERSION: u32 = 1;
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize, ValueEnum)]
 #[serde(rename_all = "snake_case")]
+#[value(rename_all = "snake_case")]
 pub enum Operator {
     ArithmeticReplace,
     ComparisonInvert,
@@ -24,6 +26,12 @@ pub enum Operator {
     LogicalSwap,
     BooleanFlip,
     NegationRemove,
+}
+
+impl std::fmt::Display for Operator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.to_possible_value().unwrap().get_name())
+    }
 }
 
 pub struct Scope {

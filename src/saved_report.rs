@@ -447,7 +447,8 @@ impl SavedReport {
         );
         if let Some(rerun) = &self.run.rerun {
             text.push_str(&format!(
-                "Rerun: missed mutations from {} (checkpoint {})\n",
+                "Rerun: {} from {} (checkpoint {})\n",
+                rerun.filter.description(),
                 rerun.source_run.display(),
                 rerun.source_checkpoint
             ));

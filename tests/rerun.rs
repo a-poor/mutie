@@ -74,12 +74,280 @@ printf '{"Action":"pass","Package":"p"}\n'
         report_path(&output)
     }
 
+    fn with_operators() -> Self {
+        let fixture = Self::new();
+        fs::write(fixture.root.join("c.go"), "package p\nvar c = 1 + 2\n").unwrap();
+        fixture
+    }
+
     fn reset_calls(&self) {
         fs::write(self.temp.path().join("calls"), "").unwrap();
     }
 
     fn calls(&self) -> String {
         fs::read_to_string(self.temp.path().join("calls")).unwrap()
+    }
+}
+
+#[test]
+fn focused_ids_preview_and_execute_once_with_source_mappings_and_filters() {
+    let fixture = Fixture::with_operators();
+    let original = fixture.first_run();
+    let original_files: Vec<_> = ["run.json", "mutants.json", "outcomes.json", "summary.txt"]
+        .into_iter()
+        .map(|name| (name, fs::read(original.join(name)).unwrap()))
+        .collect();
+    let sources: Vec<_> = ["a.go", "b.go", "c.go"]
+        .into_iter()
+        .map(|name| (name, fs::read(fixture.root.join(name)).unwrap()))
+        .collect();
+    let args = [
+        "--rerun",
+        original.to_str().unwrap(),
+        "--id",
+        "3,1",
+        "--id",
+        "3",
+        "--operator",
+        "boolean_flip,arithmetic_replace",
+        "--operator",
+        "boolean_flip",
+    ];
+    fixture.reset_calls();
+    let preview = success(&fixture.run(&[args.as_slice(), &["--list"]].concat()));
+    assert!(
+        preview.contains("[000001] (source [000001]) boolean_flip a.go:"),
+        "{preview}"
+    );
+    assert!(
+        preview.contains("[000002] (source [000003]) arithmetic_replace c.go:"),
+        "{preview}"
+    );
+    assert!(!preview.contains("b.go:") && !preview.contains("Saving report"));
+    assert_eq!(fixture.calls(), "list -json ./...\n");
+    assert_eq!(
+        fs::read_dir(fixture.root.join(".mutie")).unwrap().count(),
+        1
+    );
+
+    fixture.reset_calls();
+    let output = fixture.run(&args);
+    assert!(success(&output).contains("2 mutations: 1 killed, 1 missed"));
+    let current = report_path(&output);
+    assert!(
+        fixture
+            .calls()
+            .starts_with("test -json -count=1 -timeout=0 ./...\nlist -json ./...\n")
+    );
+    assert_eq!(
+        fixture
+            .calls()
+            .lines()
+            .filter(|line| line.starts_with("test "))
+            .count(),
+        3
+    );
+    let metadata = read(&current, "run.json");
+    let request = json!({"source_run": original, "selection": "all", "source_ids": [1,3],
+        "operators": ["arithmetic_replace", "boolean_flip"]});
+    assert_eq!(metadata["effective_config"]["rerun"], request);
+    for field in ["source_run", "selection", "source_ids", "operators"] {
+        assert_eq!(metadata["rerun"][field], request[field]);
+    }
+    assert_eq!(
+        metadata["rerun"]["source_checkpoint"],
+        read(&original, "run.json")["checkpoint"]
+    );
+    assert_eq!(
+        metadata["rerun"]["mutations"],
+        json!([{"id":1,"source_id":1},{"id":2,"source_id":3}])
+    );
+    assert_eq!(
+        read(&current, "outcomes.json")["baseline"]["outcome"],
+        "passed"
+    );
+    let inventory = read(&current, "mutants.json");
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 2);
+    assert_eq!(inventory["mutations"][1]["file"], "c.go");
+    let summary = fs::read_to_string(current.join("summary.txt")).unwrap();
+    assert!(summary.contains("source IDs: 1, 3"));
+    assert!(summary.contains("operators: arithmetic_replace, boolean_flip"));
+    assert!(summary.contains("[000002] <- source [000003]"));
+    for (name, bytes) in original_files {
+        assert_eq!(fs::read(original.join(name)).unwrap(), bytes);
+    }
+    for (name, bytes) in sources {
+        assert_eq!(fs::read(fixture.root.join(name)).unwrap(), bytes);
+    }
+    let repeated = fixture.run(&["--rerun", current.to_str().unwrap(), "--id", "2"]);
+    assert!(success(&repeated).contains("1 mutations: 0 killed, 1 missed"));
+    assert_eq!(
+        read(&report_path(&repeated), "run.json")["rerun"]["mutations"],
+        json!([{"id":1,"source_id":2}])
+    );
+}
+
+#[test]
+fn operator_id_and_missed_filters_intersect_and_empty_selections_are_explicit() {
+    let fixture = Fixture::with_operators();
+    let original = fixture.first_run();
+    for (mode, filters, files) in [
+        ("--rerun", vec![], vec!["a.go", "b.go", "c.go"]),
+        (
+            "--rerun",
+            vec!["--operator", "boolean_flip"],
+            vec!["a.go", "b.go"],
+        ),
+        (
+            "--rerun",
+            vec!["--operator", "arithmetic_replace"],
+            vec!["c.go"],
+        ),
+        (
+            "--rerun-missed",
+            vec!["--operator", "boolean_flip"],
+            vec!["b.go"],
+        ),
+        (
+            "--rerun-missed",
+            vec!["--id", "1,2", "--operator", "boolean_flip"],
+            vec!["b.go"],
+        ),
+        ("--rerun-missed", vec!["--id", "1"], vec![]),
+        ("--rerun", vec!["--operator", "logical_swap"], vec![]),
+    ] {
+        fixture.reset_calls();
+        let mut args = vec![mode, original.to_str().unwrap(), "--list"];
+        args.extend(filters);
+        let text = success(&fixture.run(&args));
+        assert!(
+            text.contains(&format!("Found {} mutations", files.len())),
+            "{text}"
+        );
+        for name in ["a.go", "b.go", "c.go"] {
+            assert_eq!(
+                text.contains(&format!("{name}:")),
+                files.contains(&name),
+                "{text}"
+            );
+        }
+        if files.is_empty() {
+            assert!(text.contains("No saved mutations matched the rerun selection"));
+        }
+        assert_eq!(fixture.calls(), "list -json ./...\n");
+    }
+    assert_eq!(
+        fs::read_dir(fixture.root.join(".mutie")).unwrap().count(),
+        1
+    );
+    fixture.reset_calls();
+    let output = fixture.run(&[
+        "--rerun",
+        original.to_str().unwrap(),
+        "--id",
+        "1",
+        "--operator",
+        "arithmetic_replace",
+    ]);
+    assert!(success(&output).contains("No saved mutations matched the rerun selection"));
+    let current = report_path(&output);
+    assert_eq!(read(&current, "run.json")["status"], "completed");
+    assert_eq!(read(&current, "run.json")["rerun"]["mutations"], json!([]));
+    assert_eq!(read(&current, "mutants.json")["mutations"], json!([]));
+    assert_eq!(
+        read(&current, "outcomes.json")["baseline"]["outcome"],
+        "passed"
+    );
+    assert_eq!(fixture.calls().lines().count(), 2);
+}
+
+#[test]
+fn focused_reruns_reject_invalid_selectors_and_preserve_validation_and_failure_metadata() {
+    let fixture = Fixture::new();
+    let original = fixture.first_run();
+    for args in [
+        vec![
+            "--rerun",
+            original.to_str().unwrap(),
+            "--id",
+            "99",
+            "--operator",
+            "logical_swap",
+        ],
+        vec!["--rerun-missed", original.to_str().unwrap(), "--id", "1,99"],
+        vec!["--rerun", original.to_str().unwrap(), "--operator", "typo"],
+        vec![
+            "--rerun",
+            original.to_str().unwrap(),
+            "--rerun-missed",
+            original.to_str().unwrap(),
+        ],
+        vec!["--id", "1"],
+    ] {
+        fixture.reset_calls();
+        let output = fixture.run(&args);
+        assert!(!output.status.success(), "{args:?}");
+        assert!(fixture.calls().is_empty());
+        assert_eq!(
+            fs::read_dir(fixture.root.join(".mutie")).unwrap().count(),
+            1
+        );
+    }
+    let args = [
+        "--rerun",
+        original.to_str().unwrap(),
+        "--id",
+        "1",
+        "--operator",
+        "boolean_flip",
+    ];
+    fs::write(fixture.root.join("broken_test.go"), "package p\n").unwrap();
+    fixture.reset_calls();
+    let output = fixture.run(&args);
+    assert!(!output.status.success());
+    assert_eq!(fixture.calls(), "test -json -count=1 -timeout=0 ./...\n");
+    let metadata = read(&report_path(&output), "run.json");
+    assert_eq!(metadata["status"], "failed");
+    assert_eq!(
+        metadata["effective_config"]["rerun"],
+        json!({"source_run": original,
+        "selection": "all", "source_ids": [1], "operators": ["boolean_flip"]})
+    );
+    fs::remove_file(fixture.root.join("broken_test.go")).unwrap();
+
+    // Unselected files can change; selected files still require exact identity.
+    fs::write(
+        fixture.root.join("c.go"),
+        "// changed\npackage p\nvar c = true\n",
+    )
+    .unwrap();
+    let listing = [args.as_slice(), &["--list"]].concat();
+    success(&fixture.run(&listing));
+    fs::write(
+        fixture.root.join("a.go"),
+        "// changed\npackage p\nvar a = true\n",
+    )
+    .unwrap();
+    for excluded in [false, true] {
+        fixture.reset_calls();
+        let mut args = args.to_vec();
+        if excluded {
+            args.extend(["--exclude", "a.go"]);
+        }
+        let output = fixture.run(&args);
+        assert!(!output.status.success());
+        assert!(
+            String::from_utf8_lossy(&output.stderr).contains(if excluded {
+                "missing"
+            } else {
+                "stale"
+            })
+        );
+        assert_eq!(fixture.calls().lines().count(), 2);
+        assert_eq!(
+            read(&report_path(&output), "outcomes.json")["mutations"],
+            json!([])
+        );
     }
 }
 
@@ -264,7 +532,7 @@ fn invalid_report_fails_before_go_or_report_creation_and_empty_selection_is_expl
     let original = report_path(&output);
     fixture.reset_calls();
     let output = fixture.run(&["--rerun-missed", original.to_str().unwrap()]);
-    assert!(success(&output).contains("no completed missed mutations"));
+    assert!(success(&output).contains("No saved mutations matched the rerun selection"));
     let current = report_path(&output);
     assert_eq!(read(&current, "mutants.json")["mutations"], json!([]));
     assert_eq!(read(&current, "run.json")["status"], "completed");

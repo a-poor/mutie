@@ -89,7 +89,10 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Add terminal regression coverage with a pre-existing prompt and output;
   verify preservation through normal completion, cancellation, and resizing,
   including narrow/short terminals and worker views taller than the screen.
-- [ ] Extend focused reruns to individual saved IDs and operator selection.
+- [x] Extend focused reruns to individual saved IDs and operator selection.
+- [x] Verify filter intersections, duplicate/invalid selectors, previews, empty
+  selections, source validation, and report mappings; exercise focused reruns
+  against the real-Go fixture with a fresh baseline.
 - [ ] Add interactive result filtering and diff/log browsing.
 - [ ] Add persistent per-mutation dismissals with required reasons and optional
   notes in repository-owned metadata; support inspecting, changing, and removing them.
