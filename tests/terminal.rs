@@ -62,6 +62,18 @@ fi
 if grep -q false code.go; then
     printf '{"Action":"output","Output":"worker diagnostic\\n"}\n'
     touch "$STATE/worker.ready"
+    if [ "$MODE" = phases ]; then
+        printf '{"Action":"build-output","ImportPath":"p","Output":"compiler diagnostic\\n"}\n'
+        touch "$STATE/building.ready"
+        while [ ! -f "$STATE/building.release" ]; do sleep 0.02; done
+        printf '{"Action":"start","Package":"p"}\n'
+        touch "$STATE/testing.ready"
+        while [ ! -f "$STATE/testing.release" ]; do sleep 0.02; done
+        if grep -q 'b = false' code.go; then
+            while [ ! -f "$STATE/last.release" ]; do sleep 0.02; done
+        fi
+        printf '{"Action":"pass","Package":"p"}\n'
+    fi
     if [ "$MODE" = cancel ]; then sleep 30; else sleep 0.15; fi
 else
     printf '{"Action":"output","Output":"baseline diagnostic\\n"}\n'
@@ -200,6 +212,42 @@ fi
         }
     }
 
+    fn resize(&mut self, rows: u16, columns: u16) {
+        let size = libc::winsize {
+            ws_row: rows,
+            ws_col: columns,
+            ws_xpixel: 0,
+            ws_ypixel: 0,
+        };
+        // SAFETY: resize the owned terminal with a valid winsize pointer.
+        assert_eq!(
+            unsafe { libc::ioctl(self.master.as_raw_fd(), libc::TIOCSWINSZ, &size) },
+            0
+        );
+    }
+
+    fn wait_for_full_frame(&mut self, expected: &str) {
+        let deadline = Instant::now() + Duration::from_secs(10);
+        let mut width = 100;
+        loop {
+            // Resizing requests a complete frame, allowing text assertions
+            // without interpreting Ratatui's incremental cursor movements.
+            width = if width == 100 { 110 } else { 100 };
+            self.resize(24, width);
+            let start = self.output.len();
+            let time = Instant::now();
+            self.until(|_| time.elapsed() >= Duration::from_millis(150));
+            if String::from_utf8_lossy(&self.output[start..]).contains(expected) {
+                return;
+            }
+            assert!(
+                Instant::now() < deadline,
+                "missing {expected:?}: {}",
+                String::from_utf8_lossy(&self.output)
+            );
+        }
+    }
+
     fn finish(&mut self) -> ExitStatus {
         let deadline = Instant::now() + Duration::from_secs(10);
         loop {
@@ -319,6 +367,41 @@ fn live_view_redraws_while_baseline_waits_and_restores_after_resize_and_success(
     fs::write(session.state.join("release"), "").unwrap();
     assert!(session.finish().success());
     session.assert_restored(true);
+    assert_eq!(session.report("outcomes.json")["summary"]["missed"], 4);
+}
+
+#[test]
+fn live_worker_phases_and_idle_rows_arrive_before_completion() {
+    let mut session = Session::start("phases", "interactive", false);
+    session.until(|s| s.state.join("building.ready").exists());
+    session.wait_for_full_frame("building");
+    assert_eq!(session.report("outcomes.json")["summary"]["missed"], 0);
+    fs::write(session.state.join("building.release"), "").unwrap();
+    session.until(|s| s.state.join("testing.ready").exists());
+    session.wait_for_full_frame("testing");
+    assert_eq!(session.report("outcomes.json")["summary"]["missed"], 0);
+    fs::write(session.state.join("testing.release"), "").unwrap();
+    session.until(|s| s.report("outcomes.json")["summary"]["missed"] == 3);
+    session.wait_for_full_frame("worker 1 idle");
+    assert_eq!(
+        session.report("outcomes.json")["mutations"][1]["state"],
+        "running"
+    );
+    assert!(!String::from_utf8_lossy(&session.output).contains("compiler diagnostic"));
+    fs::write(session.state.join("last.release"), "").unwrap();
+    assert!(session.finish().success());
+    session.assert_restored(true);
+    let directory = fs::read_dir(session.root.join(".mutie"))
+        .unwrap()
+        .next()
+        .unwrap()
+        .unwrap()
+        .path();
+    assert!(
+        fs::read_to_string(directory.join("logs/000002.stdout.jsonl"))
+            .unwrap()
+            .contains("compiler diagnostic")
+    );
     assert_eq!(session.report("outcomes.json")["summary"]["missed"], 4);
 }
 

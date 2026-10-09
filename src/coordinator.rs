@@ -62,6 +62,43 @@ pub enum RunEvent<'a> {
         worker: usize,
         result: &'a MutationResult,
     },
+    Progress(WorkerProgress),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum WorkerPhase {
+    Preparing,
+    Running,
+    Building,
+    Testing,
+}
+
+impl WorkerPhase {
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Preparing => "preparing",
+            Self::Running => "running",
+            Self::Building => "building",
+            Self::Testing => "testing",
+        }
+    }
+}
+
+impl From<go::TestPhase> for WorkerPhase {
+    fn from(phase: go::TestPhase) -> Self {
+        match phase {
+            go::TestPhase::Running => Self::Running,
+            go::TestPhase::Building => Self::Building,
+            go::TestPhase::Testing => Self::Testing,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug)]
+pub struct WorkerProgress {
+    pub worker: usize,
+    pub id: usize,
+    pub phase: WorkerPhase,
 }
 
 #[derive(Clone, Debug)]
@@ -69,6 +106,7 @@ pub struct ActiveWorker {
     pub id: usize,
     pub description: String,
     pub started: Instant,
+    pub phase: WorkerPhase,
 }
 
 #[derive(Clone, Debug)]
@@ -129,8 +167,16 @@ impl RunState {
                         id: *id,
                         description: mutation.description(),
                         started: Instant::now(),
+                        phase: WorkerPhase::Preparing,
                     },
                 );
+            }
+            RunEvent::Progress(progress) => {
+                if let Some(active) = self.active.get_mut(&progress.worker)
+                    && active.id == progress.id
+                {
+                    active.phase = progress.phase;
+                }
             }
             RunEvent::Finished { worker, result } => {
                 self.active.remove(worker);
@@ -231,6 +277,7 @@ impl Coordinator {
                 } => report.plan(mutations, *workers, *timeout, *rerun, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
                 RunEvent::Finished { result, .. } => report.record(result)?,
+                RunEvent::Progress(_) => {} // Transient phases never change persisted outcomes.
             }
         }
         if !self.interactive {
@@ -348,6 +395,21 @@ mod tests {
                 &cancellation,
             )?;
         }
+        let report_before_progress =
+            fs::read(coordinator.report_path().unwrap().join("outcomes.json"))?;
+        coordinator.emit(
+            RunEvent::Progress(WorkerProgress {
+                worker: 2,
+                id: 2,
+                phase: WorkerPhase::Testing,
+            }),
+            &cancellation,
+        )?;
+        assert_eq!(updates.borrow().active[&2].phase, WorkerPhase::Testing);
+        assert_eq!(
+            fs::read(coordinator.report_path().unwrap().join("outcomes.json"))?,
+            report_before_progress
+        );
         for (id, worker, state, outcome) in [
             (2, 2, ExecutionState::Completed, Some(Outcome::Missed)),
             (1, 1, ExecutionState::Interrupted, None),
@@ -375,6 +437,8 @@ mod tests {
         assert_eq!(state.interrupted, 1);
         assert_eq!(state.pending(), 2);
         assert!(state.active.is_empty());
+        assert_eq!(state.recent[0].description, mutations[1].description());
+        assert_eq!(state.recent[1].description, mutations[0].description());
         let outcomes: serde_json::Value = serde_json::from_slice(&fs::read(
             coordinator.report_path().unwrap().join("outcomes.json"),
         )?)?;
@@ -382,6 +446,77 @@ mod tests {
         assert_eq!(outcomes["mutations"][0]["state"], "interrupted");
         assert_eq!(outcomes["mutations"][1]["state"], "completed");
         assert_eq!(outcomes["mutations"][2]["state"], "pending");
+        Ok(())
+    }
+
+    #[test]
+    fn progress_is_scoped_to_the_current_job_and_does_not_reset_elapsed_time() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::write(root.path().join("a.go"), "package p\nvar a = true\n")?;
+        let mutations =
+            mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
+        let mut state = RunState {
+            workers: 2,
+            total: Some(2),
+            ..RunState::default()
+        };
+        state.apply(&RunEvent::Started {
+            id: 1,
+            worker: 1,
+            mutation: &mutations[0],
+        });
+        let started = state.active[&1].started;
+        assert_eq!(state.active[&1].phase, WorkerPhase::Preparing);
+        for phase in [
+            WorkerPhase::Running,
+            WorkerPhase::Building,
+            WorkerPhase::Testing,
+        ] {
+            state.apply(&RunEvent::Progress(WorkerProgress {
+                worker: 1,
+                id: 1,
+                phase,
+            }));
+            assert_eq!(state.active[&1].phase, phase);
+            assert_eq!(state.active[&1].started, started);
+            assert_eq!(state.pending(), 1);
+            assert_eq!(state.summary.total(), 0);
+        }
+        state.apply(&RunEvent::Finished {
+            worker: 1,
+            result: &MutationResult {
+                id: 1,
+                mutation: mutations[0].clone(),
+                state: ExecutionState::Completed,
+                outcome: Some(Outcome::Missed),
+                output: None,
+                error: None,
+            },
+        });
+        let late = RunEvent::Progress(WorkerProgress {
+            worker: 1,
+            id: 1,
+            phase: WorkerPhase::Testing,
+        });
+        state.apply(&late);
+        assert!(state.active.is_empty());
+        state.apply(&RunEvent::Started {
+            id: 2,
+            worker: 1,
+            mutation: &mutations[0],
+        });
+        state.apply(&late);
+        assert_eq!(state.active[&1].phase, WorkerPhase::Preparing);
+        assert_eq!(state.summary.missed, 1);
+        assert_eq!(state.pending(), 0);
+        state.finish(Some(&Interrupted.into()));
+        state.apply(&RunEvent::Progress(WorkerProgress {
+            worker: 1,
+            id: 2,
+            phase: WorkerPhase::Testing,
+        }));
+        assert!(state.active.is_empty());
+        assert_eq!(state.interrupted, 1);
         Ok(())
     }
 

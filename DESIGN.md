@@ -245,9 +245,37 @@ mutations. Support small terminals and resizing. Cancellation is the only
 necessary control initially; pause/resume and changing the work queue
 interactively are later features. The implementation uses Ratatui 0.30.1 with
 Crossterm 0.29 and an inline viewport. Rendering runs at most ten times per second,
-coalescing snapshots while keeping timers and activity indicators moving. It
-shows up to four workers and three recent results, reducing detail to fit small
-terminals. Text labels accompany semantic colors.
+coalescing snapshots while keeping timers and activity indicators moving. Worker
+rows stay ordered by worker number, including idle workers, and expand to fit the
+terminal height. Hidden workers have an overflow count including the active count.
+A bounded results tail below the workers shows up to three completions, newest
+at the bottom. Its space is reserved independently of the number of results so
+worker rows remain stable. Compact layouts shorten labels and prioritize totals;
+text labels accompany semantic colors.
+
+Worker assignment starts the elapsed timer and the `preparing` state. Launching
+the Go command switches to `running`. Live structured build output can switch to
+`building`; observed package start/run events switch to `testing`. Track active
+packages because their events interleave: a finished test within a package does
+not end that package, and build output cannot hide another package's active tests.
+When no observed package remains active, use `running` until further evidence
+arrives. Silent builds do not supply enough evidence for a more specific label.
+Completion clears the assignment to idle without resetting the worker row.
+
+Progress travels over a bounded channel to the coordinator, identified by worker
+and mutation ID; delayed messages cannot modify a reused worker's new assignment.
+Only phase changes are sent. These transient events update presentation state,
+not persisted execution states/outcomes or checkpoints. Completion and failure
+remain authoritative and take priority over queued progress.
+
+The process runner retains file-backed stdout/stderr capture. An independent
+stdout reader observes complete lines during execution, with bounded polling
+batches and line buffering; oversized or invalid lines are skipped only for
+progress. The reader is reopened so it cannot move the child's shared write
+offset. Observation is cancelled with command completion, timeout, or
+interruption, including when a progress callback is blocked. Reader failure stops
+advisory observation; final capture and classification retain their normal error
+handling. Full logs are still read and saved after process-group cleanup.
 
 Keep noisy test output in artifacts rather than interleaving it with screen
 updates. After completion, restore the terminal and print a durable plain summary
@@ -492,10 +520,20 @@ The interactive CLI ran in a pseudo-terminal with captured ANSI output and text
 screen reconstructions. The capture included 100×24 and 48×7 sizes, real Go
 workers, progress between completions, and actual Ctrl-C input. Terminal settings
 were restored on exit. At 48 columns, the original view clipped the error count;
-shorter outcome labels and worker prefixes fixed this. The wider view also now
-shows four workers plus an overflow count when space permits. Regression frame
+shorter outcome labels and worker prefixes fixed this. That revision also added
+four worker rows plus an overflow count when space permits. Regression frame
 tests and another complete real-project run verify both changes. This validates
 the exercised terminal protocol and layouts, not every terminal emulator.
+
+The subsequent live-view refinement was verified in another six-worker PTY run
+at 100×24 and 48×7. All 77 outcomes matched the original run; total run time was
+28.53 s. Captured frames showed all six numbered rows at normal size, live
+preparing/running/testing states, idle rows retaining their positions, a results
+tail below the workers, and compact overflow/totals after resizing. Terminal
+settings were restored. Deterministic PTY tests additionally held build and test
+events open to verify both labels before completion; unit tests cover interleaved
+packages, stale progress after worker reuse, bounded line decoding, and
+cancellation/deadlines while progress delivery is blocked.
 
 Inspecting saved missed-result lists, diffs, and logs yielded concrete test gaps:
 

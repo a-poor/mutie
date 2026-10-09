@@ -1,4 +1,6 @@
 use std::{
+    collections::HashSet,
+    future::Future,
     path::{Path, PathBuf},
     time::Duration,
 };
@@ -22,6 +24,73 @@ pub async fn test(
     cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
     process::run("go", TEST_ARGS, root, limit, cancellation).await
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub enum TestPhase {
+    #[default]
+    Running,
+    Building,
+    Testing,
+}
+
+pub async fn test_observed<F, Fut>(
+    root: &Path,
+    limit: Duration,
+    cancellation: &Cancellation,
+    mut progress: F,
+) -> Result<CommandOutput>
+where
+    F: FnMut(TestPhase) -> Fut + Send,
+    Fut: Future<Output = ()> + Send,
+{
+    let mut phases = TestProgress::default();
+    process::run_observed("go", TEST_ARGS, root, limit, cancellation, move |line| {
+        let update = phases.observe(line).map(&mut progress);
+        async move {
+            if let Some(update) = update {
+                update.await;
+            }
+        }
+    })
+    .await
+}
+
+#[derive(Default)]
+struct TestProgress {
+    active_packages: HashSet<String>,
+    phase: TestPhase,
+}
+
+impl TestProgress {
+    fn observe(&mut self, line: &str) -> Option<TestPhase> {
+        let event: Event = serde_json::from_str(line).ok()?;
+        // Package streams interleave. Keep testing while any observed package
+        // is active; a different package's build output must not hide that.
+        let phase = match event.action.as_str() {
+            "start" | "run" | "cont" if !event.package.is_empty() => {
+                self.active_packages.insert(event.package);
+                TestPhase::Testing
+            }
+            "pass" | "fail" | "skip" if !event.package.is_empty() && event.test.is_empty() => {
+                self.active_packages.remove(&event.package);
+                if self.active_packages.is_empty() {
+                    TestPhase::Running
+                } else {
+                    TestPhase::Testing
+                }
+            }
+            "build-output" if !event.import_path.is_empty() && self.active_packages.is_empty() => {
+                TestPhase::Building
+            }
+            _ => return None,
+        };
+        if self.phase == phase {
+            return None;
+        }
+        self.phase = phase;
+        Some(phase)
+    }
 }
 
 pub fn files(root: &Path, output: &CommandOutput) -> Result<Vec<PathBuf>> {
@@ -66,6 +135,10 @@ struct Event {
     action: String,
     #[serde(default)]
     package: String,
+    #[serde(default)]
+    test: String,
+    #[serde(default)]
+    import_path: String,
     #[serde(default)]
     failed_build: String,
     #[serde(default)]
@@ -136,6 +209,47 @@ pub fn text(output: &CommandOutput) -> String {
 mod tests {
     use super::*;
     use std::os::unix::process::ExitStatusExt;
+
+    #[test]
+    fn progress_uses_observed_events_and_tracks_interleaved_packages() {
+        let mut progress = TestProgress::default();
+        assert_eq!(progress.observe("not JSON"), None);
+        assert_eq!(
+            progress.observe(r#"{"Action":"output","Output":"compiling or testing"}"#),
+            None
+        );
+        assert_eq!(
+            progress.observe(r#"{"Action":"build-output","ImportPath":"p"}"#),
+            Some(TestPhase::Building)
+        );
+        assert_eq!(
+            progress.observe(r#"{"Action":"build-output","ImportPath":"p"}"#),
+            None
+        );
+        assert_eq!(
+            progress.observe(r#"{"Action":"start","Package":"p"}"#),
+            Some(TestPhase::Testing)
+        );
+        assert_eq!(
+            progress.observe(r#"{"Action":"start","Package":"q"}"#),
+            None
+        );
+        assert_eq!(
+            progress.observe(r#"{"Action":"build-output","ImportPath":"r"}"#),
+            None
+        );
+        assert_eq!(
+            progress.observe(r#"{"Action":"pass","Package":"p","Test":"TestExample"}"#),
+            None
+        );
+        assert_eq!(progress.observe(r#"{"Action":"pass","Package":"p"}"#), None);
+        assert_eq!(
+            progress.observe(r#"{"Action":"skip","Package":"q"}"#),
+            Some(TestPhase::Running)
+        );
+        assert_eq!(progress.observe(r#"{"Action":"start"}"#), None);
+        assert_eq!(progress.observe(r#"{"Action":"build-output"}"#), None);
+    }
 
     fn output(stdout: &str, code: i32) -> CommandOutput {
         CommandOutput {

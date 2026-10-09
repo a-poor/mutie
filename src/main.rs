@@ -15,12 +15,12 @@ use std::{collections::VecDeque, path::PathBuf, sync::Arc, time::Duration};
 
 use anyhow::{Context, Result, bail, ensure};
 use clap::Parser;
-use tokio::task::JoinSet;
+use tokio::{sync::mpsc, task::JoinSet};
 
 use cancellation::{Cancellation, Interrupted};
 use cli::{Cli, UiMode};
 use config::RunConfig;
-use coordinator::{Coordinator, Phase, RunEvent};
+use coordinator::{Coordinator, Phase, RunEvent, WorkerPhase, WorkerProgress};
 use mutation::{Mutation, Scope};
 use report::{ExecutionState, MutationResult, Outcome};
 use workspace::Workspace;
@@ -249,6 +249,7 @@ struct WorkerJob {
     worker: usize,
     mutation: Mutation,
     workspace: Option<Workspace>,
+    progress: mpsc::Sender<WorkerProgress>,
 }
 
 impl WorkerJob {
@@ -259,6 +260,7 @@ impl WorkerJob {
             worker,
             mutation,
             workspace,
+            progress,
         } = self;
         let prepared = {
             let context = context.clone();
@@ -286,10 +288,29 @@ impl WorkerJob {
         let output = match prepared {
             Ok(prepared) => {
                 workspace = Some(prepared);
-                go::test(
+                let _ = progress
+                    .send(WorkerProgress {
+                        worker,
+                        id,
+                        phase: WorkerPhase::Running,
+                    })
+                    .await;
+                go::test_observed(
                     &workspace.as_ref().unwrap().path(),
                     context.timeout,
                     &context.cancellation,
+                    move |phase| {
+                        let progress = progress.clone();
+                        async move {
+                            let _ = progress
+                                .send(WorkerProgress {
+                                    worker,
+                                    id,
+                                    phase: phase.into(),
+                                })
+                                .await;
+                        }
+                    },
                 )
                 .await
             }
@@ -350,6 +371,7 @@ async fn run_workers(
     coordinator: &mut Coordinator,
 ) -> Result<()> {
     let mut workers = JoinSet::new();
+    let (progress, mut progress_events) = mpsc::channel(jobs.saturating_mul(2).clamp(1, 256));
     let mut available: VecDeque<_> = (1..=jobs).map(|worker| (worker, None)).collect();
     let mut next = 0;
     let mut failure = None;
@@ -379,12 +401,24 @@ async fn run_workers(
                     worker,
                     mutation: mutations[next].clone(),
                     workspace,
+                    progress: progress.clone(),
                 }
                 .run(),
             );
             next += 1;
         }
-        let Some(finished) = workers.join_next().await else {
+        let finished = tokio::select! {
+            biased;
+            finished = workers.join_next() => finished,
+            Some(progress) = progress_events.recv() => {
+                if let Err(error) = coordinator.emit(RunEvent::Progress(progress), &context.cancellation) {
+                    failure.get_or_insert(error);
+                    context.cancellation.cancel();
+                }
+                continue;
+            }
+        };
+        let Some(finished) = finished else {
             break;
         };
         let result = match finished {

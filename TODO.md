@@ -71,6 +71,17 @@ checklist as work lands, checking items off after appropriate verification.
   or ambiguous matches, and require a fresh baseline.
 - [x] Test rerun report validation, source matching, previews, empty selections,
   baseline failures, source preservation, and missed-to-killed results after test changes.
+- [x] Refine the live Ratatui run view before adding saved-report browsing: keep
+  stable rows ordered by worker number, showing each worker's state, current
+  mutation, and elapsed time, including idle workers.
+- [x] Add live worker progress events for preparing/building/testing/idle states;
+  use "running" when the phase is unknown. Observe captured Go JSON output live
+  for build/test evidence while preserving full logs and command cleanup.
+- [x] Show a bounded results tail below the workers, newest completions at the
+  bottom, with killed/missed/build failed/timeout/error labels. Redraw in place,
+  retain progress and outcome totals, and keep the full history in saved reports.
+- [x] Verify worker transitions, results ordering, resizing, and compact layouts
+  for the refined live view.
 - [ ] Extend focused reruns to individual saved IDs and operator selection.
 - [ ] Add interactive result filtering and diff/log browsing.
 - [ ] Add persistent per-mutation dismissals with required reasons and optional

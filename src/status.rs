@@ -88,7 +88,7 @@ impl LiveTerminal {
         let mut terminal = Terminal::with_options(
             CrosstermBackend::new(io::stdout()),
             TerminalOptions {
-                viewport: Viewport::Inline(8 + workers.min(4) as u16),
+                viewport: Viewport::Inline(8 + workers.min((u16::MAX - 8) as usize) as u16),
             },
         )
         .inspect_err(|_| {
@@ -318,17 +318,66 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
     frame.render_widget(header, heading);
     frame.render_widget(Paragraph::new(vec![progress, counts, hint]), footer);
     let available = body.height as usize;
-    let worker_slots = state.active.len().min(4).min(available);
-    // Reserve an overflow row only when it would otherwise displace a worker.
-    let worker_slots = if state.active.len() > worker_slots && worker_slots == available {
-        worker_slots.saturating_sub(1)
+    // Geometry depends on the worker count, never on which workers are busy or
+    // how many results have arrived. Reserve a tail even before the first result.
+    let tail_space = available.saturating_sub(2).min(3);
+    let worker_space = available.saturating_sub(tail_space);
+    let worker_slots = if state.workers > worker_space {
+        worker_space.saturating_sub(1)
     } else {
-        worker_slots
+        state.workers
     };
-    let hidden_workers = state.active.len().saturating_sub(worker_slots);
+    let hidden_workers = state.workers.saturating_sub(worker_slots);
     let active_rows = worker_slots + usize::from(hidden_workers > 0 && available > 0);
     let recent_slots = available.saturating_sub(active_rows).min(3);
     let mut lines = Vec::new();
+    for worker in 1..=worker_slots {
+        let prefix = if area.width < 70 {
+            format!("w{worker}")
+        } else {
+            format!("worker {worker}")
+        };
+        let Some(active) = state.active.get(&worker) else {
+            lines.push(Line::from(format!("   {prefix} idle")).dim());
+            continue;
+        };
+        let elapsed = now.saturating_duration_since(active.started).as_secs_f64();
+        let details = if area.width < 70 {
+            let phase = match active.phase {
+                crate::coordinator::WorkerPhase::Preparing => "prep",
+                crate::coordinator::WorkerPhase::Running => "run",
+                crate::coordinator::WorkerPhase::Building => "build",
+                crate::coordinator::WorkerPhase::Testing => "test",
+            };
+            format!(
+                "{phase} #{} {elapsed:.1}s {}",
+                active.id,
+                safe_text(&active.description)
+            )
+        } else {
+            format!(
+                "{:9} #{:06} ({elapsed:.1}s) {}",
+                active.phase.name(),
+                active.id,
+                safe_text(&active.description)
+            )
+        };
+        lines.push(Line::from(vec![
+            Span::styled(format!(" {spinner} {prefix} "), Style::new().cyan()),
+            Span::raw(details),
+        ]));
+    }
+    if hidden_workers > 0 && available > 0 {
+        let active = state
+            .active
+            .keys()
+            .filter(|worker| **worker > worker_slots)
+            .count();
+        lines.push(Line::from(format!("   + {hidden_workers} workers ({active} active)")).dim());
+    }
+    if active_rows > 0 && available > active_rows + recent_slots {
+        lines.push(Line::default());
+    }
     for result in state
         .recent
         .iter()
@@ -351,41 +400,6 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
             Span::raw(format!("{}{duration}", safe_text(&result.description))),
         ]));
     }
-    for (worker, active) in state.active.iter().take(worker_slots) {
-        let elapsed = now.saturating_duration_since(active.started).as_secs_f64();
-        let (label, details) = if area.width < 70 {
-            (
-                format!(" {spinner} w{worker} "),
-                format!(
-                    "#{} {elapsed:.1}s {}",
-                    active.id,
-                    safe_text(&active.description)
-                ),
-            )
-        } else {
-            (
-                format!(" {spinner} worker {worker} "),
-                format!(
-                    "#{:06} ({elapsed:.1}s) {}",
-                    active.id,
-                    safe_text(&active.description)
-                ),
-            )
-        };
-        lines.push(Line::from(vec![
-            Span::styled(label, Style::new().cyan()),
-            Span::raw(details),
-        ]));
-    }
-    if hidden_workers > 0 && available > 0 {
-        lines.push(
-            Line::from(format!(
-                "   + {} more active workers",
-                state.active.len() - worker_slots
-            ))
-            .dim(),
-        );
-    }
     if lines.is_empty() {
         lines.push(
             Line::from(match state.phase {
@@ -404,7 +418,7 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::coordinator::{ActiveWorker, Phase, RecentResult};
+    use crate::coordinator::{ActiveWorker, Phase, RecentResult, WorkerPhase};
     use ratatui::{backend::TestBackend, buffer::Buffer, layout::Rect};
 
     fn text(buffer: &Buffer) -> String {
@@ -437,6 +451,7 @@ mod tests {
                 id: 4,
                 description: "calc.go:8:3: + -> -".into(),
                 started: state.started,
+                phase: WorkerPhase::Building,
             },
         );
         state.active.insert(
@@ -445,6 +460,7 @@ mod tests {
                 id: 5,
                 description: "ready.go:4:2: true -> false".into(),
                 started: state.started,
+                phase: WorkerPhase::Testing,
             },
         );
         state.recent.push_back(RecentResult {
@@ -510,16 +526,17 @@ mod tests {
             text(buffer),
             concat!(
                 " | mutie mutations  2.0s\n",
+                " | worker 1 building  #000004 (2.0s) calc.go:8:3: + -> -\n",
+                " | worker 2 testing   #000005 (2.0s) ready.go:4:2: true -> false\n",
+                "\n",
                 "   killed       add.go:3:2: + -> - (0.2s)\n",
-                " | worker 1 #000004 (2.0s) calc.go:8:3: + -> -\n",
-                " | worker 2 #000005 (2.0s) ready.go:4:2: true -> false\n",
-                "\n\n\n",
+                "\n\n",
                 " Mutations 3/8  |  Workers 2/2\n",
                 " 2 killed | 1 missed | 0 timeout | 0 build failed | 0 errors\n",
                 " Ctrl-C to stop  |  Test output saved in report logs"
             )
         );
-        assert_eq!(buffer[(3, 1)].fg, Color::Green);
+        assert_eq!(buffer[(3, 4)].fg, Color::Green);
         assert_eq!(buffer[(12, 8)].fg, Color::Red);
         Ok(())
     }
@@ -555,6 +572,7 @@ mod tests {
     #[test]
     fn tiny_resized_and_offset_frames_clip_unicode_and_hide_excess_workers() -> Result<()> {
         let mut state = state();
+        state.workers = 12;
         for worker in 3..=12 {
             state.active.insert(
                 worker,
@@ -562,12 +580,13 @@ mod tests {
                     id: worker,
                     description: "路径/long-name-e\u{301}😀.go\x1b[2J\n:1:1".repeat(3),
                     started: state.started,
+                    phase: WorkerPhase::Preparing,
                 },
             );
         }
         let mut terminal = Terminal::new(TestBackend::new(90, 14))?;
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
-        assert!(text(terminal.backend().buffer()).contains("more active workers"));
+        assert!(text(terminal.backend().buffer()).contains("workers (6 active)"));
         assert!(!text(terminal.backend().buffer()).contains('\x1b'));
         for (width, height) in [(30, 6), (1, 1), (0, 0), (80, 24), (50, 3)] {
             terminal.backend_mut().resize(width, height);
@@ -590,8 +609,7 @@ mod tests {
     }
 
     #[test]
-    fn narrow_summary_keeps_every_outcome_visible_and_wide_view_uses_four_worker_rows() -> Result<()>
-    {
+    fn narrow_summary_keeps_every_outcome_visible_and_workers_expand_with_height() -> Result<()> {
         let mut state = state();
         state.total = Some(77);
         state.workers = 6;
@@ -607,6 +625,7 @@ mod tests {
                     id: worker,
                     description: "parser.go:245:7: == -> !=".into(),
                     started: state.started,
+                    phase: WorkerPhase::Running,
                 },
             );
         }
@@ -618,14 +637,72 @@ mod tests {
             "{narrow}"
         );
         assert!(narrow.contains("Ctrl-C to stop | Logs saved"));
-        assert!(narrow.contains("w1 #4 0.0s calc.go:8:3"));
-        assert!(narrow.contains("+ 4 more active workers"));
+        assert!(narrow.contains("w1 build #4 0.0s calc.go:8:3"));
+        assert!(narrow.contains("+ 5 workers (5 active)"));
+        assert!(narrow.contains("killed"));
         terminal.backend_mut().resize(100, 12);
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
         let wide = text(terminal.backend().buffer());
-        assert!(wide.contains("worker 4 #000004"), "{wide}");
-        assert!(wide.contains("+ 2 more active workers"));
+        assert!(wide.contains("worker 4 running   #000004"), "{wide}");
+        assert!(wide.contains("+ 2 workers (2 active)"));
         assert!(!wide.contains("worker 5"));
+        terminal.backend_mut().resize(100, 14);
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        assert!(text(terminal.backend().buffer()).contains("worker 6 running"));
+        Ok(())
+    }
+
+    #[test]
+    fn worker_rows_stay_fixed_through_idle_reuse_and_new_results() -> Result<()> {
+        let mut state = state();
+        let mut terminal = Terminal::new(TestBackend::new(100, 10))?;
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let row = |buffer: &Buffer, y: u16| -> String {
+            (0..buffer.area.width)
+                .map(|x| buffer[(x, y)].symbol())
+                .collect::<String>()
+                .trim_end()
+                .to_owned()
+        };
+        let second = row(terminal.backend().buffer(), 2);
+        let first = state.active.remove(&1).unwrap();
+        for (name, outcome) in [
+            ("second.go", Outcome::Missed),
+            ("third.go", Outcome::BuildFailed),
+            ("fourth.go", Outcome::Timeout),
+            ("last.go", Outcome::Error),
+        ] {
+            state.recent.push_back(RecentResult {
+                description: name.into(),
+                outcome: Some(outcome),
+                elapsed: None,
+            });
+        }
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let buffer = terminal.backend().buffer();
+        assert_eq!(row(buffer, 1), "   worker 1 idle");
+        assert_eq!(row(buffer, 2), second);
+        assert_eq!(row(buffer, 4), "   build failed third.go");
+        assert_eq!(row(buffer, 5), "   timeout      fourth.go");
+        assert_eq!(row(buffer, 6), "   error        last.go");
+        assert_eq!(
+            buffer[(3, 4)].fg,
+            outcome_style(Some(Outcome::BuildFailed)).fg.unwrap()
+        );
+        state.active.insert(
+            1,
+            ActiveWorker {
+                id: 6,
+                phase: WorkerPhase::Preparing,
+                ..first
+            },
+        );
+        state.recent.clear();
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let buffer = terminal.backend().buffer();
+        assert!(row(buffer, 1).contains("worker 1 preparing #000006"));
+        assert_eq!(row(buffer, 2), second);
+        assert_eq!(row(buffer, 4), "");
         Ok(())
     }
 

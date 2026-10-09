@@ -91,14 +91,15 @@ conflicts with `--list`.
 Interactive terminals get a live, inline Ratatui display inspired by the Vitest
 CLI. The status region updates in place up to ten times per second, including
 elapsed time and activity while commands run. It shows the current phase,
-completed/total mutations, outcome counts, active worker locations and durations,
-and recent results. For example, during mutation execution:
+completed/total mutations, outcome counts, stable numbered worker rows, and a
+results tail below the workers. For example, during mutation execution:
 
 ```text
  | mutie mutations  2.0s
+ | worker 1 building  #000004 (2.0s) calc.go:8:3: + -> -
+ | worker 2 testing   #000005 (2.0s) ready.go:4:2: true -> false
+
    killed       add.go:3:2: + -> - (0.2s)
- | worker 1 #000004 (2.0s) calc.go:8:3: + -> -
- | worker 2 #000005 (2.0s) ready.go:4:2: true -> false
 
  Mutations 3/8  |  Workers 2/2
  2 killed | 1 missed | 0 timeout | 0 build failed | 0 errors
@@ -114,12 +115,23 @@ Set `ui` in `mutie.toml` or override it with `--ui auto|interactive|plain`:
   and stdout and a `TERM` other than `dumb`; unsupported terminals produce an error.
 - `plain`: print progress lines without terminal control sequences.
 
+Worker rows stay in numeric order, including `idle` workers. Busy rows show the
+mutation and elapsed time since assignment, including workspace preparation.
+`preparing` covers copying/resetting the workspace and applying the mutation.
+`running` is the fallback while the command's activity is unknown. Live
+[Go build events](https://pkg.go.dev/cmd/go#hdr-Build__json_encoding) can show
+`building`; [package test events](https://pkg.go.dev/cmd/test2json#hdr-Output_Format)
+show `testing` while an observed package is active. Quiet builds can remain
+`running`, and testing takes precedence when build and test events overlap.
+
 `--list` always uses plain output. The live view adapts to resizing and small
-terminals, showing up to four active workers and three recent results when space
-permits, with an additional-worker count when needed. Narrow terminals use shorter
-outcome labels (`kill`, `miss`, `time`, `build`, `err`; initials at smaller widths)
-and worker prefixes to keep counts and source locations visible. All results
-remain in the saved report. It uses the normal terminal screen and keeps input in normal mode
+terminals, showing as many fixed worker rows as fit and up to three recent results,
+with newest completions at the bottom. An overflow row counts hidden workers and
+how many are active. Space for the results tail is reserved before results arrive
+so completions do not move the worker rows. Narrow terminals use shorter phase
+labels (`prep`, `run`, `build`, `test`), worker prefixes, and outcome totals
+(`kill`, `miss`, `time`, `build`, `err`; initials at smaller widths).
+All results remain in the saved report. The UI uses the normal terminal screen and keeps input in normal mode
 between cursor-position queries. Ctrl-C uses the same cancellation and cleanup
 path as plain mode; SIGTERM also works on Unix. On completion or interruption,
 the status area is cleared, the cursor restored, and a final plain summary and
@@ -320,7 +332,10 @@ Rerun tests cover saved-report validation, stale/missing/ambiguous targets, fres
 baselines, selection previews, new ID mappings, empty selections, source report
 preservation, and improved tests turning a previous missed result into killed.
 Renderer tests check complete frames, styles, clipping, elapsed-time updates, and
-resizing. Unix pseudo-terminal tests exercise live redraws during a blocked
+resizing, stable idle/busy rows, and results ordering. Progress tests cover partial
+output lines, interleaved packages, stale events after worker reuse, full capture
+preservation, and cancellation/deadlines during blocked progress observation.
+Unix pseudo-terminal tests exercise live phases before command completion and redraws during a blocked
 baseline, Ctrl-C, resizing, terminal initialization failure, empty/failed runs,
 terminal restoration, and plain output in CI. Temporary workspace paths are
 canonicalized so macOS path aliases agree with Go discovery and internal symlinks.

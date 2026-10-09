@@ -1,4 +1,5 @@
 use std::{
+    future::{Future, Ready, pending},
     io::{Read, Seek, SeekFrom},
     path::Path,
     process::{ExitStatus, Stdio},
@@ -6,7 +7,7 @@ use std::{
 };
 
 use anyhow::{Context, Result};
-use tokio::process::Command;
+use tokio::{io::AsyncReadExt, process::Command};
 
 use crate::cancellation::Cancellation;
 
@@ -27,15 +28,57 @@ pub async fn run(
     limit: Duration,
     cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
+    run_inner(
+        program,
+        args,
+        root,
+        limit,
+        cancellation,
+        None::<fn(&str) -> Ready<()>>,
+    )
+    .await
+}
+
+/// Observe complete stdout lines while retaining the original file-backed
+/// captures. The callback is advisory; deadlines and cancellation can interrupt it.
+pub async fn run_observed<F, Fut>(
+    program: &str,
+    args: &[&str],
+    root: &Path,
+    limit: Duration,
+    cancellation: &Cancellation,
+    observer: F,
+) -> Result<CommandOutput>
+where
+    F: FnMut(&str) -> Fut + Send,
+    Fut: Future<Output = ()> + Send,
+{
+    run_inner(program, args, root, limit, cancellation, Some(observer)).await
+}
+
+async fn run_inner<F, Fut>(
+    program: &str,
+    args: &[&str],
+    root: &Path,
+    limit: Duration,
+    cancellation: &Cancellation,
+    observer: Option<F>,
+) -> Result<CommandOutput>
+where
+    F: FnMut(&str) -> Fut + Send,
+    Fut: Future<Output = ()> + Send,
+{
     cancellation.check()?;
-    let mut stdout = tempfile::tempfile()?;
+    let mut stdout = tempfile::NamedTempFile::new()?;
     let mut stderr = tempfile::tempfile()?;
+    // Reopen, do not clone: a cloned descriptor shares the child's write offset.
+    let reader = observer.as_ref().map(|_| stdout.reopen()).transpose()?;
     let mut command = Command::new(program);
     command
         .args(args)
         .current_dir(root)
         .stdin(Stdio::null())
-        .stdout(stdout.try_clone()?)
+        .stdout(stdout.as_file().try_clone()?)
         .stderr(stderr.try_clone()?)
         .kill_on_drop(true);
     if program == "go" {
@@ -51,6 +94,14 @@ pub async fn run(
     let mut group = ProcessGroup { id: child.id() };
     let mut timed_out = false;
     let mut interrupted = false;
+    let observation = async {
+        if let (Some(reader), Some(observer)) = (reader, observer) {
+            // Progress is best effort. If its independent reader fails, retain
+            // normal execution and the authoritative captures read after exit.
+            let _ = observe_lines(reader, observer).await;
+        }
+        pending::<()>().await
+    };
     let status = tokio::select! {
         biased;
         result = tokio::time::timeout(limit, child.wait()) => match result {
@@ -67,7 +118,8 @@ pub async fn run(
             group.kill();
             child.start_kill()?;
             child.wait().await?
-        }
+        },
+        _ = observation => unreachable!("observation never completes"),
     };
     group.kill();
     let elapsed = started.elapsed();
@@ -82,9 +134,70 @@ pub async fn run(
         timed_out,
         interrupted,
         elapsed,
-        stdout: read(&mut stdout)?,
+        stdout: read(stdout.as_file_mut())?,
         stderr: read(&mut stderr)?,
     })
+}
+
+const MAX_PROGRESS_LINE: usize = 64 * 1024;
+
+/// A bounded, incremental decoder; oversized/invalid lines are omitted only
+/// from progress observation, never from saved output.
+#[derive(Default)]
+struct ProgressLines {
+    partial: Vec<u8>,
+    skipping: bool,
+}
+
+impl ProgressLines {
+    fn push(&mut self, bytes: &[u8]) -> Vec<String> {
+        let mut lines = Vec::new();
+        for part in bytes.split_inclusive(|byte| *byte == b'\n') {
+            if !self.skipping {
+                if self.partial.len() + part.len() > MAX_PROGRESS_LINE {
+                    self.partial.clear();
+                    self.skipping = true;
+                } else {
+                    self.partial.extend_from_slice(part);
+                }
+            }
+            if part.ends_with(b"\n") {
+                if !self.skipping
+                    && let Ok(line) = std::str::from_utf8(&self.partial)
+                {
+                    lines.push(line.trim_end_matches(['\r', '\n']).to_owned());
+                }
+                self.partial.clear();
+                self.skipping = false;
+            }
+        }
+        lines
+    }
+}
+
+async fn observe_lines<F, Fut>(reader: std::fs::File, mut observer: F) -> std::io::Result<()>
+where
+    F: FnMut(&str) -> Fut,
+    Fut: Future<Output = ()>,
+{
+    let mut reader = tokio::fs::File::from_std(reader);
+    let mut decoder = ProgressLines::default();
+    let mut bytes = [0; 16 * 1024];
+    let mut tick = tokio::time::interval(Duration::from_millis(50));
+    tick.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+    loop {
+        tick.tick().await;
+        // Bound each batch so noisy commands cannot monopolize the executor.
+        for _ in 0..16 {
+            let count = reader.read(&mut bytes).await?;
+            if count == 0 {
+                break;
+            }
+            for line in decoder.push(&bytes[..count]) {
+                observer(&line).await;
+            }
+        }
+    }
 }
 
 struct ProcessGroup {
@@ -115,6 +228,80 @@ impl Drop for ProcessGroup {
 #[cfg(all(test, unix))]
 mod tests {
     use super::*;
+
+    #[test]
+    fn progress_decoder_handles_split_unicode_crlf_and_oversized_lines() {
+        let mut lines = ProgressLines::default();
+        assert!(lines.push(b"first\r").is_empty());
+        assert_eq!(lines.push(b"\n\xe7\x95"), ["first"]);
+        assert_eq!(lines.push(b"\x8c\nnext\n"), ["界", "next"]);
+        assert!(lines.push(&vec![b'x'; MAX_PROGRESS_LINE]).is_empty());
+        assert!(lines.push(b"more").is_empty());
+        assert!(lines.partial.is_empty());
+        assert_eq!(lines.push(b"\n\xff\nrecovered\n"), ["recovered"]);
+    }
+
+    #[tokio::test]
+    async fn observes_output_before_exit_without_changing_captured_bytes() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let mut seen = Vec::new();
+        let release = root.path().join("release");
+        let output = run_observed("sh", &["-c", "printf 'first\\n'; printf 'diagnostic\\n' >&2; while [ ! -f release ]; do sleep 0.02; done; printf 'last without newline'"], root.path(), Duration::from_secs(5), &Cancellation::default(), |line| {
+            seen.push(line.to_owned());
+            std::fs::write(&release, "").unwrap();
+            std::future::ready(())
+        }).await?;
+        assert!(output.status.success() && !output.timed_out);
+        assert!(seen.contains(&"first".to_owned()));
+        assert_eq!(output.stdout, "first\nlast without newline");
+        assert_eq!(output.stderr, "diagnostic\n");
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn blocked_progress_observer_cannot_block_cancellation_or_deadline() -> Result<()> {
+        use std::sync::atomic::{AtomicBool, Ordering};
+        for cancel in [true, false] {
+            let root = tempfile::tempdir()?;
+            let cancellation = Cancellation::default();
+            let observing = AtomicBool::new(false);
+            let command = run_observed(
+                "sh",
+                &[
+                    "-c",
+                    "printf 'captured\\n'; printf 'error output\\n' >&2; (sleep 1; touch leaked) & sleep 30",
+                ],
+                root.path(),
+                Duration::from_millis(400),
+                &cancellation,
+                |_| {
+                    observing.store(true, Ordering::SeqCst);
+                    pending::<()>()
+                },
+            );
+            let stop = async {
+                tokio::time::timeout(Duration::from_secs(3), async {
+                    while !observing.load(Ordering::SeqCst) {
+                        tokio::time::sleep(Duration::from_millis(5)).await;
+                    }
+                })
+                .await
+                .unwrap();
+                if cancel {
+                    cancellation.cancel();
+                }
+            };
+            let (output, ()) = tokio::join!(command, stop);
+            let output = output?;
+            assert_eq!(output.interrupted, cancel);
+            assert_eq!(output.timed_out, !cancel);
+            assert_eq!(output.stdout, "captured\n");
+            assert_eq!(output.stderr, "error output\n");
+            tokio::time::sleep(Duration::from_millis(1050)).await;
+            assert!(!root.path().join("leaked").exists());
+        }
+        Ok(())
+    }
 
     #[tokio::test]
     async fn cancellation_retains_output_and_kills_descendants() -> Result<()> {
