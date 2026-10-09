@@ -131,8 +131,11 @@ how many are active. Space for the results tail is reserved before results arriv
 so completions do not move the worker rows. Narrow terminals use shorter phase
 labels (`prep`, `run`, `build`, `test`), worker prefixes, and outcome totals
 (`kill`, `miss`, `time`, `build`, `err`; initials at smaller widths).
-All results remain in the saved report. The UI uses the normal terminal screen and keeps input in normal mode
-between cursor-position queries. Ctrl-C uses the same cancellation and cleanup
+All results remain in the saved report. The UI uses the normal terminal screen
+and allocates at most its height. Earlier output and the shell prompt remain on
+screen or in terminal scrollback as space is needed. Resizing and exit cleanup
+clear only the live status area. Input stays in normal mode between
+cursor-position queries. Ctrl-C uses the same cancellation and cleanup
 path as plain mode; SIGTERM also works on Unix. On completion or interruption,
 the status area is cleared, the cursor restored, and a final plain summary and
 report path are printed. Interrupted summaries include pending/interrupted counts.
@@ -335,9 +338,12 @@ Renderer tests check complete frames, styles, clipping, elapsed-time updates, an
 resizing, stable idle/busy rows, and results ordering. Progress tests cover partial
 output lines, interleaved packages, stale events after worker reuse, full capture
 preservation, and cancellation/deadlines during blocked progress observation.
-Unix pseudo-terminal tests exercise live phases before command completion and redraws during a blocked
-baseline, Ctrl-C, resizing, terminal initialization failure, empty/failed runs,
-terminal restoration, and plain output in CI. Temporary workspace paths are
+Unix pseudo-terminal tests exercise live phases before command completion and
+redraws during a blocked baseline, Ctrl-C, resizing, terminal initialization
+failure, empty/failed runs, terminal restoration, and plain output in CI. A
+terminal screen/scrollback model checks that pre-existing output and prompts
+survive completion, cancellation, width/height changes, and oversized worker
+views. Temporary workspace paths are
 canonicalized so macOS path aliases agree with Go discovery and internal symlinks.
 
 ## Original plan

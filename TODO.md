@@ -82,6 +82,13 @@ checklist as work lands, checking items off after appropriate verification.
   retain progress and outcome totals, and keep the full history in saved reports.
 - [x] Verify worker transitions, results ordering, resizing, and compact layouts
   for the refined live view.
+- [x] Investigate and fix the preceding shell prompt disappearing after the live
+  view closes. Distinguish content pushed into scrollback from content erased;
+  audit inline viewport sizing, Ratatui's full-screen clear on horizontal shrink,
+  and exit cleanup so pre-run terminal content is preserved.
+- [x] Add terminal regression coverage with a pre-existing prompt and output;
+  verify preservation through normal completion, cancellation, and resizing,
+  including narrow/short terminals and worker views taller than the screen.
 - [ ] Extend focused reruns to individual saved IDs and operator selection.
 - [ ] Add interactive result filtering and diff/log browsing.
 - [ ] Add persistent per-mutation dismissals with required reasons and optional

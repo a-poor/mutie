@@ -6,15 +6,15 @@ use std::{
 
 use anyhow::{Context, Result, ensure};
 use crossterm::{
-    cursor::{MoveTo, Show},
+    cursor::{MoveToColumn, Show},
     execute,
     style::ResetColor,
     terminal::{Clear, ClearType},
 };
 use ratatui::{
     Frame, Terminal, TerminalOptions, Viewport,
-    backend::CrosstermBackend,
-    layout::{Constraint, Layout},
+    backend::{Backend, ClearType as BackendClearType, CrosstermBackend},
+    layout::{Constraint, Layout, Rect, Size},
     style::{Color, Style, Stylize},
     text::{Line, Span},
     widgets::Paragraph,
@@ -66,8 +66,10 @@ fn select_mode(
 static LIVE: AtomicBool = AtomicBool::new(false);
 
 pub struct LiveTerminal {
-    terminal: Terminal<CrosstermBackend<io::Stdout>>,
-    origin: (u16, u16),
+    terminal: Terminal<CrosstermBackend<Vec<u8>>>,
+    size: Size,
+    height: u16,
+    area: Rect,
     restored: bool,
 }
 
@@ -85,22 +87,26 @@ impl LiveTerminal {
         }));
         // No persistent raw mode, alternate screen, or input task: normal
         // terminal signals remain available between backend cursor queries.
-        let mut terminal = Terminal::with_options(
-            CrosstermBackend::new(io::stdout()),
-            TerminalOptions {
-                viewport: Viewport::Inline(8 + workers.min((u16::MAX - 8) as usize) as u16),
-            },
-        )
-        .inspect_err(|_| {
-            let _ = crossterm::terminal::disable_raw_mode();
-            let _ = restore_writer(&mut io::stdout());
-        })
-        .context("initializing live terminal status")?;
+        Self::initialize(workers)
+            .inspect_err(|_| {
+                let _ = crossterm::terminal::disable_raw_mode();
+                let _ = restore_writer(&mut io::stdout());
+            })
+            .context("initializing live terminal status")
+    }
+
+    fn initialize(workers: usize) -> Result<Self> {
+        let mut backend = CrosstermBackend::new(Vec::new());
+        let size = backend.size()?;
+        let height = 8 + workers.min((u16::MAX - 8) as usize) as u16;
+        let area = allocate_inline(&mut backend, size, height, true)?;
+        let terminal = fixed_terminal(backend, area)?;
         LIVE.store(true, Ordering::SeqCst);
-        let area = terminal.get_frame().area();
         Ok(Self {
             terminal,
-            origin: (area.x, area.y),
+            size,
+            height,
+            area,
             restored: false,
         })
     }
@@ -110,12 +116,23 @@ impl LiveTerminal {
             LIVE.load(Ordering::SeqCst),
             "terminal session stopped after a panic"
         );
+        let size = self.terminal.size()?;
+        if size != self.size {
+            // Ratatui 0.30.1's resize clears the entire visible screen on a
+            // horizontal shrink, including content above an inline viewport.
+            // Rebuild fixed buffers instead; only clear the area we own.
+            self.area = allocate_inline(self.terminal.backend_mut(), size, self.height, false)?;
+            self.terminal = fixed_terminal(CrosstermBackend::new(Vec::new()), self.area)?;
+            self.size = size;
+        }
         let now = Instant::now();
-        let frame = self
-            .terminal
+        self.terminal
             .draw(|frame| render(frame, state, now, cancelling))
             .context("drawing live terminal status")?;
-        self.origin = (frame.area.x, frame.area.y);
+        // Park at the start of our area between frames. The terminal tracks
+        // this anchor through resizing/reflow, unlike a saved absolute row.
+        self.terminal.set_cursor_position(self.area.as_position())?;
+        flush_commands(self.terminal.backend_mut())?;
         Ok(())
     }
 
@@ -125,16 +142,72 @@ impl LiveTerminal {
         }
         self.restored = true;
         LIVE.store(false, Ordering::SeqCst);
-        // Avoid a cursor-position query during teardown. Attempt restoration
-        // even if clearing the inline area fails.
+        // Clear from the parked cursor, not a stale absolute row: the terminal
+        // may have resized since our last frame. No teardown query is needed.
+        // Attempt restoration even if clearing the inline area fails.
         let cleared = execute!(
             self.terminal.backend_mut(),
-            MoveTo(self.origin.0, self.origin.1),
+            MoveToColumn(0),
             Clear(ClearType::FromCursorDown)
-        );
-        let restored = restore_writer(self.terminal.backend_mut());
+        )
+        .and_then(|()| flush_commands(self.terminal.backend_mut()));
+        let restored = restore_writer(&mut io::stdout());
         cleared.and(restored).context("restoring terminal")
     }
+}
+
+fn fixed_terminal(
+    backend: CrosstermBackend<Vec<u8>>,
+    area: Rect,
+) -> io::Result<Terminal<CrosstermBackend<Vec<u8>>>> {
+    Terminal::with_options(
+        backend,
+        TerminalOptions {
+            viewport: Viewport::Fixed(area),
+        },
+    )
+}
+
+// Crossterm flushes several times during a draw. Batch the frame and its parked
+// cursor together to reduce the window for a resize to interrupt a frame or
+// observe the cursor on a worker/footer row. Keep the allocation for reuse.
+fn flush_commands(backend: &mut CrosstermBackend<Vec<u8>>) -> io::Result<()> {
+    let commands = backend.writer_mut();
+    let mut stdout = io::stdout().lock();
+    let written = stdout.write_all(commands);
+    commands.clear();
+    written.and_then(|()| stdout.flush())
+}
+
+/// Reserve an inline area using normal scrolling, preserving earlier output in
+/// scrollback. On resize the cursor is still parked at the previous area's start.
+fn allocate_inline(
+    backend: &mut CrosstermBackend<Vec<u8>>,
+    size: Size,
+    height: u16,
+    starting: bool,
+) -> Result<Rect> {
+    ensure!(
+        size.width > 0 && size.height > 0,
+        "terminal has no drawable area"
+    );
+    let cursor = backend.get_cursor_position()?;
+    let mut row = cursor.y.min(size.height - 1);
+    if starting && cursor.x > 0 {
+        // Preserve an existing partial line, too.
+        backend.append_lines(1)?;
+        row = row.saturating_add(1).min(size.height - 1);
+    }
+    backend.set_cursor_position((0, row))?;
+    backend.clear_region(BackendClearType::AfterCursor)?;
+    let height = height.min(size.height);
+    // Clamp BEFORE appending lines: requesting more rows than the screen has
+    // otherwise needlessly scrolls old output away behind blank history.
+    backend.append_lines(height.saturating_sub(1))?;
+    let area = Rect::new(0, row.min(size.height - height), size.width, height);
+    backend.set_cursor_position(area.as_position())?;
+    flush_commands(backend)?;
+    Ok(area)
 }
 
 impl Drop for LiveTerminal {

@@ -1,7 +1,8 @@
 #![cfg(unix)]
 
 //! A small PTY harness checks behavior that the in-memory renderer cannot:
-//! cursor queries, redraws during a blocked command, real Ctrl-C and termios.
+//! screen/scrollback preservation, cursor queries, redraws during a blocked
+//! command, real Ctrl-C and termios.
 use std::{
     fs::{self, File},
     io::{self, Read, Write},
@@ -25,6 +26,7 @@ struct Session {
     _slave: File,
     child: Child,
     output: Vec<u8>,
+    screen: vt100::Parser,
     query_tail: Vec<u8>,
     respond_to_queries: bool,
     termios: libc::termios,
@@ -32,6 +34,17 @@ struct Session {
 
 impl Session {
     fn start(mode: &str, ui: &str, ci: bool) -> Self {
+        Self::start_with_terminal(mode, ui, ci, (24, 100), 2, PREAMBLE)
+    }
+
+    fn start_with_terminal(
+        mode: &str,
+        ui: &str,
+        ci: bool,
+        (rows, columns): (u16, u16),
+        workers: usize,
+        preamble: &str,
+    ) -> Self {
         let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
         let root = temp.path().join("module");
         let bin = temp.path().join("bin");
@@ -91,8 +104,8 @@ fi
         let mut master = -1;
         let mut slave = -1;
         let mut size = libc::winsize {
-            ws_row: 24,
-            ws_col: 100,
+            ws_row: rows,
+            ws_col: columns,
             ws_xpixel: 0,
             ws_ypixel: 0,
         };
@@ -112,7 +125,7 @@ fi
             io::Error::last_os_error()
         );
         // SAFETY: these descriptors are new and become uniquely owned by File.
-        let (master, slave) = unsafe { (File::from_raw_fd(master), File::from_raw_fd(slave)) };
+        let (master, mut slave) = unsafe { (File::from_raw_fd(master), File::from_raw_fd(slave)) };
         let termios = termios(&slave);
         // SAFETY: operate only on the owned master descriptor.
         let flags = unsafe { libc::fcntl(master.as_raw_fd(), libc::F_GETFL) };
@@ -120,6 +133,8 @@ fi
             unsafe { libc::fcntl(master.as_raw_fd(), libc::F_SETFL, flags | libc::O_NONBLOCK) },
             0
         );
+        // Seed the terminal before the CLI starts, just as a shell would.
+        slave.write_all(preamble.as_bytes()).unwrap();
         let mut paths = vec![bin];
         paths.extend(std::env::split_paths(
             &std::env::var_os("PATH").unwrap_or_default(),
@@ -127,7 +142,15 @@ fi
         let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
         command
             .arg(&root)
-            .args(["--ui", ui, "--jobs", "2", "--timeout", "10", "--verbose"])
+            .args([
+                "--ui",
+                ui,
+                "--jobs",
+                &workers.to_string(),
+                "--timeout",
+                "10",
+                "--verbose",
+            ])
             .env("PATH", std::env::join_paths(paths).unwrap())
             .env("STATE", &state)
             .env("MODE", mode)
@@ -159,6 +182,7 @@ fi
             _slave: slave,
             child,
             output: Vec::new(),
+            screen: vt100::Parser::new(rows, columns, 10_000),
             query_tail: Vec::new(),
             respond_to_queries: mode != "no_cursor",
             termios,
@@ -172,17 +196,18 @@ fi
                 Ok(0) => break,
                 Ok(n) => {
                     self.output.extend_from_slice(&buf[..n]);
-                    self.query_tail.extend_from_slice(&buf[..n]);
-                    while let Some(index) = self.query_tail.windows(4).position(|w| w == b"\x1b[6n")
-                    {
-                        // Minimal terminal emulation: answer cursor-position requests.
-                        if self.respond_to_queries {
-                            self.master.write_all(b"\x1b[2;1R").unwrap();
+                    for byte in &buf[..n] {
+                        self.screen.process(std::slice::from_ref(byte));
+                        self.query_tail.push(*byte);
+                        if self.query_tail.ends_with(b"\x1b[6n") && self.respond_to_queries {
+                            let (row, col) = self.screen.screen().cursor_position();
+                            let (_, columns) = self.screen.screen().size();
+                            let col = col.min(columns - 1); // pending wrap at the right edge
+                            write!(self.master, "\x1b[{};{}R", row + 1, col + 1).unwrap();
                         }
-                        self.query_tail.drain(..index + 4);
-                    }
-                    if self.query_tail.len() > 3 {
-                        self.query_tail.drain(..self.query_tail.len() - 3);
+                        if self.query_tail.len() == 4 {
+                            self.query_tail.remove(0);
+                        }
                     }
                 }
                 Err(error)
@@ -213,6 +238,42 @@ fi
     }
 
     fn resize(&mut self, rows: u16, columns: u16) {
+        self.pump();
+        // vt100 truncates rows on resize. Model a terminal that scrolls enough
+        // to keep its cursor visible on height shrink, preserving those rows
+        // in scrollback. Width changes still do not reflow; markers fit the
+        // narrowest width used in these tests.
+        let (row, col) = self.screen.screen().cursor_position();
+        let (old_rows, old_columns) = self.screen.screen().size();
+        if row >= rows {
+            self.screen
+                .process(format!("\x1b[{}S\x1b[{};{}H", row + 1 - rows, rows, col + 1).as_bytes());
+        } else if rows > old_rows {
+            // Model pulling scrollback back onto the screen when growing.
+            // Rebuild the text grid so pulled rows leave scrollback and the
+            // cursor moves with them. Color assertions use renderer tests.
+            let mut saved = self.screen.screen().clone();
+            saved.set_scrollback(usize::MAX);
+            let backlog = saved.scrollback();
+            let pulled = backlog.min(usize::from(rows - old_rows));
+            let mut lines = Vec::new();
+            for offset in (1..=backlog).rev() {
+                saved.set_scrollback(offset);
+                lines.push(saved.rows(0, old_columns).next().unwrap());
+            }
+            saved.set_scrollback(0);
+            lines.extend(saved.rows(0, old_columns));
+            lines.extend(std::iter::repeat_n(
+                String::new(),
+                usize::from(rows - old_rows) - pulled,
+            ));
+            self.screen = vt100::Parser::new(rows, old_columns, 10_000);
+            self.screen.process(lines.join("\r\n").as_bytes());
+            self.screen
+                .process(format!("\x1b[{};{}H", usize::from(row) + pulled + 1, col + 1).as_bytes());
+        }
+        self.screen.screen_mut().set_size(rows, columns);
+        self.assert_history();
         let size = libc::winsize {
             ws_row: rows,
             ws_col: columns,
@@ -285,6 +346,15 @@ fi
         let output = String::from_utf8_lossy(&self.output);
         assert!(!output.contains("\x1b[?1049h"), "must stay inline");
         if interactive {
+            assert!(
+                !output.contains("\x1b[2J"),
+                "must not erase the whole screen"
+            );
+            assert!(!output.contains("\x1b[3J"), "must not erase scrollback");
+            assert!(
+                !self.screen.screen().contents().contains("Ctrl-C to stop"),
+                "the live status area must be cleared before the final summary"
+            );
             let restored = output.rfind("\x1b[?25h").expect("cursor must be restored");
             let summary = output.find("Run ").expect("final summary");
             assert!(
@@ -295,6 +365,7 @@ fi
             assert!(!output.contains('\x1b'));
         }
         assert!(output.contains("Report saved:"));
+        self.assert_history();
         assert!(fs::read_dir(&self.workspaces).unwrap().next().is_none());
         assert!(
             !fs::read_to_string(self.root.join("code.go"))
@@ -302,7 +373,25 @@ fi
                 .contains("false")
         );
     }
+
+    fn assert_history(&self) {
+        let mut screen = self.screen.screen().clone();
+        screen.set_scrollback(usize::MAX);
+        let scrollback = screen.scrollback();
+        for marker in ["earlier output", "$ mutie"] {
+            assert!(
+                (0..=scrollback).any(|offset| {
+                    screen.set_scrollback(offset);
+                    screen.contents().contains(marker)
+                }),
+                "lost {marker:?} from screen and {scrollback} scrollback rows; screen:\n{}",
+                self.screen.screen().contents()
+            );
+        }
+    }
 }
+
+const PREAMBLE: &str = "earlier output\n$ mutie\n";
 
 impl Drop for Session {
     fn drop(&mut self) {
@@ -311,14 +400,19 @@ impl Drop for Session {
             unsafe {
                 libc::kill(self.child.id() as i32, libc::SIGTERM);
             }
-            for _ in 0..100 {
+            // Keep draining even on assertion failure: macOS session-leader
+            // exit can wait for queued PTY output before becoming waitable.
+            for attempt in 0..200 {
+                let mut buf = [0; 8192];
+                while self.master.read(&mut buf).is_ok_and(|n| n > 0) {}
                 if self.child.try_wait().ok().flatten().is_some() {
                     return;
                 }
+                if attempt == 100 {
+                    let _ = self.child.kill();
+                }
                 thread::sleep(Duration::from_millis(10));
             }
-            let _ = self.child.kill();
-            let _ = self.child.wait();
         }
     }
 }
@@ -350,17 +444,7 @@ fn live_view_redraws_while_baseline_waits_and_restores_after_resize_and_success(
     );
     assert!(!String::from_utf8_lossy(&session.output).contains("baseline diagnostic"));
     for (rows, cols) in [(5, 28), (24, 100)] {
-        let size = libc::winsize {
-            ws_row: rows,
-            ws_col: cols,
-            ws_xpixel: 0,
-            ws_ypixel: 0,
-        };
-        // SAFETY: resize the owned terminal with a valid winsize pointer.
-        assert_eq!(
-            unsafe { libc::ioctl(session.master.as_raw_fd(), libc::TIOCSWINSZ, &size) },
-            0
-        );
+        session.resize(rows, cols);
         let time = Instant::now();
         session.until(|_| time.elapsed() > Duration::from_millis(150));
     }
@@ -368,6 +452,102 @@ fn live_view_redraws_while_baseline_waits_and_restores_after_resize_and_success(
     assert!(session.finish().success());
     session.assert_restored(true);
     assert_eq!(session.report("outcomes.json")["summary"]["missed"], 4);
+}
+
+#[test]
+fn width_shrink_preserves_preceding_output_and_prompt() {
+    let mut session = Session::start("live", "interactive", false);
+    session.until(|s| s.screen.screen().contents().contains("baseline"));
+    session.assert_history();
+    session.resize(24, 80);
+    let time = Instant::now();
+    session.until(|_| time.elapsed() >= Duration::from_millis(250));
+    session.assert_history();
+    fs::write(session.state.join("release"), "").unwrap();
+    assert!(session.finish().success());
+    session.assert_restored(true);
+}
+
+#[test]
+fn short_and_oversized_views_preserve_history_on_completion_and_cancellation() {
+    // vt100 cannot wrap on a single-row grid; cover narrow and one-row
+    // terminals separately, keeping the one-row case wide enough for logs.
+    for size in [(24, 100), (5, 28), (3, 18), (2, 14), (1, 512)] {
+        for cancel in [false, true] {
+            let mut session =
+                Session::start_with_terminal("live", "interactive", false, size, 64, PREAMBLE);
+            session.until(|s| s.state.join("baseline.ready").exists());
+            let time = Instant::now();
+            session.until(|_| time.elapsed() >= Duration::from_millis(150));
+            session.assert_history();
+            let mut screen = session.screen.screen().clone();
+            screen.set_scrollback(usize::MAX);
+            let first_query = session
+                .output
+                .windows(4)
+                .position(|w| w == b"\x1b[6n")
+                .unwrap();
+            let mut before_ui = vt100::Parser::new(size.0, size.1, 10_000);
+            before_ui.process(&session.output[..first_query]);
+            let (row, _) = before_ui.screen().cursor_position();
+            before_ui.screen_mut().set_scrollback(usize::MAX);
+            assert_eq!(
+                screen.scrollback(),
+                before_ui.screen().scrollback() + usize::from(row),
+                "oversized view must scroll only the pre-existing content at {size:?}"
+            );
+            if cancel {
+                session.master.write_all(&[3]).unwrap();
+            } else {
+                fs::write(session.state.join("release"), "").unwrap();
+            }
+            assert_eq!(session.finish().success(), !cancel, "size {size:?}");
+            session.assert_restored(true);
+        }
+    }
+}
+
+#[test]
+fn resizing_preserves_scrollback_and_prompt_near_the_bottom() {
+    for cancel in [false, true] {
+        let preamble = format!("{}{PREAMBLE}", "\n".repeat(21));
+        let mut session =
+            Session::start_with_terminal("live", "interactive", false, (24, 100), 2, &preamble);
+        session.until(|s| s.screen.screen().contents().contains("baseline"));
+        session.assert_history();
+        for size in [(24, 80), (5, 28), (3, 18), (24, 100), (40, 120)] {
+            session.resize(size.0, size.1);
+            let time = Instant::now();
+            session.until(|_| time.elapsed() >= Duration::from_millis(150));
+            session.assert_history();
+        }
+        if cancel {
+            session.master.write_all(&[3]).unwrap();
+        } else {
+            fs::write(session.state.join("release"), "").unwrap();
+        }
+        assert_eq!(session.finish().success(), !cancel);
+        session.assert_restored(true);
+        let visible = session.screen.screen().contents();
+        assert!(
+            visible.contains("earlier output") && visible.contains("$ mutie"),
+            "{visible}"
+        );
+    }
+}
+
+#[test]
+fn startup_preserves_a_partial_prompt_line() {
+    let mut session = Session::start_with_terminal(
+        "success",
+        "interactive",
+        false,
+        (24, 100),
+        2,
+        PREAMBLE.trim_end(),
+    );
+    assert!(session.finish().success());
+    session.assert_restored(true);
 }
 
 #[test]

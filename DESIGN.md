@@ -244,7 +244,8 @@ and activity indicators while commands are running, even between completed
 mutations. Support small terminals and resizing. Cancellation is the only
 necessary control initially; pause/resume and changing the work queue
 interactively are later features. The implementation uses Ratatui 0.30.1 with
-Crossterm 0.29 and an inline viewport. Rendering runs at most ten times per second,
+Crossterm 0.29 and an application-managed inline area backed by a fixed Ratatui
+viewport. Rendering runs at most ten times per second,
 coalescing snapshots while keeping timers and activity indicators moving. Worker
 rows stay ordered by worker number, including idle workers, and expand to fit the
 terminal height. Hidden workers have an overflow count including the active count.
@@ -252,6 +253,15 @@ A bounded results tail below the workers shows up to three completions, newest
 at the bottom. Its space is reserved independently of the number of results so
 worker rows remain stable. Compact layouts shorten labels and prioritize totals;
 text labels accompany semantic colors.
+
+Allocate at most the terminal's height, using ordinary scrolling to preserve
+earlier output in scrollback. Park the hidden cursor at the status area's start
+between frames. On resize, query this terminal-maintained anchor and recreate
+the fixed viewport buffers, clearing only from the anchor downward. This avoids
+Ratatui 0.30.1's full-screen clear and origin reset on horizontal shrink. Exit
+cleanup also clears from the parked cursor, without a stale absolute row or a
+teardown cursor query. Frames and their cursor placement are buffered and emitted
+together; this uses the pinned backend's `unstable-backend-writer` feature.
 
 Worker assignment starts the elapsed timer and the `preparing` state. Launching
 the Go command switches to `running`. Live structured build output can switch to
@@ -534,6 +544,16 @@ settings were restored. Deterministic PTY tests additionally held build and test
 events open to verify both labels before completion; unit tests cover interleaved
 packages, stale progress after worker reuse, bounded line decoding, and
 cancellation/deadlines while progress delivery is blocked.
+
+Prompt-preservation regression tests seed a PTY with earlier output and a shell
+prompt and interpret the CLI's ANSI stream with `vt100`, including cursor-query
+replies and scrollback. They cover width shrink, height shrink/growth, completion,
+Ctrl-C, prompts near the screen bottom, and views taller than the screen. Height
+changes model scrolling to retain the cursor and bringing history back into view
+on growth. Width changes do not model emulator-specific reflow. Narrow 14×2 and
+wide 512×1 cases exercise small layouts separately because `vt100` cannot wrap
+text on a one-row grid. These are protocol regressions, not validation of every
+terminal emulator's resize behavior.
 
 Inspecting saved missed-result lists, diffs, and logs yielded concrete test gaps:
 
