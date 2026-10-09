@@ -509,6 +509,14 @@ The [go-cmp measurements](benchmarks/go-cmp-v0.7.0.md) exercise a larger mutatio
 inventory on APFS. Comparisons against Linux tmpfs, ordinary copies, and projects
 with large source trees or assets are still pending.
 
+Each child Go command gets a private `mutie-go-*` directory for `GOTMPDIR`.
+If the environment contains a nonempty `GOTMPDIR`, Mutie uses that existing,
+writable directory as the parent; relative paths resolve from Mutie's starting
+directory. Otherwise it uses the system temporary directory (`TMPDIR` on Unix).
+The private directory and Go's build files inside it are removed when the command
+ends, including after a timeout or handled interruption. Existing files in the
+parent and the reusable Go build cache (`GOCACHE`) are preserved.
+
 ## Behavior
 
 - The baseline and each mutation run `go test -json -count=1 -timeout=0 ./...`.
@@ -557,12 +565,13 @@ cargo clippy --all-targets -- -D warnings
 ```
 
 The Go integration test checks all four outcomes, repository configuration and
-scope, baseline failure and timeout, workspace resets, saved reports, and
-preservation of input files. It needs Go on `PATH` and a writable Go build cache,
-and is opt-in because it runs real builds and deliberately waits for a timeout.
-Non-ignored Unix tests use a fake Go command to verify SIGINT/SIGTERM during baseline, discovery, and
-parallel execution, preserved diagnostics, pending work, process cleanup, and
-source preservation. They require an environment that delivers those signals.
+scope, baseline failure and timeout, workspace resets, Go build-directory cleanup,
+saved reports, and preservation of input files. It needs Go on `PATH` and a writable
+Go build cache, and is opt-in because it runs real builds and deliberately waits
+for a timeout. Non-ignored Unix tests use a fake Go command to verify SIGINT/SIGTERM
+during baseline, discovery, and parallel execution, preserved diagnostics, pending
+work, process and build-directory cleanup, and source preservation. They require
+an environment that delivers those signals.
 Configuration tests also cover defaults, explicit overrides, list clearing,
 invalid settings, path resolution, listing without reports, and saved effective
 settings using a fake Go command.

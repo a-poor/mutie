@@ -130,9 +130,13 @@ checklist as work lands, checking items off after appropriate verification.
 - [ ] Compare representative runs with workspaces on a reflink-capable filesystem
   versus `/tmp` on tmpfs. The go-cmp run verified explicit reflinks on APFS;
   ordinary-copy and Linux tmpfs measurements remain pending.
-- [ ] Own and clean up Go temporary build directories after timeout/interruption.
+- [x] Own and clean up Go temporary build directories after timeout/interruption.
   The go-cmp full run left 27 `go-build*` directories (566 MB logical bytes) even
-  though all Mutie workspaces were removed. Preserve the reusable Go build cache.
+  though all Mutie workspaces were removed. Each Go command now gets a private
+  `GOTMPDIR` below the caller's temporary parent; cleanup preserves unrelated
+  files and the reusable Go build cache. Regression tests cover success,
+  tool/startup errors, concurrent timeouts, and SIGINT/SIGTERM. A focused go-cmp
+  timeout and interruption both left zero owned temporary build directories.
 - [ ] Evaluate affected-package/coverage-based test selection and result reuse
   against full-module testing, with reverse dependencies, test imports, and explicit
   invalidation rules. Use the go-cmp run as a correctness/performance reference.

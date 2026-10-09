@@ -1,6 +1,7 @@
 #![cfg(unix)]
 
 use std::{
+    collections::HashSet,
     fs,
     os::unix::{fs::PermissionsExt, process::CommandExt},
     path::{Path, PathBuf},
@@ -17,6 +18,8 @@ struct Fixture {
     bin: PathBuf,
     state: PathBuf,
     workspaces: PathBuf,
+    go_temporary: PathBuf,
+    go_cache: PathBuf,
 }
 
 impl Fixture {
@@ -26,9 +29,14 @@ impl Fixture {
         let bin = temp.path().join("bin");
         let state = temp.path().join("state");
         let workspaces = temp.path().join("workspaces");
-        for directory in [&root, &bin, &state, &workspaces] {
+        let go_temporary = temp.path().join("go-tmp");
+        let go_cache = temp.path().join("go-cache");
+        for directory in [&root, &bin, &state, &workspaces, &go_temporary, &go_cache] {
             fs::create_dir(directory).unwrap();
         }
+        fs::create_dir(go_temporary.join("go-build-existing")).unwrap();
+        fs::write(go_temporary.join("go-build-existing/keep"), "unrelated").unwrap();
+        fs::write(go_cache.join("keep"), "cached build").unwrap();
         fs::write(root.join("go.mod"), "module example.com/cancellation\n").unwrap();
         for name in ["a", "b", "c", "z"] {
             fs::write(
@@ -42,6 +50,11 @@ impl Fixture {
             &go,
             r#"#!/bin/sh
 set -eu
+# Deliberately leave build files even on success. Mutie must own their cleanup.
+mkdir "$GOTMPDIR/go-build-$$"
+printf 'build output\n' > "$GOTMPDIR/go-build-$$/object"
+printf '%s\n' "$GOTMPDIR" > "$MUTIE_TEST_STATE/$$.gotmpdir"
+printf 'cache reused\n' > "$GOCACHE/reused"
 hang() {
     label="$1"
     printf 'active %s\n' "$label"
@@ -83,23 +96,39 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
             bin,
             state,
             workspaces,
+            go_temporary,
+            go_cache,
         }
     }
 
     fn start(&self, mode: &str) -> Running {
+        self.start_with_args(mode, &["--jobs", "2", "--timeout", "60"])
+    }
+
+    fn command(&self, mode: &str) -> Command {
         let mut paths = vec![self.bin.clone()];
         paths.extend(std::env::split_paths(
             &std::env::var_os("PATH").unwrap_or_default(),
         ));
-        let stdout = self.state.join("stdout");
-        let stderr = self.state.join("stderr");
-        let child = Command::new(env!("CARGO_BIN_EXE_mutie"))
-            .arg(&self.root)
-            .args(["--jobs", "2", "--timeout", "60"])
+        let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
+        command
             .env("PATH", std::env::join_paths(paths).unwrap())
             .env("TMPDIR", &self.workspaces)
+            .env("GOTMPDIR", &self.go_temporary)
+            .env("GOCACHE", &self.go_cache)
             .env("MUTIE_TEST_STATE", &self.state)
             .env("MUTIE_TEST_MODE", mode)
+            .current_dir(self._temp.path());
+        command
+    }
+
+    fn start_with_args(&self, mode: &str, args: &[&str]) -> Running {
+        let stdout = self.state.join("stdout");
+        let stderr = self.state.join("stderr");
+        let child = self
+            .command(mode)
+            .arg(&self.root)
+            .args(args)
             .stdin(Stdio::null())
             .stdout(fs::File::create(&stdout).unwrap())
             .stderr(fs::File::create(&stderr).unwrap())
@@ -137,6 +166,20 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
             "scheduled pending mutation after cancellation"
         );
         assert!(!self.state.join("leaked").exists());
+        assert_eq!(fs::read_dir(&self.go_temporary).unwrap().count(), 1);
+        assert_eq!(
+            fs::read_to_string(self.go_temporary.join("go-build-existing/keep")).unwrap(),
+            "unrelated"
+        );
+        assert_eq!(
+            fs::read_to_string(self.go_cache.join("keep")).unwrap(),
+            "cached build"
+        );
+        assert_eq!(
+            fs::read_to_string(self.go_cache.join("reused")).unwrap(),
+            "cache reused\n"
+        );
+        let mut build_directories = HashSet::new();
         for name in ["a", "b", "c", "z"] {
             assert_eq!(
                 fs::read_to_string(self.root.join(format!("{name}.go"))).unwrap(),
@@ -145,11 +188,33 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
         }
         for entry in fs::read_dir(&self.state).unwrap() {
             let path = entry.unwrap().path();
+            if path
+                .extension()
+                .is_some_and(|extension| extension == "gotmpdir")
+            {
+                let directory = PathBuf::from(fs::read_to_string(path).unwrap().trim());
+                assert!(directory.is_absolute());
+                assert!(
+                    directory
+                        .file_name()
+                        .unwrap()
+                        .to_str()
+                        .unwrap()
+                        .starts_with("mutie-go-")
+                );
+                assert!(!directory.exists(), "Go temporary build directory leaked");
+                assert!(
+                    build_directories.insert(directory),
+                    "Go commands shared a build directory"
+                );
+                continue;
+            }
             if path.extension().is_some_and(|extension| extension == "pid") {
                 let pid: i32 = fs::read_to_string(path).unwrap().trim().parse().unwrap();
                 wait_until(|| !process_running(pid));
             }
         }
+        assert!(!build_directories.is_empty());
     }
 }
 
@@ -387,4 +452,97 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
         1
     );
     fixture.assert_cleanup();
+}
+
+#[test]
+fn timeouts_remove_temporary_go_builds_and_retain_diagnostics() {
+    let fixture = Fixture::new();
+    let mut child = fixture.start_with_args(
+        "mutations",
+        &["--jobs", "2", "--timeout", "1", "--exclude", "z.go"],
+    );
+    let output = child.finish();
+    assert!(output.status.success(), "{output:?}");
+    let directory = fixture.report();
+    let outcomes = read(&directory, "outcomes.json");
+    assert_eq!(outcomes["status"], "completed");
+    assert_eq!(outcomes["summary"]["missed"], 1);
+    assert_eq!(outcomes["summary"]["timeout"], 2);
+    for (index, name) in [(1, "b"), (2, "c")] {
+        let mutation = &outcomes["mutations"][index];
+        assert_eq!(mutation["outcome"], "timeout");
+        assert!(
+            fs::read_to_string(directory.join(mutation["logs"]["stdout"].as_str().unwrap()))
+                .unwrap()
+                .contains(&format!("active {name}"))
+        );
+    }
+    fixture.assert_cleanup();
+}
+
+#[test]
+fn temporary_go_builds_respect_parent_placement_for_listing() {
+    for placement in ["unset", "empty", "absolute", "relative"] {
+        let fixture = Fixture::new();
+        let mut command = fixture.command("discovery_success");
+        let parent = match placement {
+            "unset" => {
+                command.env_remove("GOTMPDIR");
+                &fixture.workspaces
+            }
+            "empty" => {
+                command.env("GOTMPDIR", "");
+                &fixture.workspaces
+            }
+            "relative" => {
+                command.env("GOTMPDIR", "go-tmp");
+                &fixture.go_temporary
+            }
+            _ => &fixture.go_temporary,
+        };
+        let output = command.arg(&fixture.root).arg("--list").output().unwrap();
+        assert!(output.status.success(), "{placement}: {output:?}");
+        for entry in fs::read_dir(&fixture.state).unwrap() {
+            let path = entry.unwrap().path();
+            let directory = PathBuf::from(fs::read_to_string(path).unwrap().trim());
+            assert_eq!(directory.parent(), Some(parent.as_path()));
+        }
+        fixture.assert_cleanup();
+    }
+}
+
+#[test]
+fn go_startup_errors_do_not_leave_temporary_directories() {
+    for invalid_parent in [false, true] {
+        let fixture = Fixture::new();
+        // An executable whose interpreter is missing fails during spawn, after
+        // Mutie has created the private build directory.
+        fs::write(fixture.bin.join("go"), "#!/nonexistent/mutie-test-shell\n").unwrap();
+        let mut command = fixture.command("startup_error");
+        command
+            .arg(&fixture.root)
+            .arg("--list")
+            .env("PATH", &fixture.bin);
+        if invalid_parent {
+            command.env("GOTMPDIR", fixture.go_temporary.join("missing"));
+        }
+        let output = command.output().unwrap();
+        assert!(!output.status.success());
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        assert!(
+            stderr.contains(if invalid_parent {
+                "resolving Go temporary build directory"
+            } else {
+                "could not start go"
+            }),
+            "{stderr}"
+        );
+        assert_eq!(fs::read_dir(&fixture.workspaces).unwrap().count(), 0);
+        assert_eq!(fs::read_dir(&fixture.go_temporary).unwrap().count(), 1);
+        assert_eq!(
+            fs::read_to_string(fixture.go_temporary.join("go-build-existing/keep")).unwrap(),
+            "unrelated"
+        );
+        assert_eq!(fs::read_dir(&fixture.go_cache).unwrap().count(), 1);
+    }
 }

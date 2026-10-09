@@ -132,12 +132,12 @@ This is a reviewed example, not an equivalence analysis of all 262 missed result
 
 ## Implications and limits
 
-1. Fix Go temporary-build cleanup after forced termination. The full run's 27
+1. Go temporary-build cleanup after forced termination required a fix. The full run's 27
    timeouts left 27 `go-build*` directories totaling 566,027,850 logical bytes in
    `TMPDIR`, separate from the successfully removed Mutie workspaces. The earlier
    calibration left another 45 directories (496,433,335 bytes) after 41 timeouts
-   and four interrupted commands. Give temporary build output an owned lifetime;
-   keep the reusable Go build cache separate.
+   and four interrupted commands. Per-command ownership now addresses this;
+   see the cleanup follow-up below. The reusable Go build cache remains separate.
 2. Investigate affected-package execution, including reverse dependencies and test
    imports, against this full-module reference. For example, `cmp`'s external
    tests import `cmpopts`; selecting only the mutated package would omit relevant
@@ -154,6 +154,25 @@ vendored repositories, or large assets. `/tmp` is also APFS on this host; there
 was no Linux tmpfs or ordinary-copy comparison. Workspace-copy optimization is
 not justified by these timings alone. Warm-cache results on one shared host are
 observations, not a general concurrency or scaling guarantee.
+
+## Cleanup follow-up
+
+After adding per-command `GOTMPDIR` ownership, a focused rerun of source ID 328
+used the forward-direction probe described above, the same Go toolchain, and the
+existing dedicated build cache. The updated debug binary ran one worker with a
+five-second mutation deadline; a second run used a 60-second deadline and received
+SIGINT after the mutated test reached `TestDifference/#01`. Both baselines passed.
+
+The first mutation timed out; the second was saved as interrupted. Both runs
+retained their test output and removed every owned Go build directory and Mutie
+workspace. Roughly 37.4 MB of temporary build files were observed during each run.
+An existing `go-build-existing` directory in the supplied temporary parent survived,
+the cache remained available, and source SHA-256 manifests were unchanged.
+
+This verifies the cleanup fix against a real hanging mutation; it does not replace
+the historical full-run measurements or establish a new performance comparison.
+Automated tests also cover parallel timeouts, SIGINT/SIGTERM, successful discovery,
+tool/startup errors, temporary-parent placement, and preservation of cache contents.
 
 ## Reproducing the workload
 

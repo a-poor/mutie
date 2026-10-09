@@ -21,20 +21,33 @@ fn copy_tree(from: &Path, to: &Path) {
 }
 
 fn run(root: &Path, args: &[&str]) -> Output {
-    Command::new(env!("CARGO_BIN_EXE_mutie"))
-        .arg(root)
-        .args(args)
-        .output()
-        .expect("could not start mutie")
+    with_build_cleanup(
+        Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .arg(root)
+            .args(args),
+    )
 }
 
 fn dismiss(root: &Path, args: &[&str]) -> Output {
-    Command::new(env!("CARGO_BIN_EXE_mutie"))
-        .args(["dismiss", "--module"])
-        .arg(root)
-        .args(args)
+    with_build_cleanup(
+        Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .args(["dismiss", "--module"])
+            .arg(root)
+            .args(args),
+    )
+}
+
+fn with_build_cleanup(command: &mut Command) -> Output {
+    let builds = tempfile::tempdir().unwrap();
+    let output = command
+        .env("GOTMPDIR", builds.path())
         .output()
-        .expect("could not start mutie dismiss")
+        .expect("could not start mutie");
+    assert!(
+        fs::read_dir(builds.path()).unwrap().next().is_none(),
+        "Go temporary builds leaked: {output:?}"
+    );
+    output
 }
 
 fn stdout(output: &Output) -> String {

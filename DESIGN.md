@@ -300,6 +300,15 @@ interruption, including when a progress callback is blocked. Reader failure stop
 advisory observation; final capture and classification retain their normal error
 handling. Full logs are still read and saved after process-group cleanup.
 
+Every child Go command also owns a private temporary directory, passed as
+`GOTMPDIR`. Its parent is the nonempty environment `GOTMPDIR`, or the system
+temporary directory when unset/empty; canonicalization makes relative parents
+independent of the child's workspace. The directory guard outlives the child and
+process-group guards, removing build output left by forced termination as well
+as ordinary exits and startup errors. Each concurrent command has a separate
+directory. Existing parent contents and `GOCACHE` are outside this ownership.
+Like workspace cleanup, removal cannot run if Mutie itself is forcibly killed.
+
 Keep noisy test output in artifacts rather than interleaving it with screen
 updates. After completion, restore the terminal and print a durable plain summary
 and report path. Verbose captured output is printed only in plain mode. The live
@@ -565,9 +574,9 @@ while preserving full-module results as the reference. Distinguish compilation
 and test costs where the tool provides reliable measurements.
 
 The run also exposed Go build directories retained after forced termination and
-a 1.35 GB report dominated by logs. Give temporary Go builds an owned cleanup
-lifetime, and use these sizes when designing retention and log-output policies.
-The reusable Go build cache is separate from temporary build output. Larger
+a 1.35 GB report dominated by logs. Temporary Go builds now have a per-command
+cleanup lifetime; the reusable Go build cache remains separate. Use the report
+sizes when designing retention and log-output policies. Larger
 applications, asset-heavy trees, and reflink-capable filesystem versus Linux tmpfs
 comparisons still need measurements.
 

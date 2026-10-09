@@ -81,10 +81,38 @@ where
         .stdout(stdout.as_file().try_clone()?)
         .stderr(stderr.try_clone()?)
         .kill_on_drop(true);
-    if program == "go" {
+    // Outlive the child and its process-group guard so they issue any required
+    // kills before temporary builds are removed, including on spawn/wait errors
+    // or when this future is dropped.
+    let _go_build_directory = if program == "go" {
         // v1 runs one module; do not pick up a workspace outside the snapshot.
         command.env("GOWORK", "off");
-    }
+        let parent = std::env::var_os("GOTMPDIR")
+            .filter(|value| !value.is_empty())
+            .map(std::path::PathBuf::from)
+            .unwrap_or_else(std::env::temp_dir);
+        let parent = parent.canonicalize().with_context(|| {
+            format!(
+                "resolving Go temporary build directory {}",
+                parent.display()
+            )
+        })?;
+        let directory = tempfile::Builder::new()
+            .prefix("mutie-go-")
+            .tempdir_in(&parent)
+            .with_context(|| {
+                format!(
+                    "creating Go temporary build directory in {}",
+                    parent.display()
+                )
+            })?;
+        // Go cannot remove its go-build* trees after SIGKILL. Own a private
+        // parent for every invocation; never prune caller-owned files or GOCACHE.
+        command.env("GOTMPDIR", directory.path());
+        Some(directory)
+    } else {
+        None
+    };
     #[cfg(unix)]
     command.process_group(0);
     let started = Instant::now();
