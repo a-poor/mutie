@@ -101,13 +101,14 @@ checklist as work lands, checking items off after appropriate verification.
   after resizing and moved the cleanup cursor above restored history. Use relative
   frame/allocation movement and guard line wrapping; verify queued output through
   growth/shrink, completion, and cancellation with deterministic regression coverage.
-- [ ] Add persistent per-mutation dismissals with required reasons and optional
-  notes in repository-owned metadata; support inspecting, changing, and removing them.
-- [ ] Match dismissals against rediscovered mutations using source-aware identity;
-  surface stale, missing, or ambiguous matches for review after source changes.
+- [x] Add persistent per-mutation dismissals with required reasons and optional
+  notes in `mutie.dismissals.toml`; support add/list/update/remove CLI commands.
+- [x] Match dismissals against rediscovered mutations using source-aware identity;
+  surface stale, missing, or ambiguous matches with `dismiss check` for review
+  after source changes.
 - [ ] Show dismissal reasons separately from actual execution outcomes in reports
   and result views; allow dismissed findings to be included in inspection and reruns.
-- [ ] Test dismissal persistence, matching/invalidation, removal, and preservation
+- [x] Test dismissal persistence, matching/invalidation, removal, and preservation
   of execution outcomes and counts.
 - [x] Validate findings and practical runtime on a small real Go project.
 - [ ] Extend validation to a larger Go project before drawing scaling conclusions.

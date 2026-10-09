@@ -3,7 +3,9 @@ mod cancellation;
 mod cli;
 mod config;
 mod coordinator;
+mod dismissals;
 mod go;
+mod identity;
 mod mutation;
 mod process;
 mod report;
@@ -30,16 +32,28 @@ use workspace::Workspace;
 #[tokio::main]
 async fn main() -> Result<()> {
     let mut cli = Cli::parse();
-    if let Some(cli::Command::Report { run_dir, module }) = cli.command.take() {
+    if let Some(command) = cli.command.take() {
         let cancellation = Cancellation::default();
         let _signals = cancellation
             .listen()
             .context("installing cancellation handlers")?;
-        return tokio::task::spawn_blocking(move || {
-            browser::run(&run_dir, module.as_deref(), &cancellation)
-        })
-        .await
-        .context("report browser panicked")?;
+        return match command {
+            cli::Command::Report { run_dir, module } => tokio::task::spawn_blocking(move || {
+                browser::run(&run_dir, module.as_deref(), &cancellation)
+            })
+            .await
+            .context("report browser panicked")?,
+            cli::Command::Dismiss { module, action } => {
+                if matches!(action, cli::DismissAction::Check) {
+                    cli.path = module;
+                    cli.list = true;
+                    let config = RunConfig::resolve(cli)?;
+                    dismissals::check(&config, &cancellation).await
+                } else {
+                    dismissals::manage(&module, action)
+                }
+            }
+        };
     }
     let config = RunConfig::resolve(cli)?;
     let scope = Scope::new(&config.include, &config.exclude)?;

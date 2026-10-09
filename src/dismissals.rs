@@ -1,0 +1,464 @@
+//! Repository-owned review decisions. These never change execution or saved outcomes.
+use std::{
+    collections::{BTreeSet, HashMap},
+    fs::{self, OpenOptions},
+    io::{ErrorKind, Write},
+    path::{Path, PathBuf},
+    time::Duration,
+};
+
+use anyhow::{Context, Result, ensure};
+use serde::{Deserialize, Serialize};
+use tempfile::NamedTempFile;
+
+use crate::{
+    cancellation::{Cancellation, Interrupted},
+    cli::DismissAction,
+    config::RunConfig,
+    identity::MutationIdentity,
+    mutation::{self, Mutation, OPERATOR_CATALOG_VERSION, Scope},
+    report_reader::LoadedReport,
+};
+
+const FILE_NAME: &str = "mutie.dismissals.toml";
+const FORMAT_VERSION: u32 = 1;
+const LOCK_NAME: &str = ".mutie.dismissals.lock";
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct Dismissal {
+    id: usize,
+    reason: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    note: Option<String>,
+    mutation: MutationIdentity,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct Store {
+    format_version: u32,
+    operator_catalog_version: u32,
+    next_id: usize,
+    dismissals: Vec<Dismissal>,
+}
+
+impl Default for Store {
+    fn default() -> Self {
+        Self {
+            format_version: FORMAT_VERSION,
+            operator_catalog_version: OPERATOR_CATALOG_VERSION,
+            next_id: 1,
+            dismissals: Vec::new(),
+        }
+    }
+}
+
+impl Store {
+    fn load(root: &Path) -> Result<Self> {
+        let path = root.join(FILE_NAME);
+        match fs::symlink_metadata(&path) {
+            Err(error) if error.kind() == ErrorKind::NotFound => return Ok(Self::default()),
+            Err(error) => return Err(error).with_context(|| format!("opening {}", path.display())),
+            Ok(metadata) => ensure!(
+                metadata.is_file(),
+                "{} must be a regular file",
+                path.display()
+            ),
+        }
+        let source =
+            fs::read_to_string(&path).with_context(|| format!("reading {}", path.display()))?;
+        let mut store: Self =
+            toml::from_str(&source).with_context(|| format!("parsing {}", path.display()))?;
+        store
+            .validate()
+            .with_context(|| format!("validating {}", path.display()))?;
+        store.dismissals.sort_by_key(|d| d.id);
+        Ok(store)
+    }
+
+    fn validate(&self) -> Result<()> {
+        ensure!(
+            self.format_version == FORMAT_VERSION,
+            "unsupported dismissal format version {}",
+            self.format_version
+        );
+        ensure!(
+            self.operator_catalog_version == OPERATOR_CATALOG_VERSION,
+            "dismissals use an incompatible operator catalog"
+        );
+        ensure!(self.next_id > 0, "next_id must be positive");
+        let mut ids = BTreeSet::new();
+        for entry in &self.dismissals {
+            ensure!(
+                entry.id > 0 && entry.id < self.next_id,
+                "invalid dismissal ID {}; next_id must exceed all stored IDs",
+                entry.id
+            );
+            ensure!(ids.insert(entry.id), "duplicate dismissal ID {}", entry.id);
+            validate_text(&entry.reason, "reason")?;
+            if let Some(note) = &entry.note {
+                validate_text(note, "note")?;
+            }
+            entry
+                .mutation
+                .validate()
+                .with_context(|| format!("dismissal {}", entry.id))?;
+        }
+        Ok(())
+    }
+
+    fn save(&self, root: &Path) -> Result<()> {
+        self.validate()?;
+        let contents = toml::to_string_pretty(self).context("serializing dismissals")?;
+        let path = root.join(FILE_NAME);
+        let mut file = NamedTempFile::new_in(root).context("preparing dismissal file")?;
+        file.write_all(contents.as_bytes())
+            .context("writing dismissals")?;
+        file.as_file().sync_all().context("flushing dismissals")?;
+        file.persist(&path)
+            .with_context(|| format!("saving {}", path.display()))?;
+        Ok(())
+    }
+
+    fn add(
+        &mut self,
+        mutation: MutationIdentity,
+        reason: String,
+        note: Option<String>,
+    ) -> Result<usize> {
+        if let Some(existing) = self.dismissals.iter().find(|d| d.mutation == mutation) {
+            anyhow::bail!(
+                "mutation already has dismissal {}; use dismiss update",
+                existing.id
+            );
+        }
+        let id = self.next_id;
+        self.next_id = id.checked_add(1).context("dismissal IDs exhausted")?;
+        self.dismissals.push(Dismissal {
+            id,
+            reason,
+            note,
+            mutation,
+        });
+        Ok(id)
+    }
+}
+
+fn validate_text(text: &str, field: &str) -> Result<()> {
+    ensure!(
+        !text.trim().is_empty(),
+        "dismissal {field} must not be blank"
+    );
+    Ok(())
+}
+
+// Serialize CLI writers across their entire read/modify/replace transaction.
+// The atomic replacement also lets readers see a complete old or new document.
+struct WriteLock(PathBuf);
+
+impl WriteLock {
+    fn acquire(root: &Path) -> Result<Self> {
+        let path = root.join(LOCK_NAME);
+        OpenOptions::new().write(true).create_new(true).open(&path)
+            .with_context(|| format!("locking dismissals with {}; if a previous writer was interrupted, remove this lock after confirming no dismissal command is running", path.display()))?;
+        Ok(Self(path))
+    }
+}
+
+impl Drop for WriteLock {
+    fn drop(&mut self) {
+        let _ = fs::remove_file(&self.0);
+    }
+}
+
+pub fn manage(module: &Path, action: DismissAction) -> Result<()> {
+    let root = module
+        .canonicalize()
+        .with_context(|| format!("opening {}", module.display()))?;
+    ensure!(
+        root.join("go.mod").is_file(),
+        "{} must be a Go module root containing go.mod",
+        root.display()
+    );
+    if matches!(action, DismissAction::List) {
+        let store = Store::load(&root)?;
+        println!(
+            "{} dismissal(s) in {} (current source unchecked)",
+            store.dismissals.len(),
+            root.join(FILE_NAME).display()
+        );
+        for entry in store.dismissals {
+            let m = &entry.mutation;
+            println!(
+                "\nDismissal {}: {:?}:{}:{}  {}",
+                entry.id, m.file, m.line, m.column, m.operator
+            );
+            println!("  {:?} -> {:?}", m.original, m.replacement);
+            println!("  Reason: {:?}", entry.reason);
+            if let Some(note) = entry.note {
+                println!("  Note: {note:?}");
+            }
+            println!(
+                "  Source: {}; bytes {}..{}; end {}:{}",
+                m.source_fingerprint, m.byte_start, m.byte_end, m.end_line, m.end_column
+            );
+        }
+        return Ok(());
+    }
+    let _lock = WriteLock::acquire(&root)?;
+    let mut store = Store::load(&root)?;
+    let message = match action {
+        DismissAction::Add {
+            run_dir,
+            id,
+            reason,
+            note,
+        } => {
+            let report = LoadedReport::load(&run_dir)?;
+            ensure!(
+                report.complete,
+                "saved run has an incomplete mutation inventory"
+            );
+            let mutation = report
+                .mutations
+                .iter()
+                .find(|m| m.id == id.get())
+                .with_context(|| format!("unknown source mutation ID {id}"))?;
+            let dismissal_id = store.add(MutationIdentity::from(mutation), reason, note)?;
+            format!(
+                "Added dismissal {dismissal_id} from saved mutation {id}. Current source unchecked; use dismiss check."
+            )
+        }
+        DismissAction::Update {
+            id,
+            reason,
+            note,
+            clear_note,
+        } => {
+            ensure!(
+                reason.is_some() || note.is_some() || clear_note,
+                "update requires --reason, --note, or --clear-note"
+            );
+            let entry = store
+                .dismissals
+                .iter_mut()
+                .find(|d| d.id == id.get())
+                .with_context(|| format!("unknown dismissal ID {id}"))?;
+            if let Some(reason) = reason {
+                entry.reason = reason;
+            }
+            if clear_note {
+                entry.note = None;
+            } else if let Some(note) = note {
+                entry.note = Some(note);
+            }
+            format!("Updated dismissal {id}.")
+        }
+        DismissAction::Remove { id } => {
+            let index = store
+                .dismissals
+                .iter()
+                .position(|d| d.id == id.get())
+                .with_context(|| format!("unknown dismissal ID {id}"))?;
+            store.dismissals.remove(index);
+            format!("Removed dismissal {id}.")
+        }
+        DismissAction::List | DismissAction::Check => {
+            unreachable!("read-only commands are handled separately")
+        }
+    };
+    store.save(&root)?;
+    println!("{message}\nSaved {}", root.join(FILE_NAME).display());
+    Ok(())
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum MatchStatus {
+    Matched(usize),
+    Missing,
+    Stale,
+    Unmatched,
+    Ambiguous,
+}
+
+fn match_dismissals(store: &Store, mutations: &[Mutation]) -> Vec<MatchStatus> {
+    let mut by_file: HashMap<&Path, Vec<(usize, &Mutation)>> = HashMap::new();
+    for (index, mutation) in mutations.iter().enumerate() {
+        by_file
+            .entry(&mutation.file.path)
+            .or_default()
+            .push((index + 1, mutation));
+    }
+    let mut statuses: Vec<_> = store
+        .dismissals
+        .iter()
+        .map(|entry| {
+            let target = &entry.mutation;
+            let Some(candidates) = by_file.get(target.file.as_path()) else {
+                return MatchStatus::Missing;
+            };
+            if candidates
+                .iter()
+                .any(|(_, m)| m.file.fingerprint != target.source_fingerprint)
+            {
+                return MatchStatus::Stale;
+            }
+            let mut matches = candidates.iter().filter(|(_, m)| target.matches(m));
+            match (matches.next(), matches.next()) {
+                (None, _) => MatchStatus::Unmatched,
+                (Some((id, _)), None) => MatchStatus::Matched(*id),
+                _ => MatchStatus::Ambiguous,
+            }
+        })
+        .collect();
+    // A hand edit or merge can duplicate an identity under different IDs.
+    // Treat every entry in that collision as ambiguous, never pick a winner.
+    let mut counts = HashMap::new();
+    for status in &statuses {
+        if let MatchStatus::Matched(id) = status {
+            *counts.entry(*id).or_insert(0) += 1;
+        }
+    }
+    for status in &mut statuses {
+        if let MatchStatus::Matched(id) = status
+            && counts[id] > 1
+        {
+            *status = MatchStatus::Ambiguous;
+        }
+    }
+    statuses
+}
+
+pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()> {
+    let store = Store::load(&config.module_root)?;
+    if store.dismissals.is_empty() {
+        println!("No dismissals to check.");
+        return Ok(());
+    }
+    let scope = Scope::new(&config.include, &config.exclude)?;
+    let snapshot = crate::create_workspace(
+        config.module_root.clone(),
+        vec![config.module_root.join(".mutie"), config.output_dir.clone()],
+        cancellation.clone(),
+    )
+    .await?;
+    // Go list may have side effects. Discover source identities from the pristine
+    // snapshot, and run Go in a separate disposable copy, as normal runs do.
+    let discovery_workspace =
+        crate::create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
+    let output = crate::process::run(
+        "go",
+        &["list", "-json", "./..."],
+        &discovery_workspace.path(),
+        Duration::from_secs(config.baseline_timeout.get()),
+        cancellation,
+    )
+    .await?;
+    if output.interrupted {
+        return Err(Interrupted.into());
+    }
+    let mut files = crate::go::files(&discovery_workspace.path(), &output)?;
+    drop(discovery_workspace);
+    let discovery_cancellation = cancellation.clone();
+    let mutations = tokio::task::spawn_blocking(move || {
+        mutation::discover_cancellable(
+            &snapshot.path(),
+            &mut files,
+            &scope,
+            &discovery_cancellation,
+        )
+    })
+    .await
+    .context("dismissal discovery panicked")??;
+    cancellation.check()?;
+    let statuses = match_dismissals(&store, &mutations);
+    let mut matched = 0;
+    for (entry, status) in store.dismissals.iter().zip(statuses) {
+        cancellation.check()?;
+        let detail = match status {
+            MatchStatus::Matched(id) => {
+                matched += 1;
+                format!("matched (current mutation {id})")
+            }
+            MatchStatus::Missing => {
+                "missing (file removed, excluded, inactive, or has no mutations)".to_owned()
+            }
+            MatchStatus::Stale => "stale (source fingerprint changed)".to_owned(),
+            MatchStatus::Unmatched => {
+                "unmatched (source identity no longer identifies a mutation)".to_owned()
+            }
+            MatchStatus::Ambiguous => {
+                "ambiguous (multiple mutations or dismissals share this identity)".to_owned()
+            }
+        };
+        println!(
+            "Dismissal {}: {detail} — {:?}:{}:{}",
+            entry.id, entry.mutation.file, entry.mutation.line, entry.mutation.column
+        );
+    }
+    let review = store.dismissals.len() - matched;
+    println!("{matched} matched; {review} require review.");
+    ensure!(
+        review == 0,
+        "dismissals require review; inspect with dismiss list, then remove/re-add against a fresh report as needed"
+    );
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::report_reader::SavedMutation;
+
+    #[test]
+    fn matching_uses_source_identity_even_when_current_ids_change_and_rejects_ambiguity()
+    -> Result<()> {
+        let directory = tempfile::tempdir()?;
+        fs::write(
+            directory.path().join("a.go"),
+            "package p\nvar a, b = true, true\n",
+        )?;
+        let mutations = mutation::discover(
+            directory.path(),
+            vec!["a.go".into()],
+            &Scope::new(&[], &[])?,
+        )?;
+        let m = &mutations[1];
+        let saved = SavedMutation {
+            id: 99,
+            file: m.file.path.clone(),
+            operator: m.operator,
+            source_fingerprint: m.file.fingerprint.clone(),
+            byte_start: m.range.start,
+            byte_end: m.range.end,
+            line: m.line,
+            column: m.column,
+            end_line: m.end_line,
+            end_column: m.end_column,
+            original: m.original().into(),
+            replacement: m.replacement.into(),
+            diff: None,
+        };
+        let mut store = Store::default();
+        store.add(MutationIdentity::from(&saved), "reviewed".into(), None)?;
+        store.validate()?;
+        assert_eq!(
+            match_dismissals(&store, &mutations),
+            [MatchStatus::Matched(2)]
+        );
+        assert_eq!(
+            match_dismissals(&store, &mutations[1..]),
+            [MatchStatus::Matched(1)]
+        );
+        assert_eq!(
+            match_dismissals(&store, &[m.clone(), m.clone()]),
+            [MatchStatus::Ambiguous]
+        );
+        assert_eq!(
+            match_dismissals(&store, &mutations[..1]),
+            [MatchStatus::Unmatched]
+        );
+        Ok(())
+    }
+}

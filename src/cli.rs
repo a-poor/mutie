@@ -105,6 +105,14 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Manage repository-owned mutation dismissals
+    Dismiss {
+        /// Go module root where dismissals are stored
+        #[arg(long, global = true, default_value = ".", value_name = "PATH")]
+        module: PathBuf,
+        #[command(subcommand)]
+        action: DismissAction,
+    },
     /// Browse a finalized saved run, its diffs, and captured logs
     Report {
         /// Saved run directory (no Go module or checkout required)
@@ -113,6 +121,44 @@ pub enum Command {
         #[arg(long, value_name = "PATH")]
         module: Option<PathBuf>,
     },
+}
+
+#[derive(Debug, Subcommand)]
+pub enum DismissAction {
+    /// Record a dismissal using a finalized saved run's mutation identity
+    Add {
+        /// Finalized saved run with a complete mutation inventory
+        run_dir: PathBuf,
+        /// Mutation ID in the saved run
+        #[arg(long)]
+        id: NonZeroUsize,
+        /// Required nonblank explanation of the review decision
+        #[arg(long)]
+        reason: String,
+        /// Optional nonblank supporting note
+        #[arg(long)]
+        note: Option<String>,
+    },
+    /// Inspect stored dismissals without running Go or checking current source
+    List,
+    /// Change a stored dismissal's reason or note (keeps its source identity)
+    Update {
+        /// Dismissal ID from `dismiss list`, not a saved-run mutation ID
+        id: NonZeroUsize,
+        /// Replace the reason with nonblank text
+        #[arg(long)]
+        reason: Option<String>,
+        /// Replace the note with nonblank text
+        #[arg(long, conflicts_with = "clear_note")]
+        note: Option<String>,
+        /// Remove the existing note
+        #[arg(long)]
+        clear_note: bool,
+    },
+    /// Remove a stored dismissal by its dismissal ID
+    Remove { id: NonZeroUsize },
+    /// Rediscover mutations and flag stale, missing, or ambiguous dismissals
+    Check,
 }
 
 #[derive(Copy, Clone, Default, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]

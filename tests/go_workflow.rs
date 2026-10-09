@@ -28,6 +28,15 @@ fn run(root: &Path, args: &[&str]) -> Output {
         .expect("could not start mutie")
 }
 
+fn dismiss(root: &Path, args: &[&str]) -> Output {
+    Command::new(env!("CARGO_BIN_EXE_mutie"))
+        .args(["dismiss", "--module"])
+        .arg(root)
+        .args(args)
+        .output()
+        .expect("could not start mutie dismiss")
+}
+
 fn stdout(output: &Output) -> String {
     assert!(
         output.status.success(),
@@ -126,8 +135,24 @@ fn go_workflow() {
     assert!(summary.contains("missed.go:4:"));
     let first_json = fs::read(first_directory.join("run.json")).unwrap();
 
+    stdout(&dismiss(
+        &root,
+        &[
+            "add",
+            first_directory.to_str().unwrap(),
+            "--id",
+            "3",
+            "--reason",
+            "accepted test gap",
+            "--note",
+            "Exercise persistent review metadata.",
+        ],
+    ));
+    assert!(stdout(&dismiss(&root, &["check"])).contains("1 matched; 0 require review"));
+    let dismissal_bytes = fs::read(root.join("mutie.dismissals.toml")).unwrap();
+
     // Select a killed and a missed arithmetic mutation by their source IDs.
-    // The build failure and timeout from the same report must not run again.
+    // The dismissed missed mutation still executes; the build failure and timeout do not.
     let focused = run(
         &root,
         &[
@@ -231,6 +256,7 @@ fn go_workflow() {
     // Adding a test changes the missed mutation's outcome without changing its
     // source identity. A focused rerun still gets a baseline and clean workspaces.
     fs::write(root.join("difference_test.go"), "package fixture\nimport \"testing\"\nfunc TestDifference(t *testing.T) { if Difference(5, 2) != 3 { t.Fatal(\"wrong difference\") } }\n").unwrap();
+    assert!(stdout(&dismiss(&root, &["check"])).contains("1 matched; 0 require review"));
     let rerun = run(
         &root,
         &["--rerun-missed", first_directory.to_str().unwrap()],
@@ -252,6 +278,10 @@ fn go_workflow() {
     assert_eq!(
         fs::read(first_directory.join("run.json")).unwrap(),
         first_json
+    );
+    assert_eq!(
+        fs::read(root.join("mutie.dismissals.toml")).unwrap(),
+        dismissal_bytes
     );
     assert!(!root.join("test-artifact").exists());
     assert_eq!(

@@ -25,6 +25,7 @@ cargo run -- /path/to/go/module --ui plain
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
 cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9,11
 cargo run -- report /path/to/saved/run
+cargo run -- dismiss --module /path/to/go/module list
 ```
 
 The path defaults to the current directory and must contain `go.mod`. Glob
@@ -197,14 +198,72 @@ previously killed mutations can also be selected. Commands are quoted for POSIX
 shells and are never executed by the browser. An actual rerun still checks source
 identity and requires a fresh baseline. Use `--module PATH` to change the module
 path in the generated command when the checkout has moved.
+Marks last only for the current browser session. Use [persistent dismissals](#persistent-dismissals)
+to record review decisions across sessions.
 
 The detail pane shows source location, operator, outcome/state, duration, and
 available diagnostics. Missing diff/log files appear as an inline message;
 other rows remain usable. Artifact previews read at most 256 KiB, replace terminal
 control characters, and flag truncation. The complete logs remain in the saved
 files. Artifact paths must resolve inside the report directory. JSON metadata is
-limited to 64 MiB per file. A module directory named `report` can still be run as
-`mutie ./report`.
+limited to 64 MiB per file. Module directories named `report` or `dismiss` can
+still be run as `mutie ./report` or `mutie ./dismiss`.
+
+## Persistent dismissals
+
+Record a review decision for a mutation from a finalized saved run:
+
+```sh
+cargo run -- dismiss --module /path/to/go/module add /path/to/saved/run \
+  --id 9 --reason 'accepted test gap' --note 'Boundary is validated by the caller.'
+cargo run -- dismiss --module /path/to/go/module list
+cargo run -- dismiss --module /path/to/go/module check
+cargo run -- dismiss --module /path/to/go/module update 1 --reason 'equivalent behavior'
+cargo run -- dismiss --module /path/to/go/module update 1 --clear-note
+cargo run -- dismiss --module /path/to/go/module remove 1
+```
+
+The module defaults to the current directory and must contain `go.mod`.
+`add --id` selects a **saved-run mutation ID**; `update` and `remove` use the
+independent **dismissal ID** printed by `add` and `list`. Dismissal IDs are not
+reused after removal. Reasons are required nonblank text; notes are optional.
+`update --note TEXT` replaces a note, and `--clear-note` removes it. Updating a
+reason or note preserves the stored mutation identity.
+
+Decisions live in `mutie.dismissals.toml` beside `go.mod`, separate from generated
+reports and `mutie.toml`. Commit this file to version control. It stores the
+reason, note, module-relative source path, SHA-256 source fingerprint, operator,
+byte range, source coordinates, and original/replacement text. No absolute
+checkout path or run-local ID is used for matching, so the metadata can move
+with the repository. CLI edits validate the entire file and replace it atomically;
+they reformat TOML and do not preserve hand-written comments. Malformed metadata,
+unknown fields, incompatible versions, duplicate IDs, and duplicate additions
+are rejected without overwriting the file.
+
+`add`, `list`, `update`, and `remove` need neither Go nor a valid `mutie.toml`.
+Adding records the saved identity without checking current source; listing labels
+it unchecked. `check` uses current Go package discovery and the include/exclude
+patterns and discovery timeout from `mutie.toml`. It runs in disposable workspaces,
+does not run tests, and creates no reports. With no dismissals, it skips discovery.
+
+Matching is strict, using the same source identity as focused reruns. Any edit to
+the mutation's source file invalidates its fingerprint, even a comment or an
+unrelated edit in that file. Test-only edits do not invalidate it. `check` reports
+matched, stale, missing (removed/excluded/inactive files or files without mutations),
+unmatched identity, or ambiguous entries. Duplicate identities introduced by a
+manual edit or merge are flagged as ambiguous when they match a current mutation.
+It exits nonzero when anything needs review and leaves metadata unchanged. Review
+such entries with `list`, remove obsolete decisions, and re-add from a fresh report
+when appropriate. It never silently attaches a decision to a different mutation.
+
+Dismissals record human judgment and **do not change execution outcomes or counts**.
+Normal runs and focused reruns still execute dismissed mutations; a missed result
+remains missed. Displaying dismissal reasons and filters inside saved reports and
+the report browser is planned next.
+
+Concurrent CLI edits are guarded by `.mutie.dismissals.lock`, normally removed on
+exit. If a process is forcibly stopped and leaves this file behind, confirm that
+no dismissal command is running before removing the lock and retrying.
 
 ## Focused reruns
 
@@ -419,7 +478,13 @@ Rerun tests cover saved-report validation, stale/missing/ambiguous targets, fres
 baselines, ID/operator/outcome intersections, invalid selectors, selection
 previews, new ID mappings, empty selections, source report preservation, and
 improved tests turning a previous missed result into killed. The opt-in real-Go
-test also selects a killed and a missed mutation by ID and operator.
+test also selects a killed and a dismissed missed mutation by ID and operator,
+checks the dismissal against real discovery, and verifies that a test-only change
+preserves its identity while the new tests kill the previously missed mutation.
+Dismissal tests cover persistence, independent IDs, reason/note edits, removal,
+strict rediscovery, moved checkouts, stale/missing/ambiguous entries, malformed
+metadata, concurrent-writer exclusion, and preservation of reports, source files,
+execution outcomes, counts, and rerun selection.
 Browser tests cover saved IDs, intersecting filters, marks hidden by filters,
 quoted command export, missing/bounded artifacts, Unicode input, and frame
 snapshots at wide and compact sizes. Unix PTY tests open reports with no Go or

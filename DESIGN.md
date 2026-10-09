@@ -467,26 +467,44 @@ report supplies a selection, not proof that an old result remains valid. More fl
 matching across source edits needs an explicit policy and validation before it
 can replace the current strict identity check.
 
-Add persistent dismissals for individual mutations as part of result review.
-Require a reason, such as "equivalent behavior" or "accepted test gap", with room
-for an explanatory note. Store these decisions in repository-owned metadata that
-can be version-controlled, independently of generated run reports. Users must be
-able to inspect, change, and remove dismissals.
+Persistent dismissals now use `mutie dismiss --module PATH add|list|update|remove|check`.
+`add RUN_DIR --id ID --reason TEXT [--note TEXT]` copies a finalized report's
+mutation identity into module-root `mutie.dismissals.toml`. Reasons and supplied
+notes must be nonblank. Entries have independent monotonic dismissal IDs for
+inspection, reason/note updates, and removal. The file is repository-owned and
+can be version-controlled independently of generated reports. CRUD commands
+require `go.mod` but no Go installation or configuration loading, and label source
+validity unchecked. They never alter the original report.
 
-A dismissal needs a source-aware identity, not just a run-local mutation ID or
-line number. Reuse the rediscovery and matching rules for focused reruns, taking
-the source path, operator, original/replacement text, and source context into
-account. Revalidate matches after source changes. Surface stale, missing, or
-ambiguous matches for review instead of silently applying the old decision to a
-different mutation. Choose the exact storage format and matching policy when
-implementing this feature.
+`identity.rs` shares exact source matching with focused reruns: module-relative
+path, full-file SHA-256 fingerprint, operator, byte range, coordinates, and
+original/replacement text must all agree. `dismiss check` loads repository
+configuration, snapshots the project, runs Go package discovery in a separate
+copy, and discovers mutations from pristine source. It runs no baseline or
+mutation tests and creates no reports. Empty stores skip discovery. Test-only
+changes and moved checkouts preserve identity; edits anywhere in a mutation's
+source file invalidate it. Missing candidates (including excluded/inactive files),
+changed fingerprints, unmatched identities, and ambiguous matches are printed
+for review with a nonzero exit status. Multiple stored entries matching the same
+current mutation are all ambiguous. Checks never rewrite metadata or retarget a
+dismissal; reassessment uses removal and addition against a fresh report.
 
-Keep review disposition separate from execution state and outcome: a dismissed
-missed mutation still has a missed outcome. Reports and result views should show
-the dismissal and its reason, distinguish dismissed findings from outstanding
-ones, and allow dismissed findings to be included when inspecting or selecting
-reruns. A dismissal records a human judgment; it is not automatic proof of
-equivalent behavior or a passing test result.
+`dismissals.rs` validates format/catalog compatibility, unique positive IDs,
+identity fields, reasons, and notes. The new metadata format starts at version 1;
+existing report and catalog versions are unchanged. CLI edits use an exclusive
+create-new lock during read/modify/write and atomic same-directory replacement.
+The temporary lock is removed on ordinary exit, including errors; a forcibly
+terminated writer can leave a lock requiring manual removal. Readers do not need
+the lock. CLI rewrites normalize TOML and discard comments. Duplicate identities
+are rejected on addition; manual/merge duplicates remain inspectable and removable
+so `check` can flag their ambiguity.
+
+Execution currently ignores dismissals, preserving all selections, outcomes, and
+counts. A dismissed missed mutation still has a missed outcome. Report/browser
+integration remains the next slice: show the dismissal and its reason separately
+from execution state, distinguish dismissed findings from outstanding ones, and
+allow dismissed findings in inspection and rerun selection. A dismissal records
+human judgment; it is not proof of equivalent behavior or a passing result.
 
 ### 2. Real-project validation and measured performance work
 
@@ -548,8 +566,10 @@ design. No runtime or plugin ABI is selected now.
    and `godotenv`.
 7. Add ID/operator selection and a saved-report browser with filters, diff/log
    inspection, and command export — completed with renderer and PTY coverage.
+8. Add repository-owned dismissal storage, CLI review commands, and strict
+   rediscovery checks — completed with persistence and execution-preservation coverage.
 
-Open implementation choices include persistent dismissals, report retention
+Open implementation choices include dismissal presentation in reports/browser, report retention
 policy, mutation matching across source edits, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding

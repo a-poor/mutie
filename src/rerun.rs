@@ -9,6 +9,7 @@ use serde::Serialize;
 
 use crate::{
     cancellation::Cancellation,
+    identity::MutationIdentity,
     mutation::{Mutation, Operator},
     report::{Outcome, RunStatus},
     report_reader::{LoadedReport, SavedMutation},
@@ -82,20 +83,6 @@ pub struct RerunRequest {
     pub source_run: PathBuf,
     #[serde(flatten)]
     pub filter: RerunFilter,
-}
-
-impl SavedMutation {
-    fn matches(&self, current: &Mutation) -> bool {
-        self.operator == current.operator
-            && self.byte_start == current.range.start
-            && self.byte_end == current.range.end
-            && self.original == current.original()
-            && self.replacement == current.replacement
-            && self.line == current.line
-            && self.column == current.column
-            && self.end_line == current.end_line
-            && self.end_column == current.end_column
-    }
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -196,7 +183,8 @@ impl RerunSelection {
                 target.id,
                 target.file.display()
             );
-            let mut matches = candidates.iter().filter(|(_, m)| target.matches(m));
+            let identity = MutationIdentity::from(target);
+            let mut matches = candidates.iter().filter(|(_, m)| identity.matches(m));
             let (index, _) = matches.next().with_context(|| {
                 format!(
                     "saved mutation {} in {} no longer matches a discovered mutation; no mutations were run",
