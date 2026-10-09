@@ -95,7 +95,10 @@ struct Session {
 
 impl Session {
     fn start(empty: bool, module: Option<&str>) -> Self {
-        let temp = fixture(empty);
+        Self::start_fixture(fixture(empty), module)
+    }
+
+    fn start_fixture(temp: tempfile::TempDir, module: Option<&str>) -> Self {
         let root = temp.path().join("saved run");
         let original = files(&root);
         let (mut master, mut slave) = (-1, -1);
@@ -288,6 +291,42 @@ impl Drop for Session {
             }
         }
     }
+}
+
+#[test]
+fn saved_dismissals_filter_and_export_without_a_checkout_or_go() {
+    let temp = fixture(false);
+    let path = temp.path().join("saved run/mutants.json");
+    let mut inventory: serde_json::Value =
+        serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    inventory["mutations"][0]["source_fingerprint"] = json!(format!("sha256:{}", "a".repeat(64)));
+    let mut identity = inventory["mutations"][0].clone();
+    identity.as_object_mut().unwrap().remove("id");
+    identity.as_object_mut().unwrap().remove("diff");
+    inventory["dismissals"] = json!({"matched": [{"mutation_id": 1, "dismissal": {
+        "id": 5, "reason": "accepted test gap", "note": "Reviewed boundary", "mutation": identity
+    }}], "needs_review": []});
+    fs::write(&path, serde_json::to_vec(&inventory).unwrap()).unwrap();
+    // Neither repository review data nor configuration is consulted by the browser.
+    fs::write(temp.path().join("mutie.dismissals.toml"), "[broken").unwrap();
+    let mut session = Session::start_fixture(temp, None);
+    session.expect("1 dismissed | 0 need review");
+    session.expect("accepted test gap");
+    session.send(b" s");
+    session.expect("Review: undismissed");
+    session.expect("Marked: 1 (1 hidden)");
+    session.send(b"s");
+    session.expect("Review: dismissed");
+    session.expect("[D]");
+    session.resize(24, 70);
+    session.expect("accepted test gap");
+    session.send(b"v");
+    session.expect("Saved dismissal review");
+    session.send(b"e");
+    assert!(session.finish().success());
+    session.assert_restored();
+    let output = String::from_utf8_lossy(&session.output);
+    assert!(output.contains("--id 1"));
 }
 
 fn termios(file: &File) -> libc::termios {

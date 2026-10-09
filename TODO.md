@@ -106,8 +106,10 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Match dismissals against rediscovered mutations using source-aware identity;
   surface stale, missing, or ambiguous matches with `dismiss check` for review
   after source changes.
-- [ ] Show dismissal reasons separately from actual execution outcomes in reports
+- [x] Show dismissal reasons separately from actual execution outcomes in reports
   and result views; allow dismissed findings to be included in inspection and reruns.
+  Capture portable review snapshots, add browser review filters and badges, and
+  expose unresolved entries without applying them or changing outcome counts.
 - [x] Test dismissal persistence, matching/invalidation, removal, and preservation
   of execution outcomes and counts.
 - [x] Validate findings and practical runtime on a small real Go project.

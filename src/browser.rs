@@ -84,6 +84,37 @@ impl ResultFilter {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum ReviewFilter {
+    All,
+    Undismissed,
+    Dismissed,
+}
+
+impl ReviewFilter {
+    fn next(self) -> Self {
+        match self {
+            Self::All => Self::Undismissed,
+            Self::Undismissed => Self::Dismissed,
+            Self::Dismissed => Self::All,
+        }
+    }
+    fn label(self) -> &'static str {
+        match self {
+            Self::All => "all",
+            Self::Undismissed => "undismissed",
+            Self::Dismissed => "dismissed",
+        }
+    }
+    fn matches(self, dismissed: bool) -> bool {
+        match self {
+            Self::All => true,
+            Self::Undismissed => !dismissed,
+            Self::Dismissed => dismissed,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum View {
     Diff,
     Log,
@@ -91,6 +122,7 @@ enum View {
     Discovery,
     Command,
     Help,
+    Dismissals,
 }
 
 impl View {
@@ -102,6 +134,7 @@ impl View {
             Self::Discovery => "Discovery log",
             Self::Command => "Rerun command",
             Self::Help => "Help",
+            Self::Dismissals => "Saved dismissal review",
         }
     }
 }
@@ -119,6 +152,7 @@ struct Browser {
     list: ListState,
     marked: BTreeSet<usize>,
     result: ResultFilter,
+    review: ReviewFilter,
     operator: Option<Operator>,
     file_filter: String,
     draft: Option<String>,
@@ -146,6 +180,7 @@ impl Browser {
             list: ListState::default(),
             marked: BTreeSet::new(),
             result: ResultFilter::All,
+            review: ReviewFilter::All,
             operator: None,
             file_filter: String::new(),
             draft: None,
@@ -179,6 +214,9 @@ impl Browser {
             .enumerate()
             .filter(|(index, mutation)| {
                 self.result.matches(&self.report.executions[*index])
+                    && self
+                        .review
+                        .matches(self.report.dismissal(mutation.id).is_some())
                     && self
                         .operator
                         .is_none_or(|operator| operator == mutation.operator)
@@ -245,7 +283,9 @@ impl Browser {
         self.scroll = 0;
         self.horizontal = 0;
         let text = if self.view == View::Help {
-            "Keyboard shortcuts\n\nq / Esc        Close browser\nCtrl-C          Interrupt and restore terminal\nTab             Switch list/detail focus\nUp/Down or j/k  Move through rows or detail lines\nPgUp/PgDn       Move one page\nHome/End        First/last row or detail line\nLeft/Right      Scroll detail horizontally\n\no               Cycle outcome/state filter\np               Cycle operator filter\n/               Edit file substring filter\nEnter / Esc     Apply/cancel file edit\nx               Clear filters\n\nSpace           Mark/unmark current mutation\na               Mark/unmark visible mutations\nc               Clear all marks, including hidden\n\nd               Show saved diff\nl               Show mutation log\nb / g           Show baseline/discovery log\nr               Show focused rerun command\ne               Close and print rerun command\n?               Show help\n\nMarks persist across filters. Commands use all marked\nIDs, including hidden marks, or the current row when\nnone are marked. No command is executed by this browser.\n\nArtifact previews are limited to 256 KiB. Open the\nsaved file directly for its complete contents.".to_owned()
+            "Keyboard shortcuts\n\nq / Esc        Close browser\nCtrl-C          Interrupt and restore terminal\nTab             Switch list/detail focus\nUp/Down or j/k  Move through rows or detail lines\nPgUp/PgDn       Move one page\nHome/End        First/last row or detail line\nLeft/Right      Scroll detail horizontally\n\no               Cycle outcome/state filter\np               Cycle operator filter\ns               Cycle all/undismissed/dismissed\n/               Edit file substring filter\nEnter / Esc     Apply/cancel file edit\nx               Clear filters\n\nSpace           Mark/unmark current mutation\na               Mark/unmark visible mutations\nc               Clear all marks, including hidden\n\nd               Show saved diff\nl               Show mutation log\nb / g           Show baseline/discovery log\nv               Show saved dismissal review\nr               Show focused rerun command\ne               Close and print rerun command\n?               Show help\n\n[D] marks dismissed mutations; outcomes are unchanged.\nDismissals reflect the saved run, not current metadata.\n\nMarks persist across filters. Commands use all marked\nIDs, including hidden marks, or the current row when\nnone are marked. No command is executed by this browser.\n\nArtifact previews are limited to 256 KiB. Open the\nsaved file directly for its complete contents.".to_owned()
+        } else if self.view == View::Dismissals {
+            self.dismissal_review()
         } else if self.view == View::Command {
             match self.command() {
                 Ok(command) => format!(
@@ -274,7 +314,7 @@ impl Browser {
                     .selected()
                     .and_then(|i| self.report.executions[i].logs.as_ref())
                     .and_then(|logs| logs.text.as_deref()),
-                View::Command | View::Help => None,
+                View::Command | View::Help | View::Dismissals => None,
             };
             let preface = match self.view {
                 View::Baseline | View::Discovery => {
@@ -305,7 +345,7 @@ impl Browser {
                         let mutation = &self.report.mutations[index];
                         let execution = &self.report.executions[index];
                         format!(
-                            "#{} {} | {} | {}\n{}:{}:{}\n{} -> {}\n{}\n",
+                            "#{} {} | {} | {}\n{}:{}:{}\n{} -> {}\n{}{}\n",
                             mutation.id,
                             execution_label(execution),
                             mutation.operator,
@@ -319,6 +359,17 @@ impl Browser {
                             mutation.column,
                             one_line(&mutation.original),
                             one_line(&mutation.replacement),
+                            self.report
+                                .dismissal(mutation.id)
+                                .map(|d| format!(
+                                    "Review: dismissed (saved at discovery)\n{}",
+                                    d.description()
+                                ))
+                                .unwrap_or_else(|| if self.report.dismissals.is_some() {
+                                    "Review: undismissed (saved at discovery)\n".into()
+                                } else {
+                                    "Dismissal review: not recorded\n".into()
+                                }),
                             execution
                                 .error
                                 .as_deref()
@@ -349,6 +400,50 @@ impl Browser {
             format!("{preface}{contents}")
         };
         self.detail = clean_text(&text).lines().map(str::to_owned).collect();
+    }
+
+    fn dismissal_review(&self) -> String {
+        let Some(snapshot) = &self.report.dismissals else {
+            return "Dismissal review was not recorded for this run.\nOlder reports and runs that did not reach inventory publication have no saved review.\n\nNo current checkout is read by this browser.".into();
+        };
+        let missed = self
+            .report
+            .executions
+            .iter()
+            .filter(|e| e.outcome == Some(Outcome::Missed));
+        let total_missed = missed.clone().count();
+        let dismissed_missed = missed
+            .filter(|e| self.report.dismissal(e.id).is_some())
+            .count();
+        let mut text = format!(
+            "Dismissals saved at discovery\n{} dismissed; {} need review\nMissed: {} undismissed; {} dismissed\nExecution outcomes and counts are unchanged.\n\nDecisions reflect this run's source snapshot.\nLater repository edits are not read by this browser.\n[D] marks dismissed rows. s cycles the review filter.\nDismissed rows can be marked and rerun.\n\nMatched dismissals:\n",
+            snapshot.matched.len(),
+            snapshot.needs_review.len(),
+            total_missed - dismissed_missed,
+            dismissed_missed
+        );
+        if snapshot.matched.is_empty() {
+            text.push_str("None.\n");
+        }
+        for entry in &snapshot.matched {
+            text.push_str(&format!(
+                "\nMutation #{}\n{}",
+                entry.mutation_id,
+                entry.dismissal.description()
+            ));
+        }
+        text.push_str("\nNeeds review (not applied):\n");
+        if snapshot.needs_review.is_empty() {
+            text.push_str("None.\n");
+        }
+        for entry in &snapshot.needs_review {
+            text.push_str(&format!(
+                "\n{}\n{}",
+                entry.status.label(),
+                entry.dismissal.description()
+            ));
+        }
+        text
     }
 
     fn hidden_marks(&self) -> usize {
@@ -476,8 +571,13 @@ impl Browser {
                 };
                 self.refilter();
             }
+            KeyCode::Char('s') => {
+                self.review = self.review.next();
+                self.refilter();
+            }
             KeyCode::Char('x') => {
                 self.result = ResultFilter::All;
+                self.review = ReviewFilter::All;
                 self.operator = None;
                 self.file_filter.clear();
                 self.refilter();
@@ -524,6 +624,10 @@ impl Browser {
             KeyCode::Char('l') => self.view = View::Log,
             KeyCode::Char('b') => self.view = View::Baseline,
             KeyCode::Char('g') => self.view = View::Discovery,
+            KeyCode::Char('v') => {
+                self.view = View::Dismissals;
+                self.focus = Focus::Detail;
+            }
             KeyCode::Char('r') => {
                 self.view = View::Command;
                 self.focus = Focus::Detail;
@@ -551,7 +655,7 @@ impl Browser {
         }
         let [heading, filters, body, footer] = Layout::vertical([
             Constraint::Length(1),
-            Constraint::Length(2),
+            Constraint::Length(3),
             Constraint::Min(2),
             Constraint::Length(2),
         ])
@@ -596,6 +700,19 @@ impl Browser {
                         ""
                     },
                     query
+                )),
+                Line::raw(format!(
+                    " Review: {} | {}",
+                    self.review.label(),
+                    self.report
+                        .dismissals
+                        .as_ref()
+                        .map(|d| format!(
+                            "{} dismissed | {} need review (saved)",
+                            d.matched.len(),
+                            d.needs_review.len()
+                        ))
+                        .unwrap_or_else(|| "not recorded".into())
                 )),
             ]),
             filters,
@@ -676,6 +793,14 @@ impl Browser {
                             format!("{:<12} ", execution_label(execution)),
                             outcome_style(execution.outcome),
                         ),
+                        Span::styled(
+                            if self.report.dismissal(mutation.id).is_some() {
+                                "[D] "
+                            } else {
+                                ""
+                            },
+                            Style::new().fg(Color::Cyan),
+                        ),
                         Span::raw(format!(
                             "{}:{}",
                             one_line(&mutation.file.to_string_lossy()),
@@ -718,7 +843,7 @@ impl Browser {
         let hints = if self.draft.is_some() {
             " Enter apply | Esc cancel | Backspace delete\n File filter: case-insensitive substring"
         } else {
-            " q quit | ? help | Tab focus | arrows scroll | Space mark\n o outcome p operator / file x reset | d diff l log r command"
+            " q quit | ? help | Tab focus | Space mark | v review\n o outcome p operator s review / file x reset | d diff l log r command"
         };
         frame.render_widget(Paragraph::new(hints).style(Style::new().dim()), footer);
     }
@@ -948,6 +1073,74 @@ mod tests {
     }
 
     #[test]
+    fn dismissal_filter_intersects_preserves_hidden_marks_and_shows_saved_review() {
+        let temp = crate::report_reader::fixture_with_dismissals();
+        let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
+        app.load_detail();
+        assert!(app.detail.join("\n").contains("#1 missed"));
+        assert!(
+            app.detail
+                .join("\n")
+                .contains("Review: dismissed (saved at discovery)")
+        );
+        assert!(app.detail.join("\n").contains("Reviewed café / 目录"));
+        assert!(!app.detail.join("\n").contains('\x1b'));
+        key(&mut app, KeyCode::Char(' '));
+        key(&mut app, KeyCode::Char('s'));
+        assert_eq!(app.visible, [1, 3]);
+        assert_eq!(app.hidden_marks(), 1);
+        assert!(app.command().unwrap().ends_with("--id 1"));
+        key(&mut app, KeyCode::Char('s'));
+        assert_eq!(app.visible, [0, 2]);
+        key(&mut app, KeyCode::Char('o'));
+        assert_eq!(app.visible, [0]);
+        key(&mut app, KeyCode::Char('p'));
+        assert!(app.visible.is_empty());
+        assert!(app.command().unwrap().ends_with("--id 1"));
+        key(&mut app, KeyCode::Char('x'));
+        assert_eq!(app.review, ReviewFilter::All);
+        key(&mut app, KeyCode::Char('s'));
+        key(&mut app, KeyCode::Char('s'));
+        key(&mut app, KeyCode::Char('/'));
+        app.handle(Event::Paste("c.go".into()));
+        key(&mut app, KeyCode::Enter);
+        assert_eq!(app.visible, [2]);
+        key(&mut app, KeyCode::Char('a'));
+        assert!(app.command().unwrap().ends_with("--id 1,3"));
+        key(&mut app, KeyCode::Char('v'));
+        let review = app.detail.join("\n");
+        for expected in [
+            "2 dismissed; 1 need review",
+            "Missed: 0 undismissed; 1 dismissed",
+            "missing",
+            "removed.go",
+            "outcomes and counts are unchanged",
+        ] {
+            assert!(review.contains(expected), "{review}");
+        }
+        assert!(key(&mut app, KeyCode::Char('e')));
+        assert!(app.export.unwrap().ends_with("--id 1,3"));
+    }
+
+    #[test]
+    fn legacy_reports_remain_browsable_with_unrecorded_review_and_empty_dismissed_filter() {
+        let (_temp, mut app) = browser();
+        assert!(
+            app.detail
+                .join("\n")
+                .contains("Dismissal review: not recorded")
+        );
+        key(&mut app, KeyCode::Char('s'));
+        assert_eq!(app.visible.len(), 4);
+        key(&mut app, KeyCode::Char('s'));
+        assert!(app.visible.is_empty());
+        key(&mut app, KeyCode::Char('v'));
+        assert!(app.detail.join("\n").contains("was not recorded"));
+        key(&mut app, KeyCode::Char('x'));
+        assert_eq!(app.visible.len(), 4);
+    }
+
+    #[test]
     fn input_editing_event_kinds_and_detail_navigation() {
         let (_temp, mut app) = browser();
         key(&mut app, KeyCode::Char('/'));
@@ -1119,6 +1312,53 @@ mod tests {
                 actual.trim_end(),
                 fs::read_to_string(path).unwrap().trim_end()
             );
+        }
+    }
+
+    #[test]
+    fn dismissal_frames_show_review_without_replacing_outcome_styles() {
+        let temp = crate::report_reader::fixture_with_dismissals();
+        let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
+        app.load_detail();
+        app.report.directory = PathBuf::from("/saved/run");
+        for (name, width, height, view) in [
+            ("report-dismissals-wide", 100, 24, View::Diff),
+            ("report-dismissals-compact", 70, 24, View::Diff),
+            ("report-review", 100, 28, View::Dismissals),
+        ] {
+            app.view = view;
+            app.load_detail();
+            let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+            terminal.draw(|frame| app.render(frame)).unwrap();
+            let buffer = terminal.backend().buffer();
+            let actual = text(buffer);
+            assert!(actual.contains("[D]"), "{actual}");
+            assert!(
+                buffer
+                    .content
+                    .iter()
+                    .any(|cell| cell.symbol() == "D" && cell.fg == Color::Cyan)
+            );
+            assert!(
+                buffer
+                    .content
+                    .iter()
+                    .any(|cell| cell.symbol() == "m" && cell.fg == Color::Red)
+            );
+            assert!(!actual.contains('\x1b'));
+            let path =
+                Path::new(env!("CARGO_MANIFEST_DIR")).join(format!("tests/snapshots/{name}.txt"));
+            if std::env::var_os("MUTIE_UPDATE_SNAPSHOTS").is_some() {
+                fs::write(&path, format!("{actual}\n")).unwrap();
+            }
+            assert_eq!(
+                actual.trim_end(),
+                fs::read_to_string(path).unwrap().trim_end()
+            );
+        }
+        for (width, height) in [(24, 12), (23, 11), (1, 1), (0, 0), (110, 14)] {
+            let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+            terminal.draw(|frame| app.render(frame)).unwrap();
         }
     }
 }

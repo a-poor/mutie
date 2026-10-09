@@ -1,0 +1,24 @@
+ mutie report interrupted | 4 mutations | 1 missed | /saved/run
+ Outcome: all | Operator: all | Marked: 0 (0 hidden)
+ File:
+ Review: all | 2 dismissed | 1 need review (saved)
+┌ > Mutations 4/4 ─────────────────────┐┌ Diff | line 1/16 ────────────────────────────────────────┐
+│> [ ] 000001 missed       [D] a.go:1  ││#1 missed | boolean_flip | 0.25s                          │
+│  [ ] 000002 killed       目录/b.go:1 ││a.go:1:1                                                  │
+│  [ ] 000003 interrupted  [D] c.go:1  ││true -> false                                             │
+│  [ ] 000004 pending      d.go:1      ││Review: dismissed (saved at discovery)                    │
+│                                      ││Dismissal 5: a.go                                         │
+│                                      ││Reason: accepted test gap                                 │
+│                                      ││Note: Reviewed café / 目录                                │
+│                                      ││�[2J remains text                                         │
+│                                      ││                                                          │
+│                                      ││Artifact: diff/000001.diff                                │
+│                                      ││                                                          │
+│                                      ││--- a/file.go                                             │
+│                                      ││+++ b/file.go                                             │
+│                                      ││@@ -1 +1 @@                                               │
+│                                      ││-true                                                     │
+│                                      ││+false                                                    │
+└──────────────────────────────────────┘└──────────────────────────────────────────────────────────┘
+ q quit | ? help | Tab focus | Space mark | v review
+ o outcome p operator s review / file x reset | d diff l log r command

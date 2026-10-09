@@ -1,0 +1,28 @@
+ mutie report interrupted | 4 mutations | 1 missed | /saved/run
+ Outcome: all | Operator: all | Marked: 0 (0 hidden)
+ File:
+ Review: all | 2 dismissed | 1 need review (saved)
+┌ > Mutations 4/4 ─────────────────────┐┌ Saved dismissal review | line 1/31 ──────────────────────┐
+│> [ ] 000001 missed       [D] a.go:1  ││Dismissals saved at discovery                             │
+│  [ ] 000002 killed       目录/b.go:1 ││2 dismissed; 1 need review                                │
+│  [ ] 000003 interrupted  [D] c.go:1  ││Missed: 0 undismissed; 1 dismissed                        │
+│  [ ] 000004 pending      d.go:1      ││Execution outcomes and counts are unchanged.              │
+│                                      ││                                                          │
+│                                      ││Decisions reflect this run's source snapshot.             │
+│                                      ││Later repository edits are not read by this browser.      │
+│                                      ││[D] marks dismissed rows. s cycles the review filter.     │
+│                                      ││Dismissed rows can be marked and rerun.                   │
+│                                      ││                                                          │
+│                                      ││Matched dismissals:                                       │
+│                                      ││                                                          │
+│                                      ││Mutation #1                                               │
+│                                      ││Dismissal 5: a.go                                         │
+│                                      ││Reason: accepted test gap                                 │
+│                                      ││Note: Reviewed café / 目录                                │
+│                                      ││�[2J remains text                                         │
+│                                      ││                                                          │
+│                                      ││Mutation #3                                               │
+│                                      ││Dismissal 7: c.go                                         │
+└──────────────────────────────────────┘└──────────────────────────────────────────────────────────┘
+ q quit | ? help | Tab focus | Space mark | v review
+ o outcome p operator s review / file x reset | d diff l log r command

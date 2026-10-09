@@ -133,6 +133,11 @@ async fn execute(
     );
     let snapshot =
         Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
+    let dismissal_store = if config.list {
+        None
+    } else {
+        Some(dismissals::Store::load(&snapshot.path())?)
+    };
     let baseline_workspace =
         create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
     let mut timeout = config
@@ -211,6 +216,10 @@ async fn execute(
         .context("mutation discovery panicked")??
     };
     cancellation.check()?;
+    let mut dismissals = dismissal_store
+        .map(|store| store.snapshot(&mutations, cancellation))
+        .transpose()?
+        .unwrap_or_default();
     let (mutations, rerun) = match rerun {
         Some(selection) => {
             let cancellation = cancellation.clone();
@@ -257,6 +266,7 @@ async fn execute(
     }
     let timeout = timeout.context("missing mutation timeout")?;
     let jobs = config.jobs.get().min(mutations.len());
+    dismissals.select(&mutations);
     coordinator.emit(RunEvent::Phase(Phase::Inventory), cancellation)?;
     coordinator.emit(
         RunEvent::Plan {
@@ -264,6 +274,7 @@ async fn execute(
             workers: jobs,
             timeout,
             rerun: rerun.as_ref(),
+            dismissals: &dismissals,
         },
         cancellation,
     )?;

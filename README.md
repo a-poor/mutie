@@ -181,12 +181,14 @@ inline. Terminals smaller than 24 columns by 12 rows show a resize hint.
 | Page Up/Down, Home/End | Page or jump to the first/last row or detail line |
 | Left/Right | Scroll the detail pane horizontally |
 | `o`, `p` | Cycle outcome/state and operator filters |
+| `s` | Cycle all / undismissed / dismissed review filters |
 | `/`, Enter, Esc | Edit, apply, or cancel a case-insensitive file substring filter |
 | `x` | Clear all filters |
 | Space | Mark/unmark the current mutation |
 | `a`, `c` | Mark/unmark all visible mutations; clear all marks |
 | `d`, `l` | Inspect the selected mutation's saved diff or log |
 | `b`, `g` | Inspect baseline or package-discovery logs |
+| `v` | Inspect the run's saved dismissal review, including unresolved entries |
 | `r` | Show a focused rerun command |
 | `e` | Close the browser and print the rerun command to the shell |
 | `?`, `q`/Esc | Show help; close the browser |
@@ -202,7 +204,19 @@ Marks last only for the current browser session. Use [persistent dismissals](#pe
 to record review decisions across sessions.
 
 The detail pane shows source location, operator, outcome/state, duration, and
-available diagnostics. Missing diff/log files appear as an inline message;
+available diagnostics. Dismissed rows have a `[D]` badge and show their saved reason
+and note in the detail pane. The review filter intersects with outcome, operator,
+and file filters; dismissed rows can still be marked and rerun, including when
+hidden by a filter. The header's missed count always includes dismissed results.
+`v` shows the undismissed/dismissed missed counts and any stale, missing, unmatched,
+or ambiguous entries that were not applied.
+
+Review data reflects the run's source snapshot. The browser reads neither current
+repository metadata nor source files, including with `--module` (which only changes
+generated command paths). Later dismissal edits do not rewrite historical reports.
+Older reports and runs that stopped before inventory publication show review as
+**not recorded**; all their rows remain available under all/undismissed, with no
+rows under dismissed. Missing diff/log files appear as an inline message;
 other rows remain usable. Artifact previews read at most 256 KiB, replace terminal
 control characters, and flag truncation. The complete logs remain in the saved
 files. Artifact paths must resolve inside the report directory. JSON metadata is
@@ -258,8 +272,25 @@ when appropriate. It never silently attaches a decision to a different mutation.
 
 Dismissals record human judgment and **do not change execution outcomes or counts**.
 Normal runs and focused reruns still execute dismissed mutations; a missed result
-remains missed. Displaying dismissal reasons and filters inside saved reports and
-the report browser is planned next.
+remains missed. Each new run captures review metadata from its pristine project
+snapshot and matches it against discovery before applying rerun selection. Matching
+decisions for selected mutations, with the new run's IDs, and unresolved entries
+are stored in `mutants.json`. Valid decisions outside a rerun selection are omitted,
+without being flagged as missing. Review issues do not fail execution or suppress
+mutations. Invalid metadata fails a run before invoking Go; `--list` remains a
+source-only operation and does not load dismissal metadata.
+
+`summary.txt` separates dismissed and undismissed missed counts and includes reasons,
+notes, and unresolved entries. Execution counts in `outcomes.json` and all outcome
+lists remain unchanged. To see a newly added or edited decision in the browser,
+run Mutie again (a focused rerun is fine) and open the new report:
+
+```sh
+cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9
+cargo run -- report /path/to/new/run
+```
+
+Press `s` to filter by review status or `v` to inspect the saved dismissal review.
 
 Concurrent CLI edits are guarded by `.mutie.dismissals.lock`, normally removed on
 exit. If a process is forcibly stopped and leaves this file behind, confirm that
@@ -381,6 +412,16 @@ hex digest of the complete original source file. It identifies source content,
 not test content or a reusable result. IDs and offsets must not be replayed across
 source edits without rediscovery and validation.
 
+After inventory publication, `mutants.json` also contains `dismissals` with
+`matched` and `needs_review` arrays. A matched entry pairs `mutation_id` with a
+`dismissal` containing its independent `id`, `reason`, optional `note`, and full
+`mutation` identity. An unresolved entry has the same dismissal record and a
+`status` of `stale`, `missing`, `unmatched`, or `ambiguous`. Readers validate IDs
+and matched identities before browsing or rerunning. This data is optional for
+older reports; absence means review was not recorded. An empty captured review
+explicitly records that no dismissal decisions applied. It remains usable when
+the checkout or repository metadata is unavailable.
+
 `schema_version` is `1` in all three JSON files, and `operator_catalog_version` is
 `1` in run metadata and the inventory. Named operators are `arithmetic_replace`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `boolean_flip`, and
@@ -484,7 +525,10 @@ preserves its identity while the new tests kill the previously missed mutation.
 Dismissal tests cover persistence, independent IDs, reason/note edits, removal,
 strict rediscovery, moved checkouts, stale/missing/ambiguous entries, malformed
 metadata, concurrent-writer exclusion, and preservation of reports, source files,
-execution outcomes, counts, and rerun selection.
+execution outcomes, counts, and rerun selection. Report tests cover frozen review
+data, rerun ID remapping, omitted valid decisions, invalid snapshot rejection,
+and compatibility with older reports. Browser snapshots and PTY tests cover review
+filters, badges, reasons/notes, hidden marks, export, and checkout-free viewing.
 Browser tests cover saved IDs, intersecting filters, marks hidden by filters,
 quoted command export, missing/bounded artifacts, Unicode input, and frame
 snapshots at wide and compact sizes. Unix PTY tests open reports with no Go or

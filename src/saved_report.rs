@@ -11,6 +11,7 @@ use serde::Serialize;
 use crate::{
     cancellation::{Cancellation, Interrupted},
     config::RunConfig,
+    dismissals::DismissalSnapshot,
     go,
     mutation::{Mutation, OPERATOR_CATALOG_VERSION, Operator},
     process::CommandOutput,
@@ -52,6 +53,8 @@ struct Inventory {
     operator_catalog_version: u32,
     complete: bool,
     mutations: Vec<PlannedMutation>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    dismissals: Option<DismissalSnapshot>,
 }
 
 #[derive(Serialize)]
@@ -171,6 +174,7 @@ impl SavedReport {
                 operator_catalog_version: OPERATOR_CATALOG_VERSION,
                 complete: false,
                 mutations: Vec::new(),
+                dismissals: None,
             },
             outcomes: Outcomes {
                 schema_version: SCHEMA_VERSION,
@@ -233,6 +237,7 @@ impl SavedReport {
         workers: usize,
         timeout: Duration,
         rerun: Option<&RerunProvenance>,
+        dismissals: &DismissalSnapshot,
         cancellation: &Cancellation,
     ) -> Result<()> {
         ensure!(
@@ -262,6 +267,7 @@ impl SavedReport {
             });
         }
         self.inventory.mutations = inventory;
+        self.inventory.dismissals = Some(dismissals.clone());
         self.inventory.complete = true;
         self.write("mutants.json", &serde_json::to_vec_pretty(&self.inventory)?)?;
         self.outcomes.mutations = self
@@ -459,6 +465,30 @@ impl SavedReport {
                 ));
             }
         }
+        if let Some(dismissals) = &self.inventory.dismissals {
+            let dismissed_missed = self
+                .outcomes
+                .mutations
+                .iter()
+                .filter(|e| {
+                    e.outcome == Some(Outcome::Missed) && dismissals.dismissal(e.id).is_some()
+                })
+                .count();
+            text.push_str(&format!(
+                "Dismissals (saved at discovery): {} matched; {} need review\nMissed review: {} undismissed; {} dismissed (outcomes unchanged)\n",
+                dismissals.matched.len(), dismissals.needs_review.len(),
+                self.outcomes.summary.missed - dismissed_missed, dismissed_missed
+            ));
+            for issue in &dismissals.needs_review {
+                text.push_str(&format!(
+                    "  Needs review ({}): {}",
+                    issue.status.label(),
+                    issue.dismissal.description()
+                ));
+            }
+        } else {
+            text.push_str("Dismissal review: not recorded\n");
+        }
         if let Some(planned) = self.run.planned_mutations {
             text.push_str(&format!(
                 "Reported: {}/{planned}\n",
@@ -502,6 +532,7 @@ impl SavedReport {
                 if let Some(logs) = &execution.logs {
                     text.push_str(&format!("    Output: {}\n", logs.text));
                 }
+                self.append_dismissal(&mut text, execution.id);
             }
         }
         text.push_str("\nAll mutations (source paths are module-relative; artifact paths are report-relative):\n");
@@ -526,11 +557,26 @@ impl SavedReport {
             if let Some(logs) = &execution.logs {
                 text.push_str(&format!("    Output: {}\n", logs.text));
             }
+            self.append_dismissal(&mut text, execution.id);
             if let Some(error) = &execution.error {
                 text.push_str(&format!("    Error: {error}\n"));
             }
         }
         text
+    }
+
+    fn append_dismissal(&self, text: &mut String, id: usize) {
+        if let Some(dismissal) = self
+            .inventory
+            .dismissals
+            .as_ref()
+            .and_then(|d| d.dismissal(id))
+        {
+            text.push_str("    Review: dismissed (saved at discovery)\n");
+            for line in dismissal.description().lines() {
+                text.push_str(&format!("    {line}\n"));
+            }
+        }
     }
 }
 
@@ -589,6 +635,7 @@ mod tests {
             2,
             Duration::from_secs(10),
             None,
+            &DismissalSnapshot::default(),
             &Cancellation::default(),
         )?;
         let inventory = fs::read(report.path().join("mutants.json"))?;
@@ -696,6 +743,7 @@ mod tests {
                     1,
                     Duration::from_secs(10),
                     None,
+                    &DismissalSnapshot::default(),
                     &Cancellation::default()
                 )
                 .is_err()

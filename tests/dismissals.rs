@@ -44,6 +44,9 @@ if [ "$1" = list ]; then
     printf ']}\n'
     # Discovery side effects must not change source identity or the checkout.
     printf 'package p\nvar b = false\n' > b.go
+    if [ -f mutie.dismissals.toml ]; then
+        printf '[broken\n' > mutie.dismissals.toml
+    fi
     exit 0
 fi
 if grep -q 'a = false' a.go; then
@@ -408,7 +411,25 @@ fn dismissals_preserve_saved_reports_execution_outcomes_and_rerun_selection() {
     let metadata = fixture.bytes();
     let run = fixture.run(&[]);
     assert!(success(&run).contains("2 mutations: 1 killed, 1 missed"));
-    let outcomes = json(&report_path(&run), "outcomes.json");
+    let current = report_path(&run);
+    let current_inventory = fs::read(current.join("mutants.json")).unwrap();
+    let snapshot = json(&current, "mutants.json")["dismissals"].clone();
+    assert_eq!(snapshot["matched"][0]["mutation_id"], 2);
+    assert_eq!(snapshot["matched"][0]["dismissal"]["id"], 1);
+    assert_eq!(
+        snapshot["matched"][0]["dismissal"]["reason"],
+        "accepted test gap"
+    );
+    assert!(snapshot["needs_review"].as_array().unwrap().is_empty());
+    let summary = fs::read_to_string(current.join("summary.txt")).unwrap();
+    assert!(summary.contains("Missed review: 0 undismissed; 1 dismissed"));
+    assert!(summary.contains("Reviewed café behavior."));
+    assert!(
+        fs::read_to_string(current.join("missed.txt"))
+            .unwrap()
+            .contains("b.go")
+    );
+    let outcomes = json(&current, "outcomes.json");
     assert_eq!(outcomes["mutations"][0]["outcome"], "killed");
     assert_eq!(outcomes["mutations"][1]["outcome"], "missed");
     let rerun = fixture.run(&["--rerun-missed", report.to_str().unwrap()]);
@@ -416,6 +437,12 @@ fn dismissals_preserve_saved_reports_execution_outcomes_and_rerun_selection() {
     assert_eq!(
         json(&report_path(&rerun), "run.json")["rerun"]["mutations"][0]["source_id"],
         2
+    );
+    let rerun_snapshot = json(&report_path(&rerun), "mutants.json")["dismissals"].clone();
+    assert_eq!(rerun_snapshot["matched"][0]["mutation_id"], 1);
+    assert_eq!(
+        rerun_snapshot["matched"][0]["dismissal"],
+        snapshot["matched"][0]["dismissal"]
     );
     for (name, bytes) in saved {
         assert_eq!(fs::read(report.join(name)).unwrap(), bytes);
@@ -427,6 +454,103 @@ fn dismissals_preserve_saved_reports_execution_outcomes_and_rerun_selection() {
             format!("package p\nvar {name} = true\n")
         );
     }
+    success(&fixture.dismiss(&["remove", "1"]));
+    // Reading a report uses its saved review, never today's repository metadata.
+    success(&fixture.run(&["--rerun", current.to_str().unwrap(), "--list"]));
+    assert_eq!(
+        fs::read(current.join("mutants.json")).unwrap(),
+        current_inventory
+    );
+    let fresh = fixture.report();
+    assert!(
+        json(&fresh, "mutants.json")["dismissals"]["matched"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+}
+
+#[test]
+fn reports_capture_review_issues_without_applying_them_or_failing_execution() {
+    let fixture = Fixture::new();
+    let report = fixture.report();
+    success(&fixture.add(&report, "1"));
+    success(&fixture.add(&report, "2"));
+    let original = fixture.store();
+
+    // Valid decisions outside a focused selection are not reported as missing.
+    let focused = report_path(&fixture.run(&["--rerun", report.to_str().unwrap(), "--id", "2"]));
+    let review = json(&focused, "mutants.json")["dismissals"].clone();
+    assert_eq!(review["matched"].as_array().unwrap().len(), 1);
+    assert_eq!(review["matched"][0]["mutation_id"], 1);
+    assert_eq!(review["matched"][0]["dismissal"]["id"], 2);
+    assert!(review["needs_review"].as_array().unwrap().is_empty());
+    // The shared reader validates the remapped identity before a further rerun.
+    success(&fixture.run(&["--rerun", focused.to_str().unwrap(), "--list"]));
+
+    fs::write(
+        fixture.root.join("b.go"),
+        "package p\n// changed source\nvar b = true\n",
+    )
+    .unwrap();
+    let stale = fixture.report();
+    let review = json(&stale, "mutants.json")["dismissals"].clone();
+    assert_eq!(review["matched"].as_array().unwrap().len(), 1);
+    assert_eq!(review["needs_review"][0]["status"], "stale");
+    assert_eq!(review["needs_review"][0]["dismissal"]["id"], 2);
+    let summary = fs::read_to_string(stale.join("summary.txt")).unwrap();
+    assert!(summary.contains("Missed review: 1 undismissed; 0 dismissed"));
+    assert!(summary.contains("Needs review (stale)"));
+    success(&fixture.run(&["--rerun", stale.to_str().unwrap(), "--list"]));
+
+    fs::write(fixture.root.join("b.go"), "package p\nvar b = true\n").unwrap();
+    let mut duplicate = original.clone();
+    let mut entry = duplicate["dismissals"][1].clone();
+    entry["id"] = toml::Value::Integer(3);
+    duplicate["dismissals"].as_array_mut().unwrap().push(entry);
+    duplicate["next_id"] = toml::Value::Integer(4);
+    fixture.write_store(&duplicate);
+    let ambiguous = fixture.report();
+    let review = json(&ambiguous, "mutants.json")["dismissals"].clone();
+    assert_eq!(review["matched"].as_array().unwrap().len(), 1);
+    assert_eq!(review["needs_review"].as_array().unwrap().len(), 2);
+    assert!(
+        review["needs_review"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|e| e["status"] == "ambiguous")
+    );
+    success(&fixture.run(&["--rerun", ambiguous.to_str().unwrap(), "--list"]));
+
+    fixture.write_store(&original);
+    fs::write(fixture.root.join("mutie.toml"), "exclude = ['b.go']\n").unwrap();
+    let missing = fixture.report();
+    assert_eq!(
+        json(&missing, "mutants.json")["dismissals"]["needs_review"][0]["status"],
+        "missing"
+    );
+    assert_eq!(json(&missing, "outcomes.json")["summary"]["killed"], 1);
+}
+
+#[test]
+fn malformed_dismissal_metadata_fails_runs_before_go_and_never_invents_a_review() {
+    let fixture = Fixture::new();
+    fs::write(fixture.root.join("mutie.dismissals.toml"), "[broken").unwrap();
+    fixture.reset_calls();
+    let output = fixture.run(&[]);
+    failure(&output, "parsing");
+    assert_eq!(fixture.calls(), "");
+    let directory: PathBuf = String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .find_map(|l| l.strip_prefix("Saving report to "))
+        .unwrap()
+        .into();
+    assert_eq!(json(&directory, "run.json")["status"], "failed");
+    assert_eq!(json(&directory, "mutants.json")["complete"], false);
+    assert!(json(&directory, "mutants.json").get("dismissals").is_none());
+    // Listing remains a source-only operation, independent of review metadata.
+    success(&fixture.run(&["--list"]));
 }
 
 #[test]

@@ -12,6 +12,7 @@ use tokio::sync::watch;
 use crate::{
     cancellation::{Cancellation, Interrupted},
     config::RunConfig,
+    dismissals::DismissalSnapshot,
     go,
     mutation::Mutation,
     process::CommandOutput,
@@ -52,6 +53,7 @@ pub enum RunEvent<'a> {
         workers: usize,
         timeout: Duration,
         rerun: Option<&'a RerunProvenance>,
+        dismissals: &'a DismissalSnapshot,
     },
     Started {
         id: usize,
@@ -274,7 +276,15 @@ impl Coordinator {
                     workers,
                     timeout,
                     rerun,
-                } => report.plan(mutations, *workers, *timeout, *rerun, cancellation)?,
+                    dismissals,
+                } => report.plan(
+                    mutations,
+                    *workers,
+                    *timeout,
+                    *rerun,
+                    dismissals,
+                    cancellation,
+                )?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
                 RunEvent::Finished { result, .. } => report.record(result)?,
                 RunEvent::Progress(_) => {} // Transient phases never change persisted outcomes.
@@ -381,6 +391,7 @@ mod tests {
                 workers: 2,
                 timeout: Duration::from_secs(10),
                 rerun: None,
+                dismissals: &DismissalSnapshot::default(),
             },
             &cancellation,
         )?;

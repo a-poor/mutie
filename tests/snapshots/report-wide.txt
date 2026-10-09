@@ -1,11 +1,13 @@
  mutie report interrupted | 4 mutations | 1 missed | /saved/run
  Outcome: all | Operator: all | Marked: 0 (0 hidden)
  File:
-┌ > Mutations 4/4 ─────────────────────┐┌ Diff | line 1/11 ────────────────────────────────────────┐
+ Review: all | not recorded
+┌ > Mutations 4/4 ─────────────────────┐┌ Diff | line 1/12 ────────────────────────────────────────┐
 │> [ ] 000001 missed       a.go:1      ││#1 missed | boolean_flip | 0.25s                          │
 │  [ ] 000002 killed       目录/b.go:1 ││a.go:1:1                                                  │
 │  [ ] 000003 interrupted  c.go:1      ││true -> false                                             │
-│  [ ] 000004 pending      d.go:1      ││                                                          │
+│  [ ] 000004 pending      d.go:1      ││Dismissal review: not recorded                            │
+│                                      ││                                                          │
 │                                      ││Artifact: diff/000001.diff                                │
 │                                      ││                                                          │
 │                                      ││--- a/file.go                                             │
@@ -17,8 +19,6 @@
 │                                      ││                                                          │
 │                                      ││                                                          │
 │                                      ││                                                          │
-│                                      ││                                                          │
-│                                      ││                                                          │
 └──────────────────────────────────────┘└──────────────────────────────────────────────────────────┘
- q quit | ? help | Tab focus | arrows scroll | Space mark
- o outcome p operator / file x reset | d diff l log r command
+ q quit | ? help | Tab focus | Space mark | v review
+ o outcome p operator s review / file x reset | d diff l log r command

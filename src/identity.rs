@@ -43,6 +43,24 @@ impl From<&SavedMutation> for MutationIdentity {
     }
 }
 
+impl From<&Mutation> for MutationIdentity {
+    fn from(m: &Mutation) -> Self {
+        Self {
+            file: m.file.path.clone(),
+            operator: m.operator,
+            source_fingerprint: m.file.fingerprint.clone(),
+            byte_start: m.range.start,
+            byte_end: m.range.end,
+            line: m.line,
+            column: m.column,
+            end_line: m.end_line,
+            end_column: m.end_column,
+            original: m.original().to_owned(),
+            replacement: m.replacement.to_owned(),
+        }
+    }
+}
+
 impl MutationIdentity {
     pub fn matches(&self, current: &Mutation) -> bool {
         self.file == current.file.path

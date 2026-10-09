@@ -322,11 +322,18 @@ Both rerun selection and the browser use this validation. Failed/interrupted
 runs without an inventory can be inspected; reruns still require a complete
 inventory. Metadata reads are capped at 64 MiB per JSON file.
 
-`browser.rs` owns selection, marks, outcome/operator/file filters, input editing,
+`browser.rs` owns selection, marks, outcome/operator/file/review filters, input editing,
 detail scrolling, and cached artifact text. Rendering is a projection of that
 state with no file I/O. Artifact changes load at most 256 KiB and sanitize terminal
 controls; missing files show inline errors. Artifact references must resolve to
 regular files inside the report directory. The browser never modifies reports.
+Dismissal data comes only from the saved inventory, never current checkout files.
+`s` cycles all/undismissed/dismissed; it intersects with the other filters and keeps
+hidden marks. `[D]` badges and saved reasons/notes accompany actual outcomes, and
+`v` opens a scrollable review summary with unresolved entries. Older reports and
+pre-inventory failures show review as not recorded; their rows have no recorded
+dismissal. `--module` only affects command generation. Rendering remains on pinned
+Ratatui 0.30.1/Crossterm 0.29.0 with the existing lifecycle and event loop.
 
 The synchronous event loop runs on a blocking task, leaving Tokio's cancellation
 handlers responsive. It polls every 100 ms and redraws on input/resize. Ratatui's
@@ -499,12 +506,33 @@ the lock. CLI rewrites normalize TOML and discard comments. Duplicate identities
 are rejected on addition; manual/merge duplicates remain inspectable and removable
 so `check` can flag their ambiguity.
 
-Execution currently ignores dismissals, preserving all selections, outcomes, and
-counts. A dismissed missed mutation still has a missed outcome. Report/browser
-integration remains the next slice: show the dismissal and its reason separately
-from execution state, distinguish dismissed findings from outstanding ones, and
-allow dismissed findings in inspection and rerun selection. A dismissal records
-human judgment; it is not proof of equivalent behavior or a passing result.
+New runs load dismissal metadata from the pristine snapshot before Go starts;
+invalid metadata fails the run at that point. Source-only `--list` does not load it.
+After discovery, `DismissalSnapshot` partitions decisions into uniquely matched
+entries and entries needing review. Matching happens before rerun filtering, so
+valid decisions outside the selection are omitted without being called missing.
+Selected matches are then mapped to the new inventory IDs. The plan event carries
+the review to the report writer, which publishes it with the immutable inventory
+before starting workers. Go command side effects and later checkout changes cannot
+alter the captured decisions.
+
+`mutants.json` has an optional `dismissals` object with `matched` and `needs_review`
+arrays. Matched records pair a run-local `mutation_id` with a full dismissal
+(independent ID, reason, optional note, source identity). Review issues pair a
+status with the same record. Readers validate required text, identities, unique
+IDs/targets, and references to inventory mutations; issues cannot also be applied
+as matches. Missing review data means not recorded for legacy or pre-inventory
+reports; empty arrays mean an explicit empty review. No schema/catalog version
+bump is needed during local development.
+
+`summary.txt` shows separate dismissed/undismissed missed counts, reasons/notes,
+and unresolved entries. The browser exposes these through badges, details, a review
+filter, and a review summary. Saved decisions remain historical: adding a dismissal
+after a run requires a new run or focused rerun to capture it for browsing. Browsing
+requires neither Go nor current repository metadata. Outcome counts, outcome lists,
+execution, and rerun selection continue to include dismissed mutations. A dismissed
+missed mutation still has a missed outcome; a rerun can later kill it. A dismissal
+records human judgment, not proof of equivalent behavior or a passing result.
 
 ### 2. Real-project validation and measured performance work
 
@@ -568,8 +596,11 @@ design. No runtime or plugin ABI is selected now.
    inspection, and command export — completed with renderer and PTY coverage.
 8. Add repository-owned dismissal storage, CLI review commands, and strict
    rediscovery checks — completed with persistence and execution-preservation coverage.
+9. Capture dismissal decisions in saved reports and expose browser review filters,
+   details, and unresolved entries — completed with reader validation, renderer,
+   PTY, rerun-remapping, and real-Go coverage.
 
-Open implementation choices include dismissal presentation in reports/browser, report retention
+Open implementation choices include dismissal editing in the browser, report retention
 policy, mutation matching across source edits, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding

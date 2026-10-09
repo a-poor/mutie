@@ -10,6 +10,7 @@ use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, de::DeserializeOwned};
 
 use crate::{
+    dismissals::{Dismissal, DismissalSnapshot},
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
     report::{ExecutionState, Outcome, RunStatus},
     saved_report::SCHEMA_VERSION,
@@ -34,6 +35,7 @@ struct SavedInventory {
     operator_catalog_version: u32,
     complete: bool,
     mutations: Vec<SavedMutation>,
+    dismissals: Option<DismissalSnapshot>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -94,6 +96,7 @@ pub struct LoadedReport {
     pub executions: Vec<SavedExecution>,
     pub baseline: Option<SavedCommand>,
     pub discovery: Option<SavedCommand>,
+    pub dismissals: Option<DismissalSnapshot>,
 }
 
 impl LoadedReport {
@@ -108,7 +111,7 @@ impl LoadedReport {
             .context("opening report directory")?;
         ensure!(directory.is_dir(), "saved report is not a directory");
         let run: SavedRun = read_json(&directory, "run.json")?;
-        let inventory: SavedInventory = read_json(&directory, "mutants.json")?;
+        let mut inventory: SavedInventory = read_json(&directory, "mutants.json")?;
         let outcomes: SavedOutcomes = read_json(&directory, "outcomes.json")?;
         for (name, version) in [
             ("run.json", run.schema_version),
@@ -171,6 +174,15 @@ impl LoadedReport {
             );
         }
         let mut executions = BTreeMap::new();
+        if let Some(dismissals) = &mut inventory.dismissals {
+            ensure!(
+                inventory.complete,
+                "incomplete inventory cannot contain a dismissal review"
+            );
+            dismissals
+                .validate(&mutations)
+                .context("validating saved dismissal review")?;
+        }
         for execution in outcomes.mutations {
             let id = execution.id;
             ensure!(
@@ -202,7 +214,12 @@ impl LoadedReport {
             executions: executions.into_values().collect(),
             baseline: outcomes.baseline,
             discovery: outcomes.discovery,
+            dismissals: inventory.dismissals,
         })
+    }
+
+    pub fn dismissal(&self, id: usize) -> Option<&Dismissal> {
+        self.dismissals.as_ref().and_then(|d| d.dismissal(id))
     }
 
     pub fn artifact(&self, path: &Path) -> Result<String> {
@@ -347,6 +364,34 @@ pub(crate) fn fixture() -> tempfile::TempDir {
 }
 
 #[cfg(test)]
+pub(crate) fn fixture_with_dismissals() -> tempfile::TempDir {
+    use serde_json::{Value, json};
+    use std::fs;
+    let temp = fixture();
+    let path = temp.path().join("mutants.json");
+    let mut inventory: Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+    for mutation in inventory["mutations"].as_array_mut().unwrap() {
+        mutation["source_fingerprint"] = json!(format!("sha256:{}", "a".repeat(64)));
+    }
+    let dismissal = |index: usize, id: usize| {
+        let mutation: SavedMutation =
+            serde_json::from_value(inventory["mutations"][index].clone()).unwrap();
+        json!({"id": id, "reason": "accepted test gap", "note": "Reviewed café / 目录\n\u{001b}[2J remains text",
+            "mutation": crate::identity::MutationIdentity::from(&mutation)})
+    };
+    let first = dismissal(0, 5);
+    let interrupted = dismissal(2, 7);
+    let mut missing = dismissal(1, 8);
+    missing["mutation"]["file"] = json!("removed.go");
+    inventory["dismissals"] = json!({
+        "matched": [{"mutation_id": 1, "dismissal": first}, {"mutation_id": 3, "dismissal": interrupted}],
+        "needs_review": [{"status": "missing", "dismissal": missing}]
+    });
+    fs::write(path, serde_json::to_vec(&inventory).unwrap()).unwrap();
+    temp
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use std::fs;
@@ -372,6 +417,106 @@ mod tests {
         assert_eq!(report.mutations[1].file, Path::new("目录/b.go"));
         assert_eq!(report.executions[1].outcome, Some(Outcome::Killed));
         assert!(!report.run.module_root.unwrap().exists());
+        assert!(report.dismissals.is_none());
+    }
+
+    #[test]
+    fn saved_dismissals_are_validated_and_sorted_without_a_checkout() {
+        let temp = fixture_with_dismissals();
+        update(temp.path(), "mutants.json", |v| {
+            v["mutations"].as_array_mut().unwrap().reverse();
+            v["dismissals"]["matched"].as_array_mut().unwrap().reverse();
+        });
+        let report = LoadedReport::load(temp.path()).unwrap();
+        assert_eq!(report.dismissal(1).unwrap().id, 5);
+        assert!(report.dismissal(2).is_none());
+        assert_eq!(report.dismissal(3).unwrap().id, 7);
+        assert_eq!(report.executions[0].outcome, Some(Outcome::Missed));
+        assert_eq!(report.executions[2].state, ExecutionState::Interrupted);
+        assert_eq!(
+            report.dismissals.unwrap().needs_review[0]
+                .dismissal
+                .mutation
+                .file,
+            Path::new("removed.go")
+        );
+    }
+
+    #[test]
+    fn rejects_inconsistent_saved_dismissal_snapshots() {
+        use serde_json::json;
+        for (pointer, value, expected) in [
+            (
+                "/matched/0/mutation_id",
+                json!(99),
+                "unknown saved mutation",
+            ),
+            ("/matched/1/mutation_id", json!(1), "multiple dismissals"),
+            (
+                "/matched/1/dismissal/id",
+                json!(5),
+                "duplicate saved dismissal ID",
+            ),
+            (
+                "/needs_review/0/dismissal/id",
+                json!(5),
+                "duplicate saved dismissal ID",
+            ),
+            (
+                "/matched/0/dismissal/reason",
+                json!(" "),
+                "reason must not be blank",
+            ),
+            (
+                "/matched/0/dismissal/note",
+                json!(""),
+                "note must not be blank",
+            ),
+            (
+                "/matched/0/dismissal/mutation/replacement",
+                json!("other"),
+                "identity does not match",
+            ),
+            (
+                "/matched/0/dismissal/mutation/file",
+                json!("../a.go"),
+                "invalid module-relative",
+            ),
+            (
+                "/matched/0/dismissal/mutation/source_fingerprint",
+                json!("sha256:bad"),
+                "invalid source fingerprint",
+            ),
+            (
+                "/needs_review/0/status",
+                json!({"matched": 1}),
+                "issue cannot be a matched",
+            ),
+            (
+                "/needs_review/0/status",
+                json!("unknown"),
+                "unknown variant",
+            ),
+        ] {
+            let temp = fixture_with_dismissals();
+            update(temp.path(), "mutants.json", |v| {
+                *v["dismissals"].pointer_mut(pointer).unwrap() = value;
+            });
+            let error = LoadedReport::load(temp.path()).unwrap_err();
+            assert!(
+                format!("{error:#}").contains(expected),
+                "{pointer}: {error:#}"
+            );
+        }
+        let temp = fixture_with_dismissals();
+        update(temp.path(), "mutants.json", |v| {
+            v["dismissals"]["needs_review"][0]["dismissal"]["mutation"] =
+                v["dismissals"]["matched"][0]["dismissal"]["mutation"].clone();
+        });
+        assert!(
+            format!("{:#}", LoadedReport::load(temp.path()).unwrap_err())
+                .contains("matched and needing review")
+        );
     }
 
     #[test]

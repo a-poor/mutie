@@ -1,6 +1,6 @@
 //! Repository-owned review decisions. These never change execution or saved outcomes.
 use std::{
-    collections::{BTreeSet, HashMap},
+    collections::{BTreeMap, BTreeSet, HashMap},
     fs::{self, OpenOptions},
     io::{ErrorKind, Write},
     path::{Path, PathBuf},
@@ -17,26 +17,153 @@ use crate::{
     config::RunConfig,
     identity::MutationIdentity,
     mutation::{self, Mutation, OPERATOR_CATALOG_VERSION, Scope},
-    report_reader::LoadedReport,
+    report_reader::{LoadedReport, SavedMutation},
 };
 
 const FILE_NAME: &str = "mutie.dismissals.toml";
 const FORMAT_VERSION: u32 = 1;
 const LOCK_NAME: &str = ".mutie.dismissals.lock";
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-struct Dismissal {
-    id: usize,
-    reason: String,
+pub struct Dismissal {
+    pub id: usize,
+    pub reason: String,
     #[serde(skip_serializing_if = "Option::is_none")]
-    note: Option<String>,
-    mutation: MutationIdentity,
+    pub note: Option<String>,
+    pub mutation: MutationIdentity,
+}
+
+impl Dismissal {
+    fn validate(&self) -> Result<()> {
+        ensure!(self.id > 0, "dismissal ID must be positive");
+        validate_text(&self.reason, "reason")?;
+        if let Some(note) = &self.note {
+            validate_text(note, "note")?;
+        }
+        self.mutation
+            .validate()
+            .with_context(|| format!("dismissal {}", self.id))
+    }
+
+    pub fn description(&self) -> String {
+        let mut text = format!(
+            "Dismissal {}: {}\nReason: {}\n",
+            self.id,
+            self.mutation.file.display(),
+            self.reason
+        );
+        if let Some(note) = &self.note {
+            text.push_str(&format!("Note: {note}\n"));
+        }
+        crate::report_reader::clean_text(&text)
+    }
+}
+
+/// Review decisions captured against the run's pristine source, never live repository state.
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct DismissalSnapshot {
+    pub matched: Vec<MatchedDismissal>,
+    pub needs_review: Vec<DismissalIssue>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct MatchedDismissal {
+    pub mutation_id: usize,
+    pub dismissal: Dismissal,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct DismissalIssue {
+    pub status: MatchStatus,
+    pub dismissal: Dismissal,
+}
+
+impl DismissalSnapshot {
+    pub fn dismissal(&self, id: usize) -> Option<&Dismissal> {
+        self.matched
+            .binary_search_by_key(&id, |m| m.mutation_id)
+            .ok()
+            .map(|index| &self.matched[index].dismissal)
+    }
+
+    /// Rerun selection renumbers mutations; omitted valid decisions are not stale.
+    pub fn select(&mut self, mutations: &[Mutation]) {
+        let ids: BTreeMap<_, _> = mutations
+            .iter()
+            .enumerate()
+            .map(|(i, m)| (MutationIdentity::from(m), i + 1))
+            .collect();
+        self.matched.retain_mut(|entry| {
+            if let Some(id) = ids.get(&entry.dismissal.mutation) {
+                entry.mutation_id = *id;
+                true
+            } else {
+                false
+            }
+        });
+        self.matched.sort_by_key(|entry| entry.mutation_id);
+    }
+
+    pub fn validate(&mut self, mutations: &BTreeMap<usize, SavedMutation>) -> Result<()> {
+        let mut ids = BTreeSet::new();
+        let mut targets = BTreeSet::new();
+        let mut identities = BTreeSet::new();
+        for entry in &self.matched {
+            entry.dismissal.validate()?;
+            ensure!(
+                ids.insert(entry.dismissal.id),
+                "duplicate saved dismissal ID {}",
+                entry.dismissal.id
+            );
+            ensure!(
+                targets.insert(entry.mutation_id),
+                "multiple dismissals for saved mutation {}",
+                entry.mutation_id
+            );
+            ensure!(
+                identities.insert(&entry.dismissal.mutation),
+                "ambiguous saved dismissal identity matches multiple mutations"
+            );
+            let mutation = mutations
+                .get(&entry.mutation_id)
+                .context("dismissal references unknown saved mutation")?;
+            ensure!(
+                MutationIdentity::from(mutation) == entry.dismissal.mutation,
+                "dismissal identity does not match saved mutation {}",
+                entry.mutation_id
+            );
+        }
+        for entry in &self.needs_review {
+            entry.dismissal.validate()?;
+            ensure!(
+                ids.insert(entry.dismissal.id),
+                "duplicate saved dismissal ID {}",
+                entry.dismissal.id
+            );
+            ensure!(
+                !matches!(entry.status, MatchStatus::Matched(_)),
+                "review issue cannot be a matched dismissal"
+            );
+            ensure!(
+                !self
+                    .matched
+                    .iter()
+                    .any(|m| m.dismissal.mutation == entry.dismissal.mutation),
+                "ambiguous saved dismissal identity appears as matched and needing review"
+            );
+        }
+        self.matched.sort_by_key(|entry| entry.mutation_id);
+        Ok(())
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-struct Store {
+pub struct Store {
     format_version: u32,
     operator_catalog_version: u32,
     next_id: usize,
@@ -55,7 +182,7 @@ impl Default for Store {
 }
 
 impl Store {
-    fn load(root: &Path) -> Result<Self> {
+    pub fn load(root: &Path) -> Result<Self> {
         let path = root.join(FILE_NAME);
         match fs::symlink_metadata(&path) {
             Err(error) if error.kind() == ErrorKind::NotFound => return Ok(Self::default()),
@@ -96,16 +223,36 @@ impl Store {
                 entry.id
             );
             ensure!(ids.insert(entry.id), "duplicate dismissal ID {}", entry.id);
-            validate_text(&entry.reason, "reason")?;
-            if let Some(note) = &entry.note {
-                validate_text(note, "note")?;
-            }
-            entry
-                .mutation
-                .validate()
-                .with_context(|| format!("dismissal {}", entry.id))?;
+            entry.validate()?;
         }
         Ok(())
+    }
+
+    pub fn snapshot(
+        &self,
+        mutations: &[Mutation],
+        cancellation: &Cancellation,
+    ) -> Result<DismissalSnapshot> {
+        let mut snapshot = DismissalSnapshot::default();
+        for (entry, status) in self
+            .dismissals
+            .iter()
+            .zip(match_dismissals(self, mutations))
+        {
+            cancellation.check()?;
+            let dismissal = entry.clone();
+            match status {
+                MatchStatus::Matched(mutation_id) => snapshot.matched.push(MatchedDismissal {
+                    mutation_id,
+                    dismissal,
+                }),
+                _ => snapshot
+                    .needs_review
+                    .push(DismissalIssue { status, dismissal }),
+            }
+        }
+        snapshot.matched.sort_by_key(|entry| entry.mutation_id);
+        Ok(snapshot)
     }
 
     fn save(&self, root: &Path) -> Result<()> {
@@ -273,13 +420,26 @@ pub fn manage(module: &Path, action: DismissAction) -> Result<()> {
     Ok(())
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-enum MatchStatus {
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MatchStatus {
     Matched(usize),
     Missing,
     Stale,
     Unmatched,
     Ambiguous,
+}
+
+impl MatchStatus {
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Matched(_) => "matched",
+            Self::Missing => "missing",
+            Self::Stale => "stale",
+            Self::Unmatched => "unmatched",
+            Self::Ambiguous => "ambiguous",
+        }
+    }
 }
 
 fn match_dismissals(store: &Store, mutations: &[Mutation]) -> Vec<MatchStatus> {

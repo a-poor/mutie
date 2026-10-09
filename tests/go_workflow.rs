@@ -174,6 +174,14 @@ fn go_workflow() {
     );
     let (_, focused_metadata, focused_inventory, focused_outcomes) = saved_report(&focused);
     assert_eq!(focused_inventory["mutations"].as_array().unwrap().len(), 2);
+    assert_eq!(
+        focused_inventory["dismissals"]["matched"][0]["mutation_id"],
+        2
+    );
+    assert_eq!(
+        focused_inventory["dismissals"]["matched"][0]["dismissal"]["reason"],
+        "accepted test gap"
+    );
     assert_eq!(focused_outcomes["baseline"]["outcome"], "passed");
     assert_eq!(
         focused_metadata["rerun"]["mutations"],
@@ -264,6 +272,10 @@ fn go_workflow() {
     assert!(stdout(&rerun).contains("1 mutations: 1 killed, 0 missed"));
     let (rerun_directory, rerun_metadata, rerun_inventory, rerun_outcomes) = saved_report(&rerun);
     assert_eq!(rerun_inventory["mutations"][0]["file"], "missed.go");
+    assert_eq!(
+        rerun_inventory["dismissals"]["matched"][0]["mutation_id"],
+        1
+    );
     assert_eq!(rerun_outcomes["baseline"]["outcome"], "passed");
     assert_eq!(rerun_outcomes["mutations"].as_array().unwrap().len(), 1);
     assert_eq!(
