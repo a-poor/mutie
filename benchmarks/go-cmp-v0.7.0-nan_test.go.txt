@@ -1,0 +1,27 @@
+package cmpopts_test
+
+import (
+	"math"
+	"testing"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+)
+
+func TestMutieEquateNaNsDoesNotEquateFiniteValues(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		x, y any
+	}{
+		{"float64_nan_left", math.NaN(), float64(0)},
+		{"float64_nan_right", float64(0), math.NaN()},
+		{"float32_nan_left", float32(math.NaN()), float32(0)},
+		{"float32_nan_right", float32(0), float32(math.NaN())},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if cmp.Equal(tc.x, tc.y, cmpopts.EquateNaNs()) {
+				t.Fatal("EquateNaNs must not equate a NaN with a finite value")
+			}
+		})
+	}
+}

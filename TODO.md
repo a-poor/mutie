@@ -113,7 +113,14 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Test dismissal persistence, matching/invalidation, removal, and preservation
   of execution outcomes and counts.
 - [x] Validate findings and practical runtime on a small real Go project.
-- [ ] Extend validation to a larger Go project before drawing scaling conclusions.
+- [x] Extend validation to `go-cmp` v0.7.0: all 1,450 mutations across ten packages,
+  workspace/command timings, saved-report audits, and source preservation.
+  See `benchmarks/go-cmp-v0.7.0.md` for evidence and limitations.
+- [x] Repeat a fixed 32-mutation sample with one/four workers; investigate the
+  killed/timeout variation with controlled diff-direction probes. Add isolated
+  NaN comparison tests and verify a missed mutation becomes killed on a focused rerun.
+- [ ] Validate a large application or asset-heavy tree before drawing broader
+  scaling conclusions; the measured go-cmp source tree is only 470 KB.
 - [x] Record workspace timings alongside existing command durations. Count successful
   CoW clones and fallback copies/bytes for snapshot, baseline setup, discovery reset,
   worker setup, and worker reset; retain partial counts on failure/interruption and
@@ -121,14 +128,18 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Document workspace placement via the existing `TMPDIR` override, outside the
   source tree on a chosen filesystem, and record the resolved temporary root.
 - [ ] Compare representative runs with workspaces on a reflink-capable filesystem
-  versus `/tmp` on tmpfs. Use workspace and command costs to choose performance
-  changes; instrumentation alone does not establish a bottleneck or speedup.
+  versus `/tmp` on tmpfs. The go-cmp run verified explicit reflinks on APFS;
+  ordinary-copy and Linux tmpfs measurements remain pending.
+- [ ] Own and clean up Go temporary build directories after timeout/interruption.
+  The go-cmp full run left 27 `go-build*` directories (566 MB logical bytes) even
+  though all Mutie workspaces were removed. Preserve the reusable Go build cache.
 - [ ] Evaluate affected-package/coverage-based test selection and result reuse
-  against full-module testing, with explicit invalidation rules.
+  against full-module testing, with reverse dependencies, test imports, and explicit
+  invalidation rules. Use the go-cmp run as a correctness/performance reference.
 - [ ] Expand mutations, including standalone call removal and return/branch/loop
   changes; add operator selection and profiles based on useful findings.
 - [ ] Decide and implement report retention/archival without pruning active runs
-  or unrelated files.
+  or unrelated files; go-cmp's complete report is 1.35 GB, 99.86% captured logs.
 - [ ] Add CI failure policies, score definitions, and integration/report exports.
 
 ## Longer-term options

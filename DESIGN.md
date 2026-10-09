@@ -30,9 +30,11 @@ cancellation with retained command diagnostics.
 
 The fixture and tests exercise killed and missed mutations, compilation failures,
 timeouts, failed baselines, workspace restoration, and preservation of partial
-results. MVP validation on `godotenv` v1.5.1 also demonstrates actionable test gaps
-and practical runtime on a small library. It does not yet establish useful
-mutation coverage, acceptable noise, or runtime on a large real project.
+results. MVP validation on `godotenv` v1.5.1 demonstrates actionable test gaps
+and practical runtime on a small library. A larger `go-cmp` v0.7.0 run completed
+1,450 mutations across ten packages and measured workspace and command costs.
+These library runs do not establish useful mutation coverage, acceptable noise,
+or runtime for large applications.
 
 The prototype supports rerunning saved mutations by ID, operator, or missed
 outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
@@ -555,13 +557,19 @@ records human judgment, not proof of equivalent behavior or a passing result.
 
 ### 2. Real-project validation and measured performance work
 
-Extend the small-project validation to a larger Go project and measure runtime,
-invalid/equivalent-looking mutations, and whether findings lead to useful tests.
-Workspace timing and copy-method instrumentation is implemented alongside command
-durations. Use it to compare representative projects and workspace placements,
-including a reflink-capable filesystem versus tmpfs, before drawing performance
-conclusions. Distinguish compilation and test costs where the tool provides reliable
-measurements.
+The [go-cmp v0.7.0 measurements](benchmarks/go-cmp-v0.7.0.md) extend validation to
+1,450 mutations in a multi-package library. On this APFS host, workspace operations
+took 22.34 cumulative seconds and mutation commands 7,059.62 seconds. All 69,744
+file transfers were reflinked. Focus performance experiments on Go command work,
+while preserving full-module results as the reference. Distinguish compilation
+and test costs where the tool provides reliable measurements.
+
+The run also exposed Go build directories retained after forced termination and
+a 1.35 GB report dominated by logs. Give temporary Go builds an owned cleanup
+lifetime, and use these sizes when designing retention and log-output policies.
+The reusable Go build cache is separate from temporary build output. Larger
+applications, asset-heavy trees, and reflink-capable filesystem versus Linux tmpfs
+comparisons still need measurements.
 
 Full-module tests remain the correctness reference. Explore affected-package tests
 only with reverse dependencies accounted for, then coverage-based selection and
@@ -721,5 +729,6 @@ Missed-only reruns complete this tested feedback loop. Focused ID/operator rerun
 are additionally covered by deterministic selection tests and the real-Go
 fixture. Saved-result review is covered by deterministic frame/state tests and
 PTY tests on macOS, independently of Go and the original checkout. Performance
-tuning and report-retention decisions need larger-project measurements; this validation
-establishes the small-project workflow, not general scaling claims.
+tuning and report-retention decisions require workload-specific evidence. The
+[subsequent go-cmp measurements](benchmarks/go-cmp-v0.7.0.md) cover a larger
+inventory and report; neither library run establishes general scaling claims.

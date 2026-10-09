@@ -154,6 +154,12 @@ in an isolated copy caught four previously missed mutations. See the
 [validation notes](DESIGN.md#mvp-validation-evidence) for runtime, artifact sizes,
 terminal checks, and the limits of this small-project validation.
 
+A larger run on `go-cmp` v0.7.0 completed all 1,450 mutations across ten packages.
+Workspace operations used 22.3 cumulative seconds versus 7,059.6 seconds in mutation
+commands, with all file transfers reflinked on APFS. See the
+[larger-project measurements](benchmarks/go-cmp-v0.7.0.md) for the method, outcome
+counts, report size, cleanup findings, and limits of these observations.
+
 ## Browsing a saved run
 
 Open a finalized run in the full-screen Ratatui browser:
@@ -499,8 +505,9 @@ For copy-on-write comparisons, use a directory on the project's reflink-capable
 filesystem and inspect the recorded counts. A different filesystem or a tmpfs can
 prevent reflinks; support also depends on the OS and filesystem. Keep project inputs,
 worker counts, timeouts, and Go cache conditions consistent when comparing runs.
-These measurements provide evidence for future performance work; representative
-filesystem and larger-project comparisons are still pending.
+The [go-cmp measurements](benchmarks/go-cmp-v0.7.0.md) exercise a larger mutation
+inventory on APFS. Comparisons against Linux tmpfs, ordinary copies, and projects
+with large source trees or assets are still pending.
 
 ## Behavior
 
