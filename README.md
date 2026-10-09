@@ -378,14 +378,14 @@ reports and cannot be combined with `--output-dir`.
 Each run contains:
 
 - `run.json`: versioned run metadata, effective configuration, command, scope,
-  timeouts, worker counts, phase, status, and any run-level error.
+  timeouts, worker counts, workspace measurements, phase, status, and any run-level error.
 - `mutants.json`: the complete mutation inventory, including IDs, named operators,
   source locations, original text, replacements, source fingerprints, and diff
   paths. The inventory and every diff are published before workers start.
 - `outcomes.json`: baseline and package-discovery results, mutation execution
   states and outcomes, durations, exit codes, log paths, and summary counts.
-- `summary.txt`: readable counts, unfinished work, missed mutations, and artifact
-  references for every planned mutation.
+- `summary.txt`: readable counts, workspace costs, unfinished work, missed mutations,
+  and artifact references for every planned mutation.
 - `diff/000001.diff`: one unified source diff per planned mutation.
 - `logs/baseline.log`, `logs/discovery.log`, and `logs/000001.log`: readable command
   output, with separate `.stdout.jsonl` and `.stderr.log` captures alongside each
@@ -454,9 +454,53 @@ Report write failures are surfaced as errors.
 
 The module's `.mutie` directory, the selected output directory, and the source
 rerun directory are omitted from snapshots so saved reports do not affect tests
-or discovery. Keep output
-directories separate from source files, and add `.mutie/` (or your custom output
-directory) to your project's `.gitignore`.
+or discovery. Keep output directories separate from source files, and add `.mutie/`
+(or your custom output directory) to your project's `.gitignore`.
+
+### Workspace measurements
+
+The final CLI summary and `summary.txt` show cumulative snapshot, setup, and reset
+times, plus counts of reflinked and copied files. Setup combines baseline and worker
+creation; reset combines the reset before discovery and resets between mutations.
+These times can overlap across workers, so they are not the run's wall-clock time.
+
+`run.json.workspace_metrics` keeps the breakdown under `snapshot`, `baseline_setup`,
+`discovery_reset`, `worker_setup`, and `worker_reset`. Each contains:
+
+- `operations`, `completed`, `failed`, and `interrupted`: filesystem operation counts.
+- `duration_seconds`: cumulative elapsed time, including failed/interrupted operations.
+- `reflink_files`: successful copy-on-write clones reported by the copy library.
+- `copied_files` and `copied_bytes`: successful fallback copies and their logical byte
+  counts, including empty files. These are not measurements of physical disk traffic
+  or space saved; the OS may optimize fallback copies too.
+
+Every reset counts its transfers again. Directories, symlinks, excluded files, and
+failed file transfers are not counted. Successful transfers before a later failure
+or interruption are retained. Timings cover directory creation, copying, permission
+preservation, and reset deletion. They exclude the blocking-pool queue, applying
+mutations, Go commands, and final workspace cleanup. Workspace completion describes
+the filesystem operation even when the subsequent Go command fails or is interrupted.
+Command durations remain in `outcomes.json`.
+
+Measurements are saved at normal report checkpoints, with worker measurements
+collected when the worker job returns. They do not add report writes per copied file
+or operation. `--list` and `dismiss check` do not produce these reports or summaries.
+
+The canonical temporary parent directory is recorded in
+`workspace_metrics.temporary_root` and `summary.txt`. On Unix, set `TMPDIR` to an
+existing, writable directory outside the source tree to choose workspace placement:
+
+```sh
+mkdir -p /path/on/project-filesystem/mutie-tmp
+TMPDIR=/path/on/project-filesystem/mutie-tmp cargo run -- /path/to/go/module --jobs 2
+```
+
+For copy-on-write comparisons, use a directory on the project's reflink-capable
+filesystem and inspect the recorded counts. A different filesystem or a tmpfs can
+prevent reflinks; support also depends on the OS and filesystem. Keep project inputs,
+worker counts, timeouts, and Go cache conditions consistent when comparing runs.
+These measurements provide evidence for future performance work; representative
+filesystem and larger-project comparisons are still pending.
 
 ## Behavior
 

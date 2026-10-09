@@ -332,6 +332,7 @@ pub fn print_summary(coordinator: &Coordinator) {
         state.status,
         state.started.elapsed().as_secs_f64()
     );
+    println!("{}", state.workspace_metrics.summary());
     if state.pending() > 0 || state.interrupted > 0 {
         println!(
             "Unfinished: {} pending, {} interrupted",

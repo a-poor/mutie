@@ -17,6 +17,7 @@ use crate::{
     process::CommandOutput,
     report::{ExecutionState, MutationResult, Outcome, RunStatus, Summary},
     rerun::RerunProvenance,
+    workspace_metrics::WorkspaceMetrics,
 };
 
 pub(crate) const SCHEMA_VERSION: u32 = 1;
@@ -45,6 +46,7 @@ struct RunReport {
     planned_mutations: Option<usize>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rerun: Option<RerunProvenance>,
+    workspace_metrics: WorkspaceMetrics,
 }
 
 #[derive(Serialize)]
@@ -168,6 +170,7 @@ impl SavedReport {
                 mutation_timeout_seconds: config.timeout.map(|value| value.get() as f64),
                 planned_mutations: None,
                 rerun: None,
+                workspace_metrics: WorkspaceMetrics::default(),
             },
             inventory: Inventory {
                 schema_version: SCHEMA_VERSION,
@@ -197,6 +200,10 @@ impl SavedReport {
 
     pub fn path(&self) -> &Path {
         &self.directory
+    }
+
+    pub fn workspace_metrics(&mut self, metrics: &WorkspaceMetrics) {
+        self.run.workspace_metrics = metrics.clone();
     }
 
     pub fn phase(&mut self, phase: &'static str) -> Result<()> {
@@ -451,6 +458,10 @@ impl SavedReport {
             self.run.duration_seconds,
             self.outcomes.summary
         );
+        text.push_str(&format!("{}\n", self.run.workspace_metrics.summary()));
+        if let Some(root) = &self.run.workspace_metrics.temporary_root {
+            text.push_str(&format!("Workspace temporary root: {}\n", root.display()));
+        }
         if let Some(rerun) = &self.run.rerun {
             text.push_str(&format!(
                 "Rerun: {} from {} (checkpoint {})\n",

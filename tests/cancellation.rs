@@ -258,6 +258,23 @@ fn interrupt_parallel_run_retains_inventory_results_and_active_diagnostics() {
     let outcomes = read(&directory, "outcomes.json");
     assert_eq!(metadata["status"], "interrupted");
     assert_eq!(metadata["checkpoint"], outcomes["checkpoint"]);
+    let workspaces = &metadata["workspace_metrics"];
+    assert_eq!(
+        workspaces["temporary_root"],
+        fixture.workspaces.to_str().unwrap()
+    );
+    for (phase, count) in [
+        ("snapshot", 1),
+        ("baseline_setup", 1),
+        ("discovery_reset", 1),
+        ("worker_setup", 2),
+        ("worker_reset", 1),
+    ] {
+        assert_eq!(workspaces[phase]["operations"], count);
+        assert_eq!(workspaces[phase]["completed"], count);
+        assert_eq!(workspaces[phase]["failed"], 0);
+        assert_eq!(workspaces[phase]["interrupted"], 0);
+    }
     assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
     assert_eq!(outcomes["mutations"][3]["state"], "pending");
     for (index, name) in [(1, "b"), (2, "c")] {
@@ -307,6 +324,23 @@ fn interruption_during_baseline_and_discovery_preserves_command_output() {
         let outcomes = read(&directory, "outcomes.json");
         assert_eq!(metadata["status"], "interrupted");
         assert_eq!(metadata["phase"], phase);
+        assert_eq!(metadata["workspace_metrics"]["snapshot"]["completed"], 1);
+        assert_eq!(
+            metadata["workspace_metrics"]["baseline_setup"]["completed"],
+            1
+        );
+        assert_eq!(
+            metadata["workspace_metrics"]["discovery_reset"]["completed"],
+            if phase == "discovery" { 1 } else { 0 }
+        );
+        assert_eq!(
+            metadata["workspace_metrics"]["worker_setup"]["operations"],
+            0
+        );
+        assert_eq!(
+            metadata["workspace_metrics"]["worker_reset"]["operations"],
+            0
+        );
         assert_eq!(outcomes[phase]["outcome"], "interrupted");
         assert!(outcomes["mutations"].as_array().unwrap().is_empty());
         assert_eq!(read(&directory, "mutants.json")["complete"], false);
@@ -343,5 +377,14 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
     );
     assert_eq!(outcomes["summary"]["errors"], 1);
     assert_eq!(outcomes["summary"]["missed"], 1);
+    let metadata = read(&directory, "run.json");
+    assert_eq!(
+        metadata["workspace_metrics"]["worker_setup"]["completed"],
+        2
+    );
+    assert_eq!(
+        metadata["workspace_metrics"]["worker_reset"]["completed"],
+        1
+    );
     fixture.assert_cleanup();
 }

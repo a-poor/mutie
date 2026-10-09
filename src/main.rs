@@ -14,6 +14,7 @@ mod rerun;
 mod saved_report;
 mod status;
 mod workspace;
+mod workspace_metrics;
 
 use std::{collections::VecDeque, path::PathBuf, sync::Arc, time::Duration};
 
@@ -28,6 +29,7 @@ use coordinator::{Coordinator, Phase, RunEvent, WorkerPhase, WorkerProgress};
 use mutation::{Mutation, Scope};
 use report::{ExecutionState, MutationResult, Outcome};
 use workspace::Workspace;
+use workspace_metrics::{WorkspaceKind, WorkspaceMeasurement};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -114,6 +116,29 @@ async fn create_workspace(
         .context("workspace preparation panicked")?
 }
 
+async fn measured_workspace(
+    source: PathBuf,
+    excluded: Vec<PathBuf>,
+    kind: WorkspaceKind,
+    coordinator: &mut Coordinator,
+    cancellation: &Cancellation,
+) -> Result<Workspace> {
+    let task_cancellation = cancellation.clone();
+    let (result, measurement) = tokio::task::spawn_blocking(move || {
+        Workspace::create_measured(&source, &excluded, &task_cancellation)
+    })
+    .await
+    .context("workspace preparation panicked")?;
+    coordinator.emit(
+        RunEvent::Workspace {
+            kind,
+            measurement: &measurement,
+        },
+        cancellation,
+    )?;
+    result
+}
+
 async fn execute(
     config: &RunConfig,
     scope: Scope,
@@ -131,15 +156,29 @@ async fn execute(
             .iter()
             .map(|request| request.source_run.clone()),
     );
-    let snapshot =
-        Arc::new(create_workspace(root.to_owned(), excluded, cancellation.clone()).await?);
+    let snapshot = Arc::new(
+        measured_workspace(
+            root.to_owned(),
+            excluded,
+            WorkspaceKind::Snapshot,
+            coordinator,
+            cancellation,
+        )
+        .await?,
+    );
     let dismissal_store = if config.list {
         None
     } else {
         Some(dismissals::Store::load(&snapshot.path())?)
     };
-    let baseline_workspace =
-        create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
+    let baseline_workspace = measured_workspace(
+        snapshot.path(),
+        vec![],
+        WorkspaceKind::BaselineSetup,
+        coordinator,
+        cancellation,
+    )
+    .await?;
     let mut timeout = config
         .timeout
         .map(|seconds| Duration::from_secs(seconds.get()));
@@ -178,13 +217,23 @@ async fn execute(
         baseline_workspace
     } else {
         let source = snapshot.path();
-        let cancellation = cancellation.clone();
-        tokio::task::spawn_blocking(move || {
-            baseline_workspace.reset(&source, &cancellation)?;
-            Ok::<_, anyhow::Error>(baseline_workspace)
+        let reset_cancellation = cancellation.clone();
+        let (result, measurement, baseline_workspace) = tokio::task::spawn_blocking(move || {
+            let (result, measurement) =
+                baseline_workspace.reset_measured(&source, &reset_cancellation);
+            (result, measurement, baseline_workspace)
         })
         .await
-        .context("baseline workspace reset panicked")??
+        .context("baseline workspace reset panicked")?;
+        coordinator.emit(
+            RunEvent::Workspace {
+                kind: WorkspaceKind::DiscoveryReset,
+                measurement: &measurement,
+            },
+            cancellation,
+        )?;
+        result?;
+        baseline_workspace
     };
     let discovery = process::run(
         "go",
@@ -311,8 +360,15 @@ struct WorkerJob {
     progress: mpsc::Sender<WorkerProgress>,
 }
 
+struct FinishedWorker {
+    worker: usize,
+    workspace: Option<Workspace>,
+    result: MutationResult,
+    preparation: Option<(WorkspaceKind, WorkspaceMeasurement)>,
+}
+
 impl WorkerJob {
-    async fn run(self) -> (usize, Option<Workspace>, MutationResult) {
+    async fn run(self) -> FinishedWorker {
         let Self {
             context,
             id,
@@ -321,27 +377,40 @@ impl WorkerJob {
             workspace,
             progress,
         } = self;
+        let kind = if workspace.is_some() {
+            WorkspaceKind::WorkerReset
+        } else {
+            WorkspaceKind::WorkerSetup
+        };
         let prepared = {
             let context = context.clone();
             let mutation = mutation.clone();
             tokio::task::spawn_blocking(move || {
-                context.cancellation.check()?;
-                let workspace = match workspace {
+                let (result, measurement) = match workspace {
                     Some(workspace) => {
-                        workspace.reset(&context.snapshot.path(), &context.cancellation)?;
-                        workspace
+                        let (result, measurement) = workspace
+                            .reset_measured(&context.snapshot.path(), &context.cancellation);
+                        (result.map(|()| workspace), measurement)
                     }
-                    None => {
-                        Workspace::create(&context.snapshot.path(), &[], &context.cancellation)?
-                    }
+                    None => Workspace::create_measured(
+                        &context.snapshot.path(),
+                        &[],
+                        &context.cancellation,
+                    ),
                 };
-                context.cancellation.check()?;
-                mutation.apply(&workspace.path())?;
-                Ok::<_, anyhow::Error>(workspace)
+                let result = result.and_then(|workspace| {
+                    context.cancellation.check()?;
+                    mutation.apply(&workspace.path())?;
+                    Ok(workspace)
+                });
+                (result, measurement)
             })
             .await
             .context("worker workspace preparation panicked")
-            .and_then(|result| result)
+        };
+        let (prepared, preparation) = match prepared {
+            Ok((result, measurement)) => (result, Some((kind, measurement))),
+            Err(error) => (Err(error), None),
         };
         let mut workspace = None;
         let output = match prepared {
@@ -408,10 +477,10 @@ impl WorkerJob {
         if outcome == Some(Outcome::Error) {
             context.cancellation.cancel();
         }
-        (
+        FinishedWorker {
             worker,
             workspace,
-            MutationResult {
+            result: MutationResult {
                 id,
                 mutation,
                 state,
@@ -419,7 +488,8 @@ impl WorkerJob {
                 output,
                 error,
             },
-        )
+            preparation,
+        }
     }
 }
 
@@ -481,16 +551,34 @@ async fn run_workers(
             break;
         };
         let result = match finished {
-            Ok((worker, workspace, result)) => {
+            Ok(FinishedWorker {
+                worker,
+                workspace,
+                result,
+                preparation,
+            }) => {
                 available.push_back((worker, workspace));
-                coordinator
-                    .emit(
-                        RunEvent::Finished {
-                            worker,
-                            result: &result,
+                let measured = if let Some((kind, measurement)) = preparation {
+                    coordinator.emit(
+                        RunEvent::Workspace {
+                            kind,
+                            measurement: &measurement,
                         },
                         &context.cancellation,
                     )
+                } else {
+                    Ok(())
+                };
+                measured
+                    .and_then(|()| {
+                        coordinator.emit(
+                            RunEvent::Finished {
+                                worker,
+                                result: &result,
+                            },
+                            &context.cancellation,
+                        )
+                    })
                     .and_then(|()| match result.error {
                         Some(error) => Err(anyhow::anyhow!(error)),
                         None => Ok(()),

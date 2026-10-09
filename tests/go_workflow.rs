@@ -105,6 +105,28 @@ fn go_workflow() {
     assert_eq!(report["summary"]["build_failed"], 1);
     assert_eq!(report["summary"]["errors"], 0);
     assert_eq!(report["baseline"]["outcome"], "passed");
+    for (phase, operations) in [
+        ("snapshot", 1),
+        ("baseline_setup", 1),
+        ("discovery_reset", 1),
+        ("worker_setup", 2),
+        ("worker_reset", 2),
+    ] {
+        let measured = &metadata["workspace_metrics"][phase];
+        assert_eq!(measured["operations"], operations);
+        assert_eq!(measured["completed"], operations);
+        assert_eq!(measured["failed"], 0);
+        assert_eq!(measured["interrupted"], 0);
+        assert!(measured["duration_seconds"].as_f64().unwrap() > 0.0);
+        // The real filesystem chooses the copy method; both are supported.
+        assert!(
+            measured["reflink_files"].as_u64().unwrap()
+                + measured["copied_files"].as_u64().unwrap()
+                > 0
+        );
+    }
+    assert!(results.contains("Workspaces: snapshot "));
+    assert!(results.contains("Copies: "));
     let mutations = report["mutations"].as_array().unwrap();
     for (index, mutation) in mutations.iter().enumerate() {
         assert_eq!(mutation["id"], index + 1);

@@ -362,7 +362,7 @@ and other interchange formats are possible future exporters.
 Current contents of a single run directory (schema version 1):
 
 ```text
-run.json           effective configuration, versions, command, timing, run state
+run.json           effective configuration, versions, command, timing, workspace costs, run state
 mutants.json       complete inventory, written before mutation execution
 outcomes.json      baseline result, mutation outcomes, summary counts
 summary.txt        readable summary and artifact references
@@ -396,6 +396,24 @@ and may lag the JSON snapshots after a forced kill. Before discovery/publication
 `mutants.json` has `complete: false`; a complete empty inventory is distinguishable
 from discovery that never finished.
 
+Workspace operations return their elapsed time and successful file-transfer counts,
+including partial work before a failure or interruption. `workspace_metrics.rs`
+aggregates snapshot creation, baseline setup, discovery reset, worker setup, and
+worker reset independently. Counts distinguish successful explicit reflinks from
+fallback copies using the copy library's return value; fallback bytes are logical
+bytes, not physical I/O. Copy behavior and outcome classification are unchanged.
+
+The coordinator receives typed workspace events and stores the aggregate in
+`run.json.workspace_metrics` at the next normal checkpoint, without extra report
+writes. Worker measurements arrive with job completion, including failed or
+interrupted jobs. Final CLI and text summaries show compact combined totals.
+Operation status describes filesystem work, independently of subsequent Go results.
+Durations are cumulative across workers; they include reset deletion and copying,
+but exclude blocking-pool queue time, mutation application, Go commands, and final
+workspace cleanup. Existing command durations remain in `outcomes.json`.
+The canonical temporary root is saved for placement comparisons; `TMPDIR` already
+allows Unix callers to place workspaces outside the source tree on a chosen filesystem.
+
 Retention is a separate policy from report format. For the minimal MVP, retain
 isolated run directories as today. Bounded retention, such as latest plus previous
 with explicit archival, is a candidate follow-up. Decide its naming, concurrency,
@@ -418,7 +436,8 @@ Keep the implementation modular without building a plugin framework up front.
 | Terminal presentation | Show live coordinator state; browse saved results and generate rerun commands. |
 
 `coordinator.rs` owns a small event/state boundary: phase changes, command results,
-inventory publication, mutation starts and completions, and run termination.
+workspace measurements, inventory publication, mutation starts and completions,
+and run termination.
 `status.rs` owns presentation and terminal lifetime. The execution task processes
 every event and persists reports; the renderer reads compact snapshots without
 blocking on worker operations. Process output stays in artifacts, keeping it out
@@ -536,10 +555,13 @@ records human judgment, not proof of equivalent behavior or a passing result.
 
 ### 2. Real-project validation and measured performance work
 
-Try a modest real Go project and measure runtime, invalid/equivalent-looking
-mutations, and whether findings lead to useful tests. Separate snapshot/reset and
-command timings; distinguish compilation and test costs where the tool provides
-reliable measurements.
+Extend the small-project validation to a larger Go project and measure runtime,
+invalid/equivalent-looking mutations, and whether findings lead to useful tests.
+Workspace timing and copy-method instrumentation is implemented alongside command
+durations. Use it to compare representative projects and workspace placements,
+including a reflink-capable filesystem versus tmpfs, before drawing performance
+conclusions. Distinguish compilation and test costs where the tool provides reliable
+measurements.
 
 Full-module tests remain the correctness reference. Explore affected-package tests
 only with reverse dependencies accounted for, then coverage-based selection and

@@ -255,3 +255,121 @@ fn ui_modes_preserve_plain_output_and_listing_without_a_terminal() {
     assert!(listed.contains("Found 2 mutations"));
     assert!(!listed.contains('\x1b'));
 }
+
+#[test]
+fn workspace_metrics_cover_serial_parallel_and_empty_runs_without_changing_outcomes() {
+    let fixture = Fixture::new("");
+    let source = fs::read(fixture.root.join("a.go")).unwrap();
+    for (args, workers, resets, mutations) in [
+        (vec!["--jobs", "1"], 1, 1, 2),
+        (vec!["--jobs", "2"], 2, 0, 2),
+        (vec!["--exclude", "**/*.go"], 0, 0, 0),
+    ] {
+        let output = fixture.run(&args);
+        let stdout = success(&output);
+        let (directory, metadata, _) = report(&output);
+        let metrics = &metadata["workspace_metrics"];
+        assert_eq!(
+            metrics["temporary_root"],
+            std::env::temp_dir()
+                .canonicalize()
+                .unwrap()
+                .to_str()
+                .unwrap()
+        );
+        for (phase, operations) in [
+            ("snapshot", 1),
+            ("baseline_setup", 1),
+            ("discovery_reset", 1),
+            ("worker_setup", workers),
+            ("worker_reset", resets),
+        ] {
+            let phase = &metrics[phase];
+            assert_eq!(phase["operations"], operations);
+            assert_eq!(phase["completed"], operations);
+            assert_eq!(phase["failed"], 0);
+            assert_eq!(phase["interrupted"], 0);
+            // Four regular source files; generated report files must never contribute.
+            assert_eq!(
+                phase["reflink_files"].as_u64().unwrap() + phase["copied_files"].as_u64().unwrap(),
+                operations * 4
+            );
+            let elapsed = phase["duration_seconds"].as_f64().unwrap();
+            assert!(elapsed.is_finite() && elapsed >= 0.0);
+            if operations == 0 {
+                assert_eq!(elapsed, 0.0);
+            }
+        }
+        let outcomes = read(&directory, "outcomes.json");
+        assert_eq!(outcomes["summary"]["missed"], mutations);
+        assert_eq!(
+            outcomes["mutations"].as_array().unwrap().len(),
+            mutations as usize
+        );
+        assert!(outcomes["baseline"]["duration_seconds"].as_f64().unwrap() >= 0.0);
+        let summary = fs::read_to_string(directory.join("summary.txt")).unwrap();
+        let compact: Vec<_> = stdout
+            .lines()
+            .filter(|line| line.starts_with("Workspaces:") || line.starts_with("Copies:"))
+            .collect();
+        assert_eq!(compact.len(), 2);
+        for line in compact {
+            assert!(summary.contains(line), "{summary}");
+        }
+        assert!(stdout.contains("(cumulative)"));
+        assert_eq!(fs::read(fixture.root.join("a.go")).unwrap(), source);
+    }
+    let listed = success(&fixture.run(&["--list"]));
+    assert!(!listed.contains("Workspaces:") && !listed.contains("Copies:"));
+}
+
+#[test]
+fn early_failures_save_workspace_metrics_without_claiming_unstarted_work() {
+    let fixture = Fixture::new("");
+    fs::write(fixture.temp.path().join("bin/go"), "#!/bin/sh\nexit 1\n").unwrap();
+    let output = fixture.run(&[]);
+    assert!(!output.status.success());
+    let directory: PathBuf = String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .find_map(|line| line.strip_prefix("Saving report to "))
+        .unwrap()
+        .into();
+    let metadata = read(&directory, "run.json");
+    assert_eq!(metadata["status"], "failed");
+    assert_eq!(metadata["workspace_metrics"]["snapshot"]["completed"], 1);
+    assert_eq!(
+        metadata["workspace_metrics"]["baseline_setup"]["completed"],
+        1
+    );
+    for phase in ["discovery_reset", "worker_setup", "worker_reset"] {
+        assert_eq!(metadata["workspace_metrics"][phase]["operations"], 0);
+    }
+
+    let outside = fixture.temp.path().join("external");
+    fs::write(&outside, "outside module").unwrap();
+    std::os::unix::fs::symlink(&outside, fixture.root.join("external")).unwrap();
+    let output = fixture.run(&[]);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("outside the module"));
+    let directory: PathBuf = String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .find_map(|line| line.strip_prefix("Saving report to "))
+        .unwrap()
+        .into();
+    let metadata = read(&directory, "run.json");
+    let snapshot = &metadata["workspace_metrics"]["snapshot"];
+    assert_eq!(snapshot["operations"], 1);
+    assert_eq!(snapshot["completed"], 0);
+    assert_eq!(snapshot["failed"], 1);
+    for phase in [
+        "baseline_setup",
+        "discovery_reset",
+        "worker_setup",
+        "worker_reset",
+    ] {
+        assert_eq!(metadata["workspace_metrics"][phase]["operations"], 0);
+    }
+    assert!(read(&directory, "outcomes.json")["baseline"].is_null());
+    assert!(String::from_utf8_lossy(&output.stdout).contains("1 ops, 1 failed, 0 interrupted"));
+    assert_eq!(fs::read_to_string(outside).unwrap(), "outside module");
+}

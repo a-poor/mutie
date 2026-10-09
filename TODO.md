@@ -114,14 +114,15 @@ checklist as work lands, checking items off after appropriate verification.
   of execution outcomes and counts.
 - [x] Validate findings and practical runtime on a small real Go project.
 - [ ] Extend validation to a larger Go project before drawing scaling conclusions.
-- [ ] Measure workspace and command costs before choosing performance changes.
-- [ ] Make reflink use observable: count successful CoW clones and ordinary-copy
-  fallbacks, and record snapshot/reset timings. Compare representative runs with
-  workspaces on a reflink-capable filesystem versus `/tmp` on tmpfs.
-- [ ] Support/document workspace placement on the same reflink-capable filesystem
-  as the input project, outside its source tree. `TMPDIR` already provides an
-  override; the default `/tmp` on tmpfs prevents reflink savings on this machine
-  despite the repository living on Btrfs.
+- [x] Record workspace timings alongside existing command durations. Count successful
+  CoW clones and fallback copies/bytes for snapshot, baseline setup, discovery reset,
+  worker setup, and worker reset; retain partial counts on failure/interruption and
+  expose metrics in saved reports and the final summary.
+- [x] Document workspace placement via the existing `TMPDIR` override, outside the
+  source tree on a chosen filesystem, and record the resolved temporary root.
+- [ ] Compare representative runs with workspaces on a reflink-capable filesystem
+  versus `/tmp` on tmpfs. Use workspace and command costs to choose performance
+  changes; instrumentation alone does not establish a bottleneck or speedup.
 - [ ] Evaluate affected-package/coverage-based test selection and result reuse
   against full-module testing, with explicit invalidation rules.
 - [ ] Expand mutations, including standalone call removal and return/branch/loop

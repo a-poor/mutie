@@ -19,6 +19,7 @@ use crate::{
     report::{ExecutionState, MutationResult, Outcome, RunStatus, Summary},
     rerun::RerunProvenance,
     saved_report::SavedReport,
+    workspace_metrics::{WorkspaceKind, WorkspaceMeasurement, WorkspaceMetrics},
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -65,6 +66,10 @@ pub enum RunEvent<'a> {
         result: &'a MutationResult,
     },
     Progress(WorkerProgress),
+    Workspace {
+        kind: WorkspaceKind,
+        measurement: &'a WorkspaceMeasurement,
+    },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -129,6 +134,7 @@ pub struct RunState {
     pub interrupted: usize,
     pub active: BTreeMap<usize, ActiveWorker>,
     pub recent: VecDeque<RecentResult>,
+    pub workspace_metrics: WorkspaceMetrics,
 }
 
 impl Default for RunState {
@@ -143,6 +149,7 @@ impl Default for RunState {
             interrupted: 0,
             active: BTreeMap::new(),
             recent: VecDeque::new(),
+            workspace_metrics: WorkspaceMetrics::default(),
         }
     }
 }
@@ -152,6 +159,9 @@ impl RunState {
         match event {
             RunEvent::Phase(phase) => self.phase = *phase,
             RunEvent::Command { .. } => {}
+            RunEvent::Workspace { kind, measurement } => {
+                self.workspace_metrics.record(*kind, measurement)
+            }
             RunEvent::Plan {
                 mutations, workers, ..
             } => {
@@ -288,6 +298,10 @@ impl Coordinator {
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
                 RunEvent::Finished { result, .. } => report.record(result)?,
                 RunEvent::Progress(_) => {} // Transient phases never change persisted outcomes.
+                // Include metrics in the next normal checkpoint without extra report writes.
+                RunEvent::Workspace { .. } => {
+                    report.workspace_metrics(&self.state.workspace_metrics)
+                }
             }
         }
         if !self.interactive {
@@ -365,6 +379,7 @@ mod tests {
     use crate::{
         cli::Cli,
         mutation::{self, Scope},
+        workspace_metrics::{CopyCounts, OperationStatus},
     };
     use clap::Parser;
     use std::fs;
@@ -421,6 +436,34 @@ mod tests {
             fs::read(coordinator.report_path().unwrap().join("outcomes.json"))?,
             report_before_progress
         );
+        let metadata_path = coordinator.report_path().unwrap().join("run.json");
+        let metadata_before_measurement = fs::read(&metadata_path)?;
+        coordinator.emit(
+            RunEvent::Workspace {
+                kind: WorkspaceKind::WorkerReset,
+                measurement: &WorkspaceMeasurement {
+                    duration_seconds: 0.25,
+                    status: OperationStatus::Interrupted,
+                    copies: CopyCounts {
+                        reflink_files: 2,
+                        copied_files: 1,
+                        copied_bytes: 3,
+                    },
+                    temporary_root: Some(root.path().to_owned()),
+                },
+            },
+            &cancellation,
+        )?;
+        assert_eq!(
+            updates.borrow().workspace_metrics.worker_reset.interrupted,
+            1
+        );
+        // Measurements join normal checkpoints instead of causing extra report writes.
+        assert_eq!(fs::read(&metadata_path)?, metadata_before_measurement);
+        assert_eq!(
+            fs::read(coordinator.report_path().unwrap().join("outcomes.json"))?,
+            report_before_progress
+        );
         for (id, worker, state, outcome) in [
             (2, 2, ExecutionState::Completed, Some(Outcome::Missed)),
             (1, 1, ExecutionState::Interrupted, None),
@@ -457,6 +500,12 @@ mod tests {
         assert_eq!(outcomes["mutations"][0]["state"], "interrupted");
         assert_eq!(outcomes["mutations"][1]["state"], "completed");
         assert_eq!(outcomes["mutations"][2]["state"], "pending");
+        let metadata: serde_json::Value = serde_json::from_slice(&fs::read(metadata_path)?)?;
+        assert_eq!(metadata["checkpoint"], outcomes["checkpoint"]);
+        assert_eq!(
+            metadata["workspace_metrics"],
+            serde_json::to_value(&state.workspace_metrics)?
+        );
         Ok(())
     }
 
