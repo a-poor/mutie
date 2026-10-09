@@ -6,10 +6,10 @@ use std::{
 
 use anyhow::{Context, Result, ensure};
 use crossterm::{
-    cursor::{MoveToColumn, Show},
-    execute,
+    cursor::{MoveToColumn, MoveUp, Show},
+    execute, queue,
     style::ResetColor,
-    terminal::{Clear, ClearType},
+    terminal::{Clear, ClearType, DisableLineWrap, EnableLineWrap},
 };
 use ratatui::{
     Frame, Terminal, TerminalOptions, Viewport,
@@ -132,7 +132,7 @@ impl LiveTerminal {
         // Park at the start of our area between frames. The terminal tracks
         // this anchor through resizing/reflow, unlike a saved absolute row.
         self.terminal.set_cursor_position(self.area.as_position())?;
-        flush_commands(self.terminal.backend_mut())?;
+        flush_frame(self.terminal.backend_mut(), self.area.y)?;
         Ok(())
     }
 
@@ -168,15 +168,67 @@ fn fixed_terminal(
     )
 }
 
-// Crossterm flushes several times during a draw. Batch the frame and its parked
-// cursor together to reduce the window for a resize to interrupt a frame or
-// observe the cursor on a worker/footer row. Keep the allocation for reuse.
+// Setup/cleanup commands already use relative rows. Keep their allocation for reuse.
 fn flush_commands(backend: &mut CrosstermBackend<Vec<u8>>) -> io::Result<()> {
     let commands = backend.writer_mut();
     let mut stdout = io::stdout().lock();
     let written = stdout.write_all(commands);
     commands.clear();
     written.and_then(|()| stdout.flush())
+}
+
+fn flush_frame(backend: &mut CrosstermBackend<Vec<u8>>, origin_row: u16) -> io::Result<()> {
+    let frame = relative_frame(backend.writer_mut(), origin_row)?;
+    backend.writer_mut().clear();
+    let mut stdout = io::stdout().lock();
+    stdout.write_all(&frame)?;
+    stdout.flush()
+}
+
+// A frame may reach the terminal after a resize, even if its size was checked
+// immediately before writing. Absolute rows would overwrite pulled-back history
+// and move our parked cursor above the UI. Translate the pinned Crossterm
+// backend's CUP sequences to motion relative to that terminal-maintained anchor.
+// This processes only our renderer's commands, never subprocess output.
+fn relative_frame(commands: &[u8], mut row: u16) -> io::Result<Vec<u8>> {
+    let mut frame = Vec::with_capacity(commands.len());
+    // A late wide frame must not wrap when the terminal has become narrower.
+    queue!(frame, DisableLineWrap)?;
+    let mut offset = 0;
+    while offset < commands.len() {
+        if let Some((column, next_row, length)) = cursor_move(&commands[offset..]) {
+            if next_row > row {
+                // Unlike MoveDown, LF scrolls at the bottom. This keeps history
+                // above the UI even when a late frame is taller than the screen.
+                frame.extend(std::iter::repeat_n(b'\n', usize::from(next_row - row)));
+            } else if next_row < row {
+                queue!(frame, MoveUp(row - next_row))?;
+            }
+            queue!(frame, MoveToColumn(column))?;
+            row = next_row;
+            offset += length;
+        } else {
+            frame.push(commands[offset]);
+            offset += 1;
+        }
+    }
+    queue!(frame, EnableLineWrap)?;
+    Ok(frame)
+}
+
+// Crossterm 0.29 encodes MoveTo as ESC [ row ; column H (one-based u16s).
+fn cursor_move(bytes: &[u8]) -> Option<(u16, u16, usize)> {
+    if !bytes.starts_with(b"\x1b[") {
+        return None;
+    }
+    let end = bytes.iter().take(14).position(|byte| *byte == b'H')?;
+    let coordinates = std::str::from_utf8(&bytes[2..end]).ok()?;
+    let (row, column) = coordinates.split_once(';')?;
+    Some((
+        column.parse::<u16>().ok()?.checked_sub(1)?,
+        row.parse::<u16>().ok()?.checked_sub(1)?,
+        end + 1,
+    ))
 }
 
 /// Reserve an inline area using normal scrolling, preserving earlier output in
@@ -198,14 +250,18 @@ fn allocate_inline(
         backend.append_lines(1)?;
         row = row.saturating_add(1).min(size.height - 1);
     }
-    backend.set_cursor_position((0, row))?;
+    // The terminal may resize after the query; retain its actual cursor row.
+    execute!(backend, MoveToColumn(0))?;
     backend.clear_region(BackendClearType::AfterCursor)?;
     let height = height.min(size.height);
     // Clamp BEFORE appending lines: requesting more rows than the screen has
     // otherwise needlessly scrolls old output away behind blank history.
     backend.append_lines(height.saturating_sub(1))?;
     let area = Rect::new(0, row.min(size.height - height), size.width, height);
-    backend.set_cursor_position(area.as_position())?;
+    if height > 1 {
+        execute!(backend, MoveUp(height - 1))?;
+    }
+    execute!(backend, MoveToColumn(0))?;
     flush_commands(backend)?;
     Ok(area)
 }
@@ -218,9 +274,10 @@ impl Drop for LiveTerminal {
 
 fn restore_writer(writer: &mut impl Write) -> io::Result<()> {
     let reset = execute!(writer, ResetColor);
+    let wrap = execute!(writer, EnableLineWrap);
     let show = execute!(writer, Show);
     let flush = writer.flush();
-    reset.and(show).and(flush)
+    reset.and(wrap).and(show).and(flush)
 }
 
 /// Refresh at most ten times per second, coalescing state snapshots. A display
@@ -589,6 +646,76 @@ mod tests {
     }
 
     #[test]
+    fn relative_frames_match_backend_output_for_full_and_incremental_draws() -> Result<()> {
+        let mut state = state();
+        state.active.get_mut(&1).unwrap().description = "目录/e\u{301}😀.go:2:1: + -> -".into();
+        let area = Rect::new(0, 4, 88, 10);
+        let mut terminal = fixed_terminal(CrosstermBackend::new(Vec::new()), area)?;
+        let mut absolute = vt100::Parser::new(24, 88, 100);
+        let mut relative = vt100::Parser::new(24, 88, 100);
+        for parser in [&mut absolute, &mut relative] {
+            parser.process(b"earlier output\r\n$ mutie\x1b[5;1H");
+        }
+        for elapsed in [0, 1, 2] {
+            if elapsed == 2 {
+                state.active.clear();
+                state.recent.clear();
+            }
+            terminal.draw(|frame| {
+                render(
+                    frame,
+                    &state,
+                    state.started + Duration::from_secs(elapsed),
+                    false,
+                )
+            })?;
+            terminal.set_cursor_position(area.as_position())?;
+            let bytes = std::mem::take(terminal.backend_mut().writer_mut());
+            let translated = relative_frame(&bytes, area.y)?;
+            assert!((0..translated.len()).all(|i| cursor_move(&translated[i..]).is_none()));
+            absolute.process(&bytes);
+            relative.process(&translated);
+            assert_eq!(relative.screen().contents(), absolute.screen().contents());
+            assert_eq!(relative.screen().cursor_position(), (4, 0));
+            assert!(relative.screen().contents().contains("earlier output"));
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn late_tall_wide_frames_scroll_history_and_restore_line_wrapping() -> Result<()> {
+        let state = state();
+        let area = Rect::new(0, 14, 88, 10);
+        let mut terminal = fixed_terminal(CrosstermBackend::new(Vec::new()), area)?;
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        terminal.set_cursor_position(area.as_position())?;
+        // The frame was prepared for 24 rows but is consumed after shrinking.
+        let mut parser = vt100::Parser::new(5, 20, 100);
+        parser.process(b"earlier output\r\n$ mutie\r\n");
+        parser.process(&relative_frame(
+            terminal.backend_mut().writer_mut(),
+            area.y,
+        )?);
+        assert_eq!(parser.screen().cursor_position(), (0, 0));
+        let mut history = parser.screen().clone();
+        history.set_scrollback(usize::MAX);
+        let rows = history.scrollback();
+        for marker in ["earlier output", "$ mutie"] {
+            assert!(
+                (0..=rows).any(|offset| {
+                    history.set_scrollback(offset);
+                    history.contents().contains(marker)
+                }),
+                "lost {marker}"
+            );
+        }
+        // Normal shell text wraps again after the protected frame ends.
+        parser.process(b"\x1b[5;20Hab");
+        assert_eq!(parser.screen().cursor_position(), (4, 1));
+        Ok(())
+    }
+
+    #[test]
     fn complete_frame_shows_workers_results_and_summary_with_semantic_styles() -> Result<()> {
         let state = state();
         let mut terminal = Terminal::new(TestBackend::new(88, 10))?;
@@ -780,7 +907,7 @@ mod tests {
     }
 
     #[test]
-    fn restoration_attempts_show_cursor_even_if_reset_fails() {
+    fn restoration_attempts_wrapping_and_cursor_even_if_reset_fails() {
         #[derive(Default)]
         struct Writer {
             first: bool,
@@ -803,6 +930,7 @@ mod tests {
         }
         let mut writer = Writer::default();
         assert!(restore_writer(&mut writer).is_err());
+        assert!(String::from_utf8_lossy(&writer.bytes).contains("\x1b[?7h"));
         assert!(String::from_utf8_lossy(&writer.bytes).contains("\x1b[?25h"));
         assert!(writer.flushed);
     }

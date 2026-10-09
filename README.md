@@ -24,6 +24,7 @@ cargo run -- /path/to/go/module --output-dir ./mutation-reports
 cargo run -- /path/to/go/module --ui plain
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
 cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9,11
+cargo run -- report /path/to/saved/run
 ```
 
 The path defaults to the current directory and must contain `go.mod`. Glob
@@ -144,13 +145,66 @@ report path are printed. Interrupted summaries include pending/interrupted count
 
 Test output stays in saved logs while the live view is active, including with
 `--verbose`. Use `--ui plain --verbose` to print captured test output during a run.
-Interactive result filtering and diff/log browsing are future work.
+Use `mutie report RUN_DIR` to filter and inspect a finalized run.
 
 The MVP has been validated on `godotenv` v1.5.1 as well as the bundled fixture.
 Plain and live runs produced identical results for 77 mutations, and added tests
 in an isolated copy caught four previously missed mutations. See the
 [validation notes](DESIGN.md#mvp-validation-evidence) for runtime, artifact sizes,
 terminal checks, and the limits of this small-project validation.
+
+## Browsing a saved run
+
+Open a finalized run in the full-screen Ratatui browser:
+
+```sh
+cargo run -- report /path/to/saved/run
+cargo run -- report /path/to/saved/run --module /path/to/moved/checkout
+```
+
+Browsing needs an interactive terminal, but no Go installation, original checkout,
+or `mutie.toml`. It reads the saved report without changing it. Completed, failed,
+and interrupted runs are supported, including baseline failures without a mutation
+inventory. Running or inconsistent reports are rejected before terminal setup.
+Use `summary.txt` and the saved artifacts directly for non-interactive inspection.
+
+The mutation list and detail pane appear side by side in wide terminals and stack
+in narrower ones. The browser uses an alternate screen, restoring the prior shell
+screen and input mode on exit, Ctrl-C, or SIGTERM on Unix. The live run view remains
+inline. Terminals smaller than 24 columns by 12 rows show a resize hint.
+
+| Key | Action |
+| --- | --- |
+| Up/Down or `j`/`k` | Move through mutations or scroll the focused detail pane |
+| Tab | Switch list/detail focus |
+| Page Up/Down, Home/End | Page or jump to the first/last row or detail line |
+| Left/Right | Scroll the detail pane horizontally |
+| `o`, `p` | Cycle outcome/state and operator filters |
+| `/`, Enter, Esc | Edit, apply, or cancel a case-insensitive file substring filter |
+| `x` | Clear all filters |
+| Space | Mark/unmark the current mutation |
+| `a`, `c` | Mark/unmark all visible mutations; clear all marks |
+| `d`, `l` | Inspect the selected mutation's saved diff or log |
+| `b`, `g` | Inspect baseline or package-discovery logs |
+| `r` | Show a focused rerun command |
+| `e` | Close the browser and print the rerun command to the shell |
+| `?`, `q`/Esc | Show help; close the browser |
+
+Filters intersect. Marks persist across filters, and the header counts hidden
+marks. Rerun commands use **all marked saved IDs**, including hidden ones, or the
+current row when nothing is marked. They use `--rerun`, so pending/interrupted or
+previously killed mutations can also be selected. Commands are quoted for POSIX
+shells and are never executed by the browser. An actual rerun still checks source
+identity and requires a fresh baseline. Use `--module PATH` to change the module
+path in the generated command when the checkout has moved.
+
+The detail pane shows source location, operator, outcome/state, duration, and
+available diagnostics. Missing diff/log files appear as an inline message;
+other rows remain usable. Artifact previews read at most 256 KiB, replace terminal
+control characters, and flag truncation. The complete logs remain in the saved
+files. Artifact paths must resolve inside the report directory. JSON metadata is
+limited to 64 MiB per file. A module directory named `report` can still be run as
+`mutie ./report`.
 
 ## Focused reruns
 
@@ -366,6 +420,11 @@ baselines, ID/operator/outcome intersections, invalid selectors, selection
 previews, new ID mappings, empty selections, source report preservation, and
 improved tests turning a previous missed result into killed. The opt-in real-Go
 test also selects a killed and a missed mutation by ID and operator.
+Browser tests cover saved IDs, intersecting filters, marks hidden by filters,
+quoted command export, missing/bounded artifacts, Unicode input, and frame
+snapshots at wide and compact sizes. Unix PTY tests open reports with no Go or
+checkout, exercise paste and resize, and verify shell/termios restoration after
+quit, export, Ctrl-C, and SIGTERM without changing report files.
 Renderer tests check complete frames, styles, clipping, elapsed-time updates, and
 resizing, stable idle/busy rows, and results ordering. Progress tests cover partial
 output lines, interleaved packages, stale events after worker reuse, full capture
@@ -375,7 +434,9 @@ redraws during a blocked baseline, Ctrl-C, resizing, terminal initialization
 failure, empty/failed runs, terminal restoration, and plain output in CI. A
 terminal screen/scrollback model checks that pre-existing output and prompts
 survive completion, cancellation, width/height changes, and oversized worker
-views. Temporary workspace paths are
+views. A regression deliberately delivers frames prepared at the old size after
+a resize, verifying history preservation and normal line wrapping afterward.
+Temporary workspace paths are
 canonicalized so macOS path aliases agree with Go discovery and internal symlinks.
 
 ## Original plan

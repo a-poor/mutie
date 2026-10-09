@@ -93,7 +93,14 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Verify filter intersections, duplicate/invalid selectors, previews, empty
   selections, source validation, and report mappings; exercise focused reruns
   against the real-Go fixture with a fresh baseline.
-- [ ] Add interactive result filtering and diff/log browsing.
+- [x] Add interactive result filtering and diff/log browsing with `mutie report`;
+  mark saved IDs and preview/export focused rerun commands without executing them.
+- [x] Verify browser filtering, Unicode/paste input, bounded/missing artifacts,
+  compact/wide frames, and shell restoration on quit/export/Ctrl-C/SIGTERM.
+- [x] Fix the live-view scrollback race: queued frames used stale absolute rows
+  after resizing and moved the cleanup cursor above restored history. Use relative
+  frame/allocation movement and guard line wrapping; verify queued output through
+  growth/shrink, completion, and cancellation with deterministic regression coverage.
 - [ ] Add persistent per-mutation dismissals with required reasons and optional
   notes in repository-owned metadata; support inspecting, changing, and removing them.
 - [ ] Match dismissals against rediscovered mutations using source-aware identity;

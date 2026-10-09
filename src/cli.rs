@@ -1,6 +1,6 @@
 use std::{num::NonZeroU64, num::NonZeroUsize, path::PathBuf};
 
-use clap::{Parser, ValueEnum};
+use clap::{Parser, Subcommand, ValueEnum};
 use serde::{Deserialize, Serialize};
 
 use crate::mutation::Operator;
@@ -8,9 +8,14 @@ use crate::mutation::Operator;
 #[derive(Debug, Parser)]
 #[command(
     version,
+    args_conflicts_with_subcommands = true,
+    subcommand_negates_reqs = true,
     about = "Find gaps in Go tests by making small changes to your code"
 )]
 pub struct Cli {
+    #[command(subcommand)]
+    pub command: Option<Command>,
+
     /// Go module root (must contain go.mod)
     #[arg(default_value = ".")]
     pub path: PathBuf,
@@ -98,6 +103,18 @@ pub struct Cli {
     pub ui: Option<UiMode>,
 }
 
+#[derive(Debug, Subcommand)]
+pub enum Command {
+    /// Browse a finalized saved run, its diffs, and captured logs
+    Report {
+        /// Saved run directory (no Go module or checkout required)
+        run_dir: PathBuf,
+        /// Module root to use in generated rerun commands instead of the recorded path
+        #[arg(long, value_name = "PATH")]
+        module: Option<PathBuf>,
+    },
+}
+
 #[derive(Copy, Clone, Default, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum UiMode {
@@ -113,4 +130,36 @@ pub enum Lang {
     Auto,
     Go,
     Rust,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn report_command_is_separate_from_run_arguments() {
+        let cli = Cli::try_parse_from([
+            "mutie",
+            "report",
+            "/saved/run",
+            "--module",
+            "/moved/checkout",
+        ])
+        .unwrap();
+        assert!(
+            matches!(cli.command, Some(Command::Report { run_dir, module })
+            if run_dir == std::path::Path::new("/saved/run")
+                && module.as_deref() == Some(std::path::Path::new("/moved/checkout")))
+        );
+        for args in [
+            vec!["mutie", "report"],
+            vec!["mutie", "report", "/saved/run", "--list"],
+            vec!["mutie", "--list", "report", "/saved/run"],
+        ] {
+            assert!(Cli::try_parse_from(args).is_err());
+        }
+        let run = Cli::try_parse_from(["mutie", "./report", "--list"]).unwrap();
+        assert!(run.command.is_none());
+        assert!(run.list);
+    }
 }

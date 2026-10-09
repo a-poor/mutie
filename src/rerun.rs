@@ -1,18 +1,17 @@
 //! Saved IDs, operators, and outcomes select work; only freshly discovered mutations execute.
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
-    fs,
-    path::{Component, Path, PathBuf},
+    path::{Path, PathBuf},
 };
 
 use anyhow::{Context, Result, ensure};
-use serde::{Deserialize, Serialize, de::DeserializeOwned};
+use serde::Serialize;
 
 use crate::{
     cancellation::Cancellation,
-    mutation::{Mutation, OPERATOR_CATALOG_VERSION, Operator},
-    report::{ExecutionState, Outcome, RunStatus},
-    saved_report::SCHEMA_VERSION,
+    mutation::{Mutation, Operator},
+    report::{Outcome, RunStatus},
+    report_reader::{LoadedReport, SavedMutation},
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -85,42 +84,6 @@ pub struct RerunRequest {
     pub filter: RerunFilter,
 }
 
-// Read only the fields needed for selection. Older reports need not contain
-// effective configuration or presentation settings, and artifacts are never read.
-#[derive(Deserialize)]
-struct SavedRun {
-    schema_version: u32,
-    operator_catalog_version: u32,
-    checkpoint: u64,
-    status: RunStatus,
-    finished_at_unix_seconds: Option<u64>,
-    planned_mutations: Option<usize>,
-}
-
-#[derive(Deserialize)]
-struct SavedInventory {
-    schema_version: u32,
-    operator_catalog_version: u32,
-    complete: bool,
-    mutations: Vec<SavedMutation>,
-}
-
-#[derive(Deserialize)]
-struct SavedMutation {
-    id: usize,
-    file: PathBuf,
-    operator: Operator,
-    source_fingerprint: String,
-    byte_start: usize,
-    byte_end: usize,
-    line: usize,
-    column: usize,
-    end_line: usize,
-    end_column: usize,
-    original: String,
-    replacement: String,
-}
-
 impl SavedMutation {
     fn matches(&self, current: &Mutation) -> bool {
         self.operator == current.operator
@@ -133,21 +96,6 @@ impl SavedMutation {
             && self.end_line == current.end_line
             && self.end_column == current.end_column
     }
-}
-
-#[derive(Deserialize)]
-struct SavedOutcomes {
-    schema_version: u32,
-    checkpoint: u64,
-    status: RunStatus,
-    mutations: Vec<SavedExecution>,
-}
-
-#[derive(Deserialize)]
-struct SavedExecution {
-    id: usize,
-    state: ExecutionState,
-    outcome: Option<Outcome>,
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -182,111 +130,35 @@ impl RerunSelection {
     }
 
     fn read(directory: &Path, filter: &RerunFilter) -> Result<Self> {
-        let run: SavedRun = read_json(directory, "run.json")?;
-        let inventory: SavedInventory = read_json(directory, "mutants.json")?;
-        let outcomes: SavedOutcomes = read_json(directory, "outcomes.json")?;
-        for (name, version) in [
-            ("run.json", run.schema_version),
-            ("mutants.json", inventory.schema_version),
-            ("outcomes.json", outcomes.schema_version),
-        ] {
-            ensure!(
-                version == SCHEMA_VERSION,
-                "unsupported schema version {version} in {name}"
-            );
-        }
+        let report = LoadedReport::load(directory)?;
         ensure!(
-            run.operator_catalog_version == OPERATOR_CATALOG_VERSION
-                && inventory.operator_catalog_version == OPERATOR_CATALOG_VERSION,
-            "saved run uses an incompatible operator catalog"
-        );
-        ensure!(
-            run.status != RunStatus::Running && run.finished_at_unix_seconds.is_some(),
-            "saved run is not finalized; wait for it to finish or use a finalized run"
-        );
-        ensure!(
-            run.checkpoint == outcomes.checkpoint && run.status == outcomes.status,
-            "saved run has inconsistent checkpoints or statuses"
-        );
-        ensure!(
-            inventory.complete,
+            report.complete,
             "saved run has an incomplete mutation inventory"
         );
-        let count = inventory.mutations.len();
-        ensure!(
-            run.planned_mutations == Some(count) && outcomes.mutations.len() == count,
-            "saved run has inconsistent mutation counts"
-        );
-
-        let mut inventory_by_id = BTreeMap::new();
-        for mutation in inventory.mutations {
-            let id = mutation.id;
-            ensure!(id > 0 && id <= count, "invalid inventory mutation ID {id}");
-            ensure!(
-                !mutation.file.as_os_str().is_empty()
-                    && mutation
-                        .file
-                        .components()
-                        .all(|part| matches!(part, Component::Normal(_))),
-                "mutation {id} has an invalid module-relative source path"
-            );
-            ensure!(
-                mutation.byte_start < mutation.byte_end
-                    && mutation.byte_end - mutation.byte_start == mutation.original.len()
-                    && mutation.line > 0
-                    && mutation.column > 0
-                    && mutation.end_line >= mutation.line
-                    && mutation.end_column > 0,
-                "mutation {id} has invalid source coordinates"
-            );
-            ensure!(
-                inventory_by_id.insert(id, mutation).is_none(),
-                "duplicate inventory mutation ID {id}"
-            );
-        }
-        let mut missed = HashSet::new();
-        let mut seen = HashSet::new();
-        for execution in outcomes.mutations {
-            let id = execution.id;
-            ensure!(
-                inventory_by_id.contains_key(&id),
-                "unknown outcome mutation ID {id}"
-            );
-            ensure!(seen.insert(id), "duplicate outcome mutation ID {id}");
-            ensure!(
-                matches!(
-                    (execution.state, execution.outcome),
-                    (ExecutionState::Completed, Some(_))
-                        | (ExecutionState::Pending | ExecutionState::Interrupted, None)
-                ),
-                "mutation {id} has an inconsistent execution state/outcome"
-            );
-            ensure!(
-                run.status != RunStatus::Completed || execution.state == ExecutionState::Completed,
-                "completed saved run contains unfinished mutation {id}"
-            );
-            if execution.outcome == Some(Outcome::Missed) {
-                missed.insert(id);
-            }
-        }
-        // Validate IDs against the entire inventory before intersecting filters;
-        // an operator or outcome filter must never hide a mistyped ID.
+        let missed: HashSet<_> = report
+            .executions
+            .iter()
+            .filter(|execution| execution.outcome == Some(Outcome::Missed))
+            .map(|execution| execution.id)
+            .collect();
+        // Validate against the whole inventory before intersecting filters.
         for id in &filter.source_ids {
             ensure!(
-                inventory_by_id.contains_key(id),
+                *id > 0 && *id <= report.mutations.len(),
                 "unknown source mutation ID {id}"
             );
         }
         Ok(Self {
             provenance: RerunProvenance {
-                source_run: directory.to_owned(),
-                source_checkpoint: run.checkpoint,
-                source_status: run.status,
+                source_run: report.directory,
+                source_checkpoint: report.run.checkpoint,
+                source_status: report.run.status,
                 filter: filter.clone(),
                 mutations: Vec::new(),
             },
-            targets: inventory_by_id
-                .into_values()
+            targets: report
+                .mutations
+                .into_iter()
                 .filter(|m| filter.selection == RerunMode::All || missed.contains(&m.id))
                 .filter(|m| filter.source_ids.is_empty() || filter.source_ids.contains(&m.id))
                 .filter(|m| filter.operators.is_empty() || filter.operators.contains(&m.operator))
@@ -361,15 +233,20 @@ impl RerunSelection {
     }
 }
 
-fn read_json<T: DeserializeOwned>(directory: &Path, name: &str) -> Result<T> {
-    let bytes = fs::read(directory.join(name)).with_context(|| format!("reading {name}"))?;
-    serde_json::from_slice(&bytes).with_context(|| format!("parsing {name}"))
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::mutation::{self, Scope};
+    use crate::{
+        mutation::{self, OPERATOR_CATALOG_VERSION, Scope},
+        saved_report::SCHEMA_VERSION,
+    };
+    use serde::de::DeserializeOwned;
+    use std::fs;
+    fn read_json<T: DeserializeOwned>(directory: &Path, name: &str) -> Result<T> {
+        let bytes = fs::read(directory.join(name)).with_context(|| format!("reading {name}"))?;
+        serde_json::from_slice(&bytes).with_context(|| format!("parsing {name}"))
+    }
+
     use serde_json::{Value, json};
 
     struct Fixture {

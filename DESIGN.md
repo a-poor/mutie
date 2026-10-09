@@ -35,7 +35,7 @@ and practical runtime on a small library. It does not yet establish useful
 mutation coverage, acceptable noise, or runtime on a large real project.
 
 The prototype supports rerunning saved mutations by ID, operator, or missed
-outcome. Interactive result browsing remains planned.
+outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
 Rust appears in the CLI language enum but is not implemented.
 
 ## Minimal MVP
@@ -263,6 +263,17 @@ cleanup also clears from the parked cursor, without a stale absolute row or a
 teardown cursor query. Frames and their cursor placement are buffered and emitted
 together; this uses the pinned backend's `unstable-backend-writer` feature.
 
+Buffering alone does not prevent a frame prepared before resize from arriving
+after the terminal pulls history back onto the screen. The live writer translates
+the pinned Crossterm backend's absolute cursor moves to relative row movement
+from the parked cursor. Downward movement uses line feeds so a late frame taller
+than the screen scrolls history safely; wrapping is disabled during each frame
+so a late wide frame cannot unexpectedly advance rows. Wrapping is re-enabled at
+the frame's end and during error/panic cleanup. Inline allocation also uses
+relative movement after its cursor query. A PTY regression deliberately holds
+old-size output until after growth/shrink, covering completion and cancellation;
+emulator tests compare normal full/incremental frames with native backend output.
+
 Worker assignment starts the elapsed timer and the `preparing` state. Launching
 the Go command switches to `running`. Live structured build output can switch to
 `building`; observed package start/run events switch to `testing`. Track active
@@ -293,14 +304,45 @@ and report path. Verbose captured output is printed only in plain mode. The live
 view leaves input in normal mode between cursor-position queries and uses the
 existing signal-driven cancellation path. A terminal write failure cancels and
 drains execution before finalizing the report; terminal cleanup also runs on
-errors and panics. A later view can support selecting a result, scrolling its diff
-and logs, filtering missed mutations, and requesting focused reruns.
+errors and panics. The separate saved-report browser supports selecting results,
+scrolling diffs/logs, intersecting filters, and generating focused rerun commands.
 
 The UI renders coordinator state; it does not own workers or decide outcomes.
 Typed events feed the report writer, plain output, and a compact run-state
 projection. A watch channel shares the latest snapshot with the renderer; it
 retains counts and bounds recent display history without dropping persisted
 results. Report saving works independently of presentation.
+
+### Saved-report browser
+
+`mutie report RUN_DIR` bypasses run configuration and Go discovery. The shared
+`report_reader.rs` validates finalized metadata, schema/catalog versions,
+checkpoints, inventory IDs, and execution states, then joins records by saved ID.
+Both rerun selection and the browser use this validation. Failed/interrupted
+runs without an inventory can be inspected; reruns still require a complete
+inventory. Metadata reads are capped at 64 MiB per JSON file.
+
+`browser.rs` owns selection, marks, outcome/operator/file filters, input editing,
+detail scrolling, and cached artifact text. Rendering is a projection of that
+state with no file I/O. Artifact changes load at most 256 KiB and sanitize terminal
+controls; missing files show inline errors. Artifact references must resolve to
+regular files inside the report directory. The browser never modifies reports.
+
+The synchronous event loop runs on a blocking task, leaving Tokio's cancellation
+handlers responsive. It polls every 100 ms and redraws on input/resize. Ratatui's
+initialization enables raw mode and the alternate screen; a guard balances those
+modes, bracketed paste, colors, and cursor visibility. Cleanup attempts every
+operation even after an output error, and runs on normal exit, error, panic, and
+cancellation. This lifecycle is separate from the live inline status view.
+
+Wide terminals show a list beside the detail pane; widths below 90 columns stack
+them. Below 24x12, a resize hint replaces the layout. Keyboard navigation, Unicode
+file filtering, and paste update state outside rendering. Marks persist when
+filters hide rows, with hidden counts shown. `r` previews a POSIX-quoted command
+using all marked IDs or the current row, and `e` restores the terminal before
+printing it. `--module PATH` overrides the recorded checkout path. No execution
+is initiated from the browser; the resulting rerun follows normal source
+validation and baseline rules.
 
 ## Saved reports
 
@@ -364,8 +406,9 @@ Keep the implementation modular without building a plugin framework up front.
 | Coordinator | Baseline gate, mutation inventory, scheduling, cancellation, and authoritative run state. |
 | Workspace and process runner | Snapshot/copy/reset, apply edits, execute commands, enforce deadlines, and capture output. |
 | Report writer | Persist inventory, results, metadata, diffs, and logs. |
-| Rerun selection | Validate saved reports, intersect ID/operator/outcome filters, and match selected targets to current discovery. |
-| Terminal presentation | Show state and forward user control requests. |
+| Report reader | Validate and join finalized reports; read bounded saved artifacts. |
+| Rerun selection | Intersect ID/operator/outcome filters and match selected targets to current discovery. |
+| Terminal presentation | Show live coordinator state; browse saved results and generate rerun commands. |
 
 `coordinator.rs` owns a small event/state boundary: phase changes, command results,
 inventory publication, mutation starts and completions, and run termination.
@@ -419,8 +462,8 @@ Snapshot copying excludes the source run directory; output paths inside that run
 are rejected. The report and operator
 catalog versions remain unchanged during local development.
 
-Add interactive diff/log browsing on top of the same report and run-state model.
-A prior report supplies a selection, not proof that an old result remains valid. More flexible
+Interactive diff/log browsing now uses the shared saved-report reader. A prior
+report supplies a selection, not proof that an old result remains valid. More flexible
 matching across source edits needs an explicit policy and validation before it
 can replace the current strict identity check.
 
@@ -502,9 +545,11 @@ design. No runtime or plugin ABI is selected now.
    preservation — completed on the fixture and `godotenv` v1.5.1.
 6. Add missed-only saved-run selection, source validation, fresh execution, and
    report provenance — completed and verified with improved tests on the fixture
-   and `godotenv`. Broader selection and richer result review remain follow-ups.
+   and `godotenv`.
+7. Add ID/operator selection and a saved-report browser with filters, diff/log
+   inspection, and command export — completed with renderer and PTY coverage.
 
-Open implementation choices include richer result browsing, report retention
+Open implementation choices include persistent dismissals, report retention
 policy, mutation matching across source edits, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
@@ -601,6 +646,7 @@ focused reruns and clearer inspection before adding more mutation operators.
 
 Missed-only reruns complete this tested feedback loop. Focused ID/operator reruns
 are additionally covered by deterministic selection tests and the real-Go
-fixture; interactive result review remains a workflow improvement. Performance
+fixture. Saved-result review is covered by deterministic frame/state tests and
+PTY tests on macOS, independently of Go and the original checkout. Performance
 tuning and report-retention decisions need larger-project measurements; this validation
 establishes the small-project workflow, not general scaling claims.

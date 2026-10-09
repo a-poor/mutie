@@ -1,3 +1,4 @@
+mod browser;
 mod cancellation;
 mod cli;
 mod config;
@@ -6,6 +7,7 @@ mod go;
 mod mutation;
 mod process;
 mod report;
+mod report_reader;
 mod rerun;
 mod saved_report;
 mod status;
@@ -27,7 +29,19 @@ use workspace::Workspace;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let config = RunConfig::resolve(Cli::parse())?;
+    let mut cli = Cli::parse();
+    if let Some(cli::Command::Report { run_dir, module }) = cli.command.take() {
+        let cancellation = Cancellation::default();
+        let _signals = cancellation
+            .listen()
+            .context("installing cancellation handlers")?;
+        return tokio::task::spawn_blocking(move || {
+            browser::run(&run_dir, module.as_deref(), &cancellation)
+        })
+        .await
+        .context("report browser panicked")?;
+    }
+    let config = RunConfig::resolve(cli)?;
     let scope = Scope::new(&config.include, &config.exclude)?;
     let rerun = config
         .rerun

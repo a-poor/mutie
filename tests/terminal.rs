@@ -195,20 +195,7 @@ fi
             match self.master.read(&mut buf) {
                 Ok(0) => break,
                 Ok(n) => {
-                    self.output.extend_from_slice(&buf[..n]);
-                    for byte in &buf[..n] {
-                        self.screen.process(std::slice::from_ref(byte));
-                        self.query_tail.push(*byte);
-                        if self.query_tail.ends_with(b"\x1b[6n") && self.respond_to_queries {
-                            let (row, col) = self.screen.screen().cursor_position();
-                            let (_, columns) = self.screen.screen().size();
-                            let col = col.min(columns - 1); // pending wrap at the right edge
-                            write!(self.master, "\x1b[{};{}R", row + 1, col + 1).unwrap();
-                        }
-                        if self.query_tail.len() == 4 {
-                            self.query_tail.remove(0);
-                        }
-                    }
+                    self.consume(&buf[..n]);
                 }
                 Err(error)
                     if error.kind() == io::ErrorKind::WouldBlock
@@ -218,6 +205,43 @@ fi
                 }
                 Err(error) => panic!("PTY read failed: {error}"),
             }
+        }
+    }
+
+    fn consume(&mut self, bytes: &[u8]) {
+        self.output.extend_from_slice(bytes);
+        for byte in bytes {
+            self.screen.process(std::slice::from_ref(byte));
+            self.query_tail.push(*byte);
+            if self.query_tail.ends_with(b"\x1b[6n") && self.respond_to_queries {
+                let (row, col) = self.screen.screen().cursor_position();
+                let (_, columns) = self.screen.screen().size();
+                let col = col.min(columns - 1); // pending wrap at the right edge
+                write!(self.master, "\x1b[{};{}R", row + 1, col + 1).unwrap();
+            }
+            if self.query_tail.len() == 4 {
+                self.query_tail.remove(0);
+            }
+        }
+    }
+
+    fn resize_with_queued_output(&mut self, rows: u16, columns: u16) {
+        // Hold bytes produced at the old size until after the emulator resizes.
+        // This forces the race without relying on a resize landing on a tick.
+        let deadline = Instant::now() + Duration::from_secs(10);
+        let mut bytes = [0; 8192];
+        loop {
+            match self.master.read(&mut bytes) {
+                Ok(n) if n > 0 => {
+                    self.resize_screen(rows, columns);
+                    self.consume(&bytes[..n]);
+                    return;
+                }
+                Err(error) if error.kind() == io::ErrorKind::WouldBlock => {}
+                other => panic!("waiting for queued frame: {other:?}"),
+            }
+            assert!(Instant::now() < deadline, "no frame arrived");
+            thread::sleep(Duration::from_millis(10));
         }
     }
 
@@ -239,6 +263,10 @@ fi
 
     fn resize(&mut self, rows: u16, columns: u16) {
         self.pump();
+        self.resize_screen(rows, columns);
+    }
+
+    fn resize_screen(&mut self, rows: u16, columns: u16) {
         // vt100 truncates rows on resize. Model a terminal that scrolls enough
         // to keep its cursor visible on height shrink, preserving those rows
         // in scrollback. Width changes still do not reflow; markers fit the
@@ -533,6 +561,29 @@ fn resizing_preserves_scrollback_and_prompt_near_the_bottom() {
             visible.contains("earlier output") && visible.contains("$ mutie"),
             "{visible}"
         );
+    }
+}
+
+#[test]
+fn queued_frames_cannot_erase_history_after_resize() {
+    for cancel in [false, true] {
+        let preamble = format!("{}{PREAMBLE}", "\n".repeat(21));
+        let mut session =
+            Session::start_with_terminal("live", "interactive", false, (24, 100), 2, &preamble);
+        session.until(|s| s.screen.screen().contents().contains("baseline"));
+        for (rows, columns) in [(40, 120), (5, 28), (24, 100)] {
+            session.resize_with_queued_output(rows, columns);
+            let start = Instant::now();
+            session.until(|_| start.elapsed() >= Duration::from_millis(150));
+            session.assert_history();
+        }
+        if cancel {
+            session.master.write_all(&[3]).unwrap();
+        } else {
+            fs::write(session.state.join("release"), "").unwrap();
+        }
+        assert_eq!(session.finish().success(), !cancel);
+        session.assert_restored(true);
     }
 }
 
