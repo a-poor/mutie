@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     cli::{Cli, Lang, TestScope, UiMode},
+    mutation::Operator,
     rerun::{RerunFilter, RerunMode, RerunRequest},
 };
 
@@ -24,6 +25,7 @@ struct RepositoryConfig {
     test_scope: Option<TestScope>,
     include: Option<Vec<String>>,
     exclude: Option<Vec<String>>,
+    operators: Option<Vec<Operator>>,
     timeout: Option<NonZeroU64>,
     baseline_timeout: Option<NonZeroU64>,
     fail_on_missed: Option<bool>,
@@ -44,6 +46,8 @@ pub struct RunConfig {
     pub test_scope: TestScope,
     pub include: Vec<String>,
     pub exclude: Vec<String>,
+    /// Empty means all operators; selection is applied after dismissal matching.
+    pub operators: Vec<Operator>,
     pub timeout: Option<NonZeroU64>,
     pub baseline_timeout: NonZeroU64,
     pub fail_on_missed: bool,
@@ -109,6 +113,15 @@ impl RunConfig {
         } else {
             RerunMode::All
         };
+        let mut operators = if cli.clear_operators {
+            Vec::new()
+        } else if !cli.operators.is_empty() {
+            cli.operators
+        } else {
+            file.operators.unwrap_or_default()
+        };
+        operators.sort_unstable();
+        operators.dedup();
         let rerun = cli
             .rerun
             .or(cli.rerun_missed)
@@ -139,7 +152,7 @@ impl RunConfig {
                     filter: RerunFilter::new(
                         selection,
                         cli.ids.into_iter().map(NonZeroUsize::get).collect(),
-                        cli.operators,
+                        operators.clone(),
                     ),
                 })
             })
@@ -155,6 +168,7 @@ impl RunConfig {
             test_scope: cli.test_scope.or(file.test_scope).unwrap_or_default(),
             include: merge_patterns(cli.include, cli.clear_include, file.include),
             exclude: merge_patterns(cli.exclude, cli.clear_exclude, file.exclude),
+            operators,
             timeout: if cli.clear_timeout {
                 None
             } else {
@@ -272,6 +286,7 @@ mod tests {
         assert_eq!(config.baseline_timeout.get(), 300);
         assert_eq!(config.timeout, None);
         assert!(config.include.is_empty() && config.exclude.is_empty());
+        assert!(config.operators.is_empty());
         assert!(!config.verbose && !config.list);
         assert_eq!(config.ui, UiMode::Auto);
         assert_eq!(config.test_scope, TestScope::Full);
@@ -430,7 +445,9 @@ verbose = true
             "rerun_missed = 'previous-run'",
             "rerun = 'previous-run'",
             "ids = [1]",
-            "operators = ['boolean_flip']",
+            "operators = ['unknown']",
+            "operators = 'boolean_flip'",
+            "operators = [1]",
             "jobs =",
             "jobs = 1\njobs = 2",
         ] {
@@ -453,6 +470,7 @@ verbose = true
             vec!["--timeout", "1", "--clear-timeout"],
             vec!["--verbose", "--no-verbose"],
             vec!["--fail-on-missed", "--no-fail-on-missed"],
+            vec!["--operator", "call_remove", "--clear-operators"],
             vec!["--list", "--output-dir", "reports"],
             vec!["--jobs", "0"],
             vec!["--timeout", "0"],
@@ -464,13 +482,12 @@ verbose = true
     }
 
     #[test]
-    fn rerun_filters_require_a_source_and_resolve_to_normalized_invocation_settings() -> Result<()>
-    {
+    fn rerun_ids_require_a_source_and_filters_resolve_to_normalized_settings() -> Result<()> {
         use crate::mutation::Operator;
 
         for args in [
             vec!["--id", "1"],
-            vec!["--operator", "boolean_flip"],
+            vec!["--operator", "unknown"],
             vec!["--rerun", "a", "--rerun-missed", "b"],
             vec!["--rerun", "a", "--id", "0"],
             vec!["--rerun", "a", "--id", "-1"],
@@ -515,6 +532,44 @@ verbose = true
             );
             assert!(!config.output_dir.exists());
         }
+        Ok(())
+    }
+
+    #[test]
+    fn operator_selection_merges_normalizes_and_clears_for_fresh_runs_and_reruns() -> Result<()> {
+        let temp = project()?;
+        let file = temp.path().join("module/mutie.toml");
+        fs::create_dir(temp.path().join("previous"))?;
+        fs::write(
+            &file,
+            "operators = ['call_remove', 'boolean_flip', 'call_remove']",
+        )?;
+        for source in [vec![], vec!["--rerun", "previous"]] {
+            for (extra, expected) in [
+                (vec![], vec![Operator::BooleanFlip, Operator::CallRemove]),
+                (vec!["--clear-operators"], vec![]),
+                (
+                    vec![
+                        "--operator",
+                        "arithmetic_replace,call_remove",
+                        "--operator",
+                        "call_remove",
+                    ],
+                    vec![Operator::ArithmeticReplace, Operator::CallRemove],
+                ),
+            ] {
+                let args: Vec<_> = source.iter().chain(&extra).copied().collect();
+                let config = resolve(temp.path(), &args)?;
+                assert_eq!(config.operators, expected);
+                if let Some(rerun) = config.rerun {
+                    assert_eq!(rerun.filter.operators, expected);
+                }
+            }
+        }
+        fs::write(&file, "operators = []")?;
+        assert!(resolve(temp.path(), &[])?.operators.is_empty());
+        fs::write(&file, "operators = ['unknown']")?;
+        assert!(resolve(temp.path(), &["--clear-operators"]).is_err());
         Ok(())
     }
 

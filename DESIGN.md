@@ -181,8 +181,9 @@ Start with simple syntax-based edits, such as:
 - Comparison boundaries: `>` to `>=`, `<` to `<=`, and their counterparts.
 - Comparison inversion: `==` to `!=`, or a comparison to its complement.
 - Boolean and logical changes: `true` to `false`, `&&` to `||`, or removal of `!`.
+- Standalone calls: remove a complete call statement (`call_remove`).
 
-These describe the small initial catalog, much of which already exists. Each
+These describe the implemented catalog. Each
 mutation makes one change. Discovery order and operator names should be
 predictable, with tests for exact edits and source locations. Exclude test files,
 generated code, and dependencies by default. Let the language tool determine
@@ -193,12 +194,36 @@ edits will be unbuildable, such as changing string addition to subtraction in Go
 Keep those results visible and separate; improve noisy operators based on evidence.
 Do not attempt general equivalent-mutation detection in the MVP.
 
-Later candidates include dropping standalone function calls, replacing return
-values, and changing branches or loop behavior. These need language-specific
-eligibility rules: removing a standalone call differs from removing a call whose
-value is used, and can change side effects or make code invalid. Add operator
-selection and named profiles as the catalog grows. Favor understandable findings
-over generating the largest possible number of mutations.
+`call_remove` selects expression statements whose expression is a call (possibly
+parenthesized) directly inside a statement list in a block or case body. This
+follows Go's [expression statement syntax](https://go.dev/ref/spec#Expression_statements)
+without needing type information. It handles methods, generic calls, built-ins,
+and immediately invoked function literals. It excludes values used in assignments,
+returns, or other expressions, including blank-identifier assignments; go/defer,
+labeled statements, and control-flow headers are outside this first operator's
+scope. Nested argument calls are not separate removal candidates; mutations in
+their literals/operators and in function literal bodies remain independent.
+
+The mutation replaces only the statement's byte range with empty text. Surrounding
+whitespace, semicolons, and comments remain; comments inside the range disappear.
+Do not repair unused imports/locals or missing returns after removing a terminating
+panic: these are build failures, not killed mutations. Saved identity includes the
+whole original statement and exact byte/line/column endpoints. Unified diffs now
+support multiline edits, correct old/new hunk lengths, three context lines, CRLF,
+Unicode, and missing final newlines.
+
+All operators are enabled by default. Resolve repository `operators`, CLI
+`--operator`, and `--clear-operators` before execution, normalize duplicates, and
+save the effective list (empty means all). Match dismissals against the complete
+discovered catalog before selecting operators, then remap only included matched
+decisions to final IDs. `dismiss check` ignores operator restrictions so valid
+decisions outside a run's selection remain checkable. Reruns apply the same merged
+operator selection to the source inventory before strict current-source matching.
+
+Return-value, branch, and loop mutations and named operator profiles remain future
+work. Favor understandable findings over generating the largest possible number
+of mutations. See [call-removal validation](benchmarks/godotenv-v1.5.1-call-remove.md)
+for four actionable CLI gaps and four unbuildable removals on `godotenv` v1.5.1.
 
 ## Repository configuration
 
@@ -222,6 +247,7 @@ lang = "go"
 jobs = 2
 include = ["**/*.go"]
 exclude = ["internal/legacy/**"]
+operators = [] # all; or a list of named operators
 timeout = 30
 baseline_timeout = 300
 output_dir = ".mutie"
@@ -238,7 +264,8 @@ root, its ancestors, files, and dangling symlinks are invalid output destination
 Paths are not shell-expanded.
 
 Explicit CLI lists replace their configured counterparts. `--clear-include` and
-`--clear-exclude` remove the respective configured patterns. `--clear-timeout`
+`--clear-exclude` remove the respective configured patterns. `--operator` replaces
+configured `operators`; `--clear-operators` selects all operators. `--clear-timeout`
 restores the automatic timeout and `--no-verbose` disables configured verbosity.
 Reset flags conflict with their corresponding value flags. Automatic language
 selection currently resolves to Go; a missing mutation timeout remains `null` in
@@ -515,8 +542,9 @@ Repeatable or comma-separated `--id` and `--operator` filters narrow either mode
 IDs always belong to the immediate source run. Values within a filter form a
 union; different filters intersect. Normalize and deduplicate filters, reject
 unknown IDs before applying other filters, and reject unknown operators during
-CLI parsing. The source options conflict; filters require a source. All rerun
-settings are invocation-only.
+CLI parsing or configuration loading. The source options conflict; IDs require a
+source. Source and ID settings are invocation-only; operator selection also works
+on fresh runs and can be configured in `mutie.toml`.
 
 The reader validates schema/catalog versions, final status, matching
 checkpoints, a complete inventory, counts, IDs, source paths, and execution states

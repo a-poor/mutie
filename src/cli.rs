@@ -89,14 +89,13 @@ pub struct Cli {
     )]
     pub ids: Vec<NonZeroUsize>,
 
-    /// Select these saved operators (repeatable or comma-separated; intersects --id)
-    #[arg(
-        long = "operator",
-        value_enum,
-        value_delimiter = ',',
-        requires = "rerun_source"
-    )]
+    /// Select mutation operators (repeatable or comma-separated; replaces config)
+    #[arg(long = "operator", value_enum, value_delimiter = ',')]
     pub operators: Vec<Operator>,
+
+    /// Clear configured operator selection, allowing all operators
+    #[arg(long, conflicts_with = "operators")]
+    pub clear_operators: bool,
 
     /// Parent directory for saved runs (default: <module>/.mutie)
     #[arg(long, value_name = "DIR", conflicts_with = "list")]

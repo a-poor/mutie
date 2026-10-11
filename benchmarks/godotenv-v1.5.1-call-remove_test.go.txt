@@ -1,0 +1,44 @@
+package main
+
+import (
+	"flag"
+	"os"
+	"os/exec"
+	"strings"
+	"testing"
+)
+
+func TestCLIHelperProcess(t *testing.T) {
+	if os.Getenv("MUTIE_CLI_HELPER") != "1" {
+		return
+	}
+	for i, arg := range os.Args {
+		if arg == "--" {
+			os.Args = append([]string{"godotenv"}, os.Args[i+1:]...)
+			break
+		}
+	}
+	flag.CommandLine = flag.NewFlagSet("godotenv", flag.ExitOnError)
+	main()
+	os.Exit(0)
+}
+
+func runCLI(args ...string) ([]byte, error) {
+	cmd := exec.Command(os.Args[0], append([]string{"-test.run=^TestCLIHelperProcess$", "--"}, args...)...)
+	cmd.Env = append(os.Environ(), "MUTIE_CLI_HELPER=1")
+	return cmd.CombinedOutput()
+}
+
+func TestHelpAcceptsDocumentedFlags(t *testing.T) {
+	output, err := runCLI("-h", "-f", "does-not-exist.env", "-o", "must-not-execute")
+	if err != nil || !strings.Contains(string(output), "Run a process with an env setup") {
+		t.Fatalf("documented help invocation failed: %v\n%s", err, output)
+	}
+}
+
+func TestUnknownFlagFails(t *testing.T) {
+	output, err := runCLI("--mutie-unknown-option")
+	if err == nil || !strings.Contains(string(output), "flag provided but not defined") {
+		t.Fatalf("unknown flag should fail: %v\n%s", err, output)
+	}
+}

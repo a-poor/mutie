@@ -1,0 +1,461 @@
+{
+  "date": "2026-10-11",
+  "base_commit": "aa2a1ee8769c63ac9a6ce8322db3e58eabe43efc",
+  "implementation": "working tree with call_remove and operator selection",
+  "project": "github.com/joho/godotenv v1.5.1",
+  "source_manifest": {
+    "mutie.toml": "df96585b48effb13fd47251d987ce3eef9f9241d85d019dfaedb1f778e1aaa1c",
+    "go.mod": "17bf16ae5dcbf139150e383764b63c8a60434f3b0c07400ef31d24b2cfabaab5",
+    "godotenv.go": "1f71fe740cd6c976e9a151bb4fef1fc624d7e6b603c5b3ba193f834115d017ff",
+    "godotenv_test.go": "5a643f3553c9d68c4e05fde40dbc88ec6eef620356994f5f345e73edae776a77",
+    "README.md": "91cdab81b89a0f633b725ed97bbe825a62dbc754f928ed852d5c8571964019f1",
+    ".gitignore": "cf237c7aff44efbe6e502e645c3e06da03a69d7bdeb43392108ef3348143417e",
+    "parser.go": "67eeb68dd2329dd6e643937ac7c3c27d3407fc1a87b9b331035cf41ac9d0b534",
+    "LICENCE": "4334bf49b7e1a6736ce1b21814d5cce392000204d059ee6a845eeb966e7a1e31",
+    ".github/dependabot.yml": "1cbd926ff3c360cd5810e3bbc78fc30e3a43fafc39fa3cd4a10f1947b0d5e56a",
+    "fixtures/substitutions.env": "75f431cdbede5f17f3a3dfd94b8b16e06f0e7a36c3645c7ae424c43528b40afa",
+    "fixtures/exported.env": "1ce4637630173d0a851cb0deba35ae41666ffef0acc8ef156c9d229f7a94e04c",
+    "fixtures/plain.env": "fc9f92b9e77a5f693f550061a50766ce4cdf6fe6096e7439163e243f9cd37bbe",
+    "fixtures/quoted.env": "fab237a887fc12ae6c5f7b5837e2772b8ba440f8bb8397568d26b5baef5aba50",
+    "fixtures/invalid1.env": "46038741a78694712d1036a1df1a152053f8c16b116b736cd440002daba5863a",
+    "fixtures/comments.env": "86e7bb0f206d88e33b2dfd4c2cfd7ec91d1bb2aee288ca5afbb381d08ced61c0",
+    "fixtures/equals.env": "4264ae540b782dcc504d7899eef82af4b28b2ad3fe5bfb37fc1a55651916a1a1",
+    "autoload/autoload.go": "3257184f583e1ed222497b00882951ccbc16cb19099eafbd0597306d8f852859",
+    ".github/workflows/release.yml": "ff39323c2e8c6a05e05a090e7be592bda2bea345dc5988c370753c298128d66e",
+    ".github/workflows/codeql-analysis.yml": "128576555c33503fb7c4e2b69b2ba83d568eb1a3b963d08fc2fd0225ed06210f",
+    ".github/workflows/ci.yml": "83317cdf16dd1e9be4b6e716594cf39ee8290c3571ebeb931e09a12ac25401a2",
+    "cmd/godotenv/cmd.go": "373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41"
+  },
+  "go_version": "go version go1.27.2 darwin/arm64",
+  "platform": "macOS arm64",
+  "environment": {
+    "GOCACHE": "/tmp/mutie-go-cmp-s598wu91/cache",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off"
+  },
+  "raw_artifacts": "/tmp/mutie-call-remove-8pz0ds75",
+  "runs": {
+    "reports": {
+      "report": "/tmp/mutie-call-remove-8pz0ds75/reports/run-1791731293-orzvWQ",
+      "status": "completed",
+      "summary": {
+        "killed": 0,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 4,
+        "errors": 0
+      },
+      "effective_config": {
+        "module_root": "/tmp/mutie-call-remove-8pz0ds75/module",
+        "config_file": "/tmp/mutie-call-remove-8pz0ds75/module/mutie.toml",
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "call_remove"
+        ],
+        "timeout": 10,
+        "baseline_timeout": 60,
+        "fail_on_missed": false,
+        "output_dir": "/tmp/mutie-call-remove-8pz0ds75/reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "rerun": null,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "autoload/autoload.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:3257184f583e1ed222497b00882951ccbc16cb19099eafbd0597306d8f852859",
+          "byte_start": 214,
+          "byte_end": 229,
+          "original": "godotenv.Load()",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 2,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 123,
+          "byte_end": 171,
+          "original": "flag.BoolVar(&showHelp, \"h\", false, \"show help\")",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 3,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 201,
+          "byte_end": 281,
+          "original": "flag.StringVar(&rawEnvFilenames, \"f\", \"\", \"comma separated paths to .env files\")",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 4,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 302,
+          "byte_end": 373,
+          "original": "flag.BoolVar(&overload, \"o\", false, \"override existing .env variables\")",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 5,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 376,
+          "byte_end": 388,
+          "original": "flag.Parse()",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 6,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 784,
+          "byte_end": 802,
+          "original": "fmt.Println(usage)",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 7,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 1096,
+          "byte_end": 1110,
+          "original": "log.Fatal(err)",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 8,
+          "file": "godotenv.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:1f71fe740cd6c976e9a151bb4fef1fc624d7e6b603c5b3ba193f834115d017ff",
+          "byte_start": 4961,
+          "byte_end": 4980,
+          "original": "sort.Strings(lines)",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "./..."
+          ]
+        }
+      ]
+    },
+    "affected-reports": {
+      "report": "/tmp/mutie-call-remove-8pz0ds75/affected-reports/run-1791731407-QGdCbX",
+      "status": "completed",
+      "summary": {
+        "killed": 0,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 4,
+        "errors": 0
+      },
+      "effective_config": {
+        "module_root": "/tmp/mutie-call-remove-8pz0ds75/module",
+        "config_file": "/tmp/mutie-call-remove-8pz0ds75/module/mutie.toml",
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "affected",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "call_remove"
+        ],
+        "timeout": 10,
+        "baseline_timeout": 60,
+        "fail_on_missed": false,
+        "output_dir": "/tmp/mutie-call-remove-8pz0ds75/affected-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "rerun": null,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "autoload/autoload.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:3257184f583e1ed222497b00882951ccbc16cb19099eafbd0597306d8f852859",
+          "byte_start": 214,
+          "byte_end": 229,
+          "original": "godotenv.Load()",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "github.com/joho/godotenv/autoload"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 123,
+          "byte_end": 171,
+          "original": "flag.BoolVar(&showHelp, \"h\", false, \"show help\")",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 201,
+          "byte_end": 281,
+          "original": "flag.StringVar(&rawEnvFilenames, \"f\", \"\", \"comma separated paths to .env files\")",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 302,
+          "byte_end": 373,
+          "original": "flag.BoolVar(&overload, \"o\", false, \"override existing .env variables\")",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        },
+        {
+          "id": 5,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 376,
+          "byte_end": 388,
+          "original": "flag.Parse()",
+          "replacement": "",
+          "outcome": "missed",
+          "test_packages": [
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        },
+        {
+          "id": 6,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 784,
+          "byte_end": 802,
+          "original": "fmt.Println(usage)",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        },
+        {
+          "id": 7,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 1096,
+          "byte_end": 1110,
+          "original": "log.Fatal(err)",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        },
+        {
+          "id": 8,
+          "file": "godotenv.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:1f71fe740cd6c976e9a151bb4fef1fc624d7e6b603c5b3ba193f834115d017ff",
+          "byte_start": 4961,
+          "byte_end": 4980,
+          "original": "sort.Strings(lines)",
+          "replacement": "",
+          "outcome": "build_failed",
+          "test_packages": [
+            "github.com/joho/godotenv",
+            "github.com/joho/godotenv/autoload",
+            "github.com/joho/godotenv/cmd/godotenv"
+          ]
+        }
+      ]
+    },
+    "improved-reports": {
+      "report": "/tmp/mutie-call-remove-8pz0ds75/improved-reports/run-1791731377-AvDaKS",
+      "status": "completed",
+      "summary": {
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "effective_config": {
+        "module_root": "/tmp/mutie-call-remove-8pz0ds75/improved-tests",
+        "config_file": "/tmp/mutie-call-remove-8pz0ds75/improved-tests/mutie.toml",
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "call_remove"
+        ],
+        "timeout": 10,
+        "baseline_timeout": 60,
+        "fail_on_missed": false,
+        "output_dir": "/tmp/mutie-call-remove-8pz0ds75/improved-reports",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-call-remove-8pz0ds75/reports/run-1791731293-orzvWQ",
+          "selection": "missed",
+          "operators": [
+            "call_remove"
+          ]
+        },
+        "ui": "plain"
+      },
+      "rerun": {
+        "source_run": "/tmp/mutie-call-remove-8pz0ds75/reports/run-1791731293-orzvWQ",
+        "source_checkpoint": 25,
+        "source_status": "completed",
+        "selection": "missed",
+        "operators": [
+          "call_remove"
+        ],
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 2
+          },
+          {
+            "id": 2,
+            "source_id": 3
+          },
+          {
+            "id": 3,
+            "source_id": 4
+          },
+          {
+            "id": 4,
+            "source_id": 5
+          }
+        ]
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 123,
+          "byte_end": 171,
+          "original": "flag.BoolVar(&showHelp, \"h\", false, \"show help\")",
+          "replacement": "",
+          "outcome": "killed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 2,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 201,
+          "byte_end": 281,
+          "original": "flag.StringVar(&rawEnvFilenames, \"f\", \"\", \"comma separated paths to .env files\")",
+          "replacement": "",
+          "outcome": "killed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 3,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 302,
+          "byte_end": 373,
+          "original": "flag.BoolVar(&overload, \"o\", false, \"override existing .env variables\")",
+          "replacement": "",
+          "outcome": "killed",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 4,
+          "file": "cmd/godotenv/cmd.go",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:373c5ece6faef34979da4568c9b951f553cbd5cf20a7427ddd7c731b15a0db41",
+          "byte_start": 376,
+          "byte_end": 388,
+          "original": "flag.Parse()",
+          "replacement": "",
+          "outcome": "killed",
+          "test_packages": [
+            "./..."
+          ]
+        }
+      ]
+    }
+  },
+  "audit": {
+    "original_files_preserved": true,
+    "run_outcome_checkpoints_match": true,
+    "full_affected_outcomes_match": true,
+    "all_eight_diffs_apply_exactly": true,
+    "four_survivors_killed_with_added_tests": true
+  }
+}

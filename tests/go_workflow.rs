@@ -399,6 +399,108 @@ fn go_workflow() {
     assert_eq!(timeout_report["baseline"]["outcome"], "timeout");
 }
 
+#[test]
+#[ignore = "requires Go 1.24+ on PATH; builds call-removal mutants and a focused rerun"]
+fn call_removal_reports_real_outcomes_and_a_stronger_test_kills_a_survivor() {
+    let root = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+    let root = root.path();
+    fs::write(root.join("go.mod"), "module example.com/calls\n\ngo 1.24\n").unwrap();
+    let source = concat!(
+        "package calls\n\nvar State int\n\nfunc set(value int) { State = value }\n\n",
+        "func Checked() {\n\tset(\n\t\t1,\n\t)\n}\n\n",
+        "func Unchecked() { set(2) }\n\n",
+        "func Noisy() {\n\tx := 3\n\tset(x)\n}\n\n",
+        "func Parenthesized() { (set(4)) }\n"
+    );
+    fs::write(root.join("calls.go"), source).unwrap();
+    fs::write(
+        root.join("calls_test.go"),
+        r#"package calls
+
+import "testing"
+
+func TestCalls(t *testing.T) {
+    State = 0
+    Checked()
+    if State != 1 { t.Fatal("missing checked effect") }
+    Unchecked()
+    Noisy()
+    Parenthesized()
+    if State != 4 { t.Fatal("missing parenthesized effect") }
+}
+"#,
+    )
+    .unwrap();
+    let preview = stdout(&run(root, &["--operator", "call_remove", "--list"]));
+    assert!(preview.contains("Found 4 mutations"), "{preview}");
+    assert!(!root.join(".mutie").exists());
+    let output = run(
+        root,
+        &["--operator", "call_remove", "--jobs", "2", "--timeout", "5"],
+    );
+    stdout(&output);
+    let (directory, metadata, inventory, outcomes) = saved_report(&output);
+    assert_eq!(metadata["status"], "completed");
+    assert_eq!(outcomes["summary"]["killed"], 2);
+    assert_eq!(outcomes["summary"]["missed"], 1);
+    assert_eq!(outcomes["summary"]["build_failed"], 1);
+    assert_eq!(outcomes["summary"]["errors"], 0);
+    assert_eq!(inventory["mutations"][0]["original"], "set(\n\t\t1,\n\t)");
+    assert_eq!(inventory["mutations"][3]["original"], "(set(4))");
+    for m in inventory["mutations"].as_array().unwrap() {
+        assert_eq!(m["operator"], "call_remove");
+        assert_eq!(m["replacement"], "");
+    }
+    let saved = fs::read(directory.join("run.json")).unwrap();
+    stdout(&dismiss(
+        root,
+        &[
+            "add",
+            directory.to_str().unwrap(),
+            "--id",
+            "2",
+            "--reason",
+            "test review",
+        ],
+    ));
+    fs::write(
+        root.join("stronger_test.go"),
+        r#"package calls
+
+import "testing"
+
+func TestUncheckedEffect(t *testing.T) {
+    State = 0
+    Unchecked()
+    if State != 2 { t.Fatal("missing previously unchecked effect") }
+}
+"#,
+    )
+    .unwrap();
+    let rerun = run(
+        root,
+        &[
+            "--rerun-missed",
+            directory.to_str().unwrap(),
+            "--operator",
+            "call_remove",
+            "--test-scope",
+            "affected",
+            "--timeout",
+            "5",
+        ],
+    );
+    stdout(&rerun);
+    let (_, metadata, inventory, outcomes) = saved_report(&rerun);
+    assert_eq!(metadata["rerun"]["mutations"][0]["source_id"], 2);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 1);
+    assert_eq!(inventory["dismissals"]["matched"][0]["mutation_id"], 1);
+    assert_eq!(outcomes["summary"]["killed"], 1);
+    assert_eq!(outcomes["summary"]["missed"], 0);
+    assert_eq!(fs::read(directory.join("run.json")).unwrap(), saved);
+    assert_eq!(fs::read_to_string(root.join("calls.go")).unwrap(), source);
+}
+
 #[cfg(unix)]
 #[test]
 fn saves_partial_results_when_a_later_command_fails() {

@@ -145,8 +145,13 @@ checklist as work lands, checking items off after appropriate verification.
 - [ ] Evaluate coverage-based test selection and result reuse against full-module
   testing, with explicit invalidation rules. Keep affected-package comparisons
   against full-module results as projects and operators expand.
-- [ ] Expand mutations, including standalone call removal and return/branch/loop
-  changes; add operator selection and profiles based on useful findings.
+- [x] Add standalone call removal with explicit statement eligibility and multiline
+  diffs. Support operator selection for fresh runs, previews, and reruns through
+  CLI/config, preserving dismissal matching and source identity. Verify real-Go
+  outcomes and four missed-to-killed CLI gaps on `godotenv`; full/affected outcomes
+  match. See `benchmarks/godotenv-v1.5.1-call-remove.md` for evidence and noise limits.
+- [ ] Expand return/branch/loop mutations and add named operator profiles based on
+  useful findings; evaluate call-removal build-failure noise on more projects.
 - [x] Add explicit report listing and retention: status/age/logical size, count/age
   previews, and `--apply` deletion with writer locks and revalidation. Protect active
   and unfinished reports, unsupported metadata, symlinks, and unrelated contents.

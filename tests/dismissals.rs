@@ -679,6 +679,93 @@ fn reports_capture_review_issues_without_applying_them_or_failing_execution() {
 }
 
 #[test]
+fn multiline_calls_keep_identity_and_dismissals_across_operator_selection_and_reruns() {
+    let fixture = Fixture::new();
+    let source = "package p\nvar b = true\nfunc f() {\n\tprintln(\n\t\t\"é\",\n\t)\n}\n";
+    fs::write(fixture.root.join("b.go"), source).unwrap();
+    let original = fixture.report();
+    let original_bytes = fs::read(original.join("mutants.json")).unwrap();
+    let inventory = json(&original, "mutants.json");
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 3);
+    let call = &inventory["mutations"][2];
+    assert_eq!(call["operator"], "call_remove");
+    assert_eq!(call["line"], 4);
+    assert_eq!(call["end_line"], 6);
+    assert_eq!(call["replacement"], "");
+    assert!(
+        fs::read_to_string(original.join(call["diff"].as_str().unwrap()))
+            .unwrap()
+            .contains("-\t\t\"é\",\n")
+    );
+    success(&fixture.add(&original, "2"));
+    success(&fixture.add(&original, "3"));
+    let dismissal_bytes = fixture.bytes();
+    fs::write(
+        fixture.root.join("mutie.toml"),
+        "operators = ['call_remove']",
+    )
+    .unwrap();
+    assert!(success(&fixture.dismiss(&["check"])).contains("2 matched; 0 require review"));
+
+    for args in [
+        vec![],
+        vec!["--rerun-missed", original.to_str().unwrap(), "--id", "2,3"],
+    ] {
+        let output = fixture.run(&args);
+        success(&output);
+        let current = report_path(&output);
+        let inventory = json(&current, "mutants.json");
+        assert_eq!(inventory["mutations"].as_array().unwrap().len(), 1);
+        assert_eq!(inventory["mutations"][0]["original"], call["original"]);
+        assert_eq!(
+            inventory["dismissals"]["matched"].as_array().unwrap().len(),
+            1
+        );
+        assert_eq!(inventory["dismissals"]["matched"][0]["mutation_id"], 1);
+        assert_eq!(inventory["dismissals"]["matched"][0]["dismissal"]["id"], 2);
+        assert!(
+            inventory["dismissals"]["needs_review"]
+                .as_array()
+                .unwrap()
+                .is_empty()
+        );
+        if !args.is_empty() {
+            let metadata = json(&current, "run.json");
+            assert_eq!(metadata["rerun"]["mutations"][0]["source_id"], 3);
+            assert_eq!(
+                metadata["rerun"]["operators"],
+                serde_json::json!(["call_remove"])
+            );
+        }
+        // Reading the filtered report validates the multiline review identity.
+        success(&fixture.run(&["--rerun", current.to_str().unwrap(), "--id", "1", "--list"]));
+    }
+    let empty = fixture.run(&["--rerun", original.to_str().unwrap(), "--id", "2", "--list"]);
+    assert!(success(&empty).contains("Selected 0 mutations"));
+    let cleared = fixture.run(&[
+        "--rerun",
+        original.to_str().unwrap(),
+        "--clear-operators",
+        "--list",
+    ]);
+    assert!(success(&cleared).contains("Selected 3 mutations"));
+    assert_eq!(
+        fs::read(original.join("mutants.json")).unwrap(),
+        original_bytes
+    );
+    assert_eq!(fixture.bytes(), dismissal_bytes);
+    assert_eq!(
+        fs::read_to_string(fixture.root.join("b.go")).unwrap(),
+        source
+    );
+
+    fs::write(fixture.root.join("b.go"), format!("{source}// edit\n")).unwrap();
+    let stale = fixture.run(&["--rerun", original.to_str().unwrap(), "--id", "3"]);
+    assert!(!stale.status.success());
+    assert!(String::from_utf8_lossy(&stale.stderr).contains("stale"));
+}
+
+#[test]
 fn malformed_dismissal_metadata_fails_runs_before_go_and_never_invents_a_review() {
     let fixture = Fixture::new();
     fs::write(fixture.root.join("mutie.dismissals.toml"), "[broken").unwrap();

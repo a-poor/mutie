@@ -26,6 +26,7 @@ pub enum Operator {
     LogicalSwap,
     BooleanFlip,
     NegationRemove,
+    CallRemove,
 }
 
 impl std::fmt::Display for Operator {
@@ -99,16 +100,30 @@ impl Mutation {
         )
     }
 
-    /// All current operators replace a token on one line. Include three lines
-    /// of context, preserving CRLF and the final-newline marker in unified diffs.
+    /// Describe a single edit, including multiline removal, with three context
+    /// lines. Preserve CRLF and the final-newline marker in unified diffs.
     pub fn diff(&self) -> String {
         let lines: Vec<_> = self.file.source.split_inclusive('\n').collect();
-        let index = self.line - 1;
-        let offset = self.range.start - lines[..index].iter().map(|line| line.len()).sum::<usize>();
-        let mut changed = lines[index].to_owned();
-        changed.replace_range(offset..offset + self.original().len(), self.replacement);
-        let start = index.saturating_sub(3);
-        let end = (index + 4).min(lines.len());
+        let mut changed = self.file.source.clone();
+        changed.replace_range(self.range.clone(), self.replacement);
+        let changed: Vec<_> = changed.split_inclusive('\n').collect();
+        let prefix = lines
+            .iter()
+            .zip(&changed)
+            .take_while(|(a, b)| a == b)
+            .count();
+        let suffix = lines[prefix..]
+            .iter()
+            .rev()
+            .zip(changed[prefix..].iter().rev())
+            .take_while(|(a, b)| a == b)
+            .count();
+        let start = prefix.saturating_sub(3);
+        let old_end = lines.len() - suffix;
+        let new_end = changed.len() - suffix;
+        let context = suffix.min(3);
+        let old_count = old_end + context - start;
+        let new_count = new_end + context - start;
         let path = self
             .file
             .path
@@ -116,10 +131,10 @@ impl Mutation {
             .replace(std::path::MAIN_SEPARATOR, "/");
         let mut diff = format!(
             "--- a/{path}\n+++ b/{path}\n@@ -{},{} +{},{} @@\n",
-            start + 1,
-            end - start,
-            start + 1,
-            end - start
+            start + usize::from(old_count > 0),
+            old_count,
+            start + usize::from(new_count > 0),
+            new_count
         );
         fn append(diff: &mut String, prefix: char, line: &str) {
             diff.push(prefix);
@@ -128,13 +143,17 @@ impl Mutation {
                 diff.push_str("\n\\ No newline at end of file\n");
             }
         }
-        for (position, line) in lines.iter().enumerate().take(end).skip(start) {
-            if position == index {
-                append(&mut diff, '-', line);
-                append(&mut diff, '+', &changed);
-            } else {
-                append(&mut diff, ' ', line);
-            }
+        for line in &lines[start..prefix] {
+            append(&mut diff, ' ', line);
+        }
+        for line in &lines[prefix..old_end] {
+            append(&mut diff, '-', line);
+        }
+        for line in &changed[prefix..new_end] {
+            append(&mut diff, '+', line);
+        }
+        for line in &lines[old_end..old_end + context] {
+            append(&mut diff, ' ', line);
         }
         diff
     }
@@ -201,6 +220,35 @@ pub fn discover_cancellable(
 }
 
 fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
+    // Only statements directly in a block/case body. Do not remove initializers,
+    // loop updates, labeled statements, go/defer calls, or calls used as values.
+    if node.kind() == "expression_statement"
+        && node
+            .parent()
+            .is_some_and(|parent| parent.kind() == "statement_list")
+        && let Some(mut expression) = expression_child(node)
+    {
+        while expression.kind() == "parenthesized_expression" {
+            let Some(inner) = expression_child(expression) else {
+                break;
+            };
+            expression = inner;
+        }
+        if expression.kind() == "call_expression" {
+            let start = node.start_position();
+            let end = node.end_position();
+            mutations.push(Mutation {
+                file: Arc::clone(file),
+                operator: Operator::CallRemove,
+                range: node.byte_range(),
+                replacement: "",
+                line: start.row + 1,
+                column: start.column + 1,
+                end_line: end.row + 1,
+                end_column: end.column + 1,
+            });
+        }
+    }
     let candidate = match node.kind() {
         "binary_expression" | "unary_expression" => node.child_by_field_name("operator"),
         "true" | "false" => Some(node),
@@ -259,9 +307,163 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
     }
 }
 
+fn expression_child(node: Node<'_>) -> Option<Node<'_>> {
+    node.named_children(&mut node.walk())
+        .find(|child| !child.is_extra())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn call_removal_only_selects_standalone_statements_and_preserves_other_mutations() -> Result<()>
+    {
+        let root = tempfile::tempdir()?;
+        let source = r#"package p
+func f(ch chan int, x any) int {
+    direct()
+    obj.method(nested())
+    generic[int]()
+    (parenthesized())
+    ( /* comment */ commented() )
+    println("é") // retain this comment
+    multiline(
+        nested(), // part of the removed statement
+    )
+    enabled(true)
+    func() { inner() }()
+    if initCall(); condition() { ifBody() }
+    for start(); condition(); next() { loopBody() }
+    switch initSwitch(); value() { case 1: caseBody(); default: defaultBody() }
+    switch x.(type) { case int: typeBody() }
+    select { case <-ch: selectBody(); default: selectDefault() }
+    defer deferred()
+    go concurrent()
+label: labeled()
+    assigned := used()
+    assigned = usedAgain()
+    _ = assigned
+    ch <- sendValue()
+    <-ch
+    return returned()
+}
+"#;
+        fs::write(root.path().join("code.go"), source)?;
+        let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
+        let calls: Vec<_> = mutations
+            .iter()
+            .filter(|m| m.operator == Operator::CallRemove)
+            .collect();
+        assert_eq!(
+            calls.iter().map(|m| m.original()).collect::<Vec<_>>(),
+            [
+                "direct()",
+                "obj.method(nested())",
+                "generic[int]()",
+                "(parenthesized())",
+                "( /* comment */ commented() )",
+                "println(\"é\")",
+                "multiline(\n        nested(), // part of the removed statement\n    )",
+                "enabled(true)",
+                "func() { inner() }()",
+                "inner()",
+                "ifBody()",
+                "loopBody()",
+                "caseBody()",
+                "defaultBody()",
+                "typeBody()",
+                "selectBody()",
+                "selectDefault()",
+            ]
+        );
+        assert_eq!(
+            mutations
+                .iter()
+                .filter(|m| m.operator == Operator::BooleanFlip)
+                .count(),
+            1
+        );
+        let mut parser = Parser::new();
+        parser.set_language(&tree_sitter_go::LANGUAGE.into())?;
+        for mutation in calls {
+            crate::identity::MutationIdentity::from(mutation).validate()?;
+            assert_eq!(mutation.replacement, "");
+            let mut expected = source.to_owned();
+            expected.replace_range(mutation.range.clone(), "");
+            fs::write(root.path().join("code.go"), source)?;
+            mutation.apply(root.path())?;
+            assert_eq!(fs::read_to_string(root.path().join("code.go"))?, expected);
+            assert!(
+                !parser
+                    .parse(&expected, None)
+                    .unwrap()
+                    .root_node()
+                    .has_error(),
+                "{}",
+                mutation.description()
+            );
+            assert!(expected.contains("// retain this comment"));
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn multiline_call_diff_preserves_crlf_unicode_comments_and_final_line() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = "package p\r\nfunc f() {\r\n\t// before\r\n\tprintln(\r\n\t\t\"é\", // inside\r\n\t) // after\r\n}";
+        fs::write(root.path().join("code.go"), source)?;
+        let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
+        assert_eq!(mutations.len(), 1);
+        let m = &mutations[0];
+        assert_eq!((m.line, m.column, m.end_line, m.end_column), (4, 2, 6, 3));
+        assert_eq!(
+            m.diff(),
+            concat!(
+                "--- a/code.go\n+++ b/code.go\n@@ -1,7 +1,5 @@\n",
+                " package p\r\n func f() {\r\n \t// before\r\n",
+                "-\tprintln(\r\n-\t\t\"é\", // inside\r\n-\t) // after\r\n",
+                "+\t // after\r\n }\n\\ No newline at end of file\n"
+            )
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn diff_bounds_context_and_handles_whole_line_or_file_removal() {
+        for (source, range, expected) in [
+            (
+                "a\nb\nc\nd\ne\nf\ng\nh\ni\n",
+                8..12,
+                "@@ -2,8 +2,6 @@\n b\n c\n d\n-e\n-f\n g\n h\n i\n",
+            ),
+            ("a\nb\n", 0..4, "@@ -1,2 +0,0 @@\n-a\n-b\n"),
+            (
+                "a\nb",
+                0..3,
+                "@@ -1,2 +0,0 @@\n-a\n-b\n\\ No newline at end of file\n",
+            ),
+        ] {
+            let m = Mutation {
+                file: Arc::new(SourceFile {
+                    path: "code.go".into(),
+                    fingerprint: String::new(),
+                    source: source.into(),
+                }),
+                operator: Operator::CallRemove,
+                range,
+                replacement: "",
+                line: 1,
+                column: 1,
+                end_line: 1,
+                end_column: 1,
+            };
+            assert_eq!(
+                m.diff(),
+                format!("--- a/code.go\n+++ b/code.go\n{expected}")
+            );
+        }
+    }
 
     #[test]
     fn diff_preserves_unicode_crlf_and_missing_final_newline() -> Result<()> {

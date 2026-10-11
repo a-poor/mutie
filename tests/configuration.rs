@@ -126,7 +126,7 @@ verbose = true
             "lang": "go", "jobs": 2, "include": ["*.go"], "exclude": ["b.go"],
             "timeout": 4, "baseline_timeout": 30, "fail_on_missed": false,
             "output_dir": fixture.temp.path().join("repository-reports"), "verbose": true, "list": false,
-            "ui": "auto", "test_scope": "full"
+            "ui": "auto", "test_scope": "full", "operators": []
         })
     );
     assert_eq!(metadata["requested_workers"], 2);
@@ -211,6 +211,67 @@ fn listing_uses_config_and_excludes_reports_without_creating_any() {
 }
 
 #[test]
+fn operator_selection_controls_listing_execution_and_empty_runs() {
+    let fixture = Fixture::new("operators = ['call_remove']\ninclude = ['a.go']");
+    let source = "package p\nvar a = true\nfunc f() { println(\"hello\") }\n";
+    fs::write(fixture.root.join("a.go"), source).unwrap();
+    let listing = success(&fixture.run(&["--list"]));
+    assert!(listing.contains("Found 1 mutations"));
+    assert!(listing.contains("println("));
+    assert!(!fixture.root.join(".mutie").exists());
+    assert_eq!(
+        fs::read_to_string(fixture.temp.path().join("calls")).unwrap(),
+        "list\n"
+    );
+    for (args, operators, count) in [
+        (vec![], json!(["call_remove"]), 1),
+        (
+            vec!["--operator", "boolean_flip,boolean_flip"],
+            json!(["boolean_flip"]),
+            1,
+        ),
+        (vec!["--clear-operators"], json!([]), 2),
+        (
+            vec!["--operator", "arithmetic_replace"],
+            json!(["arithmetic_replace"]),
+            0,
+        ),
+        (vec!["--clear-include"], json!(["call_remove"]), 1),
+    ] {
+        let output = fixture.run(&args);
+        let (directory, metadata, inventory) = report(&output);
+        assert_eq!(metadata["effective_config"]["operators"], operators);
+        assert_eq!(metadata["status"], "completed");
+        assert_eq!(inventory["mutations"].as_array().unwrap().len(), count);
+        assert_eq!(inventory["complete"], true);
+        assert_eq!(
+            read(&directory, "outcomes.json")["summary"]["missed"],
+            count
+        );
+        for (index, mutation) in inventory["mutations"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .enumerate()
+        {
+            assert_eq!(mutation["id"], index + 1);
+            if operators != json!([]) {
+                assert!(
+                    operators
+                        .as_array()
+                        .unwrap()
+                        .contains(&mutation["operator"])
+                );
+            }
+        }
+    }
+    assert_eq!(
+        fs::read_to_string(fixture.root.join("a.go")).unwrap(),
+        source
+    );
+}
+
+#[test]
 fn invalid_config_fails_before_running_go_or_creating_reports() {
     let fixture = Fixture::new("");
     for (config, expected) in [
@@ -221,6 +282,7 @@ fn invalid_config_fails_before_running_go_or_creating_reports() {
         ("output_dir = '.'", "module root"),
         ("output_dir = ''", "must not be empty"),
         ("lang = 'rust'", "only Go"),
+        ("operators = ['unknown']", "unknown variant"),
     ] {
         fs::write(fixture.root.join("mutie.toml"), config).unwrap();
         let output = fixture.run(&[]);

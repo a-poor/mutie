@@ -56,6 +56,7 @@ jobs = 2
 test_scope = "full" # or "affected" (opt-in)
 include = ["**/*.go"]
 exclude = ["internal/legacy/**"]
+operators = [] # all operators; or ["arithmetic_replace", "call_remove"]
 timeout = 30
 baseline_timeout = 300
 fail_on_missed = false # enable to fail on undismissed missed mutations
@@ -65,7 +66,7 @@ ui = "auto"
 ```
 
 All keys are optional. Defaults are `lang = "auto"` (currently Go), one worker,
-empty include/exclude lists, a 300-second baseline/discovery timeout, `.mutie`
+empty include/exclude/operator lists, a 300-second baseline/discovery timeout, `.mutie`
 under the module root for reports, `ui = "auto"`, `test_scope = "full"`, and no verbose output. Omit
 `timeout` for the automatic policy: `max(10 seconds, 5 * baseline duration)`. Worker counts and
 timeouts must be positive integers; timeouts are in seconds. Unknown keys,
@@ -79,8 +80,9 @@ Absolute paths are also accepted. Existing symlinks are resolved, and `.`/`..`
 components are normalized before use. Paths are not shell-expanded.
 
 Each CLI list replaces its configured counterpart. To clear a configured list,
-use `--clear-include` (all eligible files) or `--clear-exclude` (no additional
-exclusions). `--clear-timeout` restores the automatic timeout; `--no-verbose`
+use `--clear-include` (all eligible files), `--clear-exclude` (no additional
+exclusions), or `--clear-operators` (all operators). `--clear-timeout` restores the
+automatic timeout; `--no-verbose`
 overrides `verbose = true`; `--no-fail-on-missed` overrides `fail_on_missed = true`.
 Each reset flag conflicts with the corresponding
 value flag. For example:
@@ -91,11 +93,47 @@ cargo run -- /path/to/go/module --clear-include --clear-exclude --list
 cargo run -- /path/to/go/module --clear-timeout --no-verbose
 ```
 
-`--list`, `--rerun`, `--rerun-missed`, `--id`, and `--operator` are invocation-only;
+`--list`, `--rerun`, `--rerun-missed`, and `--id` are invocation-only;
 they cannot be set in `mutie.toml`. Listing uses the same
 configuration and excludes the configured report directory from its snapshot,
 but creates no report directory or artifacts. An explicit `--output-dir` still
 conflicts with `--list`.
+
+## Mutation operators
+
+All seven operators run by default. Use repeatable or comma-separated
+`--operator` values to select a subset for a fresh run, a listing, or a rerun:
+
+```sh
+cargo run -- /path/to/go/module --operator call_remove --list
+cargo run -- /path/to/go/module --operator arithmetic_replace,call_remove --jobs 2
+```
+
+The `operators` list in `mutie.toml` sets the repository default. CLI values
+replace it; duplicates are removed, and unknown names are rejected. An empty
+configured list or `--clear-operators` allows all operators. Operator selection
+intersects with file scope and, for reruns, saved IDs and outcome selection.
+An empty selection completes normally. IDs are assigned after selection, and
+reports record the effective operator list.
+
+`call_remove` deletes an entire standalone function or method call, including
+multiline and parenthesized calls, from a block or case body. Arguments are also
+removed, so their side effects no longer execute. It excludes calls used as
+values (including `_ = call()`), `go`/`defer` calls, labeled calls, and calls in
+control-flow headers. Surrounding comments and separators are preserved; comments
+inside the removed statement are removed with it. Other mutations inside a call
+remain separate candidates.
+
+Removal can leave unused imports or locals, or remove a required terminating
+`panic`. These are recorded as build failures; Mutie does not make extra edits
+to repair them. Dismissals still match against discovery before operator
+selection, so valid decisions for omitted operators are not reported as stale.
+`dismiss check` checks all operators within the configured file scope.
+
+Validation on `godotenv` found four surviving CLI mutations. Added behavioral
+tests in an isolated copy killed all four; see the
+[call-removal validation](benchmarks/godotenv-v1.5.1-call-remove.md) for evidence
+and the observed build-failure noise.
 
 ## CI findings policy
 
@@ -415,8 +453,9 @@ IDs, operators, and missed-only selection takes their intersection. For example,
 filter selects nothing; an unknown ID is an error even if other filters would
 exclude it. Operator names match the [saved operator catalog](#saved-reports).
 
-`--rerun` and `--rerun-missed` conflict. `--id` and `--operator` require one of
-them; operator filtering for a fresh scan is not implemented. With no filters,
+`--rerun` and `--rerun-missed` conflict. `--id` requires one of them;
+`--operator` also works for fresh scans. Configured `operators` apply to reruns,
+too; use `--clear-operators` to remove that restriction. With no filters,
 `--rerun` selects the entire saved inventory, including previously killed,
 timed-out, build-failed, error, pending, or interrupted mutations.
 
@@ -523,8 +562,8 @@ the checkout or repository metadata is unavailable.
 
 `schema_version` is `1` in all three JSON files, and `operator_catalog_version` is
 `1` in run metadata and the inventory. Named operators are `arithmetic_replace`,
-`comparison_invert`, `comparison_boundary`, `logical_swap`, `boolean_flip`, and
-`negation_remove`.
+`comparison_invert`, `comparison_boundary`, `logical_swap`, `boolean_flip`,
+`negation_remove`, and `call_remove`.
 
 Mutation execution `state` is `pending`, `running`, `completed`, or `interrupted`.
 Only completed executions have an `outcome`; the other states have `null` outcomes
@@ -667,7 +706,8 @@ parent and the reusable Go build cache (`GOCACHE`) are preserved.
   files with Go's standard generated-code marker, vendored packages, and nested
   modules are not mutated. Build tags and platform selection follow the Go
   environment. The initial operators flip comparisons and their boundaries,
-  swap arithmetic and logical operators, flip booleans, and remove logical `!`.
+  swap arithmetic and logical operators, flip booleans, remove logical `!`, and
+  remove standalone calls.
 - Results are **killed** (tests failed), **missed** (tests passed), **timeout**, or
   **build failed** (the mutation could not compile or failed Go's build checks).
   Tool/setup failures abort the run instead of counting as killed mutations.
@@ -711,6 +751,9 @@ for a timeout. Non-ignored Unix tests use a fake Go command to verify SIGINT/SIG
 during baseline, discovery, and parallel execution, preserved diagnostics, pending
 work, process and build-directory cleanup, and source preservation. They require
 an environment that delivers those signals.
+The additional real-Go call-removal test covers multiline and parenthesized calls,
+killed/missed/build-failed results, dismissal identity, and a stronger test killing
+a survivor on an affected-package rerun.
 The opt-in affected-package fixture compares full/affected outcomes and verifies
 transitive and internal/external test imports, unrelated-package omission, and
 fresh selections after adding tests to a focused rerun.

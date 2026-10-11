@@ -334,7 +334,13 @@ async fn execute(
             ));
             (selected, Some(provenance))
         }
-        None => (mutations, None),
+        None => (
+            mutations
+                .into_iter()
+                .filter(|m| config.operators.is_empty() || config.operators.contains(&m.operator))
+                .collect(),
+            None,
+        ),
     };
     coordinator.line(format!("Found {} mutations", mutations.len()));
     if mutations.is_empty() {
