@@ -1,0 +1,377 @@
+{
+  "date": "2026-10-11",
+  "base_commit": "b7c893dbf604e2557e6eb2ddc3a53ded50c8bf3a",
+  "implementation": "working tree with max_log_bytes and file-backed output processing",
+  "project": "github.com/google/go-cmp v0.7.0",
+  "go_version": "go version go1.27.2 darwin/arm64",
+  "source": {
+    "source_report": "/tmp/mutie-go-cmp-s598wu91/reports/full-j4-t30/run-1791563116-h9kidN",
+    "ids": [
+      4,
+      5
+    ]
+  },
+  "source_manifest": {
+    "go.mod": "31c874a1d2a18e62b0550f823ce7a575c8dec7f8fd9d4fa1959bb12d7f7c0f14",
+    "LICENSE": "17b5d209ba8f9684257ecfcff87df6ceda6194143a8fbd074f29727cff6f0c40",
+    "README.md": "3e5fc0993a1105d676db182aad083e3180794108145c082d184ae90ba6be60e8",
+    "CONTRIBUTING.md": "0096fb56dc6bac4ec7201f79ffabe86245c4a6176ea57e2f02ff6d411df9cfe7",
+    "cmp/compare_test.go": "f031ebb97d967043ddb2947560ee3b30dd937b38ff15ff9f62a53070a5e4e327",
+    "cmp/example_test.go": "7194469525c21397306fad852fd7889e8087212ca6792317f7fc060e06bf376e",
+    "cmp/report_references.go": "2f7a64f7794f56c4606d959577b5c04457394b8ff3f6459080a7ffb2760ff02a",
+    "cmp/options.go": "e731d656de35eafc945dbdb32602cbcc861a8a8c949e2b18e4d7655bb58e02e6",
+    "cmp/report_text.go": "452ee42571ba6854dc5c67d58295935cdc5516ded711f1ee067dfe7c556a498f",
+    "cmp/report_reflect.go": "b5f342563cfd34d12cdc5a3f1825c75ebeb1f9b61e0a2d69d32fcd78f33cf016",
+    "cmp/export.go": "86e7c37d357f9886fb52c2a4db3e6c4159f69fef91bcd8ef344d666cdd8d0ad4",
+    "cmp/report_value.go": "c9482498cb75f382d05fc0030e04033f2d668c188548eab63a2bc05c2c50dc59",
+    "cmp/report_compare.go": "247b68a28732df31a2c4f8d0a67a655087d82565544f80b0b736784a55d05895",
+    "cmp/report_slices.go": "ec3fb7d6a29a0f37229f93b93d53ff6cbee65f9fb75ce10c2d96a7b81ee6b3ee",
+    "cmp/options_test.go": "f4628d7e88f1166e0a589c5a488328bb3ab57e30a52ddc36ff3c0df1b37d2a7b",
+    "cmp/compare.go": "aa73956045f7fb4346589e0b35160aa50f5eb20b9529b6f3b98a3e171ccf977b",
+    "cmp/report.go": "4f7fc6eec9f7f02b35926392a939a97788bd297e6b3898bfbe0857889523ee19",
+    "cmp/path.go": "e6853d1bc210ad061a24b5f9d5aa006ad92801c9cc6af1d4054f70c30d24602f",
+    "cmp/example_reporter_test.go": "027e161d7d050bbde6e77ac2bac26ded80e19e4fe4b7756a1f11f7cfd3e5363d",
+    ".github/workflows/test.yml": "c026bb39198de179972b7c0863a76076595fcdb0c72c7771d822773040eadcba",
+    "cmp/testdata/diffs": "12ccbf7fa5352c5dfd60c09dba32029320adde4582ed80258b77c8711ce59e37",
+    "cmp/cmpopts/example_test.go": "be21ccc90f892cf287df764df387b4baf911d0a543aa49655439ff256b948d4a",
+    "cmp/cmpopts/util_test.go": "65c6e703538ccfc0a8a4bbc95e5dd06faccb7b1cd4aa96aea4adbf909b1544d5",
+    "cmp/cmpopts/struct_filter.go": "ad9e44ef7c47fb52fdd7fc5f0b0f2ed59b088832c4d856368c9d5fca517d64f8",
+    "cmp/cmpopts/sort.go": "26b894ed79d2733fee95f7026b695e5d9e74f5d2a273a43401dd91971c4c2c56",
+    "cmp/cmpopts/equate.go": "1cf42542318dcbc5a68fc872d81ceb5961147880329c4b6b9d18b5ffbdd69703",
+    "cmp/cmpopts/ignore.go": "cf14846c455f11300a74d2792079ed3232b6efb79a4819643713c18d3871746e",
+    "cmp/cmpopts/xform.go": "0af8e9495dfe6c22df0bf96158ada67b5a5f03993584f409440ff076d1f9f785",
+    "cmp/internal/teststructs/project1.go": "b04c41f528a9db36ef852827ab98ba6ab42a5774c3867e319c72f5330b55fa1d",
+    "cmp/internal/teststructs/project4.go": "683f463a16db9a6b9eec632e167f0e165004b0e8bdd02fed47049f72964a4a30",
+    "cmp/internal/teststructs/project3.go": "202a9ff2fb2232bd20599db29b5d6a96885a52ad2eb0f7c6336a885b8b9177e7",
+    "cmp/internal/teststructs/structs.go": "8ebcc7febed08120ff8f9cbd4930a4b7136c3b09d6ced6ac8b70e2235b96993b",
+    "cmp/internal/teststructs/project2.go": "f7b1805e737254337905de78de6d0463d6dfbcb873fba38fbe211bb99b776131",
+    "cmp/internal/flags/flags.go": "bbb67604cfe6c4ead5763ba37468c59aa882cb93f21e923b400c6aab4e44748d",
+    "cmp/internal/value/sort.go": "ebd93021d4475c303efc529d305e3951fb26f29e9facf98b5f348f74bcd25388",
+    "cmp/internal/value/sort_test.go": "66b2cc09e7a7b0ec4d247d08050145863b37d5bf14c05e6c7349177ea1ac5c53",
+    "cmp/internal/value/name_test.go": "121c1f2f0a18f0bab8e6969be7128c9dd813650701c28a569f436aa2c133aff3",
+    "cmp/internal/value/name.go": "b9603406c33ff8a1b33f12f268dea21549a40293df940a783f6f7db552601140",
+    "cmp/internal/value/pointer.go": "829247a1f759bc18b0d91aedc5adc8d787c28aa7046839037e73866351dd9661",
+    "cmp/internal/testprotos/protos.go": "158ccf8c7d90a87d44eba3ac498b33740efc66d793747067d2e7b7051e31d7df",
+    "cmp/internal/diff/debug_enable.go": "42950f9e903c1c481e81f6cf50ed015aa89919914a1e5a217758d3c97fe6f902",
+    "cmp/internal/diff/diff_test.go": "85e7c1e7c0ae9f15db9437e55b4cf2a5da9d9f672acc407d4f3fa04b78d4f4b2",
+    "cmp/internal/diff/diff.go": "de6127a170d36f8a83ce1743e06c99491bc33f6186864cfff213cbcacb207ae4",
+    "cmp/internal/diff/debug_disable.go": "a144910615ebbb763e1651c917c69cb4d54e81e3d7f3db44f9565e76ad86c586",
+    "cmp/internal/function/func_test.go": "4e319d0361af86f28d93f9c1e7167585ad7eae590b32e7e547dfe88ef3db8717",
+    "cmp/internal/function/func.go": "342fe41a45a693a9ff49ac7c76c0d0e4c9723a8f4def37b8d800496e9bd981f3",
+    "cmp/internal/teststructs/foo1/foo.go": "9209393543446a5b402375365792ed4b386f6878f6fffcf23c797707b9d0cdf7",
+    "cmp/internal/teststructs/foo2/foo.go": "9209393543446a5b402375365792ed4b386f6878f6fffcf23c797707b9d0cdf7"
+  },
+  "jobs": 2,
+  "timeout_seconds": 30,
+  "test_scope": "full",
+  "runs": {
+    "full": {
+      "report": "/tmp/mutie-log-limits-2cvygzzm/full/run-1791734536-oEBiIz",
+      "report_bytes": 2544336,
+      "log_bytes": 2534370,
+      "summary": {
+        "killed": 0,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "max_log_bytes": null,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "cmp/cmpopts/equate.go",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:1cf42542318dcbc5a68fc872d81ceb5961147880329c4b6b9d18b5ffbdd69703",
+          "line": 30,
+          "column": 31,
+          "end_line": 30,
+          "end_column": 33,
+          "byte_start": 840,
+          "byte_end": 842,
+          "original": "&&",
+          "replacement": "||",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 2,
+          "file": "cmp/cmpopts/equate.go",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:1cf42542318dcbc5a68fc872d81ceb5961147880329c4b6b9d18b5ffbdd69703",
+          "line": 30,
+          "column": 19,
+          "end_line": 30,
+          "end_column": 21,
+          "byte_start": 828,
+          "byte_end": 830,
+          "original": "&&",
+          "replacement": "||",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "./..."
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "text": "logs/baseline.log",
+          "stdout": "logs/baseline.stdout.jsonl",
+          "stderr": "logs/baseline.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 89873,
+              "head_bytes": 89873,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stdout": {
+              "total_bytes": 743782,
+              "head_bytes": 743782,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        },
+        {
+          "text": "logs/discovery.log",
+          "stdout": "logs/discovery.stdout.jsonl",
+          "stderr": "logs/discovery.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 16709,
+              "head_bytes": 16709,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stdout": {
+              "total_bytes": 16709,
+              "head_bytes": 16709,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        },
+        {
+          "text": "logs/000001.log",
+          "stdout": "logs/000001.stdout.jsonl",
+          "stderr": "logs/000001.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 89873,
+              "head_bytes": 89873,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stdout": {
+              "total_bytes": 743765,
+              "head_bytes": 743765,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        },
+        {
+          "text": "logs/000002.log",
+          "stdout": "logs/000002.stdout.jsonl",
+          "stderr": "logs/000002.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 89873,
+              "head_bytes": 89873,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stdout": {
+              "total_bytes": 743786,
+              "head_bytes": 743786,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        }
+      ]
+    },
+    "limited": {
+      "report": "/tmp/mutie-log-limits-2cvygzzm/limited/run-1791734718-C3ednT",
+      "report_bytes": 141768,
+      "log_bytes": 131754,
+      "summary": {
+        "killed": 0,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "max_log_bytes": 16384,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "cmp/cmpopts/equate.go",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:1cf42542318dcbc5a68fc872d81ceb5961147880329c4b6b9d18b5ffbdd69703",
+          "line": 30,
+          "column": 31,
+          "end_line": 30,
+          "end_column": 33,
+          "byte_start": 840,
+          "byte_end": 842,
+          "original": "&&",
+          "replacement": "||",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "./..."
+          ]
+        },
+        {
+          "id": 2,
+          "file": "cmp/cmpopts/equate.go",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:1cf42542318dcbc5a68fc872d81ceb5961147880329c4b6b9d18b5ffbdd69703",
+          "line": 30,
+          "column": 19,
+          "end_line": 30,
+          "end_column": 21,
+          "byte_start": 828,
+          "byte_end": 830,
+          "original": "&&",
+          "replacement": "||",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "./..."
+          ]
+        }
+      ],
+      "logs": [
+        {
+          "text": "logs/baseline.log",
+          "stdout": "logs/baseline.stdout.jsonl",
+          "stderr": "logs/baseline.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 89873,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 73489
+            },
+            "stdout": {
+              "total_bytes": 743791,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 727407
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        },
+        {
+          "text": "logs/discovery.log",
+          "stdout": "logs/discovery.stdout.jsonl",
+          "stderr": "logs/discovery.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 16709,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 325
+            },
+            "stdout": {
+              "total_bytes": 16709,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 325
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        },
+        {
+          "text": "logs/000001.log",
+          "stdout": "logs/000001.stdout.jsonl",
+          "stderr": "logs/000001.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 89873,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 73489
+            },
+            "stdout": {
+              "total_bytes": 743806,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 727422
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        },
+        {
+          "text": "logs/000002.log",
+          "stdout": "logs/000002.stdout.jsonl",
+          "stderr": "logs/000002.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 89873,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 73489
+            },
+            "stdout": {
+              "total_bytes": 743804,
+              "head_bytes": 8192,
+              "tail_bytes": 8192,
+              "omitted_bytes": 727420
+            },
+            "stderr": {
+              "total_bytes": 0,
+              "head_bytes": 0,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        }
+      ]
+    }
+  },
+  "source_preserved": true,
+  "outcomes_and_inventory_match": true
+}

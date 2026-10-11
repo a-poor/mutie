@@ -128,11 +128,14 @@ fn go_workflow() {
             "--test-scope",
             "affected",
             "--fail-on-missed",
+            "--max-log-bytes",
+            "128",
         ],
     );
     assert_eq!(affected.status.code(), Some(3), "{affected:?}");
     let (_, affected_metadata, affected_inventory, affected_outcomes) = saved_report(&affected);
     assert_eq!(affected_metadata["status"], "completed");
+    assert_eq!(affected_metadata["effective_config"]["max_log_bytes"], 128);
     assert_eq!(affected_metadata["policy"]["status"], "failed");
     assert_eq!(affected_metadata["policy"]["undismissed_missed"], 1);
     assert_eq!(affected_outcomes["summary"], report["summary"]);

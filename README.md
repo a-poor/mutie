@@ -58,6 +58,7 @@ include = ["**/*.go"]
 exclude = ["internal/legacy/**"]
 operators = [] # all operators; or ["arithmetic_replace", "call_remove"]
 timeout = 30
+# max_log_bytes = 65536 # optional retained bytes per log artifact
 baseline_timeout = 300
 fail_on_missed = false # enable to fail on undismissed missed mutations
 output_dir = ".mutie"
@@ -84,6 +85,7 @@ use `--clear-include` (all eligible files), `--clear-exclude` (no additional
 exclusions), or `--clear-operators` (all operators). `--clear-timeout` restores the
 automatic timeout; `--no-verbose`
 overrides `verbose = true`; `--no-fail-on-missed` overrides `fail_on_missed = true`.
+`--clear-max-log-bytes` restores unlimited logs.
 Each reset flag conflicts with the corresponding
 value flag. For example:
 
@@ -346,8 +348,11 @@ Older reports and runs that stopped before inventory publication show review as
 **not recorded**; all their rows remain available under all/undismissed, with no
 rows under dismissed. Missing diff/log files appear as an inline message;
 other rows remain usable. Artifact previews read at most 256 KiB, replace terminal
-control characters, and flag truncation. The complete logs remain in the saved
-files. Artifact paths must resolve inside the report directory. JSON metadata is
+control characters, and flag preview truncation. Full saved artifacts remain on
+disk; if log retention omitted output, the browser separately shows byte counts
+and explains that the omitted output is absent from the report. These notices
+remain visible even when a log file is missing. Artifact paths must resolve inside
+the report directory. JSON metadata is
 limited to 64 MiB per file. Module directories named `report` or `dismiss` can
 still be run as `mutie ./report` or `mutie ./dismiss`.
 
@@ -513,14 +518,16 @@ Each run contains:
   source locations, original text, replacements, source fingerprints, `test_packages`, and diff
   paths. The inventory and every diff are published before workers start.
 - `outcomes.json`: baseline and package-discovery results, mutation execution
-  states and outcomes, durations, exit codes, log paths, and summary counts.
+  states and outcomes, durations, exit codes, log paths, retention byte counts, and
+  summary counts.
 - `summary.txt`: readable counts, workspace costs, unfinished work, missed mutations,
   and artifact references for every planned mutation.
 - `diff/000001.diff`: one unified source diff per planned mutation.
 - `logs/baseline.log`, `logs/discovery.log`, and `logs/000001.log`: readable command
   output, with separate `.stdout.jsonl` and `.stderr.log` captures alongside each
-  log. Discovery stdout contains Go package JSON; test stdout contains Go test
-  events. Logs are saved even without `--verbose`.
+  log. Complete discovery stdout contains Go package JSON; complete test stdout
+  contains Go test events. Logs are saved even without `--verbose`. Limited logs
+  contain head/tail excerpts and an omission marker; see the log limit below.
 - `killed.txt`, `missed.txt`, `timeout.txt`, `build_failed.txt`, and `errors.txt`:
   outcome lists containing IDs and source descriptions, sorted by ID.
 - `.mutie.lock`: an empty lock file held open for the report writer's lifetime,
@@ -594,6 +601,42 @@ The module's `.mutie` directory, the selected output directory, and the source
 rerun directory are omitted from snapshots so saved reports do not affect tests
 or discovery. Keep output directories separate from source files, and add `.mutie/`
 (or your custom output directory) to your project's `.gitignore`.
+
+### Limiting saved logs
+
+Logs are unlimited by default. Set a positive byte limit per artifact with
+`--max-log-bytes`, or `max_log_bytes` in `mutie.toml`:
+
+```sh
+cargo run -- /path/to/go/module --max-log-bytes 65536
+cargo run -- /path/to/go/module --clear-max-log-bytes
+```
+
+The limit applies independently to each readable `.log`, raw stdout, and raw
+stderr artifact for baseline, discovery, and mutation commands. When output is
+larger, Mutie retains roughly half from the beginning and half from the end
+(the extra byte for odd limits goes to the beginning). A readable omission marker
+is added outside the byte budget. Readable logs cut at UTF-8 boundaries and can
+retain a few fewer bytes; raw captures preserve exact byte excerpts, which can
+split characters or JSON records. A truncated `.stdout.jsonl` is an excerpt, not
+a complete JSON stream.
+
+Each `outcomes.json` log record includes `retention.text`, `retention.stdout`,
+and `retention.stderr`, with `total_bytes`, `head_bytes`, `tail_bytes`, and
+`omitted_bytes`. Counts exclude the marker. Complete logs have zero omitted and
+tail bytes. Older reports without these fields remain readable. The browser
+shows saved-log truncation separately from its own 256 KiB preview limit;
+`--verbose` and command-failure diagnostics use the same limited readable output.
+
+Classification and package discovery read the **complete temporary captures**;
+truncation cannot turn a tool/build failure into a killed or missed mutation.
+Full stdout/stderr and rendered output remain file-backed until processed and
+saved, then are removed. This setting limits retained artifacts and diagnostic
+previews, **not temporary disk usage**. Parsing uses one Go output record at a
+time; an individual oversized record and the package graph still need memory.
+Interrupted commands save limited partial logs with the same metadata. Omitted
+output cannot be recovered from the report; rerun with a larger limit or
+`--clear-max-log-bytes` when more diagnostics are needed.
 
 ## Report retention
 

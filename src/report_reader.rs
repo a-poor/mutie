@@ -13,7 +13,7 @@ use crate::{
     dismissals::{Dismissal, DismissalSnapshot},
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
     report::{ExecutionState, Outcome, RunStatus},
-    saved_report::SCHEMA_VERSION,
+    saved_report::{LogRetention, SCHEMA_VERSION},
 };
 
 #[derive(Debug, Deserialize)]
@@ -76,6 +76,7 @@ pub struct SavedLogs {
     pub text: Option<PathBuf>,
     pub stdout: Option<PathBuf>,
     pub stderr: Option<PathBuf>,
+    pub retention: Option<LogRetention>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -176,6 +177,16 @@ impl LoadedReport {
             );
         }
         let mut executions = BTreeMap::new();
+        for command in [&outcomes.baseline, &outcomes.discovery]
+            .into_iter()
+            .flatten()
+        {
+            if let Some(retention) = &command.logs.retention {
+                retention
+                    .validate()
+                    .context("validating command log retention")?;
+            }
+        }
         if let Some(dismissals) = &mut inventory.dismissals {
             ensure!(
                 inventory.complete,
@@ -186,6 +197,15 @@ impl LoadedReport {
                 .context("validating saved dismissal review")?;
         }
         for execution in outcomes.mutations {
+            if let Some(retention) = execution
+                .logs
+                .as_ref()
+                .and_then(|logs| logs.retention.as_ref())
+            {
+                retention
+                    .validate()
+                    .context("validating mutation log retention")?;
+            }
             let id = execution.id;
             ensure!(
                 mutations.contains_key(&id),
@@ -232,7 +252,7 @@ impl LoadedReport {
             &bytes[..bytes.len().min(LIMIT as usize)],
         ));
         if truncated {
-            text.push_str("\n\n[Preview truncated at 256 KiB; the complete file remains in the saved report.]");
+            text.push_str("\n\n[Preview truncated at 256 KiB; the full saved artifact remains in the report.]");
         }
         Ok(text)
     }
@@ -420,6 +440,31 @@ mod tests {
         assert_eq!(report.executions[1].outcome, Some(Outcome::Killed));
         assert!(!report.run.module_root.unwrap().exists());
         assert!(report.dismissals.is_none());
+    }
+
+    #[test]
+    fn validates_log_retention_and_accepts_legacy_records_without_it() {
+        use serde_json::json;
+        for path in ["/baseline/logs", "/discovery/logs", "/mutations/0/logs"] {
+            let temp = fixture();
+            assert!(LoadedReport::load(temp.path()).is_ok());
+            let full =
+                json!({"total_bytes": 12, "head_bytes": 12, "tail_bytes": 0, "omitted_bytes": 0});
+            let cut =
+                json!({"total_bytes": 100, "head_bytes": 5, "tail_bytes": 5, "omitted_bytes": 90});
+            update(temp.path(), "outcomes.json", |v| {
+                v.pointer_mut(path).unwrap()["retention"] =
+                    json!({"text":cut, "stdout":full, "stderr":full});
+            });
+            assert!(LoadedReport::load(temp.path()).is_ok());
+            update(temp.path(), "outcomes.json", |v| {
+                v.pointer_mut(path).unwrap()["retention"]["text"]["omitted_bytes"] = json!(99);
+            });
+            assert!(
+                format!("{:#}", LoadedReport::load(temp.path()).unwrap_err())
+                    .contains("log retention")
+            );
+        }
     }
 
     #[test]

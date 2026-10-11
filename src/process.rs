@@ -1,6 +1,5 @@
 use std::{
     future::{Future, Ready, pending},
-    io::{Read, Seek, SeekFrom},
     path::Path,
     process::{ExitStatus, Stdio},
     time::{Duration, Instant},
@@ -9,15 +8,15 @@ use std::{
 use anyhow::{Context, Result};
 use tokio::{io::AsyncReadExt, process::Command};
 
-use crate::cancellation::Cancellation;
+use crate::{cancellation::Cancellation, capture::Capture};
 
 pub struct CommandOutput {
     pub status: ExitStatus,
     pub timed_out: bool,
     pub interrupted: bool,
     pub elapsed: Duration,
-    pub stdout: String,
-    pub stderr: String,
+    pub stdout: Capture,
+    pub stderr: Capture,
 }
 
 /// Capture to files so a full pipe or a descendant holding it open cannot hang us.
@@ -69,8 +68,8 @@ where
     Fut: Future<Output = ()> + Send,
 {
     cancellation.check()?;
-    let mut stdout = tempfile::NamedTempFile::new()?;
-    let mut stderr = tempfile::tempfile()?;
+    let stdout = tempfile::NamedTempFile::new()?;
+    let stderr = tempfile::NamedTempFile::new()?;
     // Reopen, do not clone: a cloned descriptor shares the child's write offset.
     let reader = observer.as_ref().map(|_| stdout.reopen()).transpose()?;
     let mut command = Command::new(program);
@@ -79,7 +78,7 @@ where
         .current_dir(root)
         .stdin(Stdio::null())
         .stdout(stdout.as_file().try_clone()?)
-        .stderr(stderr.try_clone()?)
+        .stderr(stderr.as_file().try_clone()?)
         .kill_on_drop(true);
     // Outlive the child and its process-group guard so they issue any required
     // kills before temporary builds are removed, including on spawn/wait errors
@@ -151,19 +150,13 @@ where
     };
     group.kill();
     let elapsed = started.elapsed();
-    fn read(file: &mut std::fs::File) -> Result<String> {
-        file.seek(SeekFrom::Start(0))?;
-        let mut bytes = Vec::new();
-        file.read_to_end(&mut bytes)?;
-        Ok(String::from_utf8_lossy(&bytes).into_owned())
-    }
     Ok(CommandOutput {
         status,
         timed_out,
         interrupted,
         elapsed,
-        stdout: read(stdout.as_file_mut())?,
-        stderr: read(&mut stderr)?,
+        stdout: Capture::new(stdout)?,
+        stderr: Capture::new(stderr)?,
     })
 }
 
@@ -281,8 +274,8 @@ mod tests {
         }).await?;
         assert!(output.status.success() && !output.timed_out);
         assert!(seen.contains(&"first".to_owned()));
-        assert_eq!(output.stdout, "first\nlast without newline");
-        assert_eq!(output.stderr, "diagnostic\n");
+        assert_eq!(output.stdout.text()?, "first\nlast without newline");
+        assert_eq!(output.stderr.text()?, "diagnostic\n");
         Ok(())
     }
 
@@ -323,8 +316,8 @@ mod tests {
             let output = output?;
             assert_eq!(output.interrupted, cancel);
             assert_eq!(output.timed_out, !cancel);
-            assert_eq!(output.stdout, "captured\n");
-            assert_eq!(output.stderr, "error output\n");
+            assert_eq!(output.stdout.text()?, "captured\n");
+            assert_eq!(output.stderr.text()?, "error output\n");
             tokio::time::sleep(Duration::from_millis(1050)).await;
             assert!(!root.path().join("leaked").exists());
         }
@@ -359,8 +352,8 @@ mod tests {
         let output = output?;
         assert!(output.interrupted);
         assert!(!output.timed_out);
-        assert_eq!(output.stdout, "before cancellation\n");
-        assert_eq!(output.stderr, "diagnostic\n");
+        assert_eq!(output.stdout.text()?, "before cancellation\n");
+        assert_eq!(output.stderr.text()?, "diagnostic\n");
         tokio::time::sleep(Duration::from_millis(600)).await;
         assert!(!root.path().join("leaked").exists());
         Ok(())

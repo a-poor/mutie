@@ -147,7 +147,8 @@ This is a reviewed example, not an equivalence analysis of all 262 missed result
    result when checking outcome consistency.
 3. Use the 1.35 GB report as evidence for the existing retention/log-output work.
    The JSON metadata is small; captured logs dominate retained size. Pruning and
-   output limits still need an explicit policy that preserves useful diagnostics.
+   output limits need an explicit policy that preserves useful diagnostics; the
+   saved-log limit follow-up below measures the initial implementation.
 
 This validates a larger mutation inventory and a multi-package library with a
 compact source tree. It does not establish behavior for large applications,
@@ -224,6 +225,35 @@ outside Go's import graph can require omitted tests; full-module testing remains
 the reference. To repeat this comparison, use the original sample IDs, add the
 test file above to `cmp/internal/diff`, and alternate `--test-scope full` and
 `--test-scope affected` with the same cache, workers, source, and deadlines.
+
+## Saved-log limit follow-up
+
+On 2026-10-11, source IDs 4 and 5 were rerun with unlimited logs and with
+`--max-log-bytes 16384`. Both runs used the updated debug binary, an unmodified
+source copy, the same dedicated warm Go cache, two workers, 30-second mutation
+deadlines, and full-module testing. The environment used `GOENV=off`,
+`GOTOOLCHAIN=local`, `GOPROXY=off`, `GOMAXPROCS=8`, and `CGO_ENABLED=0`.
+[The follow-up data](go-cmp-v0.7.0-log-limits.json) records source hashes, selected
+mutations, outcomes, artifact sizes, and retention metadata.
+
+| Retained log limit per artifact | Saved log bytes | Total report bytes |
+| --- | ---: | ---: |
+| Unlimited | 2,534,370 | 2,544,336 |
+| 16 KiB | 131,754 | 141,768 |
+
+Saved logs shrank by **94.8%**. Both runs produced **0 killed, 2 missed, 0
+timeouts, 0 build failures, and 0 errors**, with identical mutation inventories
+and matching final checkpoints. Source hashes were unchanged. Every limited
+artifact stayed within its payload budget plus the truncation marker, and the
+readable logs remained valid UTF-8.
+
+This is a focused artifact-size comparison, not a performance benchmark; other
+development checks overlapped the runs. It also does not bound temporary disk
+usage: complete raw and rendered command output stays in temporary files until
+processing and report persistence finish. Go event classification and package
+discovery consume the complete captures. Memory use still depends on individual
+JSON-record size and the package graph. Automated noisy-output tests separately
+cover failures in omitted output, timeouts, interruption, reruns, and cleanup.
 
 ## Reproducing the workload
 

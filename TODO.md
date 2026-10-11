@@ -155,8 +155,13 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Add explicit report listing and retention: status/age/logical size, count/age
   previews, and `--apply` deletion with writer locks and revalidation. Protect active
   and unfinished reports, unsupported metadata, symlinks, and unrelated contents.
-- [ ] Evaluate archival and log-volume policies; go-cmp's complete report is
-  1.35 GB, 99.86% captured logs. Explicit pruning is available now.
+- [x] Add opt-in per-artifact log limits with CLI/config overrides, head/tail
+  excerpts, byte-count metadata, and browser notices. Keep complete event parsing
+  and discovery independent of retention; preserve noisy outcomes, Unicode,
+  partial diagnostics, reruns, and cleanup after timeout/interruption.
+- [ ] Evaluate archival/compression and hard limits on temporary capture disk
+  usage. Saved-log retention is bounded when configured; full temporary captures
+  and individual Go JSON records remain outside that budget.
 - [x] Add opt-in `--fail-on-missed` / repository configuration, with a local
   disable override. Evaluate current undismissed missed findings after successful
   execution, save the decision separately from execution status, and return exit

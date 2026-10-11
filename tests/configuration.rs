@@ -124,7 +124,7 @@ verbose = true
         json!({
             "module_root": fixture.root, "config_file": fixture.root.join("mutie.toml"),
             "lang": "go", "jobs": 2, "include": ["*.go"], "exclude": ["b.go"],
-            "timeout": 4, "baseline_timeout": 30, "fail_on_missed": false,
+            "timeout": 4, "max_log_bytes": null, "baseline_timeout": 30, "fail_on_missed": false,
             "output_dir": fixture.temp.path().join("repository-reports"), "verbose": true, "list": false,
             "ui": "auto", "test_scope": "full", "operators": []
         })

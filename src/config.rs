@@ -27,6 +27,7 @@ struct RepositoryConfig {
     exclude: Option<Vec<String>>,
     operators: Option<Vec<Operator>>,
     timeout: Option<NonZeroU64>,
+    max_log_bytes: Option<NonZeroUsize>,
     baseline_timeout: Option<NonZeroU64>,
     fail_on_missed: Option<bool>,
     output_dir: Option<PathBuf>,
@@ -49,6 +50,7 @@ pub struct RunConfig {
     /// Empty means all operators; selection is applied after dismissal matching.
     pub operators: Vec<Operator>,
     pub timeout: Option<NonZeroU64>,
+    pub max_log_bytes: Option<NonZeroUsize>,
     pub baseline_timeout: NonZeroU64,
     pub fail_on_missed: bool,
     pub output_dir: PathBuf,
@@ -169,6 +171,11 @@ impl RunConfig {
             include: merge_patterns(cli.include, cli.clear_include, file.include),
             exclude: merge_patterns(cli.exclude, cli.clear_exclude, file.exclude),
             operators,
+            max_log_bytes: if cli.clear_max_log_bytes {
+                None
+            } else {
+                cli.max_log_bytes.or(file.max_log_bytes)
+            },
             timeout: if cli.clear_timeout {
                 None
             } else {
@@ -435,6 +442,9 @@ verbose = true
             "jobs = 1.5",
             "jobs = '2'",
             "timeout = 0",
+            "max_log_bytes = 0",
+            "max_log_bytes = -1",
+            "max_log_bytes = '1KiB'",
             "baseline_timeout = 0",
             "lang = 'python'",
             "include = '*.go'",
@@ -468,6 +478,8 @@ verbose = true
             vec!["--include", "a.go", "--clear-include"],
             vec!["--exclude", "a.go", "--clear-exclude"],
             vec!["--timeout", "1", "--clear-timeout"],
+            vec!["--max-log-bytes", "1", "--clear-max-log-bytes"],
+            vec!["--max-log-bytes", "0"],
             vec!["--verbose", "--no-verbose"],
             vec!["--fail-on-missed", "--no-fail-on-missed"],
             vec!["--operator", "call_remove", "--clear-operators"],
@@ -570,6 +582,32 @@ verbose = true
         assert!(resolve(temp.path(), &[])?.operators.is_empty());
         fs::write(&file, "operators = ['unknown']")?;
         assert!(resolve(temp.path(), &["--clear-operators"]).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn log_limit_defaults_to_unlimited_and_merges_explicit_overrides() -> Result<()> {
+        let temp = project()?;
+        assert_eq!(resolve(temp.path(), &[])?.max_log_bytes, None);
+        let file = temp.path().join("module/mutie.toml");
+        fs::write(&file, "max_log_bytes = 1024")?;
+        assert_eq!(
+            resolve(temp.path(), &[])?.max_log_bytes.unwrap().get(),
+            1024
+        );
+        assert_eq!(
+            resolve(temp.path(), &["--max-log-bytes", "1"])?
+                .max_log_bytes
+                .unwrap()
+                .get(),
+            1
+        );
+        assert_eq!(
+            resolve(temp.path(), &["--clear-max-log-bytes"])?.max_log_bytes,
+            None
+        );
+        fs::write(file, "max_log_bytes = 0")?;
+        assert!(resolve(temp.path(), &["--clear-max-log-bytes"]).is_err());
         Ok(())
     }
 

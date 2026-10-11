@@ -10,11 +10,11 @@ use serde::Serialize;
 
 use crate::{
     cancellation::{Cancellation, Interrupted},
+    capture::Retention,
     config::RunConfig,
     dismissals::DismissalSnapshot,
-    go,
+    go::{self, CommandOutput},
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
-    process::CommandOutput,
     report::{
         ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
     },
@@ -108,6 +108,35 @@ struct Logs {
     text: String,
     stdout: String,
     stderr: String,
+    retention: LogRetention,
+}
+
+#[derive(Clone, Debug, serde::Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct LogRetention {
+    pub text: Retention,
+    pub stdout: Retention,
+    pub stderr: Retention,
+}
+
+impl LogRetention {
+    pub fn validate(&self) -> Result<()> {
+        self.text.validate()?;
+        self.stdout.validate()?;
+        self.stderr.validate()
+    }
+
+    pub fn notices(&self) -> String {
+        [
+            ("Text", &self.text),
+            ("Stdout", &self.stdout),
+            ("Stderr", &self.stderr),
+        ]
+        .into_iter()
+        .filter(|(_, r)| r.omitted_bytes > 0)
+        .map(|(name, r)| format!("{name}: {}\n", r.notice()))
+        .collect()
+    }
 }
 
 #[derive(Serialize)]
@@ -440,10 +469,15 @@ impl SavedReport {
             text: format!("{prefix}.log"),
             stdout: format!("{prefix}.stdout.jsonl"),
             stderr: format!("{prefix}.stderr.log"),
+            retention: LogRetention {
+                text: output.text.retention()?,
+                stdout: output.stdout.retention()?,
+                stderr: output.stderr.retention()?,
+            },
         };
-        self.write(&logs.text, go::text(output).as_bytes())?;
-        self.write(&logs.stdout, output.stdout.as_bytes())?;
-        self.write(&logs.stderr, output.stderr.as_bytes())?;
+        output.text.save(&self.directory.join(&logs.text))?;
+        output.stdout.save(&self.directory.join(&logs.stdout))?;
+        output.stderr.save(&self.directory.join(&logs.stderr))?;
         Ok(logs)
     }
 
@@ -671,14 +705,20 @@ mod tests {
     }
 
     fn output() -> CommandOutput {
-        CommandOutput {
-            status: std::process::ExitStatus::from_raw(0),
-            timed_out: false,
-            interrupted: false,
-            elapsed: Duration::from_millis(125),
-            stdout: "{\"Action\":\"output\",\"Output\":\"PASS\\n\"}\n".into(),
-            stderr: "diagnostic\n".into(),
-        }
+        CommandOutput::prepare(
+            crate::process::CommandOutput {
+                status: std::process::ExitStatus::from_raw(0),
+                timed_out: false,
+                interrupted: false,
+                elapsed: Duration::from_millis(125),
+                stdout: crate::capture::Capture::from_bytes(
+                    b"{\"Action\":\"output\",\"Output\":\"PASS\\n\"}\n",
+                ),
+                stderr: crate::capture::Capture::from_bytes(b"diagnostic\n"),
+            },
+            None,
+        )
+        .unwrap()
     }
 
     #[test]
@@ -750,7 +790,7 @@ mod tests {
         assert!(report.finish(None).is_err());
         report.started(3, 1)?;
         let mut interrupted = output();
-        interrupted.interrupted = true;
+        interrupted.mark_interrupted();
         report.record(&MutationResult {
             id: 3,
             mutation: mutations[2].clone(),

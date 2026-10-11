@@ -1,6 +1,8 @@
 use std::{
     collections::HashSet,
     future::Future,
+    io::{BufRead, BufReader, Write},
+    num::NonZeroUsize,
     path::{Path, PathBuf},
     time::Duration,
 };
@@ -8,13 +10,155 @@ use std::{
 use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;
 
-use crate::{
-    cancellation::Cancellation,
-    process::{self, CommandOutput},
-    report::Outcome,
-};
+use crate::{cancellation::Cancellation, capture::Capture, process, report::Outcome};
 
 pub mod selection;
+
+pub struct CommandOutput {
+    raw: process::CommandOutput,
+    pub text: Capture,
+    evidence: Evidence,
+}
+
+impl std::ops::Deref for CommandOutput {
+    type Target = process::CommandOutput;
+    fn deref(&self) -> &Self::Target {
+        &self.raw
+    }
+}
+
+#[derive(Default)]
+struct Evidence {
+    build_failed: bool,
+    setup_failed: bool,
+    test_failed: bool,
+}
+
+impl Evidence {
+    fn observe(&mut self, event: &Event) {
+        self.build_failed |= event.action == "build-fail"
+            || !event.failed_build.is_empty()
+            || event.output.trim_end().ends_with("[build failed]");
+        self.setup_failed |= event.output.trim_end().ends_with("[setup failed]");
+        self.test_failed |= event.action == "fail" && !event.package.is_empty();
+    }
+}
+
+impl CommandOutput {
+    #[cfg(test)]
+    pub fn mark_interrupted(&mut self) {
+        self.raw.interrupted = true;
+    }
+
+    /// Parse every event before applying retention. Only one JSON record is in
+    /// memory at a time; the complete raw and rendered streams stay file-backed.
+    pub(crate) fn prepare(
+        mut raw: process::CommandOutput,
+        log_limit: Option<NonZeroUsize>,
+    ) -> Result<Self> {
+        let mut rendered = tempfile::NamedTempFile::new()?;
+        let mut reader = BufReader::new(raw.stdout.reader()?);
+        let mut line = Vec::new();
+        let mut evidence = Evidence::default();
+        let mut last = None;
+        while reader.read_until(b'\n', &mut line)? != 0 {
+            let decoded = String::from_utf8_lossy(&line);
+            let decoded = match decoded.strip_suffix('\n') {
+                Some(line) => line.strip_suffix('\r').unwrap_or(line),
+                None => &decoded,
+            };
+            match serde_json::from_str::<Event>(decoded) {
+                Ok(event) => {
+                    evidence.observe(&event);
+                    rendered.write_all(event.output.as_bytes())?;
+                    last = event.output.as_bytes().last().copied().or(last);
+                }
+                Err(_) => {
+                    writeln!(rendered, "{decoded}")?;
+                    last = Some(b'\n');
+                }
+            }
+            line.clear();
+        }
+        if raw.stderr.retention()?.total_bytes > 0 {
+            if last.is_some_and(|c| c != b'\n') {
+                writeln!(rendered)?;
+            }
+            write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;
+        }
+        raw.stdout.set_limit(log_limit);
+        raw.stderr.set_limit(log_limit);
+        let mut text = Capture::utf8(rendered)?;
+        text.set_limit(log_limit);
+        Ok(Self {
+            raw,
+            text,
+            evidence,
+        })
+    }
+}
+
+/// Decode stderr incrementally, retaining partial UTF-8 across chunk boundaries.
+fn write_lossy(reader: &mut impl std::io::Read, writer: &mut impl Write) -> std::io::Result<()> {
+    let mut bytes = [0; 16 * 1024];
+    let mut pending = Vec::new();
+    loop {
+        let count = reader.read(&mut bytes)?;
+        pending.extend_from_slice(&bytes[..count]);
+        let mut offset = 0;
+        while offset < pending.len() {
+            match std::str::from_utf8(&pending[offset..]) {
+                Ok(text) => {
+                    writer.write_all(text.as_bytes())?;
+                    offset = pending.len();
+                }
+                Err(error) => {
+                    let end = offset + error.valid_up_to();
+                    writer.write_all(&pending[offset..end])?;
+                    offset = end;
+                    match error.error_len() {
+                        Some(len) => {
+                            writer.write_all("�".as_bytes())?;
+                            offset += len;
+                        }
+                        None if count == 0 => {
+                            writer.write_all("�".as_bytes())?;
+                            offset = pending.len();
+                        }
+                        None => break,
+                    }
+                }
+            }
+        }
+        pending.drain(..offset);
+        if count == 0 {
+            return Ok(());
+        }
+    }
+}
+
+async fn prepare(
+    raw: process::CommandOutput,
+    log_limit: Option<NonZeroUsize>,
+) -> Result<CommandOutput> {
+    tokio::task::spawn_blocking(move || CommandOutput::prepare(raw, log_limit))
+        .await
+        .context("processing Go command output panicked")?
+}
+
+pub async fn discover(
+    root: &Path,
+    scope: crate::cli::TestScope,
+    limit: Duration,
+    log_limit: Option<NonZeroUsize>,
+    cancellation: &Cancellation,
+) -> Result<CommandOutput> {
+    prepare(
+        process::run("go", list_args(scope), root, limit, cancellation).await?,
+        log_limit,
+    )
+    .await
+}
 
 // Disable result caching so each mutation really executes tests. The outer
 // deadline covers compilation too, and replaces Go's per-binary timeout.
@@ -30,9 +174,14 @@ pub fn list_args(scope: crate::cli::TestScope) -> &'static [&'static str] {
 pub async fn test(
     root: &Path,
     limit: Duration,
+    log_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
-    process::run("go", TEST_ARGS, root, limit, cancellation).await
+    prepare(
+        process::run("go", TEST_ARGS, root, limit, cancellation).await?,
+        log_limit,
+    )
+    .await
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -47,6 +196,7 @@ pub async fn test_observed<F, Fut>(
     root: &Path,
     packages: &[String],
     limit: Duration,
+    log_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
     mut progress: F,
 ) -> Result<CommandOutput>
@@ -61,7 +211,7 @@ where
         .chain(packages.iter().map(String::as_str))
         .collect();
     let mut phases = TestProgress::default();
-    process::run_observed("go", &args, root, limit, cancellation, move |line| {
+    let raw = process::run_observed("go", &args, root, limit, cancellation, move |line| {
         let update = phases.observe(line).map(&mut progress);
         async move {
             if let Some(update) = update {
@@ -69,7 +219,8 @@ where
             }
         }
     })
-    .await
+    .await?;
+    prepare(raw, log_limit).await
 }
 
 #[derive(Default)]
@@ -120,9 +271,9 @@ pub fn packages(output: &CommandOutput) -> Result<Vec<selection::Package>> {
     ensure!(
         output.status.success(),
         "Go package discovery failed:\n{}",
-        output.stderr
+        output.stderr.text()?
     );
-    serde_json::Deserializer::from_str(&output.stdout)
+    serde_json::Deserializer::from_reader(BufReader::new(output.stdout.reader()?))
         .into_iter::<selection::Package>()
         .collect::<std::result::Result<Vec<_>, _>>()
         .context("decoding go list output")
@@ -174,59 +325,102 @@ pub fn classify(output: &CommandOutput) -> Result<Outcome> {
     if output.status.success() {
         return Ok(Outcome::Missed);
     }
-    let events: Vec<Event> = output
-        .stdout
-        .lines()
-        .filter_map(|line| serde_json::from_str(line).ok())
-        .collect();
-    if events.iter().any(|event| {
-        event.action == "build-fail"
-            || !event.failed_build.is_empty()
-            || event.output.trim_end().ends_with("[build failed]")
-    }) {
+    if output.evidence.build_failed {
         return Ok(Outcome::BuildFailed);
     }
     // Setup/tool failures must not inflate the number of killed mutations.
-    if !events
-        .iter()
-        .any(|event| event.output.trim_end().ends_with("[setup failed]"))
-        && events
-            .iter()
-            .any(|event| event.action == "fail" && !event.package.is_empty())
-    {
+    if !output.evidence.setup_failed && output.evidence.test_failed {
         return Ok(Outcome::Killed);
     }
     bail!(
         "Go command failed without a test or build failure ({}):\n{}",
         output.status,
-        text(output)
+        text(output)?
     );
 }
 
-pub fn text(output: &CommandOutput) -> String {
-    let mut text = String::new();
-    for line in output.stdout.lines() {
-        match serde_json::from_str::<Event>(line) {
-            Ok(event) => text.push_str(&event.output),
-            Err(_) => {
-                text.push_str(line);
-                text.push('\n');
-            }
-        }
-    }
-    if !output.stderr.is_empty() {
-        if !text.is_empty() && !text.ends_with('\n') {
-            text.push('\n');
-        }
-        text.push_str(&output.stderr);
-    }
-    text
+pub fn text(output: &CommandOutput) -> Result<String> {
+    output.text.text()
 }
 
 #[cfg(all(test, unix))]
 mod tests {
     use super::*;
     use std::os::unix::process::ExitStatusExt;
+
+    #[test]
+    fn incremental_stderr_decoding_matches_lossy_utf8_across_chunks_and_eof() -> Result<()> {
+        let mut bytes = vec![b'a'; 16 * 1024 - 1];
+        bytes.extend_from_slice("界é\r\n".as_bytes());
+        bytes.extend_from_slice(b"\xff\xc0\xe2\x82");
+        let mut decoded = Vec::new();
+        write_lossy(&mut bytes.as_slice(), &mut decoded)?;
+        assert_eq!(String::from_utf8(decoded)?, String::from_utf8_lossy(&bytes));
+        Ok(())
+    }
+
+    #[test]
+    fn retained_logs_never_determine_classification_even_for_oversized_events() -> Result<()> {
+        let noise = "{\"Action\":\"output\",\"Output\":\"padding é界\\n\"}\n".repeat(200);
+        for (event, expected) in [
+            (
+                "{\"Action\":\"fail\",\"Package\":\"p\"}",
+                Some(Outcome::Killed),
+            ),
+            (
+                "{\"Action\":\"build-fail\",\"ImportPath\":\"p\"}",
+                Some(Outcome::BuildFailed),
+            ),
+            (
+                "{\"Action\":\"fail\",\"Package\":\"p\",\"FailedBuild\":\"p\"}",
+                Some(Outcome::BuildFailed),
+            ),
+            (
+                "{\"Action\":\"output\",\"Output\":\"FAIL p [build failed]\\n\"}",
+                Some(Outcome::BuildFailed),
+            ),
+            (
+                "{\"Action\":\"output\",\"Output\":\"FAIL p [setup failed]\\n\"}\n{\"Action\":\"fail\",\"Package\":\"p\"}",
+                None,
+            ),
+            ("tool error", None),
+        ] {
+            let raw = format!("{noise}{event}\n{noise}");
+            let mut limited = CommandOutput::prepare(output(&raw, 1).raw, NonZeroUsize::new(64))?;
+            assert!(!limited.stdout.text()?.contains(event));
+            assert_eq!(classify(&limited).ok(), expected);
+            assert_eq!(classify(&limited).ok(), classify(&output(&raw, 1)).ok());
+            assert!(text(&limited)?.len() < 256);
+            limited.raw.timed_out = true;
+            assert_eq!(classify(&limited)?, Outcome::Timeout);
+            limited.raw.interrupted = true;
+            assert!(classify(&limited).is_err());
+        }
+        let oversized = serde_json::json!({"Action":"output", "Output":format!("{} [setup failed]\n", "x".repeat(2 * 1024 * 1024))}).to_string();
+        let raw = format!("{noise}{oversized}\n{{\"Action\":\"fail\",\"Package\":\"p\"}}\n{noise}");
+        let limited = CommandOutput::prepare(output(&raw, 1).raw, NonZeroUsize::new(64))?;
+        assert!(classify(&limited).is_err());
+        assert!(limited.stdout.retention()?.omitted_bytes > 2 * 1024 * 1024);
+        Ok(())
+    }
+
+    #[test]
+    fn discovery_decodes_complete_machine_output_and_text_preserves_stream_boundaries() -> Result<()>
+    {
+        let raw = "{\"Dir\":\"/module\",\"GoFiles\":[\"a.go\"],\"Ignored\":\"padding\"}\n{\"Dir\":\"/module/sub\",\"GoFiles\":[\"b.go\"]}";
+        let limited = CommandOutput::prepare(output(raw, 0).raw, NonZeroUsize::new(1))?;
+        assert_eq!(
+            files(Path::new("/module"), &limited)?,
+            [PathBuf::from("a.go"), PathBuf::from("sub/b.go")]
+        );
+        assert!(limited.stdout.retention()?.omitted_bytes > 0);
+        let mut raw = output("{\"Action\":\"output\",\"Output\":\"é\"}\n", 0).raw;
+        raw.stderr = Capture::from_bytes(b"diagnostic\r\n");
+        let prepared = CommandOutput::prepare(raw, None)?;
+        assert_eq!(text(&prepared)?, "é\ndiagnostic\r\n");
+        assert_eq!(text(&output("plain\r\nlast\r", 0))?, "plain\nlast\r\n");
+        Ok(())
+    }
 
     #[test]
     fn progress_uses_observed_events_and_tracks_interleaved_packages() {
@@ -270,14 +464,18 @@ mod tests {
     }
 
     fn output(stdout: &str, code: i32) -> CommandOutput {
-        CommandOutput {
-            status: std::process::ExitStatus::from_raw(code << 8),
-            timed_out: false,
-            interrupted: false,
-            elapsed: Duration::ZERO,
-            stdout: stdout.into(),
-            stderr: String::new(),
-        }
+        CommandOutput::prepare(
+            process::CommandOutput {
+                status: std::process::ExitStatus::from_raw(code << 8),
+                timed_out: false,
+                interrupted: false,
+                elapsed: Duration::ZERO,
+                stdout: Capture::from_bytes(stdout.as_bytes()),
+                stderr: Capture::from_bytes(b""),
+            },
+            None,
+        )
+        .unwrap()
     }
 
     #[test]
@@ -311,10 +509,10 @@ mod tests {
         assert!(classify(&output("go: missing dependency", 1)).is_err());
         assert!(classify(&output("{\"Action\":\"output\",\"Output\":\"FAIL p [setup failed]\\n\"}\n{\"Action\":\"fail\",\"Package\":\"p\"}", 1)).is_err());
         let mut timed_out = output("", 1);
-        timed_out.timed_out = true;
+        timed_out.raw.timed_out = true;
         assert_eq!(classify(&timed_out)?, Outcome::Timeout);
         let mut interrupted = output("", 0);
-        interrupted.interrupted = true;
+        interrupted.raw.interrupted = true;
         assert!(classify(&interrupted).is_err());
         Ok(())
     }

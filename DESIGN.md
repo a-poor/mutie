@@ -352,7 +352,12 @@ progress. The reader is reopened so it cannot move the child's shared write
 offset. Observation is cancelled with command completion, timeout, or
 interruption, including when a progress callback is blocked. Reader failure stops
 advisory observation; final capture and classification retain their normal error
-handling. Full logs are still read and saved after process-group cleanup.
+handling. After process-group cleanup, capture readers freeze their endpoint so
+later writes cannot extend processing indefinitely. Complete captures remain on
+disk; `go.rs` processes events one record at a time on a blocking task, accumulates
+classification evidence independently of retained logs, and renders readable
+output into a separate temporary file. Discovery decodes the complete capture
+through a reader, including when only a tiny excerpt will be saved.
 
 Every child Go command also owns a private temporary directory, passed as
 `GOTMPDIR`. Its parent is the nonempty environment `GOTMPDIR`, or the system
@@ -446,6 +451,31 @@ Detailed stdout/stderr captures can remain alongside the readable logs. Source
 paths are project-relative and artifact paths are run-directory-relative. Keep
 units and location conventions explicit in the schema. Preserve native byte
 offsets and document the conversion if a future exporter uses another convention.
+
+`--max-log-bytes` / repository `max_log_bytes` sets an optional positive byte
+budget for each readable, stdout, and stderr artifact. The default is unlimited;
+an explicit CLI value replaces config, and `--clear-max-log-bytes` restores the
+default. The effective setting is saved with all other run configuration.
+`capture.rs` retains a beginning/end excerpt, with the extra byte assigned to the
+head for odd limits, and inserts an omission marker outside the payload budget.
+Readable output is valid UTF-8, with cuts moved inward to character boundaries;
+raw excerpts can split UTF-8 or JSON records and are not promised to be parseable.
+
+Log records contain `retention.{text,stdout,stderr}` byte counts: original total,
+retained head, retained tail, and omitted middle. The reader validates their sums
+and accepts legacy records without retention metadata. Artifacts are streamed
+into temporary files in the report directory and atomically replaced only after
+writing and syncing. The browser shows retention notices even for missing files,
+separately from its bounded artifact preview. No report/catalog version bump is
+needed during local development.
+
+Retention never supplies classification evidence or package-discovery input.
+The cap bounds persisted log payloads and in-memory diagnostic previews, not
+temporary disk usage or individual JSON-record size. Full command captures and
+the rendered text are removed when the command result is released, including
+failure, timeout, interruption, and report-write errors. Hard limits on live
+temporary capture size and archival/compression remain separate future policies;
+do not silently discard semantic events to enforce an artifact budget.
 
 Publish the inventory and diffs before workers begin. Inventory entries without
 final outcomes remain visibly untested or interrupted. Update results and derived
@@ -739,7 +769,7 @@ design. No runtime or plugin ABI is selected now.
    PTY, rerun-remapping, and real-Go coverage.
 
 Open implementation choices include dismissal editing in the browser, report archival
-and log-volume policies, mutation matching across source edits, and which language to
+and temporary-capture disk limits, mutation matching across source edits, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
 the initial MVP.

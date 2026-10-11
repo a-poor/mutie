@@ -507,11 +507,11 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
     // snapshot, and run Go in a separate disposable copy, as normal runs do.
     let discovery_workspace =
         crate::create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
-    let output = crate::process::run(
-        "go",
-        &["list", "-json", "./..."],
+    let output = crate::go::discover(
         &discovery_workspace.path(),
+        crate::cli::TestScope::Full,
         Duration::from_secs(config.baseline_timeout.get()),
+        config.max_log_bytes,
         cancellation,
     )
     .await?;

@@ -397,7 +397,20 @@ impl Browser {
                 },
                 None => "No artifact recorded for this view.".into(),
             };
-            format!("{preface}{contents}")
+            let retention = match self.view {
+                View::Baseline => self.report.baseline.as_ref().map(|c| &c.logs),
+                View::Discovery => self.report.discovery.as_ref().map(|c| &c.logs),
+                View::Log => self
+                    .selected()
+                    .and_then(|i| self.report.executions[i].logs.as_ref()),
+                _ => None,
+            }
+            .and_then(|logs| logs.retention.as_ref());
+            let mut notices = retention.map(|r| r.notices()).unwrap_or_default();
+            if !notices.is_empty() {
+                notices.push_str("Omitted output is not stored in this report.\n");
+            }
+            format!("{preface}{notices}{contents}")
         };
         self.detail = clean_text(&text).lines().map(str::to_owned).collect();
     }
@@ -1011,6 +1024,40 @@ mod tests {
         let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
         app.load_detail();
         (temp, app)
+    }
+
+    #[test]
+    fn truncated_logs_are_visible_even_when_artifacts_are_missing() {
+        let (temp, mut app) = browser();
+        let r = crate::capture::Retention {
+            total_bytes: 10000,
+            head_bytes: 32,
+            tail_bytes: 32,
+            omitted_bytes: 9936,
+        };
+        let retention = crate::saved_report::LogRetention {
+            text: r.clone(),
+            stdout: r.clone(),
+            stderr: r,
+        };
+        app.report.executions[0].logs.as_mut().unwrap().retention = Some(retention.clone());
+        app.report.baseline.as_mut().unwrap().logs.retention = Some(retention.clone());
+        app.report.discovery.as_mut().unwrap().logs.retention = Some(retention);
+        for key_code in ['l', 'b', 'g'] {
+            key(&mut app, KeyCode::Char(key_code));
+            let detail = app.detail.join("\n");
+            assert!(detail.contains("Log truncated: 9936 bytes omitted"));
+            assert!(detail.contains("Omitted output is not stored"));
+            for (w, h) in [(100, 30), (60, 30)] {
+                let mut terminal = Terminal::new(TestBackend::new(w, h)).unwrap();
+                terminal.draw(|frame| app.render(frame)).unwrap();
+                assert!(text(terminal.backend().buffer()).contains("Log truncated"));
+            }
+        }
+        fs::remove_file(temp.path().join("logs/000001.log")).unwrap();
+        key(&mut app, KeyCode::Char('l'));
+        assert!(app.detail.join("\n").contains("Artifact unavailable"));
+        assert!(app.detail.join("\n").contains("9936 bytes omitted"));
     }
 
     fn key(app: &mut Browser, code: KeyCode) -> bool {

@@ -1,5 +1,6 @@
 mod browser;
 mod cancellation;
+mod capture;
 mod cli;
 mod config;
 mod coordinator;
@@ -222,7 +223,13 @@ async fn execute(
         .map(|seconds| Duration::from_secs(seconds.get()));
     if !config.list {
         coordinator.emit(RunEvent::Phase(Phase::Baseline), cancellation)?;
-        let baseline = go::test(&baseline_workspace.path(), baseline_limit, cancellation).await?;
+        let baseline = go::test(
+            &baseline_workspace.path(),
+            baseline_limit,
+            config.max_log_bytes,
+            cancellation,
+        )
+        .await?;
         coordinator.emit(
             RunEvent::Command {
                 phase: Phase::Baseline,
@@ -237,13 +244,13 @@ async fn execute(
             bail!(
                 "baseline timed out after {:.1}s; no mutations were run\n{}",
                 baseline_limit.as_secs_f64(),
-                go::text(&baseline)
+                go::text(&baseline)?
             );
         }
         if !baseline.status.success() {
             bail!(
                 "baseline tests failed; no mutations were run\n{}",
-                go::text(&baseline)
+                go::text(&baseline)?
             );
         }
         timeout.get_or_insert_with(|| (baseline.elapsed * 5).max(Duration::from_secs(10)));
@@ -273,11 +280,11 @@ async fn execute(
         result?;
         baseline_workspace
     };
-    let discovery = process::run(
-        "go",
-        go::list_args(config.test_scope),
+    let discovery = go::discover(
         &baseline_workspace.path(),
+        config.test_scope,
         baseline_limit,
+        config.max_log_bytes,
         cancellation,
     )
     .await?;
@@ -292,6 +299,7 @@ async fn execute(
         return Err(Interrupted.into());
     }
     let packages = go::packages(&discovery)?;
+    drop(discovery);
     let graph = if config.test_scope == TestScope::Affected {
         Some(go::selection::PackageGraph::new(
             &baseline_workspace.path(),
@@ -407,6 +415,7 @@ async fn execute(
         snapshot,
         test_packages: Arc::new(test_packages),
         timeout,
+        max_log_bytes: config.max_log_bytes,
         cancellation: cancellation.clone(),
     };
     run_workers(context, mutations, jobs, coordinator).await
@@ -417,6 +426,7 @@ struct WorkerContext {
     snapshot: Arc<Workspace>,
     test_packages: Arc<Vec<Vec<String>>>,
     timeout: Duration,
+    max_log_bytes: Option<std::num::NonZeroUsize>,
     cancellation: Cancellation,
 }
 
@@ -496,6 +506,7 @@ impl WorkerJob {
                     &workspace.as_ref().unwrap().path(),
                     &context.test_packages[id - 1],
                     context.timeout,
+                    context.max_log_bytes,
                     &context.cancellation,
                     move |phase| {
                         let progress = progress.clone();

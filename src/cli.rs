@@ -56,6 +56,14 @@ pub struct Cli {
     #[arg(long, conflicts_with = "timeout")]
     pub clear_timeout: bool,
 
+    /// Retain at most BYTES of each saved log (head and tail; default: unlimited)
+    #[arg(long, value_name = "BYTES")]
+    pub max_log_bytes: Option<NonZeroUsize>,
+
+    /// Disable the configured log limit
+    #[arg(long, conflicts_with = "max_log_bytes")]
+    pub clear_max_log_bytes: bool,
+
     /// Timeout for the baseline and package discovery, in seconds (default: 300)
     #[arg(long, value_name = "SECONDS")]
     pub baseline_timeout: Option<NonZeroU64>,

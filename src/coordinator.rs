@@ -13,8 +13,8 @@ use crate::{
     cancellation::{Cancellation, Interrupted},
     config::RunConfig,
     go,
+    go::CommandOutput,
     mutation::Mutation,
-    process::CommandOutput,
     report::{
         ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
     },
@@ -301,7 +301,7 @@ impl Coordinator {
                         output.elapsed.as_secs_f64()
                     ));
                     if self.verbose {
-                        print!("{}", go::text(output));
+                        print!("{}", go::text(output)?);
                     }
                 }
                 RunEvent::Finished { result, .. } => {
@@ -325,7 +325,7 @@ impl Coordinator {
                     if self.verbose
                         && let Some(output) = &result.output
                     {
-                        let text = go::text(output);
+                        let text = go::text(output)?;
                         if !text.is_empty() {
                             self.line(text.trim_end());
                         }
