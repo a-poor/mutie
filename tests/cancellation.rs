@@ -377,9 +377,13 @@ fn interrupt_parallel_run_retains_inventory_results_and_active_diagnostics() {
 
 #[test]
 fn interruption_during_baseline_and_discovery_preserves_command_output() {
-    for (phase, signal) in [("baseline", libc::SIGINT), ("discovery", libc::SIGTERM)] {
+    for (phase, signal, scope) in [
+        ("baseline", libc::SIGINT, "full"),
+        ("discovery", libc::SIGTERM, "full"),
+        ("discovery", libc::SIGTERM, "affected"),
+    ] {
         let fixture = Fixture::new();
-        let mut child = fixture.start(phase);
+        let mut child = fixture.start_with_args(phase, &["--test-scope", scope]);
         fixture.ready(phase);
         child.signal(signal);
         let output = child.finish();

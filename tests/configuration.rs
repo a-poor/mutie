@@ -126,7 +126,7 @@ verbose = true
             "lang": "go", "jobs": 2, "include": ["*.go"], "exclude": ["b.go"],
             "timeout": 4, "baseline_timeout": 30,
             "output_dir": fixture.temp.path().join("repository-reports"), "verbose": true, "list": false,
-            "ui": "auto"
+            "ui": "auto", "test_scope": "full"
         })
     );
     assert_eq!(metadata["requested_workers"], 2);

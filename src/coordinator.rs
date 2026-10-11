@@ -12,12 +12,10 @@ use tokio::sync::watch;
 use crate::{
     cancellation::{Cancellation, Interrupted},
     config::RunConfig,
-    dismissals::DismissalSnapshot,
     go,
     mutation::Mutation,
     process::CommandOutput,
-    report::{ExecutionState, MutationResult, Outcome, RunStatus, Summary},
-    rerun::RerunProvenance,
+    report::{ExecutionState, MutationResult, Outcome, RunPlan, RunStatus, Summary},
     saved_report::SavedReport,
     workspace_metrics::{WorkspaceKind, WorkspaceMeasurement, WorkspaceMetrics},
 };
@@ -49,13 +47,7 @@ pub enum RunEvent<'a> {
         phase: Phase,
         output: &'a CommandOutput,
     },
-    Plan {
-        mutations: &'a [Mutation],
-        workers: usize,
-        timeout: Duration,
-        rerun: Option<&'a RerunProvenance>,
-        dismissals: &'a DismissalSnapshot,
-    },
+    Plan(&'a RunPlan<'a>),
     Started {
         id: usize,
         worker: usize,
@@ -162,11 +154,9 @@ impl RunState {
             RunEvent::Workspace { kind, measurement } => {
                 self.workspace_metrics.record(*kind, measurement)
             }
-            RunEvent::Plan {
-                mutations, workers, ..
-            } => {
-                self.total = Some(mutations.len());
-                self.workers = *workers;
+            RunEvent::Plan(plan) => {
+                self.total = Some(plan.mutations.len());
+                self.workers = plan.workers;
             }
             RunEvent::Started {
                 id,
@@ -281,20 +271,7 @@ impl Coordinator {
             match &event {
                 RunEvent::Phase(phase) => report.phase(phase.name())?,
                 RunEvent::Command { phase, output } => report.command(phase.name(), output)?,
-                RunEvent::Plan {
-                    mutations,
-                    workers,
-                    timeout,
-                    rerun,
-                    dismissals,
-                } => report.plan(
-                    mutations,
-                    *workers,
-                    *timeout,
-                    *rerun,
-                    dismissals,
-                    cancellation,
-                )?,
+                RunEvent::Plan(plan) => report.plan(plan, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
                 RunEvent::Finished { result, .. } => report.record(result)?,
                 RunEvent::Progress(_) => {} // Transient phases never change persisted outcomes.
@@ -401,13 +378,14 @@ mod tests {
         let (mut coordinator, updates) = Coordinator::new(&config, true)?;
         let cancellation = Cancellation::default();
         coordinator.emit(
-            RunEvent::Plan {
+            RunEvent::Plan(&RunPlan {
                 mutations: &mutations,
+                test_packages: &vec![vec!["./...".into()]; mutations.len()],
                 workers: 2,
                 timeout: Duration::from_secs(10),
                 rerun: None,
-                dismissals: &DismissalSnapshot::default(),
-            },
+                dismissals: &crate::dismissals::DismissalSnapshot::default(),
+            }),
             &cancellation,
         )?;
         coordinator.emit(RunEvent::Phase(Phase::Mutations), &cancellation)?;

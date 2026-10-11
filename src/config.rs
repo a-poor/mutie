@@ -10,7 +10,7 @@ use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    cli::{Cli, Lang, UiMode},
+    cli::{Cli, Lang, TestScope, UiMode},
     rerun::{RerunFilter, RerunMode, RerunRequest},
 };
 
@@ -21,6 +21,7 @@ use crate::{
 struct RepositoryConfig {
     lang: Option<Lang>,
     jobs: Option<NonZeroUsize>,
+    test_scope: Option<TestScope>,
     include: Option<Vec<String>>,
     exclude: Option<Vec<String>>,
     timeout: Option<NonZeroU64>,
@@ -39,6 +40,7 @@ pub struct RunConfig {
     pub config_file: Option<PathBuf>,
     pub lang: Lang,
     pub jobs: NonZeroUsize,
+    pub test_scope: TestScope,
     pub include: Vec<String>,
     pub exclude: Vec<String>,
     pub timeout: Option<NonZeroU64>,
@@ -148,6 +150,7 @@ impl RunConfig {
                 .jobs
                 .or(file.jobs)
                 .unwrap_or(NonZeroUsize::new(1).unwrap()),
+            test_scope: cli.test_scope.or(file.test_scope).unwrap_or_default(),
             include: merge_patterns(cli.include, cli.clear_include, file.include),
             exclude: merge_patterns(cli.exclude, cli.clear_exclude, file.exclude),
             timeout: if cli.clear_timeout {
@@ -267,6 +270,7 @@ mod tests {
         assert!(config.include.is_empty() && config.exclude.is_empty());
         assert!(!config.verbose && !config.list);
         assert_eq!(config.ui, UiMode::Auto);
+        assert_eq!(config.test_scope, TestScope::Full);
         assert!(config.config_file.is_none());
         assert_eq!(config.output_dir, temp.path().join("module/.mutie"));
         assert!(!config.output_dir.exists());
@@ -291,6 +295,22 @@ mod tests {
         assert!(resolve(temp.path(), &["--ui", "unknown"]).is_err());
         fs::write(temp.path().join("module/mutie.toml"), "ui = 'unknown'")?;
         assert!(resolve(temp.path(), &["--ui", "plain"]).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn test_scope_merges_config_and_explicit_full_override() -> Result<()> {
+        let temp = project()?;
+        let file = temp.path().join("module/mutie.toml");
+        fs::write(&file, "test_scope = 'affected'")?;
+        assert_eq!(resolve(temp.path(), &[])?.test_scope, TestScope::Affected);
+        assert_eq!(
+            resolve(temp.path(), &["--test-scope", "full"])?.test_scope,
+            TestScope::Full
+        );
+        assert!(resolve(temp.path(), &["--test-scope", "unknown"]).is_err());
+        fs::write(&file, "test_scope = 'unknown'")?;
+        assert!(resolve(temp.path(), &[]).is_err());
         Ok(())
     }
 

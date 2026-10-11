@@ -2,7 +2,7 @@ use std::{
     fs,
     io::Write,
     path::{Path, PathBuf},
-    time::{Duration, Instant, SystemTime, UNIX_EPOCH},
+    time::{Instant, SystemTime, UNIX_EPOCH},
 };
 
 use anyhow::{Context, Result, ensure};
@@ -13,9 +13,9 @@ use crate::{
     config::RunConfig,
     dismissals::DismissalSnapshot,
     go,
-    mutation::{Mutation, OPERATOR_CATALOG_VERSION, Operator},
+    mutation::{OPERATOR_CATALOG_VERSION, Operator},
     process::CommandOutput,
-    report::{ExecutionState, MutationResult, Outcome, RunStatus, Summary},
+    report::{ExecutionState, MutationResult, Outcome, RunPlan, RunStatus, Summary},
     rerun::RerunProvenance,
     workspace_metrics::WorkspaceMetrics,
 };
@@ -36,7 +36,9 @@ struct RunReport {
     status: RunStatus,
     phase: &'static str,
     error: Option<String>,
-    command: Vec<&'static str>,
+    baseline_command: Vec<&'static str>,
+    mutation_command_prefix: Vec<&'static str>,
+    discovery_command: Vec<&'static str>,
     include: Vec<String>,
     exclude: Vec<String>,
     requested_workers: usize,
@@ -74,6 +76,7 @@ struct PlannedMutation {
     original: String,
     replacement: &'static str,
     diff: String,
+    test_packages: Vec<String>,
 }
 
 #[derive(Serialize)]
@@ -159,8 +162,14 @@ impl SavedReport {
                 status: RunStatus::Running,
                 phase: "snapshot",
                 error: None,
-                command: std::iter::once("go")
+                baseline_command: std::iter::once("go")
                     .chain(go::TEST_ARGS.iter().copied())
+                    .collect(),
+                mutation_command_prefix: std::iter::once("go")
+                    .chain(go::TEST_ARGS[..go::TEST_ARGS.len() - 1].iter().copied())
+                    .collect(),
+                discovery_command: std::iter::once("go")
+                    .chain(go::list_args(config.test_scope).iter().copied())
                     .collect(),
                 include: config.include.clone(),
                 exclude: config.exclude.clone(),
@@ -238,15 +247,19 @@ impl SavedReport {
         self.flush()
     }
 
-    pub fn plan(
-        &mut self,
-        mutations: &[Mutation],
-        workers: usize,
-        timeout: Duration,
-        rerun: Option<&RerunProvenance>,
-        dismissals: &DismissalSnapshot,
-        cancellation: &Cancellation,
-    ) -> Result<()> {
+    pub fn plan(&mut self, plan: &RunPlan<'_>, cancellation: &Cancellation) -> Result<()> {
+        let RunPlan {
+            mutations,
+            test_packages,
+            workers,
+            timeout,
+            rerun,
+            dismissals,
+        } = plan;
+        ensure!(
+            mutations.len() == test_packages.len() && test_packages.iter().all(|p| !p.is_empty()),
+            "every mutation must have a test package selection"
+        );
         ensure!(
             !self.inventory.complete,
             "mutation inventory already published"
@@ -271,10 +284,11 @@ impl SavedReport {
                 original: mutation.original().to_owned(),
                 replacement: mutation.replacement,
                 diff,
+                test_packages: test_packages[index].clone(),
             });
         }
         self.inventory.mutations = inventory;
-        self.inventory.dismissals = Some(dismissals.clone());
+        self.inventory.dismissals = Some((*dismissals).clone());
         self.inventory.complete = true;
         self.write("mutants.json", &serde_json::to_vec_pretty(&self.inventory)?)?;
         self.outcomes.mutations = self
@@ -294,7 +308,7 @@ impl SavedReport {
             .collect();
         self.run.planned_mutations = Some(mutations.len());
         self.run.rerun = rerun.cloned();
-        self.run.workers = Some(workers);
+        self.run.workers = Some(*workers);
         self.run.mutation_timeout_seconds = Some(timeout.as_secs_f64());
         self.flush()
     }
@@ -459,6 +473,13 @@ impl SavedReport {
             self.outcomes.summary
         );
         text.push_str(&format!("{}\n", self.run.workspace_metrics.summary()));
+        text.push_str(&format!(
+            "Mutation test scope: {} (baseline: full module)\n",
+            match self.run.effective_config.test_scope {
+                crate::cli::TestScope::Full => "full",
+                crate::cli::TestScope::Affected => "affected",
+            }
+        ));
         if let Some(root) = &self.run.workspace_metrics.temporary_root {
             text.push_str(&format!("Workspace temporary root: {}\n", root.display()));
         }
@@ -604,6 +625,7 @@ mod tests {
     };
     use clap::Parser;
     use std::os::unix::process::ExitStatusExt;
+    use std::time::Duration;
 
     fn config(root: &Path) -> Result<RunConfig> {
         fs::write(root.join("go.mod"), "module example.com/test\n")?;
@@ -642,11 +664,14 @@ mod tests {
         assert_eq!(read(&report, "mutants.json")["complete"], false);
         report.command("baseline", &output())?;
         report.plan(
-            &mutations,
-            2,
-            Duration::from_secs(10),
-            None,
-            &DismissalSnapshot::default(),
+            &RunPlan {
+                mutations: &mutations,
+                test_packages: &vec![vec!["./...".into()]; mutations.len()],
+                workers: 2,
+                timeout: Duration::from_secs(10),
+                rerun: None,
+                dismissals: &DismissalSnapshot::default(),
+            },
             &Cancellation::default(),
         )?;
         let inventory = fs::read(report.path().join("mutants.json"))?;
@@ -750,11 +775,14 @@ mod tests {
         assert!(
             report
                 .plan(
-                    &mutations,
-                    1,
-                    Duration::from_secs(10),
-                    None,
-                    &DismissalSnapshot::default(),
+                    &RunPlan {
+                        mutations: &mutations,
+                        test_packages: &vec![vec!["./...".into()]; mutations.len()],
+                        workers: 1,
+                        timeout: Duration::from_secs(10),
+                        rerun: None,
+                        dismissals: &DismissalSnapshot::default(),
+                    },
                     &Cancellation::default()
                 )
                 .is_err()

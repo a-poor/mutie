@@ -14,9 +14,18 @@ use crate::{
     report::Outcome,
 };
 
+pub mod selection;
+
 // Disable result caching so each mutation really executes tests. The outer
 // deadline covers compilation too, and replaces Go's per-binary timeout.
 pub const TEST_ARGS: &[&str] = &["test", "-json", "-count=1", "-timeout=0", "./..."];
+
+pub fn list_args(scope: crate::cli::TestScope) -> &'static [&'static str] {
+    match scope {
+        crate::cli::TestScope::Full => &["list", "-json", "./..."],
+        crate::cli::TestScope::Affected => &["list", "-deps", "-test", "-json", "./..."],
+    }
+}
 
 pub async fn test(
     root: &Path,
@@ -36,6 +45,7 @@ pub enum TestPhase {
 
 pub async fn test_observed<F, Fut>(
     root: &Path,
+    packages: &[String],
     limit: Duration,
     cancellation: &Cancellation,
     mut progress: F,
@@ -44,8 +54,14 @@ where
     F: FnMut(TestPhase) -> Fut + Send,
     Fut: Future<Output = ()> + Send,
 {
+    ensure!(!packages.is_empty(), "mutation test selection is empty");
+    let args: Vec<_> = TEST_ARGS[..TEST_ARGS.len() - 1]
+        .iter()
+        .copied()
+        .chain(packages.iter().map(String::as_str))
+        .collect();
     let mut phases = TestProgress::default();
-    process::run_observed("go", TEST_ARGS, root, limit, cancellation, move |line| {
+    process::run_observed("go", &args, root, limit, cancellation, move |line| {
         let update = phases.observe(line).map(&mut progress);
         async move {
             if let Some(update) = update {
@@ -94,6 +110,11 @@ impl TestProgress {
 }
 
 pub fn files(root: &Path, output: &CommandOutput) -> Result<Vec<PathBuf>> {
+    let packages = packages(output)?;
+    files_in(root, &packages)
+}
+
+pub fn packages(output: &CommandOutput) -> Result<Vec<selection::Package>> {
     ensure!(!output.interrupted, "Go package discovery interrupted");
     ensure!(!output.timed_out, "Go package discovery timed out");
     ensure!(
@@ -101,18 +122,15 @@ pub fn files(root: &Path, output: &CommandOutput) -> Result<Vec<PathBuf>> {
         "Go package discovery failed:\n{}",
         output.stderr
     );
-    #[derive(Deserialize)]
-    #[serde(rename_all = "PascalCase")]
-    struct Package {
-        dir: PathBuf,
-        #[serde(default)]
-        go_files: Vec<String>,
-        #[serde(default)]
-        cgo_files: Vec<String>,
-    }
+    serde_json::Deserializer::from_str(&output.stdout)
+        .into_iter::<selection::Package>()
+        .collect::<std::result::Result<Vec<_>, _>>()
+        .context("decoding go list output")
+}
+
+pub fn files_in(root: &Path, packages: &[selection::Package]) -> Result<Vec<PathBuf>> {
     let mut files = Vec::new();
-    for package in serde_json::Deserializer::from_str(&output.stdout).into_iter::<Package>() {
-        let package = package.context("decoding go list output")?;
+    for package in packages {
         let relative = package
             .dir
             .strip_prefix(root)
@@ -120,8 +138,8 @@ pub fn files(root: &Path, output: &CommandOutput) -> Result<Vec<PathBuf>> {
         files.extend(
             package
                 .go_files
-                .into_iter()
-                .chain(package.cgo_files)
+                .iter()
+                .chain(&package.cgo_files)
                 .map(|name| relative.join(name)),
         );
     }

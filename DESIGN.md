@@ -45,7 +45,8 @@ Rust appears in the CLI language enum but is not implemented.
 The initial deliverable is a useful local Go tool with a small, predictable scope:
 
 - One self-contained Go module, initially targeting Linux/Unix execution.
-- `go test ./...` for the baseline and every mutation; no custom test runner yet.
+- `go test ./...` for the baseline and, by default, every mutation; an opt-in
+  affected-package mode narrows mutation tests. No custom test runner yet.
 - Whole-module mutation discovery by default, with include/exclude file globs.
 - A small catalog of arithmetic, comparison, boolean, and logical mutations.
 - A passing baseline, independent worker workspaces, and command deadlines.
@@ -97,6 +98,30 @@ the whole-command timeout, including compilation. Start with the current default
 300 seconds for the baseline and `max(10 seconds, 5 * baseline duration)` for each
 mutation, with explicit overrides. Scope filters select mutated files; they do
 not narrow the tests that run.
+
+`test_scope = "affected"` / `--test-scope affected` uses a separate package
+selection policy. Discovery requests `go list -deps -test -json ./...` from the
+pristine workspace. Ordinary packages matched by `./...` supply mutation files and
+eligible test targets; dependency-only packages, test variants, and generated test
+binaries supply graph edges without becoming mutation targets. Build tags, cgo,
+and platform selection continue to follow Go's environment.
+
+The graph resolves `ImportMap` edges and follows reverse imports starting from the
+mutated package and every copy rebuilt for a test. A target is selected if its
+ordinary package or generated test binary is reachable. This includes transitive
+production dependencies, internal/external test imports, and paths through
+dependencies outside the target set. Missing nodes, duplicate package ownership,
+missing test binaries, and incomplete/error metadata stop execution before inventory
+publication. Discovery cancellation and diagnostics use the existing command path.
+
+The baseline stays full-module, and `full` remains the default and an explicit CLI
+override. Selection is computed before workers start and sorted for reproducible
+arguments. Each planned mutation records `test_packages`; `baseline_command`,
+`discovery_command`, and `mutation_command_prefix` describe commands in `run.json`.
+Reruns recompute selections from current source/tests and use current settings.
+There is no result reuse or coverage selection. Dependencies through runtime file
+reads, subprocesses, or dynamic loading are outside the import graph: affected mode
+is opt-in and full-module results remain the correctness reference.
 
 Cancellation stops scheduling, terminates active process groups on Unix, collects
 completed results and active command diagnostics, finalizes an interrupted run,
@@ -573,6 +598,12 @@ file transfers were reflinked. Focus performance experiments on Go command work,
 while preserving full-module results as the reference. Distinguish compilation
 and test costs where the tool provides reliable measurements.
 
+A controlled [affected-package comparison](benchmarks/go-cmp-v0.7.0.md#affected-package-follow-up)
+uses the same 32 saved IDs with four workers and a fixed diff-search direction.
+Full / affected / affected / full runs matched all outcomes; mean run duration
+fell from 36.13 to 27.00 seconds. This is evidence for the opt-in mode on this
+compact library, not a general speedup or proof of selection equivalence.
+
 The run also exposed Go build directories retained after forced termination and
 a 1.35 GB report dominated by logs. Temporary Go builds now have a per-command
 cleanup lifetime; the reusable Go build cache remains separate. Use the report
@@ -580,9 +611,9 @@ sizes when designing retention and log-output policies. Larger
 applications, asset-heavy trees, and reflink-capable filesystem versus Linux tmpfs
 comparisons still need measurements.
 
-Full-module tests remain the correctness reference. Explore affected-package tests
-only with reverse dependencies accounted for, then coverage-based selection and
-result reuse with explicit invalidation rules. Consider workspace-copy optimizations
+Full-module tests remain the correctness reference for the implemented opt-in
+affected-package mode. Coverage-based selection and result reuse still need explicit
+invalidation rules and separate validation. Consider workspace-copy optimizations
 without giving up restoration of test side effects. Measure before choosing which
 optimization to implement.
 

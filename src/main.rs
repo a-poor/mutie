@@ -23,11 +23,11 @@ use clap::Parser;
 use tokio::{sync::mpsc, task::JoinSet};
 
 use cancellation::{Cancellation, Interrupted};
-use cli::{Cli, UiMode};
+use cli::{Cli, TestScope, UiMode};
 use config::RunConfig;
 use coordinator::{Coordinator, Phase, RunEvent, WorkerPhase, WorkerProgress};
 use mutation::{Mutation, Scope};
-use report::{ExecutionState, MutationResult, Outcome};
+use report::{ExecutionState, MutationResult, Outcome, RunPlan};
 use workspace::Workspace;
 use workspace_metrics::{WorkspaceKind, WorkspaceMeasurement};
 
@@ -237,7 +237,7 @@ async fn execute(
     };
     let discovery = process::run(
         "go",
-        &["list", "-json", "./..."],
+        go::list_args(config.test_scope),
         &baseline_workspace.path(),
         baseline_limit,
         cancellation,
@@ -253,7 +253,19 @@ async fn execute(
     if discovery.interrupted {
         return Err(Interrupted.into());
     }
-    let mut files = go::files(&baseline_workspace.path(), &discovery)?;
+    let packages = go::packages(&discovery)?;
+    let graph = if config.test_scope == TestScope::Affected {
+        Some(go::selection::PackageGraph::new(
+            &baseline_workspace.path(),
+            &packages,
+        )?)
+    } else {
+        None
+    };
+    let mut files = match &graph {
+        Some(graph) => graph.files.clone(),
+        None => go::files_in(&baseline_workspace.path(), &packages)?,
+    };
     drop(baseline_workspace);
     let mutations = {
         let snapshot = Arc::clone(&snapshot);
@@ -296,6 +308,13 @@ async fn execute(
             None => "No eligible mutations matched the selected scope.".to_owned(),
         });
     }
+    let test_packages: Vec<Vec<String>> = mutations
+        .iter()
+        .map(|mutation| match &graph {
+            Some(graph) => graph.packages_for(&mutation.file.path),
+            None => Ok(vec!["./...".to_owned()]),
+        })
+        .collect::<Result<_>>()?;
     if config.list {
         for (index, mutation) in mutations.iter().enumerate() {
             cancellation.check()?;
@@ -310,6 +329,9 @@ async fn execute(
             } else {
                 println!("{}", mutation.description());
             }
+            if config.test_scope == TestScope::Affected {
+                println!("  Tests: {}", test_packages[index].join(" "));
+            }
         }
         return Ok(());
     }
@@ -318,13 +340,14 @@ async fn execute(
     dismissals.select(&mutations);
     coordinator.emit(RunEvent::Phase(Phase::Inventory), cancellation)?;
     coordinator.emit(
-        RunEvent::Plan {
+        RunEvent::Plan(&RunPlan {
             mutations: &mutations,
+            test_packages: &test_packages,
             workers: jobs,
             timeout,
             rerun: rerun.as_ref(),
             dismissals: &dismissals,
-        },
+        }),
         cancellation,
     )?;
     cancellation.check()?;
@@ -338,6 +361,7 @@ async fn execute(
     ));
     let context = WorkerContext {
         snapshot,
+        test_packages: Arc::new(test_packages),
         timeout,
         cancellation: cancellation.clone(),
     };
@@ -347,6 +371,7 @@ async fn execute(
 #[derive(Clone)]
 struct WorkerContext {
     snapshot: Arc<Workspace>,
+    test_packages: Arc<Vec<Vec<String>>>,
     timeout: Duration,
     cancellation: Cancellation,
 }
@@ -425,6 +450,7 @@ impl WorkerJob {
                     .await;
                 go::test_observed(
                     &workspace.as_ref().unwrap().path(),
+                    &context.test_packages[id - 1],
                     context.timeout,
                     &context.cancellation,
                     move |phase| {

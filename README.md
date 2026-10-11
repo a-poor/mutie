@@ -3,8 +3,8 @@
 A CLI for performing mutation testing.
 
 The first prototype supports Go modules. It runs a passing baseline, finds small
-source mutations with Tree-sitter, and runs the full test suite for each mutation
-in an isolated temporary workspace. Rust and other languages are planned.
+source mutations with Tree-sitter, and by default runs the full test suite for each
+mutation in an isolated temporary workspace. Rust and other languages are planned.
 
 See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
@@ -17,6 +17,7 @@ Requires Rust/Cargo and Go 1.24+ on `PATH`. The prototype is tested on Linux and
 ```sh
 cargo run -- /path/to/go/module
 cargo run -- /path/to/go/module --jobs 4
+cargo run -- /path/to/go/module --test-scope affected --jobs 4
 cargo run -- /path/to/go/module --list
 cargo run -- /path/to/go/module --include 'internal/**/*.go' --exclude '**/generated_*'
 cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
@@ -31,8 +32,8 @@ cargo run -- dismiss --module /path/to/go/module list
 The path defaults to the current directory and must contain `go.mod`. Glob
 patterns are relative to that directory; quote them so your shell does not expand
 them. Repeat `--include` or `--exclude` to supply multiple patterns. Exclusions
-win. These options control which files are mutated; tests still run for the full
-module. `--list` discovers mutations without running tests.
+win. These options control which files are mutated; test selection is controlled
+separately by `--test-scope`. `--list` discovers mutations without running tests.
 
 The bundled fixture deliberately produces all four outcomes:
 
@@ -49,6 +50,7 @@ supplied CLI arguments. Parent directories are not searched.
 ```toml
 lang = "go"
 jobs = 2
+test_scope = "full" # or "affected" (opt-in)
 include = ["**/*.go"]
 exclude = ["internal/legacy/**"]
 timeout = 30
@@ -60,7 +62,7 @@ ui = "auto"
 
 All keys are optional. Defaults are `lang = "auto"` (currently Go), one worker,
 empty include/exclude lists, a 300-second baseline/discovery timeout, `.mutie`
-under the module root for reports, `ui = "auto"`, and no verbose output. Omit
+under the module root for reports, `ui = "auto"`, `test_scope = "full"`, and no verbose output. Omit
 `timeout` for the automatic policy: `max(10 seconds, 5 * baseline duration)`. Worker counts and
 timeouts must be positive integers; timeouts are in seconds. Unknown keys,
 malformed TOML, and incorrect value types are rejected even if CLI options would
@@ -89,6 +91,44 @@ they cannot be set in `mutie.toml`. Listing uses the same
 configuration and excludes the configured report directory from its snapshot,
 but creates no report directory or artifacts. An explicit `--output-dir` still
 conflicts with `--list`.
+
+## Affected-package testing
+
+`--test-scope affected` tests the mutated package and module packages that depend
+on it, including transitive dependencies and internal/external test imports.
+The baseline always tests the full module. The default `--test-scope full` runs
+`./...` for every mutation and overrides a configured affected scope.
+
+```sh
+cargo run -- /path/to/go/module --test-scope affected --jobs 4
+cargo run -- /path/to/go/module --test-scope affected --list
+cargo run -- /path/to/go/module --test-scope affected --rerun RUN_DIR --id 9,11
+```
+
+Selection uses `go list -deps -test -json ./...` from a pristine workspace, including
+Go's test-specific package variants and dependencies outside the set matched by
+`./...`. See [Go's package metadata](https://pkg.go.dev/cmd/go#hdr-List_packages_or_modules).
+Only module packages matched by `./...` are test targets. Include/exclude globs
+restrict mutation locations; they do not remove dependent tests from selection.
+An incomplete or ambiguous graph stops the run before mutations execute, retaining
+discovery diagnostics. Test output, classification, deadlines, and workspace
+restoration use the normal execution path.
+
+Use this mode for projects whose test dependencies are represented by Go imports.
+File reads, subprocesses, dynamically loaded code, and other relationships outside
+the import graph can require tests this mode omits. Full-module runs remain the
+correctness reference. Affected-package testing is not coverage-based selection
+and does not reuse old results. Compare outcomes on your project before relying
+on reduced scope.
+
+`--list` shows each mutation's selected packages. Saved inventory entries record
+the exact package arguments as `test_packages`, even for pending or interrupted
+mutations. Reruns use current settings and recompute the graph from current source
+and tests; they never reuse the source report's package selection.
+
+The [go-cmp sample comparison](benchmarks/go-cmp-v0.7.0.md#affected-package-follow-up)
+matched all 32 outcomes and averaged 25.3% less run time with affected scope on
+one warm-cache host. Results depend on the project and its dependency structure.
 
 ## Live terminal status
 
@@ -354,7 +394,7 @@ or ambiguous targets fail the entire selection rather than silently being skippe
 Current include/exclude settings still apply; clear configured filters if needed.
 
 The current module can be a moved or copied checkout. Current configuration,
-tests, worker count, and timeouts apply; old outcomes are never reused. Newly
+tests, test scope, worker count, and timeouts apply; old outcomes are never reused. Newly
 discovered mutations are not added to the saved selection. If the filters match
 nothing, execution saves a completed empty run after baseline and discovery.
 `--list` previews and validates the selection without running tests or writing a
@@ -383,10 +423,10 @@ reports and cannot be combined with `--output-dir`.
 
 Each run contains:
 
-- `run.json`: versioned run metadata, effective configuration, command, scope,
+- `run.json`: versioned run metadata, effective configuration, commands, scope,
   timeouts, worker counts, workspace measurements, phase, status, and any run-level error.
 - `mutants.json`: the complete mutation inventory, including IDs, named operators,
-  source locations, original text, replacements, source fingerprints, and diff
+  source locations, original text, replacements, source fingerprints, `test_packages`, and diff
   paths. The inventory and every diff are published before workers start.
 - `outcomes.json`: baseline and package-discovery results, mutation execution
   states and outcomes, durations, exit codes, log paths, and summary counts.
@@ -407,6 +447,12 @@ deadline, once determined, is in `mutation_timeout_seconds`. Configured `jobs`
 and `requested_workers` describe the requested concurrency; `workers` records the
 number used, capped by the mutation count. Configuration timeout values use
 seconds, matching the TOML file.
+
+`baseline_command` and `discovery_command` record their complete argument lists.
+For a mutation, append its inventory `test_packages` to `mutation_command_prefix`.
+Full scope records `["./..."]`; affected scope records sorted Go import paths.
+These fields replace the earlier single `command` field; older saved reports
+remain readable and eligible for reruns.
 
 Mutation IDs are local to each run, assigned in deterministic discovery order.
 Inventory and execution records are sorted by ID regardless of completion order;
@@ -519,7 +565,8 @@ parent and the reusable Go build cache (`GOCACHE`) are preserved.
 
 ## Behavior
 
-- The baseline and each mutation run `go test -json -count=1 -timeout=0 ./...`.
+- The baseline runs `go test -json -count=1 -timeout=0 ./...`. Mutations use the
+  same flags with `./...` by default, or selected packages in affected scope.
   Test-result caching is disabled; Go's build cache is still used. Mutie enforces
   a deadline for the entire command, including compilation. See the
   [Go test documentation](https://pkg.go.dev/cmd/go#hdr-Test_packages).
@@ -561,6 +608,7 @@ paths. Windows descendant-process cleanup is not implemented yet.
 ```sh
 cargo test
 cargo test --test go_workflow -- --ignored
+cargo test --test affected_packages -- --ignored
 cargo clippy --all-targets -- -D warnings
 ```
 
@@ -572,6 +620,9 @@ for a timeout. Non-ignored Unix tests use a fake Go command to verify SIGINT/SIG
 during baseline, discovery, and parallel execution, preserved diagnostics, pending
 work, process and build-directory cleanup, and source preservation. They require
 an environment that delivers those signals.
+The opt-in affected-package fixture compares full/affected outcomes and verifies
+transitive and internal/external test imports, unrelated-package omission, and
+fresh selections after adding tests to a focused rerun.
 Configuration tests also cover defaults, explicit overrides, list clearing,
 invalid settings, path resolution, listing without reports, and saved effective
 settings using a fake Go command.

@@ -24,9 +24,13 @@ pub struct Cli {
     #[arg(long, value_enum)]
     pub lang: Option<Lang>,
 
-    /// Number of mutation workers (default: 1; each runs the full test suite)
+    /// Number of mutation workers (default: 1)
     #[arg(short, long)]
     pub jobs: Option<NonZeroUsize>,
+
+    /// Mutation tests to run (default: full; baseline always tests the full module)
+    #[arg(long, value_enum)]
+    pub test_scope: Option<TestScope>,
 
     /// Only mutate files matching these module-relative globs (repeatable)
     #[arg(long, value_name = "GLOB")]
@@ -168,6 +172,14 @@ pub enum UiMode {
     Auto,
     Interactive,
     Plain,
+}
+
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum TestScope {
+    #[default]
+    Full,
+    Affected,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]

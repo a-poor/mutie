@@ -118,6 +118,20 @@ fn go_workflow() {
     assert_eq!(report["summary"]["build_failed"], 1);
     assert_eq!(report["summary"]["errors"], 0);
     assert_eq!(report["baseline"]["outcome"], "passed");
+    let affected = run(
+        &root,
+        &["--jobs", "2", "--timeout", "5", "--test-scope", "affected"],
+    );
+    stdout(&affected);
+    let (_, _, affected_inventory, affected_outcomes) = saved_report(&affected);
+    assert_eq!(affected_outcomes["summary"], report["summary"]);
+    assert_eq!(affected_inventory["mutations"].as_array().unwrap().len(), 4);
+    for mutation in affected_inventory["mutations"].as_array().unwrap() {
+        assert_eq!(
+            mutation["test_packages"],
+            serde_json::json!(["example.com/mutie-fixture"])
+        );
+    }
     for (phase, operations) in [
         ("snapshot", 1),
         ("baseline_setup", 1),

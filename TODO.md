@@ -137,9 +137,14 @@ checklist as work lands, checking items off after appropriate verification.
   files and the reusable Go build cache. Regression tests cover success,
   tool/startup errors, concurrent timeouts, and SIGINT/SIGTERM. A focused go-cmp
   timeout and interruption both left zero owned temporary build directories.
-- [ ] Evaluate affected-package/coverage-based test selection and result reuse
-  against full-module testing, with reverse dependencies, test imports, and explicit
-  invalidation rules. Use the go-cmp run as a correctness/performance reference.
+- [x] Add opt-in affected-package testing with a full-module baseline/default,
+  transitive reverse dependencies and test imports, per-mutation saved selections,
+  and fresh graph discovery on reruns. Verify against real multi-package tests.
+  The controlled go-cmp sample matched all 32 outcomes in four paired runs;
+  affected scope averaged 25.3% less run time (see benchmark notes/data).
+- [ ] Evaluate coverage-based test selection and result reuse against full-module
+  testing, with explicit invalidation rules. Keep affected-package comparisons
+  against full-module results as projects and operators expand.
 - [ ] Expand mutations, including standalone call removal and return/branch/loop
   changes; add operator selection and profiles based on useful findings.
 - [ ] Decide and implement report retention/archival without pruning active runs

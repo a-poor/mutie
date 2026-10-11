@@ -138,8 +138,9 @@ This is a reviewed example, not an equivalence analysis of all 262 missed result
    calibration left another 45 directories (496,433,335 bytes) after 41 timeouts
    and four interrupted commands. Per-command ownership now addresses this;
    see the cleanup follow-up below. The reusable Go build cache remains separate.
-2. Investigate affected-package execution, including reverse dependencies and test
-   imports, against this full-module reference. For example, `cmp`'s external
+2. Compare affected-package execution, including reverse dependencies and test
+   imports, against this full-module reference. The opt-in implementation is
+   measured in the follow-up below. For example, `cmp`'s external
    tests import `cmpopts`; selecting only the mutated package would omit relevant
    tests. Go command duration includes tooling, builds, and execution, which were
    not separately profiled here. Account for the demonstrated direction-dependent
@@ -173,6 +174,56 @@ This verifies the cleanup fix against a real hanging mutation; it does not repla
 the historical full-run measurements or establish a new performance comparison.
 Automated tests also cover parallel timeouts, SIGINT/SIGTERM, successful discovery,
 tool/startup errors, temporary-parent placement, and preservation of cache contents.
+
+## Affected-package follow-up
+
+On 2026-10-10, the new `--test-scope affected` mode was compared with `full` using
+the same 32 saved IDs and four workers. Both modes used the updated release binary,
+the same dedicated warm cache, 30-second mutation deadlines, full-module baselines,
+and the original environment. The order was full / affected / affected / full.
+No other Go builds or test runs overlapped the measurements; host load was not
+isolated. [The follow-up data](go-cmp-v0.7.0-affected.json) records source hashes,
+selected packages, individual outcomes/durations, and the Rust implementation hashes.
+
+Both modes used an isolated source copy with one additional same-package test file:
+
+```go
+package diff
+
+func init() { randBool = false }
+```
+
+This forces reverse search in `cmp/internal/diff`, removing the known random
+killed/timeout variation for source ID 328. The original implementation files and
+mutation identities were unchanged. These are controlled comparisons between
+modes, not replacements for the earlier unmodified-source timing measurements.
+
+| Trial | Test scope | Run seconds | Mutation-command seconds, cumulative | Package targets across 32 mutations |
+| --- | --- | ---: | ---: | ---: |
+| 1 | Full | 36.56 | 124.85 | 320 |
+| 2 | Affected | 27.39 | 89.48 | 95 |
+| 3 | Affected | 26.61 | 87.79 | 95 |
+| 4 | Full | 35.71 | 123.00 | 320 |
+
+All four runs produced **27 killed, 4 missed, 0 timeouts, and 1 build failure**,
+matching by source ID both across modes and against the original full-run sample.
+Affected mode averaged **27.00 seconds versus 36.13 seconds**, or **25.3% less run
+time** on this workload. Package counts include targets without test files and
+count repeated selections across mutations. Discovery took approximately 0.10
+seconds in affected mode versus 0.06 seconds in full mode.
+
+For example, mutations in `cmp/cmpopts` selected both `cmp/cmpopts` and `cmp`, whose
+external tests import it. Mutation 328 selected `cmp/internal/diff`,
+`cmp/internal/value`, `cmp`, and `cmp/cmpopts`. Every baseline still ran `./...`.
+Source manifests were unchanged after each run, saved checkpoints matched, and
+all owned temporary workspaces/build directories were removed.
+
+Two trials per mode on one compact library do not establish general speedups or
+selection equivalence. Runtime file reads, subprocesses, and other dependencies
+outside Go's import graph can require omitted tests; full-module testing remains
+the reference. To repeat this comparison, use the original sample IDs, add the
+test file above to `cmp/internal/diff`, and alternate `--test-scope full` and
+`--test-scope affected` with the same cache, workers, source, and deadlines.
 
 ## Reproducing the workload
 

@@ -1,0 +1,1161 @@
+{
+  "date": "2026-10-10",
+  "project": "github.com/google/go-cmp@v0.7.0",
+  "go_version": "go version go1.27.2 darwin/arm64",
+  "host": "macOS arm64",
+  "source_files_sha256": {
+    "go.mod": "31c874a1d2a18e62b0550f823ce7a575c8dec7f8fd9d4fa1959bb12d7f7c0f14",
+    "LICENSE": "17b5d209ba8f9684257ecfcff87df6ceda6194143a8fbd074f29727cff6f0c40",
+    "README.md": "3e5fc0993a1105d676db182aad083e3180794108145c082d184ae90ba6be60e8",
+    "CONTRIBUTING.md": "0096fb56dc6bac4ec7201f79ffabe86245c4a6176ea57e2f02ff6d411df9cfe7",
+    "cmp/compare_test.go": "f031ebb97d967043ddb2947560ee3b30dd937b38ff15ff9f62a53070a5e4e327",
+    "cmp/example_test.go": "7194469525c21397306fad852fd7889e8087212ca6792317f7fc060e06bf376e",
+    "cmp/report_references.go": "2f7a64f7794f56c4606d959577b5c04457394b8ff3f6459080a7ffb2760ff02a",
+    "cmp/options.go": "e731d656de35eafc945dbdb32602cbcc861a8a8c949e2b18e4d7655bb58e02e6",
+    "cmp/report_text.go": "452ee42571ba6854dc5c67d58295935cdc5516ded711f1ee067dfe7c556a498f",
+    "cmp/report_reflect.go": "b5f342563cfd34d12cdc5a3f1825c75ebeb1f9b61e0a2d69d32fcd78f33cf016",
+    "cmp/export.go": "86e7c37d357f9886fb52c2a4db3e6c4159f69fef91bcd8ef344d666cdd8d0ad4",
+    "cmp/report_value.go": "c9482498cb75f382d05fc0030e04033f2d668c188548eab63a2bc05c2c50dc59",
+    "cmp/report_compare.go": "247b68a28732df31a2c4f8d0a67a655087d82565544f80b0b736784a55d05895",
+    "cmp/report_slices.go": "ec3fb7d6a29a0f37229f93b93d53ff6cbee65f9fb75ce10c2d96a7b81ee6b3ee",
+    "cmp/options_test.go": "f4628d7e88f1166e0a589c5a488328bb3ab57e30a52ddc36ff3c0df1b37d2a7b",
+    "cmp/compare.go": "aa73956045f7fb4346589e0b35160aa50f5eb20b9529b6f3b98a3e171ccf977b",
+    "cmp/report.go": "4f7fc6eec9f7f02b35926392a939a97788bd297e6b3898bfbe0857889523ee19",
+    "cmp/path.go": "e6853d1bc210ad061a24b5f9d5aa006ad92801c9cc6af1d4054f70c30d24602f",
+    "cmp/example_reporter_test.go": "027e161d7d050bbde6e77ac2bac26ded80e19e4fe4b7756a1f11f7cfd3e5363d",
+    ".github/workflows/test.yml": "c026bb39198de179972b7c0863a76076595fcdb0c72c7771d822773040eadcba",
+    "cmp/testdata/diffs": "12ccbf7fa5352c5dfd60c09dba32029320adde4582ed80258b77c8711ce59e37",
+    "cmp/cmpopts/example_test.go": "be21ccc90f892cf287df764df387b4baf911d0a543aa49655439ff256b948d4a",
+    "cmp/cmpopts/util_test.go": "65c6e703538ccfc0a8a4bbc95e5dd06faccb7b1cd4aa96aea4adbf909b1544d5",
+    "cmp/cmpopts/struct_filter.go": "ad9e44ef7c47fb52fdd7fc5f0b0f2ed59b088832c4d856368c9d5fca517d64f8",
+    "cmp/cmpopts/sort.go": "26b894ed79d2733fee95f7026b695e5d9e74f5d2a273a43401dd91971c4c2c56",
+    "cmp/cmpopts/equate.go": "1cf42542318dcbc5a68fc872d81ceb5961147880329c4b6b9d18b5ffbdd69703",
+    "cmp/cmpopts/ignore.go": "cf14846c455f11300a74d2792079ed3232b6efb79a4819643713c18d3871746e",
+    "cmp/cmpopts/xform.go": "0af8e9495dfe6c22df0bf96158ada67b5a5f03993584f409440ff076d1f9f785",
+    "cmp/internal/teststructs/project1.go": "b04c41f528a9db36ef852827ab98ba6ab42a5774c3867e319c72f5330b55fa1d",
+    "cmp/internal/teststructs/project4.go": "683f463a16db9a6b9eec632e167f0e165004b0e8bdd02fed47049f72964a4a30",
+    "cmp/internal/teststructs/project3.go": "202a9ff2fb2232bd20599db29b5d6a96885a52ad2eb0f7c6336a885b8b9177e7",
+    "cmp/internal/teststructs/structs.go": "8ebcc7febed08120ff8f9cbd4930a4b7136c3b09d6ced6ac8b70e2235b96993b",
+    "cmp/internal/teststructs/project2.go": "f7b1805e737254337905de78de6d0463d6dfbcb873fba38fbe211bb99b776131",
+    "cmp/internal/flags/flags.go": "bbb67604cfe6c4ead5763ba37468c59aa882cb93f21e923b400c6aab4e44748d",
+    "cmp/internal/value/sort.go": "ebd93021d4475c303efc529d305e3951fb26f29e9facf98b5f348f74bcd25388",
+    "cmp/internal/value/sort_test.go": "66b2cc09e7a7b0ec4d247d08050145863b37d5bf14c05e6c7349177ea1ac5c53",
+    "cmp/internal/value/name_test.go": "121c1f2f0a18f0bab8e6969be7128c9dd813650701c28a569f436aa2c133aff3",
+    "cmp/internal/value/name.go": "b9603406c33ff8a1b33f12f268dea21549a40293df940a783f6f7db552601140",
+    "cmp/internal/value/pointer.go": "829247a1f759bc18b0d91aedc5adc8d787c28aa7046839037e73866351dd9661",
+    "cmp/internal/testprotos/protos.go": "158ccf8c7d90a87d44eba3ac498b33740efc66d793747067d2e7b7051e31d7df",
+    "cmp/internal/diff/mutie_selection_test.go": "f3d1aafafda4d591d4766816c07333ce36c155a8bf47fb9b3d49cfa87434c06b",
+    "cmp/internal/diff/debug_enable.go": "42950f9e903c1c481e81f6cf50ed015aa89919914a1e5a217758d3c97fe6f902",
+    "cmp/internal/diff/diff_test.go": "85e7c1e7c0ae9f15db9437e55b4cf2a5da9d9f672acc407d4f3fa04b78d4f4b2",
+    "cmp/internal/diff/diff.go": "de6127a170d36f8a83ce1743e06c99491bc33f6186864cfff213cbcacb207ae4",
+    "cmp/internal/diff/debug_disable.go": "a144910615ebbb763e1651c917c69cb4d54e81e3d7f3db44f9565e76ad86c586",
+    "cmp/internal/function/func_test.go": "4e319d0361af86f28d93f9c1e7167585ad7eae590b32e7e547dfe88ef3db8717",
+    "cmp/internal/function/func.go": "342fe41a45a693a9ff49ac7c76c0d0e4c9723a8f4def37b8d800496e9bd981f3",
+    "cmp/internal/teststructs/foo1/foo.go": "9209393543446a5b402375365792ed4b386f6878f6fffcf23c797707b9d0cdf7",
+    "cmp/internal/teststructs/foo2/foo.go": "9209393543446a5b402375365792ed4b386f6878f6fffcf23c797707b9d0cdf7"
+  },
+  "mutie_base_commit": "15bfea85239fb361d1694b3bd245247a7f9a4f19",
+  "mutie_source_sha256": {
+    "cancellation.rs": "f84d1a4cb6a6508a1febd2a2ccf0b59d4d615a29c3c8812069625514809df8d1",
+    "mutation.rs": "2fad4c0f888d7e2613d595c188dbab888baacc16d73444a24ab40c346b77b236",
+    "config.rs": "d4c0852d3c5c00c5bd6fcdac00da7bda429e1a2af2d320a733e8259955b47212",
+    "workspace_metrics.rs": "f40ba1e7ef3cca26f7a2616a811b75f167f3ffb3156451d4b7d2cf708e3e0aa6",
+    "coordinator.rs": "d14bcbab563d91ec1db24c7f4dade958f216d8dfc5b28d070ac2b08971e8efaf",
+    "report.rs": "36b51f44f81b86c8f5a72dcc9300de1323af3c090378eae31a1064bb86d425c9",
+    "report_reader.rs": "09ad59b102f2e7fe961b86f95e151fba30c66cd6cd8f5910e3af188907f9cac1",
+    "identity.rs": "02a65b5ae9791114294b54712834b11e49b54e5772e01cdabcf2b23024af2612",
+    "status.rs": "3837307bd968aba132736c92986edf5d3154809010e19e9035c292c9ede53fe4",
+    "workspace.rs": "c8ded5b7670fab7ab590ee5526fd45e572c81db8eed419750a3521edf768f9e9",
+    "main.rs": "2540bff748c4b65468a6d56c1a2c8a6262c9851031ec85ece0e8b6d860256bdc",
+    "saved_report.rs": "571a148e3434a66467b77f2511528e5e7dce612e673701cb92bcea98ee06a2c8",
+    "dismissals.rs": "20c6b462e38f48e09d1fe58eec9214bb856f5a18ce95a7cf0f5df1d4b26f3307",
+    "process.rs": "2b221cf15b6d4400d113f00f16e8b0cf81f523b2b2aeffe9db7b4bab80e3d050",
+    "go.rs": "e0eb82596bd0f8ec317eede76acb3968516509571654a8a805ef69a6f671373a",
+    "browser.rs": "06c9a08a81f5ea94091cf0595bdf6844a1aa0cd435cad89c7111754bb0922fae",
+    "cli.rs": "35f0b8d2e9fa788902713c1b93381527593b23952d8eb448bdb7706b9cf17eb1",
+    "rerun.rs": "b14bc441bf199835baafaa5b9acc47852e27698d7d59f1daa1524b520aa9659b",
+    "go/selection.rs": "0da58e3a48d64151d40c475feb2c4087e28994d9ce901c77c0cd72d8e7d6c299"
+  },
+  "method": {
+    "sample_ids": [
+      1,
+      47,
+      94,
+      141,
+      187,
+      234,
+      281,
+      328,
+      374,
+      421,
+      468,
+      515,
+      561,
+      608,
+      655,
+      702,
+      748,
+      795,
+      842,
+      889,
+      935,
+      982,
+      1029,
+      1076,
+      1122,
+      1169,
+      1216,
+      1263,
+      1309,
+      1356,
+      1403,
+      1450
+    ],
+    "jobs": 4,
+    "timeout": 30,
+    "baseline_timeout": 120,
+    "order": [
+      "full",
+      "affected",
+      "affected",
+      "full"
+    ],
+    "cache": "Existing dedicated cache plus a full-module preflight; result caching disabled.",
+    "direction": "Same-package test init forces randBool=false in both modes.",
+    "environment": {
+      "GOWORK": "off",
+      "GOENV": "off",
+      "GOTOOLCHAIN": "local",
+      "GOPROXY": "off",
+      "GOFLAGS": "",
+      "CGO_ENABLED": "0",
+      "GOMAXPROCS": "8"
+    }
+  },
+  "runs": [
+    {
+      "label": "1-full",
+      "scope": "full",
+      "report": "1-full/run-1791694812-pphBBv",
+      "run_seconds": 36.558981625,
+      "baseline_seconds": 1.918991042,
+      "discovery_seconds": 0.061436208,
+      "mutation_command_seconds": 124.851111457,
+      "summary": {
+        "killed": 27,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 1,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_root_empty": true,
+      "results": [
+        {
+          "source_id": 1,
+          "outcome": "killed",
+          "seconds": 5.730264625
+        },
+        {
+          "source_id": 47,
+          "outcome": "killed",
+          "seconds": 4.618809583
+        },
+        {
+          "source_id": 94,
+          "outcome": "killed",
+          "seconds": 3.542674375
+        },
+        {
+          "source_id": 141,
+          "outcome": "killed",
+          "seconds": 6.761187792
+        },
+        {
+          "source_id": 187,
+          "outcome": "killed",
+          "seconds": 4.065811959
+        },
+        {
+          "source_id": 234,
+          "outcome": "killed",
+          "seconds": 4.122589083
+        },
+        {
+          "source_id": 281,
+          "outcome": "killed",
+          "seconds": 3.985639375
+        },
+        {
+          "source_id": 328,
+          "outcome": "killed",
+          "seconds": 3.9314002500000003
+        },
+        {
+          "source_id": 374,
+          "outcome": "killed",
+          "seconds": 3.723471625
+        },
+        {
+          "source_id": 421,
+          "outcome": "killed",
+          "seconds": 3.8808599580000003
+        },
+        {
+          "source_id": 468,
+          "outcome": "killed",
+          "seconds": 3.890082958
+        },
+        {
+          "source_id": 515,
+          "outcome": "killed",
+          "seconds": 3.931297625
+        },
+        {
+          "source_id": 561,
+          "outcome": "killed",
+          "seconds": 3.828191708
+        },
+        {
+          "source_id": 608,
+          "outcome": "missed",
+          "seconds": 3.7777582499999998
+        },
+        {
+          "source_id": 655,
+          "outcome": "killed",
+          "seconds": 3.629421417
+        },
+        {
+          "source_id": 702,
+          "outcome": "killed",
+          "seconds": 3.696994
+        },
+        {
+          "source_id": 748,
+          "outcome": "killed",
+          "seconds": 3.724709333
+        },
+        {
+          "source_id": 795,
+          "outcome": "killed",
+          "seconds": 3.640461583
+        },
+        {
+          "source_id": 842,
+          "outcome": "killed",
+          "seconds": 3.6287260420000003
+        },
+        {
+          "source_id": 889,
+          "outcome": "missed",
+          "seconds": 3.85385175
+        },
+        {
+          "source_id": 935,
+          "outcome": "build_failed",
+          "seconds": 3.062577709
+        },
+        {
+          "source_id": 982,
+          "outcome": "killed",
+          "seconds": 3.340132958
+        },
+        {
+          "source_id": 1029,
+          "outcome": "killed",
+          "seconds": 3.240028916
+        },
+        {
+          "source_id": 1076,
+          "outcome": "killed",
+          "seconds": 3.986034833
+        },
+        {
+          "source_id": 1122,
+          "outcome": "killed",
+          "seconds": 2.949582291
+        },
+        {
+          "source_id": 1169,
+          "outcome": "killed",
+          "seconds": 3.624872667
+        },
+        {
+          "source_id": 1216,
+          "outcome": "killed",
+          "seconds": 3.829831042
+        },
+        {
+          "source_id": 1263,
+          "outcome": "killed",
+          "seconds": 4.048819625
+        },
+        {
+          "source_id": 1309,
+          "outcome": "missed",
+          "seconds": 3.772172875
+        },
+        {
+          "source_id": 1356,
+          "outcome": "killed",
+          "seconds": 3.90578975
+        },
+        {
+          "source_id": 1403,
+          "outcome": "missed",
+          "seconds": 3.723664917
+        },
+        {
+          "source_id": 1450,
+          "outcome": "killed",
+          "seconds": 3.403400583
+        }
+      ],
+      "selected_package_count": 320
+    },
+    {
+      "label": "2-affected",
+      "scope": "affected",
+      "report": "2-affected/run-1791694849-G9zC42",
+      "run_seconds": 27.388919834,
+      "baseline_seconds": 2.042359583,
+      "discovery_seconds": 0.099014458,
+      "mutation_command_seconds": 89.480218583,
+      "summary": {
+        "killed": 27,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 1,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_root_empty": true,
+      "results": [
+        {
+          "source_id": 1,
+          "outcome": "killed",
+          "seconds": 2.327287417
+        },
+        {
+          "source_id": 47,
+          "outcome": "killed",
+          "seconds": 2.790383875
+        },
+        {
+          "source_id": 94,
+          "outcome": "killed",
+          "seconds": 4.307189
+        },
+        {
+          "source_id": 141,
+          "outcome": "killed",
+          "seconds": 3.3060545
+        },
+        {
+          "source_id": 187,
+          "outcome": "killed",
+          "seconds": 1.973123625
+        },
+        {
+          "source_id": 234,
+          "outcome": "killed",
+          "seconds": 2.5084093750000003
+        },
+        {
+          "source_id": 281,
+          "outcome": "killed",
+          "seconds": 2.446865083
+        },
+        {
+          "source_id": 328,
+          "outcome": "killed",
+          "seconds": 3.706131917
+        },
+        {
+          "source_id": 374,
+          "outcome": "killed",
+          "seconds": 2.856707084
+        },
+        {
+          "source_id": 421,
+          "outcome": "killed",
+          "seconds": 3.555791541
+        },
+        {
+          "source_id": 468,
+          "outcome": "killed",
+          "seconds": 3.978820958
+        },
+        {
+          "source_id": 515,
+          "outcome": "killed",
+          "seconds": 3.114026625
+        },
+        {
+          "source_id": 561,
+          "outcome": "killed",
+          "seconds": 2.981619958
+        },
+        {
+          "source_id": 608,
+          "outcome": "missed",
+          "seconds": 3.051188417
+        },
+        {
+          "source_id": 655,
+          "outcome": "killed",
+          "seconds": 3.0161833749999998
+        },
+        {
+          "source_id": 702,
+          "outcome": "killed",
+          "seconds": 2.546879666
+        },
+        {
+          "source_id": 748,
+          "outcome": "killed",
+          "seconds": 2.5557503329999998
+        },
+        {
+          "source_id": 795,
+          "outcome": "killed",
+          "seconds": 2.320876208
+        },
+        {
+          "source_id": 842,
+          "outcome": "killed",
+          "seconds": 2.758228583
+        },
+        {
+          "source_id": 889,
+          "outcome": "missed",
+          "seconds": 2.6650388339999997
+        },
+        {
+          "source_id": 935,
+          "outcome": "build_failed",
+          "seconds": 0.269372
+        },
+        {
+          "source_id": 982,
+          "outcome": "killed",
+          "seconds": 2.413040917
+        },
+        {
+          "source_id": 1029,
+          "outcome": "killed",
+          "seconds": 2.950592667
+        },
+        {
+          "source_id": 1076,
+          "outcome": "killed",
+          "seconds": 2.331476292
+        },
+        {
+          "source_id": 1122,
+          "outcome": "killed",
+          "seconds": 3.289282042
+        },
+        {
+          "source_id": 1169,
+          "outcome": "killed",
+          "seconds": 2.65128775
+        },
+        {
+          "source_id": 1216,
+          "outcome": "killed",
+          "seconds": 2.612824584
+        },
+        {
+          "source_id": 1263,
+          "outcome": "killed",
+          "seconds": 2.957817791
+        },
+        {
+          "source_id": 1309,
+          "outcome": "missed",
+          "seconds": 2.643392667
+        },
+        {
+          "source_id": 1356,
+          "outcome": "killed",
+          "seconds": 3.025024
+        },
+        {
+          "source_id": 1403,
+          "outcome": "missed",
+          "seconds": 2.8445229579999998
+        },
+        {
+          "source_id": 1450,
+          "outcome": "killed",
+          "seconds": 2.725028541
+        }
+      ],
+      "selected_package_count": 95
+    },
+    {
+      "label": "3-affected",
+      "scope": "affected",
+      "report": "3-affected/run-1791694876-XZXcaT",
+      "run_seconds": 26.606570083,
+      "baseline_seconds": 1.927892333,
+      "discovery_seconds": 0.098504583,
+      "mutation_command_seconds": 87.794828587,
+      "summary": {
+        "killed": 27,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 1,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_root_empty": true,
+      "results": [
+        {
+          "source_id": 1,
+          "outcome": "killed",
+          "seconds": 4.259167834
+        },
+        {
+          "source_id": 47,
+          "outcome": "killed",
+          "seconds": 2.26837125
+        },
+        {
+          "source_id": 94,
+          "outcome": "killed",
+          "seconds": 3.089843
+        },
+        {
+          "source_id": 141,
+          "outcome": "killed",
+          "seconds": 3.193473917
+        },
+        {
+          "source_id": 187,
+          "outcome": "killed",
+          "seconds": 2.000629583
+        },
+        {
+          "source_id": 234,
+          "outcome": "killed",
+          "seconds": 2.876304208
+        },
+        {
+          "source_id": 281,
+          "outcome": "killed",
+          "seconds": 3.002891792
+        },
+        {
+          "source_id": 328,
+          "outcome": "killed",
+          "seconds": 2.793895916
+        },
+        {
+          "source_id": 374,
+          "outcome": "killed",
+          "seconds": 3.579886458
+        },
+        {
+          "source_id": 421,
+          "outcome": "killed",
+          "seconds": 2.899694959
+        },
+        {
+          "source_id": 468,
+          "outcome": "killed",
+          "seconds": 3.382525042
+        },
+        {
+          "source_id": 515,
+          "outcome": "killed",
+          "seconds": 3.114685833
+        },
+        {
+          "source_id": 561,
+          "outcome": "killed",
+          "seconds": 2.961087833
+        },
+        {
+          "source_id": 608,
+          "outcome": "missed",
+          "seconds": 2.851806458
+        },
+        {
+          "source_id": 655,
+          "outcome": "killed",
+          "seconds": 2.531065709
+        },
+        {
+          "source_id": 702,
+          "outcome": "killed",
+          "seconds": 2.554157084
+        },
+        {
+          "source_id": 748,
+          "outcome": "killed",
+          "seconds": 2.56145
+        },
+        {
+          "source_id": 795,
+          "outcome": "killed",
+          "seconds": 2.5824089580000003
+        },
+        {
+          "source_id": 842,
+          "outcome": "killed",
+          "seconds": 2.657929459
+        },
+        {
+          "source_id": 889,
+          "outcome": "missed",
+          "seconds": 2.699465417
+        },
+        {
+          "source_id": 935,
+          "outcome": "build_failed",
+          "seconds": 0.149291208
+        },
+        {
+          "source_id": 982,
+          "outcome": "killed",
+          "seconds": 2.408819417
+        },
+        {
+          "source_id": 1029,
+          "outcome": "killed",
+          "seconds": 2.583968042
+        },
+        {
+          "source_id": 1076,
+          "outcome": "killed",
+          "seconds": 2.916906667
+        },
+        {
+          "source_id": 1122,
+          "outcome": "killed",
+          "seconds": 2.695569041
+        },
+        {
+          "source_id": 1169,
+          "outcome": "killed",
+          "seconds": 2.782725542
+        },
+        {
+          "source_id": 1216,
+          "outcome": "killed",
+          "seconds": 2.640502541
+        },
+        {
+          "source_id": 1263,
+          "outcome": "killed",
+          "seconds": 2.534748709
+        },
+        {
+          "source_id": 1309,
+          "outcome": "missed",
+          "seconds": 2.861323542
+        },
+        {
+          "source_id": 1356,
+          "outcome": "killed",
+          "seconds": 2.76464175
+        },
+        {
+          "source_id": 1403,
+          "outcome": "missed",
+          "seconds": 2.806176709
+        },
+        {
+          "source_id": 1450,
+          "outcome": "killed",
+          "seconds": 2.789414709
+        }
+      ],
+      "selected_package_count": 95
+    },
+    {
+      "label": "4-full",
+      "scope": "full",
+      "report": "4-full/run-1791694903-WZUeLQ",
+      "run_seconds": 35.705899167,
+      "baseline_seconds": 1.938571167,
+      "discovery_seconds": 0.059126833,
+      "mutation_command_seconds": 123.004425708,
+      "summary": {
+        "killed": 27,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 1,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_root_empty": true,
+      "results": [
+        {
+          "source_id": 1,
+          "outcome": "killed",
+          "seconds": 6.86917725
+        },
+        {
+          "source_id": 47,
+          "outcome": "killed",
+          "seconds": 4.664513041
+        },
+        {
+          "source_id": 94,
+          "outcome": "killed",
+          "seconds": 3.6126175
+        },
+        {
+          "source_id": 141,
+          "outcome": "killed",
+          "seconds": 5.725402792
+        },
+        {
+          "source_id": 187,
+          "outcome": "killed",
+          "seconds": 4.021862833
+        },
+        {
+          "source_id": 234,
+          "outcome": "killed",
+          "seconds": 4.032128083
+        },
+        {
+          "source_id": 281,
+          "outcome": "killed",
+          "seconds": 3.880532
+        },
+        {
+          "source_id": 328,
+          "outcome": "killed",
+          "seconds": 3.729082542
+        },
+        {
+          "source_id": 374,
+          "outcome": "killed",
+          "seconds": 3.823529292
+        },
+        {
+          "source_id": 421,
+          "outcome": "killed",
+          "seconds": 3.7586021670000003
+        },
+        {
+          "source_id": 468,
+          "outcome": "killed",
+          "seconds": 3.8200825419999997
+        },
+        {
+          "source_id": 515,
+          "outcome": "killed",
+          "seconds": 3.795290792
+        },
+        {
+          "source_id": 561,
+          "outcome": "killed",
+          "seconds": 3.770810667
+        },
+        {
+          "source_id": 608,
+          "outcome": "missed",
+          "seconds": 3.746741958
+        },
+        {
+          "source_id": 655,
+          "outcome": "killed",
+          "seconds": 3.723377584
+        },
+        {
+          "source_id": 702,
+          "outcome": "killed",
+          "seconds": 3.781324583
+        },
+        {
+          "source_id": 748,
+          "outcome": "killed",
+          "seconds": 3.804114458
+        },
+        {
+          "source_id": 795,
+          "outcome": "killed",
+          "seconds": 3.776951083
+        },
+        {
+          "source_id": 842,
+          "outcome": "killed",
+          "seconds": 3.817064916
+        },
+        {
+          "source_id": 889,
+          "outcome": "missed",
+          "seconds": 3.761777541
+        },
+        {
+          "source_id": 935,
+          "outcome": "build_failed",
+          "seconds": 2.933597167
+        },
+        {
+          "source_id": 982,
+          "outcome": "killed",
+          "seconds": 3.111640167
+        },
+        {
+          "source_id": 1029,
+          "outcome": "killed",
+          "seconds": 2.9948231659999998
+        },
+        {
+          "source_id": 1076,
+          "outcome": "killed",
+          "seconds": 3.005646334
+        },
+        {
+          "source_id": 1122,
+          "outcome": "killed",
+          "seconds": 3.8468370419999998
+        },
+        {
+          "source_id": 1169,
+          "outcome": "killed",
+          "seconds": 3.710577791
+        },
+        {
+          "source_id": 1216,
+          "outcome": "killed",
+          "seconds": 3.693474292
+        },
+        {
+          "source_id": 1263,
+          "outcome": "killed",
+          "seconds": 3.701379125
+        },
+        {
+          "source_id": 1309,
+          "outcome": "missed",
+          "seconds": 3.561408125
+        },
+        {
+          "source_id": 1356,
+          "outcome": "killed",
+          "seconds": 3.583695542
+        },
+        {
+          "source_id": 1403,
+          "outcome": "missed",
+          "seconds": 3.602311208
+        },
+        {
+          "source_id": 1450,
+          "outcome": "killed",
+          "seconds": 3.344052125
+        }
+      ],
+      "selected_package_count": 320
+    }
+  ],
+  "selections": [
+    {
+      "source_id": 1,
+      "file": "cmp/cmpopts/equate.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts"
+      ]
+    },
+    {
+      "source_id": 47,
+      "file": "cmp/cmpopts/ignore.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts"
+      ]
+    },
+    {
+      "source_id": 94,
+      "file": "cmp/cmpopts/ignore.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts"
+      ]
+    },
+    {
+      "source_id": 141,
+      "file": "cmp/cmpopts/sort.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts"
+      ]
+    },
+    {
+      "source_id": 187,
+      "file": "cmp/cmpopts/struct_filter.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts"
+      ]
+    },
+    {
+      "source_id": 234,
+      "file": "cmp/compare.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 281,
+      "file": "cmp/compare.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 328,
+      "file": "cmp/internal/diff/diff.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/diff",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 374,
+      "file": "cmp/internal/diff/diff.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/diff",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 421,
+      "file": "cmp/internal/diff/diff.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/diff",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 468,
+      "file": "cmp/internal/function/func.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/function",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 515,
+      "file": "cmp/internal/value/name.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 561,
+      "file": "cmp/internal/value/sort.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 608,
+      "file": "cmp/internal/value/sort.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 655,
+      "file": "cmp/options.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 702,
+      "file": "cmp/path.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 748,
+      "file": "cmp/report_compare.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 795,
+      "file": "cmp/report_compare.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 842,
+      "file": "cmp/report_compare.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 889,
+      "file": "cmp/report_compare.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 935,
+      "file": "cmp/report_references.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 982,
+      "file": "cmp/report_reflect.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1029,
+      "file": "cmp/report_reflect.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1076,
+      "file": "cmp/report_slices.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1122,
+      "file": "cmp/report_slices.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1169,
+      "file": "cmp/report_slices.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1216,
+      "file": "cmp/report_slices.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1263,
+      "file": "cmp/report_slices.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1309,
+      "file": "cmp/report_text.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1356,
+      "file": "cmp/report_text.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1403,
+      "file": "cmp/report_text.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    },
+    {
+      "source_id": 1450,
+      "file": "cmp/report_value.go",
+      "packages": [
+        "github.com/google/go-cmp/cmp",
+        "github.com/google/go-cmp/cmp/cmpopts",
+        "github.com/google/go-cmp/cmp/internal/value"
+      ]
+    }
+  ],
+  "matches_original_full_run_sample": true,
+  "limits": [
+    "One compact library and shared APFS host; two trials per mode, not a general speed guarantee.",
+    "A test init forces the reverse diff direction in both modes, eliminating the known killed/timeout variation for source ID 328.",
+    "Runtime file reads, subprocesses, and dynamically loaded code are outside static import-based test selection."
+  ],
+  "comparison": {
+    "full_mean_seconds": 36.132440396,
+    "affected_mean_seconds": 26.9977449585,
+    "wall_time_reduction_percent": 25.281147183491225
+  }
+}

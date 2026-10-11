@@ -4,6 +4,16 @@ use serde::{Deserialize, Serialize};
 
 use crate::{mutation::Mutation, process::CommandOutput};
 
+pub struct RunPlan<'a> {
+    pub mutations: &'a [Mutation],
+    /// Exact package arguments for each mutation, in inventory order.
+    pub test_packages: &'a [Vec<String>],
+    pub workers: usize,
+    pub timeout: std::time::Duration,
+    pub rerun: Option<&'a crate::rerun::RerunProvenance>,
+    pub dismissals: &'a crate::dismissals::DismissalSnapshot,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Outcome {
