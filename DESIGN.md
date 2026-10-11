@@ -33,8 +33,10 @@ timeouts, failed baselines, workspace restoration, and preservation of partial
 results. MVP validation on `godotenv` v1.5.1 demonstrates actionable test gaps
 and practical runtime on a small library. A larger `go-cmp` v0.7.0 run completed
 1,450 mutations across ten packages and measured workspace and command costs.
-These library runs do not establish useful mutation coverage, acceptable noise,
-or runtime for large applications.
+A fixed 32-mutation application sample on `fzf` v0.65.2 matched full/affected
+outcomes and demonstrated two actionable call-removal gaps in its Go tests.
+These runs do not establish acceptable noise or runtime for large applications
+or asset-heavy trees.
 
 The prototype supports rerunning saved mutations by ID, operator, or missed
 outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
@@ -683,13 +685,29 @@ Full / affected / affected / full runs matched all outcomes; mean run duration
 fell from 36.13 to 27.00 seconds. This is evidence for the opt-in mode on this
 compact library, not a general speedup or proof of selection equivalence.
 
-The run also exposed Go build directories retained after forced termination and
-a 1.35 GB report dominated by logs. Temporary Go builds now have a per-command
-cleanup lifetime; the reusable Go build cache remains separate. Explicit retention
-now lists report sizes and previews pruning by count and age. Log-output and
-archival policies remain open. Larger
-applications, asset-heavy trees, and reflink-capable filesystem versus Linux tmpfs
-comparisons still need measurements.
+The [fzf v0.65.2 application sample](benchmarks/fzf-v0.65.2.md) covers 32 mutations
+across all seven operators, including eight call removals. Affected / full / full /
+affected trials matched every outcome (6 killed, 21 missed, 5 build failures);
+mean run time fell from 59.76 to 49.91 seconds. New tests killed two survivors in
+both scopes. Workspace operations took about 1.1 cumulative seconds per trial,
+with all 4,550 transfers reflinked. Sampled temporary logical bytes peaked at
+59.7–66.4 MB; reports used 1.55–2.34 MB with a 65,536-byte per-artifact log limit.
+This evaluates the Go suite on a 1.34 MB source tree, not fzf's Ruby/tmux suite or
+large-tree scaling.
+
+The application tests also left files directly in inherited `TMPDIR`: 220 files
+(15,961 bytes) per full trial and 172 (12,571 bytes) per affected trial. Mutie's
+workspaces, Go build directories, and captures were removed. General test temporary
+files need a per-command owned directory and cleanup on completion, timeout, and
+cancellation, preserving unrelated caller files and reusable caches.
+
+The earlier go-cmp run exposed Go build directories retained after forced
+termination and a 1.35 GB report dominated by logs. Temporary Go builds now have
+a per-command cleanup lifetime; the reusable Go build cache remains separate. Explicit retention
+now lists report sizes and previews pruning by count and age. Per-artifact saved
+log limits are implemented; full temporary capture limits and archival policies
+remain open. Larger applications, asset-heavy trees, and reflink-capable filesystem
+versus Linux tmpfs comparisons still need measurements.
 
 Full-module tests remain the correctness reference for the implemented opt-in
 affected-package mode. Coverage-based selection and result reuse still need explicit

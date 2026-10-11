@@ -119,8 +119,14 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Repeat a fixed 32-mutation sample with one/four workers; investigate the
   killed/timeout variation with controlled diff-direction probes. Add isolated
   NaN comparison tests and verify a missed mutation becomes killed on a focused rerun.
+- [x] Validate a fixed 32-mutation application sample on `fzf` v0.65.2 across all
+  seven operators. Full/affected outcomes matched in four measured trials;
+  affected scope averaged 16.5% less run time. Record workspace/temp/report sizes,
+  review build failures, and prove two call-removal survivors become killed with
+  isolated test additions. See `benchmarks/fzf-v0.65.2.md` for evidence and limits.
 - [ ] Validate a large application or asset-heavy tree before drawing broader
-  scaling conclusions; the measured go-cmp source tree is only 470 KB.
+  scaling conclusions. The measured go-cmp tree is 470 KB and fzf is 1.34 MB;
+  the larger Hugo candidate could not pass its baseline on the validation host.
 - [x] Record workspace timings alongside existing command durations. Count successful
   CoW clones and fallback copies/bytes for snapshot, baseline setup, discovery reset,
   worker setup, and worker reset; retain partial counts on failure/interruption and
@@ -137,6 +143,11 @@ checklist as work lands, checking items off after appropriate verification.
   files and the reusable Go build cache. Regression tests cover success,
   tool/startup errors, concurrent timeouts, and SIGINT/SIGTERM. A focused go-cmp
   timeout and interruption both left zero owned temporary build directories.
+- [ ] Own general test temporary directories per Go command, in addition to
+  `GOTMPDIR`, and clean them after completion, timeout, and cancellation. fzf tests
+  left 220 files (15,961 bytes) per full sample run in inherited `TMPDIR`, outside
+  managed workspaces. Preserve caller-owned files and reusable caches; verify
+  concurrent execution and failure paths.
 - [x] Add opt-in affected-package testing with a full-module baseline/default,
   transitive reverse dependencies and test imports, per-mutation saved selections,
   and fresh graph discovery on reruns. Verify against real multi-package tests.
@@ -152,6 +163,8 @@ checklist as work lands, checking items off after appropriate verification.
   match. See `benchmarks/godotenv-v1.5.1-call-remove.md` for evidence and noise limits.
 - [ ] Expand return/branch/loop mutations and add named operator profiles based on
   useful findings; evaluate call-removal build-failure noise on more projects.
+  The fzf sample added two actionable gaps and two unbuildable call removals;
+  eight stratified removals do not establish a general noise rate.
 - [x] Add explicit report listing and retention: status/age/logical size, count/age
   previews, and `--apply` deletion with writer locks and revalidation. Protect active
   and unfinished reports, unsupported metadata, symlinks, and unrelated contents.

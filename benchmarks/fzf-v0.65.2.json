@@ -1,0 +1,3354 @@
+{
+  "date": "2026-10-11",
+  "project": "github.com/junegunn/fzf",
+  "tag": "v0.65.2",
+  "upstream_commit": "416aff86e9d550d0a34af9d3cc12dfede25354c3",
+  "archive_url": "https://codeload.github.com/junegunn/fzf/tar.gz/refs/tags/v0.65.2",
+  "mutie_commit": "d5419d487fe4840d9dc39fc59b0eadf4dc80c96d",
+  "mutie_build": "cargo build --release --locked",
+  "host": {
+    "os": "macOS (build redacted)",
+    "architecture": "arm64",
+    "logical_cpus": null,
+    "filesystem": "APFS",
+    "go_version": "go1.27.2 darwin/arm64"
+  },
+  "environment": {
+    "source": "/tmp/mutie-fzf-igp8pib1/module",
+    "root": "/tmp/mutie-fzf-igp8pib1/module",
+    "GOCACHE": "/tmp/mutie-go-cmp-s598wu91/cache",
+    "GOMODCACHE": "/tmp/mutie-hugo-x1nkr4tj/modcache",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOMAXPROCS": "8",
+    "CGO_ENABLED": "0",
+    "GOWORK": "off",
+    "GOFLAGS": "",
+    "TMPDIR": "/tmp/mutie-fzf-igp8pib1/workspaces",
+    "source_archive": "/tmp/mutie-fzf-v0.65.2.tar.gz",
+    "source_archive_sha256": "53b7e0077833f96ae04fd1e312ed65b2d5c427422b652dd3ce6c2d1702f8ce56",
+    "SHELL": "/bin/zsh"
+  },
+  "source": {
+    "files": 130,
+    "logical_bytes": 1344688,
+    "go_files": 74,
+    "go_lines": 25561,
+    "sha256_by_path": {
+      ".github/FUNDING.yml": "5cd956436e17592fa4330f47268a2c73d7c1e2e4c85fc71ff500979b62f63b02",
+      ".github/ISSUE_TEMPLATE/issue_template.yml": "1be295abdbb2f7795558f4e279669906d248ff155a4ae2d3e7e599b1f918eb51",
+      ".github/dependabot.yml": "519bbd6e7b249bb65b2385483111a2db7cac72420939afd9a4b8d51dc0c7d6d0",
+      ".github/workflows/codeql-analysis.yml": "53254dbf8f2a9d44e6efe5953ca723af80bcbc63962d71288b9c373d0eeedd6a",
+      ".github/workflows/depsreview.yaml": "40153fbf7525c662fa7d6ac654fd86bc53d3c269c4d9e5ff8b09bca0cb26e1f2",
+      ".github/workflows/linux.yml": "6465e540cd258a26cd607359f92bc299d2f67b9533858b27232d6ad793605cc9",
+      ".github/workflows/macos.yml": "25a029c6954d3d60ff7933ac2d546262f80a1e31f5fed4742dcc391df25640f1",
+      ".github/workflows/sponsors.yml": "3d7bf6831ebf1baba14b9fa3dd6f12aba0d5f5e353b77aabdb7f885285f02c2d",
+      ".github/workflows/typos.yml": "4a579576d468167849e74084ebf5d4ac9b590b5a5c20bd48fea8b2b36a7b3374",
+      ".github/workflows/winget.yml": "8d74e119f1ce254e4cd4b2ebb217f7924dedb61838a2a1808520c3653d1624c7",
+      ".gitignore": "06bc054f7cad0af84efb55bd95291f75fbfa132444ec205ae0a48a7e2a526694",
+      ".goreleaser.yml": "f794450daa8accef69bbbe98eb89ece03609efb12ea40465dc2d0d2821955901",
+      ".rubocop.yml": "b6a9fc82fa112f65b2b7a3ee6b68f6df859c31cb443b9ce869fa204fcd46ed71",
+      ".tool-versions": "56f6e1309429c4c55adcf5e046ad0999376cc487aaa587f5bb3c100be7fb2471",
+      "ADVANCED.md": "99cd0fa06532bc32cc7fb87a22bc5a108f8523599e1ff17b3d53d7d53c4bf62c",
+      "BUILD.md": "1f2bcc446901167ba950c37c1c407b02357a70d9271bcdf035b05c1e2231f2f0",
+      "CHANGELOG.md": "6cdb7b96529168ddbc683b442d84b60eb757fe5e0f97bb526c1ac879436f7cef",
+      "Dockerfile": "284f6f370a4d893e73eb0a52975d2831d18b98ca4aeca003c688f29bcdfdfec5",
+      "Gemfile": "1550de3a39ed2476b3ba0cd59a2f751f580d7f4fd00928cdb7210e9d066e71bc",
+      "Gemfile.lock": "b87009ad0ba3a3f2ba30190514a22a05773bf0b8c353aaf7356633385e3f0e3d",
+      "LICENSE": "c308be1be029070dd6a9c1134e19c398169eb9cfbd5f078fb002659db1e1b7cc",
+      "Makefile": "4074711583c4e376fd560dc1130a5945696afb666293e40e34001bb0bd57317c",
+      "README-VIM.md": "44d6419bc286ce5c7c2a14cb8173d79bc80c6544a1f17e3a76990de0b67ff96c",
+      "README.md": "7c9ea60a97feffd773ccd0c8ba6485867cb552072084576fd25ba01373fb8687",
+      "SECURITY.md": "009018f58ff72254ebc93f7d55cbe86b98345dabf0fbbac41ac0e818fa1ba8d3",
+      "bin/fzf-preview.sh": "5c5da5f2c3e701425e0466019b09dc367b6ce17c14a0fee8a253eed5f9e26db3",
+      "bin/fzf-tmux": "8060c0b517ec82097155043b2909b3aed22728b2e142b80f7832ec83375cb599",
+      "doc/fzf.txt": "07c20731197e0b1c314406dc64c33855d2b6b392add626a3f284be636fcb3dd7",
+      "go.mod": "6cc838db5cb7817cbb9522b55c9715ab6f543a0eaf3b5178cd9db42bd60640ae",
+      "go.sum": "2fd09cbf39d97c2875c9f6b11702dd18b42771d925f346550f36878b334cc63c",
+      "install": "e5f58b91ea250cc60a3e3a1e4e1849dfe70d2a9cae0beed0d9322072723e3d9c",
+      "install.ps1": "7675c604fea9007ce23ffe6ec3c57e04bc0abcb6af1b667100053d0a7c022aa1",
+      "main.go": "6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+      "man/man1/fzf-tmux.1": "ee5af53fdf7b8f4d7c6068a26196ed1b2fc7f013b720f4a0945baa379dca66f7",
+      "man/man1/fzf.1": "1f91420480e74cddd8fd9b78d20c0e042ebaf64c3cf7df3ed9d310aefa511a87",
+      "plugin/fzf.vim": "02c7acc3649c38614cbb68d18eac9c72fd3552380e6ee9c85cfe3e411771f147",
+      "shell/common.sh": "90df5efd9a0b0af76b5444097e9b0e5de29b1ef23f83dcde9a49a8d13c60c45b",
+      "shell/completion.bash": "cba6c3d80018a44b8b95c61401f7e3ed1bd689dca9278bc89071a7b03e9faff3",
+      "shell/completion.zsh": "b6ae11e219741cb1c63900a7dfb133690e0d9545496cd7fe6f0a78d6816f1623",
+      "shell/key-bindings.bash": "020c65ea83aa46b329afe99d8e56767e2ce9cd805bb56d7d117aea94488517c4",
+      "shell/key-bindings.fish": "f9589b8664138d87239c2a7cbedd1df3d7913a02482d46827df31f633ec3fa2a",
+      "shell/key-bindings.zsh": "5631f9e96be0cddff810bc6c5ef33128742d7b2b73a9ccc7c7790e28bae9f08b",
+      "shell/update-common.sh": "154aa54c579810ddaf79fa17b5b690832bb7e2dc8b523bc0ec1043c8e3e7f6f3",
+      "src/LICENSE": "c308be1be029070dd6a9c1134e19c398169eb9cfbd5f078fb002659db1e1b7cc",
+      "src/actiontype_string.go": "2303c17359420c7e4f63bef7ed1a47b57fd2b3a23befb157f8de7ce575d2d6d3",
+      "src/algo/algo.go": "5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+      "src/algo/algo_test.go": "38beb9059e832313c5c3b269d4fd099a7368512db437a9a46001a33bd5fca000",
+      "src/algo/normalize.go": "72c8968169a45092cc682c0e9be534822387ed300fee51a411d8bdd1bff2c220",
+      "src/ansi.go": "0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+      "src/ansi_test.go": "e1137459d36e4d3220418e07965157336d9d966ca541bc2980953c82969bc43d",
+      "src/cache.go": "f996914b3b59e059f01f24fd22470e77e8937904f9e15aa48fa12e3be3c8e772",
+      "src/cache_test.go": "474e8557492d4b371b74b9bfdd4c325161462d59d16bdfc4978081b71ad72741",
+      "src/chunklist.go": "affbf3eca1c37271365d2e2f097e547fcd0bd321bb0fa76df9c22fb500819dd7",
+      "src/chunklist_test.go": "e1a56bde6f68967ea2d310d5ba6953b603136db09a1f7f73cf63c89981ded483",
+      "src/constants.go": "42822e1706898ee1f9f25f019d00ca08b34ba163d5401cb83937880dae0f373f",
+      "src/core.go": "03b45dd380528ae8ccdede0f67e91dfae6524bf089b61ab636d21c3c1fcbed26",
+      "src/functions.go": "a58c0783331a03aad985879fb1edba1147d541696c625a48716426fb2064cd0e",
+      "src/history.go": "2677024ed4a523bb0e4638ca6c87380ddcb27303d236a0ccf868ccd49c613413",
+      "src/history_test.go": "5972c7a39d0f113013191c8a0cede086748ba7ab8d47ae8c34271b44d52b1e92",
+      "src/item.go": "d6b3a3b6a9fd04a72e2f9400f6269c36c350f418dd79ef903dbf73c1fbf43430",
+      "src/item_test.go": "7bc2c63bada26900a4b26a105c0e89447004936f617844bb3c55fcec9e43b46f",
+      "src/matcher.go": "fb1af61ec2f8169aaa732544691c04a09877fa0a85f12a49fafe4b4bc8255ed8",
+      "src/merger.go": "b37485fa1dbcac0d20144088c645ccf4dca24819fc09f06b42088a55fa82ceac",
+      "src/merger_test.go": "2f1fd3559f00af9ca26a8a89839a7bb3a61712d758d3bdd1c115402b60886d37",
+      "src/options.go": "02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+      "src/options_no_pprof.go": "95aa0ba40494b5b2145b467b7337342788d22639e4fae99000168b9e09499fde",
+      "src/options_pprof.go": "151909b02da70207945d32e624d69abb4ac99b912c3f0e114a5cd9b785b79981",
+      "src/options_pprof_test.go": "272bd808781bfeb24dd2732cb7ca4263def71762f28b1d1a433c0bd802e84956",
+      "src/options_test.go": "852d8d7cd77d6db40203bd57ee159d48b47c698574d6f60710598c84e7aff6cf",
+      "src/pattern.go": "cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+      "src/pattern_test.go": "70f834cec5fa4b055ecb30e582a5ac2f43578fb1b69bf29213caff747924a2ff",
+      "src/protector/protector.go": "955dbaa50e31edfb6789bd9b18248e9562b8512b8d341c2879414d1d05af9fd4",
+      "src/protector/protector_openbsd.go": "59d8816801e2970b34fa819046d4f79662a480f1618d3f4b7f3db0874ddef19f",
+      "src/proxy.go": "d153f8c0597744fe5cf6e93293cf11033b90e00d2e074ca71c0c333c13d4dee5",
+      "src/proxy_unix.go": "7d89ae1e1ac15c1257f1cbb01102e186b772d4a0df5cf4888e05ec3fa5307c4c",
+      "src/proxy_windows.go": "30574721a2213f2f9514c858983883cf888bbdb17e46bc5a92e3ea7e4b639585",
+      "src/reader.go": "98efb162dc84b0c9199296b2290e4608f3e95f455ad70b717430830ee8287837",
+      "src/reader_test.go": "21ce9f8cdf45c093479317c4abcf84a0b931a4a6d1e6ba0dca22689254e75120",
+      "src/result.go": "1248f1ef7890ca2d407c401e8be7814e54dfc0c28d066d3362460b880b058699",
+      "src/result_others.go": "11b236699dcead797d9037be6af2294662267e60993ff4b944e46b31582517fc",
+      "src/result_test.go": "42274c2e8f1db1da05cf3e52abe100d2b5de83cf05487c581618b22d5ec03fbf",
+      "src/result_x86.go": "30fed11dbd46a0e6060347b6790c3a11abea9d9795f5aab7b4289b3d61ad70a9",
+      "src/server.go": "07be8f8db3d81909c8c6e4f5e8c63e8d0e988cc51bc0a0e64b230e4e8dc2b29b",
+      "src/terminal.go": "249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+      "src/terminal_test.go": "c972a7fc218356c22ca3faa03ca32d643e93264258a0f6fd715e46355e3bc2f7",
+      "src/terminal_unix.go": "ed3d96bcf7c0fd716fd1bf1e8f7fff3b0b87e483c4ce6e80ee0e7bbd4c01e6c3",
+      "src/terminal_windows.go": "d04291d16f7f496900aad22a9a4c8c2d2d7d63aceb520766c8f5d5f6735ac8a9",
+      "src/tmux.go": "e641d74a3ca74135bb9554099e4ed66c70698b42bbc4f0413ec500ca6533f215",
+      "src/tokenizer.go": "fac325d4a151c20d555c2e4598aa4663588523319aba4290817cc4e0cbf18c38",
+      "src/tokenizer_test.go": "c0bcb242595882062ca48d10227c7ed7f0c8402755223637c1884cf3538cd84d",
+      "src/tui/dummy.go": "78c54da2291acdcd43c60c4899f1264c7db492cf7b42cc92a074323349968cde",
+      "src/tui/eventtype_string.go": "d77ebfb882421e85f2ccef4fa4c81c96c37be8a5f8d5b00ff8b3bce6982bc7ab",
+      "src/tui/light.go": "077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+      "src/tui/light_unix.go": "360c9e9990d0ab95107250665cc8be29ed55683daa3d789b1003006e5c392109",
+      "src/tui/light_windows.go": "9e7a17c52d7933fbe3cbf5792b49c70b0f5de91f466f511348e23da279f7f7e3",
+      "src/tui/tcell.go": "9c26373650c400ab8ea46aa18f9f1dbb37e07187e9a90f23b9eb9796329f068f",
+      "src/tui/tcell_test.go": "b271d50fc7861ace35d955abb147dbf620746988f0f586a1c8b0ac65e247928a",
+      "src/tui/ttyname_unix.go": "718e04527c008bf07b5a71178e10dbbad2b769e7dcc304df7c7ec6c4a82875ec",
+      "src/tui/ttyname_windows.go": "be226e55b8283f4c9e178188f533739350894070ffdb8ebc71b5a205fc1e96e9",
+      "src/tui/tui.go": "40761ef90f66b5f7a6fa3ce37e1be747c1a0f0525bcac64e6a3ad8a7bb50b7e2",
+      "src/tui/tui_test.go": "e507104a19af7b8a048660fbd22c27e5948ee51c954c03cfffb3c5c670567c70",
+      "src/util/atexit.go": "cc991bc937eadc74c643bd53f20dd1fc84473d215bc9b09f8dfa4d620bdf2794",
+      "src/util/atexit_test.go": "a82dd7c457ebda00d89de2684f5b33a06db9e0ddf46d738306b5971c6d9a7110",
+      "src/util/atomicbool.go": "6a3cb13eda99760e04a6030c252c02a7b5807afd03726c6a8dae14b1946b0ed6",
+      "src/util/atomicbool_test.go": "50800ee12c4f96b2345c533e6671737e6fe9b8e492daf84675b07efbd7a84365",
+      "src/util/chars.go": "b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+      "src/util/chars_test.go": "49de693be280285d0ae9a6d1e3e63f207ede1f50b7b78329bf5c06f85c447291",
+      "src/util/concurrent_set.go": "7a2047af0e39d5fbf3d8e64e4ab4eeb5e0f540b1bc2011684f080f72e7a85416",
+      "src/util/eventbox.go": "40a286302eab90a68cc444110e8f03282ef4317fb782a3d9a42fe20c1a83423c",
+      "src/util/eventbox_test.go": "c48eb3efe0b80ea4088a60e17e8203547e9dc24325599c9334c42f808258bd3d",
+      "src/util/slab.go": "62a04236d865c9544ee68f81373c1f0b80a95ab813d743267cbb8e6bd31df7e4",
+      "src/util/util.go": "c6919c9eeff1517c56390b93c5021260fd8da8b28e4629413b9c6030a21e59f2",
+      "src/util/util_test.go": "7e64ac63dea4a16913c85bdd3d70887088fbcabaf97be347fcc2f6f3a2155bd6",
+      "src/util/util_unix.go": "53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+      "src/util/util_windows.go": "b64c28062ad9b9b58adeda74c724e25724d31246f9d3b012b6c363a8fa6cd8d0",
+      "src/winpty.go": "cdb117c29f869312f4349318e0a368b18ba8e0311e2586ed4676942e56d33f97",
+      "src/winpty_windows.go": "10dc5808e7a67961ac80764a96f8c81b2ff9ce95eb98e2c20d4c51ef7e53e923",
+      "test/lib/common.rb": "38ad29676e3827d74eaa89e0aba4ca9032292912f17cc58063e587d561507999",
+      "test/lib/common.sh": "127a8a0becf04ea7c6fcd55a2447533609eff2c48ac8820fa64c6885cb9febe6",
+      "test/runner.rb": "6fb49cb23c0193fb91aa9b730128addb0d8fa30a8430b28c7cb5422df45e6085",
+      "test/test_core.rb": "67d4e522abf399ccaa447e78e1fc7927d7e66f45b3ce2794b45c91723c5c2dc6",
+      "test/test_exec.rb": "74350f49f5d2b071bf292577023127888c541842d8699c48932aec3cf9a7ab04",
+      "test/test_filter.rb": "d2554c568a5710d192ecab0e8211849b941aa562f965d79dea1a369add0ad867",
+      "test/test_layout.rb": "8ababb5303a7480e52dfc1aad7e7747af75ece99a9490a1360c8e8bd4aeb0c59",
+      "test/test_preview.rb": "b748066d77af2fb605acd5416f394057dd59b46ac55a62017d85ca2cd3c34b66",
+      "test/test_server.rb": "6dc6764f43803624b5d1101f2768e7135c751ce1a488886642218b0651697a78",
+      "test/test_shell_integration.rb": "1d698b4eadc51ad8e9a68dd5081d25b95564b1d1821a6acec4172fd4e4324ba1",
+      "test/vim/fzf.vader": "788747be81b9158db8a9028b3f85c73143b35425ad0df461f62203d37ca2a77d",
+      "typos.toml": "672005b6cec77773357df3811dce0791b5a629012cc0f86476d93d318815bacc",
+      "uninstall": "8b1d686b7f37857fc81ae0eedddad3df63ca26f0c77064d7543f191950ab1123"
+    }
+  },
+  "selection": {
+    "source_report": "/tmp/mutie-fzf-igp8pib1/reports/seed/run-1791740816-HMtQrh",
+    "method": "8 call_remove and 4 per other operator, evenly spaced by source ID within each operator: index floor(i*(N-1)/(n-1)); selected before outcomes",
+    "inventory_counts": {
+      "call_remove": 1165,
+      "arithmetic_replace": 1140,
+      "logical_swap": 725,
+      "comparison_invert": 1928,
+      "boolean_flip": 733,
+      "comparison_boundary": 771,
+      "negation_remove": 295
+    },
+    "mutations": [
+      {
+        "id": 1,
+        "file": "main.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 36,
+        "column": 2,
+        "end_line": 36,
+        "end_column": 38,
+        "byte_start": 595,
+        "byte_end": 631,
+        "original": "fmt.Println(\"### \" + label + \" ###\")",
+        "replacement": "",
+        "diff": "diff/000001.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2,
+        "file": "main.go",
+        "operator": "arithmetic_replace",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 36,
+        "column": 29,
+        "end_line": 36,
+        "end_column": 30,
+        "byte_start": 622,
+        "byte_end": 623,
+        "original": "+",
+        "replacement": "-",
+        "diff": "diff/000002.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 8,
+        "file": "main.go",
+        "operator": "logical_swap",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 42,
+        "column": 27,
+        "end_line": 42,
+        "end_column": 29,
+        "byte_start": 786,
+        "byte_end": 788,
+        "original": "&&",
+        "replacement": "||",
+        "diff": "diff/000008.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 9,
+        "file": "main.go",
+        "operator": "comparison_invert",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 42,
+        "column": 10,
+        "end_line": 42,
+        "end_column": 12,
+        "byte_start": 769,
+        "byte_end": 771,
+        "original": "==",
+        "replacement": "!=",
+        "diff": "diff/000009.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 14,
+        "file": "main.go",
+        "operator": "boolean_flip",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 51,
+        "column": 35,
+        "end_line": 51,
+        "end_column": 39,
+        "byte_start": 932,
+        "byte_end": 936,
+        "original": "true",
+        "replacement": "false",
+        "diff": "diff/000014.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 25,
+        "file": "main.go",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 76,
+        "column": 20,
+        "end_line": 76,
+        "end_column": 21,
+        "byte_start": 1478,
+        "byte_end": 1479,
+        "original": ">",
+        "replacement": ">=",
+        "diff": "diff/000025.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 108,
+        "file": "src/algo/algo.go",
+        "operator": "negation_remove",
+        "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+        "line": 331,
+        "column": 5,
+        "end_line": 331,
+        "end_column": 6,
+        "byte_start": 9986,
+        "byte_end": 9987,
+        "original": "!",
+        "replacement": "",
+        "diff": "diff/000108.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1448,
+        "file": "src/options.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 1038,
+        "column": 4,
+        "end_line": 1038,
+        "end_column": 16,
+        "byte_start": 30844,
+        "byte_end": 30856,
+        "original": "add(tui.Esc)",
+        "replacement": "",
+        "diff": "diff/001448.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1690,
+        "file": "src/options.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 1715,
+        "column": 4,
+        "end_line": 1715,
+        "end_column": 25,
+        "byte_start": 48922,
+        "byte_end": 48943,
+        "original": "appendAction(actBell)",
+        "replacement": "",
+        "diff": "diff/001690.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2085,
+        "file": "src/options.go",
+        "operator": "comparison_invert",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 3270,
+        "column": 17,
+        "end_line": 3270,
+        "end_column": 18,
+        "byte_start": 89159,
+        "byte_end": 89160,
+        "original": ">",
+        "replacement": "<=",
+        "diff": "diff/002085.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2153,
+        "file": "src/options.go",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 3490,
+        "column": 67,
+        "end_line": 3490,
+        "end_column": 68,
+        "byte_start": 95184,
+        "byte_end": 95185,
+        "original": "<",
+        "replacement": "<=",
+        "diff": "diff/002153.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2191,
+        "file": "src/options.go",
+        "operator": "arithmetic_replace",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 3556,
+        "column": 34,
+        "end_line": 3556,
+        "end_column": 35,
+        "byte_start": 97249,
+        "byte_end": 97250,
+        "original": "+",
+        "replacement": "-",
+        "diff": "diff/002191.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2225,
+        "file": "src/pattern.go",
+        "operator": "boolean_flip",
+        "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+        "line": 97,
+        "column": 14,
+        "end_line": 97,
+        "end_column": 18,
+        "byte_start": 2201,
+        "byte_end": 2205,
+        "original": "true",
+        "replacement": "false",
+        "diff": "diff/002225.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2480,
+        "file": "src/reader.go",
+        "operator": "negation_remove",
+        "source_fingerprint": "sha256:98efb162dc84b0c9199296b2290e4608f3e95f455ad70b717430830ee8287837",
+        "line": 308,
+        "column": 8,
+        "end_line": 308,
+        "end_column": 9,
+        "byte_start": 6883,
+        "byte_end": 6884,
+        "original": "!",
+        "replacement": "",
+        "diff": "diff/002480.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2487,
+        "file": "src/reader.go",
+        "operator": "logical_swap",
+        "source_fingerprint": "sha256:98efb162dc84b0c9199296b2290e4608f3e95f455ad70b717430830ee8287837",
+        "line": 330,
+        "column": 30,
+        "end_line": 330,
+        "end_column": 32,
+        "byte_start": 7391,
+        "byte_end": 7393,
+        "original": "||",
+        "replacement": "&&",
+        "diff": "diff/002487.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3246,
+        "file": "src/terminal.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 2252,
+        "column": 6,
+        "end_line": 2252,
+        "end_column": 78,
+        "byte_start": 59332,
+        "byte_end": 59404,
+        "original": "innerBorderFn(marginInt[0]+pheight, marginInt[3], width, height-pheight)",
+        "replacement": "",
+        "diff": "diff/003246.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4009,
+        "file": "src/terminal.go",
+        "operator": "arithmetic_replace",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 3553,
+        "column": 14,
+        "end_line": 3553,
+        "end_column": 15,
+        "byte_start": 96421,
+        "byte_end": 96422,
+        "original": "-",
+        "replacement": "+",
+        "diff": "diff/004009.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4337,
+        "file": "src/terminal.go",
+        "operator": "negation_remove",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 4067,
+        "column": 5,
+        "end_line": 4067,
+        "end_column": 6,
+        "byte_start": 110367,
+        "byte_end": 110368,
+        "original": "!",
+        "replacement": "",
+        "diff": "diff/004337.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4373,
+        "file": "src/terminal.go",
+        "operator": "comparison_invert",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 4162,
+        "column": 14,
+        "end_line": 4162,
+        "end_column": 16,
+        "byte_start": 112600,
+        "byte_end": 112602,
+        "original": "==",
+        "replacement": "!=",
+        "diff": "diff/004373.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4394,
+        "file": "src/terminal.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 4258,
+        "column": 2,
+        "end_line": 4258,
+        "end_column": 24,
+        "byte_start": 114938,
+        "byte_end": 114960,
+        "original": "removeFiles(tempFiles)",
+        "replacement": "",
+        "diff": "diff/004394.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4464,
+        "file": "src/terminal.go",
+        "operator": "boolean_flip",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 4514,
+        "column": 18,
+        "end_line": 4514,
+        "end_column": 22,
+        "byte_start": 122216,
+        "byte_end": 122220,
+        "original": "true",
+        "replacement": "false",
+        "diff": "diff/004464.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4515,
+        "file": "src/terminal.go",
+        "operator": "logical_swap",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 4616,
+        "column": 92,
+        "end_line": 4616,
+        "end_column": 94,
+        "byte_start": 124568,
+        "byte_end": 124570,
+        "original": "||",
+        "replacement": "&&",
+        "diff": "diff/004515.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4898,
+        "file": "src/terminal.go",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 5541,
+        "column": 12,
+        "end_line": 5541,
+        "end_column": 14,
+        "byte_start": 150447,
+        "byte_end": 150449,
+        "original": ">=",
+        "replacement": ">",
+        "diff": "diff/004898.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4970,
+        "file": "src/terminal.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 5697,
+        "column": 6,
+        "end_line": 5697,
+        "end_column": 46,
+        "byte_start": 154945,
+        "byte_end": 154985,
+        "original": "scrollPreviewBy(-t.pwindow.Height() / 2)",
+        "replacement": "",
+        "diff": "diff/004970.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 5949,
+        "file": "src/tui/light.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+        "line": 94,
+        "column": 2,
+        "end_line": 94,
+        "end_column": 32,
+        "byte_start": 1840,
+        "byte_end": 1870,
+        "original": "fmt.Fprint(r.ttyout, sequence)",
+        "replacement": "",
+        "diff": "diff/005949.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6714,
+        "file": "src/util/util.go",
+        "operator": "negation_remove",
+        "source_fingerprint": "sha256:c6919c9eeff1517c56390b93c5021260fd8da8b28e4629413b9c6030a21e59f2",
+        "line": 150,
+        "column": 11,
+        "end_line": 150,
+        "end_column": 12,
+        "byte_start": 3060,
+        "byte_end": 3061,
+        "original": "!",
+        "replacement": "",
+        "diff": "diff/006714.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6723,
+        "file": "src/util/util.go",
+        "operator": "logical_swap",
+        "source_fingerprint": "sha256:c6919c9eeff1517c56390b93c5021260fd8da8b28e4629413b9c6030a21e59f2",
+        "line": 179,
+        "column": 12,
+        "end_line": 179,
+        "end_column": 14,
+        "byte_start": 3655,
+        "byte_end": 3657,
+        "original": "&&",
+        "replacement": "||",
+        "diff": "diff/006723.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6742,
+        "file": "src/util/util_unix.go",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+        "line": 24,
+        "column": 15,
+        "end_line": 24,
+        "end_column": 16,
+        "byte_start": 331,
+        "byte_end": 332,
+        "original": ">",
+        "replacement": ">=",
+        "diff": "diff/006742.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6748,
+        "file": "src/util/util_unix.go",
+        "operator": "arithmetic_replace",
+        "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+        "line": 57,
+        "column": 13,
+        "end_line": 57,
+        "end_column": 14,
+        "byte_start": 1268,
+        "byte_end": 1269,
+        "original": "+",
+        "replacement": "-",
+        "diff": "diff/006748.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6749,
+        "file": "src/util/util_unix.go",
+        "operator": "comparison_invert",
+        "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+        "line": 62,
+        "column": 9,
+        "end_line": 62,
+        "end_column": 11,
+        "byte_start": 1432,
+        "byte_end": 1434,
+        "original": "!=",
+        "replacement": "==",
+        "diff": "diff/006749.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6756,
+        "file": "src/util/util_unix.go",
+        "operator": "call_remove",
+        "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+        "line": 92,
+        "column": 2,
+        "end_line": 92,
+        "end_column": 30,
+        "byte_start": 2198,
+        "byte_end": 2226,
+        "original": "unix.Dup2(int(file.Fd()), 0)",
+        "replacement": "",
+        "diff": "diff/006756.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6757,
+        "file": "src/winpty.go",
+        "operator": "boolean_flip",
+        "source_fingerprint": "sha256:cdb117c29f869312f4349318e0a368b18ba8e0311e2586ed4676942e56d33f97",
+        "line": 8,
+        "column": 9,
+        "end_line": 8,
+        "end_column": 14,
+        "byte_start": 94,
+        "byte_end": 99,
+        "original": "false",
+        "replacement": "true",
+        "diff": "diff/006757.diff",
+        "test_packages": [
+          "./..."
+        ]
+      }
+    ]
+  },
+  "calibration": {
+    "label": "full-1",
+    "scope": "full",
+    "command": [
+      "/path/to/mutie/target/release/mutie",
+      "/tmp/mutie-fzf-igp8pib1/module",
+      "--rerun",
+      "/tmp/mutie-fzf-igp8pib1/reports/seed/run-1791740816-HMtQrh",
+      "--id",
+      "1,2,8,9,14,25,108,1448,1690,2085,2153,2191,2225,2480,2487,3246,4009,4337,4373,4394,4464,4515,4898,4970,5949,6714,6723,6742,6748,6749,6756,6757",
+      "--test-scope",
+      "full",
+      "--jobs",
+      "2",
+      "--timeout",
+      "30",
+      "--baseline-timeout",
+      "120",
+      "--max-log-bytes",
+      "65536",
+      "--ui",
+      "plain",
+      "--output-dir",
+      "/tmp/mutie-fzf-igp8pib1/reports/full-1"
+    ],
+    "report": "/tmp/mutie-fzf-igp8pib1/reports/full-1/run-1791740919-qZ7LLl",
+    "wall_seconds": 69.18798933300423,
+    "run_seconds": 69.107120791,
+    "baseline_seconds": 5.69307525,
+    "discovery_seconds": 0.282841875,
+    "summary": {
+      "killed": 6,
+      "missed": 21,
+      "timeout": 0,
+      "build_failed": 5,
+      "errors": 0
+    },
+    "score": {
+      "scope": "rerun",
+      "killed": 6,
+      "missed": 21,
+      "timeout": 0,
+      "build_failed": 5,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 22.22222222222222,
+      "unavailable_reason": null
+    },
+    "workspace_metrics": {
+      "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/full-1",
+      "snapshot": {
+        "operations": 1,
+        "completed": 1,
+        "failed": 0,
+        "interrupted": 0,
+        "duration_seconds": 0.037115708,
+        "reflink_files": 130,
+        "copied_files": 0,
+        "copied_bytes": 0
+      },
+      "baseline_setup": {
+        "operations": 1,
+        "completed": 1,
+        "failed": 0,
+        "interrupted": 0,
+        "duration_seconds": 0.030267333,
+        "reflink_files": 130,
+        "copied_files": 0,
+        "copied_bytes": 0
+      },
+      "discovery_reset": {
+        "operations": 1,
+        "completed": 1,
+        "failed": 0,
+        "interrupted": 0,
+        "duration_seconds": 0.039860458,
+        "reflink_files": 130,
+        "copied_files": 0,
+        "copied_bytes": 0
+      },
+      "worker_setup": {
+        "operations": 2,
+        "completed": 2,
+        "failed": 0,
+        "interrupted": 0,
+        "duration_seconds": 0.054344166,
+        "reflink_files": 260,
+        "copied_files": 0,
+        "copied_bytes": 0
+      },
+      "worker_reset": {
+        "operations": 30,
+        "completed": 30,
+        "failed": 0,
+        "interrupted": 0,
+        "duration_seconds": 1.124070124,
+        "reflink_files": 3900,
+        "copied_files": 0,
+        "copied_bytes": 0
+      }
+    },
+    "workspace_seconds": 1.285657789,
+    "mutation_command_seconds": 116.659903834,
+    "mutation_median_seconds": 3.803850958,
+    "report_bytes": 2339048,
+    "log_bytes": 2269536,
+    "report_files": 144,
+    "disk_sample_count": 231,
+    "disk_scan_seconds": 3.0957292621023953,
+    "sampled_peak_logical_bytes": {
+      "workspace": 4034066,
+      "go_build": 62374030,
+      "test_and_other": 15961,
+      "captures": 98676,
+      "total": 66411427
+    },
+    "source_preserved": true,
+    "mutie_owned_temporary_artifacts_cleaned": true,
+    "test_temporary_leftover_bytes": 15961,
+    "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+    "mutations": [
+      {
+        "id": 1,
+        "source_id": 1,
+        "outcome": "missed",
+        "duration_seconds": 7.048314334,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2,
+        "source_id": 2,
+        "outcome": "build_failed",
+        "duration_seconds": 8.031550625,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3,
+        "source_id": 8,
+        "outcome": "missed",
+        "duration_seconds": 1.802639042,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 4,
+        "source_id": 9,
+        "outcome": "missed",
+        "duration_seconds": 1.6267535,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 5,
+        "source_id": 14,
+        "outcome": "missed",
+        "duration_seconds": 1.739472708,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 6,
+        "source_id": 25,
+        "outcome": "missed",
+        "duration_seconds": 1.9583714589999999,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 7,
+        "source_id": 108,
+        "outcome": "killed",
+        "duration_seconds": 5.946995667,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 8,
+        "source_id": 1448,
+        "outcome": "killed",
+        "duration_seconds": 5.689290459,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 9,
+        "source_id": 1690,
+        "outcome": "missed",
+        "duration_seconds": 3.8477957910000002,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 10,
+        "source_id": 2085,
+        "outcome": "missed",
+        "duration_seconds": 3.724594709,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 11,
+        "source_id": 2153,
+        "outcome": "missed",
+        "duration_seconds": 3.566145208,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 12,
+        "source_id": 2191,
+        "outcome": "build_failed",
+        "duration_seconds": 0.896199583,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 13,
+        "source_id": 2225,
+        "outcome": "missed",
+        "duration_seconds": 4.556304541,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 14,
+        "source_id": 2480,
+        "outcome": "missed",
+        "duration_seconds": 4.228217,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 15,
+        "source_id": 2487,
+        "outcome": "missed",
+        "duration_seconds": 4.696817459,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 16,
+        "source_id": 3246,
+        "outcome": "missed",
+        "duration_seconds": 3.735245,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 17,
+        "source_id": 4009,
+        "outcome": "missed",
+        "duration_seconds": 3.616457583,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 18,
+        "source_id": 4337,
+        "outcome": "missed",
+        "duration_seconds": 3.64470625,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 19,
+        "source_id": 4373,
+        "outcome": "killed",
+        "duration_seconds": 3.599995,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 20,
+        "source_id": 4394,
+        "outcome": "build_failed",
+        "duration_seconds": 0.8258585,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 21,
+        "source_id": 4464,
+        "outcome": "missed",
+        "duration_seconds": 3.925223792,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 22,
+        "source_id": 4515,
+        "outcome": "missed",
+        "duration_seconds": 4.385747292,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 23,
+        "source_id": 4898,
+        "outcome": "missed",
+        "duration_seconds": 3.658044875,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 24,
+        "source_id": 4970,
+        "outcome": "missed",
+        "duration_seconds": 4.32278075,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 25,
+        "source_id": 5949,
+        "outcome": "missed",
+        "duration_seconds": 3.759906125,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 26,
+        "source_id": 6714,
+        "outcome": "killed",
+        "duration_seconds": 4.281265375,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 27,
+        "source_id": 6723,
+        "outcome": "killed",
+        "duration_seconds": 4.837558583,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 28,
+        "source_id": 6742,
+        "outcome": "killed",
+        "duration_seconds": 4.02763325,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 29,
+        "source_id": 6748,
+        "outcome": "build_failed",
+        "duration_seconds": 0.197280041,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 30,
+        "source_id": 6749,
+        "outcome": "missed",
+        "duration_seconds": 4.216866958,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 31,
+        "source_id": 6756,
+        "outcome": "build_failed",
+        "duration_seconds": 0.184531083,
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 32,
+        "source_id": 6757,
+        "outcome": "missed",
+        "duration_seconds": 4.081341292,
+        "test_packages": [
+          "./..."
+        ]
+      }
+    ],
+    "test_temporary_leftover_files": 220,
+    "mutation_stdout_truncated_streams": 27,
+    "package_target_count": 192,
+    "raw_evidence_sha256": {
+      "full-1.json": "a9f75f061f21ef610ff1954ea55aef2f7ea5678c90d66c0d3543189dc9127a64",
+      "full-1.disk-samples.json": "46d7bd475fe2fbb91aa214e20080d0ead5acc66b922e0562318d12a75b497e78",
+      "run.json": "8984898fb14ecc2052dc89d8d8902f9a39bf8158af7a3f538bec0802d9987511",
+      "mutants.json": "5d17a44c222ccddc4b1593ce8bad45346738420808d77cd5c29ee304d5265758",
+      "outcomes.json": "f8a92a65ed4831fab28c9fa836c17eff00c628a337606fab1a0e41b9356e48fb"
+    }
+  },
+  "comparison": {
+    "order": [
+      "affected-1",
+      "full-2",
+      "full-3",
+      "affected-2"
+    ],
+    "full_mean_run_seconds": 59.757683104,
+    "affected_mean_run_seconds": 49.9125778755,
+    "affected_percent_less_run_time": 16.475045077242967,
+    "all_original_outcomes_match": true,
+    "trials": [
+      {
+        "label": "affected-1",
+        "scope": "affected",
+        "command": [
+          "/path/to/mutie/target/release/mutie",
+          "/tmp/mutie-fzf-igp8pib1/module",
+          "--rerun",
+          "/tmp/mutie-fzf-igp8pib1/reports/seed/run-1791740816-HMtQrh",
+          "--id",
+          "1,2,8,9,14,25,108,1448,1690,2085,2153,2191,2225,2480,2487,3246,4009,4337,4373,4394,4464,4515,4898,4970,5949,6714,6723,6742,6748,6749,6756,6757",
+          "--test-scope",
+          "affected",
+          "--jobs",
+          "2",
+          "--timeout",
+          "30",
+          "--baseline-timeout",
+          "120",
+          "--max-log-bytes",
+          "65536",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-fzf-igp8pib1/reports/affected-1"
+        ],
+        "report": "/tmp/mutie-fzf-igp8pib1/reports/affected-1/run-1791741006-oSI03h",
+        "wall_seconds": 50.40662079205504,
+        "run_seconds": 50.326056417,
+        "baseline_seconds": 4.256029333,
+        "discovery_seconds": 0.248496375,
+        "summary": {
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 22.22222222222222,
+          "unavailable_reason": null
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/affected-1",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.021352833,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.02330175,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.028124208,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.04605675,
+            "reflink_files": 260,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 30,
+            "completed": 30,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.9441633759999997,
+            "reflink_files": 3900,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        },
+        "workspace_seconds": 1.0629989169999996,
+        "mutation_command_seconds": 84.098926293,
+        "mutation_median_seconds": 3.3772872290000002,
+        "report_bytes": 1548725,
+        "log_bytes": 1476883,
+        "report_files": 144,
+        "disk_sample_count": 171,
+        "disk_scan_seconds": 1.895401406858582,
+        "sampled_peak_logical_bytes": {
+          "workspace": 4034066,
+          "go_build": 59128708,
+          "test_and_other": 12571,
+          "captures": 82877,
+          "total": 63220228
+        },
+        "source_preserved": true,
+        "mutie_owned_temporary_artifacts_cleaned": true,
+        "test_temporary_leftover_bytes": 12571,
+        "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 1,
+            "outcome": "missed",
+            "duration_seconds": 1.645258667,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 2,
+            "source_id": 2,
+            "outcome": "build_failed",
+            "duration_seconds": 1.7366691250000001,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 3,
+            "source_id": 8,
+            "outcome": "missed",
+            "duration_seconds": 0.202104084,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 4,
+            "source_id": 9,
+            "outcome": "missed",
+            "duration_seconds": 0.214524792,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 5,
+            "source_id": 14,
+            "outcome": "missed",
+            "duration_seconds": 0.189517708,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 6,
+            "source_id": 25,
+            "outcome": "missed",
+            "duration_seconds": 0.192234167,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 7,
+            "source_id": 108,
+            "outcome": "killed",
+            "duration_seconds": 4.152911792,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo"
+            ]
+          },
+          {
+            "id": 8,
+            "source_id": 1448,
+            "outcome": "killed",
+            "duration_seconds": 3.58314825,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 9,
+            "source_id": 1690,
+            "outcome": "missed",
+            "duration_seconds": 3.4192035,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 10,
+            "source_id": 2085,
+            "outcome": "missed",
+            "duration_seconds": 3.437868542,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 11,
+            "source_id": 2153,
+            "outcome": "missed",
+            "duration_seconds": 3.355335958,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 12,
+            "source_id": 2191,
+            "outcome": "build_failed",
+            "duration_seconds": 0.23640675,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 13,
+            "source_id": 2225,
+            "outcome": "missed",
+            "duration_seconds": 3.360619041,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 14,
+            "source_id": 2480,
+            "outcome": "missed",
+            "duration_seconds": 3.31132525,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 15,
+            "source_id": 2487,
+            "outcome": "missed",
+            "duration_seconds": 3.341983916,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 16,
+            "source_id": 3246,
+            "outcome": "missed",
+            "duration_seconds": 3.4769333749999998,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 17,
+            "source_id": 4009,
+            "outcome": "missed",
+            "duration_seconds": 3.4084365,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 18,
+            "source_id": 4337,
+            "outcome": "missed",
+            "duration_seconds": 3.491255292,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 19,
+            "source_id": 4373,
+            "outcome": "killed",
+            "duration_seconds": 3.281108583,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 20,
+            "source_id": 4394,
+            "outcome": "build_failed",
+            "duration_seconds": 0.204738709,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 21,
+            "source_id": 4464,
+            "outcome": "missed",
+            "duration_seconds": 3.2684982910000002,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 22,
+            "source_id": 4515,
+            "outcome": "missed",
+            "duration_seconds": 3.588357667,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 23,
+            "source_id": 4898,
+            "outcome": "missed",
+            "duration_seconds": 3.514474833,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 24,
+            "source_id": 4970,
+            "outcome": "missed",
+            "duration_seconds": 3.393955417,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 25,
+            "source_id": 5949,
+            "outcome": "missed",
+            "duration_seconds": 3.646135542,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/tui"
+            ]
+          },
+          {
+            "id": 26,
+            "source_id": 6714,
+            "outcome": "killed",
+            "duration_seconds": 3.949663083,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 27,
+            "source_id": 6723,
+            "outcome": "killed",
+            "duration_seconds": 4.034822,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 28,
+            "source_id": 6742,
+            "outcome": "killed",
+            "duration_seconds": 4.266387792,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 29,
+            "source_id": 6748,
+            "outcome": "build_failed",
+            "duration_seconds": 0.166778333,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 30,
+            "source_id": 6749,
+            "outcome": "missed",
+            "duration_seconds": 4.09435625,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 31,
+            "source_id": 6756,
+            "outcome": "build_failed",
+            "duration_seconds": 0.232518709,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 32,
+            "source_id": 6757,
+            "outcome": "missed",
+            "duration_seconds": 3.701394375,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          }
+        ],
+        "test_temporary_leftover_files": 172,
+        "mutation_stdout_truncated_streams": 4,
+        "package_target_count": 78,
+        "raw_evidence_sha256": {
+          "affected-1.json": "3af115e6030baf985a4e5f72ba360b44f768deeca6a05fe1a12572ff335df5c1",
+          "affected-1.disk-samples.json": "704cee43ce49c3c7111e410a453c95a8ab235bd7d72198f51b8415f6007b117a",
+          "run.json": "7e04137f826f3e002e82c38b35c52574fa18b070b6b249baaecb41d5cc9d8d5a",
+          "mutants.json": "388ed4685046353615dceae27862cd22ec441ad09488bf05e0b8a3aa4adae591",
+          "outcomes.json": "a0459e3a4b1139c9f16f58d7bc2211d67e97ef44b17f03f4182aea80c5f5c0dd"
+        }
+      },
+      {
+        "label": "full-2",
+        "scope": "full",
+        "command": [
+          "/path/to/mutie/target/release/mutie",
+          "/tmp/mutie-fzf-igp8pib1/module",
+          "--rerun",
+          "/tmp/mutie-fzf-igp8pib1/reports/seed/run-1791740816-HMtQrh",
+          "--id",
+          "1,2,8,9,14,25,108,1448,1690,2085,2153,2191,2225,2480,2487,3246,4009,4337,4373,4394,4464,4515,4898,4970,5949,6714,6723,6742,6748,6749,6756,6757",
+          "--test-scope",
+          "full",
+          "--jobs",
+          "2",
+          "--timeout",
+          "30",
+          "--baseline-timeout",
+          "120",
+          "--max-log-bytes",
+          "65536",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-fzf-igp8pib1/reports/full-2"
+        ],
+        "report": "/tmp/mutie-fzf-igp8pib1/reports/full-2/run-1791741089-TvbNPT",
+        "wall_seconds": 59.261936,
+        "run_seconds": 59.184717708,
+        "baseline_seconds": 4.249036959,
+        "discovery_seconds": 0.142507666,
+        "summary": {
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 22.22222222222222,
+          "unavailable_reason": null
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/full-2",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.019533458,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.020070958,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.032429917,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.049607167,
+            "reflink_files": 260,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 30,
+            "completed": 30,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 1.0018803349999998,
+            "reflink_files": 3900,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        },
+        "workspace_seconds": 1.1235218349999998,
+        "mutation_command_seconds": 102.097064333,
+        "mutation_median_seconds": 3.6679635829999997,
+        "report_bytes": 2339083,
+        "log_bytes": 2269528,
+        "report_files": 144,
+        "disk_sample_count": 198,
+        "disk_scan_seconds": 2.8476267590000224,
+        "sampled_peak_logical_bytes": {
+          "workspace": 4034066,
+          "go_build": 62374030,
+          "test_and_other": 15961,
+          "captures": 126417,
+          "total": 66411427
+        },
+        "source_preserved": true,
+        "mutie_owned_temporary_artifacts_cleaned": true,
+        "test_temporary_leftover_bytes": 15961,
+        "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 1,
+            "outcome": "missed",
+            "duration_seconds": 4.372313333,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 2,
+            "source_id": 2,
+            "outcome": "build_failed",
+            "duration_seconds": 5.410639209,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 3,
+            "source_id": 8,
+            "outcome": "missed",
+            "duration_seconds": 1.693365958,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 4,
+            "source_id": 9,
+            "outcome": "missed",
+            "duration_seconds": 1.376559625,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 5,
+            "source_id": 14,
+            "outcome": "missed",
+            "duration_seconds": 1.303135666,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 6,
+            "source_id": 25,
+            "outcome": "missed",
+            "duration_seconds": 1.450792792,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 7,
+            "source_id": 108,
+            "outcome": "killed",
+            "duration_seconds": 3.7768685829999997,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 8,
+            "source_id": 1448,
+            "outcome": "killed",
+            "duration_seconds": 3.884648792,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 9,
+            "source_id": 1690,
+            "outcome": "missed",
+            "duration_seconds": 4.483868542,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 10,
+            "source_id": 2085,
+            "outcome": "missed",
+            "duration_seconds": 3.9495025,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 11,
+            "source_id": 2153,
+            "outcome": "missed",
+            "duration_seconds": 3.784721916,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 12,
+            "source_id": 2191,
+            "outcome": "build_failed",
+            "duration_seconds": 0.896159458,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 13,
+            "source_id": 2225,
+            "outcome": "missed",
+            "duration_seconds": 3.714629291,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 14,
+            "source_id": 2480,
+            "outcome": "missed",
+            "duration_seconds": 3.875626291,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 15,
+            "source_id": 2487,
+            "outcome": "missed",
+            "duration_seconds": 4.001906583,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 16,
+            "source_id": 3246,
+            "outcome": "missed",
+            "duration_seconds": 3.539592292,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 17,
+            "source_id": 4009,
+            "outcome": "missed",
+            "duration_seconds": 3.428408375,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 18,
+            "source_id": 4337,
+            "outcome": "missed",
+            "duration_seconds": 3.5513218330000003,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 19,
+            "source_id": 4373,
+            "outcome": "killed",
+            "duration_seconds": 3.5106437919999998,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 20,
+            "source_id": 4394,
+            "outcome": "build_failed",
+            "duration_seconds": 1.5688301249999999,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 21,
+            "source_id": 4464,
+            "outcome": "missed",
+            "duration_seconds": 3.346048166,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 22,
+            "source_id": 4515,
+            "outcome": "missed",
+            "duration_seconds": 3.914179542,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 23,
+            "source_id": 4898,
+            "outcome": "missed",
+            "duration_seconds": 3.562536458,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 24,
+            "source_id": 4970,
+            "outcome": "missed",
+            "duration_seconds": 3.535671458,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 25,
+            "source_id": 5949,
+            "outcome": "missed",
+            "duration_seconds": 4.013227459,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 26,
+            "source_id": 6714,
+            "outcome": "killed",
+            "duration_seconds": 4.334301959,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 27,
+            "source_id": 6723,
+            "outcome": "killed",
+            "duration_seconds": 3.885112084,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 28,
+            "source_id": 6742,
+            "outcome": "killed",
+            "duration_seconds": 3.928539625,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 29,
+            "source_id": 6748,
+            "outcome": "build_failed",
+            "duration_seconds": 0.195506875,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 30,
+            "source_id": 6749,
+            "outcome": "missed",
+            "duration_seconds": 3.993414667,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 31,
+            "source_id": 6756,
+            "outcome": "build_failed",
+            "duration_seconds": 0.193693209,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 32,
+            "source_id": 6757,
+            "outcome": "missed",
+            "duration_seconds": 3.6212978749999998,
+            "test_packages": [
+              "./..."
+            ]
+          }
+        ],
+        "test_temporary_leftover_files": 220,
+        "mutation_stdout_truncated_streams": 27,
+        "package_target_count": 192,
+        "raw_evidence_sha256": {
+          "full-2.json": "58c7789141160c5edc643cb86d67510026295d3bee0066a9e4c58c18772b9b07",
+          "full-2.disk-samples.json": "1e24348ae61cdff03095a497306eb52170ac143f421affef25c99010043445a3",
+          "run.json": "d7a3e384599e3639db00a813b5d1269c25adf32b82b970f65a7a17d06576c07b",
+          "mutants.json": "5d17a44c222ccddc4b1593ce8bad45346738420808d77cd5c29ee304d5265758",
+          "outcomes.json": "6d86f1693d9217ba51b892c80580e0c5904e3d8ff6cd679a6a579acbe4e269a9"
+        }
+      },
+      {
+        "label": "full-3",
+        "scope": "full",
+        "command": [
+          "/path/to/mutie/target/release/mutie",
+          "/tmp/mutie-fzf-igp8pib1/module",
+          "--rerun",
+          "/tmp/mutie-fzf-igp8pib1/reports/seed/run-1791740816-HMtQrh",
+          "--id",
+          "1,2,8,9,14,25,108,1448,1690,2085,2153,2191,2225,2480,2487,3246,4009,4337,4373,4394,4464,4515,4898,4970,5949,6714,6723,6742,6748,6749,6756,6757",
+          "--test-scope",
+          "full",
+          "--jobs",
+          "2",
+          "--timeout",
+          "30",
+          "--baseline-timeout",
+          "120",
+          "--max-log-bytes",
+          "65536",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-fzf-igp8pib1/reports/full-3"
+        ],
+        "report": "/tmp/mutie-fzf-igp8pib1/reports/full-3/run-1791741149-o8vWUX",
+        "wall_seconds": 60.402661916999996,
+        "run_seconds": 60.3306485,
+        "baseline_seconds": 3.649132917,
+        "discovery_seconds": 0.162196292,
+        "summary": {
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 22.22222222222222,
+          "unavailable_reason": null
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/full-3",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0216735,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.021637416,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.030589083,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.045531667,
+            "reflink_files": 260,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 30,
+            "completed": 30,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.9875167490000001,
+            "reflink_files": 3900,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        },
+        "workspace_seconds": 1.1069484150000002,
+        "mutation_command_seconds": 104.34600725199999,
+        "mutation_median_seconds": 3.7891272085,
+        "report_bytes": 2339060,
+        "log_bytes": 2269533,
+        "report_files": 144,
+        "disk_sample_count": 200,
+        "disk_scan_seconds": 2.958227874999885,
+        "sampled_peak_logical_bytes": {
+          "workspace": 4034066,
+          "go_build": 62374030,
+          "test_and_other": 15961,
+          "captures": 134808,
+          "total": 66411433
+        },
+        "source_preserved": true,
+        "mutie_owned_temporary_artifacts_cleaned": true,
+        "test_temporary_leftover_bytes": 15961,
+        "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 1,
+            "outcome": "missed",
+            "duration_seconds": 5.352664459,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 2,
+            "source_id": 2,
+            "outcome": "build_failed",
+            "duration_seconds": 4.2978355,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 3,
+            "source_id": 8,
+            "outcome": "missed",
+            "duration_seconds": 1.6715989580000001,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 4,
+            "source_id": 9,
+            "outcome": "missed",
+            "duration_seconds": 1.308852167,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 5,
+            "source_id": 14,
+            "outcome": "missed",
+            "duration_seconds": 1.7062243750000001,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 6,
+            "source_id": 25,
+            "outcome": "missed",
+            "duration_seconds": 1.332779334,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 7,
+            "source_id": 108,
+            "outcome": "killed",
+            "duration_seconds": 3.703184958,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 8,
+            "source_id": 1448,
+            "outcome": "killed",
+            "duration_seconds": 4.267697375,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 9,
+            "source_id": 1690,
+            "outcome": "missed",
+            "duration_seconds": 4.177571333,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 10,
+            "source_id": 2085,
+            "outcome": "missed",
+            "duration_seconds": 4.198449166,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 11,
+            "source_id": 2153,
+            "outcome": "missed",
+            "duration_seconds": 3.989105333,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 12,
+            "source_id": 2191,
+            "outcome": "build_failed",
+            "duration_seconds": 0.9459555,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 13,
+            "source_id": 2225,
+            "outcome": "missed",
+            "duration_seconds": 4.309861292,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 14,
+            "source_id": 2480,
+            "outcome": "missed",
+            "duration_seconds": 3.410932542,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 15,
+            "source_id": 2487,
+            "outcome": "missed",
+            "duration_seconds": 3.910226959,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 16,
+            "source_id": 3246,
+            "outcome": "missed",
+            "duration_seconds": 3.483824334,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 17,
+            "source_id": 4009,
+            "outcome": "missed",
+            "duration_seconds": 3.473641584,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 18,
+            "source_id": 4337,
+            "outcome": "missed",
+            "duration_seconds": 3.404381917,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 19,
+            "source_id": 4373,
+            "outcome": "killed",
+            "duration_seconds": 4.189863541,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 20,
+            "source_id": 4394,
+            "outcome": "build_failed",
+            "duration_seconds": 0.928276916,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 21,
+            "source_id": 4464,
+            "outcome": "missed",
+            "duration_seconds": 3.704906583,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 22,
+            "source_id": 4515,
+            "outcome": "missed",
+            "duration_seconds": 4.073101375,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 23,
+            "source_id": 4898,
+            "outcome": "missed",
+            "duration_seconds": 3.55994925,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 24,
+            "source_id": 4970,
+            "outcome": "missed",
+            "duration_seconds": 3.873347834,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 25,
+            "source_id": 5949,
+            "outcome": "missed",
+            "duration_seconds": 3.918736375,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 26,
+            "source_id": 6714,
+            "outcome": "killed",
+            "duration_seconds": 4.107044625,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 27,
+            "source_id": 6723,
+            "outcome": "killed",
+            "duration_seconds": 4.248018042,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 28,
+            "source_id": 6742,
+            "outcome": "killed",
+            "duration_seconds": 4.264900083,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 29,
+            "source_id": 6748,
+            "outcome": "build_failed",
+            "duration_seconds": 0.188969875,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 30,
+            "source_id": 6749,
+            "outcome": "missed",
+            "duration_seconds": 4.563329042,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 31,
+            "source_id": 6756,
+            "outcome": "build_failed",
+            "duration_seconds": 0.291336042,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 32,
+            "source_id": 6757,
+            "outcome": "missed",
+            "duration_seconds": 3.489440583,
+            "test_packages": [
+              "./..."
+            ]
+          }
+        ],
+        "test_temporary_leftover_files": 220,
+        "mutation_stdout_truncated_streams": 27,
+        "package_target_count": 192,
+        "raw_evidence_sha256": {
+          "full-3.json": "7dafdbea4a2610cfa13329616275d1aee4a08d9d2602a9fd11b0da8501756156",
+          "full-3.disk-samples.json": "d94926e0bc3da696464b8ecce66025f10b0fc0b0d41ed4d2de0ec32e9d28c799",
+          "run.json": "d5a05e434d19d04b362bd4c673fdde7abb161a83bddc0c7b20e59d7e2640c0cc",
+          "mutants.json": "5d17a44c222ccddc4b1593ce8bad45346738420808d77cd5c29ee304d5265758",
+          "outcomes.json": "4e48d3e58cc34bdde008a0c9dc050808117d21de31e3f0b8ee2db83561360856"
+        }
+      },
+      {
+        "label": "affected-2",
+        "scope": "affected",
+        "command": [
+          "/path/to/mutie/target/release/mutie",
+          "/tmp/mutie-fzf-igp8pib1/module",
+          "--rerun",
+          "/tmp/mutie-fzf-igp8pib1/reports/seed/run-1791740816-HMtQrh",
+          "--id",
+          "1,2,8,9,14,25,108,1448,1690,2085,2153,2191,2225,2480,2487,3246,4009,4337,4373,4394,4464,4515,4898,4970,5949,6714,6723,6742,6748,6749,6756,6757",
+          "--test-scope",
+          "affected",
+          "--jobs",
+          "2",
+          "--timeout",
+          "30",
+          "--baseline-timeout",
+          "120",
+          "--max-log-bytes",
+          "65536",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-fzf-igp8pib1/reports/affected-2"
+        ],
+        "report": "/tmp/mutie-fzf-igp8pib1/reports/affected-2/run-1791741209-PPlnde",
+        "wall_seconds": 49.571012124999996,
+        "run_seconds": 49.499099334,
+        "baseline_seconds": 3.881692792,
+        "discovery_seconds": 0.197419125,
+        "summary": {
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 6,
+          "missed": 21,
+          "timeout": 0,
+          "build_failed": 5,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 22.22222222222222,
+          "unavailable_reason": null
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/affected-2",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.021595459,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.021630625,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.034208792,
+            "reflink_files": 130,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.045706250000000004,
+            "reflink_files": 260,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 30,
+            "completed": 30,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.969509382,
+            "reflink_files": 3900,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        },
+        "workspace_seconds": 1.092650508,
+        "mutation_command_seconds": 83.300798998,
+        "mutation_median_seconds": 3.3276588755,
+        "report_bytes": 1548749,
+        "log_bytes": 1476904,
+        "report_files": 144,
+        "disk_sample_count": 165,
+        "disk_scan_seconds": 2.1928719940000576,
+        "sampled_peak_logical_bytes": {
+          "workspace": 4034066,
+          "go_build": 55537303,
+          "test_and_other": 12571,
+          "captures": 82994,
+          "total": 59653112
+        },
+        "source_preserved": true,
+        "mutie_owned_temporary_artifacts_cleaned": true,
+        "test_temporary_leftover_bytes": 12571,
+        "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 1,
+            "outcome": "missed",
+            "duration_seconds": 1.558002458,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 2,
+            "source_id": 2,
+            "outcome": "build_failed",
+            "duration_seconds": 1.6511880410000002,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 3,
+            "source_id": 8,
+            "outcome": "missed",
+            "duration_seconds": 0.188149333,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 4,
+            "source_id": 9,
+            "outcome": "missed",
+            "duration_seconds": 0.190967333,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 5,
+            "source_id": 14,
+            "outcome": "missed",
+            "duration_seconds": 0.221950125,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 6,
+            "source_id": 25,
+            "outcome": "missed",
+            "duration_seconds": 0.214165375,
+            "test_packages": [
+              "github.com/junegunn/fzf"
+            ]
+          },
+          {
+            "id": 7,
+            "source_id": 108,
+            "outcome": "killed",
+            "duration_seconds": 3.815481333,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo"
+            ]
+          },
+          {
+            "id": 8,
+            "source_id": 1448,
+            "outcome": "killed",
+            "duration_seconds": 3.363923167,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 9,
+            "source_id": 1690,
+            "outcome": "missed",
+            "duration_seconds": 3.262162375,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 10,
+            "source_id": 2085,
+            "outcome": "missed",
+            "duration_seconds": 3.792959166,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 11,
+            "source_id": 2153,
+            "outcome": "missed",
+            "duration_seconds": 3.3920913329999998,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 12,
+            "source_id": 2191,
+            "outcome": "build_failed",
+            "duration_seconds": 0.227753708,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 13,
+            "source_id": 2225,
+            "outcome": "missed",
+            "duration_seconds": 3.169249458,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 14,
+            "source_id": 2480,
+            "outcome": "missed",
+            "duration_seconds": 3.430526958,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 15,
+            "source_id": 2487,
+            "outcome": "missed",
+            "duration_seconds": 3.47826675,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 16,
+            "source_id": 3246,
+            "outcome": "missed",
+            "duration_seconds": 3.421250042,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 17,
+            "source_id": 4009,
+            "outcome": "missed",
+            "duration_seconds": 3.382431,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 18,
+            "source_id": 4337,
+            "outcome": "missed",
+            "duration_seconds": 3.291394584,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 19,
+            "source_id": 4373,
+            "outcome": "killed",
+            "duration_seconds": 3.410646792,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 20,
+            "source_id": 4394,
+            "outcome": "build_failed",
+            "duration_seconds": 0.221327333,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 21,
+            "source_id": 4464,
+            "outcome": "missed",
+            "duration_seconds": 3.283750417,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 22,
+            "source_id": 4515,
+            "outcome": "missed",
+            "duration_seconds": 3.283644041,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 23,
+            "source_id": 4898,
+            "outcome": "missed",
+            "duration_seconds": 3.437585625,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 24,
+            "source_id": 4970,
+            "outcome": "missed",
+            "duration_seconds": 3.27262475,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 25,
+            "source_id": 5949,
+            "outcome": "missed",
+            "duration_seconds": 3.667451792,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/tui"
+            ]
+          },
+          {
+            "id": 26,
+            "source_id": 6714,
+            "outcome": "killed",
+            "duration_seconds": 4.069737708,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 27,
+            "source_id": 6723,
+            "outcome": "killed",
+            "duration_seconds": 4.224677709,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 28,
+            "source_id": 6742,
+            "outcome": "killed",
+            "duration_seconds": 4.217095125,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 29,
+            "source_id": 6748,
+            "outcome": "build_failed",
+            "duration_seconds": 0.179236459,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 30,
+            "source_id": 6749,
+            "outcome": "missed",
+            "duration_seconds": 4.062433458,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 31,
+            "source_id": 6756,
+            "outcome": "build_failed",
+            "duration_seconds": 0.183500584,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/algo",
+              "github.com/junegunn/fzf/src/tui",
+              "github.com/junegunn/fzf/src/util"
+            ]
+          },
+          {
+            "id": 32,
+            "source_id": 6757,
+            "outcome": "missed",
+            "duration_seconds": 3.735174666,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          }
+        ],
+        "test_temporary_leftover_files": 172,
+        "mutation_stdout_truncated_streams": 4,
+        "package_target_count": 78,
+        "raw_evidence_sha256": {
+          "affected-2.json": "1b16f3d7ec59559cdfd11e626760233a74d7ba2e7e79e67b12ad75352824f703",
+          "affected-2.disk-samples.json": "7768f0e5d3f5a0d6d78dccc17f93dde75e8b2125b9d0a1c9943ba0fecea89c0c",
+          "run.json": "6afc70857f302626f0b4ec0666e95f502e4714ab2f417c773b396abb04386e2e",
+          "mutants.json": "388ed4685046353615dceae27862cd22ec441ad09488bf05e0b8a3aa4adae591",
+          "outcomes.json": "bd68c21cf4fffe43b0b4da5aaecb8a87f27f0f40d2023945116d8a621d8316b7"
+        }
+      }
+    ]
+  },
+  "improved": {
+    "source_report": "/tmp/mutie-fzf-igp8pib1/reports/full-1/run-1791740919-qZ7LLl",
+    "source_ids": [
+      9,
+      25
+    ],
+    "seed_ids": [
+      1690,
+      5949
+    ],
+    "tests": {
+      "src/mutie_bell_test.go": "f4a3202c01fd6abb8e6bd7647d619f99fe6e7f31fc979501c087a0bb5521eb35",
+      "src/tui/mutie_output_test.go": "68f5d344013f7e46d48039b0f25d214064451d7cce10d81815d2201e63dfbed8"
+    },
+    "trials": [
+      {
+        "label": "improved-full",
+        "scope": "full",
+        "command": [
+          "/path/to/mutie/target/release/mutie",
+          "/tmp/mutie-fzf-igp8pib1/improved",
+          "--rerun",
+          "/tmp/mutie-fzf-igp8pib1/reports/full-1/run-1791740919-qZ7LLl",
+          "--id",
+          "9,25",
+          "--test-scope",
+          "full",
+          "--jobs",
+          "2",
+          "--timeout",
+          "30",
+          "--baseline-timeout",
+          "120",
+          "--max-log-bytes",
+          "65536",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-fzf-igp8pib1/reports/improved-full"
+        ],
+        "report": "/tmp/mutie-fzf-igp8pib1/reports/improved-full/run-1791741286-BXinhD",
+        "wall_seconds": 10.582458625000001,
+        "run_seconds": 10.521180583,
+        "baseline_seconds": 4.051021083,
+        "discovery_seconds": 0.151472083,
+        "summary": {
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/improved-full",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.020751375,
+            "reflink_files": 132,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.019855208,
+            "reflink_files": 132,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.031636291,
+            "reflink_files": 132,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.052516125999999996,
+            "reflink_files": 264,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 0,
+            "completed": 0,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0,
+            "reflink_files": 0,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        },
+        "workspace_seconds": 0.124759,
+        "mutation_command_seconds": 10.026201874,
+        "mutation_median_seconds": 5.013100937,
+        "report_bytes": 267578,
+        "log_bytes": 257523,
+        "report_files": 24,
+        "disk_sample_count": 35,
+        "disk_scan_seconds": 0.3814814590000018,
+        "sampled_peak_logical_bytes": {
+          "workspace": 4037463,
+          "go_build": 62726689,
+          "test_and_other": 1695,
+          "captures": 82708,
+          "total": 66766071
+        },
+        "source_preserved": true,
+        "mutie_owned_temporary_artifacts_cleaned": true,
+        "test_temporary_leftover_bytes": 1695,
+        "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 9,
+            "outcome": "killed",
+            "duration_seconds": 4.495245958,
+            "test_packages": [
+              "./..."
+            ]
+          },
+          {
+            "id": 2,
+            "source_id": 25,
+            "outcome": "killed",
+            "duration_seconds": 5.530955916,
+            "test_packages": [
+              "./..."
+            ]
+          }
+        ],
+        "test_temporary_leftover_files": 24,
+        "mutation_stdout_truncated_streams": 2,
+        "package_target_count": 12,
+        "raw_evidence_sha256": {
+          "improved-full.json": "9847d9d888a884d0881e5506e916087ebf211814b763f9b8e7517d0ada87a44d",
+          "improved-full.disk-samples.json": "e6847da65437a84713307e27a59b69db4815d1c88168abb528a4b370a2c744fd",
+          "run.json": "bfac4cadbff50b71bfddc9c7debe9e9b0054db6b3d7f0b68f723dafd30cb2d5a",
+          "mutants.json": "f9648412cfd3ce04cea8ab11d020fa8e5f3a46b248e01b05acdfa816a39c68ba",
+          "outcomes.json": "f2bfa60178d302c2435d57af6ceb3bbc7cb2d46fbec830de4572cee03243d252"
+        }
+      },
+      {
+        "label": "improved-affected",
+        "scope": "affected",
+        "command": [
+          "/path/to/mutie/target/release/mutie",
+          "/tmp/mutie-fzf-igp8pib1/improved",
+          "--rerun",
+          "/tmp/mutie-fzf-igp8pib1/reports/full-1/run-1791740919-qZ7LLl",
+          "--id",
+          "9,25",
+          "--test-scope",
+          "affected",
+          "--jobs",
+          "2",
+          "--timeout",
+          "30",
+          "--baseline-timeout",
+          "120",
+          "--max-log-bytes",
+          "65536",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-fzf-igp8pib1/reports/improved-affected"
+        ],
+        "report": "/tmp/mutie-fzf-igp8pib1/reports/improved-affected/run-1791741296-I5fslO",
+        "wall_seconds": 8.901985750000001,
+        "run_seconds": 8.843949708,
+        "baseline_seconds": 3.679381625,
+        "discovery_seconds": 0.207498542,
+        "summary": {
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp/mutie-fzf-igp8pib1/workspaces/improved-affected",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.018481375,
+            "reflink_files": 132,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.019576958,
+            "reflink_files": 132,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.031129417,
+            "reflink_files": 132,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.048487293,
+            "reflink_files": 264,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 0,
+            "completed": 0,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0,
+            "reflink_files": 0,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        },
+        "workspace_seconds": 0.117675043,
+        "mutation_command_seconds": 8.079649709,
+        "mutation_median_seconds": 4.0398248545,
+        "report_bytes": 321148,
+        "log_bytes": 310896,
+        "report_files": 24,
+        "disk_sample_count": 29,
+        "disk_scan_seconds": 0.29209954100000246,
+        "sampled_peak_logical_bytes": {
+          "workspace": 4037463,
+          "go_build": 42964270,
+          "test_and_other": 1695,
+          "captures": 662698,
+          "total": 47080797
+        },
+        "source_preserved": true,
+        "mutie_owned_temporary_artifacts_cleaned": true,
+        "test_temporary_leftover_bytes": 1695,
+        "binary_sha256": "d452b7a7de4d0602f6d15246400f305cf485381067128e5c62402746f9386994",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 9,
+            "outcome": "killed",
+            "duration_seconds": 4.14659475,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src"
+            ]
+          },
+          {
+            "id": 2,
+            "source_id": 25,
+            "outcome": "killed",
+            "duration_seconds": 3.933054959,
+            "test_packages": [
+              "github.com/junegunn/fzf",
+              "github.com/junegunn/fzf/src",
+              "github.com/junegunn/fzf/src/tui"
+            ]
+          }
+        ],
+        "test_temporary_leftover_files": 24,
+        "mutation_stdout_truncated_streams": 0,
+        "package_target_count": 5,
+        "raw_evidence_sha256": {
+          "improved-affected.json": "307dc28570c0c34e8104054987005e39aac41509e6c7471f17ae72d736f5e97c",
+          "improved-affected.disk-samples.json": "fc55f674e28322256d06693ca044fdc5f3a155a4b0bf0f6d951a00832c0b8a4b",
+          "run.json": "110e56ba05d71a723d8873641ea3322733337f8ad8fd92d2088f6e9e3892fcff",
+          "mutants.json": "e83ced08fe6415f5f92bd42b87bb3d13752aa28873254c95ed230d491294968a",
+          "outcomes.json": "af233df9a29ceffa29f59312918bddc42ff75b44d020dedabe084832586911fe"
+        }
+      }
+    ]
+  },
+  "audit": {
+    "original_source_preserved": true,
+    "improved_original_files_preserved": true,
+    "unique_diffs_applied_and_byte_checked": 32,
+    "all_trial_diffs_match": true,
+    "completed_reports_validated_by_mutie_runs": 7,
+    "retained_log_counts_and_artifact_sizes_checked": true
+  },
+  "disk_method": {
+    "units": "logical bytes",
+    "sampling_interval_seconds_plus_scan_time": 0.25,
+    "groups": {
+      "workspace": "top-level mutie-* directories excluding mutie-go-*",
+      "go_build": "top-level mutie-go-* directories",
+      "captures": "top-level .tmp* files",
+      "test_and_other": "other files and directories",
+      "total": "sum within each non-atomic scan"
+    },
+    "exclusions": [
+      "source copies",
+      "saved reports",
+      "Go build cache",
+      "Go module cache"
+    ],
+    "caveats": [
+      "Sampled peaks are lower bounds.",
+      "Per-group maxima need not coincide.",
+      "Reflink logical bytes are not physical allocation.",
+      "Measurements are not RSS."
+    ]
+  },
+  "limits": [
+    "32 stratified mutations, not an inventory-wide score or random sample.",
+    "Go tests only; separate Ruby/tmux integration suite was not run.",
+    "Warm shared caches and one host; no general speedup claim.",
+    "1.34 MB source tree does not establish asset-heavy scaling.",
+    "No ordinary-copy, Linux, or tmpfs comparison."
+  ],
+  "candidate_preflight": {
+    "project": "github.com/gohugoio/hugo",
+    "tag": "v0.134.3",
+    "source_logical_bytes": 13384559,
+    "go_files": 833,
+    "exit_code": 1,
+    "go_test_seconds": 200.874609,
+    "blocking_findings": [
+      "Go vet printf analyzer panicked with the installed Go toolchain.",
+      "Some tests required unavailable loopback/network services."
+    ],
+    "action": "Did not change or disable checks to force a passing baseline; no mutation performance measurement.",
+    "raw_evidence": "/tmp/mutie-hugo-x1nkr4tj/artifacts"
+  }
+}

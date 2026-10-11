@@ -1,0 +1,35 @@
+package tui
+
+import (
+	"bytes"
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestMutiePassThroughIsFlushedToOutput(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "terminal-output")
+	output, err := os.Create(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer output.Close()
+	renderer := &LightRenderer{ttyout: output}
+	renderer.PassThrough("visible output")
+	renderer.RefreshWindows(nil)
+	first, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Contains(first, []byte("visible output")) {
+		t.Fatalf("refresh did not write the queued output: %q", first)
+	}
+	renderer.RefreshWindows(nil)
+	second, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(first, second) {
+		t.Fatal("refresh wrote the same output twice")
+	}
+}

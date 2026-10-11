@@ -267,7 +267,9 @@ and tests; they never reuse the source report's package selection.
 
 The [go-cmp sample comparison](benchmarks/go-cmp-v0.7.0.md#affected-package-follow-up)
 matched all 32 outcomes and averaged 25.3% less run time with affected scope on
-one warm-cache host. Results depend on the project and its dependency structure.
+one warm-cache host. A [32-mutation fzf sample](benchmarks/fzf-v0.65.2.md) also
+matched outcomes and averaged 16.5% less run time. Results depend on the project
+and its dependency structure.
 
 ## Live terminal status
 
@@ -338,6 +340,13 @@ Workspace operations used 22.3 cumulative seconds versus 7,059.6 seconds in muta
 commands, with all file transfers reflinked on APFS. See the
 [larger-project measurements](benchmarks/go-cmp-v0.7.0.md) for the method, outcome
 counts, report size, cleanup findings, and limits of these observations.
+
+An application sample on `fzf` v0.65.2 matched full/affected outcomes for 32
+mutations across all seven operators. Added tests killed two call-removal survivors
+in both scopes. The [application measurements](benchmarks/fzf-v0.65.2.md) cover
+runtime, disk use, and test-created temporary files left outside managed workspaces.
+This covered fzf's Go tests; its separate Ruby/tmux suite and large-tree scaling
+remain outside the validation.
 
 ## Browsing a saved run
 

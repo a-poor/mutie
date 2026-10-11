@@ -1,0 +1,17 @@
+package fzf
+
+import (
+	"github.com/junegunn/fzf/src/tui"
+	"testing"
+)
+
+func TestMutieBellBinding(t *testing.T) {
+	opts, err := ParseOptions(false, []string{"--bind", "ctrl-x:bell"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	actions := opts.Keymap[tui.CtrlX.AsEvent()]
+	if len(actions) != 1 || actions[0].t != actBell {
+		t.Fatalf("ctrl-x:bell must bind one bell action; got %v", actions)
+	}
+}
