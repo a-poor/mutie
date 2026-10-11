@@ -1,0 +1,63 @@
+package fzf
+
+import (
+	"fmt"
+	"testing"
+
+	"github.com/junegunn/fzf/src/util"
+)
+
+func TestMutiePartialChunkTail(t *testing.T) {
+	for _, tail := range []int{3, chunkSize + 3} {
+		t.Run(fmt.Sprint(tail), func(t *testing.T) {
+			cl := NewChunkList(NewChunkCache(), func(item *Item, data []byte) bool {
+				item.text = util.ToChars(data)
+				return true
+			})
+			total := chunkSize*2 + 5
+			for i := 0; i < total; i++ {
+				cl.Push([]byte(fmt.Sprint(i)))
+			}
+			before, _, _ := cl.Snapshot(0)
+			snapshot, count, changed := cl.Snapshot(tail)
+			if !changed || count != tail || CountItems(snapshot) != tail {
+				t.Fatalf("tail %d: got count %d, snapshot count %d, changed %v",
+					tail, count, CountItems(snapshot), changed)
+			}
+			index := total - tail
+			for _, chunk := range snapshot {
+				for i := 0; i < chunk.count; i++ {
+					if got := chunk.items[i].text.ToString(); got != fmt.Sprint(index) {
+						t.Fatalf("tail item: got %q, want %d", got, index)
+					}
+					index++
+				}
+			}
+			if CountItems(before) != total {
+				t.Fatal("tail trimming changed the previous snapshot")
+			}
+		})
+	}
+}
+
+func TestMutieTrimLeftReservesEllipsisWidth(t *testing.T) {
+	terminal := Terminal{tabstop: 8}
+	for _, tc := range []struct {
+		input   string
+		want    string
+		trimmed int32
+	}{
+		{"界界界a", "界a", 2},
+		{"a\tb", "b", 2},
+		{"abcdef", "def", 3},
+		{"ab", "ab", 0},
+	} {
+		t.Run(tc.input, func(t *testing.T) {
+			got, trimmed := terminal.trimLeft([]rune(tc.input), 5, 2)
+			if string(got) != tc.want || trimmed != tc.trimmed {
+				t.Fatalf("trimLeft: got %q removing %d runes; want %q removing %d",
+					string(got), trimmed, tc.want, tc.trimmed)
+			}
+		})
+	}
+}

@@ -187,6 +187,7 @@ Start with simple syntax-based edits, such as:
 - Standalone calls: remove a complete call statement (`call_remove`).
 - Branch conditions: force an `if` condition true or false (`branch_force_true`,
   `branch_force_false`).
+- Conditional loops: skip all iterations of a `for` loop (`loop_skip`).
 
 These describe the implemented catalog. Each
 mutation makes one change. Discovery order and operator names should be
@@ -234,6 +235,22 @@ with named boolean types and generic `~bool` operands, without referring to
 shadowable `true`/`false` identifiers. This avoids unused-name repair edits and
 does not claim general buildability or equivalent-mutation detection.
 
+Loop skipping uses the same false guard for an explicit `for` condition.
+Tree-sitter Go represents a single-condition loop with an expression child and
+a three-part loop with `for_clause.condition`; select only those expressions.
+Exclude range clauses, missing conditions (`for {}` or `for init; ; post {}`),
+and bare `true`/`false` after unwrapping parentheses/comments. Like branch forcing,
+this is syntax-only eligibility without name resolution or constant folding.
+
+Replacing only the condition with `(0 != 0) && (condition)` preserves the init
+and post statements and the body in the source. Under Go's
+[for-clause semantics](https://go.dev/ref/spec#For_statements), the initializer
+still runs once, but short-circuiting skips the original condition, all iterations,
+and the post statement. References in the condition remain used, including locals
+declared in the initializer. Labeled loops remain valid because the loop itself
+is retained. Continue visiting the original tree so nested loops and other
+operators remain independent, even inside an excluded outer loop.
+
 Replacement text can now be owned for source-dependent edits; existing token and
 call-removal replacements remain borrowed. Saved identities and inventories keep
 the same string representation and exact original condition range. Discovery visits
@@ -254,7 +271,13 @@ tests killed four survivors in both scopes; review also identified an equivalent
 ASCII decoding shortcut. This is evidence for useful findings, not a general
 noise-rate or killability claim.
 
-Return-value, loop, and further branch mutations and named operator profiles remain
+The [fzf loop sample](benchmarks/fzf-v0.65.2-loops.md) validated 16 of 107
+`loop_skip` mutations, with matching full/affected outcomes: five killed, 11
+missed, no build failures. Added tests killed two survivors in both scopes,
+covering partial tail chunks and display-width trimming. Debug-only code and an
+ASCII fast path also survived; the sample does not make every miss a test gap.
+
+Return-value, further loop/branch mutations, and named operator profiles remain
 future work. Favor understandable findings over generating the largest possible number
 of mutations. See [call-removal validation](benchmarks/godotenv-v1.5.1-call-remove.md)
 for four actionable CLI gaps and four unbuildable removals on `godotenv` v1.5.1.

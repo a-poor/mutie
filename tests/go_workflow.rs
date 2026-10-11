@@ -645,6 +645,120 @@ func TestUnchecked(t *testing.T) {
 }
 
 #[test]
+#[ignore = "requires Go 1.24+ on PATH; builds loop-skipping mutants and reruns stronger tests"]
+fn loop_skip_preserves_initializers_and_references_and_supports_reruns() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("module");
+    copy_tree(
+        &Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/go-loops"),
+        &root,
+    );
+    let source = fs::read(root.join("loops.go")).unwrap();
+    fs::write(root.join("mutie.toml"), "operators = [\"loop_skip\"]\n").unwrap();
+    let preview = stdout(&run(&root, &["--list"]));
+    assert!(preview.contains("Found 9 mutations"), "{preview}");
+    assert!(!root.join(".mutie").exists());
+    let output = run(&root, &["--jobs", "2", "--timeout", "15"]);
+    stdout(&output);
+    let (directory, metadata, inventory, outcomes) = saved_report(&output);
+    assert_eq!(metadata["status"], "completed");
+    assert_eq!(
+        metadata["effective_config"]["operators"],
+        serde_json::json!(["loop_skip"])
+    );
+    assert_eq!(
+        outcomes["summary"],
+        serde_json::json!({
+            "killed": 7, "missed": 2, "timeout": 0, "build_failed": 0, "errors": 0,
+        }),
+        "{outcomes:#}"
+    );
+    let mutations = inventory["mutations"].as_array().unwrap();
+    assert_eq!(mutations.len(), 9);
+    for m in mutations {
+        assert_eq!(m["operator"], "loop_skip");
+        assert_eq!(
+            m["replacement"],
+            format!("(0 != 0) && ({})", m["original"].as_str().unwrap())
+        );
+        let diff = fs::read_to_string(directory.join(m["diff"].as_str().unwrap())).unwrap();
+        assert!(diff.contains(m["replacement"].as_str().unwrap()));
+    }
+    let effects = outcomes["mutations"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|m| m["id"] == 7)
+        .unwrap();
+    let log =
+        fs::read_to_string(directory.join(effects["logs"]["text"].as_str().unwrap())).unwrap();
+    assert!(log.contains("effects: got 1/0/0/0; want 1/3/2/2"), "{log}");
+    let saved = fs::read(directory.join("run.json")).unwrap();
+    stdout(&dismiss(
+        &root,
+        &[
+            "add",
+            directory.to_str().unwrap(),
+            "--id",
+            "9",
+            "--reason",
+            "reviewed loop gap",
+        ],
+    ));
+    stdout(&dismiss(&root, &["check"]));
+    fs::write(
+        root.join("stronger_test.go"),
+        r#"package loops
+import "testing"
+func TestUnchecked(t *testing.T) {
+    if Unchecked(3) != 3 { t.Fatal("missing loop contribution") }
+}
+"#,
+    )
+    .unwrap();
+    let preview = stdout(&run(
+        &root,
+        &[
+            "--rerun-missed",
+            directory.to_str().unwrap(),
+            "--operator",
+            "loop_skip",
+            "--id",
+            "9",
+            "--list",
+        ],
+    ));
+    assert!(preview.contains("Selected 1 mutations"), "{preview}");
+    let rerun = run(
+        &root,
+        &[
+            "--rerun-missed",
+            directory.to_str().unwrap(),
+            "--operator",
+            "loop_skip",
+            "--test-scope",
+            "affected",
+            "--timeout",
+            "15",
+        ],
+    );
+    stdout(&rerun);
+    let (_, metadata, inventory, outcomes) = saved_report(&rerun);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 2);
+    assert_eq!(inventory["dismissals"]["matched"][0]["mutation_id"], 2);
+    assert_eq!(metadata["rerun"]["mutations"][1]["source_id"], 9);
+    assert_eq!(
+        outcomes["summary"],
+        serde_json::json!({
+            "killed": 1, "missed": 1, "timeout": 0, "build_failed": 0, "errors": 0,
+        }),
+        "{outcomes:#}"
+    );
+    assert_eq!(fs::read(directory.join("run.json")).unwrap(), saved);
+    assert_eq!(fs::read(root.join("loops.go")).unwrap(), source);
+}
+
+#[test]
 #[ignore = "requires Go 1.24+ on PATH; terminates a noisy real Go test"]
 fn capture_limit_stops_noisy_go_tests_without_counting_a_kill() {
     let root = tempfile::tempdir().unwrap();

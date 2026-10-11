@@ -178,7 +178,15 @@ checklist as work lands, checking items off after appropriate verification.
   fzf sample matched full/affected outcomes with no build failures; added tests
   killed four survivors in both scopes. See `benchmarks/fzf-v0.65.2-branches.md`
   for useful findings and equivalent-mutation limits.
-- [ ] Expand return/loop and further branch mutations and add named operator profiles based on
+- [x] Add `loop_skip` for explicit conditions in single-condition and three-part
+  Go `for` loops. Preserve initializer execution and name references; skip the
+  original condition, body, and post statement. Exclude range/missing/bare-boolean
+  conditions, retain nested discovery, and verify exact diffs, types, effects,
+  config/CLI selection, reports, dismissals, and stronger-test reruns. A fixed
+  16-mutation fzf sample matched full/affected outcomes without build failures;
+  added tests killed two survivors in both scopes. See
+  `benchmarks/fzf-v0.65.2-loops.md` for findings and limitations.
+- [ ] Expand return and further loop/branch mutations and add named operator profiles based on
   useful findings; evaluate call-removal build-failure noise on more projects.
   The fzf sample added two actionable gaps and two unbuildable call removals;
   eight stratified removals do not establish a general noise rate.

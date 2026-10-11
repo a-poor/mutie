@@ -30,6 +30,7 @@ pub enum Operator {
     CallRemove,
     BranchForceTrue,
     BranchForceFalse,
+    LoopSkip,
 }
 
 impl std::fmt::Display for Operator {
@@ -223,8 +224,18 @@ pub fn discover_cancellable(
 }
 
 fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
-    if node.kind() == "if_statement"
-        && let Some(condition) = node.child_by_field_name("condition")
+    let (condition, guards): (_, &[(Operator, &str)]) = match node.kind() {
+        "if_statement" => (
+            node.child_by_field_name("condition"),
+            &[
+                (Operator::BranchForceTrue, "(0 == 0) ||"),
+                (Operator::BranchForceFalse, "(0 != 0) &&"),
+            ],
+        ),
+        "for_statement" => (loop_condition(node), &[(Operator::LoopSkip, "(0 != 0) &&")]),
+        _ => (None, &[]),
+    };
+    if let Some(condition) = condition
         // Leave literal conditions (including parentheses/comments) to boolean_flip.
         // This is syntactic eligibility, not constant folding or name resolution.
         && !matches!(unparenthesized(condition).kind(), "true" | "false")
@@ -232,14 +243,11 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
         let original = &file.source[condition.byte_range()];
         let start = condition.start_position();
         let end = condition.end_position();
-        for (operator, guard) in [
-            (Operator::BranchForceTrue, "(0 == 0) ||"),
-            (Operator::BranchForceFalse, "(0 != 0) &&"),
-        ] {
-            // Retain references so imports/locals (including if initializers) stay
+        for &(operator, guard) in guards {
+            // Retain references so imports/locals (including initializers) stay
             // used, but never evaluate the condition. Constant comparisons avoid
             // depending on Go's shadowable true/false identifiers. The initializer
-            // and both branch bodies remain untouched.
+            // and bodies remain untouched; a skipped loop never runs its update.
             mutations.push(Mutation {
                 file: Arc::clone(file),
                 operator,
@@ -334,6 +342,17 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
     }
 }
 
+fn loop_condition(node: Node<'_>) -> Option<Node<'_>> {
+    // In the pinned Go grammar, a single condition is an unnamed-field expression
+    // child. A three-part header instead puts it in for_clause.condition.
+    let header = expression_child(node)?;
+    match header.kind() {
+        "for_clause" => header.child_by_field_name("condition"),
+        "range_clause" | "block" => None,
+        _ => Some(header),
+    }
+}
+
 fn expression_child(node: Node<'_>) -> Option<Node<'_>> {
     node.named_children(&mut node.walk())
         .find(|child| !child.is_extra())
@@ -352,6 +371,121 @@ fn unparenthesized(mut node: Node<'_>) -> Node<'_> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn loop_skip_selects_only_explicit_nonliteral_conditions() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = r#"package p
+func f(b bool, ch chan bool, xs []int) {
+    for b { }
+    for ( /* before */ b /* after */ ) { }
+    for start(); ready(); next() { }
+    for ; b; { }
+    for i := 0; i < len(xs); i++ { }
+    for b && // condition comment
+        ready() { }
+label: for <-ch { break label }
+    for func() bool { for inner { }; return b }() { }
+    for { for nested { }; break }
+    for i := 0; ; i++ { break }
+    for ;; { break }
+    for true { break }
+    for ( /* literal */ (false)) { }
+    for start(); (true); next() { break }
+    for ; false; { }
+    for range xs { }
+    for i := range xs { _ = i }
+    for _, x := range xs { _ = x }
+    for range 3 { }
+    for range func(yield func(int) bool) { yield(1) } { }
+    if b { }
+    switch { case b: }
+}
+"#;
+        fs::write(root.path().join("code.go"), source)?;
+        let scope = Scope::new(&[], &[])?;
+        let all = discover(root.path(), vec!["code.go".into()], &scope)?;
+        let loops: Vec<_> = all
+            .iter()
+            .filter(|m| m.operator == Operator::LoopSkip)
+            .collect();
+        assert_eq!(
+            loops.iter().map(|m| m.original()).collect::<Vec<_>>(),
+            [
+                "b",
+                "( /* before */ b /* after */ )",
+                "ready()",
+                "b",
+                "i < len(xs)",
+                "b && // condition comment\n        ready()",
+                "<-ch",
+                "func() bool { for inner { }; return b }()",
+                "inner",
+                "nested",
+            ]
+        );
+        let again = discover(root.path(), vec!["code.go".into()], &scope)?;
+        let mut parser = Parser::new();
+        parser.set_language(&tree_sitter_go::LANGUAGE.into())?;
+        for m in loops {
+            assert_eq!(m.replacement, format!("(0 != 0) && ({})", m.original()));
+            let identity = crate::identity::MutationIdentity::from(m);
+            identity.validate()?;
+            assert_eq!(
+                again.iter().filter(|next| identity.matches(next)).count(),
+                1
+            );
+            let mut expected = source.to_owned();
+            expected.replace_range(m.range.clone(), &m.replacement);
+            fs::write(root.path().join("code.go"), source)?;
+            m.apply(root.path())?;
+            assert_eq!(fs::read_to_string(root.path().join("code.go"))?, expected);
+            assert!(
+                !parser
+                    .parse(&expected, None)
+                    .unwrap()
+                    .root_node()
+                    .has_error(),
+                "{expected}"
+            );
+            fs::write(root.path().join("code.go"), format!("{source}// changed\n"))?;
+            assert!(m.apply(root.path()).is_err());
+        }
+        // Discovery still visits the original header/body, including excluded loops.
+        for (operator, count) in [
+            (Operator::BooleanFlip, 4),
+            (Operator::LogicalSwap, 1),
+            (Operator::ComparisonInvert, 1),
+            (Operator::ComparisonBoundary, 1),
+            (Operator::BranchForceTrue, 1),
+            (Operator::BranchForceFalse, 1),
+        ] {
+            assert_eq!(all.iter().filter(|m| m.operator == operator).count(), count);
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn loop_skip_diff_changes_only_the_multiline_condition() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = "package p\r\nfunc f(é bool) {\r\n\tfor init(); é && // condition\r\n\t\tready(); next() { // body\r\n\t}\r\n}";
+        fs::write(root.path().join("code.go"), source)?;
+        let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
+        let m = &mutations[0];
+        assert_eq!(m.operator, Operator::LoopSkip);
+        assert_eq!((m.line, m.column, m.end_line, m.end_column), (3, 14, 4, 10));
+        assert_eq!(
+            m.diff(),
+            concat!(
+                "--- a/code.go\n+++ b/code.go\n@@ -1,6 +1,6 @@\n",
+                " package p\r\n func f(é bool) {\r\n",
+                "-\tfor init(); é && // condition\r\n-\t\tready(); next() { // body\r\n",
+                "+\tfor init(); (0 != 0) && (é && // condition\r\n+\t\tready()); next() { // body\r\n",
+                " \t}\r\n }\n\\ No newline at end of file\n",
+            )
+        );
+        Ok(())
+    }
 
     #[test]
     fn branches_select_whole_if_conditions_and_keep_nested_operators() -> Result<()> {

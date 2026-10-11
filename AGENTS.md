@@ -26,6 +26,8 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
 - `tests/go_workflow.rs` covers the Go workflow; `configuration.rs` tests config behavior, `cancellation.rs` tests shutdown, and `terminal.rs` exercises the CLI in a pseudo-terminal. `tests/fixtures/go/` provides the sample Go module.
 - `tests/fixtures/go-branches/` exercises branch forcing with Go type checking,
   unused-name preservation, short-circuit behavior, and focused reruns.
+- `tests/fixtures/go-loops/` checks loop skipping, initializer/condition/body/post
+  effects, type checking, and stronger-test reruns.
 - `tests/report_browser.rs` checks the saved-report browser in a pseudo-terminal;
   `tests/snapshots/` holds its wide and compact renderer snapshots.
 - `tests/report_retention.rs` exercises previews, explicit deletion, and active-run

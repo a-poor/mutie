@@ -1,0 +1,1555 @@
+{
+  "date": "2026-10-11",
+  "mutie_base_commit": "773cf8a",
+  "change": "uncommitted loop_skip implementation",
+  "source": {
+    "project": "fzf",
+    "tag": "v0.65.2",
+    "commit": "416aff86e9d550d0a34af9d3cc12dfede25354c3",
+    "archive_sha256": "53b7e0077833f96ae04fd1e312ed65b2d5c427422b652dd3ce6c2d1702f8ce56",
+    "files": 130,
+    "logical_bytes": 1344688,
+    "manifest_sha256": "e717d891f7e940b4b44e76df933ccf61b65358627c78ebc18488b98c6acf45ee"
+  },
+  "host": {
+    "os": "macOS (version redacted)",
+    "arch": "arm64",
+    "go": "go version go1.27.2 darwin/arm64",
+    "GOMAXPROCS": "8",
+    "CGO_ENABLED": "0",
+    "GOPROXY": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off"
+  },
+  "selection": {
+    "source_report": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/seed/run-1791760534-Kg6ylI",
+    "method": "16 loop conditions evenly spaced by discovery order, index floor(i*(N-1)/15) for i=0..15; selected before outcomes",
+    "inventory_count": 107,
+    "ids": [
+      1,
+      8,
+      15,
+      22,
+      29,
+      36,
+      43,
+      50,
+      57,
+      64,
+      71,
+      78,
+      85,
+      92,
+      99,
+      107
+    ],
+    "mutations": [
+      {
+        "id": 1,
+        "file": "src/algo/algo.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+        "line": 196,
+        "column": 14,
+        "end_line": 196,
+        "end_column": 35,
+        "byte_start": 6608,
+        "byte_end": 6629,
+        "original": "i <= unicode.MaxASCII",
+        "replacement": "(0 != 0) && (i <= unicode.MaxASCII)",
+        "diff": "diff/000001.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 8,
+        "file": "src/algo/algo.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+        "line": 412,
+        "column": 22,
+        "end_line": 412,
+        "end_column": 36,
+        "byte_start": 11699,
+        "byte_end": 11713,
+        "original": "idx <= lastIdx",
+        "replacement": "(0 != 0) && (idx <= lastIdx)",
+        "diff": "diff/000008.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 15,
+        "file": "src/ansi.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+        "line": 163,
+        "column": 8,
+        "end_line": 163,
+        "end_column": 18,
+        "byte_start": 3547,
+        "byte_end": 3557,
+        "original": "i < len(s)",
+        "replacement": "(0 != 0) && (i < len(s))",
+        "diff": "diff/000015.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 22,
+        "file": "src/chunklist.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:affbf3eca1c37271365d2e2f097e547fcd0bd321bb0fa76df9c22fb500819dd7",
+        "line": 108,
+        "column": 36,
+        "end_line": 108,
+        "end_column": 42,
+        "byte_start": 2375,
+        "byte_end": 2381,
+        "original": "i >= 0",
+        "replacement": "(0 != 0) && (i >= 0)",
+        "diff": "diff/000022.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 29,
+        "file": "src/merger.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:b37485fa1dbcac0d20144088c645ccf4dca24819fc09f06b42088a55fa82ceac",
+        "line": 149,
+        "column": 27,
+        "end_line": 149,
+        "end_column": 35,
+        "byte_start": 3249,
+        "byte_end": 3257,
+        "original": "i <= idx",
+        "replacement": "(0 != 0) && (i <= idx)",
+        "diff": "diff/000029.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 36,
+        "file": "src/pattern.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+        "line": 323,
+        "column": 17,
+        "end_line": 323,
+        "end_column": 34,
+        "byte_start": 7898,
+        "byte_end": 7915,
+        "original": "idx < chunk.count",
+        "replacement": "(0 != 0) && (idx < chunk.count)",
+        "diff": "diff/000036.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 43,
+        "file": "src/result.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:1248f1ef7890ca2d407c401e8be7814e54dfc0c28d066d3362460b880b058699",
+        "line": 81,
+        "column": 26,
+        "end_line": 81,
+        "end_column": 32,
+        "byte_start": 1741,
+        "byte_end": 1747,
+        "original": "i >= 0",
+        "replacement": "(0 != 0) && (i >= 0)",
+        "diff": "diff/000043.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 50,
+        "file": "src/terminal.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 1422,
+        "column": 7,
+        "end_line": 1422,
+        "end_column": 16,
+        "byte_start": 37320,
+        "byte_end": 37329,
+        "original": "limit > 0",
+        "replacement": "(0 != 0) && (limit > 0)",
+        "diff": "diff/000050.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 57,
+        "file": "src/terminal.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 3337,
+        "column": 6,
+        "end_line": 3337,
+        "end_column": 58,
+        "byte_start": 90099,
+        "byte_end": 90151,
+        "original": "currentWidth > width-ellipsisWidth && len(runes) > 0",
+        "replacement": "(0 != 0) && (currentWidth > width-ellipsisWidth && len(runes) > 0)",
+        "diff": "diff/000057.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 64,
+        "file": "src/terminal.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 4778,
+        "column": 19,
+        "end_line": 4778,
+        "end_column": 45,
+        "byte_start": 128580,
+        "byte_end": 128606,
+        "original": "lineNum <= clickHeaderLine",
+        "replacement": "(0 != 0) && (lineNum <= clickHeaderLine)",
+        "diff": "diff/000064.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 71,
+        "file": "src/terminal.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 5913,
+        "column": 18,
+        "end_line": 5913,
+        "end_column": 62,
+        "byte_start": 161300,
+        "byte_end": 161344,
+        "original": "i < t.merger.Length() && len(t.selected) > 0",
+        "replacement": "(0 != 0) && (i < t.merger.Length() && len(t.selected) > 0)",
+        "diff": "diff/000071.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 78,
+        "file": "src/terminal.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 6835,
+        "column": 23,
+        "end_line": 6835,
+        "end_column": 44,
+        "byte_start": 187762,
+        "byte_end": 187783,
+        "original": "i < t.merger.Length()",
+        "replacement": "(0 != 0) && (i < t.merger.Length())",
+        "diff": "diff/000078.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 85,
+        "file": "src/tui/light.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+        "line": 211,
+        "column": 15,
+        "end_line": 211,
+        "end_column": 27,
+        "byte_start": 4610,
+        "byte_end": 4622,
+        "original": "i < r.MaxY()",
+        "replacement": "(0 != 0) && (i < r.MaxY())",
+        "diff": "diff/000085.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 92,
+        "file": "src/util/chars.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+        "line": 29,
+        "column": 8,
+        "end_line": 29,
+        "end_column": 25,
+        "byte_start": 502,
+        "byte_end": 519,
+        "original": "i <= len(bytes)-8",
+        "replacement": "(0 != 0) && (i <= len(bytes)-8)",
+        "diff": "diff/000092.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 99,
+        "file": "src/util/chars.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+        "line": 153,
+        "column": 13,
+        "end_line": 153,
+        "end_column": 20,
+        "byte_start": 3158,
+        "byte_end": 3165,
+        "original": "j < len",
+        "replacement": "(0 != 0) && (j < len)",
+        "diff": "diff/000099.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 107,
+        "file": "src/util/util.go",
+        "operator": "loop_skip",
+        "source_fingerprint": "sha256:c6919c9eeff1517c56390b93c5021260fd8da8b28e4629413b9c6030a21e59f2",
+        "line": 200,
+        "column": 14,
+        "end_line": 200,
+        "end_column": 47,
+        "byte_start": 4031,
+        "byte_end": 4064,
+        "original": "i < Max(len(parts1), len(parts2))",
+        "replacement": "(0 != 0) && (i < Max(len(parts1), len(parts2)))",
+        "diff": "diff/000107.diff",
+        "test_packages": [
+          "./..."
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "16 evenly spaced loop conditions, not a random or whole-catalog sample",
+    "Only Go tests were run; Ruby/tmux suite was not run",
+    "Single trial per scope with no controlled warm-up; Rust checks overlapped part of validation, so these timings are not a performance comparison",
+    "Matching outcomes do not prove general test-selection equivalence",
+    "Not every survivor was reviewed or shown killable; debug-only code and an ASCII fast path survived"
+  ],
+  "runs": [
+    {
+      "label": "full",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/module",
+        "--operator",
+        "loop_skip",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full",
+        "--rerun",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/seed/run-1791760534-Kg6ylI",
+        "--id",
+        "1,8,15,22,29,36,43,50,57,64,71,78,85,92,99,107",
+        "--test-scope",
+        "full"
+      ],
+      "report": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full/run-1791760553-0v85G8",
+      "wall_seconds": 47.49606654199306,
+      "status": "completed",
+      "summary": {
+        "killed": 5,
+        "missed": 11,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "87324f8973a5cc9443652e873730197327086f846aadba32c3ac6e725ca5a681",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/algo/algo.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+          "line": 196,
+          "column": 14,
+          "end_line": 196,
+          "end_column": 35,
+          "byte_start": 6608,
+          "byte_end": 6629,
+          "original": "i <= unicode.MaxASCII",
+          "replacement": "(0 != 0) && (i <= unicode.MaxASCII)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1,
+          "outcome": "killed",
+          "duration_seconds": 7.460060167
+        },
+        {
+          "id": 2,
+          "file": "src/algo/algo.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+          "line": 412,
+          "column": 22,
+          "end_line": 412,
+          "end_column": 36,
+          "byte_start": 11699,
+          "byte_end": 11713,
+          "original": "idx <= lastIdx",
+          "replacement": "(0 != 0) && (idx <= lastIdx)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 8,
+          "outcome": "missed",
+          "duration_seconds": 6.8443601659999995
+        },
+        {
+          "id": 3,
+          "file": "src/ansi.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+          "line": 163,
+          "column": 8,
+          "end_line": 163,
+          "end_column": 18,
+          "byte_start": 3547,
+          "byte_end": 3557,
+          "original": "i < len(s)",
+          "replacement": "(0 != 0) && (i < len(s))",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 15,
+          "outcome": "killed",
+          "duration_seconds": 2.9266662500000002
+        },
+        {
+          "id": 4,
+          "file": "src/chunklist.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:affbf3eca1c37271365d2e2f097e547fcd0bd321bb0fa76df9c22fb500819dd7",
+          "line": 108,
+          "column": 36,
+          "end_line": 108,
+          "end_column": 42,
+          "byte_start": 2375,
+          "byte_end": 2381,
+          "original": "i >= 0",
+          "replacement": "(0 != 0) && (i >= 0)",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 22,
+          "outcome": "missed",
+          "duration_seconds": 3.075253667
+        },
+        {
+          "id": 5,
+          "file": "src/merger.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:b37485fa1dbcac0d20144088c645ccf4dca24819fc09f06b42088a55fa82ceac",
+          "line": 149,
+          "column": 27,
+          "end_line": 149,
+          "end_column": 35,
+          "byte_start": 3249,
+          "byte_end": 3257,
+          "original": "i <= idx",
+          "replacement": "(0 != 0) && (i <= idx)",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 29,
+          "outcome": "killed",
+          "duration_seconds": 2.542318208
+        },
+        {
+          "id": 6,
+          "file": "src/pattern.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+          "line": 323,
+          "column": 17,
+          "end_line": 323,
+          "end_column": 34,
+          "byte_start": 7898,
+          "byte_end": 7915,
+          "original": "idx < chunk.count",
+          "replacement": "(0 != 0) && (idx < chunk.count)",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 36,
+          "outcome": "missed",
+          "duration_seconds": 2.7625655
+        },
+        {
+          "id": 7,
+          "file": "src/result.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:1248f1ef7890ca2d407c401e8be7814e54dfc0c28d066d3362460b880b058699",
+          "line": 81,
+          "column": 26,
+          "end_line": 81,
+          "end_column": 32,
+          "byte_start": 1741,
+          "byte_end": 1747,
+          "original": "i >= 0",
+          "replacement": "(0 != 0) && (i >= 0)",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 43,
+          "outcome": "missed",
+          "duration_seconds": 2.867279167
+        },
+        {
+          "id": 8,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 1422,
+          "column": 7,
+          "end_line": 1422,
+          "end_column": 16,
+          "byte_start": 37320,
+          "byte_end": 37329,
+          "original": "limit > 0",
+          "replacement": "(0 != 0) && (limit > 0)",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 50,
+          "outcome": "missed",
+          "duration_seconds": 5.039828083
+        },
+        {
+          "id": 9,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3337,
+          "column": 6,
+          "end_line": 3337,
+          "end_column": 58,
+          "byte_start": 90099,
+          "byte_end": 90151,
+          "original": "currentWidth > width-ellipsisWidth && len(runes) > 0",
+          "replacement": "(0 != 0) && (currentWidth > width-ellipsisWidth && len(runes) > 0)",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 57,
+          "outcome": "missed",
+          "duration_seconds": 6.9868324170000005
+        },
+        {
+          "id": 10,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 4778,
+          "column": 19,
+          "end_line": 4778,
+          "end_column": 45,
+          "byte_start": 128580,
+          "byte_end": 128606,
+          "original": "lineNum <= clickHeaderLine",
+          "replacement": "(0 != 0) && (lineNum <= clickHeaderLine)",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 64,
+          "outcome": "missed",
+          "duration_seconds": 5.58109325
+        },
+        {
+          "id": 11,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 5913,
+          "column": 18,
+          "end_line": 5913,
+          "end_column": 62,
+          "byte_start": 161300,
+          "byte_end": 161344,
+          "original": "i < t.merger.Length() && len(t.selected) > 0",
+          "replacement": "(0 != 0) && (i < t.merger.Length() && len(t.selected) > 0)",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 71,
+          "outcome": "missed",
+          "duration_seconds": 6.249601125
+        },
+        {
+          "id": 12,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 6835,
+          "column": 23,
+          "end_line": 6835,
+          "end_column": 44,
+          "byte_start": 187762,
+          "byte_end": 187783,
+          "original": "i < t.merger.Length()",
+          "replacement": "(0 != 0) && (i < t.merger.Length())",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 78,
+          "outcome": "missed",
+          "duration_seconds": 6.683019958
+        },
+        {
+          "id": 13,
+          "file": "src/tui/light.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 211,
+          "column": 15,
+          "end_line": 211,
+          "end_column": 27,
+          "byte_start": 4610,
+          "byte_end": 4622,
+          "original": "i < r.MaxY()",
+          "replacement": "(0 != 0) && (i < r.MaxY())",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 85,
+          "outcome": "missed",
+          "duration_seconds": 5.087728292
+        },
+        {
+          "id": 14,
+          "file": "src/util/chars.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+          "line": 29,
+          "column": 8,
+          "end_line": 29,
+          "end_column": 25,
+          "byte_start": 502,
+          "byte_end": 519,
+          "original": "i <= len(bytes)-8",
+          "replacement": "(0 != 0) && (i <= len(bytes)-8)",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 92,
+          "outcome": "missed",
+          "duration_seconds": 2.883709167
+        },
+        {
+          "id": 15,
+          "file": "src/util/chars.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+          "line": 153,
+          "column": 13,
+          "end_line": 153,
+          "end_column": 20,
+          "byte_start": 3158,
+          "byte_end": 3165,
+          "original": "j < len",
+          "replacement": "(0 != 0) && (j < len)",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 99,
+          "outcome": "killed",
+          "duration_seconds": 2.791063958
+        },
+        {
+          "id": 16,
+          "file": "src/util/util.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:c6919c9eeff1517c56390b93c5021260fd8da8b28e4629413b9c6030a21e59f2",
+          "line": 200,
+          "column": 14,
+          "end_line": 200,
+          "end_column": 47,
+          "byte_start": 4031,
+          "byte_end": 4064,
+          "original": "i < Max(len(parts1), len(parts2))",
+          "replacement": "(0 != 0) && (i < Max(len(parts1), len(parts2)))",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 107,
+          "outcome": "killed",
+          "duration_seconds": 2.728318916
+        }
+      ],
+      "run_seconds": 47.393255833,
+      "baseline_seconds": 4.032742583,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-loops-mr8hl1xq/module",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "loop_skip"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/seed/run-1791760534-Kg6ylI",
+          "selection": "all",
+          "source_ids": [
+            1,
+            8,
+            15,
+            22,
+            29,
+            36,
+            43,
+            50,
+            57,
+            64,
+            71,
+            78,
+            85,
+            92,
+            99,
+            107
+          ],
+          "operators": [
+            "loop_skip"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "266697033fee9d78fa46ee50a96b0617508a13cce77d7d42101fb40e5999cd4e",
+        "mutants.json": "9c392c7bda7d8182abcb5e42ed3577ef70d9420a94be1afcad736dc73d7d9567",
+        "outcomes.json": "89803291ada5737a8516f1724c76918d8c185c11a045a2020f45d4d7a85482df"
+      }
+    },
+    {
+      "label": "affected",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/module",
+        "--operator",
+        "loop_skip",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/affected",
+        "--rerun",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/seed/run-1791760534-Kg6ylI",
+        "--id",
+        "1,8,15,22,29,36,43,50,57,64,71,78,85,92,99,107",
+        "--test-scope",
+        "affected"
+      ],
+      "report": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/affected/run-1791760601-z4GTX0",
+      "wall_seconds": 27.963801666046493,
+      "status": "completed",
+      "summary": {
+        "killed": 5,
+        "missed": 11,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "87324f8973a5cc9443652e873730197327086f846aadba32c3ac6e725ca5a681",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/algo/algo.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+          "line": 196,
+          "column": 14,
+          "end_line": 196,
+          "end_column": 35,
+          "byte_start": 6608,
+          "byte_end": 6629,
+          "original": "i <= unicode.MaxASCII",
+          "replacement": "(0 != 0) && (i <= unicode.MaxASCII)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo"
+          ],
+          "source_id": 1,
+          "outcome": "killed",
+          "duration_seconds": 3.04904725
+        },
+        {
+          "id": 2,
+          "file": "src/algo/algo.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5e3577386229270a93637d4f42fa5a59b67bd375b38dafb5c3abf5e86554e80b",
+          "line": 412,
+          "column": 22,
+          "end_line": 412,
+          "end_column": 36,
+          "byte_start": 11699,
+          "byte_end": 11713,
+          "original": "idx <= lastIdx",
+          "replacement": "(0 != 0) && (idx <= lastIdx)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo"
+          ],
+          "source_id": 8,
+          "outcome": "missed",
+          "duration_seconds": 2.841727542
+        },
+        {
+          "id": 3,
+          "file": "src/ansi.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+          "line": 163,
+          "column": 8,
+          "end_line": 163,
+          "end_column": 18,
+          "byte_start": 3547,
+          "byte_end": 3557,
+          "original": "i < len(s)",
+          "replacement": "(0 != 0) && (i < len(s))",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 15,
+          "outcome": "killed",
+          "duration_seconds": 2.066964958
+        },
+        {
+          "id": 4,
+          "file": "src/chunklist.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:affbf3eca1c37271365d2e2f097e547fcd0bd321bb0fa76df9c22fb500819dd7",
+          "line": 108,
+          "column": 36,
+          "end_line": 108,
+          "end_column": 42,
+          "byte_start": 2375,
+          "byte_end": 2381,
+          "original": "i >= 0",
+          "replacement": "(0 != 0) && (i >= 0)",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 22,
+          "outcome": "missed",
+          "duration_seconds": 2.472935833
+        },
+        {
+          "id": 5,
+          "file": "src/merger.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:b37485fa1dbcac0d20144088c645ccf4dca24819fc09f06b42088a55fa82ceac",
+          "line": 149,
+          "column": 27,
+          "end_line": 149,
+          "end_column": 35,
+          "byte_start": 3249,
+          "byte_end": 3257,
+          "original": "i <= idx",
+          "replacement": "(0 != 0) && (i <= idx)",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 29,
+          "outcome": "killed",
+          "duration_seconds": 1.971480375
+        },
+        {
+          "id": 6,
+          "file": "src/pattern.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+          "line": 323,
+          "column": 17,
+          "end_line": 323,
+          "end_column": 34,
+          "byte_start": 7898,
+          "byte_end": 7915,
+          "original": "idx < chunk.count",
+          "replacement": "(0 != 0) && (idx < chunk.count)",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 36,
+          "outcome": "missed",
+          "duration_seconds": 2.471127875
+        },
+        {
+          "id": 7,
+          "file": "src/result.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:1248f1ef7890ca2d407c401e8be7814e54dfc0c28d066d3362460b880b058699",
+          "line": 81,
+          "column": 26,
+          "end_line": 81,
+          "end_column": 32,
+          "byte_start": 1741,
+          "byte_end": 1747,
+          "original": "i >= 0",
+          "replacement": "(0 != 0) && (i >= 0)",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 43,
+          "outcome": "missed",
+          "duration_seconds": 2.369601417
+        },
+        {
+          "id": 8,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 1422,
+          "column": 7,
+          "end_line": 1422,
+          "end_column": 16,
+          "byte_start": 37320,
+          "byte_end": 37329,
+          "original": "limit > 0",
+          "replacement": "(0 != 0) && (limit > 0)",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 50,
+          "outcome": "missed",
+          "duration_seconds": 2.490625
+        },
+        {
+          "id": 9,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3337,
+          "column": 6,
+          "end_line": 3337,
+          "end_column": 58,
+          "byte_start": 90099,
+          "byte_end": 90151,
+          "original": "currentWidth > width-ellipsisWidth && len(runes) > 0",
+          "replacement": "(0 != 0) && (currentWidth > width-ellipsisWidth && len(runes) > 0)",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 57,
+          "outcome": "missed",
+          "duration_seconds": 2.309744125
+        },
+        {
+          "id": 10,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 4778,
+          "column": 19,
+          "end_line": 4778,
+          "end_column": 45,
+          "byte_start": 128580,
+          "byte_end": 128606,
+          "original": "lineNum <= clickHeaderLine",
+          "replacement": "(0 != 0) && (lineNum <= clickHeaderLine)",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 64,
+          "outcome": "missed",
+          "duration_seconds": 3.736470209
+        },
+        {
+          "id": 11,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 5913,
+          "column": 18,
+          "end_line": 5913,
+          "end_column": 62,
+          "byte_start": 161300,
+          "byte_end": 161344,
+          "original": "i < t.merger.Length() && len(t.selected) > 0",
+          "replacement": "(0 != 0) && (i < t.merger.Length() && len(t.selected) > 0)",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 71,
+          "outcome": "missed",
+          "duration_seconds": 2.781859458
+        },
+        {
+          "id": 12,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 6835,
+          "column": 23,
+          "end_line": 6835,
+          "end_column": 44,
+          "byte_start": 187762,
+          "byte_end": 187783,
+          "original": "i < t.merger.Length()",
+          "replacement": "(0 != 0) && (i < t.merger.Length())",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 78,
+          "outcome": "missed",
+          "duration_seconds": 2.403147125
+        },
+        {
+          "id": 13,
+          "file": "src/tui/light.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 211,
+          "column": 15,
+          "end_line": 211,
+          "end_column": 27,
+          "byte_start": 4610,
+          "byte_end": 4622,
+          "original": "i < r.MaxY()",
+          "replacement": "(0 != 0) && (i < r.MaxY())",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/tui"
+          ],
+          "source_id": 85,
+          "outcome": "missed",
+          "duration_seconds": 2.722044833
+        },
+        {
+          "id": 14,
+          "file": "src/util/chars.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+          "line": 29,
+          "column": 8,
+          "end_line": 29,
+          "end_column": 25,
+          "byte_start": 502,
+          "byte_end": 519,
+          "original": "i <= len(bytes)-8",
+          "replacement": "(0 != 0) && (i <= len(bytes)-8)",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo",
+            "github.com/junegunn/fzf/src/tui",
+            "github.com/junegunn/fzf/src/util"
+          ],
+          "source_id": 92,
+          "outcome": "missed",
+          "duration_seconds": 2.940743875
+        },
+        {
+          "id": 15,
+          "file": "src/util/chars.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:b5ecc9dff7a590def02149fbd63b0d36bac897df99bbaa02cb8dabe789bdebf1",
+          "line": 153,
+          "column": 13,
+          "end_line": 153,
+          "end_column": 20,
+          "byte_start": 3158,
+          "byte_end": 3165,
+          "original": "j < len",
+          "replacement": "(0 != 0) && (j < len)",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo",
+            "github.com/junegunn/fzf/src/tui",
+            "github.com/junegunn/fzf/src/util"
+          ],
+          "source_id": 99,
+          "outcome": "killed",
+          "duration_seconds": 3.278059667
+        },
+        {
+          "id": 16,
+          "file": "src/util/util.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:c6919c9eeff1517c56390b93c5021260fd8da8b28e4629413b9c6030a21e59f2",
+          "line": 200,
+          "column": 14,
+          "end_line": 200,
+          "end_column": 47,
+          "byte_start": 4031,
+          "byte_end": 4064,
+          "original": "i < Max(len(parts1), len(parts2))",
+          "replacement": "(0 != 0) && (i < Max(len(parts1), len(parts2)))",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo",
+            "github.com/junegunn/fzf/src/tui",
+            "github.com/junegunn/fzf/src/util"
+          ],
+          "source_id": 107,
+          "outcome": "killed",
+          "duration_seconds": 2.695374041
+        }
+      ],
+      "run_seconds": 27.862842333,
+      "baseline_seconds": 3.665332791,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-loops-mr8hl1xq/module",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "affected",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "loop_skip"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/affected",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/seed/run-1791760534-Kg6ylI",
+          "selection": "all",
+          "source_ids": [
+            1,
+            8,
+            15,
+            22,
+            29,
+            36,
+            43,
+            50,
+            57,
+            64,
+            71,
+            78,
+            85,
+            92,
+            99,
+            107
+          ],
+          "operators": [
+            "loop_skip"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "00de28efbf2d2890a2e2c28938da1dc68ea8e8c764c2520315af44f366d1b86c",
+        "mutants.json": "ec92973d7f95cc15aa1971f2087a139beed5bd4ebf0a3f6783e77d7445d3b32c",
+        "outcomes.json": "85fa98186cdc2d02aab204eb444b5eb35459946da11714205cc0fa91da4ac106"
+      }
+    },
+    {
+      "label": "stronger-full",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/improved",
+        "--operator",
+        "loop_skip",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/stronger-full",
+        "--rerun-missed",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full/run-1791760553-0v85G8",
+        "--id",
+        "4,9",
+        "--test-scope",
+        "full"
+      ],
+      "report": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/stronger-full/run-1791760671-9TaW8p",
+      "wall_seconds": 9.205986458982807,
+      "status": "completed",
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "87324f8973a5cc9443652e873730197327086f846aadba32c3ac6e725ca5a681",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/chunklist.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:affbf3eca1c37271365d2e2f097e547fcd0bd321bb0fa76df9c22fb500819dd7",
+          "line": 108,
+          "column": 36,
+          "end_line": 108,
+          "end_column": 42,
+          "byte_start": 2375,
+          "byte_end": 2381,
+          "original": "i >= 0",
+          "replacement": "(0 != 0) && (i >= 0)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 4,
+          "outcome": "killed",
+          "duration_seconds": 3.765977625
+        },
+        {
+          "id": 2,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3337,
+          "column": 6,
+          "end_line": 3337,
+          "end_column": 58,
+          "byte_start": 90099,
+          "byte_end": 90151,
+          "original": "currentWidth > width-ellipsisWidth && len(runes) > 0",
+          "replacement": "(0 != 0) && (currentWidth > width-ellipsisWidth && len(runes) > 0)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 9,
+          "outcome": "killed",
+          "duration_seconds": 4.733108625
+        }
+      ],
+      "run_seconds": 9.103154334,
+      "baseline_seconds": 3.460237375,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-loops-mr8hl1xq/improved",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "loop_skip"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/stronger-full",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full/run-1791760553-0v85G8",
+          "selection": "missed",
+          "source_ids": [
+            4,
+            9
+          ],
+          "operators": [
+            "loop_skip"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "1517b670470d17792edba8a3033d0ce7e310ad43d7bd24977a51a03abcadcfaf",
+        "mutants.json": "5d2530683a7194de029450dbc67e07f8daca462eaf8f912b857fb027991b6db5",
+        "outcomes.json": "ce665c107d7a922b1a8401914bc60f29e6c4d2997cb95a3cf939129624b7fe52"
+      }
+    },
+    {
+      "label": "stronger-affected",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/improved",
+        "--operator",
+        "loop_skip",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/stronger-affected",
+        "--rerun-missed",
+        "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full/run-1791760553-0v85G8",
+        "--id",
+        "4,9",
+        "--test-scope",
+        "affected"
+      ],
+      "report": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/stronger-affected/run-1791760681-pjp8Zl",
+      "wall_seconds": 6.237001291010529,
+      "status": "completed",
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "87324f8973a5cc9443652e873730197327086f846aadba32c3ac6e725ca5a681",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/chunklist.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:affbf3eca1c37271365d2e2f097e547fcd0bd321bb0fa76df9c22fb500819dd7",
+          "line": 108,
+          "column": 36,
+          "end_line": 108,
+          "end_column": 42,
+          "byte_start": 2375,
+          "byte_end": 2381,
+          "original": "i >= 0",
+          "replacement": "(0 != 0) && (i >= 0)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 4,
+          "outcome": "killed",
+          "duration_seconds": 2.823337375
+        },
+        {
+          "id": 2,
+          "file": "src/terminal.go",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3337,
+          "column": 6,
+          "end_line": 3337,
+          "end_column": 58,
+          "byte_start": 90099,
+          "byte_end": 90151,
+          "original": "currentWidth > width-ellipsisWidth && len(runes) > 0",
+          "replacement": "(0 != 0) && (currentWidth > width-ellipsisWidth && len(runes) > 0)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 9,
+          "outcome": "killed",
+          "duration_seconds": 2.621913916
+        }
+      ],
+      "run_seconds": 6.138606417,
+      "baseline_seconds": 2.449136667,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-loops-mr8hl1xq/improved",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "affected",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "loop_skip"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/stronger-affected",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-loops-mr8hl1xq/reports/full/run-1791760553-0v85G8",
+          "selection": "missed",
+          "source_ids": [
+            4,
+            9
+          ],
+          "operators": [
+            "loop_skip"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "032ffe4b7fd4074b0dc1b58125cf8096b1c9b1852528c0f595c3b01a7680f09b",
+        "mutants.json": "03f33550b43001adb0d6ecb25ea3236ab4a8b471a5d7e89c9c2aa4b01a703df2",
+        "outcomes.json": "8a17af8eaec005a6a924148b88af54f54377b3337c3e669c37547aceb073d098"
+      }
+    }
+  ],
+  "stronger_tests": [
+    {
+      "file": "benchmarks/fzf-v0.65.2-loops_test.go.txt",
+      "destination": "src/mutie_loop_test.go",
+      "sha256": "caa728a323bf274b5ee27c02e4dec5cd96b46069418c37aa3ad8b44e1525c82a"
+    }
+  ],
+  "failure_evidence": [
+    {
+      "run": "stronger-full",
+      "id": 1,
+      "evidence": [
+        "    mutie_loop_test.go:24: tail 3: got count 5, snapshot count 5, changed true",
+        "--- FAIL: TestMutiePartialChunkTail/3 (0.00s)",
+        "    mutie_loop_test.go:24: tail 103: got count 105, snapshot count 105, changed true",
+        "--- FAIL: TestMutiePartialChunkTail/103 (0.00s)",
+        "--- FAIL: TestMutiePartialChunkTail (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-full",
+      "id": 2,
+      "evidence": [
+        "    mutie_loop_test.go:58: trimLeft: got \"\u754c\u754c\u754ca\" removing 0 runes; want \"\u754ca\" removing 2",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth/\u754c\u754c\u754ca (0.00s)",
+        "    mutie_loop_test.go:58: trimLeft: got \"a\\tb\" removing 0 runes; want \"b\" removing 2",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth/a_b (0.00s)",
+        "    mutie_loop_test.go:58: trimLeft: got \"bcdef\" removing 1 runes; want \"def\" removing 3",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth/abcdef (0.00s)",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-affected",
+      "id": 1,
+      "evidence": [
+        "    mutie_loop_test.go:24: tail 3: got count 5, snapshot count 5, changed true",
+        "--- FAIL: TestMutiePartialChunkTail/3 (0.00s)",
+        "    mutie_loop_test.go:24: tail 103: got count 105, snapshot count 105, changed true",
+        "--- FAIL: TestMutiePartialChunkTail/103 (0.00s)",
+        "--- FAIL: TestMutiePartialChunkTail (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-affected",
+      "id": 2,
+      "evidence": [
+        "    mutie_loop_test.go:58: trimLeft: got \"\u754c\u754c\u754ca\" removing 0 runes; want \"\u754ca\" removing 2",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth/\u754c\u754c\u754ca (0.00s)",
+        "    mutie_loop_test.go:58: trimLeft: got \"a\\tb\" removing 0 runes; want \"b\" removing 2",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth/a_b (0.00s)",
+        "    mutie_loop_test.go:58: trimLeft: got \"bcdef\" removing 1 runes; want \"def\" removing 3",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth/abcdef (0.00s)",
+        "--- FAIL: TestMutieTrimLeftReservesEllipsisWidth (0.00s)"
+      ]
+    }
+  ],
+  "source_report_preserved": true
+}

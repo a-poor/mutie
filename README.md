@@ -108,13 +108,14 @@ conflicts with `--list`.
 
 ## Mutation operators
 
-All nine operators run by default. Use repeatable or comma-separated
+All ten operators run by default. Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 
 ```sh
 cargo run -- /path/to/go/module --operator call_remove --list
 cargo run -- /path/to/go/module --operator arithmetic_replace,call_remove --jobs 2
 cargo run -- /path/to/go/module --operator branch_force_true,branch_force_false --list
+cargo run -- /path/to/go/module --operator loop_skip --list
 ```
 
 The `operators` list in `mutie.toml` sets the repository default. CLI values
@@ -143,6 +144,24 @@ The [fzf branch sample](benchmarks/fzf-v0.65.2-branches.md) matched all 24 outco
 between full and affected tests with no build failures. Added tests killed four
 survivors, covering ellipsis arguments and up-arrow modifiers. This sample does
 not establish a general noise rate or make every survivor a test gap.
+
+`loop_skip` makes a conditional `for` loop execute zero iterations. It supports
+both `for condition { ... }` and `for init; condition; post { ... }`, replacing
+only the condition with `(0 != 0) && (condition)`. The initializer still runs
+once; the original condition, body, and post statement are not evaluated.
+References remain in the source, keeping imports and local variables used.
+Nested, labeled, parenthesized, and multiline conditions are supported.
+
+Range loops and loops without a condition are excluded. Bare `true`/`false`
+conditions (including parentheses/comments) remain with `boolean_flip`, following
+the same syntax rule as branch forcing. Other operators in headers and bodies
+remain separate candidates, including inside loops excluded from `loop_skip`.
+Skipping an already empty loop can be equivalent; a missed result alone does not
+prove that a test is missing.
+
+The [fzf loop sample](benchmarks/fzf-v0.65.2-loops.md) matched all 16 outcomes
+between full and affected tests with no build failures. Added tests killed two
+survivors covering partial tail chunks and display-width trimming.
 
 `call_remove` deletes an entire standalone function or method call, including
 multiline and parenthesized calls, from a block or case body. Arguments are also
@@ -661,7 +680,8 @@ the checkout or repository metadata is unavailable.
 `schema_version` is `1` in all three JSON files, and `operator_catalog_version` is
 `1` in run metadata and the inventory. Named operators are `arithmetic_replace`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `boolean_flip`,
-`negation_remove`, `call_remove`, `branch_force_true`, and `branch_force_false`.
+`negation_remove`, `call_remove`, `branch_force_true`, `branch_force_false`, and
+`loop_skip`.
 
 Mutation execution `state` is `pending`, `running`, `completed`, or `interrupted`.
 Only completed executions have an `outcome`; the other states have `null` outcomes
@@ -890,7 +910,8 @@ paths outside the private directories are not covered by this cleanup.
   modules are not mutated. Build tags and platform selection follow the Go
   environment. The initial operators flip comparisons and their boundaries,
   swap arithmetic and logical operators, flip booleans, remove logical `!`, and
-  remove standalone calls, and force `if` conditions true or false.
+  remove standalone calls, force `if` conditions true or false, and skip
+  conditional `for` loops.
 - Results are **killed** (tests failed), **missed** (tests passed), **timeout**, or
   **build failed** (the mutation could not compile or failed Go's build checks).
   Tool/setup failures abort the run instead of counting as killed mutations.
@@ -954,6 +975,10 @@ initializer and condition side effects, named/generic booleans, shadowed boolean
 names, config/CLI selection, diffs, dismissals, and affected-package reruns after
 stronger tests. Parser tests cover nested and multiline conditions, comments,
 Unicode, CRLF, literal exclusion, and strict source matching.
+The real-Go loop fixture verifies both header forms, unused-name preservation,
+named/generic booleans, initializer/condition/body/post effects, saved selections,
+dismissals, and a stronger-test rerun. Parser tests check excluded loop forms,
+nested discovery, exact condition ranges, and multiline diffs.
 Dismissal tests cover persistence, independent IDs, reason/note edits, removal,
 strict rediscovery, moved checkouts, stale/missing/ambiguous entries, malformed
 metadata, concurrent-writer exclusion, and preservation of reports, source files,
