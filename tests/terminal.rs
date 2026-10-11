@@ -163,6 +163,9 @@ fi
         if ci {
             command.env("CI", "true");
         }
+        if mode == "policy" {
+            command.arg("--fail-on-missed");
+        }
         // SAFETY: pre_exec performs only async-signal-safe session/terminal syscalls.
         unsafe {
             command.pre_exec(|| {
@@ -666,6 +669,21 @@ fn empty_and_failed_runs_restore_terminal_and_ci_uses_plain_output() {
             session.report("run.json")["status"],
             if success { "completed" } else { "failed" }
         );
+    }
+}
+
+#[test]
+fn findings_failure_restores_terminal_and_preserves_completed_report() {
+    for (ui, ci, interactive) in [("interactive", false, true), ("auto", true, false)] {
+        let mut session = Session::start("policy", ui, ci);
+        assert_eq!(session.finish().code(), Some(3));
+        session.assert_restored(interactive);
+        let report = session.report("run.json");
+        assert_eq!(report["status"], "completed");
+        assert_eq!(report["policy"]["status"], "failed");
+        assert_eq!(report["policy"]["undismissed_missed"], 4);
+        let output = String::from_utf8_lossy(&session.output);
+        assert!(output.contains("Findings policy: failed"));
     }
 }
 

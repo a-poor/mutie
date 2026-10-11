@@ -173,6 +173,151 @@ fn json(path: &Path, name: &str) -> Value {
     serde_json::from_slice(&fs::read(path.join(name)).unwrap()).unwrap()
 }
 
+fn policy_report(output: &Output, undismissed: usize, dismissed: usize) -> PathBuf {
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert_eq!(
+        output.status.code(),
+        Some(if undismissed > 0 { 3 } else { 0 }),
+        "{output:?}"
+    );
+    assert!(output.stderr.is_empty(), "{output:?}");
+    let path: PathBuf = text
+        .lines()
+        .find_map(|line| line.strip_prefix("Saving report to "))
+        .unwrap()
+        .into();
+    let run = json(&path, "run.json");
+    let outcomes = json(&path, "outcomes.json");
+    let status = if undismissed > 0 { "failed" } else { "passed" };
+    assert_eq!(run["status"], "completed");
+    assert!(run["error"].is_null());
+    assert_eq!(run["effective_config"]["fail_on_missed"], true);
+    assert_eq!(run["checkpoint"], outcomes["checkpoint"]);
+    assert_eq!(outcomes["status"], "completed");
+    assert_eq!(outcomes["summary"]["missed"], undismissed + dismissed);
+    assert_eq!(
+        run["policy"],
+        serde_json::json!({"status":status,"undismissed_missed":undismissed,"dismissed_missed":dismissed})
+    );
+    let message = format!("Findings policy: {status}");
+    assert!(text.contains(&message), "{text}");
+    assert!(
+        fs::read_to_string(path.join("summary.txt"))
+            .unwrap()
+            .contains(&message)
+    );
+    assert!(path.join("missed.txt").is_file());
+    path
+}
+
+#[test]
+fn findings_policy_uses_current_dismissals_for_full_and_focused_runs() {
+    let fixture = Fixture::new();
+    let default = fixture.report();
+    assert_eq!(json(&default, "run.json")["policy"]["status"], "disabled");
+    let failed = policy_report(&fixture.run(&["--fail-on-missed"]), 1, 0);
+    assert_eq!(
+        json(&failed, "outcomes.json")["summary"],
+        json(&default, "outcomes.json")["summary"]
+    );
+    let original = fs::read(failed.join("run.json")).unwrap();
+    success(&fixture.add(&failed, "2"));
+    policy_report(&fixture.run(&["--fail-on-missed"]), 0, 1);
+    let focused = policy_report(
+        &fixture.run(&[
+            "--rerun",
+            failed.to_str().unwrap(),
+            "--id",
+            "2",
+            "--fail-on-missed",
+        ]),
+        0,
+        1,
+    );
+    let inventory = json(&focused, "mutants.json");
+    assert_eq!(inventory["dismissals"]["matched"][0]["mutation_id"], 1);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 1);
+    success(&fixture.dismiss(&["remove", "1"]));
+    // The source run's review and policy are historical; the current review governs.
+    policy_report(
+        &fixture.run(&[
+            "--rerun-missed",
+            focused.to_str().unwrap(),
+            "--fail-on-missed",
+        ]),
+        1,
+        0,
+    );
+    success(&fixture.add(&failed, "2"));
+    fs::write(
+        fixture.root.join("b.go"),
+        "package p\n// source changed\nvar b = true\n",
+    )
+    .unwrap();
+    let stale = policy_report(&fixture.run(&["--fail-on-missed"]), 1, 0);
+    assert_eq!(
+        json(&stale, "mutants.json")["dismissals"]["needs_review"][0]["status"],
+        "stale"
+    );
+    assert_eq!(fs::read(failed.join("run.json")).unwrap(), original);
+}
+
+#[test]
+fn configured_policy_can_be_disabled_and_does_not_gate_listing_or_empty_runs() {
+    let fixture = Fixture::new();
+    fs::write(fixture.root.join("mutie.toml"), "fail_on_missed = true").unwrap();
+    let listing = success(&fixture.run(&["--list", "--fail-on-missed"]));
+    assert!(!listing.contains("Findings policy:"));
+    assert!(!fixture.root.join(".mutie").exists());
+    let failed = policy_report(&fixture.run(&[]), 1, 0);
+    let disabled = fixture.run(&["--no-fail-on-missed"]);
+    let path = report_path(&disabled);
+    assert_eq!(
+        json(&path, "run.json")["effective_config"]["fail_on_missed"],
+        false
+    );
+    assert_eq!(json(&path, "run.json")["policy"]["status"], "disabled");
+    policy_report(&fixture.run(&["--include", "absent.go"]), 0, 0);
+    policy_report(
+        &fixture.run(&[
+            "--rerun",
+            failed.to_str().unwrap(),
+            "--operator",
+            "negation_remove",
+        ]),
+        0,
+        0,
+    );
+    let invalid = fixture.run(&["--fail-on-missed", "--no-fail-on-missed"]);
+    assert_eq!(invalid.status.code(), Some(2));
+}
+
+#[test]
+fn baseline_failures_and_timeouts_leave_enabled_policy_unevaluated() {
+    for timeout in [false, true] {
+        let fixture = Fixture::new();
+        if timeout {
+            fs::write(fixture.temp.path().join("bin/go"), "#!/bin/sh\nsleep 30\n").unwrap();
+        } else {
+            fs::write(fixture.root.join("a.go"), "package p\nvar a = false\n").unwrap();
+        }
+        let output = fixture.run(&["--fail-on-missed", "--baseline-timeout", "1"]);
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        let path = Path::new(
+            text.lines()
+                .find_map(|line| line.strip_prefix("Saving report to "))
+                .unwrap(),
+        );
+        let run = json(path, "run.json");
+        assert_eq!(run["status"], "failed");
+        assert_eq!(run["policy"], serde_json::json!({"status":"not_evaluated"}));
+        assert!(
+            !text.contains("Findings policy: passed") && !text.contains("Findings policy: failed")
+        );
+    }
+}
+
 #[test]
 fn crud_persists_reasons_notes_and_independent_ids_without_go() {
     let fixture = Fixture::new();

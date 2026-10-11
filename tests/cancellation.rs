@@ -102,7 +102,10 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
     }
 
     fn start(&self, mode: &str) -> Running {
-        self.start_with_args(mode, &["--jobs", "2", "--timeout", "60"])
+        self.start_with_args(
+            mode,
+            &["--jobs", "2", "--timeout", "60", "--fail-on-missed"],
+        )
     }
 
     fn command(&self, mode: &str) -> Command {
@@ -317,11 +320,12 @@ fn interrupt_parallel_run_retains_inventory_results_and_active_diagnostics() {
     assert_eq!(before["mutations"][3]["state"], "pending");
     child.signal(libc::SIGINT);
     let output = child.finish();
-    assert!(!output.status.success());
+    assert_eq!(output.status.code(), Some(1));
     assert!(String::from_utf8_lossy(&output.stderr).contains("interrupted"));
     let metadata = read(&directory, "run.json");
     let outcomes = read(&directory, "outcomes.json");
     assert_eq!(metadata["status"], "interrupted");
+    assert_eq!(metadata["policy"]["status"], "not_evaluated");
     assert_eq!(metadata["checkpoint"], outcomes["checkpoint"]);
     let workspaces = &metadata["workspace_metrics"];
     assert_eq!(
@@ -383,15 +387,17 @@ fn interruption_during_baseline_and_discovery_preserves_command_output() {
         ("discovery", libc::SIGTERM, "affected"),
     ] {
         let fixture = Fixture::new();
-        let mut child = fixture.start_with_args(phase, &["--test-scope", scope]);
+        let mut child =
+            fixture.start_with_args(phase, &["--test-scope", scope, "--fail-on-missed"]);
         fixture.ready(phase);
         child.signal(signal);
         let output = child.finish();
-        assert!(!output.status.success());
+        assert_eq!(output.status.code(), Some(1));
         let directory = fixture.report();
         let metadata = read(&directory, "run.json");
         let outcomes = read(&directory, "outcomes.json");
         assert_eq!(metadata["status"], "interrupted");
+        assert_eq!(metadata["policy"]["status"], "not_evaluated");
         assert_eq!(metadata["phase"], phase);
         assert_eq!(metadata["workspace_metrics"]["snapshot"]["completed"], 1);
         assert_eq!(
@@ -430,7 +436,7 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
     fixture.ready("c");
     fs::write(fixture.state.join("fail"), "").unwrap();
     let output = child.finish();
-    assert!(!output.status.success());
+    assert_eq!(output.status.code(), Some(1));
     assert!(String::from_utf8_lossy(&output.stderr).contains("go tool failed unexpectedly"));
     let directory = fixture.report();
     let outcomes = read(&directory, "outcomes.json");
@@ -447,6 +453,7 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
     assert_eq!(outcomes["summary"]["errors"], 1);
     assert_eq!(outcomes["summary"]["missed"], 1);
     let metadata = read(&directory, "run.json");
+    assert_eq!(metadata["policy"]["status"], "not_evaluated");
     assert_eq!(
         metadata["workspace_metrics"]["worker_setup"]["completed"],
         2

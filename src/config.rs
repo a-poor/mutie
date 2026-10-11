@@ -26,6 +26,7 @@ struct RepositoryConfig {
     exclude: Option<Vec<String>>,
     timeout: Option<NonZeroU64>,
     baseline_timeout: Option<NonZeroU64>,
+    fail_on_missed: Option<bool>,
     output_dir: Option<PathBuf>,
     verbose: Option<bool>,
     ui: Option<UiMode>,
@@ -45,6 +46,7 @@ pub struct RunConfig {
     pub exclude: Vec<String>,
     pub timeout: Option<NonZeroU64>,
     pub baseline_timeout: NonZeroU64,
+    pub fail_on_missed: bool,
     pub output_dir: PathBuf,
     pub verbose: bool,
     pub list: bool,
@@ -162,6 +164,8 @@ impl RunConfig {
                 .baseline_timeout
                 .or(file.baseline_timeout)
                 .unwrap_or(NonZeroU64::new(300).unwrap()),
+            fail_on_missed: !cli.no_fail_on_missed
+                && (cli.fail_on_missed || file.fail_on_missed.unwrap_or(false)),
             output_dir,
             verbose: if cli.no_verbose {
                 false
@@ -315,6 +319,19 @@ mod tests {
     }
 
     #[test]
+    fn findings_policy_defaults_and_explicit_overrides() -> Result<()> {
+        let temp = project()?;
+        assert!(!resolve(temp.path(), &[])?.fail_on_missed);
+        let file = temp.path().join("module/mutie.toml");
+        fs::write(&file, "fail_on_missed = true")?;
+        assert!(resolve(temp.path(), &[])?.fail_on_missed);
+        assert!(!resolve(temp.path(), &["--no-fail-on-missed"])?.fail_on_missed);
+        fs::write(&file, "fail_on_missed = false")?;
+        assert!(resolve(temp.path(), &["--fail-on-missed"])?.fail_on_missed);
+        Ok(())
+    }
+
+    #[test]
     fn explicit_cli_values_replace_repository_values_including_defaults() -> Result<()> {
         let temp = project()?;
         fs::write(
@@ -408,6 +425,7 @@ verbose = true
             "include = '*.go'",
             "exclude = [1]",
             "verbose = 'yes'",
+            "fail_on_missed = 'yes'",
             "list = true",
             "rerun_missed = 'previous-run'",
             "rerun = 'previous-run'",
@@ -434,6 +452,7 @@ verbose = true
             vec!["--exclude", "a.go", "--clear-exclude"],
             vec!["--timeout", "1", "--clear-timeout"],
             vec!["--verbose", "--no-verbose"],
+            vec!["--fail-on-missed", "--no-fail-on-missed"],
             vec!["--list", "--output-dir", "reports"],
             vec!["--jobs", "0"],
             vec!["--timeout", "0"],

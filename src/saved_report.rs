@@ -15,7 +15,9 @@ use crate::{
     go,
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
     process::CommandOutput,
-    report::{ExecutionState, MutationResult, Outcome, RunPlan, RunStatus, Summary},
+    report::{
+        ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
+    },
     report_lock,
     rerun::RerunProvenance,
     workspace_metrics::WorkspaceMetrics,
@@ -37,6 +39,7 @@ struct RunReport {
     status: RunStatus,
     phase: &'static str,
     error: Option<String>,
+    policy: PolicyEvaluation,
     baseline_command: Vec<&'static str>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
@@ -168,6 +171,7 @@ impl SavedReport {
                 status: RunStatus::Running,
                 phase: "snapshot",
                 error: None,
+                policy: PolicyEvaluation::pending(config.fail_on_missed),
                 baseline_command: std::iter::once("go")
                     .chain(go::TEST_ARGS.iter().copied())
                     .collect(),
@@ -215,6 +219,10 @@ impl SavedReport {
 
     pub fn path(&self) -> &Path {
         &self.directory
+    }
+
+    pub fn policy(&self) -> &PolicyEvaluation {
+        &self.run.policy
     }
 
     pub fn workspace_metrics(&mut self, metrics: &WorkspaceMetrics) {
@@ -401,7 +409,30 @@ impl SavedReport {
         self.outcomes.status = status;
         self.run.error = error.map(|error| format!("{error:#}"));
         self.run.finished_at_unix_seconds = Some(unix_seconds()?);
+        self.run.policy =
+            if self.run.effective_config.fail_on_missed && status == RunStatus::Completed {
+                let dismissed = self.dismissed_missed();
+                PolicyEvaluation::completed(self.outcomes.summary.missed - dismissed, dismissed)
+            } else {
+                PolicyEvaluation::pending(self.run.effective_config.fail_on_missed)
+            };
         self.flush()
+    }
+
+    fn dismissed_missed(&self) -> usize {
+        self.outcomes
+            .mutations
+            .iter()
+            .filter(|execution| {
+                execution.state == ExecutionState::Completed
+                    && execution.outcome == Some(Outcome::Missed)
+                    && self
+                        .inventory
+                        .dismissals
+                        .as_ref()
+                        .is_some_and(|dismissals| dismissals.dismissal(execution.id).is_some())
+            })
+            .count()
     }
 
     fn logs(&self, prefix: &str, output: &CommandOutput) -> Result<Logs> {
@@ -479,6 +510,7 @@ impl SavedReport {
             self.outcomes.summary
         );
         text.push_str(&format!("{}\n", self.run.workspace_metrics.summary()));
+        text.push_str(&format!("{}\n", self.run.policy));
         text.push_str(&format!(
             "Mutation test scope: {} (baseline: full module)\n",
             match self.run.effective_config.test_scope {
@@ -504,14 +536,7 @@ impl SavedReport {
             }
         }
         if let Some(dismissals) = &self.inventory.dismissals {
-            let dismissed_missed = self
-                .outcomes
-                .mutations
-                .iter()
-                .filter(|e| {
-                    e.outcome == Some(Outcome::Missed) && dismissals.dismissal(e.id).is_some()
-                })
-                .count();
+            let dismissed_missed = self.dismissed_missed();
             text.push_str(&format!(
                 "Dismissals (saved at discovery): {} matched; {} need review\nMissed review: {} undismissed; {} dismissed (outcomes unchanged)\n",
                 dismissals.matched.len(), dismissals.needs_review.len(),

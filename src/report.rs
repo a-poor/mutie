@@ -74,6 +74,74 @@ impl fmt::Display for RunStatus {
     }
 }
 
+/// Findings policy is separate from execution status. Only a successfully
+/// completed run can pass or fail; errors and interruptions stay unevaluated.
+#[derive(Clone, Debug, Serialize)]
+#[serde(tag = "status", rename_all = "snake_case")]
+pub enum PolicyEvaluation {
+    Disabled,
+    NotEvaluated,
+    Passed {
+        undismissed_missed: usize,
+        dismissed_missed: usize,
+    },
+    Failed {
+        undismissed_missed: usize,
+        dismissed_missed: usize,
+    },
+}
+
+impl PolicyEvaluation {
+    pub fn pending(enabled: bool) -> Self {
+        if enabled {
+            Self::NotEvaluated
+        } else {
+            Self::Disabled
+        }
+    }
+
+    pub fn completed(undismissed_missed: usize, dismissed_missed: usize) -> Self {
+        if undismissed_missed > 0 {
+            Self::Failed {
+                undismissed_missed,
+                dismissed_missed,
+            }
+        } else {
+            Self::Passed {
+                undismissed_missed,
+                dismissed_missed,
+            }
+        }
+    }
+
+    pub fn failed(&self) -> bool {
+        matches!(self, Self::Failed { .. })
+    }
+}
+
+impl fmt::Display for PolicyEvaluation {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Disabled => f.write_str("Findings policy: disabled"),
+            Self::NotEvaluated => f.write_str(
+                "Findings policy: not evaluated (--fail-on-missed requires a completed run)",
+            ),
+            Self::Passed {
+                undismissed_missed,
+                dismissed_missed,
+            }
+            | Self::Failed {
+                undismissed_missed,
+                dismissed_missed,
+            } => write!(
+                f,
+                "Findings policy: {} (--fail-on-missed; {undismissed_missed} undismissed missed, {dismissed_missed} dismissed missed)",
+                if self.failed() { "failed" } else { "passed" }
+            ),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Default, Serialize)]
 pub struct Summary {
     pub killed: usize,

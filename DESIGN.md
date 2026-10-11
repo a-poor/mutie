@@ -152,7 +152,9 @@ Tool failures stop the run rather than inflate the killed count. A timeout is
 reported separately, and an invalid mutation is not evidence of good tests. The
 MVP reports counts without enforcing a mutation-score threshold. Completed local
 runs can succeed with missed mutations; baseline/tool failures exit unsuccessfully.
-CI score definitions and exit policies are later work.
+The opt-in `--fail-on-missed` policy exits `3` when a completed run has undismissed
+missed findings. Execution status stays `completed`, independently of the policy
+decision. Score definitions and percentage thresholds remain later work.
 
 Inventory records contain the run-local ID, relative source path, named operator,
 byte range, line/column range, original text, replacement, and source fingerprint.
@@ -650,8 +652,27 @@ recognizing a language.
 
 ### 4. CI and additional report consumers
 
-Add explicit failure policies and score definitions, predictable exit codes,
-and integrations driven by saved results. Consider HTML
+The first CI policy is implemented: `fail_on_missed` defaults to false, merges from
+repository configuration, and supports explicit `--fail-on-missed` /
+`--no-fail-on-missed` overrides. Evaluate it only after successful execution with a
+complete inventory and completed outcomes, using the saved current-run dismissal
+snapshot. Exact matched dismissals exempt missed findings from the policy without
+changing execution or outcome totals. Unresolved dismissals never exempt findings.
+Focused reruns use freshly matched dismissals and evaluate only their selection;
+empty runs pass and listing never evaluates the policy.
+
+`run.json.policy` distinguishes `disabled`, `not_evaluated`, `passed`, and `failed`.
+Passed/failed decisions include undismissed/dismissed missed counts. Text summaries
+show the same decision. The coordinator finishes execution and persists this
+decision without converting a findings failure into an execution error. The CLI
+returns `3` only after the final report flush succeeds; execution/persistence errors
+return `1`, CLI argument errors use `2`, and success uses `0`. Terminal restoration
+precedes the final summary and policy exit. Baseline/tool failures and interruption
+leave enabled policies unevaluated. Policy fields are additive; older reports
+remain readable, and reruns do not reuse their policy decision.
+
+Add score definitions, percentage thresholds, and integrations driven by saved
+results as needed. Consider HTML
 or interchange exports when there is a concrete consumer. Avoid making a score the
 only useful output; individual missed mutations remain the main local finding.
 

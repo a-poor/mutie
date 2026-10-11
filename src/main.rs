@@ -18,7 +18,7 @@ mod status;
 mod workspace;
 mod workspace_metrics;
 
-use std::{collections::VecDeque, path::PathBuf, sync::Arc, time::Duration};
+use std::{collections::VecDeque, path::PathBuf, process::ExitCode, sync::Arc, time::Duration};
 
 use anyhow::{Context, Result, bail, ensure};
 use clap::Parser;
@@ -29,19 +29,19 @@ use cli::{Cli, TestScope, UiMode};
 use config::RunConfig;
 use coordinator::{Coordinator, Phase, RunEvent, WorkerPhase, WorkerProgress};
 use mutation::{Mutation, Scope};
-use report::{ExecutionState, MutationResult, Outcome, RunPlan};
+use report::{ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan};
 use workspace::Workspace;
 use workspace_metrics::{WorkspaceKind, WorkspaceMeasurement};
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() -> Result<ExitCode> {
     let mut cli = Cli::parse();
     if let Some(command) = cli.command.take() {
         let cancellation = Cancellation::default();
         let _signals = cancellation
             .listen()
             .context("installing cancellation handlers")?;
-        return match command {
+        let result = match command {
             cli::Command::Runs { directory } => tokio::task::spawn_blocking(move || {
                 report_retention::run(&directory, None, false, &cancellation)
             })
@@ -76,6 +76,7 @@ async fn main() -> Result<()> {
                 }
             }
         };
+        return result.map(|()| ExitCode::SUCCESS);
     }
     let config = RunConfig::resolve(cli)?;
     let scope = Scope::new(&config.include, &config.exclude)?;
@@ -99,9 +100,7 @@ async fn main() -> Result<()> {
                 None
             }
             Err(error) => {
-                let result = coordinator.finish(Err(error));
-                status::print_summary(&coordinator);
-                return result;
+                return finish_run(coordinator, Err(error));
             }
         }
     } else {
@@ -119,11 +118,30 @@ async fn main() -> Result<()> {
         .await;
         (coordinator, result)
     });
-    let (mut coordinator, result) =
+    let (coordinator, result) =
         status::drive(engine, updates, &mut terminal, &cancellation).await?;
+    finish_run(coordinator, result)
+}
+
+fn finish_run(mut coordinator: Coordinator, result: Result<()>) -> Result<ExitCode> {
     let result = coordinator.finish(result);
     status::print_summary(&coordinator);
-    result
+    if coordinator.report_finished
+        && let Some(policy) = coordinator.policy()
+        && !matches!(policy, PolicyEvaluation::Disabled)
+    {
+        println!("{policy}");
+    }
+    // Persistence and execution errors take precedence over findings. Returning
+    // an ExitCode lets all terminal, report-lock, and runtime guards drop normally.
+    result?;
+    Ok(
+        if coordinator.policy().is_some_and(PolicyEvaluation::failed) {
+            ExitCode::from(3)
+        } else {
+            ExitCode::SUCCESS
+        },
+    )
 }
 
 async fn create_workspace(
@@ -653,4 +671,103 @@ async fn run_workers(
         "workers did not report every mutation"
     );
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::fs;
+
+    #[test]
+    fn findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass() -> Result<()> {
+        for fail_save in [false, true] {
+            let root = tempfile::tempdir()?;
+            fs::write(root.path().join("go.mod"), "module example.com/policy\n")?;
+            fs::write(
+                root.path().join("a.go"),
+                "package p\nvar a = true\nvar b = true\nvar c = true\n",
+            )?;
+            let config = RunConfig::resolve(Cli::parse_from([
+                std::ffi::OsStr::new("mutie"),
+                root.path().as_os_str(),
+                std::ffi::OsStr::new("--fail-on-missed"),
+            ]))?;
+            let mutations =
+                mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
+            let (mut coordinator, _) = Coordinator::new(&config, true)?;
+            let directory = coordinator.report_path().unwrap();
+            let initial: serde_json::Value =
+                serde_json::from_slice(&fs::read(directory.join("run.json"))?)?;
+            assert_eq!(initial["policy"]["status"], "not_evaluated");
+            let cancellation = Cancellation::default();
+            coordinator.emit(
+                RunEvent::Plan(&RunPlan {
+                    mutations: &mutations,
+                    test_packages: &vec![vec!["./...".into()]; mutations.len()],
+                    workers: 1,
+                    timeout: Duration::from_secs(1),
+                    rerun: None,
+                    dismissals: &dismissals::DismissalSnapshot::default(),
+                }),
+                &cancellation,
+            )?;
+            for (index, outcome) in [
+                Outcome::Killed,
+                Outcome::Timeout,
+                if fail_save {
+                    Outcome::Missed
+                } else {
+                    Outcome::BuildFailed
+                },
+            ]
+            .into_iter()
+            .enumerate()
+            {
+                coordinator.emit(
+                    RunEvent::Started {
+                        id: index + 1,
+                        worker: 1,
+                        mutation: &mutations[index],
+                    },
+                    &cancellation,
+                )?;
+                coordinator.emit(
+                    RunEvent::Finished {
+                        worker: 1,
+                        result: &MutationResult {
+                            id: index + 1,
+                            mutation: mutations[index].clone(),
+                            state: ExecutionState::Completed,
+                            outcome: Some(outcome),
+                            output: None,
+                            error: None,
+                        },
+                    },
+                    &cancellation,
+                )?;
+            }
+            if fail_save {
+                // Fail the final text-summary write after JSON has a findings failure.
+                fs::remove_file(directory.join("summary.txt"))?;
+                fs::create_dir(directory.join("summary.txt"))?;
+            }
+            let result = finish_run(coordinator, Ok(()));
+            if fail_save {
+                assert!(format!("{:#}", result.unwrap_err()).contains("finishing saved report"));
+            } else {
+                assert_eq!(result?, ExitCode::SUCCESS);
+            }
+            let metadata: serde_json::Value =
+                serde_json::from_slice(&fs::read(directory.join("run.json"))?)?;
+            assert_eq!(
+                metadata["policy"]["status"],
+                if fail_save { "failed" } else { "passed" }
+            );
+            assert_eq!(
+                metadata["policy"]["undismissed_missed"],
+                usize::from(fail_save)
+            );
+        }
+        Ok(())
+    }
 }

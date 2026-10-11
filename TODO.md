@@ -152,7 +152,12 @@ checklist as work lands, checking items off after appropriate verification.
   and unfinished reports, unsupported metadata, symlinks, and unrelated contents.
 - [ ] Evaluate archival and log-volume policies; go-cmp's complete report is
   1.35 GB, 99.86% captured logs. Explicit pruning is available now.
-- [ ] Add CI failure policies, score definitions, and integration/report exports.
+- [x] Add opt-in `--fail-on-missed` / repository configuration, with a local
+  disable override. Evaluate current undismissed missed findings after successful
+  execution, save the decision separately from execution status, and return exit
+  `3` only after report persistence. Cover current/stale dismissals, focused/empty
+  runs, listing, failures, cancellation, and terminal restoration.
+- [ ] Define mutation scores/percentage thresholds and integration/report exports.
 
 ## Longer-term options
 

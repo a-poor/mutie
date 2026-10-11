@@ -60,6 +60,14 @@ pub struct Cli {
     #[arg(long, value_name = "SECONDS")]
     pub baseline_timeout: Option<NonZeroU64>,
 
+    /// Exit with code 3 after a completed run with undismissed missed mutations
+    #[arg(long)]
+    pub fail_on_missed: bool,
+
+    /// Disable configured failure on undismissed missed mutations
+    #[arg(long, conflicts_with = "fail_on_missed")]
+    pub no_fail_on_missed: bool,
+
     /// List mutations without running tests
     #[arg(long)]
     pub list: bool,

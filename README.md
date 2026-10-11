@@ -18,6 +18,7 @@ Requires Rust/Cargo and Go 1.24+ on `PATH`. The prototype is tested on Linux and
 cargo run -- /path/to/go/module
 cargo run -- /path/to/go/module --jobs 4
 cargo run -- /path/to/go/module --test-scope affected --jobs 4
+cargo run -- /path/to/go/module --fail-on-missed
 cargo run -- /path/to/go/module --list
 cargo run -- /path/to/go/module --include 'internal/**/*.go' --exclude '**/generated_*'
 cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
@@ -57,6 +58,7 @@ include = ["**/*.go"]
 exclude = ["internal/legacy/**"]
 timeout = 30
 baseline_timeout = 300
+fail_on_missed = false # enable to fail on undismissed missed mutations
 output_dir = ".mutie"
 verbose = false
 ui = "auto"
@@ -79,7 +81,8 @@ components are normalized before use. Paths are not shell-expanded.
 Each CLI list replaces its configured counterpart. To clear a configured list,
 use `--clear-include` (all eligible files) or `--clear-exclude` (no additional
 exclusions). `--clear-timeout` restores the automatic timeout; `--no-verbose`
-overrides `verbose = true`. Each reset flag conflicts with the corresponding
+overrides `verbose = true`; `--no-fail-on-missed` overrides `fail_on_missed = true`.
+Each reset flag conflicts with the corresponding
 value flag. For example:
 
 ```sh
@@ -93,6 +96,45 @@ they cannot be set in `mutie.toml`. Listing uses the same
 configuration and excludes the configured report directory from its snapshot,
 but creates no report directory or artifacts. An explicit `--output-dir` still
 conflicts with `--list`.
+
+## CI findings policy
+
+By default, completed runs exit successfully even if mutations survive. Enable
+`--fail-on-missed` (or `fail_on_missed = true` in `mutie.toml`) to fail a completed
+run when at least one **undismissed missed mutation** remains:
+
+```sh
+mutie /path/to/module --fail-on-missed --ui plain
+mutie /path/to/module --rerun-missed RUN_DIR --fail-on-missed
+mutie /path/to/module --no-fail-on-missed # override a repository policy locally
+```
+
+The policy uses the current run's dismissal snapshot. Only exact, matched
+dismissals exempt missed findings; stale, missing, unmatched, or ambiguous entries
+do not. Dismissed mutations still execute and remain in the missed outcome count.
+Focused reruns evaluate only their selected mutations using current configuration
+and freshly matched dismissals. A successful empty selection passes. `--list`
+does not evaluate the policy or write a report.
+
+| Exit code | Meaning |
+| --- | --- |
+| `0` | Successful operation; for runs, the policy is disabled or passes. |
+| `1` | Execution, configuration, reporting, or other operation failure, including handled interruption. |
+| `2` | Invalid CLI arguments. |
+| `3` | A completed, saved run fails `--fail-on-missed`. |
+
+A findings failure keeps `status: "completed"` and `error: null` in the saved
+report. It changes the CLI exit code without changing mutation outcomes. The
+final terminal summary, `summary.txt`, and `run.json.policy` record the decision.
+Policy status is `disabled`, `not_evaluated`, `passed`, or `failed`; passed/failed
+decisions also record `undismissed_missed` and `dismissed_missed` counts. Enabled
+policies remain `not_evaluated` during execution and after failed/interrupted runs.
+Execution and report-writing errors take precedence over a findings failure;
+partial report files may survive a write error but never produce exit code `3`.
+
+Killed, timed-out, and unbuildable mutations do not count as missed for this policy.
+The policy is not a mutation score or a guarantee that all mutations were killed.
+Percentage thresholds remain future work.
 
 ## Affected-package testing
 
@@ -426,7 +468,8 @@ reports and cannot be combined with `--output-dir`.
 Each run contains:
 
 - `run.json`: versioned run metadata, effective configuration, commands, scope,
-  timeouts, worker counts, workspace measurements, phase, status, and any run-level error.
+  timeouts, worker counts, workspace measurements, phase, status, findings-policy
+  decision, and any run-level error.
 - `mutants.json`: the complete mutation inventory, including IDs, named operators,
   source locations, original text, replacements, source fingerprints, `test_packages`, and diff
   paths. The inventory and every diff are published before workers start.
@@ -640,9 +683,10 @@ parent and the reusable Go build cache (`GOCACHE`) are preserved.
   are removed on completion. On Unix, timeouts and interruption kill the child
   process group, including test binaries. Cancellation is also checked during
   workspace copying and between discovery/publication steps.
-- A completed run exits successfully even if mutations survive. Baseline and
-  tool failures exit unsuccessfully. CI thresholds are future work; saved JSON
-  reports can already be consumed by other tools.
+- A completed run exits successfully unless `--fail-on-missed` is enabled and
+  undismissed missed findings remain (exit `3`). Baseline, tool, and report-writing
+  failures exit `1`. Percentage thresholds are future work; saved JSON reports
+  can already be consumed by other tools.
 
 The initial scope is one self-contained Go module. `GOWORK` is set to `off` for
 child Go commands. Workspaces, local replacements outside the module, and tests

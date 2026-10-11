@@ -120,10 +120,21 @@ fn go_workflow() {
     assert_eq!(report["baseline"]["outcome"], "passed");
     let affected = run(
         &root,
-        &["--jobs", "2", "--timeout", "5", "--test-scope", "affected"],
+        &[
+            "--jobs",
+            "2",
+            "--timeout",
+            "5",
+            "--test-scope",
+            "affected",
+            "--fail-on-missed",
+        ],
     );
-    stdout(&affected);
-    let (_, _, affected_inventory, affected_outcomes) = saved_report(&affected);
+    assert_eq!(affected.status.code(), Some(3), "{affected:?}");
+    let (_, affected_metadata, affected_inventory, affected_outcomes) = saved_report(&affected);
+    assert_eq!(affected_metadata["status"], "completed");
+    assert_eq!(affected_metadata["policy"]["status"], "failed");
+    assert_eq!(affected_metadata["policy"]["undismissed_missed"], 1);
     assert_eq!(affected_outcomes["summary"], report["summary"]);
     assert_eq!(affected_inventory["mutations"].as_array().unwrap().len(), 4);
     for mutation in affected_inventory["mutations"].as_array().unwrap() {

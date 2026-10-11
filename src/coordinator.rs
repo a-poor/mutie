@@ -15,7 +15,9 @@ use crate::{
     go,
     mutation::Mutation,
     process::CommandOutput,
-    report::{ExecutionState, MutationResult, Outcome, RunPlan, RunStatus, Summary},
+    report::{
+        ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
+    },
     saved_report::SavedReport,
     workspace_metrics::{WorkspaceKind, WorkspaceMeasurement, WorkspaceMetrics},
 };
@@ -252,6 +254,10 @@ impl Coordinator {
 
     pub fn report_path(&self) -> Option<PathBuf> {
         self.saved.as_ref().map(|r| r.path().to_owned())
+    }
+
+    pub fn policy(&self) -> Option<&PolicyEvaluation> {
+        self.saved.as_ref().map(SavedReport::policy)
     }
 
     pub fn line(&self, line: impl std::fmt::Display) {
