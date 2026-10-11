@@ -16,6 +16,7 @@ use crate::{
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
     process::CommandOutput,
     report::{ExecutionState, MutationResult, Outcome, RunPlan, RunStatus, Summary},
+    report_lock,
     rerun::RerunProvenance,
     workspace_metrics::WorkspaceMetrics,
 };
@@ -120,6 +121,8 @@ struct Execution {
 
 pub struct SavedReport {
     directory: PathBuf,
+    // Hold through the final multi-file flush, not merely until status changes.
+    _lock: fs::File,
     started: Instant,
     run: RunReport,
     inventory: Inventory,
@@ -141,10 +144,13 @@ impl SavedReport {
         let directory = tempfile::Builder::new()
             .prefix(&format!("run-{started_at}-"))
             .tempdir_in(&output_root)?;
+        let lock =
+            report_lock::acquire(directory.path(), true)?.context("new report has no lock")?;
         fs::create_dir(directory.path().join("diff"))?;
         fs::create_dir(directory.path().join("logs"))?;
         let mut report = Self {
             directory: directory.path().to_owned(),
+            _lock: lock,
             started: Instant::now(),
             run: RunReport {
                 schema_version: SCHEMA_VERSION,

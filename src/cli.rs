@@ -109,6 +109,28 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// List saved runs, their status, age, and logical disk usage
+    Runs {
+        /// Parent directory of saved runs (relative to the current directory)
+        #[arg(default_value = ".mutie", value_name = "DIR")]
+        directory: PathBuf,
+    },
+    /// Preview removal of finalized saved runs; deletion requires --apply
+    #[command(group(clap::ArgGroup::new("retention").required(true).multiple(true).args(["keep_last", "older_than"])))]
+    Prune {
+        /// Parent directory of saved runs (relative to the current directory)
+        #[arg(default_value = ".mutie", value_name = "DIR")]
+        directory: PathBuf,
+        /// Keep the newest N eligible finalized runs (0 keeps none)
+        #[arg(long, value_name = "N")]
+        keep_last: Option<usize>,
+        /// Select runs finished more than DAYS * 24 hours ago; intersects --keep-last
+        #[arg(long, value_name = "DAYS")]
+        older_than: Option<NonZeroU64>,
+        /// Delete selected runs after revalidation (default: preview only)
+        #[arg(long)]
+        apply: bool,
+    },
     /// Manage repository-owned mutation dismissals
     Dismiss {
         /// Go module root where dismissals are stored

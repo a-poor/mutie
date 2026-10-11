@@ -26,6 +26,8 @@ cargo run -- /path/to/go/module --ui plain
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
 cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9,11
 cargo run -- report /path/to/saved/run
+cargo run -- runs /path/to/go/module/.mutie
+cargo run -- prune /path/to/go/module/.mutie --keep-last 5
 cargo run -- dismiss --module /path/to/go/module list
 ```
 
@@ -439,6 +441,8 @@ Each run contains:
   events. Logs are saved even without `--verbose`.
 - `killed.txt`, `missed.txt`, `timeout.txt`, `build_failed.txt`, and `errors.txt`:
   outcome lists containing IDs and source descriptions, sorted by ID.
+- `.mutie.lock`: an empty lock file held open for the report writer's lifetime,
+  including its final writes. The file remains after the process exits.
 
 `run.json` includes `effective_config` with all merged settings, the resolved Go
 language, absolute module/output paths, and the config file path (`null` when
@@ -508,6 +512,49 @@ The module's `.mutie` directory, the selected output directory, and the source
 rerun directory are omitted from snapshots so saved reports do not affect tests
 or discovery. Keep output directories separate from source files, and add `.mutie/`
 (or your custom output directory) to your project's `.gitignore`.
+
+## Report retention
+
+List saved runs with their status, age, logical file size, and any protection reason:
+
+```sh
+mutie runs                       # .mutie under the current directory
+mutie runs /path/to/reports       # custom report root
+mutie prune --keep-last 5         # preview keeping the newest five eligible runs
+mutie prune --older-than 30       # preview runs finished more than 30 days ago
+mutie prune --keep-last 5 --older-than 30
+mutie prune --keep-last 5 --older-than 30 --apply
+```
+
+Both commands accept an optional report parent directory, defaulting to `.mutie`
+relative to the current directory. They work without Go, the original checkout,
+or `mutie.toml`; pass custom output directories explicitly. A missing report root
+is an empty listing and is not created. Listing and pruning previews write nothing.
+
+`prune` requires at least one rule and previews by default. `--apply` deletes the
+selected run directories and all their report artifacts. `--keep-last N` preserves
+the newest N eligible finalized runs, ordered by finish time (then name for ties).
+Protected runs do not consume these slots; `--keep-last 0` selects all eligible
+runs. `--older-than DAYS` accepts positive whole days of 24 hours and selects
+runs strictly older than that threshold. With both rules, a run must be outside
+the newest N **and** older than the age threshold to be selected. No automatic
+retention or archival runs in the background.
+
+Only direct `run-*` directories with supported, consistent finalized report metadata
+and the expected artifact layout are eligible. Completed, failed, and interrupted
+runs can qualify, including failed baselines with no inventory. Running reports
+remain protected even after a forced kill. Locked reports, invalid metadata,
+future/inconsistent timestamps, symlinks, special files, and unexpected files or
+directories inside a run protect that entire run. Other root entries are ignored.
+Sizes sum file lengths without reading logs; they are not physical storage usage
+or a guarantee of space reclaimed on compressed or copy-on-write filesystems.
+
+Apply acquires each selected report's lock and checks its metadata, identity, and
+artifact list again before removing it. A changed or newly locked report is left
+in place and reported as an error. Older finalized reports without a lock file
+are supported; apply adds the lock before revalidation. Cancellation stops between
+runs; deletion already underway finishes first. Filesystem failures can leave a
+partially removed run and return an error with the number of fully deleted runs.
 
 ### Workspace measurements
 

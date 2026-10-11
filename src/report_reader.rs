@@ -74,6 +74,8 @@ pub struct SavedCommand {
 #[derive(Clone, Debug, Deserialize)]
 pub struct SavedLogs {
     pub text: Option<PathBuf>,
+    pub stdout: Option<PathBuf>,
+    pub stderr: Option<PathBuf>,
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -262,7 +264,7 @@ fn read_relative(directory: &Path, path: &Path, limit: u64) -> Result<Vec<u8>> {
     Ok(bytes)
 }
 
-fn read_json<T: DeserializeOwned>(directory: &Path, name: &str) -> Result<T> {
+pub(crate) fn read_json<T: DeserializeOwned>(directory: &Path, name: &str) -> Result<T> {
     const LIMIT: u64 = 64 * 1024 * 1024;
     let bytes = read_relative(directory, Path::new(name), LIMIT + 1)?;
     ensure!(

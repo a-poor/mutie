@@ -147,8 +147,11 @@ checklist as work lands, checking items off after appropriate verification.
   against full-module results as projects and operators expand.
 - [ ] Expand mutations, including standalone call removal and return/branch/loop
   changes; add operator selection and profiles based on useful findings.
-- [ ] Decide and implement report retention/archival without pruning active runs
-  or unrelated files; go-cmp's complete report is 1.35 GB, 99.86% captured logs.
+- [x] Add explicit report listing and retention: status/age/logical size, count/age
+  previews, and `--apply` deletion with writer locks and revalidation. Protect active
+  and unfinished reports, unsupported metadata, symlinks, and unrelated contents.
+- [ ] Evaluate archival and log-volume policies; go-cmp's complete report is
+  1.35 GB, 99.86% captured logs. Explicit pruning is available now.
 - [ ] Add CI failure policies, score definitions, and integration/report exports.
 
 ## Longer-term options

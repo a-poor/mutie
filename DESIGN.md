@@ -450,11 +450,29 @@ workspace cleanup. Existing command durations remain in `outcomes.json`.
 The canonical temporary root is saved for placement comparisons; `TMPDIR` already
 allows Unix callers to place workspaces outside the source tree on a chosen filesystem.
 
-Retention is a separate policy from report format. For the minimal MVP, retain
-isolated run directories as today. Bounded retention, such as latest plus previous
-with explicit archival, is a candidate follow-up. Decide its naming, concurrency,
-and pruning rules before enabling automatic deletion. Never prune active runs or
-unrelated user directories.
+Retention is explicit and separate from report generation. `mutie runs [DIR]`
+lists direct `run-*` children with status, age, logical size, and protection reasons.
+`mutie prune [DIR]` requires `--keep-last N` and/or `--older-than DAYS`; both rules
+intersect. The newest eligible finalized runs are ordered by finish time, with
+name as a deterministic tie breaker. Protected runs do not consume keep slots.
+The default root is `.mutie` relative to the invocation directory; these commands
+do not load module configuration or invoke Go. Preview is read-only; `--apply`
+is required to delete. Automatic retention and archival remain future work.
+
+The retention reader reuses finalized-report validation and restricts artifacts
+to the writer's layout. Unknown files, nested directories, symlinks, special files,
+inconsistent/future timestamps, unsupported metadata, and unfinished runs are
+protected. Abandoned `running` reports are never inferred to be safe to delete.
+Size calculation uses file metadata, not log contents, and reports logical bytes.
+Each new writer holds an exclusive `.mutie.lock` file lock until drop, including
+the multi-file final flush. The persistent empty file does not itself mean active.
+Pruning acquires the same lock, revalidates the selected snapshot and directory
+identity, then holds it through removal. Legacy finalized runs gain the lock only
+on apply. Deletion removes only validated artifact paths and uses nonrecursive
+directory removal, preserving unexpected files added during deletion. The lock
+file is removed last, after the report artifacts, to coordinate concurrent pruners.
+Changed or locked selections fail without being deleted; filesystem deletion
+errors report partial progress. Cancellation stops between removals.
 
 ## Component boundaries
 
@@ -606,8 +624,9 @@ compact library, not a general speedup or proof of selection equivalence.
 
 The run also exposed Go build directories retained after forced termination and
 a 1.35 GB report dominated by logs. Temporary Go builds now have a per-command
-cleanup lifetime; the reusable Go build cache remains separate. Use the report
-sizes when designing retention and log-output policies. Larger
+cleanup lifetime; the reusable Go build cache remains separate. Explicit retention
+now lists report sizes and previews pruning by count and age. Log-output and
+archival policies remain open. Larger
 applications, asset-heavy trees, and reflink-capable filesystem versus Linux tmpfs
 comparisons still need measurements.
 
@@ -632,7 +651,7 @@ recognizing a language.
 ### 4. CI and additional report consumers
 
 Add explicit failure policies and score definitions, predictable exit codes,
-report retention controls, and integrations driven by saved results. Consider HTML
+and integrations driven by saved results. Consider HTML
 or interchange exports when there is a concrete consumer. Avoid making a score the
 only useful output; individual missed mutations remain the main local finding.
 
@@ -670,8 +689,8 @@ design. No runtime or plugin ABI is selected now.
    details, and unresolved entries — completed with reader validation, renderer,
    PTY, rerun-remapping, and real-Go coverage.
 
-Open implementation choices include dismissal editing in the browser, report retention
-policy, mutation matching across source edits, and which language to
+Open implementation choices include dismissal editing in the browser, report archival
+and log-volume policies, mutation matching across source edits, and which language to
 add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
 the initial MVP.

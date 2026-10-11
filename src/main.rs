@@ -9,7 +9,9 @@ mod identity;
 mod mutation;
 mod process;
 mod report;
+mod report_lock;
 mod report_reader;
+mod report_retention;
 mod rerun;
 mod saved_report;
 mod status;
@@ -40,6 +42,24 @@ async fn main() -> Result<()> {
             .listen()
             .context("installing cancellation handlers")?;
         return match command {
+            cli::Command::Runs { directory } => tokio::task::spawn_blocking(move || {
+                report_retention::run(&directory, None, false, &cancellation)
+            })
+            .await
+            .context("report listing panicked")?,
+            cli::Command::Prune {
+                directory,
+                keep_last,
+                older_than,
+                apply,
+            } => {
+                let policy = report_retention::Policy::new(keep_last, older_than)?;
+                tokio::task::spawn_blocking(move || {
+                    report_retention::run(&directory, Some(policy), apply, &cancellation)
+                })
+                .await
+                .context("report pruning panicked")?
+            }
             cli::Command::Report { run_dir, module } => tokio::task::spawn_blocking(move || {
                 browser::run(&run_dir, module.as_deref(), &cancellation)
             })
