@@ -19,6 +19,7 @@ cargo run -- /path/to/go/module
 cargo run -- /path/to/go/module --jobs 4
 cargo run -- /path/to/go/module --test-scope affected --jobs 4
 cargo run -- /path/to/go/module --fail-on-missed
+cargo run -- /path/to/go/module --min-score 80
 cargo run -- /path/to/go/module --list
 cargo run -- /path/to/go/module --include 'internal/**/*.go' --exclude '**/generated_*'
 cargo run -- /path/to/go/module --timeout 30 --baseline-timeout 300 --verbose
@@ -61,6 +62,7 @@ timeout = 30
 # max_log_bytes = 65536 # optional retained bytes per log artifact
 baseline_timeout = 300
 fail_on_missed = false # enable to fail on undismissed missed mutations
+# min_score = 80.5 # optional minimum raw mutation score (0-100)
 output_dir = ".mutie"
 verbose = false
 ui = "auto"
@@ -86,6 +88,7 @@ exclusions), or `--clear-operators` (all operators). `--clear-timeout` restores 
 automatic timeout; `--no-verbose`
 overrides `verbose = true`; `--no-fail-on-missed` overrides `fail_on_missed = true`.
 `--clear-max-log-bytes` restores unlimited logs.
+`--clear-min-score` disables a configured score threshold.
 Each reset flag conflicts with the corresponding
 value flag. For example:
 
@@ -158,10 +161,10 @@ does not evaluate the policy or write a report.
 
 | Exit code | Meaning |
 | --- | --- |
-| `0` | Successful operation; for runs, the policy is disabled or passes. |
+| `0` | Successful operation; for runs, each policy is disabled or passes. |
 | `1` | Execution, configuration, reporting, or other operation failure, including handled interruption. |
 | `2` | Invalid CLI arguments. |
-| `3` | A completed, saved run fails `--fail-on-missed`. |
+| `3` | A completed, saved run fails `--fail-on-missed` or `--min-score`. |
 
 A findings failure keeps `status: "completed"` and `error: null` in the saved
 report. It changes the CLI exit code without changing mutation outcomes. The
@@ -174,7 +177,59 @@ partial report files may survive a write error but never produce exit code `3`.
 
 Killed, timed-out, and unbuildable mutations do not count as missed for this policy.
 The policy is not a mutation score or a guarantee that all mutations were killed.
-Percentage thresholds remain future work.
+
+## Mutation scores and minimum thresholds
+
+Every new run records a raw mutation score:
+
+```text
+score = 100 × killed / (killed + missed)
+```
+
+Timeouts and build failures are excluded and reported alongside the score; they
+never count as kills. Matched dismissals remain in the killed/missed counts, so
+dismissing a survivor does not improve the raw score. A failed or interrupted run
+has no final percentage. A completed run with no killed or missed mutations also
+has an unavailable score, rather than an invented zero or 100 percent.
+
+Use a threshold for gradual adoption in CI:
+
+```sh
+mutie /path/to/module --min-score 80 --ui plain
+mutie /path/to/module --min-score 66.67
+mutie /path/to/module --clear-min-score # disable a repository threshold locally
+```
+
+Repository `min_score = 80.5` accepts a number from 0 through 100 with at most
+two decimal places. The default is disabled. CLI values replace configuration;
+`--clear-min-score` conflicts with `--min-score`. Equality passes. Comparison uses
+the exact count ratio, independently of the two-decimal display: two killed and
+one missed display as `66.67%` but fail a `66.67` minimum. Even a zero threshold
+fails a completed run with no scored mutations, including an empty selection or
+a run containing only timeouts/build failures. `--list` never evaluates a gate.
+
+Both policies can be enabled. Either failure produces exit `3` after the completed
+report is saved. For example, dismissing all survivors can satisfy
+`--fail-on-missed` while still failing `--min-score`. Execution, interruption, and
+report-writing errors retain exit `1` and take precedence over policy failures.
+
+The final summary, `summary.txt`, and the browser's `m` view show the percentage,
+exact counts, exclusions, dismissals included, and scope. Scope is
+`all_discovered`, `filtered`, or `rerun`; a filtered run or rerun describes **only
+that selection**. Testing affected packages does not change mutation selection.
+Even an unfiltered run measures only the mutations discovered for this module,
+active files, and supported operators. Browser filters and marks never recompute
+the saved score, and reruns calculate a fresh score using current configuration.
+
+`run.json.score` stores the scope, `killed`, `missed`, `timeout`, `build_failed`,
+`errors`, `unfinished`, `dismissed_in_score`, `percentage`, and
+`unavailable_reason`. Counts are authoritative; the JSON percentage is a derived
+floating-point value. An unavailable score has `percentage: null` and reason
+`incomplete_run`, `execution_errors`, or `no_scored_mutations`.
+`run.json.score_policy` stores `disabled`, `not_evaluated`, `passed`, or `failed`,
+plus `minimum` whenever enabled. Readers validate the score and decision against
+saved outcomes, review, and configuration. Older reports remain readable and
+show the score as not recorded.
 
 ## Affected-package testing
 
@@ -319,6 +374,7 @@ inline. Terminals smaller than 24 columns by 12 rows show a resize hint.
 | `d`, `l` | Inspect the selected mutation's saved diff or log |
 | `b`, `g` | Inspect baseline or package-discovery logs |
 | `v` | Inspect the run's saved dismissal review, including unresolved entries |
+| `m` | Inspect the saved mutation score, selection scope, and minimum-score decision |
 | `r` | Show a focused rerun command |
 | `e` | Close the browser and print the rerun command to the shell |
 | `?`, `q`/Esc | Show help; close the browser |
@@ -766,10 +822,9 @@ parent and the reusable Go build cache (`GOCACHE`) are preserved.
   are removed on completion. On Unix, timeouts and interruption kill the child
   process group, including test binaries. Cancellation is also checked during
   workspace copying and between discovery/publication steps.
-- A completed run exits successfully unless `--fail-on-missed` is enabled and
-  undismissed missed findings remain (exit `3`). Baseline, tool, and report-writing
-  failures exit `1`. Percentage thresholds are future work; saved JSON reports
-  can already be consumed by other tools.
+- A completed run exits successfully unless an enabled `--fail-on-missed` or
+  `--min-score` policy fails (exit `3`). Baseline, tool, and report-writing failures
+  exit `1`. Saved JSON reports can be consumed by other tools.
 
 The initial scope is one self-contained Go module. `GOWORK` is set to `off` for
 child Go commands. Workspaces, local replacements outside the module, and tests

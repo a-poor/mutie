@@ -167,7 +167,14 @@ checklist as work lands, checking items off after appropriate verification.
   execution, save the decision separately from execution status, and return exit
   `3` only after report persistence. Cover current/stale dismissals, focused/empty
   runs, listing, failures, cancellation, and terminal restoration.
-- [ ] Define mutation scores/percentage thresholds and integration/report exports.
+- [x] Define raw mutation scores with explicit exclusions, unchanged dismissal
+  counts, and selection scope. Add opt-in `--min-score` / config with exact
+  comparisons, explicit empty/incomplete-run handling, and execution/persistence
+  error precedence. Surface scores in summaries, saved JSON, and browser `m`;
+  validate saved decisions and cover threshold boundaries, configuration, combined
+  policies, filtered/focused runs, compact/wide frames, terminal restoration, and
+  real-Go killed/missed/timeout/build-failure outcomes.
+- [ ] Add integration/report exports for concrete consumers.
 
 ## Longer-term options
 

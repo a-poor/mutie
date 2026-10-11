@@ -20,5 +20,5 @@
 │                                                                    │
 │Artifact: diff/000001.diff                                          │
 └────────────────────────────────────────────────────────────────────┘
- q quit | ? help | Tab focus | Space mark | v review
+ q quit | ? help | Tab focus | m score | v review
  o outcome p operator s review / file x reset | d diff l log r command

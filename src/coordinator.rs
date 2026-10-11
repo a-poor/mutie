@@ -260,6 +260,14 @@ impl Coordinator {
         self.saved.as_ref().map(SavedReport::policy)
     }
 
+    pub fn score(&self) -> Option<&crate::score::MutationScore> {
+        self.saved.as_ref().map(SavedReport::score)
+    }
+
+    pub fn score_policy(&self) -> Option<&crate::score::ScorePolicy> {
+        self.saved.as_ref().map(SavedReport::score_policy)
+    }
+
     pub fn line(&self, line: impl std::fmt::Display) {
         if !self.interactive {
             println!("{line}");

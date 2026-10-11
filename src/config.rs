@@ -13,6 +13,7 @@ use crate::{
     cli::{Cli, Lang, TestScope, UiMode},
     mutation::Operator,
     rerun::{RerunFilter, RerunMode, RerunRequest},
+    score::{MinimumScore, ScoreScope},
 };
 
 /// Parsed file values have no defaults; only explicitly supplied CLI values
@@ -30,6 +31,7 @@ struct RepositoryConfig {
     max_log_bytes: Option<NonZeroUsize>,
     baseline_timeout: Option<NonZeroU64>,
     fail_on_missed: Option<bool>,
+    min_score: Option<MinimumScore>,
     output_dir: Option<PathBuf>,
     verbose: Option<bool>,
     ui: Option<UiMode>,
@@ -53,6 +55,7 @@ pub struct RunConfig {
     pub max_log_bytes: Option<NonZeroUsize>,
     pub baseline_timeout: NonZeroU64,
     pub fail_on_missed: bool,
+    pub min_score: Option<MinimumScore>,
     pub output_dir: PathBuf,
     pub verbose: bool,
     pub list: bool,
@@ -187,6 +190,11 @@ impl RunConfig {
                 .unwrap_or(NonZeroU64::new(300).unwrap()),
             fail_on_missed: !cli.no_fail_on_missed
                 && (cli.fail_on_missed || file.fail_on_missed.unwrap_or(false)),
+            min_score: if cli.clear_min_score {
+                None
+            } else {
+                cli.min_score.or(file.min_score)
+            },
             output_dir,
             verbose: if cli.no_verbose {
                 false
@@ -211,6 +219,13 @@ impl RunConfig {
             }
         }
         Ok(config)
+    }
+
+    pub fn score_scope(&self) -> ScoreScope {
+        ScoreScope::selected(
+            self.rerun.is_some(),
+            !self.include.is_empty() || !self.exclude.is_empty() || !self.operators.is_empty(),
+        )
     }
 }
 
@@ -337,6 +352,41 @@ mod tests {
         assert!(resolve(temp.path(), &["--test-scope", "unknown"]).is_err());
         fs::write(&file, "test_scope = 'unknown'")?;
         assert!(resolve(temp.path(), &[]).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn minimum_score_config_overrides_and_validation() -> Result<()> {
+        let temp = project()?;
+        assert_eq!(resolve(temp.path(), &[])?.min_score, None);
+        let file = temp.path().join("module/mutie.toml");
+        for value in ["0", "80", "66.67", "100.0"] {
+            fs::write(&file, format!("min_score = {value}"))?;
+            assert_eq!(
+                resolve(temp.path(), &[])?.min_score,
+                Some(value.parse().unwrap())
+            );
+            assert_eq!(
+                resolve(temp.path(), &["--min-score", "50.01"])?.min_score,
+                Some("50.01".parse().unwrap())
+            );
+            assert_eq!(
+                resolve(temp.path(), &["--clear-min-score"])?.min_score,
+                None
+            );
+        }
+        for value in ["-1", "101", "nan", "inf", "1.001", "'80'", "true"] {
+            fs::write(&file, format!("min_score = {value}"))?;
+            assert!(resolve(temp.path(), &[]).is_err(), "{value}");
+        }
+        fs::write(&file, "")?;
+        for value in ["-1", "101", "NaN", "inf", "1.001"] {
+            assert!(
+                resolve(temp.path(), &["--min-score", value]).is_err(),
+                "{value}"
+            );
+        }
+        assert!(resolve(temp.path(), &["--min-score", "80", "--clear-min-score"]).is_err());
         Ok(())
     }
 

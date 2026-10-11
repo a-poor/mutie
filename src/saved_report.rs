@@ -20,6 +20,7 @@ use crate::{
     },
     report_lock,
     rerun::RerunProvenance,
+    score::{MutationScore, ScorePolicy},
     workspace_metrics::WorkspaceMetrics,
 };
 
@@ -40,6 +41,8 @@ struct RunReport {
     phase: &'static str,
     error: Option<String>,
     policy: PolicyEvaluation,
+    score: MutationScore,
+    score_policy: ScorePolicy,
     baseline_command: Vec<&'static str>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
@@ -201,6 +204,13 @@ impl SavedReport {
                 phase: "snapshot",
                 error: None,
                 policy: PolicyEvaluation::pending(config.fail_on_missed),
+                score: MutationScore::calculate(
+                    config.score_scope(),
+                    RunStatus::Running,
+                    false,
+                    [],
+                ),
+                score_policy: ScorePolicy::Disabled,
                 baseline_command: std::iter::once("go")
                     .chain(go::TEST_ARGS.iter().copied())
                     .collect(),
@@ -252,6 +262,14 @@ impl SavedReport {
 
     pub fn policy(&self) -> &PolicyEvaluation {
         &self.run.policy
+    }
+
+    pub fn score(&self) -> &MutationScore {
+        &self.run.score
+    }
+
+    pub fn score_policy(&self) -> &ScorePolicy {
+        &self.run.score_policy
     }
 
     pub fn workspace_metrics(&mut self, metrics: &WorkspaceMetrics) {
@@ -482,6 +500,22 @@ impl SavedReport {
     }
 
     fn flush(&mut self) -> Result<()> {
+        self.run.score = MutationScore::calculate(
+            self.run.effective_config.score_scope(),
+            self.run.status,
+            self.inventory.complete,
+            self.outcomes.mutations.iter().map(|execution| {
+                (
+                    execution.outcome,
+                    self.inventory
+                        .dismissals
+                        .as_ref()
+                        .is_some_and(|d| d.dismissal(execution.id).is_some()),
+                )
+            }),
+        );
+        self.run.score_policy =
+            ScorePolicy::evaluate(self.run.effective_config.min_score, &self.run.score);
         self.run.duration_seconds = self.started.elapsed().as_secs_f64();
         self.run.checkpoint += 1;
         self.outcomes.checkpoint = self.run.checkpoint;
@@ -545,6 +579,8 @@ impl SavedReport {
         );
         text.push_str(&format!("{}\n", self.run.workspace_metrics.summary()));
         text.push_str(&format!("{}\n", self.run.policy));
+        text.push_str(&self.run.score.details());
+        text.push_str(&format!("{}\n", self.run.score_policy));
         text.push_str(&format!(
             "Mutation test scope: {} (baseline: full module)\n",
             match self.run.effective_config.test_scope {

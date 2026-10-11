@@ -211,6 +211,180 @@ fn policy_report(output: &Output, undismissed: usize, dismissed: usize) -> PathB
 }
 
 #[test]
+fn score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes() {
+    let fixture = Fixture::new();
+    let check = |args: &[&str], code, percentage: Value, scope, policy| {
+        let output = fixture.run(args);
+        assert_eq!(output.status.code(), Some(code), "{output:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        let path = PathBuf::from(
+            text.lines()
+                .find_map(|l| l.strip_prefix("Saving report to "))
+                .unwrap(),
+        );
+        let run = json(&path, "run.json");
+        assert_eq!(run["status"], "completed");
+        assert_eq!(run["score"]["percentage"], percentage);
+        assert_eq!(run["score"]["scope"], scope);
+        assert_eq!(run["score_policy"]["status"], policy);
+        assert_eq!(
+            run["checkpoint"],
+            json(&path, "outcomes.json")["checkpoint"]
+        );
+        assert!(text.contains("Mutation score:"));
+        assert!(
+            fs::read_to_string(path.join("summary.txt"))
+                .unwrap()
+                .contains("Mutation score:")
+        );
+        path
+    };
+    let original = check(
+        &[],
+        0,
+        serde_json::json!(50.0),
+        "all_discovered",
+        "disabled",
+    );
+    let original_bytes = fs::read(original.join("run.json")).unwrap();
+    check(
+        &["--min-score", "50"],
+        0,
+        serde_json::json!(50.0),
+        "all_discovered",
+        "passed",
+    );
+    check(
+        &["--min-score", "50.01"],
+        3,
+        serde_json::json!(50.0),
+        "all_discovered",
+        "failed",
+    );
+    // A passing score cannot override the independent missed-findings policy.
+    let failed = check(
+        &["--min-score", "50", "--fail-on-missed"],
+        3,
+        serde_json::json!(50.0),
+        "all_discovered",
+        "passed",
+    );
+    assert_eq!(json(&failed, "run.json")["policy"]["status"], "failed");
+    success(&fixture.add(&original, "2"));
+    // Dismissing the survivor passes fail-on-missed but does not raise the raw score.
+    let dismissed = check(
+        &["--min-score", "51", "--fail-on-missed"],
+        3,
+        serde_json::json!(50.0),
+        "all_discovered",
+        "failed",
+    );
+    assert_eq!(json(&dismissed, "run.json")["policy"]["status"], "passed");
+    assert_eq!(
+        json(&dismissed, "run.json")["score"]["dismissed_in_score"],
+        1
+    );
+    assert_eq!(
+        json(&dismissed, "outcomes.json")["summary"],
+        json(&original, "outcomes.json")["summary"]
+    );
+    check(
+        &["--min-score", "100", "--include", "a.go"],
+        0,
+        serde_json::json!(100.0),
+        "filtered",
+        "passed",
+    );
+    check(
+        &["--min-score", "100", "--operator", "boolean_flip"],
+        3,
+        serde_json::json!(50.0),
+        "filtered",
+        "failed",
+    );
+    let rerun = check(
+        &[
+            "--min-score",
+            "100",
+            "--rerun",
+            original.to_str().unwrap(),
+            "--id",
+            "1",
+        ],
+        0,
+        serde_json::json!(100.0),
+        "rerun",
+        "passed",
+    );
+    assert!(
+        fs::read_to_string(rerun.join("summary.txt"))
+            .unwrap()
+            .contains("rerun selection only")
+    );
+    check(
+        &[
+            "--min-score",
+            "0",
+            "--rerun-missed",
+            original.to_str().unwrap(),
+        ],
+        0,
+        serde_json::json!(0.0),
+        "rerun",
+        "passed",
+    );
+    check(
+        &["--min-score", "0", "--include", "absent.go"],
+        3,
+        Value::Null,
+        "filtered",
+        "failed",
+    );
+    check(
+        &[
+            "--min-score",
+            "0",
+            "--rerun",
+            original.to_str().unwrap(),
+            "--operator",
+            "negation_remove",
+        ],
+        3,
+        Value::Null,
+        "rerun",
+        "failed",
+    );
+    assert_eq!(fs::read(original.join("run.json")).unwrap(), original_bytes);
+    assert_eq!(
+        fs::read_to_string(fixture.root.join("a.go")).unwrap(),
+        "package p\nvar a = true\n"
+    );
+    assert_eq!(
+        fs::read_to_string(fixture.root.join("b.go")).unwrap(),
+        "package p\nvar b = true\n"
+    );
+}
+
+#[test]
+fn configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate() {
+    let fixture = Fixture::new();
+    fs::write(fixture.root.join("mutie.toml"), "min_score = 80.5").unwrap();
+    let listing = success(&fixture.run(&["--list"]));
+    assert!(!listing.contains("Mutation score:"));
+    assert!(!fixture.root.join(".mutie").exists());
+    assert_eq!(fixture.run(&[]).status.code(), Some(3));
+    for (args, minimum, policy) in [
+        (vec!["--min-score", "50"], serde_json::json!(50.0), "passed"),
+        (vec!["--clear-min-score"], Value::Null, "disabled"),
+    ] {
+        let path = report_path(&fixture.run(&args));
+        let run = json(&path, "run.json");
+        assert_eq!(run["effective_config"]["min_score"], minimum);
+        assert_eq!(run["score_policy"]["status"], policy);
+    }
+}
+
+#[test]
 fn findings_policy_uses_current_dismissals_for_full_and_focused_runs() {
     let fixture = Fixture::new();
     let default = fixture.report();
@@ -301,7 +475,13 @@ fn baseline_failures_and_timeouts_leave_enabled_policy_unevaluated() {
         } else {
             fs::write(fixture.root.join("a.go"), "package p\nvar a = false\n").unwrap();
         }
-        let output = fixture.run(&["--fail-on-missed", "--baseline-timeout", "1"]);
+        let output = fixture.run(&[
+            "--fail-on-missed",
+            "--min-score",
+            "0",
+            "--baseline-timeout",
+            "1",
+        ]);
         assert_eq!(output.status.code(), Some(1), "{output:?}");
         let text = String::from_utf8_lossy(&output.stdout);
         let path = Path::new(
@@ -312,6 +492,8 @@ fn baseline_failures_and_timeouts_leave_enabled_policy_unevaluated() {
         let run = json(path, "run.json");
         assert_eq!(run["status"], "failed");
         assert_eq!(run["policy"], serde_json::json!({"status":"not_evaluated"}));
+        assert_eq!(run["score_policy"]["status"], "not_evaluated");
+        assert!(run["score"]["percentage"].is_null());
         assert!(
             !text.contains("Findings policy: passed") && !text.contains("Findings policy: failed")
         );

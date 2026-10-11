@@ -123,6 +123,7 @@ enum View {
     Command,
     Help,
     Dismissals,
+    Score,
 }
 
 impl View {
@@ -135,6 +136,7 @@ impl View {
             Self::Command => "Rerun command",
             Self::Help => "Help",
             Self::Dismissals => "Saved dismissal review",
+            Self::Score => "Mutation score",
         }
     }
 }
@@ -283,7 +285,16 @@ impl Browser {
         self.scroll = 0;
         self.horizontal = 0;
         let text = if self.view == View::Help {
-            "Keyboard shortcuts\n\nq / Esc        Close browser\nCtrl-C          Interrupt and restore terminal\nTab             Switch list/detail focus\nUp/Down or j/k  Move through rows or detail lines\nPgUp/PgDn       Move one page\nHome/End        First/last row or detail line\nLeft/Right      Scroll detail horizontally\n\no               Cycle outcome/state filter\np               Cycle operator filter\ns               Cycle all/undismissed/dismissed\n/               Edit file substring filter\nEnter / Esc     Apply/cancel file edit\nx               Clear filters\n\nSpace           Mark/unmark current mutation\na               Mark/unmark visible mutations\nc               Clear all marks, including hidden\n\nd               Show saved diff\nl               Show mutation log\nb / g           Show baseline/discovery log\nv               Show saved dismissal review\nr               Show focused rerun command\ne               Close and print rerun command\n?               Show help\n\n[D] marks dismissed mutations; outcomes are unchanged.\nDismissals reflect the saved run, not current metadata.\n\nMarks persist across filters. Commands use all marked\nIDs, including hidden marks, or the current row when\nnone are marked. No command is executed by this browser.\n\nArtifact previews are limited to 256 KiB. Open the\nsaved file directly for its complete contents.".to_owned()
+            "Keyboard shortcuts\n\nq / Esc        Close browser\nCtrl-C          Interrupt and restore terminal\nTab             Switch list/detail focus\nUp/Down or j/k  Move through rows or detail lines\nPgUp/PgDn       Move one page\nHome/End        First/last row or detail line\nLeft/Right      Scroll detail horizontally\n\no               Cycle outcome/state filter\np               Cycle operator filter\ns               Cycle all/undismissed/dismissed\n/               Edit file substring filter\nEnter / Esc     Apply/cancel file edit\nx               Clear filters\n\nSpace           Mark/unmark current mutation\na               Mark/unmark visible mutations\nc               Clear all marks, including hidden\n\nd               Show saved diff\nl               Show mutation log\nb / g           Show baseline/discovery log\nv               Show saved dismissal review\nm               Show mutation score and threshold\nr               Show focused rerun command\ne               Close and print rerun command\n?               Show help\n\n[D] marks dismissed mutations; outcomes are unchanged.\nDismissals reflect the saved run, not current metadata.\n\nMarks persist across filters. Commands use all marked\nIDs, including hidden marks, or the current row when\nnone are marked. No command is executed by this browser.\n\nArtifact previews are limited to 256 KiB. Open the\nsaved file directly for its complete contents.".to_owned()
+        } else if self.view == View::Score {
+            match &self.report.run.score {
+                Some(score) => format!(
+                    "{}\n{}\n\nScore uses the entire saved run selection.\nBrowser filters and marks do not change it.\nDismissals do not change the raw score.\nDisplay rounds to two decimal places; the\nminimum-score gate compares the exact ratio.\n",
+                    score.details(),
+                    self.report.run.score_policy.as_ref().unwrap(),
+                ),
+                None => "Mutation score: not recorded\n\nThis older report has no saved score or\nminimum-score policy. Outcomes remain available.\n".into(),
+            }
         } else if self.view == View::Dismissals {
             self.dismissal_review()
         } else if self.view == View::Command {
@@ -314,7 +325,7 @@ impl Browser {
                     .selected()
                     .and_then(|i| self.report.executions[i].logs.as_ref())
                     .and_then(|logs| logs.text.as_deref()),
-                View::Command | View::Help | View::Dismissals => None,
+                View::Command | View::Help | View::Dismissals | View::Score => None,
             };
             let preface = match self.view {
                 View::Baseline | View::Discovery => {
@@ -641,6 +652,10 @@ impl Browser {
                 self.view = View::Dismissals;
                 self.focus = Focus::Detail;
             }
+            KeyCode::Char('m') => {
+                self.view = View::Score;
+                self.focus = Focus::Detail;
+            }
             KeyCode::Char('r') => {
                 self.view = View::Command;
                 self.focus = Focus::Detail;
@@ -856,7 +871,7 @@ impl Browser {
         let hints = if self.draft.is_some() {
             " Enter apply | Esc cancel | Backspace delete\n File filter: case-insensitive substring"
         } else {
-            " q quit | ? help | Tab focus | Space mark | v review\n o outcome p operator s review / file x reset | d diff l log r command"
+            " q quit | ? help | Tab focus | m score | v review\n o outcome p operator s review / file x reset | d diff l log r command"
         };
         frame.render_widget(Paragraph::new(hints).style(Style::new().dim()), footer);
     }
@@ -1024,6 +1039,46 @@ mod tests {
         let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
         app.load_detail();
         (temp, app)
+    }
+
+    #[test]
+    fn score_view_keeps_saved_scope_across_filters_and_resizes() {
+        let temp = crate::report_reader::fixture_with_score();
+        let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
+        app.report.directory = PathBuf::from("/saved/run");
+        key(&mut app, KeyCode::Char('m'));
+        let detail = app.detail.clone();
+        assert!(detail.join("\n").contains("Minimum-score policy: failed"));
+        key(&mut app, KeyCode::Char('o'));
+        key(&mut app, KeyCode::Char('s'));
+        assert_eq!(app.detail, detail);
+        assert!(app.visible.len() < app.report.mutations.len());
+        for (width, height) in [(100, 30), (60, 30), (24, 12), (10, 5), (100, 30)] {
+            let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+            terminal.draw(|frame| app.render(frame)).unwrap();
+            let rendered = text(terminal.backend().buffer());
+            if width >= 60 {
+                assert!(rendered.contains("Mutation score: 66.67%"), "{rendered}");
+                assert!(rendered.contains("rerun selection only"), "{rendered}");
+                assert!(
+                    rendered.contains("Dismissed in score: 2 (included)"),
+                    "{rendered}"
+                );
+                let name = if width == 100 { "wide" } else { "compact" };
+                let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join(format!("tests/snapshots/report-score-{name}.txt"));
+                if std::env::var_os("MUTIE_UPDATE_SNAPSHOTS").is_some() {
+                    fs::write(&path, format!("{rendered}\n")).unwrap();
+                }
+                assert_eq!(
+                    rendered.trim_end(),
+                    fs::read_to_string(path).unwrap().trim_end()
+                );
+            }
+        }
+        let (_temp, mut legacy) = browser();
+        key(&mut legacy, KeyCode::Char('m'));
+        assert!(legacy.detail.join("\n").contains("not recorded"));
     }
 
     #[test]

@@ -165,6 +165,8 @@ fi
         }
         if mode == "policy" {
             command.arg("--fail-on-missed");
+        } else if mode == "score_policy" {
+            command.args(["--min-score", "1"]);
         }
         // SAFETY: pre_exec performs only async-signal-safe session/terminal syscalls.
         unsafe {
@@ -701,5 +703,22 @@ fn failed_terminal_setup_restores_input_and_auto_falls_back_to_plain() {
             assert!(!session.state.join("baseline.ready").exists());
             assert_eq!(session.report("run.json")["status"], "failed");
         }
+    }
+}
+
+#[test]
+fn score_failure_restores_terminal_and_preserves_completed_report() {
+    for (ui, ci, interactive) in [("interactive", false, true), ("auto", true, false)] {
+        let mut session = Session::start("score_policy", ui, ci);
+        assert_eq!(session.finish().code(), Some(3));
+        session.assert_restored(interactive);
+        let report = session.report("run.json");
+        assert_eq!(report["status"], "completed");
+        assert_eq!(report["policy"]["status"], "disabled");
+        assert_eq!(report["score_policy"]["status"], "failed");
+        assert_eq!(report["score"]["percentage"], 0.0);
+        let output = String::from_utf8_lossy(&session.output);
+        assert!(output.contains("Minimum-score policy: failed"));
+        assert!(output.contains("Mutation score: 0.00%"));
     }
 }

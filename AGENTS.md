@@ -14,6 +14,8 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.
 - `src/report.rs` defines outcomes; `saved_report.rs` persists reports, diffs, and logs.
+- `src/score.rs` computes raw mutation scores, selection scope, and exact minimum-score
+  decisions independently of dismissal-based findings policy.
 - `src/report_reader.rs` validates saved runs for reruns and browsing;
   `src/browser.rs` owns the full-screen report browser and command export.
 - `src/report_retention.rs` lists and prunes finalized saved runs;
@@ -29,7 +31,8 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
 - `tests/log_limits.rs` checks log retention, outcome preservation, complete
   discovery, reruns, noisy failures, signal cleanup, and source preservation.
 - `tests/dismissals.rs` checks persistence, invalidation, metadata edits, and
-  preservation of execution outcomes and saved reports.
+  preservation of execution outcomes and saved reports; it also exercises
+  dismissal-based and minimum-score CI policies, configuration, and focused runs.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 
 ## Development Status & Versioning

@@ -117,6 +117,9 @@ fn go_workflow() {
     assert_eq!(report["summary"]["timeout"], 1);
     assert_eq!(report["summary"]["build_failed"], 1);
     assert_eq!(report["summary"]["errors"], 0);
+    assert_eq!(metadata["score"]["percentage"], 50.0);
+    assert_eq!(metadata["score"]["timeout"], 1);
+    assert_eq!(metadata["score"]["build_failed"], 1);
     assert_eq!(report["baseline"]["outcome"], "passed");
     let affected = run(
         &root,
@@ -128,6 +131,8 @@ fn go_workflow() {
             "--test-scope",
             "affected",
             "--fail-on-missed",
+            "--min-score",
+            "50.01",
             "--max-log-bytes",
             "128",
         ],
@@ -138,6 +143,8 @@ fn go_workflow() {
     assert_eq!(affected_metadata["effective_config"]["max_log_bytes"], 128);
     assert_eq!(affected_metadata["policy"]["status"], "failed");
     assert_eq!(affected_metadata["policy"]["undismissed_missed"], 1);
+    assert_eq!(affected_metadata["score_policy"]["status"], "failed");
+    assert_eq!(affected_metadata["score"], metadata["score"]);
     assert_eq!(affected_outcomes["summary"], report["summary"]);
     assert_eq!(affected_inventory["mutations"].as_array().unwrap().len(), 4);
     for mutation in affected_inventory["mutations"].as_array().unwrap() {

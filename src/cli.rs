@@ -76,6 +76,14 @@ pub struct Cli {
     #[arg(long, conflicts_with = "fail_on_missed")]
     pub no_fail_on_missed: bool,
 
+    /// Minimum raw mutation score, 0-100 with up to two decimals (exit 3 if unmet)
+    #[arg(long, value_name = "PERCENT")]
+    pub min_score: Option<crate::score::MinimumScore>,
+
+    /// Disable the configured minimum mutation score
+    #[arg(long, conflicts_with = "min_score")]
+    pub clear_min_score: bool,
+
     /// List mutations without running tests
     #[arg(long)]
     pub list: bool,

@@ -14,6 +14,7 @@ use crate::{
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
     report::{ExecutionState, Outcome, RunStatus},
     saved_report::{LogRetention, SCHEMA_VERSION},
+    score::{MinimumScore, MutationScore, ScorePolicy, ScoreScope},
 };
 
 #[derive(Debug, Deserialize)]
@@ -27,6 +28,22 @@ pub struct SavedRun {
     pub module_root: Option<PathBuf>,
     pub phase: Option<String>,
     pub error: Option<String>,
+    pub score: Option<MutationScore>,
+    pub score_policy: Option<ScorePolicy>,
+    effective_config: Option<ScoreConfig>,
+}
+
+/// Only the saved configuration needed to verify score scope and policy.
+#[derive(Debug, Deserialize)]
+struct ScoreConfig {
+    #[serde(default)]
+    include: Vec<String>,
+    #[serde(default)]
+    exclude: Vec<String>,
+    #[serde(default)]
+    operators: Vec<Operator>,
+    rerun: Option<serde_json::Value>,
+    min_score: Option<MinimumScore>,
 }
 
 #[derive(Deserialize)]
@@ -228,6 +245,45 @@ impl LoadedReport {
                 "duplicate outcome mutation ID {id}"
             );
         }
+        if let Some(score) = &run.score {
+            let config = run
+                .effective_config
+                .as_ref()
+                .context("saved score has no configuration")?;
+            let expected = MutationScore::calculate(
+                ScoreScope::selected(
+                    config.rerun.is_some(),
+                    !config.include.is_empty()
+                        || !config.exclude.is_empty()
+                        || !config.operators.is_empty(),
+                ),
+                run.status,
+                inventory.complete,
+                executions.values().map(|execution| {
+                    (
+                        execution.outcome,
+                        inventory
+                            .dismissals
+                            .as_ref()
+                            .is_some_and(|d| d.dismissal(execution.id).is_some()),
+                    )
+                }),
+            );
+            ensure!(
+                expected.matches_saved(score),
+                "saved mutation score disagrees with execution outcomes or scope"
+            );
+            ensure!(
+                run.score_policy.as_ref()
+                    == Some(&ScorePolicy::evaluate(config.min_score, &expected)),
+                "saved minimum-score policy disagrees with score or configuration"
+            );
+        } else {
+            ensure!(
+                run.score_policy.is_none(),
+                "saved minimum-score policy has no score"
+            );
+        }
         Ok(Self {
             directory,
             run,
@@ -414,6 +470,61 @@ pub(crate) fn fixture_with_dismissals() -> tempfile::TempDir {
 }
 
 #[cfg(test)]
+pub(crate) fn fixture_with_score() -> tempfile::TempDir {
+    use serde_json::{Value, json};
+    use std::fs;
+    let temp = fixture_with_dismissals();
+    let directory = temp.path().canonicalize().unwrap();
+    let mut outcomes: Value = read_json(&directory, "outcomes.json").unwrap();
+    outcomes["status"] = json!("completed");
+    for (execution, outcome) in outcomes["mutations"]
+        .as_array_mut()
+        .unwrap()
+        .iter_mut()
+        .zip(["missed", "killed", "killed", "build_failed"])
+    {
+        execution["state"] = json!("completed");
+        execution["outcome"] = json!(outcome);
+    }
+    fs::write(
+        temp.path().join("outcomes.json"),
+        serde_json::to_vec(&outcomes).unwrap(),
+    )
+    .unwrap();
+    let mut run: Value = read_json(&directory, "run.json").unwrap();
+    run["status"] = json!("completed");
+    run["effective_config"] = json!({"include":[], "exclude":[], "operators":[],
+        "rerun":{"source_run":"/saved/older"}, "min_score":66.67});
+    fs::write(
+        temp.path().join("run.json"),
+        serde_json::to_vec(&run).unwrap(),
+    )
+    .unwrap();
+    let report = LoadedReport::load(temp.path()).unwrap();
+    let score = MutationScore::calculate(
+        ScoreScope::Rerun,
+        report.run.status,
+        report.complete,
+        report
+            .executions
+            .iter()
+            .map(|e| (e.outcome, report.dismissal(e.id).is_some())),
+    );
+    run["score_policy"] = serde_json::to_value(ScorePolicy::evaluate(
+        Some("66.67".parse().unwrap()),
+        &score,
+    ))
+    .unwrap();
+    run["score"] = serde_json::to_value(score).unwrap();
+    fs::write(
+        temp.path().join("run.json"),
+        serde_json::to_vec(&run).unwrap(),
+    )
+    .unwrap();
+    temp
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use std::fs;
@@ -423,6 +534,35 @@ mod tests {
             serde_json::from_slice(&fs::read(directory.join(name)).unwrap()).unwrap();
         edit(&mut value);
         fs::write(directory.join(name), serde_json::to_vec(&value).unwrap()).unwrap();
+    }
+
+    #[test]
+    fn score_and_threshold_are_validated_against_outcomes_review_and_selection() {
+        use serde_json::json;
+        let temp = fixture_with_score();
+        let report = LoadedReport::load(temp.path()).unwrap();
+        assert_eq!(report.run.score.unwrap().value_label(), "66.67%");
+        assert!(report.run.score_policy.unwrap().failed());
+        for (pointer, value) in [
+            ("/score/percentage", json!(100)),
+            ("/score/killed", json!(3)),
+            ("/score/unfinished", json!(1)),
+            ("/score/dismissed_in_score", json!(0)),
+            ("/score/unavailable_reason", json!("incomplete_run")),
+            ("/score/scope", json!("all_discovered")),
+            ("/score_policy/status", json!("passed")),
+            ("/score_policy/minimum", json!(50)),
+            ("/effective_config/min_score", json!(50)),
+            ("/effective_config/rerun", json!(null)),
+            ("/score_policy", json!(null)),
+            ("/score", json!(null)),
+        ] {
+            let temp = fixture_with_score();
+            update(temp.path(), "run.json", |v| {
+                *v.pointer_mut(pointer).unwrap() = value
+            });
+            assert!(LoadedReport::load(temp.path()).is_err(), "{pointer}");
+        }
     }
 
     #[test]

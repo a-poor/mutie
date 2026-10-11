@@ -15,6 +15,7 @@ mod report_reader;
 mod report_retention;
 mod rerun;
 mod saved_report;
+mod score;
 mod status;
 mod workspace;
 mod workspace_metrics;
@@ -128,8 +129,19 @@ fn finish_run(mut coordinator: Coordinator, result: Result<()>) -> Result<ExitCo
     let result = coordinator.finish(result);
     status::print_summary(&coordinator);
     if coordinator.report_finished
+        && let Some(score) = coordinator.score()
+    {
+        print!("{}", score.details());
+    }
+    if coordinator.report_finished
         && let Some(policy) = coordinator.policy()
         && !matches!(policy, PolicyEvaluation::Disabled)
+    {
+        println!("{policy}");
+    }
+    if coordinator.report_finished
+        && let Some(policy) = coordinator.score_policy()
+        && !matches!(policy, score::ScorePolicy::Disabled)
     {
         println!("{policy}");
     }
@@ -137,7 +149,11 @@ fn finish_run(mut coordinator: Coordinator, result: Result<()>) -> Result<ExitCo
     // an ExitCode lets all terminal, report-lock, and runtime guards drop normally.
     result?;
     Ok(
-        if coordinator.policy().is_some_and(PolicyEvaluation::failed) {
+        if coordinator.policy().is_some_and(PolicyEvaluation::failed)
+            || coordinator
+                .score_policy()
+                .is_some_and(score::ScorePolicy::failed)
+        {
             ExitCode::from(3)
         } else {
             ExitCode::SUCCESS
@@ -708,6 +724,8 @@ mod tests {
                 std::ffi::OsStr::new("mutie"),
                 root.path().as_os_str(),
                 std::ffi::OsStr::new("--fail-on-missed"),
+                std::ffi::OsStr::new("--min-score"),
+                std::ffi::OsStr::new("100"),
             ]))?;
             let mutations =
                 mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
@@ -716,6 +734,7 @@ mod tests {
             let initial: serde_json::Value =
                 serde_json::from_slice(&fs::read(directory.join("run.json"))?)?;
             assert_eq!(initial["policy"]["status"], "not_evaluated");
+            assert_eq!(initial["score_policy"]["status"], "not_evaluated");
             let cancellation = Cancellation::default();
             coordinator.emit(
                 RunEvent::Plan(&RunPlan {
@@ -778,6 +797,10 @@ mod tests {
                 serde_json::from_slice(&fs::read(directory.join("run.json"))?)?;
             assert_eq!(
                 metadata["policy"]["status"],
+                if fail_save { "failed" } else { "passed" }
+            );
+            assert_eq!(
+                metadata["score_policy"]["status"],
                 if fail_save { "failed" } else { "passed" }
             );
             assert_eq!(

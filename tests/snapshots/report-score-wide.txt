@@ -1,0 +1,30 @@
+ mutie report completed | 4 mutations | 1 missed | /saved/run
+ Outcome: missed | Operator: all | Marked: 0 (0 hidden)
+ File:
+ Review: undismissed | 2 dismissed | 1 need review (saved)
+┌ Mutations 0/4 ───────────────────────┐┌ > Mutation score | line 1/14 ────────────────────────────┐
+│No matches. x clears filters.         ││Mutation score: 66.67%                                    │
+│                                      ││Scope: rerun selection only                               │
+│                                      ││Killed / (killed + missed): 2 / 3                         │
+│                                      ││Excluded: 0 timeout, 1 build failed                       │
+│                                      ││Execution errors: 0; unfinished: 0                        │
+│                                      ││Dismissed in score: 2 (included)                          │
+│                                      ││                                                          │
+│                                      ││Minimum-score policy: failed (minimum 66.67%)             │
+│                                      ││                                                          │
+│                                      ││Score uses the entire saved run selection.                │
+│                                      ││Browser filters and marks do not change it.               │
+│                                      ││Dismissals do not change the raw score.                   │
+│                                      ││Display rounds to two decimal places; the                 │
+│                                      ││minimum-score gate compares the exact ratio.              │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+│                                      ││                                                          │
+└──────────────────────────────────────┘└──────────────────────────────────────────────────────────┘
+ q quit | ? help | Tab focus | m score | v review
+ o outcome p operator s review / file x reset | d diff l log r command

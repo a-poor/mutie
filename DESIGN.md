@@ -1,6 +1,6 @@
 # mutie design
 
-Status: working design, 2026-10-08. This document records the direction for the
+Status: working design, 2026-10-11. This document records the direction for the
 project, including work that is not implemented yet. [README.md](README.md)
 documents the current CLI and behavior; [TODO.md](TODO.md) tracks implementation
 progress. Update this reference as decisions change.
@@ -150,11 +150,12 @@ killed merely because its execution stopped.
 
 Tool failures stop the run rather than inflate the killed count. A timeout is
 reported separately, and an invalid mutation is not evidence of good tests. The
-MVP reports counts without enforcing a mutation-score threshold. Completed local
-runs can succeed with missed mutations; baseline/tool failures exit unsuccessfully.
-The opt-in `--fail-on-missed` policy exits `3` when a completed run has undismissed
-missed findings. Execution status stays `completed`, independently of the policy
-decision. Score definitions and percentage thresholds remain later work.
+default reports counts and a raw score without enforcing a threshold. Completed
+local runs can succeed with missed mutations; baseline/tool failures exit
+unsuccessfully. Opt-in `--fail-on-missed` and `--min-score` policies exit `3` when
+a completed, saved run fails either enabled gate. Execution status stays
+`completed`, independently of the policy decision; see the CI section for score
+definitions and exclusions.
 
 Inventory records contain the run-local ID, relative source path, named operator,
 byte range, line/column range, original text, replacement, and source fingerprint.
@@ -729,10 +730,42 @@ precedes the final summary and policy exit. Baseline/tool failures and interrupt
 leave enabled policies unevaluated. Policy fields are additive; older reports
 remain readable, and reruns do not reuse their policy decision.
 
-Add score definitions, percentage thresholds, and integrations driven by saved
-results as needed. Consider HTML
-or interchange exports when there is a concrete consumer. Avoid making a score the
-only useful output; individual missed mutations remain the main local finding.
+Raw mutation scores and an independent minimum-score policy are implemented in
+`score.rs`. Score is `100 * killed / (killed + missed)`. Timeouts and build failures
+are excluded and exposed as counts, not counted as kills. Review decisions never
+alter this ratio; matched dismissals among scored outcomes have a separate count.
+Only successfully completed inventories with no unfinished/error outcomes have a
+percentage. Zero denominators have no score. Failed/interrupted runs retain counts
+but never present a partial percentage as a final result.
+
+`min_score` defaults to disabled and merges from repository configuration with
+`--min-score` and `--clear-min-score` overrides. Accept 0 through 100 with at most
+two decimal places, represented internally as integer hundredths. Compare counts
+using widened integer cross-products, independent of floating-point serialization
+and two-decimal display rounding. An enabled threshold fails a completed run with
+no killed/missed outcomes, even at minimum zero. Errors and interruption leave it
+unevaluated. Either enabled CI policy may fail a completed run; execution and
+persistence errors still take precedence. Listing evaluates neither policy.
+
+Every report checkpoint includes `run.json.score` and `score_policy`, with the
+decision finalized only on successful completion. Score scope distinguishes all
+discovered mutations, file/operator-filtered selections, and reruns. Reruns always
+score only their fresh selection; full/affected test scope is a separate axis.
+The report reader recomputes from validated outcomes and saved dismissal matches,
+checks scope/configuration and gate decisions, and tolerates only tiny JSON
+floating-point representation differences in the derived percentage. Counts are
+authoritative. These additive fields need no schema bump; legacy reports show
+score as not recorded.
+
+The final plain summary and saved text expose the score, counts, exclusions, and
+selection scope. Browser `m` opens a cached score detail view using the existing
+Ratatui layout and terminal lifecycle. Browser filters/marks never change the
+score. Regression coverage includes exact thresholds, empty and partial runs,
+dismissals, combined policies, scope/reruns, report validation/persistence errors,
+compact/wide frames, and terminal restoration.
+
+Consider integration, HTML, or interchange exports when there is a concrete
+consumer. Individual missed mutations remain the main local finding.
 
 ### 5. Optional language plugins
 
