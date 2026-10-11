@@ -107,6 +107,31 @@ after normal completion, timeout, and cancellation. Preserve caller-owned files
 and reusable caches. The observed leftovers are small; this is a lifetime and
 isolation gap, not evidence of large disk consumption in this sample.
 
+### Test temporary-directory cleanup follow-up
+
+Implemented on the working tree based on `1424d9e`. Each Go command now receives
+a separate owned `mutie-test-*` directory through child `TMPDIR`, `TMP`, and
+`TEMP`. Its lifetime covers the command and process-group shutdown; `GOTMPDIR`
+keeps its separate ownership and placement rules.
+
+Repeated the original 32-ID sample with the release build, once per scope.
+Both runs retained **6 killed, 21 missed, 5 build failures, and no timeouts or
+tool errors**, matching every original outcome. Both per-trial temporary parents
+were completely empty after exit, down from 220 leftover files for full scope
+and 172 for affected scope. Source hashes remained unchanged and both saved
+reports passed Mutie's reader. The [follow-up data](fzf-v0.65.2-temp-cleanup.json)
+records commands, binary/source hashes, reports, and cleanup results; raw evidence
+remains under the original temporary root as `cleanup-full` and `cleanup-affected`.
+These checks make no new timing or peak-disk comparison.
+
+Regression coverage also checks success, tool/startup errors, concurrent workers,
+timeouts, SIGINT/SIGTERM, relative parent placement, and nested files/symlinks
+without removing caller-owned files or reusable caches. The real-Go fixture leaves
+temporary files before a deliberately hanging mutation and verifies their cleanup.
+Removal still cannot run after a forced kill of Mutie itself, and tests that
+explicitly write outside the supplied temporary directories remain outside this
+ownership.
+
 ## Findings and build-failure noise
 
 The eight selected call removals produced one killed, five missed, and two

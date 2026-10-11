@@ -362,14 +362,20 @@ classification evidence independently of retained logs, and renders readable
 output into a separate temporary file. Discovery decodes the complete capture
 through a reader, including when only a tiny excerpt will be saved.
 
-Every child Go command also owns a private temporary directory, passed as
-`GOTMPDIR`. Its parent is the nonempty environment `GOTMPDIR`, or the system
-temporary directory when unset/empty; canonicalization makes relative parents
-independent of the child's workspace. The directory guard outlives the child and
-process-group guards, removing build output left by forced termination as well
-as ordinary exits and startup errors. Each concurrent command has a separate
-directory. Existing parent contents and `GOCACHE` are outside this ownership.
-Like workspace cleanup, removal cannot run if Mutie itself is forcibly killed.
+Every child Go command owns two private temporary directories. Build output uses
+`GOTMPDIR`; its parent is the nonempty environment `GOTMPDIR`, or the system
+temporary directory when unset/empty. General test files use a separate directory
+under the system temporary parent, passed through the child's `TMPDIR`, `TMP`,
+and `TEMP`. Canonicalization makes relative parents independent of the child's
+workspace; the caller's environment is never modified. Discovery and baseline
+commands use the same ownership rules as mutation tests.
+
+Both directory guards outlive the child and process-group guards, removing files
+left by forced command termination as well as ordinary exits and startup errors.
+Each concurrent command has separate directories, so completion cannot remove
+another command's active files. Existing parent contents, explicit external paths,
+and `GOCACHE` are outside this ownership. Like workspace cleanup, removal cannot
+run if Mutie itself is forcibly killed.
 
 Keep noisy test output in artifacts rather than interleaving it with screen
 updates. After completion, restore the terminal and print a durable plain summary
@@ -695,11 +701,13 @@ with all 4,550 transfers reflinked. Sampled temporary logical bytes peaked at
 This evaluates the Go suite on a 1.34 MB source tree, not fzf's Ruby/tmux suite or
 large-tree scaling.
 
-The application tests also left files directly in inherited `TMPDIR`: 220 files
+The application tests initially left files directly in inherited `TMPDIR`: 220 files
 (15,961 bytes) per full trial and 172 (12,571 bytes) per affected trial. Mutie's
 workspaces, Go build directories, and captures were removed. General test temporary
-files need a per-command owned directory and cleanup on completion, timeout, and
-cancellation, preserving unrelated caller files and reusable caches.
+files now use a per-command owned directory with cleanup on completion, timeout,
+and cancellation, preserving unrelated caller files and reusable caches.
+Repeating the same fzf sample with the change left both temporary parents empty,
+with all 32 outcomes unchanged in each scope; see the benchmark's cleanup follow-up.
 
 The earlier go-cmp run exposed Go build directories retained after forced
 termination and a 1.35 GB report dominated by logs. Temporary Go builds now have

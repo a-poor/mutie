@@ -81,15 +81,36 @@ where
         .stderr(stderr.as_file().try_clone()?)
         .kill_on_drop(true);
     // Outlive the child and its process-group guard so they issue any required
-    // kills before temporary builds are removed, including on spawn/wait errors
+    // kills before temporary files are removed, including on spawn/wait errors
     // or when this future is dropped.
-    let _go_build_directory = if program == "go" {
+    let _go_directories = if program == "go" {
         // v1 runs one module; do not pick up a workspace outside the snapshot.
         command.env("GOWORK", "off");
+        let test_parent = std::env::temp_dir();
+        let test_parent = test_parent.canonicalize().with_context(|| {
+            format!(
+                "resolving Go test temporary directory {}",
+                test_parent.display()
+            )
+        })?;
+        let tests = tempfile::Builder::new()
+            .prefix("mutie-test-")
+            .tempdir_in(&test_parent)
+            .with_context(|| {
+                format!(
+                    "creating Go test temporary directory in {}",
+                    test_parent.display()
+                )
+            })?;
+        // Go tests and their helpers can leave files outside the workspace.
+        // Set all common aliases in the child only, including for discovery.
+        for variable in ["TMPDIR", "TMP", "TEMP"] {
+            command.env(variable, tests.path());
+        }
         let parent = std::env::var_os("GOTMPDIR")
             .filter(|value| !value.is_empty())
             .map(std::path::PathBuf::from)
-            .unwrap_or_else(std::env::temp_dir);
+            .unwrap_or(test_parent);
         let parent = parent.canonicalize().with_context(|| {
             format!(
                 "resolving Go temporary build directory {}",
@@ -108,7 +129,7 @@ where
         // Go cannot remove its go-build* trees after SIGKILL. Own a private
         // parent for every invocation; never prune caller-owned files or GOCACHE.
         command.env("GOTMPDIR", directory.path());
-        Some(directory)
+        Some((tests, directory))
     } else {
         None
     };

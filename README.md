@@ -345,6 +345,9 @@ An application sample on `fzf` v0.65.2 matched full/affected outcomes for 32
 mutations across all seven operators. Added tests killed two call-removal survivors
 in both scopes. The [application measurements](benchmarks/fzf-v0.65.2.md) cover
 runtime, disk use, and test-created temporary files left outside managed workspaces.
+The [cleanup follow-up](benchmarks/fzf-v0.65.2.md#test-temporary-directory-cleanup-follow-up)
+repeated both scopes with private test temporary directories: zero leftovers and
+unchanged outcomes.
 This covered fzf's Go tests; its separate Ruby/tmux suite and large-tree scaling
 remain outside the validation.
 
@@ -796,9 +799,18 @@ Each child Go command gets a private `mutie-go-*` directory for `GOTMPDIR`.
 If the environment contains a nonempty `GOTMPDIR`, Mutie uses that existing,
 writable directory as the parent; relative paths resolve from Mutie's starting
 directory. Otherwise it uses the system temporary directory (`TMPDIR` on Unix).
-The private directory and Go's build files inside it are removed when the command
-ends, including after a timeout or handled interruption. Existing files in the
-parent and the reusable Go build cache (`GOCACHE`) are preserved.
+
+Each Go command also gets a separate `mutie-test-*` directory under the system
+temporary parent. Mutie sets `TMPDIR`, `TMP`, and `TEMP` to this absolute path
+in the child, so test-created files and helper subprocesses use the same owned
+directory. This applies to baseline tests, discovery, and mutation tests, with
+separate directories for concurrent commands. The caller's environment is unchanged.
+
+Both private directories and their contents are removed when the command ends,
+including after startup errors, timeouts, or handled interruptions. Existing
+parent contents and the reusable Go build cache (`GOCACHE`) are preserved.
+Cleanup cannot run if Mutie itself is forcibly killed; files written to explicit
+paths outside the private directories are not covered by this cleanup.
 
 ## Behavior
 

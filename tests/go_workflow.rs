@@ -21,7 +21,7 @@ fn copy_tree(from: &Path, to: &Path) {
 }
 
 fn run(root: &Path, args: &[&str]) -> Output {
-    with_build_cleanup(
+    with_temporary_cleanup(
         Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg(root)
             .args(args),
@@ -29,7 +29,7 @@ fn run(root: &Path, args: &[&str]) -> Output {
 }
 
 fn dismiss(root: &Path, args: &[&str]) -> Output {
-    with_build_cleanup(
+    with_temporary_cleanup(
         Command::new(env!("CARGO_BIN_EXE_mutie"))
             .args(["dismiss", "--module"])
             .arg(root)
@@ -37,15 +37,23 @@ fn dismiss(root: &Path, args: &[&str]) -> Output {
     )
 }
 
-fn with_build_cleanup(command: &mut Command) -> Output {
+fn with_temporary_cleanup(command: &mut Command) -> Output {
     let builds = tempfile::tempdir().unwrap();
+    let tests = tempfile::tempdir().unwrap();
     let output = command
         .env("GOTMPDIR", builds.path())
+        .env("TMPDIR", tests.path())
+        .env("TMP", tests.path())
+        .env("TEMP", tests.path())
         .output()
         .expect("could not start mutie");
     assert!(
         fs::read_dir(builds.path()).unwrap().next().is_none(),
         "Go temporary builds leaked: {output:?}"
+    );
+    assert!(
+        fs::read_dir(tests.path()).unwrap().next().is_none(),
+        "Go test temporary files, workspaces, or captures leaked: {output:?}"
     );
     output
 }

@@ -2,6 +2,7 @@ package fixture
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 )
@@ -19,8 +20,21 @@ func TestGreeting(t *testing.T) {
 }
 
 func TestReady(t *testing.T) {
+	leaveTemporaryFiles(t)
 	for !Ready() {
 		time.Sleep(time.Second)
+	}
+}
+
+// Intentionally do not clean these up. Mutie must do so even if TestReady hangs.
+func leaveTemporaryFiles(t *testing.T) {
+	t.Helper()
+	directory, err := os.MkdirTemp("", "fixture-test-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(directory, "leftover"), []byte("test output"), 0600); err != nil {
+		t.Fatal(err)
 	}
 }
 

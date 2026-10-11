@@ -143,11 +143,14 @@ checklist as work lands, checking items off after appropriate verification.
   files and the reusable Go build cache. Regression tests cover success,
   tool/startup errors, concurrent timeouts, and SIGINT/SIGTERM. A focused go-cmp
   timeout and interruption both left zero owned temporary build directories.
-- [ ] Own general test temporary directories per Go command, in addition to
-  `GOTMPDIR`, and clean them after completion, timeout, and cancellation. fzf tests
-  left 220 files (15,961 bytes) per full sample run in inherited `TMPDIR`, outside
-  managed workspaces. Preserve caller-owned files and reusable caches; verify
-  concurrent execution and failure paths.
+- [x] Own general test temporary directories per Go command, in addition to
+  `GOTMPDIR`, and clean them after completion, timeout, and cancellation. Set child
+  `TMPDIR`/`TMP`/`TEMP` without changing the caller's environment. Verify separate
+  concurrent lifetimes, startup/tool errors, signals, relative parent placement,
+  nested files, symlinks, and preservation of caller-owned files and caches.
+  The real-Go fixture deliberately leaves temporary files before its timeout;
+  baseline, mutation, and rerun cleanup checks pass. Repeated fzf full/affected
+  samples left zero temporary files, with all 32 outcomes unchanged in each scope.
 - [x] Add opt-in affected-package testing with a full-module baseline/default,
   transitive reverse dependencies and test imports, per-mutation saved selections,
   and fresh graph discovery on reruns. Verify against real multi-package tests.

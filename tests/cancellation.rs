@@ -34,6 +34,12 @@ impl Fixture {
         for directory in [&root, &bin, &state, &workspaces, &go_temporary, &go_cache] {
             fs::create_dir(directory).unwrap();
         }
+        fs::create_dir(workspaces.join("mutie-test-existing")).unwrap();
+        fs::write(
+            workspaces.join("mutie-test-existing/keep"),
+            "unrelated test file",
+        )
+        .unwrap();
         fs::create_dir(go_temporary.join("go-build-existing")).unwrap();
         fs::write(go_temporary.join("go-build-existing/keep"), "unrelated").unwrap();
         fs::write(go_cache.join("keep"), "cached build").unwrap();
@@ -54,6 +60,16 @@ set -eu
 mkdir "$GOTMPDIR/go-build-$$"
 printf 'build output\n' > "$GOTMPDIR/go-build-$$/object"
 printf '%s\n' "$GOTMPDIR" > "$MUTIE_TEST_STATE/$$.gotmpdir"
+# Test helpers may use any of these variables, or leave nested files/symlinks.
+test "$TMPDIR" = "$TMP"
+test "$TMPDIR" = "$TEMP"
+test "$TMPDIR" != "$GOTMPDIR"
+test ! -e "$TMPDIR/test-artifact"
+printf 'test output\n' > "$TMPDIR/test-artifact"
+mkdir "$TMPDIR/nested"
+printf 'nested output\n' > "$TMPDIR/nested/artifact"
+ln -s "$GOCACHE" "$TMPDIR/cache-link"
+printf '%s\n' "$TMPDIR" > "$MUTIE_TEST_STATE/$$.tmpdir"
 printf 'cache reused\n' > "$GOCACHE/reused"
 hang() {
     label="$1"
@@ -64,6 +80,10 @@ hang() {
     (sleep 30; touch "$MUTIE_TEST_STATE/leaked") &
     printf '%s\n' "$!" > "$MUTIE_TEST_STATE/$label.child.pid"
     touch "$MUTIE_TEST_STATE/$label.ready"
+    if [ "$MUTIE_TEST_MODE" = isolation ] && [ "$label" = b ]; then
+        while [ ! -f "$MUTIE_TEST_STATE/release-b" ]; do sleep 0.01; done
+        exit 0
+    fi
     if [ "$MUTIE_TEST_MODE" = tool_error ] && [ "$label" = c ]; then
         while [ ! -f "$MUTIE_TEST_STATE/fail" ]; do sleep 0.01; done
         printf 'go tool failed unexpectedly\n' >&2
@@ -125,6 +145,8 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
         command
             .env("PATH", std::env::join_paths(paths).unwrap())
             .env("TMPDIR", &self.workspaces)
+            .env("TMP", &self.go_temporary)
+            .env("TEMP", &self.go_temporary)
             .env("GOTMPDIR", &self.go_temporary)
             .env("GOCACHE", &self.go_cache)
             .env("MUTIE_TEST_STATE", &self.state)
@@ -168,10 +190,7 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
     }
 
     fn assert_cleanup(&self) {
-        assert!(
-            fs::read_dir(&self.workspaces).unwrap().next().is_none(),
-            "temporary workspace leaked"
-        );
+        self.assert_test_temporary_cleanup();
         assert!(
             !self.state.join("unexpected").exists(),
             "scheduled pending mutation after cancellation"
@@ -191,6 +210,7 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
             "cache reused\n"
         );
         let mut build_directories = HashSet::new();
+        let mut test_directories = HashSet::new();
         for name in ["a", "b", "c", "z"] {
             assert_eq!(
                 fs::read_to_string(self.root.join(format!("{name}.go"))).unwrap(),
@@ -199,6 +219,27 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
         }
         for entry in fs::read_dir(&self.state).unwrap() {
             let path = entry.unwrap().path();
+            if path
+                .extension()
+                .is_some_and(|extension| extension == "tmpdir")
+            {
+                let directory = PathBuf::from(fs::read_to_string(path).unwrap().trim());
+                assert_eq!(directory.parent(), Some(self.workspaces.as_path()));
+                assert!(
+                    directory
+                        .file_name()
+                        .unwrap()
+                        .to_str()
+                        .unwrap()
+                        .starts_with("mutie-test-")
+                );
+                assert!(!directory.exists(), "Go test temporary directory leaked");
+                assert!(
+                    test_directories.insert(directory),
+                    "Go commands shared a test directory"
+                );
+                continue;
+            }
             if path
                 .extension()
                 .is_some_and(|extension| extension == "gotmpdir")
@@ -226,6 +267,29 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
             }
         }
         assert!(!build_directories.is_empty());
+        assert_eq!(test_directories.len(), build_directories.len());
+        assert!(test_directories.is_disjoint(&build_directories));
+    }
+
+    fn assert_test_temporary_cleanup(&self) {
+        assert_eq!(
+            fs::read_dir(&self.workspaces).unwrap().count(),
+            1,
+            "temporary workspace, capture, or test files leaked"
+        );
+        assert_eq!(
+            fs::read_to_string(self.workspaces.join("mutie-test-existing/keep")).unwrap(),
+            "unrelated test file"
+        );
+    }
+
+    fn test_temporary(&self, label: &str) -> PathBuf {
+        let pid = fs::read_to_string(self.state.join(format!("{label}.pid"))).unwrap();
+        PathBuf::from(
+            fs::read_to_string(self.state.join(format!("{}.tmpdir", pid.trim())))
+                .unwrap()
+                .trim(),
+        )
     }
 }
 
@@ -488,7 +552,7 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
 }
 
 #[test]
-fn timeouts_remove_temporary_go_builds_and_retain_diagnostics() {
+fn timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics() {
     let fixture = Fixture::new();
     let mut child = fixture.start_with_args(
         "mutations",
@@ -514,7 +578,7 @@ fn timeouts_remove_temporary_go_builds_and_retain_diagnostics() {
 }
 
 #[test]
-fn temporary_go_builds_respect_parent_placement_for_listing() {
+fn go_temporary_directories_respect_parent_placement_for_listing() {
     for placement in ["unset", "empty", "absolute", "relative"] {
         let fixture = Fixture::new();
         let mut command = fixture.command("discovery_success");
@@ -529,6 +593,7 @@ fn temporary_go_builds_respect_parent_placement_for_listing() {
             }
             "relative" => {
                 command.env("GOTMPDIR", "go-tmp");
+                command.env("TMPDIR", "workspaces");
                 &fixture.go_temporary
             }
             _ => &fixture.go_temporary,
@@ -537,8 +602,13 @@ fn temporary_go_builds_respect_parent_placement_for_listing() {
         assert!(output.status.success(), "{placement}: {output:?}");
         for entry in fs::read_dir(&fixture.state).unwrap() {
             let path = entry.unwrap().path();
-            let directory = PathBuf::from(fs::read_to_string(path).unwrap().trim());
-            assert_eq!(directory.parent(), Some(parent.as_path()));
+            if path
+                .extension()
+                .is_some_and(|extension| extension == "gotmpdir")
+            {
+                let directory = PathBuf::from(fs::read_to_string(path).unwrap().trim());
+                assert_eq!(directory.parent(), Some(parent.as_path()));
+            }
         }
         fixture.assert_cleanup();
     }
@@ -549,7 +619,7 @@ fn go_startup_errors_do_not_leave_temporary_directories() {
     for invalid_parent in [false, true] {
         let fixture = Fixture::new();
         // An executable whose interpreter is missing fails during spawn, after
-        // Mutie has created the private build directory.
+        // Mutie has created both private temporary directories.
         fs::write(fixture.bin.join("go"), "#!/nonexistent/mutie-test-shell\n").unwrap();
         let mut command = fixture.command("startup_error");
         command
@@ -570,7 +640,7 @@ fn go_startup_errors_do_not_leave_temporary_directories() {
             }),
             "{stderr}"
         );
-        assert_eq!(fs::read_dir(&fixture.workspaces).unwrap().count(), 0);
+        fixture.assert_test_temporary_cleanup();
         assert_eq!(fs::read_dir(&fixture.go_temporary).unwrap().count(), 1);
         assert_eq!(
             fs::read_to_string(fixture.go_temporary.join("go-build-existing/keep")).unwrap(),
@@ -578,4 +648,34 @@ fn go_startup_errors_do_not_leave_temporary_directories() {
         );
         assert_eq!(fs::read_dir(&fixture.go_cache).unwrap().count(), 1);
     }
+}
+
+#[test]
+fn completing_one_worker_preserves_another_workers_test_temporary_files() {
+    let fixture = Fixture::new();
+    let mut child = fixture.start_with_args(
+        "isolation",
+        &["--jobs", "2", "--timeout", "60", "--exclude", "z.go"],
+    );
+    fixture.ready("b");
+    fixture.ready("c");
+    let b = fixture.test_temporary("b");
+    let c = fixture.test_temporary("c");
+    assert_ne!(b, c);
+    for directory in [&b, &c] {
+        assert_eq!(
+            fs::read_to_string(directory.join("test-artifact")).unwrap(),
+            "test output\n"
+        );
+    }
+    fs::write(fixture.state.join("release-b"), "").unwrap();
+    wait_until(|| !b.exists());
+    assert_eq!(
+        fs::read_to_string(c.join("test-artifact")).unwrap(),
+        "test output\n"
+    );
+    child.signal(libc::SIGTERM);
+    let output = child.finish();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    fixture.assert_cleanup();
 }
