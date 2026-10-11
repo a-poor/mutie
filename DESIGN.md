@@ -185,6 +185,8 @@ Start with simple syntax-based edits, such as:
 - Comparison inversion: `==` to `!=`, or a comparison to its complement.
 - Boolean and logical changes: `true` to `false`, `&&` to `||`, or removal of `!`.
 - Standalone calls: remove a complete call statement (`call_remove`).
+- Branch conditions: force an `if` condition true or false (`branch_force_true`,
+  `branch_force_false`).
 
 These describe the implemented catalog. Each
 mutation makes one change. Discovery order and operator names should be
@@ -215,6 +217,29 @@ whole original statement and exact byte/line/column endpoints. Unified diffs now
 support multiline edits, correct old/new hunk lengths, three context lines, CRLF,
 Unicode, and missing final newlines.
 
+Branch forcing selects the complete `condition` field of each `if_statement`,
+including `else if`, labeled statements, initializers, and nested function bodies.
+After unwrapping parentheses and ignoring comments, a bare `true`/`false` is
+excluded to avoid overlap with `boolean_flip`. This is syntactic eligibility;
+shadowed bare boolean names are also excluded, and other constant expressions
+are not evaluated. Loop and switch conditions are outside this operator's scope.
+
+Replace `condition` with `(0 == 0) || (condition)` or `(0 != 0) && (condition)`.
+Go's [short-circuit rules](https://go.dev/ref/spec#Logical_operators) skip the
+original expression, including calls and receives, while its syntactic references
+keep local variables and imports used. An `if` initializer still executes and both
+branch bodies remain intact. The comparison guards produce
+[untyped boolean constants](https://go.dev/ref/spec#Constant_expressions), compatible
+with named boolean types and generic `~bool` operands, without referring to
+shadowable `true`/`false` identifiers. This avoids unused-name repair edits and
+does not claim general buildability or equivalent-mutation detection.
+
+Replacement text can now be owned for source-dependent edits; existing token and
+call-removal replacements remain borrowed. Saved identities and inventories keep
+the same string representation and exact original condition range. Discovery visits
+the original tree only, so operators inside a condition remain separate mutations
+and synthesized guards never create additional candidates.
+
 All operators are enabled by default. Resolve repository `operators`, CLI
 `--operator`, and `--clear-operators` before execution, normalize duplicates, and
 save the effective list (empty means all). Match dismissals against the complete
@@ -223,8 +248,14 @@ decisions to final IDs. `dismiss check` ignores operator restrictions so valid
 decisions outside a run's selection remain checkable. Reruns apply the same merged
 operator selection to the source inventory before strict current-source matching.
 
-Return-value, branch, and loop mutations and named operator profiles remain future
-work. Favor understandable findings over generating the largest possible number
+The [fzf branch sample](benchmarks/fzf-v0.65.2-branches.md) validated 24 mutations
+at 12 conditions in both scopes: one killed, 23 missed, no build failures. Added
+tests killed four survivors in both scopes; review also identified an equivalent
+ASCII decoding shortcut. This is evidence for useful findings, not a general
+noise-rate or killability claim.
+
+Return-value, loop, and further branch mutations and named operator profiles remain
+future work. Favor understandable findings over generating the largest possible number
 of mutations. See [call-removal validation](benchmarks/godotenv-v1.5.1-call-remove.md)
 for four actionable CLI gaps and four unbuildable removals on `godotenv` v1.5.1.
 

@@ -108,12 +108,13 @@ conflicts with `--list`.
 
 ## Mutation operators
 
-All seven operators run by default. Use repeatable or comma-separated
+All nine operators run by default. Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 
 ```sh
 cargo run -- /path/to/go/module --operator call_remove --list
 cargo run -- /path/to/go/module --operator arithmetic_replace,call_remove --jobs 2
+cargo run -- /path/to/go/module --operator branch_force_true,branch_force_false --list
 ```
 
 The `operators` list in `mutie.toml` sets the repository default. CLI values
@@ -122,6 +123,26 @@ configured list or `--clear-operators` allows all operators. Operator selection
 intersects with file scope and, for reruns, saved IDs and outcome selection.
 An empty selection completes normally. IDs are assigned after selection, and
 reports record the effective operator list.
+
+`branch_force_true` and `branch_force_false` force an entire `if` or `else if`
+condition to take or skip its branch. They preserve the initializer (if any)
+and both bodies, but skip evaluation of the original condition, including its
+side effects. For example, `if ready()` becomes `if (0 == 0) || (ready())` or
+`if (0 != 0) && (ready())`. Keeping the original expression as a short-circuited
+operand keeps its imports and local variables used, avoiding unused-name build
+failures. The constant comparisons work even when code shadows `true` or `false`.
+
+These operators include nested, labeled, multiline, and initializer-bearing
+`if` statements. They exclude loop/switch conditions and conditions consisting
+only of `true` or `false` (possibly parenthesized), which remain covered by
+`boolean_flip`. This is a syntax rule, without name resolution or general constant
+folding; named constants and equivalent branches can still produce unkillable
+mutations. Other mutations inside the original condition remain independent.
+
+The [fzf branch sample](benchmarks/fzf-v0.65.2-branches.md) matched all 24 outcomes
+between full and affected tests with no build failures. Added tests killed four
+survivors, covering ellipsis arguments and up-arrow modifiers. This sample does
+not establish a general noise rate or make every survivor a test gap.
 
 `call_remove` deletes an entire standalone function or method call, including
 multiline and parenthesized calls, from a block or case body. Arguments are also
@@ -640,7 +661,7 @@ the checkout or repository metadata is unavailable.
 `schema_version` is `1` in all three JSON files, and `operator_catalog_version` is
 `1` in run metadata and the inventory. Named operators are `arithmetic_replace`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `boolean_flip`,
-`negation_remove`, and `call_remove`.
+`negation_remove`, `call_remove`, `branch_force_true`, and `branch_force_false`.
 
 Mutation execution `state` is `pending`, `running`, `completed`, or `interrupted`.
 Only completed executions have an `outcome`; the other states have `null` outcomes
@@ -869,7 +890,7 @@ paths outside the private directories are not covered by this cleanup.
   modules are not mutated. Build tags and platform selection follow the Go
   environment. The initial operators flip comparisons and their boundaries,
   swap arithmetic and logical operators, flip booleans, remove logical `!`, and
-  remove standalone calls.
+  remove standalone calls, and force `if` conditions true or false.
 - Results are **killed** (tests failed), **missed** (tests passed), **timeout**, or
   **build failed** (the mutation could not compile or failed Go's build checks).
   Tool/setup failures abort the run instead of counting as killed mutations.
@@ -928,6 +949,11 @@ improved tests turning a previous missed result into killed. The opt-in real-Go
 test also selects a killed and a dismissed missed mutation by ID and operator,
 checks the dismissal against real discovery, and verifies that a test-only change
 preserves its identity while the new tests kill the previously missed mutation.
+The real-Go branch fixture covers locals/imports used only in conditions,
+initializer and condition side effects, named/generic booleans, shadowed boolean
+names, config/CLI selection, diffs, dismissals, and affected-package reruns after
+stronger tests. Parser tests cover nested and multiline conditions, comments,
+Unicode, CRLF, literal exclusion, and strict source matching.
 Dismissal tests cover persistence, independent IDs, reason/note edits, removal,
 strict rediscovery, moved checkouts, stale/missing/ambiguous entries, malformed
 metadata, concurrent-writer exclusion, and preservation of reports, source files,

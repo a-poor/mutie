@@ -1,0 +1,2197 @@
+{
+  "date": "2026-10-11",
+  "mutie_base_commit": "0e0cf1d",
+  "change": "uncommitted branch forcing implementation",
+  "source": {
+    "project": "fzf",
+    "tag": "v0.65.2",
+    "commit": "416aff86e9d550d0a34af9d3cc12dfede25354c3",
+    "archive_sha256": "53b7e0077833f96ae04fd1e312ed65b2d5c427422b652dd3ce6c2d1702f8ce56",
+    "files": 130,
+    "logical_bytes": 1344688,
+    "manifest_sha256": "e717d891f7e940b4b44e76df933ccf61b65358627c78ebc18488b98c6acf45ee"
+  },
+  "host": {
+    "os": "macOS (version redacted)",
+    "arch": "arm64",
+    "go": "go version go1.27.2 darwin/arm64",
+    "GOMAXPROCS": "8",
+    "CGO_ENABLED": "0",
+    "GOPROXY": "off",
+    "GOENV": "off",
+    "GOTOOLCHAIN": "local",
+    "GOWORK": "off"
+  },
+  "selection": {
+    "source_report": "/tmp/mutie-fzf-branches-4kifbebk/reports/seed/run-1791757638-TA2IWC",
+    "method": "12 conditions evenly spaced by discovery order; both directions per condition; selected before outcomes",
+    "inventory_counts": {
+      "branch_force_true": 1987,
+      "branch_force_false": 1987
+    },
+    "ids": [
+      1,
+      2,
+      361,
+      362,
+      723,
+      724,
+      1083,
+      1084,
+      1445,
+      1446,
+      1805,
+      1806,
+      2167,
+      2168,
+      2527,
+      2528,
+      2889,
+      2890,
+      3249,
+      3250,
+      3611,
+      3612,
+      3973,
+      3974
+    ],
+    "mutations": [
+      {
+        "id": 1,
+        "file": "main.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 42,
+        "column": 5,
+        "end_line": 42,
+        "end_column": 40,
+        "byte_start": 764,
+        "byte_end": 799,
+        "original": "code == fzf.ExitError && err != nil",
+        "replacement": "(0 == 0) || (code == fzf.ExitError && err != nil)",
+        "diff": "diff/000001.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2,
+        "file": "main.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+        "line": 42,
+        "column": 5,
+        "end_line": 42,
+        "end_column": 40,
+        "byte_start": 764,
+        "byte_end": 799,
+        "original": "code == fzf.ExitError && err != nil",
+        "replacement": "(0 != 0) && (code == fzf.ExitError && err != nil)",
+        "diff": "diff/000002.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 361,
+        "file": "src/ansi.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+        "line": 216,
+        "column": 8,
+        "end_line": 216,
+        "end_column": 30,
+        "byte_start": 4908,
+        "byte_end": 4930,
+        "original": "s[i+1] < utf8.RuneSelf",
+        "replacement": "(0 == 0) || (s[i+1] < utf8.RuneSelf)",
+        "diff": "diff/000361.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 362,
+        "file": "src/ansi.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+        "line": 216,
+        "column": 8,
+        "end_line": 216,
+        "end_column": 30,
+        "byte_start": 4908,
+        "byte_end": 4930,
+        "original": "s[i+1] < utf8.RuneSelf",
+        "replacement": "(0 != 0) && (s[i+1] < utf8.RuneSelf)",
+        "diff": "diff/000362.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 723,
+        "file": "src/options.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 502,
+        "column": 6,
+        "end_line": 502,
+        "end_column": 26,
+        "byte_start": 17382,
+        "byte_end": 17402,
+        "original": "b.alternative != nil",
+        "replacement": "(0 == 0) || (b.alternative != nil)",
+        "diff": "diff/000723.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 724,
+        "file": "src/options.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 502,
+        "column": 6,
+        "end_line": 502,
+        "end_column": 26,
+        "byte_start": 17382,
+        "byte_end": 17402,
+        "original": "b.alternative != nil",
+        "replacement": "(0 != 0) && (b.alternative != nil)",
+        "diff": "diff/000724.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1083,
+        "file": "src/options.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 2837,
+        "column": 7,
+        "end_line": 2837,
+        "end_column": 17,
+        "byte_start": 76658,
+        "byte_end": 76668,
+        "original": "err != nil",
+        "replacement": "(0 == 0) || (err != nil)",
+        "diff": "diff/001083.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1084,
+        "file": "src/options.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+        "line": 2837,
+        "column": 7,
+        "end_line": 2837,
+        "end_column": 17,
+        "byte_start": 76658,
+        "byte_end": 76668,
+        "original": "err != nil",
+        "replacement": "(0 != 0) && (err != nil)",
+        "diff": "diff/001084.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1445,
+        "file": "src/pattern.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+        "line": 327,
+        "column": 71,
+        "end_line": 327,
+        "end_column": 83,
+        "byte_start": 8073,
+        "byte_end": 8085,
+        "original": "match != nil",
+        "replacement": "(0 == 0) || (match != nil)",
+        "diff": "diff/001445.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1446,
+        "file": "src/pattern.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+        "line": 327,
+        "column": 71,
+        "end_line": 327,
+        "end_column": 83,
+        "byte_start": 8073,
+        "byte_end": 8085,
+        "original": "match != nil",
+        "replacement": "(0 != 0) && (match != nil)",
+        "diff": "diff/001446.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1805,
+        "file": "src/terminal.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 1154,
+        "column": 5,
+        "end_line": 1154,
+        "end_column": 40,
+        "byte_start": 29749,
+        "byte_end": 29784,
+        "original": "t.gap > 0 && len(*opts.GapLine) > 0",
+        "replacement": "(0 == 0) || (t.gap > 0 && len(*opts.GapLine) > 0)",
+        "diff": "diff/001805.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 1806,
+        "file": "src/terminal.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 1154,
+        "column": 5,
+        "end_line": 1154,
+        "end_column": 40,
+        "byte_start": 29749,
+        "byte_end": 29784,
+        "original": "t.gap > 0 && len(*opts.GapLine) > 0",
+        "replacement": "(0 != 0) && (t.gap > 0 && len(*opts.GapLine) > 0)",
+        "diff": "diff/001806.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2167,
+        "file": "src/terminal.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 2360,
+        "column": 5,
+        "end_line": 2360,
+        "end_column": 20,
+        "byte_start": 63274,
+        "byte_end": 63289,
+        "original": "t.window == nil",
+        "replacement": "(0 == 0) || (t.window == nil)",
+        "diff": "diff/002167.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2168,
+        "file": "src/terminal.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 2360,
+        "column": 5,
+        "end_line": 2360,
+        "end_column": 20,
+        "byte_start": 63274,
+        "byte_end": 63289,
+        "original": "t.window == nil",
+        "replacement": "(0 != 0) && (t.window == nil)",
+        "diff": "diff/002168.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2527,
+        "file": "src/terminal.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 3575,
+        "column": 9,
+        "end_line": 3575,
+        "end_column": 47,
+        "byte_start": 97075,
+        "byte_end": 97113,
+        "original": "t.overflow(line[maxe:], ellipsisWidth)",
+        "replacement": "(0 == 0) || (t.overflow(line[maxe:], ellipsisWidth))",
+        "diff": "diff/002527.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2528,
+        "file": "src/terminal.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 3575,
+        "column": 9,
+        "end_line": 3575,
+        "end_column": 47,
+        "byte_start": 97075,
+        "byte_end": 97113,
+        "original": "t.overflow(line[maxe:], ellipsisWidth)",
+        "replacement": "(0 != 0) && (t.overflow(line[maxe:], ellipsisWidth))",
+        "diff": "diff/002528.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2889,
+        "file": "src/terminal.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 5210,
+        "column": 10,
+        "end_line": 5210,
+        "end_column": 99,
+        "byte_start": 141134,
+        "byte_end": 141223,
+        "original": "(t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus",
+        "replacement": "(0 == 0) || ((t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus)",
+        "diff": "diff/002889.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 2890,
+        "file": "src/terminal.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 5210,
+        "column": 10,
+        "end_line": 5210,
+        "end_column": 99,
+        "byte_start": 141134,
+        "byte_end": 141223,
+        "original": "(t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus",
+        "replacement": "(0 != 0) && ((t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus)",
+        "diff": "diff/002890.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3249,
+        "file": "src/terminal.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 6537,
+        "column": 10,
+        "end_line": 6537,
+        "end_column": 17,
+        "byte_start": 178934,
+        "byte_end": 178941,
+        "original": "me.Left",
+        "replacement": "(0 == 0) || (me.Left)",
+        "diff": "diff/003249.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3250,
+        "file": "src/terminal.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+        "line": 6537,
+        "column": 10,
+        "end_line": 6537,
+        "end_column": 17,
+        "byte_start": 178934,
+        "byte_end": 178941,
+        "original": "me.Left",
+        "replacement": "(0 != 0) && (me.Left)",
+        "diff": "diff/003250.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3611,
+        "file": "src/tui/light.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+        "line": 555,
+        "column": 11,
+        "end_line": 555,
+        "end_column": 14,
+        "byte_start": 12156,
+        "byte_end": 12159,
+        "original": "alt",
+        "replacement": "(0 == 0) || (alt)",
+        "diff": "diff/003611.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3612,
+        "file": "src/tui/light.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+        "line": 555,
+        "column": 11,
+        "end_line": 555,
+        "end_column": 14,
+        "byte_start": 12156,
+        "byte_end": 12159,
+        "original": "alt",
+        "replacement": "(0 != 0) && (alt)",
+        "diff": "diff/003612.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3973,
+        "file": "src/util/util_unix.go",
+        "operator": "branch_force_true",
+        "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+        "line": 62,
+        "column": 5,
+        "end_line": 62,
+        "end_column": 15,
+        "byte_start": 1428,
+        "byte_end": 1438,
+        "original": "err != nil",
+        "replacement": "(0 == 0) || (err != nil)",
+        "diff": "diff/003973.diff",
+        "test_packages": [
+          "./..."
+        ]
+      },
+      {
+        "id": 3974,
+        "file": "src/util/util_unix.go",
+        "operator": "branch_force_false",
+        "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+        "line": 62,
+        "column": 5,
+        "end_line": 62,
+        "end_column": 15,
+        "byte_start": 1428,
+        "byte_end": 1438,
+        "original": "err != nil",
+        "replacement": "(0 != 0) && (err != nil)",
+        "diff": "diff/003974.diff",
+        "test_packages": [
+          "./..."
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "24 mutations from 12 evenly spaced conditions, not a random or whole-catalog sample",
+    "Only Go tests were run; Ruby/tmux suite was not run",
+    "Single trial per scope; validation timing is not a performance benchmark; Rust checks and real-Go fixture tests overlapped part of validation",
+    "An unchanged outcome across scopes is not proof of general test-selection equivalence",
+    "Not every survivor was reviewed or shown killable; the ASCII decoder shortcut has equivalent output when skipped"
+  ],
+  "runs": [
+    {
+      "label": "full",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-branches-4kifbebk/module",
+        "--operator",
+        "branch_force_true,branch_force_false",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/full",
+        "--rerun",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/seed/run-1791757638-TA2IWC",
+        "--id",
+        "1,2,361,362,723,724,1083,1084,1445,1446,1805,1806,2167,2168,2527,2528,2889,2890,3249,3250,3611,3612,3973,3974",
+        "--test-scope",
+        "full"
+      ],
+      "report": "/tmp/mutie-fzf-branches-4kifbebk/reports/full/run-1791757715-nXlFaF",
+      "wall_seconds": 38.226036875043064,
+      "status": "completed",
+      "summary": {
+        "killed": 1,
+        "missed": 23,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "6d1aa7e7f28349e1f6aa3646de39629e6d23bbb214916f8648f35bebecc9be5b",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "main.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+          "line": 42,
+          "column": 5,
+          "end_line": 42,
+          "end_column": 40,
+          "byte_start": 764,
+          "byte_end": 799,
+          "original": "code == fzf.ExitError && err != nil",
+          "replacement": "(0 == 0) || (code == fzf.ExitError && err != nil)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1,
+          "outcome": "missed",
+          "duration_seconds": 4.178541541
+        },
+        {
+          "id": 2,
+          "file": "main.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+          "line": 42,
+          "column": 5,
+          "end_line": 42,
+          "end_column": 40,
+          "byte_start": 764,
+          "byte_end": 799,
+          "original": "code == fzf.ExitError && err != nil",
+          "replacement": "(0 != 0) && (code == fzf.ExitError && err != nil)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2,
+          "outcome": "missed",
+          "duration_seconds": 3.275094583
+        },
+        {
+          "id": 3,
+          "file": "src/ansi.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+          "line": 216,
+          "column": 8,
+          "end_line": 216,
+          "end_column": 30,
+          "byte_start": 4908,
+          "byte_end": 4930,
+          "original": "s[i+1] < utf8.RuneSelf",
+          "replacement": "(0 == 0) || (s[i+1] < utf8.RuneSelf)",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 361,
+          "outcome": "killed",
+          "duration_seconds": 2.498319625
+        },
+        {
+          "id": 4,
+          "file": "src/ansi.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+          "line": 216,
+          "column": 8,
+          "end_line": 216,
+          "end_column": 30,
+          "byte_start": 4908,
+          "byte_end": 4930,
+          "original": "s[i+1] < utf8.RuneSelf",
+          "replacement": "(0 != 0) && (s[i+1] < utf8.RuneSelf)",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 362,
+          "outcome": "missed",
+          "duration_seconds": 2.448647959
+        },
+        {
+          "id": 5,
+          "file": "src/options.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 502,
+          "column": 6,
+          "end_line": 502,
+          "end_column": 26,
+          "byte_start": 17382,
+          "byte_end": 17402,
+          "original": "b.alternative != nil",
+          "replacement": "(0 == 0) || (b.alternative != nil)",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 723,
+          "outcome": "missed",
+          "duration_seconds": 2.602708334
+        },
+        {
+          "id": 6,
+          "file": "src/options.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 502,
+          "column": 6,
+          "end_line": 502,
+          "end_column": 26,
+          "byte_start": 17382,
+          "byte_end": 17402,
+          "original": "b.alternative != nil",
+          "replacement": "(0 != 0) && (b.alternative != nil)",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 724,
+          "outcome": "missed",
+          "duration_seconds": 2.404302709
+        },
+        {
+          "id": 7,
+          "file": "src/options.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 == 0) || (err != nil)",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1083,
+          "outcome": "missed",
+          "duration_seconds": 2.3223054579999998
+        },
+        {
+          "id": 8,
+          "file": "src/options.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 != 0) && (err != nil)",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1084,
+          "outcome": "missed",
+          "duration_seconds": 2.407949833
+        },
+        {
+          "id": 9,
+          "file": "src/pattern.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+          "line": 327,
+          "column": 71,
+          "end_line": 327,
+          "end_column": 83,
+          "byte_start": 8073,
+          "byte_end": 8085,
+          "original": "match != nil",
+          "replacement": "(0 == 0) || (match != nil)",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1445,
+          "outcome": "missed",
+          "duration_seconds": 2.432012958
+        },
+        {
+          "id": 10,
+          "file": "src/pattern.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+          "line": 327,
+          "column": 71,
+          "end_line": 327,
+          "end_column": 83,
+          "byte_start": 8073,
+          "byte_end": 8085,
+          "original": "match != nil",
+          "replacement": "(0 != 0) && (match != nil)",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1446,
+          "outcome": "missed",
+          "duration_seconds": 2.525767625
+        },
+        {
+          "id": 11,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 1154,
+          "column": 5,
+          "end_line": 1154,
+          "end_column": 40,
+          "byte_start": 29749,
+          "byte_end": 29784,
+          "original": "t.gap > 0 && len(*opts.GapLine) > 0",
+          "replacement": "(0 == 0) || (t.gap > 0 && len(*opts.GapLine) > 0)",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1805,
+          "outcome": "missed",
+          "duration_seconds": 2.717486709
+        },
+        {
+          "id": 12,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 1154,
+          "column": 5,
+          "end_line": 1154,
+          "end_column": 40,
+          "byte_start": 29749,
+          "byte_end": 29784,
+          "original": "t.gap > 0 && len(*opts.GapLine) > 0",
+          "replacement": "(0 != 0) && (t.gap > 0 && len(*opts.GapLine) > 0)",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 1806,
+          "outcome": "missed",
+          "duration_seconds": 2.551384292
+        },
+        {
+          "id": 13,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 2360,
+          "column": 5,
+          "end_line": 2360,
+          "end_column": 20,
+          "byte_start": 63274,
+          "byte_end": 63289,
+          "original": "t.window == nil",
+          "replacement": "(0 == 0) || (t.window == nil)",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2167,
+          "outcome": "missed",
+          "duration_seconds": 2.5389343330000003
+        },
+        {
+          "id": 14,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 2360,
+          "column": 5,
+          "end_line": 2360,
+          "end_column": 20,
+          "byte_start": 63274,
+          "byte_end": 63289,
+          "original": "t.window == nil",
+          "replacement": "(0 != 0) && (t.window == nil)",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2168,
+          "outcome": "missed",
+          "duration_seconds": 2.526835583
+        },
+        {
+          "id": 15,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3575,
+          "column": 9,
+          "end_line": 3575,
+          "end_column": 47,
+          "byte_start": 97075,
+          "byte_end": 97113,
+          "original": "t.overflow(line[maxe:], ellipsisWidth)",
+          "replacement": "(0 == 0) || (t.overflow(line[maxe:], ellipsisWidth))",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2527,
+          "outcome": "missed",
+          "duration_seconds": 2.469244333
+        },
+        {
+          "id": 16,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3575,
+          "column": 9,
+          "end_line": 3575,
+          "end_column": 47,
+          "byte_start": 97075,
+          "byte_end": 97113,
+          "original": "t.overflow(line[maxe:], ellipsisWidth)",
+          "replacement": "(0 != 0) && (t.overflow(line[maxe:], ellipsisWidth))",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2528,
+          "outcome": "missed",
+          "duration_seconds": 2.47955675
+        },
+        {
+          "id": 17,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 5210,
+          "column": 10,
+          "end_line": 5210,
+          "end_column": 99,
+          "byte_start": 141134,
+          "byte_end": 141223,
+          "original": "(t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus",
+          "replacement": "(0 == 0) || ((t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus)",
+          "diff": "diff/000017.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2889,
+          "outcome": "missed",
+          "duration_seconds": 2.706768458
+        },
+        {
+          "id": 18,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 5210,
+          "column": 10,
+          "end_line": 5210,
+          "end_column": 99,
+          "byte_start": 141134,
+          "byte_end": 141223,
+          "original": "(t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus",
+          "replacement": "(0 != 0) && ((t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus)",
+          "diff": "diff/000018.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 2890,
+          "outcome": "missed",
+          "duration_seconds": 3.272269
+        },
+        {
+          "id": 19,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 6537,
+          "column": 10,
+          "end_line": 6537,
+          "end_column": 17,
+          "byte_start": 178934,
+          "byte_end": 178941,
+          "original": "me.Left",
+          "replacement": "(0 == 0) || (me.Left)",
+          "diff": "diff/000019.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 3249,
+          "outcome": "missed",
+          "duration_seconds": 2.214156583
+        },
+        {
+          "id": 20,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 6537,
+          "column": 10,
+          "end_line": 6537,
+          "end_column": 17,
+          "byte_start": 178934,
+          "byte_end": 178941,
+          "original": "me.Left",
+          "replacement": "(0 != 0) && (me.Left)",
+          "diff": "diff/000020.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 3250,
+          "outcome": "missed",
+          "duration_seconds": 2.273753958
+        },
+        {
+          "id": 21,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 == 0) || (alt)",
+          "diff": "diff/000021.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 3611,
+          "outcome": "missed",
+          "duration_seconds": 2.551501042
+        },
+        {
+          "id": 22,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 != 0) && (alt)",
+          "diff": "diff/000022.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 3612,
+          "outcome": "missed",
+          "duration_seconds": 2.3567078329999998
+        },
+        {
+          "id": 23,
+          "file": "src/util/util_unix.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+          "line": 62,
+          "column": 5,
+          "end_line": 62,
+          "end_column": 15,
+          "byte_start": 1428,
+          "byte_end": 1438,
+          "original": "err != nil",
+          "replacement": "(0 == 0) || (err != nil)",
+          "diff": "diff/000023.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 3973,
+          "outcome": "missed",
+          "duration_seconds": 3.134818166
+        },
+        {
+          "id": 24,
+          "file": "src/util/util_unix.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+          "line": 62,
+          "column": 5,
+          "end_line": 62,
+          "end_column": 15,
+          "byte_start": 1428,
+          "byte_end": 1438,
+          "original": "err != nil",
+          "replacement": "(0 != 0) && (err != nil)",
+          "diff": "diff/000024.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 3974,
+          "outcome": "missed",
+          "duration_seconds": 2.9223056659999997
+        }
+      ],
+      "run_seconds": 38.083228,
+      "baseline_seconds": 3.1419965,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-branches-4kifbebk/module",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "branch_force_true",
+          "branch_force_false"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-branches-4kifbebk/reports/full",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-branches-4kifbebk/reports/seed/run-1791757638-TA2IWC",
+          "selection": "all",
+          "source_ids": [
+            1,
+            2,
+            361,
+            362,
+            723,
+            724,
+            1083,
+            1084,
+            1445,
+            1446,
+            1805,
+            1806,
+            2167,
+            2168,
+            2527,
+            2528,
+            2889,
+            2890,
+            3249,
+            3250,
+            3611,
+            3612,
+            3973,
+            3974
+          ],
+          "operators": [
+            "branch_force_true",
+            "branch_force_false"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "e6b4dfb5daae9767bc06db99e07d60ca5dd1094c57c70e8a28459c50e4bee042",
+        "mutants.json": "c6e6def4875f16ea66f70c2fc14c7b76b228b955cc398d187d506314c7e9b4aa",
+        "outcomes.json": "805015d208f650009c2cd949260b6ed90c4b2015961c8b49482faf55fe584514"
+      }
+    },
+    {
+      "label": "affected",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-branches-4kifbebk/module",
+        "--operator",
+        "branch_force_true,branch_force_false",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/affected",
+        "--rerun",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/seed/run-1791757638-TA2IWC",
+        "--id",
+        "1,2,361,362,723,724,1083,1084,1445,1446,1805,1806,2167,2168,2527,2528,2889,2890,3249,3250,3611,3612,3973,3974",
+        "--test-scope",
+        "affected"
+      ],
+      "report": "/tmp/mutie-fzf-branches-4kifbebk/reports/affected/run-1791757753-qdyNC8",
+      "wall_seconds": 35.72706304199528,
+      "status": "completed",
+      "summary": {
+        "killed": 1,
+        "missed": 23,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "6d1aa7e7f28349e1f6aa3646de39629e6d23bbb214916f8648f35bebecc9be5b",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "main.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+          "line": 42,
+          "column": 5,
+          "end_line": 42,
+          "end_column": 40,
+          "byte_start": 764,
+          "byte_end": 799,
+          "original": "code == fzf.ExitError && err != nil",
+          "replacement": "(0 == 0) || (code == fzf.ExitError && err != nil)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf"
+          ],
+          "source_id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.996105875
+        },
+        {
+          "id": 2,
+          "file": "main.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:6f2b0828dd3f28ccef61ca537c82a358b1bd141c3c81e750b691295fc7a622a1",
+          "line": 42,
+          "column": 5,
+          "end_line": 42,
+          "end_column": 40,
+          "byte_start": 764,
+          "byte_end": 799,
+          "original": "code == fzf.ExitError && err != nil",
+          "replacement": "(0 != 0) && (code == fzf.ExitError && err != nil)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf"
+          ],
+          "source_id": 2,
+          "outcome": "missed",
+          "duration_seconds": 1.049958917
+        },
+        {
+          "id": 3,
+          "file": "src/ansi.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+          "line": 216,
+          "column": 8,
+          "end_line": 216,
+          "end_column": 30,
+          "byte_start": 4908,
+          "byte_end": 4930,
+          "original": "s[i+1] < utf8.RuneSelf",
+          "replacement": "(0 == 0) || (s[i+1] < utf8.RuneSelf)",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 361,
+          "outcome": "killed",
+          "duration_seconds": 2.514759291
+        },
+        {
+          "id": 4,
+          "file": "src/ansi.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0c0039285982e7650978cb3b18e42085da56bcf2a4b0da5d28cdd88717a0828d",
+          "line": 216,
+          "column": 8,
+          "end_line": 216,
+          "end_column": 30,
+          "byte_start": 4908,
+          "byte_end": 4930,
+          "original": "s[i+1] < utf8.RuneSelf",
+          "replacement": "(0 != 0) && (s[i+1] < utf8.RuneSelf)",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 362,
+          "outcome": "missed",
+          "duration_seconds": 2.281191667
+        },
+        {
+          "id": 5,
+          "file": "src/options.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 502,
+          "column": 6,
+          "end_line": 502,
+          "end_column": 26,
+          "byte_start": 17382,
+          "byte_end": 17402,
+          "original": "b.alternative != nil",
+          "replacement": "(0 == 0) || (b.alternative != nil)",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 723,
+          "outcome": "missed",
+          "duration_seconds": 2.174984625
+        },
+        {
+          "id": 6,
+          "file": "src/options.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 502,
+          "column": 6,
+          "end_line": 502,
+          "end_column": 26,
+          "byte_start": 17382,
+          "byte_end": 17402,
+          "original": "b.alternative != nil",
+          "replacement": "(0 != 0) && (b.alternative != nil)",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 724,
+          "outcome": "missed",
+          "duration_seconds": 2.165518125
+        },
+        {
+          "id": 7,
+          "file": "src/options.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 == 0) || (err != nil)",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 1083,
+          "outcome": "missed",
+          "duration_seconds": 2.060887
+        },
+        {
+          "id": 8,
+          "file": "src/options.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 != 0) && (err != nil)",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 1084,
+          "outcome": "missed",
+          "duration_seconds": 2.102969959
+        },
+        {
+          "id": 9,
+          "file": "src/pattern.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+          "line": 327,
+          "column": 71,
+          "end_line": 327,
+          "end_column": 83,
+          "byte_start": 8073,
+          "byte_end": 8085,
+          "original": "match != nil",
+          "replacement": "(0 == 0) || (match != nil)",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 1445,
+          "outcome": "missed",
+          "duration_seconds": 2.0632643330000002
+        },
+        {
+          "id": 10,
+          "file": "src/pattern.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:cb3cbfa33af0dbcf5afdf8924c9259580dce90b4a13260c288662c353d28dc5b",
+          "line": 327,
+          "column": 71,
+          "end_line": 327,
+          "end_column": 83,
+          "byte_start": 8073,
+          "byte_end": 8085,
+          "original": "match != nil",
+          "replacement": "(0 != 0) && (match != nil)",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 1446,
+          "outcome": "missed",
+          "duration_seconds": 2.1679275000000002
+        },
+        {
+          "id": 11,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 1154,
+          "column": 5,
+          "end_line": 1154,
+          "end_column": 40,
+          "byte_start": 29749,
+          "byte_end": 29784,
+          "original": "t.gap > 0 && len(*opts.GapLine) > 0",
+          "replacement": "(0 == 0) || (t.gap > 0 && len(*opts.GapLine) > 0)",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 1805,
+          "outcome": "missed",
+          "duration_seconds": 2.239322834
+        },
+        {
+          "id": 12,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 1154,
+          "column": 5,
+          "end_line": 1154,
+          "end_column": 40,
+          "byte_start": 29749,
+          "byte_end": 29784,
+          "original": "t.gap > 0 && len(*opts.GapLine) > 0",
+          "replacement": "(0 != 0) && (t.gap > 0 && len(*opts.GapLine) > 0)",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 1806,
+          "outcome": "missed",
+          "duration_seconds": 2.14989475
+        },
+        {
+          "id": 13,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 2360,
+          "column": 5,
+          "end_line": 2360,
+          "end_column": 20,
+          "byte_start": 63274,
+          "byte_end": 63289,
+          "original": "t.window == nil",
+          "replacement": "(0 == 0) || (t.window == nil)",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 2167,
+          "outcome": "missed",
+          "duration_seconds": 2.044556042
+        },
+        {
+          "id": 14,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 2360,
+          "column": 5,
+          "end_line": 2360,
+          "end_column": 20,
+          "byte_start": 63274,
+          "byte_end": 63289,
+          "original": "t.window == nil",
+          "replacement": "(0 != 0) && (t.window == nil)",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 2168,
+          "outcome": "missed",
+          "duration_seconds": 2.233885834
+        },
+        {
+          "id": 15,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3575,
+          "column": 9,
+          "end_line": 3575,
+          "end_column": 47,
+          "byte_start": 97075,
+          "byte_end": 97113,
+          "original": "t.overflow(line[maxe:], ellipsisWidth)",
+          "replacement": "(0 == 0) || (t.overflow(line[maxe:], ellipsisWidth))",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 2527,
+          "outcome": "missed",
+          "duration_seconds": 2.278792459
+        },
+        {
+          "id": 16,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 3575,
+          "column": 9,
+          "end_line": 3575,
+          "end_column": 47,
+          "byte_start": 97075,
+          "byte_end": 97113,
+          "original": "t.overflow(line[maxe:], ellipsisWidth)",
+          "replacement": "(0 != 0) && (t.overflow(line[maxe:], ellipsisWidth))",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 2528,
+          "outcome": "missed",
+          "duration_seconds": 2.309153375
+        },
+        {
+          "id": 17,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 5210,
+          "column": 10,
+          "end_line": 5210,
+          "end_column": 99,
+          "byte_start": 141134,
+          "byte_end": 141223,
+          "original": "(t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus",
+          "replacement": "(0 == 0) || ((t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus)",
+          "diff": "diff/000017.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 2889,
+          "outcome": "missed",
+          "duration_seconds": 3.022733625
+        },
+        {
+          "id": 18,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 5210,
+          "column": 10,
+          "end_line": 5210,
+          "end_column": 99,
+          "byte_start": 141134,
+          "byte_end": 141223,
+          "original": "(t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus",
+          "replacement": "(0 != 0) && ((t.hasFocusActions || t.infoCommand != \"\") && focusChanged && currentIndex != t.lastFocus)",
+          "diff": "diff/000018.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 2890,
+          "outcome": "missed",
+          "duration_seconds": 2.7176584999999998
+        },
+        {
+          "id": 19,
+          "file": "src/terminal.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 6537,
+          "column": 10,
+          "end_line": 6537,
+          "end_column": 17,
+          "byte_start": 178934,
+          "byte_end": 178941,
+          "original": "me.Left",
+          "replacement": "(0 == 0) || (me.Left)",
+          "diff": "diff/000019.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 3249,
+          "outcome": "missed",
+          "duration_seconds": 2.960782041
+        },
+        {
+          "id": 20,
+          "file": "src/terminal.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:249e0741394cbdd73341e80548905a35b95cfd23bb4196fa7284f88f3cd0fbcb",
+          "line": 6537,
+          "column": 10,
+          "end_line": 6537,
+          "end_column": 17,
+          "byte_start": 178934,
+          "byte_end": 178941,
+          "original": "me.Left",
+          "replacement": "(0 != 0) && (me.Left)",
+          "diff": "diff/000020.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 3250,
+          "outcome": "missed",
+          "duration_seconds": 2.927033583
+        },
+        {
+          "id": 21,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 == 0) || (alt)",
+          "diff": "diff/000021.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/tui"
+          ],
+          "source_id": 3611,
+          "outcome": "missed",
+          "duration_seconds": 3.713595375
+        },
+        {
+          "id": 22,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 != 0) && (alt)",
+          "diff": "diff/000022.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/tui"
+          ],
+          "source_id": 3612,
+          "outcome": "missed",
+          "duration_seconds": 4.100176625
+        },
+        {
+          "id": 23,
+          "file": "src/util/util_unix.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+          "line": 62,
+          "column": 5,
+          "end_line": 62,
+          "end_column": 15,
+          "byte_start": 1428,
+          "byte_end": 1438,
+          "original": "err != nil",
+          "replacement": "(0 == 0) || (err != nil)",
+          "diff": "diff/000023.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo",
+            "github.com/junegunn/fzf/src/tui",
+            "github.com/junegunn/fzf/src/util"
+          ],
+          "source_id": 3973,
+          "outcome": "missed",
+          "duration_seconds": 3.672522416
+        },
+        {
+          "id": 24,
+          "file": "src/util/util_unix.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:53fda6bed521880dfa3002bb8e86c59349628ea90a5611db2db8b2ba91d419de",
+          "line": 62,
+          "column": 5,
+          "end_line": 62,
+          "end_column": 15,
+          "byte_start": 1428,
+          "byte_end": 1438,
+          "original": "err != nil",
+          "replacement": "(0 != 0) && (err != nil)",
+          "diff": "diff/000024.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/algo",
+            "github.com/junegunn/fzf/src/tui",
+            "github.com/junegunn/fzf/src/util"
+          ],
+          "source_id": 3974,
+          "outcome": "missed",
+          "duration_seconds": 3.98338625
+        }
+      ],
+      "run_seconds": 35.619683583,
+      "baseline_seconds": 2.377834542,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-branches-4kifbebk/module",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "affected",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "branch_force_true",
+          "branch_force_false"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-branches-4kifbebk/reports/affected",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-branches-4kifbebk/reports/seed/run-1791757638-TA2IWC",
+          "selection": "all",
+          "source_ids": [
+            1,
+            2,
+            361,
+            362,
+            723,
+            724,
+            1083,
+            1084,
+            1445,
+            1446,
+            1805,
+            1806,
+            2167,
+            2168,
+            2527,
+            2528,
+            2889,
+            2890,
+            3249,
+            3250,
+            3611,
+            3612,
+            3973,
+            3974
+          ],
+          "operators": [
+            "branch_force_true",
+            "branch_force_false"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "e11718672268929d82e198d77fb2d2deeeaa7a40b04ed70afef65f42b84673a0",
+        "mutants.json": "2596b3684d310558a7d50ccd702e6a28a31d2c2b9b55b9187679b01488a30752",
+        "outcomes.json": "5687d25cc3f0460d8718e4483c751a15b6123191ce0bf105ca19a5e40e71312c"
+      }
+    },
+    {
+      "label": "stronger-full",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-branches-4kifbebk/improved",
+        "--operator",
+        "branch_force_true,branch_force_false",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/stronger-full",
+        "--rerun-missed",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/full/run-1791757715-nXlFaF",
+        "--id",
+        "7,8,21,22",
+        "--test-scope",
+        "full"
+      ],
+      "report": "/tmp/mutie-fzf-branches-4kifbebk/reports/stronger-full/run-1791757816-AlQEB8",
+      "wall_seconds": 10.43393025000114,
+      "status": "completed",
+      "summary": {
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "6d1aa7e7f28349e1f6aa3646de39629e6d23bbb214916f8648f35bebecc9be5b",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/options.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 == 0) || (err != nil)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 7,
+          "outcome": "killed",
+          "duration_seconds": 3.122118375
+        },
+        {
+          "id": 2,
+          "file": "src/options.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 != 0) && (err != nil)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 8,
+          "outcome": "killed",
+          "duration_seconds": 4.030334708
+        },
+        {
+          "id": 3,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 == 0) || (alt)",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 21,
+          "outcome": "killed",
+          "duration_seconds": 2.416329084
+        },
+        {
+          "id": 4,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 != 0) && (alt)",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "./..."
+          ],
+          "source_id": 22,
+          "outcome": "killed",
+          "duration_seconds": 2.556021
+        }
+      ],
+      "run_seconds": 10.292497333,
+      "baseline_seconds": 2.687854583,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-branches-4kifbebk/improved",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "branch_force_true",
+          "branch_force_false"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-branches-4kifbebk/reports/stronger-full",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-branches-4kifbebk/reports/full/run-1791757715-nXlFaF",
+          "selection": "missed",
+          "source_ids": [
+            7,
+            8,
+            21,
+            22
+          ],
+          "operators": [
+            "branch_force_true",
+            "branch_force_false"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "876a669961289d0780d53035c4c3527c77241803ead76576a592f2028e88643d",
+        "mutants.json": "4e191708ad5230e17a5a265cd6b67162c65b305ce31c3b64b40fef7c2c23b7e7",
+        "outcomes.json": "5525f374e116cf8149801b7027e314da722f5f5649bf67e74182230d69143d21"
+      }
+    },
+    {
+      "label": "stronger-affected",
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-fzf-branches-4kifbebk/improved",
+        "--operator",
+        "branch_force_true,branch_force_false",
+        "--jobs",
+        "2",
+        "--timeout",
+        "30",
+        "--baseline-timeout",
+        "120",
+        "--max-log-bytes",
+        "65536",
+        "--max-capture-bytes",
+        "16777216",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/stronger-affected",
+        "--rerun-missed",
+        "/tmp/mutie-fzf-branches-4kifbebk/reports/full/run-1791757715-nXlFaF",
+        "--id",
+        "7,8,21,22",
+        "--test-scope",
+        "affected"
+      ],
+      "report": "/tmp/mutie-fzf-branches-4kifbebk/reports/stronger-affected/run-1791757826-I9eFHo",
+      "wall_seconds": 8.875899083039258,
+      "status": "completed",
+      "summary": {
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "source_preserved": true,
+      "temporary_cleanup": true,
+      "binary_sha256": "6d1aa7e7f28349e1f6aa3646de39629e6d23bbb214916f8648f35bebecc9be5b",
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/options.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 == 0) || (err != nil)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 7,
+          "outcome": "killed",
+          "duration_seconds": 2.515210667
+        },
+        {
+          "id": 2,
+          "file": "src/options.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:02c49fe0da2c9d972f70c5ffa338d0a42eded1fa08ff34e6ed4c882cae74440a",
+          "line": 2837,
+          "column": 7,
+          "end_line": 2837,
+          "end_column": 17,
+          "byte_start": 76658,
+          "byte_end": 76668,
+          "original": "err != nil",
+          "replacement": "(0 != 0) && (err != nil)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src"
+          ],
+          "source_id": 8,
+          "outcome": "killed",
+          "duration_seconds": 2.702684833
+        },
+        {
+          "id": 3,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 == 0) || (alt)",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/tui"
+          ],
+          "source_id": 21,
+          "outcome": "killed",
+          "duration_seconds": 2.53357625
+        },
+        {
+          "id": 4,
+          "file": "src/tui/light.go",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:077ffce36389a4d103ddb66fc9638c8f7c8721950b35986875f04825fbc0d12f",
+          "line": 555,
+          "column": 11,
+          "end_line": 555,
+          "end_column": 14,
+          "byte_start": 12156,
+          "byte_end": 12159,
+          "original": "alt",
+          "replacement": "(0 != 0) && (alt)",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "github.com/junegunn/fzf",
+            "github.com/junegunn/fzf/src",
+            "github.com/junegunn/fzf/src/tui"
+          ],
+          "source_id": 22,
+          "outcome": "killed",
+          "duration_seconds": 2.523239916
+        }
+      ],
+      "run_seconds": 8.795012917,
+      "baseline_seconds": 2.4935935000000002,
+      "effective_config": {
+        "module_root": "/tmp/mutie-fzf-branches-4kifbebk/improved",
+        "config_file": null,
+        "lang": "go",
+        "jobs": 2,
+        "test_scope": "affected",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "branch_force_true",
+          "branch_force_false"
+        ],
+        "timeout": 30,
+        "max_log_bytes": 65536,
+        "max_capture_bytes": 16777216,
+        "baseline_timeout": 120,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-fzf-branches-4kifbebk/reports/stronger-affected",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-fzf-branches-4kifbebk/reports/full/run-1791757715-nXlFaF",
+          "selection": "missed",
+          "source_ids": [
+            7,
+            8,
+            21,
+            22
+          ],
+          "operators": [
+            "branch_force_true",
+            "branch_force_false"
+          ]
+        },
+        "ui": "plain"
+      },
+      "report_sha256": {
+        "run.json": "424031269936a62cfb3f90b1cd1fbc63fc8e6534c1f6439c0d65629e233437e1",
+        "mutants.json": "e212ccaceb322adff5e8b20a632f714e3b8ba0acfb3e6399168d8bd39af03945",
+        "outcomes.json": "eee2da63560f9cef0fa0ab1d7ebb677fc31038d64bb5ede203fb5a13816642fe"
+      }
+    }
+  ],
+  "stronger_tests": [
+    {
+      "file": "benchmarks/fzf-v0.65.2-ellipsis_test.go.txt",
+      "destination": "src/mutie_branch_test.go",
+      "sha256": "4397e675d23862529f5cd438dc2e07e8706fdeff7d22c19ac42a5607ba410c7f"
+    },
+    {
+      "file": "benchmarks/fzf-v0.65.2-arrow_test.go.txt",
+      "destination": "src/tui/mutie_branch_test.go",
+      "sha256": "37b1f416a40eb254dbc91e5d4056fb91fb214cc21a71802472a5e27a87455bcf"
+    }
+  ],
+  "failure_evidence": [
+    {
+      "run": "stronger-full",
+      "id": 1,
+      "evidence": [
+        "    mutie_branch_test.go:11: ellipsis argument was not applied: <nil>",
+        "--- FAIL: TestMutieEllipsisArgument (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-full",
+      "id": 2,
+      "evidence": [
+        "    mutie_branch_test.go:14: missing ellipsis argument was accepted",
+        "--- FAIL: TestMutieEllipsisArgument (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-full",
+      "id": 3,
+      "evidence": [
+        "    mutie_branch_test.go:20: got event AltUp consuming 6 bytes; want ShiftUp consuming 6",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;2A (0.00s)",
+        "    mutie_branch_test.go:20: got event AltUp consuming 6 bytes; want AltShiftUp consuming 6",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;4A (0.00s)",
+        "    mutie_branch_test.go:20: got event AltUp consuming 7 bytes; want AltShiftUp consuming 7",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;10A (0.00s)",
+        "--- FAIL: TestMutieUpArrowModifiers (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-full",
+      "id": 4,
+      "evidence": [
+        "    mutie_branch_test.go:20: got event ShiftUp consuming 6 bytes; want AltUp consuming 6",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;3A (0.00s)",
+        "--- FAIL: TestMutieUpArrowModifiers (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-affected",
+      "id": 1,
+      "evidence": [
+        "    mutie_branch_test.go:11: ellipsis argument was not applied: <nil>",
+        "--- FAIL: TestMutieEllipsisArgument (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-affected",
+      "id": 2,
+      "evidence": [
+        "    mutie_branch_test.go:14: missing ellipsis argument was accepted",
+        "--- FAIL: TestMutieEllipsisArgument (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-affected",
+      "id": 3,
+      "evidence": [
+        "    mutie_branch_test.go:20: got event AltUp consuming 6 bytes; want ShiftUp consuming 6",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;2A (0.00s)",
+        "    mutie_branch_test.go:20: got event AltUp consuming 6 bytes; want AltShiftUp consuming 6",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;4A (0.00s)",
+        "    mutie_branch_test.go:20: got event AltUp consuming 7 bytes; want AltShiftUp consuming 7",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;10A (0.00s)",
+        "--- FAIL: TestMutieUpArrowModifiers (0.00s)"
+      ]
+    },
+    {
+      "run": "stronger-affected",
+      "id": 4,
+      "evidence": [
+        "    mutie_branch_test.go:20: got event ShiftUp consuming 6 bytes; want AltUp consuming 6",
+        "--- FAIL: TestMutieUpArrowModifiers/\\x1b[1;3A (0.00s)",
+        "--- FAIL: TestMutieUpArrowModifiers (0.00s)"
+      ]
+    }
+  ],
+  "source_report_preserved": true
+}

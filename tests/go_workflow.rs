@@ -530,6 +530,121 @@ func TestUncheckedEffect(t *testing.T) {
 }
 
 #[test]
+#[ignore = "requires Go 1.24+ on PATH; builds branch mutants and reruns stronger tests"]
+fn branch_forcing_preserves_references_and_reports_stronger_test_results() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("module");
+    let fixture = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/go-branches");
+    copy_tree(&fixture, &root);
+    let source = fs::read(root.join("branches.go")).unwrap();
+    fs::write(
+        root.join("mutie.toml"),
+        "operators = [\"branch_force_true\", \"branch_force_false\"]\n",
+    )
+    .unwrap();
+    let preview = stdout(&run(&root, &["--list"]));
+    assert!(preview.contains("Found 18 mutations"), "{preview}");
+    let preview = stdout(&run(&root, &["--operator", "branch_force_false", "--list"]));
+    assert!(preview.contains("Found 9 mutations"), "{preview}");
+    assert!(!root.join(".mutie").exists());
+
+    let output = run(&root, &["--jobs", "2", "--timeout", "15"]);
+    stdout(&output);
+    let (directory, metadata, inventory, outcomes) = saved_report(&output);
+    assert_eq!(metadata["status"], "completed");
+    assert_eq!(outcomes["summary"]["killed"], 14, "{outcomes:#}");
+    assert_eq!(outcomes["summary"]["missed"], 4);
+    assert_eq!(outcomes["summary"]["build_failed"], 0);
+    assert_eq!(outcomes["summary"]["timeout"], 0);
+    assert_eq!(outcomes["summary"]["errors"], 0);
+    let mutations = inventory["mutations"].as_array().unwrap();
+    assert_eq!(mutations.len(), 18);
+    for m in mutations {
+        let guard = match m["operator"].as_str().unwrap() {
+            "branch_force_true" => "(0 == 0) ||",
+            "branch_force_false" => "(0 != 0) &&",
+            unexpected => panic!("unexpected operator: {unexpected}"),
+        };
+        assert_eq!(
+            m["replacement"],
+            format!("{guard} ({})", m["original"].as_str().unwrap())
+        );
+        let diff = fs::read_to_string(directory.join(m["diff"].as_str().unwrap())).unwrap();
+        assert!(diff.contains(m["replacement"].as_str().unwrap()));
+    }
+    let saved = fs::read(directory.join("run.json")).unwrap();
+    let unchecked_false = mutations.last().unwrap()["id"]
+        .as_u64()
+        .unwrap()
+        .to_string();
+    stdout(&dismiss(
+        &root,
+        &[
+            "add",
+            directory.to_str().unwrap(),
+            "--id",
+            &unchecked_false,
+            "--reason",
+            "reviewed branch gap",
+        ],
+    ));
+    stdout(&dismiss(&root, &["check"]));
+    fs::write(
+        root.join("stronger_test.go"),
+        r#"package branches
+import "testing"
+func TestUnchecked(t *testing.T) {
+    if Unchecked(true) != 1 || Unchecked(false) != 2 { t.Fatal("wrong branch") }
+}
+"#,
+    )
+    .unwrap();
+    let preview = stdout(&run(
+        &root,
+        &[
+            "--rerun-missed",
+            directory.to_str().unwrap(),
+            "--operator",
+            "branch_force_false",
+            "--id",
+            &unchecked_false,
+            "--list",
+        ],
+    ));
+    assert!(preview.contains("Selected 1 mutations"), "{preview}");
+    let rerun = run(
+        &root,
+        &[
+            "--rerun-missed",
+            directory.to_str().unwrap(),
+            "--test-scope",
+            "affected",
+            "--timeout",
+            "15",
+            "--jobs",
+            "2",
+        ],
+    );
+    stdout(&rerun);
+    let (_, metadata, inventory, outcomes) = saved_report(&rerun);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 4);
+    assert_eq!(inventory["dismissals"]["matched"][0]["mutation_id"], 4);
+    assert_eq!(
+        metadata["rerun"]["mutations"][3]["source_id"]
+            .as_u64()
+            .unwrap()
+            .to_string(),
+        unchecked_false
+    );
+    assert_eq!(outcomes["summary"]["killed"], 2, "{outcomes:#}");
+    assert_eq!(outcomes["summary"]["missed"], 2);
+    assert_eq!(outcomes["summary"]["build_failed"], 0);
+    assert_eq!(outcomes["summary"]["errors"], 0);
+    assert_eq!(fs::read(directory.join("run.json")).unwrap(), saved);
+    assert_eq!(fs::read(root.join("branches.go")).unwrap(), source);
+}
+
+#[test]
 #[ignore = "requires Go 1.24+ on PATH; terminates a noisy real Go test"]
 fn capture_limit_stops_noisy_go_tests_without_counting_a_kill() {
     let root = tempfile::tempdir().unwrap();

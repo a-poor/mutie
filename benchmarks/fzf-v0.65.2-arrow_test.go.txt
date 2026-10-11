@@ -1,0 +1,25 @@
+package tui
+
+import "testing"
+
+func TestMutieUpArrowModifiers(t *testing.T) {
+	for _, tc := range []struct {
+		sequence string
+		want     EventType
+	}{
+		{"\x1b[1;2A", ShiftUp},
+		{"\x1b[1;3A", AltUp},
+		{"\x1b[1;4A", AltShiftUp},
+		{"\x1b[1;10A", AltShiftUp},
+	} {
+		t.Run(tc.sequence, func(t *testing.T) {
+			renderer := LightRenderer{buffer: []byte(tc.sequence)}
+			size := 0
+			event := renderer.escSequence(&size)
+			if event.Type != tc.want || size != len(tc.sequence) {
+				t.Fatalf("got event %v consuming %d bytes; want %v consuming %d",
+					event.Type, size, tc.want, len(tc.sequence))
+			}
+		})
+	}
+}

@@ -598,7 +598,7 @@ mod tests {
             end_line: m.end_line,
             end_column: m.end_column,
             original: m.original().into(),
-            replacement: m.replacement.into(),
+            replacement: m.replacement.to_string(),
             diff: None,
         };
         let mut store = Store::default();

@@ -56,7 +56,7 @@ impl From<&Mutation> for MutationIdentity {
             end_line: m.end_line,
             end_column: m.end_column,
             original: m.original().to_owned(),
-            replacement: m.replacement.to_owned(),
+            replacement: m.replacement.to_string(),
         }
     }
 }

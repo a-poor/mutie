@@ -1,0 +1,16 @@
+package fzf
+
+import "testing"
+
+func TestMutieEllipsisArgument(t *testing.T) {
+	opts, err := ParseOptions(false, []string{"--ellipsis", "..."})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if opts.Ellipsis == nil || *opts.Ellipsis != "..." {
+		t.Fatalf("ellipsis argument was not applied: %v", opts.Ellipsis)
+	}
+	if _, err := ParseOptions(false, []string{"--ellipsis"}); err == nil {
+		t.Fatal("missing ellipsis argument was accepted")
+	}
+}

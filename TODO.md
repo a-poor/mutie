@@ -169,7 +169,16 @@ checklist as work lands, checking items off after appropriate verification.
   CLI/config, preserving dismissal matching and source identity. Verify real-Go
   outcomes and four missed-to-killed CLI gaps on `godotenv`; full/affected outcomes
   match. See `benchmarks/godotenv-v1.5.1-call-remove.md` for evidence and noise limits.
-- [ ] Expand return/branch/loop mutations and add named operator profiles based on
+- [x] Add `branch_force_true` / `branch_force_false` for complete Go `if` and
+  `else if` conditions. Use short-circuit wrappers to preserve name references
+  without evaluating the original condition; preserve initializers and bodies,
+  exclude bare boolean conditions, and retain independent nested operators.
+  Verify multiline diffs, config/CLI selection, real-Go types and side effects,
+  dismissals, source preservation, and stronger-test reruns. A fixed 24-mutation
+  fzf sample matched full/affected outcomes with no build failures; added tests
+  killed four survivors in both scopes. See `benchmarks/fzf-v0.65.2-branches.md`
+  for useful findings and equivalent-mutation limits.
+- [ ] Expand return/loop and further branch mutations and add named operator profiles based on
   useful findings; evaluate call-removal build-failure noise on more projects.
   The fzf sample added two actionable gaps and two unbuildable call removals;
   eight stratified removals do not establish a general noise rate.

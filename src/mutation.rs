@@ -1,4 +1,5 @@
 use std::{
+    borrow::Cow,
     fs,
     ops::Range,
     path::{Path, PathBuf},
@@ -27,6 +28,8 @@ pub enum Operator {
     BooleanFlip,
     NegationRemove,
     CallRemove,
+    BranchForceTrue,
+    BranchForceFalse,
 }
 
 impl std::fmt::Display for Operator {
@@ -77,7 +80,7 @@ pub struct Mutation {
     pub file: Arc<SourceFile>,
     pub operator: Operator,
     pub range: Range<usize>,
-    pub replacement: &'static str,
+    pub replacement: Cow<'static, str>,
     pub line: usize,
     pub column: usize,
     pub end_line: usize,
@@ -105,7 +108,7 @@ impl Mutation {
     pub fn diff(&self) -> String {
         let lines: Vec<_> = self.file.source.split_inclusive('\n').collect();
         let mut changed = self.file.source.clone();
-        changed.replace_range(self.range.clone(), self.replacement);
+        changed.replace_range(self.range.clone(), &self.replacement);
         let changed: Vec<_> = changed.split_inclusive('\n').collect();
         let prefix = lines
             .iter()
@@ -166,7 +169,7 @@ impl Mutation {
             "{} changed after discovery",
             path.display()
         );
-        source.replace_range(self.range.clone(), self.replacement);
+        source.replace_range(self.range.clone(), &self.replacement);
         fs::write(&path, source).with_context(|| format!("mutating {}", path.display()))
     }
 }
@@ -220,20 +223,44 @@ pub fn discover_cancellable(
 }
 
 fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
+    if node.kind() == "if_statement"
+        && let Some(condition) = node.child_by_field_name("condition")
+        // Leave literal conditions (including parentheses/comments) to boolean_flip.
+        // This is syntactic eligibility, not constant folding or name resolution.
+        && !matches!(unparenthesized(condition).kind(), "true" | "false")
+    {
+        let original = &file.source[condition.byte_range()];
+        let start = condition.start_position();
+        let end = condition.end_position();
+        for (operator, guard) in [
+            (Operator::BranchForceTrue, "(0 == 0) ||"),
+            (Operator::BranchForceFalse, "(0 != 0) &&"),
+        ] {
+            // Retain references so imports/locals (including if initializers) stay
+            // used, but never evaluate the condition. Constant comparisons avoid
+            // depending on Go's shadowable true/false identifiers. The initializer
+            // and both branch bodies remain untouched.
+            mutations.push(Mutation {
+                file: Arc::clone(file),
+                operator,
+                range: condition.byte_range(),
+                replacement: format!("{guard} ({original})").into(),
+                line: start.row + 1,
+                column: start.column + 1,
+                end_line: end.row + 1,
+                end_column: end.column + 1,
+            });
+        }
+    }
     // Only statements directly in a block/case body. Do not remove initializers,
     // loop updates, labeled statements, go/defer calls, or calls used as values.
     if node.kind() == "expression_statement"
         && node
             .parent()
             .is_some_and(|parent| parent.kind() == "statement_list")
-        && let Some(mut expression) = expression_child(node)
+        && let Some(expression) = expression_child(node)
     {
-        while expression.kind() == "parenthesized_expression" {
-            let Some(inner) = expression_child(expression) else {
-                break;
-            };
-            expression = inner;
-        }
+        let expression = unparenthesized(expression);
         if expression.kind() == "call_expression" {
             let start = node.start_position();
             let end = node.end_position();
@@ -241,7 +268,7 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
                 file: Arc::clone(file),
                 operator: Operator::CallRemove,
                 range: node.byte_range(),
-                replacement: "",
+                replacement: "".into(),
                 line: start.row + 1,
                 column: start.column + 1,
                 end_line: end.row + 1,
@@ -294,7 +321,7 @@ fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) 
                 _ => Operator::ArithmeticReplace,
             },
             range: token.byte_range(),
-            replacement,
+            replacement: (*replacement).into(),
             line: position.row + 1,
             column: position.column + 1,
             end_line: end.row + 1,
@@ -312,9 +339,129 @@ fn expression_child(node: Node<'_>) -> Option<Node<'_>> {
         .find(|child| !child.is_extra())
 }
 
+fn unparenthesized(mut node: Node<'_>) -> Node<'_> {
+    while node.kind() == "parenthesized_expression" {
+        let Some(inner) = expression_child(node) else {
+            break;
+        };
+        node = inner;
+    }
+    node
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn branches_select_whole_if_conditions_and_keep_nested_operators() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = r#"package p
+func f(b bool, ch chan bool) {
+    if b { } else if x := check(); x { }
+    if ( /* before */ b /* after */ ) { }
+    if b && // continue the condition
+        check() { }
+    if func() bool { if nested { }; return b }() { }
+label: if <-ch { }
+    if true { } else if ( /* constant */ (false)) { }
+    for b { }
+    switch { case b: }
+    _ = b
+}
+"#;
+        fs::write(root.path().join("code.go"), source)?;
+        let scope = Scope::new(&[], &[])?;
+        let all = discover(root.path(), vec!["code.go".into()], &scope)?;
+        let branches: Vec<_> = all
+            .iter()
+            .filter(|m| {
+                matches!(
+                    m.operator,
+                    Operator::BranchForceTrue | Operator::BranchForceFalse
+                )
+            })
+            .collect();
+        let originals = [
+            "b",
+            "x",
+            "( /* before */ b /* after */ )",
+            "b && // continue the condition\n        check()",
+            "func() bool { if nested { }; return b }()",
+            "nested",
+            "<-ch",
+        ];
+        assert_eq!(branches.len(), originals.len() * 2);
+        let again = discover(root.path(), vec!["code.go".into()], &scope)?;
+        let mut parser = Parser::new();
+        parser.set_language(&tree_sitter_go::LANGUAGE.into())?;
+        for (pair, original) in branches.as_chunks::<2>().0.iter().zip(originals) {
+            for (m, operator, guard) in [
+                (pair[0], Operator::BranchForceTrue, "(0 == 0) ||"),
+                (pair[1], Operator::BranchForceFalse, "(0 != 0) &&"),
+            ] {
+                assert_eq!(m.original(), original);
+                assert_eq!(m.operator, operator);
+                assert_eq!(m.replacement, format!("{guard} ({original})"));
+                let identity = crate::identity::MutationIdentity::from(m);
+                identity.validate()?;
+                assert_eq!(
+                    again.iter().filter(|next| identity.matches(next)).count(),
+                    1
+                );
+                let mut expected = source.to_owned();
+                expected.replace_range(m.range.clone(), &m.replacement);
+                fs::write(root.path().join("code.go"), source)?;
+                m.apply(root.path())?;
+                assert_eq!(fs::read_to_string(root.path().join("code.go"))?, expected);
+                assert!(
+                    !parser
+                        .parse(&expected, None)
+                        .unwrap()
+                        .root_node()
+                        .has_error(),
+                    "{expected}"
+                );
+                fs::write(root.path().join("code.go"), format!("{source}// changed\n"))?;
+                assert!(m.apply(root.path()).is_err());
+            }
+        }
+        assert_eq!(
+            all.iter()
+                .filter(|m| m.operator == Operator::BooleanFlip)
+                .count(),
+            2
+        );
+        assert_eq!(
+            all.iter()
+                .filter(|m| m.operator == Operator::LogicalSwap)
+                .count(),
+            1
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn branch_diff_preserves_multiline_condition_comments_crlf_and_unicode() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let source = "package p\r\nfunc f(é bool) {\r\n\tif é && // comment\r\n\t\tcheck() { // body\r\n\t}\r\n}";
+        fs::write(root.path().join("code.go"), source)?;
+        let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
+        let m = &mutations[0];
+        assert_eq!(m.operator, Operator::BranchForceTrue);
+        assert_eq!((m.line, m.column, m.end_line, m.end_column), (3, 5, 4, 10));
+        assert_eq!(
+            m.diff(),
+            concat!(
+                "--- a/code.go\n+++ b/code.go\n@@ -1,6 +1,6 @@\n",
+                " package p\r\n func f(é bool) {\r\n",
+                "-\tif é && // comment\r\n-\t\tcheck() { // body\r\n",
+                "+\tif (0 == 0) || (é && // comment\r\n+\t\tcheck()) { // body\r\n",
+                " \t}\r\n }\n\\ No newline at end of file\n",
+            )
+        );
+        Ok(())
+    }
 
     #[test]
     fn call_removal_only_selects_standalone_statements_and_preserves_other_mutations() -> Result<()>
@@ -452,7 +599,7 @@ label: labeled()
                 }),
                 operator: Operator::CallRemove,
                 range,
-                replacement: "",
+                replacement: "".into(),
                 line: 1,
                 column: 1,
                 end_line: 1,

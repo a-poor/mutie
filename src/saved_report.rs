@@ -81,7 +81,7 @@ struct PlannedMutation {
     byte_start: usize,
     byte_end: usize,
     original: String,
-    replacement: &'static str,
+    replacement: String,
     diff: String,
     test_packages: Vec<String>,
 }
@@ -348,7 +348,7 @@ impl SavedReport {
                 byte_start: mutation.range.start,
                 byte_end: mutation.range.end,
                 original: mutation.original().to_owned(),
-                replacement: mutation.replacement,
+                replacement: mutation.replacement.to_string(),
                 diff,
                 test_packages: test_packages[index].clone(),
             });
