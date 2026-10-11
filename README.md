@@ -60,6 +60,7 @@ exclude = ["internal/legacy/**"]
 operators = [] # all operators; or ["arithmetic_replace", "call_remove"]
 timeout = 30
 # max_log_bytes = 65536 # optional retained bytes per log artifact
+# max_capture_bytes = 16777216 # optional combined stdout/stderr bytes per command
 baseline_timeout = 300
 fail_on_missed = false # enable to fail on undismissed missed mutations
 # min_score = 80.5 # optional minimum raw mutation score (0-100)
@@ -88,6 +89,7 @@ exclusions), or `--clear-operators` (all operators). `--clear-timeout` restores 
 automatic timeout; `--no-verbose`
 overrides `verbose = true`; `--no-fail-on-missed` overrides `fail_on_missed = true`.
 `--clear-max-log-bytes` restores unlimited logs.
+`--clear-max-capture-bytes` disables a configured command-output capture limit.
 `--clear-min-score` disables a configured score threshold.
 Each reset flag conflicts with the corresponding
 value flag. For example:
@@ -696,8 +698,9 @@ tail bytes. Older reports without these fields remain readable. The browser
 shows saved-log truncation separately from its own 256 KiB preview limit;
 `--verbose` and command-failure diagnostics use the same limited readable output.
 
-Classification and package discovery read the **complete temporary captures**;
-truncation cannot turn a tool/build failure into a killed or missed mutation.
+Classification and package discovery read the **complete temporary captures**
+of commands that finish within their capture budget; saved-log truncation cannot
+turn a tool/build failure into a killed or missed mutation.
 Full stdout/stderr and rendered output remain file-backed until processed and
 saved, then are removed. This setting limits retained artifacts and diagnostic
 previews, **not temporary disk usage**. Parsing uses one Go output record at a
@@ -705,6 +708,45 @@ time; an individual oversized record and the package graph still need memory.
 Interrupted commands save limited partial logs with the same metadata. Omitted
 output cannot be recovered from the report; rerun with a larger limit or
 `--clear-max-log-bytes` when more diagnostics are needed.
+
+### Limiting command-output capture
+
+`--max-capture-bytes BYTES` (or `max_capture_bytes` in `mutie.toml`) sets a positive
+byte budget shared by raw stdout and stderr for **each Go command**. It defaults
+to unlimited. This applies to baseline tests, discovery (including `--list` and
+configured `dismiss check`), and mutation tests. Each concurrent command has its
+own budget. Reruns use current settings, not the source report's budget.
+
+```sh
+cargo run -- /path/to/go/module --max-capture-bytes 16777216 --max-log-bytes 65536
+cargo run -- /path/to/go/module --clear-max-capture-bytes
+```
+
+With the limit enabled, Mutie drains both output pipes into temporary files and
+never writes more than the combined byte budget to those raw captures. Output
+ending exactly at the limit is allowed. Reading another byte stops the command's
+process group and reports an explicit output-capture error with exit code `1`.
+A baseline or discovery overflow prevents mutation execution; a mutation overflow
+is a tool error and stops the run, including active peers. It is never classified
+as killed, missed, or timed out, even if a test-failure event was already received.
+Findings and minimum-score policies stay unevaluated.
+
+The captured prefix is retained for diagnostics, with the saved-log limit applied
+afterward. stdout/stderr are independent prefixes; their relative interleaving is
+not recorded. Raw output can end within a UTF-8 character or JSON record. Readable
+logs include an error notice, and the failure is saved in run/mutation errors or
+the baseline/discovery record's `capture_error`, independently of log truncation.
+Retention byte counts describe bytes captured, not all bytes the child attempted
+to emit; the uncaptured amount is unknown. Increase or clear the capture limit
+to rerun a command that needs more output.
+
+This is a raw command-output budget, not a quota on all disk use. Rendered readable
+logs, saved reports, workspaces, test-created files, and Go build/module caches
+are separate. Readable rendering can expand invalid UTF-8, and JSON decoding still
+needs memory for individual captured records. Deadlines and cancellation remain
+active while draining. After process-group shutdown, Mutie allows up to one second
+for buffered output to reach EOF; a pipe still held open is an explicit capture
+error instead of an indefinite wait.
 
 ## Report retention
 

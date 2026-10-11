@@ -30,6 +30,8 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
   protection across processes without requiring Go for retention commands.
 - `tests/log_limits.rs` checks log retention, outcome preservation, complete
   discovery, reruns, noisy failures, signal cleanup, and source preservation.
+- `tests/capture_limits.rs` checks raw output budgets, overflow errors, baseline
+  and discovery failures, saved diagnostics, policy precedence, and reruns.
 - `tests/dismissals.rs` checks persistence, invalidation, metadata edits, and
   preservation of execution outcomes and saved reports; it also exercises
   dismissal-based and minimum-score CI policies, configuration, and focused runs.

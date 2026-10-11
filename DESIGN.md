@@ -362,6 +362,27 @@ classification evidence independently of retained logs, and renders readable
 output into a separate temporary file. Discovery decodes the complete capture
 through a reader, including when only a tiny excerpt will be saved.
 
+The opt-in `max_capture_bytes` budget changes raw capture transport to pipes.
+Mutie alone writes the capture files, draining stdout and stderr with a shared
+per-command remaining-byte count and bounded buffers. Each write is capped before
+reaching disk; a one-byte lookahead distinguishes exact-budget output from an
+overflow. Unlimited commands retain direct file capture. Progress observation
+still uses an independent reader and cannot block capture, deadlines, or signals.
+On overflow or capture I/O failure, stop the process group and preserve captured
+diagnostics as an execution error. A fast child exit still drains buffered bytes;
+after group shutdown, a one-second drain deadline prevents inherited pipes from
+hanging cleanup. Failure to reach EOF is explicit, never silently treated as
+complete output.
+
+Capture errors take precedence over test/build evidence and timeout classification;
+handled cancellation remains interrupted. Do not decode incomplete discovery as a
+package graph. Baseline/discovery records save `capture_error` and a failed outcome;
+mutations save the existing error outcome and explanatory error field. Run errors
+and browser error details remain available independently of saved-log retention.
+The readable log also includes a capture-error notice. Retention counts cover only
+captured bytes; do not claim a total for unobserved output. CLI/config overrides
+and a clear flag follow existing settings rules, and reruns use current settings.
+
 Every child Go command owns two private temporary directories. Build output uses
 `GOTMPDIR`; its parent is the nonempty environment `GOTMPDIR`, or the system
 temporary directory when unset/empty. General test files use a separate directory
@@ -482,9 +503,12 @@ Retention never supplies classification evidence or package-discovery input.
 The cap bounds persisted log payloads and in-memory diagnostic previews, not
 temporary disk usage or individual JSON-record size. Full command captures and
 the rendered text are removed when the command result is released, including
-failure, timeout, interruption, and report-write errors. Hard limits on live
-temporary capture size and archival/compression remain separate future policies;
-do not silently discard semantic events to enforce an artifact budget.
+failure, timeout, interruption, and report-write errors. The separate opt-in capture
+budget bounds combined raw stdout/stderr per command and terminates on overflow;
+it does not silently discard semantic events and then classify an incomplete run.
+Rendered logs can expand invalid UTF-8, and reports, caches, workspace files, and
+individual decoded records have separate disk/memory costs. Archival/compression
+and run-wide resource quotas remain future policies.
 
 Publish the inventory and diffs before workers begin. Inventory entries without
 final outcomes remain visibly untested or interrupted. Update results and derived
@@ -713,7 +737,7 @@ The earlier go-cmp run exposed Go build directories retained after forced
 termination and a 1.35 GB report dominated by logs. Temporary Go builds now have
 a per-command cleanup lifetime; the reusable Go build cache remains separate. Explicit retention
 now lists report sizes and previews pruning by count and age. Per-artifact saved
-log limits are implemented; full temporary capture limits and archival policies
+log limits and per-command raw capture limits are implemented; archival policies
 remain open. Larger applications, asset-heavy trees, and reflink-capable filesystem
 versus Linux tmpfs comparisons still need measurements.
 
@@ -722,6 +746,42 @@ affected-package mode. Coverage-based selection and result reuse still need expl
 invalidation rules and separate validation. Consider workspace-copy optimizations
 without giving up restoration of test side effects. Measure before choosing which
 optimization to implement.
+
+#### Future exploration: structural identities and result reuse
+
+Deferred exploration, not the next implementation task. Investigate whether
+Tree-sitter structural fingerprints and Merkle hashes could preserve mutation
+identity across unrelated edits and avoid redundant mutation execution. Current
+matching requires the whole-file fingerprint and exact source coordinates; no
+change to that behavior is implied by this proposal.
+
+Keep mutation identity separate from result validity. A syntax-node hash could
+combine node kind, token contents, and ordered child hashes, excluding source
+positions. Enclosing declarations and surrounding context could help relocate
+mutations; repeated identical expressions must not produce ambiguous matches.
+Normalization needs explicit rules, including preservation of meaningful Go
+directives. An unchanged subtree establishes syntax identity, not unchanged
+behavior through its callees, shared state, or tests.
+
+Result reuse would additionally need fingerprints of relevant source dependencies,
+tests and fixtures, dependency versions, toolchain, execution settings, and tracked
+environment inputs. A Merkle dependency graph could propagate changes into cache
+keys, but Tree-sitter alone does not discover all dependencies. Untracked external
+inputs and nondeterminism require a conservative fallback. The fzf validation is a
+concrete invalidation case: adding tests changed missed mutations to killed while
+all implementation files remained unchanged.
+
+Explore in stages: structural matching first, conservative file/package-level
+result keys next, then finer reuse using per-test coverage and killing-test
+information. Added or changed tests must invalidate relevant missed results.
+Keep dismissals as separate review decisions with explicit staleness rules;
+initially retry timeouts and tool errors. Validate reuse against fresh full-module
+runs, retain a fresh baseline, expose reused-result provenance, and provide a way
+to force execution. Measure avoided test execution before investing in finer hashes.
+
+Useful references are [Stryker's incremental mutation testing](https://stryker-mutator.io/docs/stryker-js/incremental/),
+including its untracked-input limitations, and
+[Bazel's action-cache input model](https://bazel.build/remote/caching).
 
 ### 3. Broader mutations and language support
 
@@ -827,9 +887,9 @@ design. No runtime or plugin ABI is selected now.
    details, and unresolved entries — completed with reader validation, renderer,
    PTY, rerun-remapping, and real-Go coverage.
 
-Open implementation choices include dismissal editing in the browser, report archival
-and temporary-capture disk limits, mutation matching across source edits, and which language to
-add next. Resolve these when working on the corresponding milestone and update
+Open implementation choices include dismissal editing in the browser, report archival,
+run-wide resource budgets, mutation matching across source edits, and which language
+to add next. Resolve these when working on the corresponding milestone and update
 this document; they do not require expanding
 the initial MVP.
 

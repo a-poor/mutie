@@ -1,12 +1,17 @@
 use std::{
     future::{Future, Ready, pending},
+    io::Write,
+    num::NonZeroUsize,
     path::Path,
     process::{ExitStatus, Stdio},
     time::{Duration, Instant},
 };
 
 use anyhow::{Context, Result};
-use tokio::{io::AsyncReadExt, process::Command};
+use tokio::{
+    io::AsyncReadExt,
+    process::{ChildStderr, ChildStdout, Command},
+};
 
 use crate::{cancellation::Cancellation, capture::Capture};
 
@@ -14,17 +19,20 @@ pub struct CommandOutput {
     pub status: ExitStatus,
     pub timed_out: bool,
     pub interrupted: bool,
+    pub capture_error: Option<String>,
     pub elapsed: Duration,
     pub stdout: Capture,
     pub stderr: Capture,
 }
 
-/// Capture to files so a full pipe or a descendant holding it open cannot hang us.
+/// Unlimited captures go directly to files. Limited captures use drained pipes
+/// so only Mutie can write to the files and enforce a shared byte budget.
 pub async fn run(
     program: &str,
     args: &[&str],
     root: &Path,
     limit: Duration,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
     run_inner(
@@ -32,6 +40,7 @@ pub async fn run(
         args,
         root,
         limit,
+        capture_limit,
         cancellation,
         None::<fn(&str) -> Ready<()>>,
     )
@@ -45,6 +54,7 @@ pub async fn run_observed<F, Fut>(
     args: &[&str],
     root: &Path,
     limit: Duration,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
     observer: F,
 ) -> Result<CommandOutput>
@@ -52,7 +62,16 @@ where
     F: FnMut(&str) -> Fut + Send,
     Fut: Future<Output = ()> + Send,
 {
-    run_inner(program, args, root, limit, cancellation, Some(observer)).await
+    run_inner(
+        program,
+        args,
+        root,
+        limit,
+        capture_limit,
+        cancellation,
+        Some(observer),
+    )
+    .await
 }
 
 async fn run_inner<F, Fut>(
@@ -60,6 +79,7 @@ async fn run_inner<F, Fut>(
     args: &[&str],
     root: &Path,
     limit: Duration,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
     observer: Option<F>,
 ) -> Result<CommandOutput>
@@ -68,17 +88,25 @@ where
     Fut: Future<Output = ()> + Send,
 {
     cancellation.check()?;
-    let stdout = tempfile::NamedTempFile::new()?;
-    let stderr = tempfile::NamedTempFile::new()?;
-    // Reopen, do not clone: a cloned descriptor shares the child's write offset.
+    let mut stdout = tempfile::NamedTempFile::new()?;
+    let mut stderr = tempfile::NamedTempFile::new()?;
+    // Reopen, do not clone: observation must not move the capture writer's offset.
     let reader = observer.as_ref().map(|_| stdout.reopen()).transpose()?;
     let mut command = Command::new(program);
     command
         .args(args)
         .current_dir(root)
         .stdin(Stdio::null())
-        .stdout(stdout.as_file().try_clone()?)
-        .stderr(stderr.as_file().try_clone()?)
+        .stdout(if capture_limit.is_some() {
+            Stdio::piped()
+        } else {
+            stdout.as_file().try_clone()?.into()
+        })
+        .stderr(if capture_limit.is_some() {
+            Stdio::piped()
+        } else {
+            stderr.as_file().try_clone()?.into()
+        })
         .kill_on_drop(true);
     // Outlive the child and its process-group guard so they issue any required
     // kills before temporary files are removed, including on spawn/wait errors
@@ -142,6 +170,7 @@ where
     let mut group = ProcessGroup { id: child.id() };
     let mut timed_out = false;
     let mut interrupted = false;
+    let mut capture_error = None;
     let observation = async {
         if let (Some(reader), Some(observer)) = (reader, observer) {
             // Progress is best effort. If its independent reader fails, retain
@@ -150,35 +179,118 @@ where
         }
         pending::<()>().await
     };
-    let status = tokio::select! {
-        biased;
-        result = tokio::time::timeout(limit, child.wait()) => match result {
-            Ok(status) => status.context("waiting for child process")?,
-            Err(_) => {
-                timed_out = true;
-                group.kill();
-                child.start_kill()?;
-                child.wait().await?
+    let stdout_pipe = child.stdout.take();
+    let stderr_pipe = child.stderr.take();
+    let status = {
+        let capture = async {
+            if let Some(budget) = capture_limit {
+                capture_pipes(
+                    stdout_pipe.context("missing stdout pipe")?,
+                    stderr_pipe.context("missing stderr pipe")?,
+                    stdout.as_file_mut(),
+                    stderr.as_file_mut(),
+                    budget.get(),
+                )
+                .await
+            } else {
+                pending::<Result<()>>().await
             }
-        },
-        _ = cancellation.cancelled() => {
-            interrupted = true;
-            group.kill();
-            child.start_kill()?;
-            child.wait().await?
-        },
-        _ = observation => unreachable!("observation never completes"),
+        };
+        let deadline = tokio::time::sleep(limit);
+        tokio::pin!(capture, deadline, observation);
+        let mut captured = false;
+        let status = loop {
+            tokio::select! {
+                biased;
+                result = &mut capture, if !captured => {
+                    captured = true;
+                    if let Err(error) = result {
+                        capture_error = Some(format!("{error:#}"));
+                        group.kill();
+                        child.start_kill()?;
+                        break child.wait().await?;
+                    }
+                },
+                result = child.wait() => break result.context("waiting for child process")?,
+                _ = &mut deadline => {
+                    timed_out = true;
+                    group.kill();
+                    child.start_kill()?;
+                    break child.wait().await?;
+                },
+                _ = cancellation.cancelled() => {
+                    interrupted = true;
+                    group.kill();
+                    child.start_kill()?;
+                    break child.wait().await?;
+                },
+                _ = &mut observation => unreachable!("observation never completes"),
+            }
+        };
+        group.kill();
+        // Drain bytes already in the pipes even when the child exits first.
+        // A descendant outside the process group may still hold a pipe open;
+        // bound that wait and explicitly fail rather than silently lose output.
+        if capture_limit.is_some() && !captured {
+            capture_error = match tokio::time::timeout(Duration::from_secs(1), &mut capture).await {
+                Ok(Ok(())) => None,
+                Ok(Err(error)) => Some(format!("{error:#}")),
+                Err(_) => Some("output capture did not reach EOF after command shutdown".into()),
+            };
+        }
+        status
     };
-    group.kill();
     let elapsed = started.elapsed();
     Ok(CommandOutput {
         status,
         timed_out,
         interrupted,
+        capture_error,
         elapsed,
         stdout: Capture::new(stdout)?,
         stderr: Capture::new(stderr)?,
     })
+}
+
+/// Both streams share one budget. Read one byte beyond an exactly full budget
+/// to distinguish overflow from output that ends precisely at the limit.
+async fn capture_pipes(
+    mut stdout: ChildStdout,
+    mut stderr: ChildStderr,
+    stdout_file: &mut std::fs::File,
+    stderr_file: &mut std::fs::File,
+    budget: usize,
+) -> Result<()> {
+    let mut out = [0; 16 * 1024];
+    let mut err = [0; 16 * 1024];
+    let (mut out_done, mut err_done) = (false, false);
+    let mut remaining = budget;
+    while !out_done || !err_done {
+        let read_size = remaining.saturating_add(1).min(out.len());
+        let (count, bytes, file) = tokio::select! {
+            result = stdout.read(&mut out[..read_size]), if !out_done => {
+                let count = result.context("reading command stdout")?;
+                out_done = count == 0;
+                (count, &out[..count], &mut *stdout_file)
+            },
+            result = stderr.read(&mut err[..read_size]), if !err_done => {
+                let count = result.context("reading command stderr")?;
+                err_done = count == 0;
+                (count, &err[..count], &mut *stderr_file)
+            },
+        };
+        let keep = count.min(remaining);
+        // Synchronous bounded writes finish before cancellation can drop the
+        // capture, so no background writer can race cleanup or saved lengths.
+        file.write_all(&bytes[..keep])
+            .context("writing command output capture")?;
+        remaining -= keep;
+        anyhow::ensure!(
+            count == keep,
+            "command output exceeded --max-capture-bytes ({budget} bytes combined stdout/stderr); command stopped, captured output is incomplete"
+        );
+    }
+    Ok(())
 }
 
 const MAX_PROGRESS_LINE: usize = 64 * 1024;
@@ -271,6 +383,103 @@ impl Drop for ProcessGroup {
 mod tests {
     use super::*;
 
+    #[tokio::test]
+    async fn capture_budget_is_shared_and_exact_boundary_succeeds_even_on_fast_exit() -> Result<()>
+    {
+        let root = tempfile::tempdir()?;
+        for (script, budget, exceeded, stdout, stderr) in [
+            (
+                "printf 1234; printf 56789 >&2",
+                9,
+                false,
+                Some("1234"),
+                Some("56789"),
+            ),
+            ("printf 123456789", 8, true, Some("12345678"), Some("")),
+            ("printf 123456789 >&2", 8, true, Some(""), Some("12345678")),
+            ("printf 1234; printf 56789 >&2", 8, true, None, None),
+            ("printf x", 1, false, Some("x"), Some("")),
+            ("true", 1, false, Some(""), Some("")),
+        ] {
+            let output = run(
+                "sh",
+                &["-c", script],
+                root.path(),
+                Duration::from_secs(5),
+                NonZeroUsize::new(budget),
+                &Cancellation::default(),
+            )
+            .await?;
+            assert_eq!(output.capture_error.is_some(), exceeded, "{script}");
+            assert!(!output.timed_out && !output.interrupted);
+            let captured =
+                output.stdout.retention()?.total_bytes + output.stderr.retention()?.total_bytes;
+            assert!(captured <= budget as u64);
+            if exceeded {
+                assert_eq!(captured, budget as u64);
+                assert!(
+                    output
+                        .capture_error
+                        .as_ref()
+                        .unwrap()
+                        .contains("--max-capture-bytes")
+                );
+            } else {
+                assert!(output.status.success());
+            }
+            if let Some(expected) = stdout {
+                assert_eq!(output.stdout.text()?, expected);
+            }
+            if let Some(expected) = stderr {
+                assert_eq!(output.stderr.text()?, expected);
+            }
+        }
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn noisy_capture_stops_descendants_even_with_a_blocked_observer() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let release = root.path().join("release");
+        let output = run_observed("sh", &["-c", "printf 'ready\\n'; while [ ! -f release ]; do sleep 0.01; done; (sleep 1; touch leaked) & while :; do printf 'stdout payload\\n'; printf 'stderr payload\\n' >&2; done"], root.path(), Duration::from_secs(5), NonZeroUsize::new(4096), &Cancellation::default(), |_| {
+            std::fs::write(&release, "").unwrap();
+            pending::<()>()
+        }).await?;
+        assert!(release.exists());
+        assert!(output.capture_error.as_ref().unwrap().contains("4096"));
+        assert!(!output.timed_out && !output.interrupted);
+        assert_eq!(
+            output.stdout.retention()?.total_bytes + output.stderr.retention()?.total_bytes,
+            4096
+        );
+        assert!(output.stdout.text()?.starts_with("ready\n"));
+        tokio::time::sleep(Duration::from_millis(1100)).await;
+        assert!(!root.path().join("leaked").exists());
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn limited_capture_does_not_wait_for_descendants_after_parent_exit() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let output = run(
+            "sh",
+            &[
+                "-c",
+                "printf 'finished\\n'; (sleep 30; touch leaked) & exit 0",
+            ],
+            root.path(),
+            Duration::from_secs(5),
+            NonZeroUsize::new(4096),
+            &Cancellation::default(),
+        )
+        .await?;
+        assert!(output.status.success());
+        assert!(output.capture_error.is_none());
+        assert_eq!(output.stdout.text()?, "finished\n");
+        assert!(output.elapsed < Duration::from_secs(3));
+        Ok(())
+    }
+
     #[test]
     fn progress_decoder_handles_split_unicode_crlf_and_oversized_lines() {
         let mut lines = ProgressLines::default();
@@ -288,7 +497,7 @@ mod tests {
         let root = tempfile::tempdir()?;
         let mut seen = Vec::new();
         let release = root.path().join("release");
-        let output = run_observed("sh", &["-c", "printf 'first\\n'; printf 'diagnostic\\n' >&2; while [ ! -f release ]; do sleep 0.02; done; printf 'last without newline'"], root.path(), Duration::from_secs(5), &Cancellation::default(), |line| {
+        let output = run_observed("sh", &["-c", "printf 'first\\n'; printf 'diagnostic\\n' >&2; while [ ! -f release ]; do sleep 0.02; done; printf 'last without newline'"], root.path(), Duration::from_secs(5), None, &Cancellation::default(), |line| {
             seen.push(line.to_owned());
             std::fs::write(&release, "").unwrap();
             std::future::ready(())
@@ -315,6 +524,7 @@ mod tests {
                 ],
                 root.path(),
                 Duration::from_millis(400),
+                None,
                 &cancellation,
                 |_| {
                     observing.store(true, Ordering::SeqCst);
@@ -357,6 +567,7 @@ mod tests {
             ],
             root.path(),
             Duration::from_secs(10),
+            None,
             &cancellation,
         );
         let stop = async {
@@ -390,6 +601,7 @@ mod tests {
             &["-c", "touch started"],
             root.path(),
             Duration::from_secs(1),
+            None,
             &cancellation,
         )
         .await
@@ -408,6 +620,7 @@ mod tests {
             &["-c", "(sleep 0.5; touch leaked) & wait"],
             root.path(),
             Duration::from_millis(100),
+            None,
             &Cancellation::default(),
         )
         .await?;

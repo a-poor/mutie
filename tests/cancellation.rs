@@ -84,8 +84,11 @@ hang() {
         while [ ! -f "$MUTIE_TEST_STATE/release-b" ]; do sleep 0.01; done
         exit 0
     fi
-    if [ "$MUTIE_TEST_MODE" = tool_error ] && [ "$label" = c ]; then
+    if { [ "$MUTIE_TEST_MODE" = tool_error ] || [ "$MUTIE_TEST_MODE" = capture_error ]; } && [ "$label" = c ]; then
         while [ ! -f "$MUTIE_TEST_STATE/fail" ]; do sleep 0.01; done
+        if [ "$MUTIE_TEST_MODE" = capture_error ]; then
+            while :; do printf 'stdout diagnostic\n'; printf 'stderr diagnostic\n' >&2; done
+        fi
         printf 'go tool failed unexpectedly\n' >&2
         exit 2
     fi
@@ -143,6 +146,7 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
         ));
         let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
         command
+            .args(["--max-capture-bytes", "4096"])
             .env("PATH", std::env::join_paths(paths).unwrap())
             .env("TMPDIR", &self.workspaces)
             .env("TMP", &self.go_temporary)
@@ -514,41 +518,46 @@ fn interruption_during_baseline_and_discovery_preserves_command_output() {
 
 #[test]
 fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
-    let fixture = Fixture::new();
-    let mut child = fixture.start("tool_error");
-    fixture.ready("b");
-    fixture.ready("c");
-    fs::write(fixture.state.join("fail"), "").unwrap();
-    let output = child.finish();
-    assert_eq!(output.status.code(), Some(1));
-    assert!(String::from_utf8_lossy(&output.stderr).contains("go tool failed unexpectedly"));
-    let directory = fixture.report();
-    let outcomes = read(&directory, "outcomes.json");
-    assert_eq!(outcomes["status"], "failed");
-    assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
-    assert_eq!(outcomes["mutations"][1]["state"], "interrupted");
-    assert_eq!(outcomes["mutations"][2]["outcome"], "error");
-    assert_eq!(outcomes["mutations"][3]["state"], "pending");
-    assert!(
-        fs::read_to_string(directory.join("logs/000002.log"))
-            .unwrap()
-            .contains("active b")
-    );
-    assert_eq!(outcomes["summary"]["errors"], 1);
-    assert_eq!(outcomes["summary"]["missed"], 1);
-    let metadata = read(&directory, "run.json");
-    assert_eq!(metadata["policy"]["status"], "not_evaluated");
-    assert_eq!(metadata["score_policy"]["status"], "not_evaluated");
-    assert!(metadata["score"]["percentage"].is_null());
-    assert_eq!(
-        metadata["workspace_metrics"]["worker_setup"]["completed"],
-        2
-    );
-    assert_eq!(
-        metadata["workspace_metrics"]["worker_reset"]["completed"],
-        1
-    );
-    fixture.assert_cleanup();
+    for (mode, diagnostic) in [
+        ("tool_error", "go tool failed unexpectedly"),
+        ("capture_error", "--max-capture-bytes"),
+    ] {
+        let fixture = Fixture::new();
+        let mut child = fixture.start(mode);
+        fixture.ready("b");
+        fixture.ready("c");
+        fs::write(fixture.state.join("fail"), "").unwrap();
+        let output = child.finish();
+        assert_eq!(output.status.code(), Some(1));
+        assert!(String::from_utf8_lossy(&output.stderr).contains(diagnostic));
+        let directory = fixture.report();
+        let outcomes = read(&directory, "outcomes.json");
+        assert_eq!(outcomes["status"], "failed");
+        assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
+        assert_eq!(outcomes["mutations"][1]["state"], "interrupted");
+        assert_eq!(outcomes["mutations"][2]["outcome"], "error");
+        assert_eq!(outcomes["mutations"][3]["state"], "pending");
+        assert!(
+            fs::read_to_string(directory.join("logs/000002.log"))
+                .unwrap()
+                .contains("active b")
+        );
+        assert_eq!(outcomes["summary"]["errors"], 1);
+        assert_eq!(outcomes["summary"]["missed"], 1);
+        let metadata = read(&directory, "run.json");
+        assert_eq!(metadata["policy"]["status"], "not_evaluated");
+        assert_eq!(metadata["score_policy"]["status"], "not_evaluated");
+        assert!(metadata["score"]["percentage"].is_null());
+        assert_eq!(
+            metadata["workspace_metrics"]["worker_setup"]["completed"],
+            2
+        );
+        assert_eq!(
+            metadata["workspace_metrics"]["worker_reset"]["completed"],
+            1
+        );
+        fixture.assert_cleanup();
+    }
 }
 
 #[test]

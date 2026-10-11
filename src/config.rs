@@ -29,6 +29,7 @@ struct RepositoryConfig {
     operators: Option<Vec<Operator>>,
     timeout: Option<NonZeroU64>,
     max_log_bytes: Option<NonZeroUsize>,
+    max_capture_bytes: Option<NonZeroUsize>,
     baseline_timeout: Option<NonZeroU64>,
     fail_on_missed: Option<bool>,
     min_score: Option<MinimumScore>,
@@ -53,6 +54,7 @@ pub struct RunConfig {
     pub operators: Vec<Operator>,
     pub timeout: Option<NonZeroU64>,
     pub max_log_bytes: Option<NonZeroUsize>,
+    pub max_capture_bytes: Option<NonZeroUsize>,
     pub baseline_timeout: NonZeroU64,
     pub fail_on_missed: bool,
     pub min_score: Option<MinimumScore>,
@@ -178,6 +180,11 @@ impl RunConfig {
                 None
             } else {
                 cli.max_log_bytes.or(file.max_log_bytes)
+            },
+            max_capture_bytes: if cli.clear_max_capture_bytes {
+                None
+            } else {
+                cli.max_capture_bytes.or(file.max_capture_bytes)
             },
             timeout: if cli.clear_timeout {
                 None
@@ -658,6 +665,28 @@ verbose = true
         );
         fs::write(file, "max_log_bytes = 0")?;
         assert!(resolve(temp.path(), &["--clear-max-log-bytes"]).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn capture_limit_is_independent_and_merges_explicit_overrides() -> Result<()> {
+        let temp = project()?;
+        assert_eq!(resolve(temp.path(), &[])?.max_capture_bytes, None);
+        let file = temp.path().join("module/mutie.toml");
+        fs::write(&file, "max_capture_bytes = 4096\nmax_log_bytes = 64")?;
+        for (args, expected) in [
+            (vec![], Some(4096)),
+            (vec!["--max-capture-bytes", "1"], Some(1)),
+            (vec!["--clear-max-capture-bytes"], None),
+        ] {
+            let config = resolve(temp.path(), &args)?;
+            assert_eq!(config.max_capture_bytes.map(NonZeroUsize::get), expected);
+            assert_eq!(config.max_log_bytes.unwrap().get(), 64);
+        }
+        for value in ["0", "-1", "'1KiB'"] {
+            fs::write(&file, format!("max_capture_bytes = {value}"))?;
+            assert!(resolve(temp.path(), &["--clear-max-capture-bytes"]).is_err());
+        }
         Ok(())
     }
 

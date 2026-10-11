@@ -159,6 +159,11 @@ checklist as work lands, checking items off after appropriate verification.
 - [ ] Evaluate coverage-based test selection and result reuse against full-module
   testing, with explicit invalidation rules. Keep affected-package comparisons
   against full-module results as projects and operators expand.
+- [ ] Future exploration, not the next implementation task: investigate Tree-sitter
+  structural fingerprints and Merkle dependency hashes for durable mutation
+  identity and incremental result reuse. See
+  [design notes](DESIGN.md#future-exploration-structural-identities-and-result-reuse)
+  for dependency tracking, invalidation, and validation requirements.
 - [x] Add standalone call removal with explicit statement eligibility and multiline
   diffs. Support operator selection for fresh runs, previews, and reruns through
   CLI/config, preserving dismissal matching and source identity. Verify real-Go
@@ -175,9 +180,14 @@ checklist as work lands, checking items off after appropriate verification.
   excerpts, byte-count metadata, and browser notices. Keep complete event parsing
   and discovery independent of retention; preserve noisy outcomes, Unicode,
   partial diagnostics, reruns, and cleanup after timeout/interruption.
-- [ ] Evaluate archival/compression and hard limits on temporary capture disk
-  usage. Saved-log retention is bounded when configured; full temporary captures
-  and individual Go JSON records remain outside that budget.
+- [x] Add opt-in per-command raw capture limits with CLI/config/clear overrides.
+  Bound combined stdout/stderr writes before they reach disk; stop the command
+  group on overflow and retain diagnostics as a tool error. Preserve exact-limit
+  success, discovery completeness, saved reports, policy precedence, and reruns;
+  verify noisy streams, blocked observers, concurrent workers, signals, and cleanup.
+- [ ] Evaluate archival/compression and run-wide disk/memory budgets. Per-command
+  raw captures and per-artifact saved logs can be bounded; rendered logs, decoded
+  Go records, workspace/test files, and caches have separate resource costs.
 - [x] Add opt-in `--fail-on-missed` / repository configuration, with a local
   disable override. Evaluate current undismissed missed findings after successful
   execution, save the decision separately from execution status, and return exit

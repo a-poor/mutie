@@ -243,6 +243,7 @@ async fn execute(
             &baseline_workspace.path(),
             baseline_limit,
             config.max_log_bytes,
+            config.max_capture_bytes,
             cancellation,
         )
         .await?;
@@ -255,6 +256,12 @@ async fn execute(
         )?;
         if baseline.interrupted {
             return Err(Interrupted.into());
+        }
+        if let Some(error) = &baseline.capture_error {
+            bail!(
+                "baseline: {error}; no mutations were run\n{}",
+                go::text(&baseline)?
+            );
         }
         if baseline.timed_out {
             bail!(
@@ -301,6 +308,7 @@ async fn execute(
         config.test_scope,
         baseline_limit,
         config.max_log_bytes,
+        config.max_capture_bytes,
         cancellation,
     )
     .await?;
@@ -432,6 +440,7 @@ async fn execute(
         test_packages: Arc::new(test_packages),
         timeout,
         max_log_bytes: config.max_log_bytes,
+        max_capture_bytes: config.max_capture_bytes,
         cancellation: cancellation.clone(),
     };
     run_workers(context, mutations, jobs, coordinator).await
@@ -443,6 +452,7 @@ struct WorkerContext {
     test_packages: Arc<Vec<Vec<String>>>,
     timeout: Duration,
     max_log_bytes: Option<std::num::NonZeroUsize>,
+    max_capture_bytes: Option<std::num::NonZeroUsize>,
     cancellation: Cancellation,
 }
 
@@ -523,6 +533,7 @@ impl WorkerJob {
                     &context.test_packages[id - 1],
                     context.timeout,
                     context.max_log_bytes,
+                    context.max_capture_bytes,
                     &context.cancellation,
                     move |phase| {
                         let progress = progress.clone();

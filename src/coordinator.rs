@@ -303,7 +303,11 @@ impl Coordinator {
                 RunEvent::Command {
                     phase: Phase::Baseline,
                     output,
-                } if output.status.success() && !output.interrupted && !output.timed_out => {
+                } if output.status.success()
+                    && !output.interrupted
+                    && !output.timed_out
+                    && output.capture_error.is_none() =>
+                {
                     self.line(format!(
                         "Baseline passed in {:.2}s",
                         output.elapsed.as_secs_f64()

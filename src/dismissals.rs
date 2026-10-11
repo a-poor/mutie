@@ -512,6 +512,7 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
         crate::cli::TestScope::Full,
         Duration::from_secs(config.baseline_timeout.get()),
         config.max_log_bytes,
+        config.max_capture_bytes,
         cancellation,
     )
     .await?;

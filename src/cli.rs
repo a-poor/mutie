@@ -64,6 +64,14 @@ pub struct Cli {
     #[arg(long, conflicts_with = "max_log_bytes")]
     pub clear_max_log_bytes: bool,
 
+    /// Stop a command if combined stdout/stderr exceeds BYTES (default: unlimited)
+    #[arg(long, value_name = "BYTES")]
+    pub max_capture_bytes: Option<NonZeroUsize>,
+
+    /// Disable the configured command output capture limit
+    #[arg(long, conflicts_with = "max_capture_bytes")]
+    pub clear_max_capture_bytes: bool,
+
     /// Timeout for the baseline and package discovery, in seconds (default: 300)
     #[arg(long, value_name = "SECONDS")]
     pub baseline_timeout: Option<NonZeroU64>,

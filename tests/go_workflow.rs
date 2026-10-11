@@ -24,6 +24,7 @@ fn run(root: &Path, args: &[&str]) -> Output {
     with_temporary_cleanup(
         Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg(root)
+            .args(["--max-capture-bytes", "1048576"])
             .args(args),
     )
 }
@@ -420,6 +421,8 @@ fn go_workflow() {
 #[test]
 #[ignore = "requires Go 1.24+ on PATH; builds call-removal mutants and a focused rerun"]
 fn call_removal_reports_real_outcomes_and_a_stronger_test_kills_a_survivor() {
+    // This fixture checks compilation and reruns; allow build headroom on busy hosts.
+    // Deliberate deadline behavior is covered by go_workflow.
     let root = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
     let root = root.path();
     fs::write(root.join("go.mod"), "module example.com/calls\n\ngo 1.24\n").unwrap();
@@ -454,7 +457,14 @@ func TestCalls(t *testing.T) {
     assert!(!root.join(".mutie").exists());
     let output = run(
         root,
-        &["--operator", "call_remove", "--jobs", "2", "--timeout", "5"],
+        &[
+            "--operator",
+            "call_remove",
+            "--jobs",
+            "2",
+            "--timeout",
+            "15",
+        ],
     );
     stdout(&output);
     let (directory, metadata, inventory, outcomes) = saved_report(&output);
@@ -505,7 +515,7 @@ func TestUncheckedEffect(t *testing.T) {
             "--test-scope",
             "affected",
             "--timeout",
-            "5",
+            "15",
         ],
     );
     stdout(&rerun);
@@ -513,10 +523,86 @@ func TestUncheckedEffect(t *testing.T) {
     assert_eq!(metadata["rerun"]["mutations"][0]["source_id"], 2);
     assert_eq!(inventory["mutations"].as_array().unwrap().len(), 1);
     assert_eq!(inventory["dismissals"]["matched"][0]["mutation_id"], 1);
-    assert_eq!(outcomes["summary"]["killed"], 1);
+    assert_eq!(outcomes["summary"]["killed"], 1, "{outcomes:#}");
     assert_eq!(outcomes["summary"]["missed"], 0);
     assert_eq!(fs::read(directory.join("run.json")).unwrap(), saved);
     assert_eq!(fs::read_to_string(root.join("calls.go")).unwrap(), source);
+}
+
+#[test]
+#[ignore = "requires Go 1.24+ on PATH; terminates a noisy real Go test"]
+fn capture_limit_stops_noisy_go_tests_without_counting_a_kill() {
+    let root = tempfile::tempdir().unwrap();
+    fs::write(
+        root.path().join("go.mod"),
+        "module example.com/noise\n\ngo 1.24\n",
+    )
+    .unwrap();
+    let source = "package noise\nvar Quiet = true\n";
+    fs::write(root.path().join("noise.go"), source).unwrap();
+    fs::write(
+        root.path().join("noise_test.go"),
+        r#"package noise
+
+import (
+	"fmt"
+	"os"
+	"strings"
+	"testing"
+)
+
+func TestNoise(t *testing.T) {
+	file, err := os.CreateTemp("", "noise-leftover-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	file.Close()
+	if !Quiet {
+		for {
+			fmt.Println(strings.Repeat("noisy output", 100))
+		}
+	}
+}
+"#,
+    )
+    .unwrap();
+    let output = with_temporary_cleanup(
+        Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .arg(root.path())
+            .args([
+                "--max-capture-bytes",
+                "8192",
+                "--max-log-bytes",
+                "128",
+                "--timeout",
+                "10",
+            ]),
+    );
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let (_, metadata, _, outcomes) = saved_report(&output);
+    assert_eq!(outcomes["baseline"]["outcome"], "passed");
+    assert_eq!(metadata["status"], "failed");
+    assert_eq!(
+        outcomes["summary"],
+        serde_json::json!({"killed":0,"missed":0,"timeout":0,"build_failed":0,"errors":1})
+    );
+    let mutation = &outcomes["mutations"][0];
+    assert!(
+        mutation["error"]
+            .as_str()
+            .unwrap()
+            .contains("--max-capture-bytes")
+    );
+    let retention = &mutation["logs"]["retention"];
+    assert_eq!(
+        retention["stdout"]["total_bytes"].as_u64().unwrap()
+            + retention["stderr"]["total_bytes"].as_u64().unwrap(),
+        8192
+    );
+    assert_eq!(
+        fs::read_to_string(root.path().join("noise.go")).unwrap(),
+        source
+    );
 }
 
 #[cfg(unix)]

@@ -86,6 +86,9 @@ impl CommandOutput {
             }
             write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;
         }
+        if let Some(error) = &raw.capture_error {
+            writeln!(rendered, "\n[Output capture error: {error}]")?;
+        }
         raw.stdout.set_limit(log_limit);
         raw.stderr.set_limit(log_limit);
         let mut text = Capture::utf8(rendered)?;
@@ -151,10 +154,19 @@ pub async fn discover(
     scope: crate::cli::TestScope,
     limit: Duration,
     log_limit: Option<NonZeroUsize>,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
     prepare(
-        process::run("go", list_args(scope), root, limit, cancellation).await?,
+        process::run(
+            "go",
+            list_args(scope),
+            root,
+            limit,
+            capture_limit,
+            cancellation,
+        )
+        .await?,
         log_limit,
     )
     .await
@@ -175,10 +187,11 @@ pub async fn test(
     root: &Path,
     limit: Duration,
     log_limit: Option<NonZeroUsize>,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
 ) -> Result<CommandOutput> {
     prepare(
-        process::run("go", TEST_ARGS, root, limit, cancellation).await?,
+        process::run("go", TEST_ARGS, root, limit, capture_limit, cancellation).await?,
         log_limit,
     )
     .await
@@ -197,6 +210,7 @@ pub async fn test_observed<F, Fut>(
     packages: &[String],
     limit: Duration,
     log_limit: Option<NonZeroUsize>,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
     mut progress: F,
 ) -> Result<CommandOutput>
@@ -211,14 +225,22 @@ where
         .chain(packages.iter().map(String::as_str))
         .collect();
     let mut phases = TestProgress::default();
-    let raw = process::run_observed("go", &args, root, limit, cancellation, move |line| {
-        let update = phases.observe(line).map(&mut progress);
-        async move {
-            if let Some(update) = update {
-                update.await;
+    let raw = process::run_observed(
+        "go",
+        &args,
+        root,
+        limit,
+        capture_limit,
+        cancellation,
+        move |line| {
+            let update = phases.observe(line).map(&mut progress);
+            async move {
+                if let Some(update) = update {
+                    update.await;
+                }
             }
-        }
-    })
+        },
+    )
     .await?;
     prepare(raw, log_limit).await
 }
@@ -267,6 +289,9 @@ pub fn files(root: &Path, output: &CommandOutput) -> Result<Vec<PathBuf>> {
 
 pub fn packages(output: &CommandOutput) -> Result<Vec<selection::Package>> {
     ensure!(!output.interrupted, "Go package discovery interrupted");
+    if let Some(error) = &output.capture_error {
+        bail!("Go package discovery: {error}");
+    }
     ensure!(!output.timed_out, "Go package discovery timed out");
     ensure!(
         output.status.success(),
@@ -319,6 +344,9 @@ pub fn classify(output: &CommandOutput) -> Result<Outcome> {
         !output.interrupted,
         "cannot classify an interrupted command"
     );
+    if let Some(error) = &output.capture_error {
+        bail!("Go test output capture failed: {error}");
+    }
     if output.timed_out {
         return Ok(Outcome::Timeout);
     }
@@ -469,6 +497,7 @@ mod tests {
                 status: std::process::ExitStatus::from_raw(code << 8),
                 timed_out: false,
                 interrupted: false,
+                capture_error: None,
                 elapsed: Duration::ZERO,
                 stdout: Capture::from_bytes(stdout.as_bytes()),
                 stderr: Capture::from_bytes(b""),

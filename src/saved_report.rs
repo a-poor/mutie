@@ -102,6 +102,8 @@ struct CommandRecord {
     outcome: &'static str,
     duration_seconds: f64,
     exit_code: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    capture_error: Option<String>,
     logs: Logs,
 }
 
@@ -289,6 +291,8 @@ impl SavedReport {
         let record = CommandRecord {
             outcome: if output.interrupted {
                 "interrupted"
+            } else if output.capture_error.is_some() {
+                "failed"
             } else if output.timed_out {
                 "timeout"
             } else if output.status.success() {
@@ -298,6 +302,7 @@ impl SavedReport {
             },
             duration_seconds: output.elapsed.as_secs_f64(),
             exit_code: output.status.code(),
+            capture_error: output.capture_error.clone(),
             logs: self.logs(&format!("logs/{name}"), output)?,
         };
         if name == "baseline" {
@@ -746,6 +751,7 @@ mod tests {
                 status: std::process::ExitStatus::from_raw(0),
                 timed_out: false,
                 interrupted: false,
+                capture_error: None,
                 elapsed: Duration::from_millis(125),
                 stdout: crate::capture::Capture::from_bytes(
                     b"{\"Action\":\"output\",\"Output\":\"PASS\\n\"}\n",
