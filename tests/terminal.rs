@@ -13,12 +13,26 @@ use std::{
     },
     path::PathBuf,
     process::{Child, Command, ExitStatus, Stdio},
+    sync::Mutex,
     thread,
     time::{Duration, Instant},
 };
 
+// openpty has no atomic close-on-exec option. Keep another test from spawning
+// between descriptor allocation and setting FD_CLOEXEC; sessions still run in
+// parallel once their children have started.
+static SPAWN_LOCK: Mutex<()> = Mutex::new(());
+// This is a whole-workflow watchdog, not a command timeout. Under competing
+// Cargo builds a successful baseline/discovery/mutation run can exceed 10s.
+const WAIT_LIMIT: Duration = Duration::from_secs(30);
+
 struct Session {
     _temp: tempfile::TempDir,
+    description: String,
+    started: Instant,
+    last_pump: Instant,
+    longest_pump_gap: Duration,
+    cursor_queries: usize,
     root: PathBuf,
     state: PathBuf,
     workspaces: PathBuf,
@@ -64,6 +78,15 @@ impl Session {
             &go,
             r#"#!/bin/sh
 set -eu
+# Tool processes receive null stdin and captured stdout/stderr. They must not
+# inherit this session's PTY handles or handles belonging to concurrent tests.
+for fd in /dev/fd/*; do
+    fd=${fd##*/}
+    if [ -t "$fd" ]; then
+        printf 'inherited terminal descriptor %s\n' "$fd" >&2
+        exit 1
+    fi
+done
 if [ "$1" = list ]; then
     if [ "$MODE" = empty ]; then
         printf '{"Dir":"%s","GoFiles":[]}\n' "$PWD"
@@ -101,6 +124,7 @@ fi
         .unwrap();
         fs::set_permissions(go, fs::Permissions::from_mode(0o755)).unwrap();
 
+        let spawning = SPAWN_LOCK.lock().unwrap_or_else(|error| error.into_inner());
         let mut master = -1;
         let mut slave = -1;
         let mut size = libc::winsize {
@@ -126,6 +150,18 @@ fi
         );
         // SAFETY: these descriptors are new and become uniquely owned by File.
         let (master, mut slave) = unsafe { (File::from_raw_fd(master), File::from_raw_fd(slave)) };
+        for file in [&master, &slave] {
+            // SAFETY: operate only on the two newly owned descriptors. Without
+            // CLOEXEC every CLI and tool child can keep other sessions alive.
+            let flags = unsafe { libc::fcntl(file.as_raw_fd(), libc::F_GETFD) };
+            assert_ne!(flags, -1, "{}", io::Error::last_os_error());
+            assert_eq!(
+                unsafe { libc::fcntl(file.as_raw_fd(), libc::F_SETFD, flags | libc::FD_CLOEXEC) },
+                0,
+                "{}",
+                io::Error::last_os_error()
+            );
+        }
         let termios = termios(&slave);
         // SAFETY: operate only on the owned master descriptor.
         let flags = unsafe { libc::fcntl(master.as_raw_fd(), libc::F_GETFL) };
@@ -178,8 +214,16 @@ fi
             });
         }
         let child = command.spawn().unwrap();
+        drop(spawning);
         Self {
             _temp: temp,
+            description: format!(
+                "mode={mode}, ui={ui}, ci={ci}, size={rows}x{columns}, workers={workers}"
+            ),
+            started: Instant::now(),
+            last_pump: Instant::now(),
+            longest_pump_gap: Duration::ZERO,
+            cursor_queries: 0,
             root,
             state,
             workspaces,
@@ -195,6 +239,9 @@ fi
     }
 
     fn pump(&mut self) {
+        let now = Instant::now();
+        self.longest_pump_gap = self.longest_pump_gap.max(now - self.last_pump);
+        self.last_pump = now;
         let mut buf = [0; 8192];
         loop {
             match self.master.read(&mut buf) {
@@ -218,11 +265,14 @@ fi
         for byte in bytes {
             self.screen.process(std::slice::from_ref(byte));
             self.query_tail.push(*byte);
-            if self.query_tail.ends_with(b"\x1b[6n") && self.respond_to_queries {
-                let (row, col) = self.screen.screen().cursor_position();
-                let (_, columns) = self.screen.screen().size();
-                let col = col.min(columns - 1); // pending wrap at the right edge
-                write!(self.master, "\x1b[{};{}R", row + 1, col + 1).unwrap();
+            if self.query_tail.ends_with(b"\x1b[6n") {
+                self.cursor_queries += 1;
+                if self.respond_to_queries {
+                    let (row, col) = self.screen.screen().cursor_position();
+                    let (_, columns) = self.screen.screen().size();
+                    let col = col.min(columns - 1); // pending wrap at the right edge
+                    write!(self.master, "\x1b[{};{}R", row + 1, col + 1).unwrap();
+                }
             }
             if self.query_tail.len() == 4 {
                 self.query_tail.remove(0);
@@ -233,7 +283,7 @@ fi
     fn resize_with_queued_output(&mut self, rows: u16, columns: u16) {
         // Hold bytes produced at the old size until after the emulator resizes.
         // This forces the race without relying on a resize landing on a tick.
-        let deadline = Instant::now() + Duration::from_secs(10);
+        let deadline = Instant::now() + WAIT_LIMIT;
         let mut bytes = [0; 8192];
         loop {
             match self.master.read(&mut bytes) {
@@ -251,7 +301,7 @@ fi
     }
 
     fn until(&mut self, condition: impl Fn(&Self) -> bool) {
-        let deadline = Instant::now() + Duration::from_secs(10);
+        let deadline = Instant::now() + WAIT_LIMIT;
         loop {
             self.pump();
             if condition(self) {
@@ -321,7 +371,7 @@ fi
     }
 
     fn wait_for_full_frame(&mut self, expected: &str) {
-        let deadline = Instant::now() + Duration::from_secs(10);
+        let deadline = Instant::now() + WAIT_LIMIT;
         let mut width = 100;
         loop {
             // Resizing requests a complete frame, allowing text assertions
@@ -343,7 +393,7 @@ fi
     }
 
     fn finish(&mut self) -> ExitStatus {
-        let deadline = Instant::now() + Duration::from_secs(10);
+        let deadline = Instant::now() + WAIT_LIMIT;
         loop {
             self.pump();
             if let Some(status) = self.child.try_wait().unwrap() {
@@ -422,6 +472,59 @@ fi
             );
         }
     }
+
+    fn dump_diagnostics(&mut self) {
+        eprintln!(
+            "PTY session: {}; pid={}, elapsed={:?}, exit after cleanup={:?}\n\
+             cursor queries={}, responses enabled={}, longest pump gap={:?}\nscreen:\n{}",
+            self.description,
+            self.child.id(),
+            self.started.elapsed(),
+            self.child.try_wait(),
+            self.cursor_queries,
+            self.respond_to_queries,
+            self.longest_pump_gap,
+            self.screen.screen().contents(),
+        );
+        let start = self.output.len().saturating_sub(32 * 1024);
+        eprintln!(
+            "PTY output (last {} of {} bytes, escaped):\n{:?}",
+            self.output.len() - start,
+            self.output.len(),
+            String::from_utf8_lossy(&self.output[start..]),
+        );
+        // Emit saved errors and command diagnostics before TempDir removes them.
+        // All reads are best effort so a missing/partial report cannot mask the
+        // original assertion failure. Bound each file even for a noisy child.
+        let Ok(runs) = fs::read_dir(self.root.join(".mutie")) else {
+            return;
+        };
+        for run in runs.flatten() {
+            let directory = run.path();
+            let mut files = vec![directory.join("run.json"), directory.join("outcomes.json")];
+            if let Ok(logs) = fs::read_dir(directory.join("logs")) {
+                files.extend(
+                    logs.flatten().map(|entry| entry.path()).filter(|path| {
+                        path.extension().is_some_and(|extension| extension == "log")
+                    }),
+                );
+            }
+            files.sort();
+            for path in files {
+                let Ok(file) = File::open(&path) else {
+                    continue;
+                };
+                let mut bytes = Vec::new();
+                if file.take(16 * 1024).read_to_end(&mut bytes).is_ok() {
+                    eprintln!(
+                        "{} (up to 16 KiB):\n{}",
+                        path.display(),
+                        String::from_utf8_lossy(&bytes)
+                    );
+                }
+            }
+        }
+    }
 }
 
 const PREAMBLE: &str = "earlier output\n$ mutie\n";
@@ -437,15 +540,23 @@ impl Drop for Session {
             // exit can wait for queued PTY output before becoming waitable.
             for attempt in 0..200 {
                 let mut buf = [0; 8192];
-                while self.master.read(&mut buf).is_ok_and(|n| n > 0) {}
+                while let Ok(n) = self.master.read(&mut buf) {
+                    if n == 0 {
+                        break;
+                    }
+                    self.output.extend_from_slice(&buf[..n]);
+                }
                 if self.child.try_wait().ok().flatten().is_some() {
-                    return;
+                    break;
                 }
                 if attempt == 100 {
                     let _ = self.child.kill();
                 }
                 thread::sleep(Duration::from_millis(10));
             }
+        }
+        if thread::panicking() {
+            self.dump_diagnostics();
         }
     }
 }

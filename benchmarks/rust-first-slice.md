@@ -135,21 +135,79 @@ The survivor changes `MutationScore::matches_saved` so a mismatch between
 `Some(percentage)` and `None` can pass its initial comparison. All 187 default
 tests still pass under that mutation, including the previously failing terminal
 test. Inspection of the existing saved-score validation tests shows numeric
-tampering cases but no `null` percentage case. A useful next regression is to
-reject a saved score with a missing percentage when completed outcomes require
-one, plus the reverse presence mismatch. That stronger-test run is still to do;
-this slice does not claim to have closed the real-project coverage gap.
+tampering cases but no `null` percentage case. This identified an actionable
+coverage gap: reject a saved score with a missing percentage when completed
+outcomes require one, plus the reverse presence mismatch. The follow-up below
+closes that gap through a fresh mutation run.
+
+## Stronger-test follow-up — 2026-10-11
+
+Added two report-reader regressions on top of `b72a5d5` (`Implements first rust
+slice`). They load saved reports and change only the percentage's presence:
+
+- `saved_score_requires_percentage_for_scored_outcomes` checks both explicit
+  `null` and an omitted field when completed outcomes require a score.
+- `saved_score_rejects_percentage_for_an_interrupted_run` checks fabricated
+  percentages of 0 and 100 while preserving the counts and unavailable reason.
+
+Both first verify a valid report and then require the corrupt report to fail
+score validation. The production score logic already implements this behavior;
+the change adds coverage for it.
+
+The targeted tests, `cargo fmt --check` and strict Clippy passed. Then repeated
+the same two-mutation sample through the ordinary CLI, with one worker and no
+competing builds/tests:
+
+```sh
+cargo run --locked -- . --include src/score.rs --operator boolean_flip \
+  --jobs 1 --timeout 600 --baseline-timeout 300 --ui plain \
+  --output-dir /tmp/mutie-rust-score-regression
+```
+
+The fresh baseline passed **189 tests**, with 8 opt-in tests ignored. Both
+mutations were killed, with no missed mutations, timeouts, build failures or
+execution errors. The former survivor failed **exactly the two new tests**;
+all of its integration tests passed, including the terminal tests. This verifies
+that the new assertions detected the change without the unrelated failure from
+the earlier parallel attempt.
+
+| Phase | Fresh compilation | Whole command |
+| --- | --- | --- |
+| Baseline | 21.29 s | 113.08 s |
+| `score.rs:183`, `true` → `false` | 21.76 s | 111.49 s — killed |
+| `score.rs:187`, `false` → `true` | 22.32 s | 119.37 s — killed |
+
+The complete run took **346.28 seconds** (about 5 minutes 46 seconds), with
+0.347 cumulative seconds spent copying/resetting workspaces. The inventory was
+identical to the earlier serial run, and all 81 source, test and Cargo input
+hashes matched their pre-run values. Saved-report listing accepted the completed
+report. The build strategy still uses fresh artifacts; these timings are another
+observation, not an optimization result.
+
+The filtered sample improved from **one killed / one missed to two killed /
+zero missed**. This establishes the real-project run/inspect/improve-tests/fresh-run
+workflow. Focused Rust reruns remain unimplemented.
+
+Local evidence:
+
+- `/tmp/mutie-rust-score-regression/run-1791770817-gCQbph`
+- `/tmp/mutie-rust-score-regression.log`
+- `/tmp/mutie-rust-score-regression-inputs.json`
 
 ## Remaining limits
 
 Fresh dependency compilation plus the full self-test suite makes even this
 two-mutation sample expensive. Build reuse must prove correct invalidation,
 restoration and parallel isolation before it replaces fresh artifacts. The
-observed terminal-test instability under load also needs follow-up; a passing
-baseline alone cannot establish that every later failure was caused by a mutation.
+terminal follow-up in [`terminal-reliability.md`](terminal-reliability.md) fixes
+reproduced descriptor-inheritance and test-watchdog defects and records parallel
+stress checks. The original exit-only failure cannot be assigned a specific
+cause; a passing baseline alone cannot establish that every later failure was
+caused by a mutation.
 
 Rust focused reruns, dismissals, additional operators, broader Cargo layouts and
 conditional-code discovery remain unsupported. Further execution checks include
 mutation-stage cancellation with partial results, compilation timeouts, protocol/
-tool failures and raw-capture limits. The fixture's stronger-test run does not
-complete the real-project run/inspect/improve-tests/focused-rerun milestone.
+tool failures and raw-capture limits. Stronger tests have been verified through
+fresh runs on both the fixture and Mutie; the full workflow including focused
+reruns remains incomplete.

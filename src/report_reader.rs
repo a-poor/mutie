@@ -593,6 +593,73 @@ mod tests {
     }
 
     #[test]
+    fn saved_score_requires_percentage_for_scored_outcomes() {
+        let temp = fixture_with_score();
+        let report = LoadedReport::load(temp.path()).unwrap();
+        assert!(report.run.score.unwrap().percentage.is_some());
+
+        // Both explicit null and an omitted field deserialize to None. The
+        // outcomes still require a percentage, with every other score field intact.
+        for omitted in [false, true] {
+            update(temp.path(), "run.json", |run| {
+                if omitted {
+                    run["score"].as_object_mut().unwrap().remove("percentage");
+                } else {
+                    run["score"]["percentage"] = serde_json::Value::Null;
+                }
+            });
+            let error = LoadedReport::load(temp.path())
+                .expect_err("a scored report must retain its percentage");
+            assert!(
+                error
+                    .root_cause()
+                    .to_string()
+                    .contains("saved mutation score disagrees"),
+                "{error:#}"
+            );
+        }
+    }
+
+    #[test]
+    fn saved_score_rejects_percentage_for_an_interrupted_run() {
+        let temp = fixture();
+        let report = LoadedReport::load(temp.path()).unwrap();
+        let score = MutationScore::calculate(
+            ScoreScope::AllDiscovered,
+            report.run.status,
+            report.complete,
+            report.executions.iter().map(|e| (e.outcome, false)),
+        );
+        assert_eq!(score.percentage, None);
+        update(temp.path(), "run.json", |run| {
+            run["effective_config"] = serde_json::json!({});
+            run["score_policy"] = serde_json::to_value(ScorePolicy::Disabled).unwrap();
+            run["score"] = serde_json::to_value(&score).unwrap();
+        });
+        assert_eq!(
+            LoadedReport::load(temp.path()).unwrap().run.score,
+            Some(score)
+        );
+
+        // An interrupted run has no score even when some mutations finished.
+        // Keep the counts and unavailable reason unchanged to isolate this check.
+        for percentage in [0, 100] {
+            update(temp.path(), "run.json", |run| {
+                run["score"]["percentage"] = serde_json::json!(percentage);
+            });
+            let error = LoadedReport::load(temp.path())
+                .expect_err("an interrupted report must not claim a percentage");
+            assert!(
+                error
+                    .root_cause()
+                    .to_string()
+                    .contains("saved mutation score disagrees"),
+                "{error:#}"
+            );
+        }
+    }
+
+    #[test]
     fn operator_totals_join_old_shuffled_records_and_allow_missing_timings() {
         let temp = fixture();
         update(temp.path(), "mutants.json", |v| {

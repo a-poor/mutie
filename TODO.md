@@ -36,6 +36,18 @@ slice is implemented; the full milestone is still in progress.
   unsupported Rust rerun/dismissal actions explicit. Mutie's serial two-mutation
   score sample finished with one kill and one survivor in 429.59 seconds. See
   `benchmarks/rust-first-slice.md`, including the noisy parallel-run result.
+- [x] Turn the first real Rust survivor into a test improvement: add saved-report
+  regressions for missing/unexpected percentages, then run the same score sample
+  through Mutie again. The fresh serial run passed all 189 baseline tests and
+  killed both mutations; the former survivor failed exactly the two new cases.
+  See the stronger-test follow-up in `benchmarks/rust-first-slice.md`.
+- [x] Harden the PTY self-tests under parallel Cargo load: retain failure
+  diagnostics, prevent inherited terminal descriptors, and allow enough time
+  for a whole test workflow to finish. The descriptor regression fails before
+  the fix; 12 paired terminal/browser runs (216 tests) pass afterward, including
+  overlap with fresh compilation. A fresh two-worker self-run passes all 189
+  baseline tests and kills both score mutations through score-validation failures;
+  every terminal/browser test passes. See `benchmarks/terminal-reliability.md`.
 - [ ] Make Rust execution reliable: distinguish build/test/tool failures, enforce
   timeouts and cancellation, preserve partial results, and define build-cache
   and target-directory ownership. Verify repeated/parallel mutations execute the
@@ -43,8 +55,9 @@ slice is implemented; the full milestone is still in progress.
   The first slice covers ordinary Cargo evidence, fresh artifacts, repeated/
   parallel runs, test timeouts and baseline cancellation. Remaining checks include
   mutation-stage interruption/partial runs, compilation timeouts, tool/protocol
-  failures and raw-capture limits before expanding the supported scope. Investigate
-  the self-test terminal failure observed under competing parallel Cargo runs.
+  failures and raw-capture limits before expanding the supported scope. The PTY
+  follow-up fixes reproduced harness defects; the original exit-only failure
+  lacks enough diagnostics to establish its specific cause.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
   project's workspace/package selection if required by the agreed scope.
@@ -57,9 +70,9 @@ slice is implemented; the full milestone is still in progress.
 - [ ] Exercise the complete workflow on the selected Rust project with ordinary
   CLI commands. Review survivors, verify a useful stronger-test rerun, and record
   time to an actionable finding, run/build/workspace costs, and noise/limitations.
-  The first real survivor is the presence-mismatch branch in
-  `MutationScore::matches_saved`; add saved-percentage presence/absence regression
-  cases and verify a fresh run catches it, then cover the focused rerun workflow.
+  Saved-percentage presence/absence regressions now catch the first real survivor
+  in `MutationScore::matches_saved` through a fresh run. The focused rerun workflow
+  and broader reliability checks remain to do.
 - [ ] Document verified Rust usage and limits in README/design, mark the milestone
   complete, and choose the next major objective from observed user needs.
 

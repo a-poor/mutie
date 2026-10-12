@@ -12,9 +12,14 @@ use std::{
     },
     path::{Path, PathBuf},
     process::{Child, Command, ExitStatus, Stdio},
+    sync::Mutex,
     thread,
     time::{Duration, Instant},
 };
+
+// Serialize allocation through spawn so no child inherits a PTY before its
+// close-on-exec flags are set. The browser sessions themselves run in parallel.
+static SPAWN_LOCK: Mutex<()> = Mutex::new(());
 
 fn fixture(empty: bool) -> tempfile::TempDir {
     let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
@@ -101,6 +106,7 @@ impl Session {
     fn start_fixture(temp: tempfile::TempDir, module: Option<&str>) -> Self {
         let root = temp.path().join("saved run");
         let original = files(&root);
+        let spawning = SPAWN_LOCK.lock().unwrap_or_else(|error| error.into_inner());
         let (mut master, mut slave) = (-1, -1);
         let mut size = libc::winsize {
             ws_row: 24,
@@ -123,6 +129,17 @@ impl Session {
         );
         // SAFETY: each new descriptor is transferred to exactly one File.
         let (master, mut slave) = unsafe { (File::from_raw_fd(master), File::from_raw_fd(slave)) };
+        for file in [&master, &slave] {
+            // SAFETY: flags affect only these newly owned descriptors.
+            let flags = unsafe { libc::fcntl(file.as_raw_fd(), libc::F_GETFD) };
+            assert_ne!(flags, -1, "{}", io::Error::last_os_error());
+            assert_eq!(
+                unsafe { libc::fcntl(file.as_raw_fd(), libc::F_SETFD, flags | libc::FD_CLOEXEC) },
+                0,
+                "{}",
+                io::Error::last_os_error()
+            );
+        }
         let termios = termios(&slave);
         // SAFETY: flags affect only the owned master descriptor.
         let flags = unsafe { libc::fcntl(master.as_raw_fd(), libc::F_GETFL) };
@@ -156,6 +173,7 @@ impl Session {
             });
         }
         let child = command.spawn().unwrap();
+        drop(spawning);
         let mut session = Self {
             temp,
             original,
@@ -426,6 +444,7 @@ fn ctrl_c_and_sigterm_restore_the_terminal() {
 fn invalid_reports_and_nonterminals_fail_before_terminal_setup() {
     let temp = fixture(false);
     for path in [temp.path().join("missing"), temp.path().join("saved run")] {
+        let _spawning = SPAWN_LOCK.lock().unwrap_or_else(|error| error.into_inner());
         let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg("report")
             .arg(&path)
