@@ -4,6 +4,47 @@ Track implementation here; keep design decisions and rationale in
 [DESIGN.md](DESIGN.md) and current usage in [README.md](README.md). Update this
 checklist as work lands, checking items off after appropriate verification.
 
+## Current direction
+
+The Go MVP is complete and usable for its supported scope. Rust support is the
+next major milestone, chosen to enable routine use on the maintainer's Rust
+projects. Prioritize a working end-to-end workflow and real-project findings over
+automatically adding optional Go features or presentation polish. Fix concrete
+correctness/reliability blockers as needed; explicit user priorities take precedence.
+
+## Next milestone: usable Rust support
+
+See [the Rust milestone](DESIGN.md#next-milestone-usable-rust-support-planned)
+for scope, architecture, and completion criteria. Rust is planned, not implemented.
+
+- [x] Select Rust as the second language and the next major product milestone.
+- [ ] Choose a small fixture and a representative maintainer-owned Rust project;
+  document required Cargo package/workspace scope, test targets, features,
+  conditional compilation, local dependencies, and unsupported cases. This is
+  the next implementation-planning step; do not assume all workspaces are supported.
+- [ ] Build the first end-to-end Rust slice: project detection/configuration,
+  source discovery, one operator, passing baseline, isolated mutation execution,
+  and saved results for one Cargo package. Extract only the shared language
+  boundary needed for Go and Rust while preserving existing Go behavior.
+- [ ] Make Rust execution reliable: distinguish build/test/tool failures, enforce
+  timeouts and cancellation, preserve partial results, and define build-cache
+  and target-directory ownership. Verify repeated/parallel mutations execute the
+  intended tests without stale artifacts, source edits, or artifact collisions.
+- [ ] Add a small useful Rust operator set and document eligibility for test-only
+  code, macros, generated sources, and conditional code. Support the chosen real
+  project's workspace/package selection if required by the agreed scope.
+- [ ] Complete the shared user workflow for Rust: filters/configuration,
+  live/plain status, reports/browser, scores/policies, dismissals, and focused
+  reruns. Record language and execution scope for correct rerun validation;
+  preserve existing Go reports and reject unsupported language-specific options.
+- [ ] Verify fixture outcomes, failed/empty runs, interruption, source/artifact
+  preservation, and stronger-test reruns, with Go regressions remaining green.
+- [ ] Exercise the complete workflow on the selected Rust project with ordinary
+  CLI commands. Review survivors, verify a useful stronger-test rerun, and record
+  time to an actionable finding, run/build/workspace costs, and noise/limitations.
+- [ ] Document verified Rust usage and limits in README/design, mark the milestone
+  complete, and choose the next major objective from observed user needs.
+
 ## Completed foundation
 
 - [x] Build the Rust CLI with initial Go module support.
@@ -63,7 +104,10 @@ checklist as work lands, checking items off after appropriate verification.
 - [x] Fix narrow-terminal outcome clipping and use all four worker rows when
   space permits; verify the fixes against the real-project run and frame tests.
 
-## Follow-up work
+## Go follow-up history and deferred backlog
+
+Checked items below are implemented. Unchecked items remain available for later
+work; their order is not a priority queue and they do not block the Rust milestone.
 
 - [x] Rerun completed missed mutations from a saved run with `--rerun-missed`;
   preserve the source report and record old-to-new ID mappings.
@@ -228,11 +272,10 @@ checklist as work lands, checking items off after appropriate verification.
 
 ## Longer-term options
 
-- [ ] Pick and implement a second language, extracting the shared language boundary.
-- [ ] Add Rust, JavaScript/TypeScript, and Python support one language at a time;
-  choose the order based on concrete projects.
-- [ ] Extend project support to workspaces, multiple modules, and additional test
-  frameworks as needed.
+- [ ] After Rust validation, consider JavaScript/TypeScript or Python based on
+  concrete projects and the largest remaining obstacles to routine use.
+- [ ] Extend project support beyond the chosen Rust milestone scope to additional
+  workspace/multi-module layouts and test frameworks as needed.
 - [ ] Consider HTML and standard interchange exports for concrete consumers.
 - [ ] Explore external language plugins, possibly using WASM, after multiple
   built-in languages establish the interface. Design the protocol, host controls,

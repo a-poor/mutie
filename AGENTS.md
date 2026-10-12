@@ -45,6 +45,21 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
 
 ## Development Status & Versioning
 
+The Go MVP is complete; Mutie is a usable Go-focused alpha. Rust support is the
+next major milestone, motivated by the maintainer's Rust projects, and is not yet
+implemented. Follow the active Rust milestone in `TODO.md` and `DESIGN.md` when
+choosing work. Begin with representative project selection and a defined Cargo
+support scope, then build an end-to-end slice through execution and saved results.
+
+Prioritize milestone progress, demonstrated correctness/reliability blockers,
+and explicit user requests. Do not automatically propose another small Go feature,
+operator, or UI refinement because it is an unchecked backlog item. Judge progress
+by the run/inspect/improve-tests/rerun workflow on real projects, including runtime
+and finding usefulness. Extract the language boundary as Go and Rust need it;
+keep existing Go behavior covered and defer speculative plugin abstractions.
+Distinguish planned Rust support from verified behavior in documentation and CLI
+claims. Reassess the next major objective when the milestone is complete.
+
 Mutie is still in local development and has no external users. Breaking changes are acceptable at this stage. Do not bump project versions (including the package, report schema, and operator catalog versions) unless explicitly requested; version bumps for ordinary development changes are unnecessary noise for now.
 
 ## Build, Test, and Development Commands

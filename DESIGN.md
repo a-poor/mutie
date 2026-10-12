@@ -15,11 +15,12 @@ code and checking whether the tests detect them. The intended local workflow is:
 3. Improve the tests.
 4. Rerun the relevant mutations and verify that the tests now catch them.
 
-Start with Go and local use. Support other languages and CI over time. Use
+The Go MVP and basic CI policies are implemented. Rust is the next language,
+chosen because the maintainer has real Rust projects to use for validation. Use
 `cargo-mutants` as a reference for understandable terminal output and inspectable
 report artifacts, without requiring compatibility with its CLI or file formats.
 
-## What the prototype establishes
+## Current position: Go MVP complete
 
 The current implementation supports one Go module, selected through its `go.mod`.
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
@@ -42,7 +43,75 @@ The prototype supports rerunning saved mutations by ID, operator, or missed
 outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
 Rust appears in the CLI language enum but is not implemented.
 
-## Minimal MVP
+The project is a usable Go-focused alpha. The execution, inspection, and focused
+rerun workflow is established; further Go operators and presentation refinements
+are optional improvements rather than prerequisites for the next milestone.
+Broad adoption and large-repository scaling remain unproven.
+
+## Next milestone: usable Rust support (planned)
+
+The next major deliverable is the same test-improvement workflow on the
+maintainer's Rust code: passing baseline, mutations in isolated copies, live
+progress, saved findings, review, stronger tests, and focused reruns. Adding a
+parser or recognizing `Cargo.toml` alone does not complete this milestone.
+
+### Scope and sequence
+
+1. Select a small Rust fixture and a representative maintainer-owned project.
+   Inspect their Cargo package/workspace layouts, test targets, features,
+   conditional compilation, build scripts, and local dependencies. Record the
+   initial support contract and unsupported cases before broad implementation.
+   Start the first end-to-end slice with one Cargo package; include workspace
+   member selection in this milestone if the chosen real project requires it.
+   General workspace support is not implied by recognizing a member package.
+2. Extract the smallest shared language boundary needed by Go and Rust while
+   building that slice. Separate project/file discovery, mutation generation,
+   command construction, and result interpretation from scheduling, workspaces,
+   reports, and presentation. Route one Rust operator through discovery,
+   baseline, isolated execution, and a saved report before expanding the catalog.
+   Keep the existing Go behavior covered throughout; avoid a separate framework
+   refactor or plugin architecture ahead of the working Rust path.
+3. Establish reliable Cargo build/test execution and source selection. Define
+   how compilation failures, test failures, tool errors, timeouts, and
+   interruption map to existing outcomes. Verify that repeated and parallel
+   mutations execute the intended tests without stale builds or shared artifact
+   collisions. Specify target-directory/cache ownership and cleanup separately
+   from source snapshots; preserve the input project's files and build artifacts.
+   Define treatment of test-only code, generated sources, macros, and inactive
+   conditional code, making unsupported cases explicit.
+4. Add a small useful Rust operator set, driven by syntax fixtures and actual
+   findings rather than parity with every Go operator. Reuse configuration,
+   scope filters, live/plain output, saved reports, scores, operator totals,
+   dismissals, and focused reruns. Make project language and execution settings
+   unambiguous in saved runs and rerun validation. Keep existing Go reports
+   readable; do not bump package, report, or catalog versions for ordinary
+   development changes.
+5. Validate the complete workflow on the fixture and the selected Rust project.
+   Cover failed baselines, empty selections, all outcomes, cancellation,
+   source preservation, saved-report inspection, and a stronger-test rerun.
+   Measure time to an actionable finding, full/focused run time, build and
+   workspace costs, and the usefulness of reviewed survivors. Record equivalent
+   mutations and build-failure noise as well as successes. Use ordinary Mutie
+   commands for the user workflow, and document evidence and limitations.
+
+### Completion and priorities
+
+Rust support is usable when the chosen supported project can complete the
+run → inspect → improve tests → rerun workflow through the existing CLI, with
+reliable outcome classification and source preservation. Real-project evidence
+and regression coverage for Go are required alongside the Rust fixture. Update
+the README with verified support and limitations as each slice lands; until then
+Rust remains planned. At completion, assess the largest remaining obstacle to
+routine use before choosing another milestone.
+
+Advance this milestone by default when selecting new work. Fix demonstrated
+correctness or reliability blockers as they arise, and follow explicit user
+priorities. Additional Go operators, UI polish, exports, broader benchmarks,
+coverage-driven selection, incremental result reuse, and plugins remain backlog
+items unless needed for this milestone or supported by concrete user evidence.
+Do not automatically select the next small unchecked feature.
+
+## Original Go MVP — completed
 
 The initial deliverable is a useful local Go tool with a small, predictable scope:
 
@@ -660,11 +729,15 @@ of the redraw channel. Domain records drive both modes without parsing progress
 messages.
 
 Some Go-specific responsibilities currently live directly in `mutation.rs` and
-`go.rs`. Keep a clear boundary now, and extract a shared language interface when
-implementing a second language. Avoid speculative abstractions with only one
-working implementation.
+`go.rs`. Extract a shared language interface as part of the first working Rust
+slice, guided by both implementations. Keep language-specific tooling and syntax
+behind that boundary while sharing execution state and report semantics. Avoid
+speculative abstractions beyond the needs of Go and Rust.
 
 ## Work after the MVP
+
+The sections below retain completed follow-ups and deferred design options; their
+order is not the current work queue. The Rust milestone above sets the next priority.
 
 ### 1. Focused reruns and richer inspection
 
@@ -854,9 +927,10 @@ including its untracked-input limitations, and
 
 ### 3. Broader mutations and language support
 
-Expand the Go catalog based on observed gaps. Candidate additional languages are
-Rust, JavaScript/TypeScript, and Python. Pick their order based on concrete projects
-we want to test rather than promising all of them at once.
+Rust is the selected second language and the next major milestone, with scope and
+validation described above. Further Go operators remain driven by observed gaps.
+JavaScript/TypeScript and Python are later options; select either only after
+evaluating routine Go/Rust use and a concrete project need.
 
 Each language needs more than a Tree-sitter grammar: project/file discovery, useful
 mutation rules, build/test integration, timeout behavior, and reliable outcome
@@ -955,12 +1029,17 @@ design. No runtime or plugin ABI is selected now.
 9. Capture dismissal decisions in saved reports and expose browser review filters,
    details, and unresolved entries — completed with reader validation, renderer,
    PTY, rerun-remapping, and real-Go coverage.
+10. Extend the Go workflow with CI policies, affected-package testing, additional
+    operators, report retention/output limits, and per-operator summaries —
+    completed; details and validation are tracked in `TODO.md`.
+11. Deliver usable Rust support through the scope, implementation, and real-project
+    validation steps above — next major milestone, not yet implemented.
 
-Open implementation choices include dismissal editing in the browser, report archival,
-run-wide resource budgets, mutation matching across source edits, and which language
-to add next. Resolve these when working on the corresponding milestone and update
-this document; they do not require expanding
-the initial MVP.
+Immediate open choices concern the selected Rust project's Cargo scope, source
+eligibility, test execution, and build-artifact ownership. Resolve these in the
+first Rust slice. Dismissal editing in the browser, report archival, run-wide
+resource budgets, and mutation matching across source edits remain deferred
+choices; they do not block starting Rust support.
 
 ## MVP validation evidence
 
