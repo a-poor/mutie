@@ -124,6 +124,7 @@ enum View {
     Help,
     Dismissals,
     Score,
+    Operators,
 }
 
 impl View {
@@ -137,6 +138,7 @@ impl View {
             Self::Help => "Help",
             Self::Dismissals => "Saved dismissal review",
             Self::Score => "Mutation score",
+            Self::Operators => "Operator breakdown",
         }
     }
 }
@@ -285,7 +287,9 @@ impl Browser {
         self.scroll = 0;
         self.horizontal = 0;
         let text = if self.view == View::Help {
-            "Keyboard shortcuts\n\nq / Esc        Close browser\nCtrl-C          Interrupt and restore terminal\nTab             Switch list/detail focus\nUp/Down or j/k  Move through rows or detail lines\nPgUp/PgDn       Move one page\nHome/End        First/last row or detail line\nLeft/Right      Scroll detail horizontally\n\no               Cycle outcome/state filter\np               Cycle operator filter\ns               Cycle all/undismissed/dismissed\n/               Edit file substring filter\nEnter / Esc     Apply/cancel file edit\nx               Clear filters\n\nSpace           Mark/unmark current mutation\na               Mark/unmark visible mutations\nc               Clear all marks, including hidden\n\nd               Show saved diff\nl               Show mutation log\nb / g           Show baseline/discovery log\nv               Show saved dismissal review\nm               Show mutation score and threshold\nr               Show focused rerun command\ne               Close and print rerun command\n?               Show help\n\n[D] marks dismissed mutations; outcomes are unchanged.\nDismissals reflect the saved run, not current metadata.\n\nMarks persist across filters. Commands use all marked\nIDs, including hidden marks, or the current row when\nnone are marked. No command is executed by this browser.\n\nArtifact previews are limited to 256 KiB. Open the\nsaved file directly for its complete contents.".to_owned()
+            "Keyboard shortcuts\n\nq / Esc        Close browser\nCtrl-C          Interrupt and restore terminal\nTab             Switch list/detail focus\nUp/Down or j/k  Move through rows or detail lines\nPgUp/PgDn       Move one page\nHome/End        First/last row or detail line\nLeft/Right      Scroll detail horizontally\n\no               Cycle outcome/state filter\np               Cycle operator filter\ns               Cycle all/undismissed/dismissed\n/               Edit file substring filter\nEnter / Esc     Apply/cancel file edit\nx               Clear filters\n\nSpace           Mark/unmark current mutation\na               Mark/unmark visible mutations\nc               Clear all marks, including hidden\n\nd               Show saved diff\nl               Show mutation log\nb / g           Show baseline/discovery log\nv               Show saved dismissal review\nm               Show mutation score and threshold\nt               Show operator counts and command time\nr               Show focused rerun command\ne               Close and print rerun command\n?               Show help\n\n[D] marks dismissed mutations; outcomes are unchanged.\nDismissals reflect the saved run, not current metadata.\n\nMarks persist across filters. Commands use all marked\nIDs, including hidden marks, or the current row when\nnone are marked. No command is executed by this browser.\n\nArtifact previews are limited to 256 KiB. Open the\nsaved file directly for its complete contents.".to_owned()
+        } else if self.view == View::Operators {
+            self.report.operator_summary()
         } else if self.view == View::Score {
             match &self.report.run.score {
                 Some(score) => format!(
@@ -325,7 +329,9 @@ impl Browser {
                     .selected()
                     .and_then(|i| self.report.executions[i].logs.as_ref())
                     .and_then(|logs| logs.text.as_deref()),
-                View::Command | View::Help | View::Dismissals | View::Score => None,
+                View::Command | View::Help | View::Dismissals | View::Score | View::Operators => {
+                    None
+                }
             };
             let preface = match self.view {
                 View::Baseline | View::Discovery => {
@@ -656,6 +662,10 @@ impl Browser {
                 self.view = View::Score;
                 self.focus = Focus::Detail;
             }
+            KeyCode::Char('t') => {
+                self.view = View::Operators;
+                self.focus = Focus::Detail;
+            }
             KeyCode::Char('r') => {
                 self.view = View::Command;
                 self.focus = Focus::Detail;
@@ -871,7 +881,7 @@ impl Browser {
         let hints = if self.draft.is_some() {
             " Enter apply | Esc cancel | Backspace delete\n File filter: case-insensitive substring"
         } else {
-            " q quit | ? help | Tab focus | m score | v review\n o outcome p operator s review / file x reset | d diff l log r command"
+            " q quit | ? help | Tab focus | t totals | m score | v review\n o outcome p operator s review / file x reset | d diff l log r command"
         };
         frame.render_widget(Paragraph::new(hints).style(Style::new().dim()), footer);
     }
@@ -1039,6 +1049,90 @@ mod tests {
         let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
         app.load_detail();
         (temp, app)
+    }
+
+    #[test]
+    fn operator_view_keeps_saved_totals_across_filters_marks_and_resizes() {
+        let temp = crate::report_reader::fixture_with_dismissals();
+        let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
+        app.report.directory = PathBuf::from("/saved/run");
+        app.report.executions[2].duration_seconds = None;
+        key(&mut app, KeyCode::Char('t'));
+        assert_eq!(app.focus, Focus::Detail);
+        let detail = app.detail.clone();
+        assert!(
+            detail
+                .join("\n")
+                .contains("Time: 0.25s (1 recorded, 1 missing)")
+        );
+        assert!(
+            detail
+                .join("\n")
+                .contains("Pending: 1 | Running: 0 | Interrupted: 1")
+        );
+        for code in [' ', 'o', 'p', 's'] {
+            key(&mut app, KeyCode::Char(code));
+        }
+        assert!(app.visible.is_empty());
+        assert_eq!(app.marked.len(), 1);
+        assert_eq!(app.detail, detail);
+        for (width, height) in [(100, 30), (60, 30), (24, 12), (100, 12), (10, 5), (100, 30)] {
+            let mut terminal = Terminal::new(TestBackend::new(width, height)).unwrap();
+            terminal.draw(|frame| app.render(frame)).unwrap();
+            let rendered = text(terminal.backend().buffer());
+            if width >= 60 && height == 30 {
+                assert!(rendered.contains("arithmetic_replace"), "{rendered}");
+                assert!(
+                    rendered.contains("Time: 0.25s (1 recorded, 0 missing)"),
+                    "{rendered}"
+                );
+                let name = if width == 100 { "wide" } else { "compact" };
+                let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join(format!("tests/snapshots/report-operators-{name}.txt"));
+                if std::env::var_os("MUTIE_UPDATE_SNAPSHOTS").is_some() {
+                    fs::write(&path, format!("{rendered}\n")).unwrap();
+                }
+                assert_eq!(
+                    rendered.trim_end(),
+                    fs::read_to_string(path).unwrap().trim_end()
+                );
+            }
+        }
+        key(&mut app, KeyCode::PageDown);
+        assert!(app.scroll > 0);
+        key(&mut app, KeyCode::Right);
+        assert_eq!(app.horizontal, 8);
+        key(&mut app, KeyCode::Home);
+        assert_eq!(app.scroll, 0);
+        key(&mut app, KeyCode::Char('/'));
+        key(&mut app, KeyCode::Char('t'));
+        assert_eq!(app.draft.as_deref(), Some("t"));
+        key(&mut app, KeyCode::Enter);
+        assert_eq!(app.detail, detail);
+        key(&mut app, KeyCode::Char('d'));
+        key(&mut app, KeyCode::Char('t'));
+        assert_eq!(app.horizontal, 0);
+        assert_eq!(app.detail, detail);
+    }
+
+    #[test]
+    fn operator_view_distinguishes_empty_and_unpublished_inventories() {
+        let (_temp, mut app) = browser();
+        app.report.mutations.clear();
+        app.report.executions.clear();
+        app.refilter();
+        key(&mut app, KeyCode::Char('t'));
+        assert!(
+            app.detail
+                .join("\n")
+                .contains("No mutations in this selection")
+        );
+        app.report.complete = false;
+        app.detail_key = None;
+        app.load_detail();
+        let mut terminal = Terminal::new(TestBackend::new(60, 24)).unwrap();
+        terminal.draw(|frame| app.render(frame)).unwrap();
+        assert!(text(terminal.backend().buffer()).contains("inventory was not published"));
     }
 
     #[test]

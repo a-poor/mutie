@@ -20,5 +20,5 @@
 │+++ b/file.go                                                       │
 │@@ -1 +1 @@                                                         │
 └────────────────────────────────────────────────────────────────────┘
- q quit | ? help | Tab focus | m score | v review
+ q quit | ? help | Tab focus | t totals | m score | v review
  o outcome p operator s review / file x reset | d diff l log r command

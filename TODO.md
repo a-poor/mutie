@@ -186,6 +186,13 @@ checklist as work lands, checking items off after appropriate verification.
   16-mutation fzf sample matched full/affected outcomes without build failures;
   added tests killed two survivors in both scopes. See
   `benchmarks/fzf-v0.65.2-loops.md` for findings and limitations.
+- [x] Add per-operator planned/completed counts, outcomes, unfinished states, and
+  cumulative command time to saved summaries and the browser's `t` view. Derive
+  totals from existing inventory/execution records so older reports work without
+  rewriting them. Keep totals scoped to the saved selection across filters, marks,
+  and dismissals; distinguish missing timings and unpublished/empty inventories.
+  Verify aggregation, shuffled legacy records, saved-summary parity, wide/compact
+  snapshots, navigation/resizing, and report preservation in a pseudo-terminal.
 - [ ] Expand return and further loop/branch mutations and add named operator profiles based on
   useful findings; evaluate call-removal build-failure noise on more projects.
   The fzf sample added two actionable gaps and two unbuildable call removals;

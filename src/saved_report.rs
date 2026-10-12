@@ -656,6 +656,18 @@ impl SavedReport {
         if let Some(error) = &self.run.error {
             text.push_str(&format!("\nError: {error}\n"));
         }
+        text.push('\n');
+        text.push_str(&crate::operator_summary::summarize(
+            self.inventory.complete,
+            self.outcomes.mutations.iter().map(|execution| {
+                (
+                    self.inventory.mutations[execution.id - 1].operator,
+                    execution.state,
+                    execution.outcome,
+                    execution.duration_seconds,
+                )
+            }),
+        ));
         text.push_str("\nMissed mutations:\n");
         if self.outcomes.summary.missed == 0 {
             text.push_str("  None reported.\n");
@@ -864,6 +876,12 @@ mod tests {
         assert!(missed.starts_with("[000001]"));
         assert!(fs::read_to_string(report.path().join("errors.txt"))?.is_empty());
         assert!(fs::read_to_string(report.path().join("summary.txt"))?.contains("Interrupted: 1"));
+        let summary = fs::read_to_string(report.path().join("summary.txt"))?;
+        let loaded = crate::report_reader::LoadedReport::load(report.path())?;
+        assert!(summary.contains(&loaded.operator_summary()));
+        assert!(summary.contains("boolean_flip\n  Planned: 3 | Completed: 2"));
+        assert!(summary.contains("Killed: 0 | Missed: 2 | Timeout: 0"));
+        assert!(summary.contains("Time: 0.38s (3 recorded, 0 missing)"));
         assert_eq!(fs::read(report.path().join("mutants.json"))?, inventory);
         let previous = fs::read(report.path().join("run.json"))?;
         let next = SavedReport::create(&config)?;
@@ -904,6 +922,10 @@ mod tests {
         assert!(report.started(1, 1).is_err());
         report.finish(Some(&anyhow::anyhow!("report write failed")))?;
         assert_eq!(read(&report, "run.json")["status"], "failed");
+        assert!(
+            fs::read_to_string(report.path().join("summary.txt"))?
+                .contains("Not available: inventory was not published.")
+        );
         Ok(())
     }
 

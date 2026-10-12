@@ -1,0 +1,30 @@
+ mutie report interrupted | 4 mutations | 1 missed | /saved/
+ Outcome: missed | Operator: arithmetic_replace | Marked: 1
+ File:
+ Review: undismissed | 2 dismissed | 1 need review (saved)
+┌ Mutations 0/4 ───────────────────────────────────────────┐
+│No matches. x clears filters.                             │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+┌ > Operator breakdown | line 1/23 ────────────────────────┐
+│Operator breakdown (saved run selection):                 │
+│                                                          │
+│arithmetic_replace                                        │
+│  Planned: 1 | Completed: 1                               │
+│  Killed: 1 | Missed: 0 | Timeout: 0                      │
+│  Build failed: 0 | Error: 0                              │
+│  Pending: 0 | Running: 0 | Interrupted: 0                │
+│  Time: 0.25s (1 recorded, 0 missing)                     │
+│                                                          │
+│boolean_flip                                              │
+│  Planned: 3 | Completed: 1                               │
+│  Killed: 0 | Missed: 1 | Timeout: 0                      │
+│  Build failed: 0 | Error: 0                              │
+│  Pending: 1 | Running: 0 | Interrupted: 1                │
+└──────────────────────────────────────────────────────────┘
+ q quit | ? help | Tab focus | t totals | m score | v review
+ o outcome p operator s review / file x reset | d diff l log

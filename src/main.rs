@@ -8,6 +8,7 @@ mod dismissals;
 mod go;
 mod identity;
 mod mutation;
+mod operator_summary;
 mod process;
 mod report;
 mod report_lock;

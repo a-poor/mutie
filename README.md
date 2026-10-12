@@ -429,6 +429,7 @@ inline. Terminals smaller than 24 columns by 12 rows show a resize hint.
 | `b`, `g` | Inspect baseline or package-discovery logs |
 | `v` | Inspect the run's saved dismissal review, including unresolved entries |
 | `m` | Inspect the saved mutation score, selection scope, and minimum-score decision |
+| `t` | Inspect per-operator counts, unfinished work, and cumulative command time |
 | `r` | Show a focused rerun command |
 | `e` | Close the browser and print the rerun command to the shell |
 | `?`, `q`/Esc | Show help; close the browser |
@@ -450,6 +451,16 @@ and file filters; dismissed rows can still be marked and rerun, including when
 hidden by a filter. The header's missed count always includes dismissed results.
 `v` shows the undismissed/dismissed missed counts and any stale, missing, unmatched,
 or ambiguous entries that were not applied.
+
+`t` shows the operator breakdown for the entire saved run selection, independent
+of browser filters, marks, or dismissals. Each operator has planned and completed
+counts, all five outcomes, pending/running/interrupted counts, and recorded command
+time. Time is cumulative across workers, includes interrupted commands with saved
+durations, and excludes baseline, discovery, and workspace work; it can exceed the
+run's wall time. Recorded and missing timing counts accompany each total. Missing
+or invalid timings remain unknown; pending mutations do not count as missing.
+Older reports use the same view, derived from their saved inventory and outcomes.
+A run without a published inventory shows the breakdown as unavailable.
 
 Review data reflects the run's source snapshot. The browser reads neither current
 repository metadata nor source files, including with `--module` (which only changes
@@ -630,8 +641,9 @@ Each run contains:
 - `outcomes.json`: baseline and package-discovery results, mutation execution
   states and outcomes, durations, exit codes, log paths, retention byte counts, and
   summary counts.
-- `summary.txt`: readable counts, workspace costs, unfinished work, missed mutations,
-  and artifact references for every planned mutation.
+- `summary.txt`: readable counts, per-operator outcomes and command time, workspace
+  costs, unfinished work, missed mutations, and artifact references for every
+  planned mutation.
 - `diff/000001.diff`: one unified source diff per planned mutation.
 - `logs/baseline.log`, `logs/discovery.log`, and `logs/000001.log`: readable command
   output, with separate `.stdout.jsonl` and `.stderr.log` captures alongside each
@@ -642,6 +654,11 @@ Each run contains:
   outcome lists containing IDs and source descriptions, sorted by ID.
 - `.mutie.lock`: an empty lock file held open for the report writer's lifetime,
   including its final writes. The file remains after the process exits.
+
+New text summaries include the same operator breakdown as the browser's `t` view.
+Totals cover only the run's selected mutations, including for filtered runs and
+reruns. They are derived from the inventory and execution records; no additional
+JSON fields are required, and browsing an older report does not rewrite its summary.
 
 `run.json` includes `effective_config` with all merged settings, the resolved Go
 language, absolute module/output paths, and the config file path (`null` when

@@ -296,6 +296,23 @@ impl LoadedReport {
         })
     }
 
+    pub fn operator_summary(&self) -> String {
+        crate::operator_summary::summarize(
+            self.complete,
+            self.mutations
+                .iter()
+                .zip(&self.executions)
+                .map(|(mutation, execution)| {
+                    (
+                        mutation.operator,
+                        execution.state,
+                        execution.outcome,
+                        execution.duration_seconds,
+                    )
+                }),
+        )
+    }
+
     pub fn dismissal(&self, id: usize) -> Option<&Dismissal> {
         self.dismissals.as_ref().and_then(|d| d.dismissal(id))
     }
@@ -563,6 +580,34 @@ mod tests {
             });
             assert!(LoadedReport::load(temp.path()).is_err(), "{pointer}");
         }
+    }
+
+    #[test]
+    fn operator_totals_join_old_shuffled_records_and_allow_missing_timings() {
+        let temp = fixture();
+        update(temp.path(), "mutants.json", |v| {
+            v["mutations"].as_array_mut().unwrap().reverse();
+        });
+        update(temp.path(), "outcomes.json", |v| {
+            let executions = v["mutations"].as_array_mut().unwrap();
+            executions[0]
+                .as_object_mut()
+                .unwrap()
+                .remove("duration_seconds");
+            executions[2]["duration_seconds"] = serde_json::json!(0.5);
+            executions.rotate_left(1);
+        });
+        let report = LoadedReport::load(temp.path()).unwrap();
+        assert!(report.run.score.is_none());
+        let summary = report.operator_summary();
+        assert!(summary.contains(
+            "arithmetic_replace\n  Planned: 1 | Completed: 1\n  Killed: 1 | Missed: 0 | Timeout: 0"
+        ));
+        assert!(summary.contains(
+            "boolean_flip\n  Planned: 3 | Completed: 1\n  Killed: 0 | Missed: 1 | Timeout: 0"
+        ));
+        assert!(summary.contains("Time: 0.25s (1 recorded, 0 missing)"));
+        assert!(summary.contains("Time: 0.50s (1 recorded, 1 missing)"));
     }
 
     #[test]

@@ -357,6 +357,14 @@ fn browser_filters_inspects_and_exports_preserving_the_shell_and_report() {
     session.expect("resize to");
     session.resize(24, 110);
     session.expect("No matches");
+    session.send(b"t");
+    session.expect("Operator breakdown");
+    session.expect("Planned: 2 | Completed: 2");
+    session.expect("Time: 0.02s (2 recorded, 0 missing)");
+    session.resize(24, 70);
+    session.expect("Time: 0.02s (2 recorded, 0 missing)");
+    session.send(b"\x1b[6~"); // Page Down reaches the timing/scope explanation.
+    session.expect("Time sums recorded mutation command durations");
     session.send(b"r");
     session.expect("Rerun command");
     session.send(b"e");
@@ -374,6 +382,8 @@ fn failed_run_without_inventory_is_inspectable_and_quits_cleanly() {
     let mut session = Session::start(true, None);
     session.expect("No mutations recorded");
     session.expect("baseline diagnostic");
+    session.send(b"t");
+    session.expect("inventory was not published");
     session.send(b"e");
     session.expect("no complete mutation inventory");
     session.send(b"q");

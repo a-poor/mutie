@@ -489,6 +489,21 @@ pre-inventory failures show review as not recorded; their rows have no recorded
 dismissal. `--module` only affects command generation. Rendering remains on pinned
 Ratatui 0.30.1/Crossterm 0.29.0 with the existing lifecycle and event loop.
 
+`t` opens the operator breakdown. `operator_summary.rs` groups inventory and
+execution records by operator in catalog order, using the same formatter for
+`summary.txt` and the browser. The reader joins records by saved ID before
+aggregation; there are no new persisted fields. Counts cover the entire saved
+selection, including pending and interrupted work, independently of filters,
+marks, and dismissal metadata. Each operator shows planned/completed counts,
+all outcomes, unfinished states, and cumulative mutation command time. Time
+includes recorded interrupted commands, excludes pending work and non-mutation
+commands/workspaces, and can exceed wall time when workers overlap. Missing,
+negative, or non-finite timings count as unavailable, not zero; recorded zero
+remains distinguishable from no timings, and sum overflow is labeled unavailable.
+Unpublished inventories show an unavailable message; a published empty selection
+shows no mutations. The derived view also works for older reports without scores
+or dismissal snapshots, without rewriting their saved files.
+
 The synchronous event loop runs on a blocking task, leaving Tokio's cancellation
 handlers responsive. It polls every 100 ms and redraws on input/resize. Ratatui's
 initialization enables raw mode and the alternate screen; a guard balances those
