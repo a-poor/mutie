@@ -1,4 +1,5 @@
 use std::{
+    ffi::OsStr,
     future::{Future, Ready, pending},
     io::Write,
     num::NonZeroUsize,
@@ -43,6 +44,31 @@ pub async fn run(
         capture_limit,
         cancellation,
         None::<fn(&str) -> Ready<()>>,
+        &[],
+    )
+    .await
+}
+
+/// Language-owned environment overrides, scoped to this child process.
+#[allow(clippy::too_many_arguments)]
+pub async fn run_with_env(
+    program: &str,
+    args: &[&str],
+    root: &Path,
+    limit: Duration,
+    capture_limit: Option<NonZeroUsize>,
+    cancellation: &Cancellation,
+    environment: &[(&str, &OsStr)],
+) -> Result<CommandOutput> {
+    run_inner(
+        program,
+        args,
+        root,
+        limit,
+        capture_limit,
+        cancellation,
+        None::<fn(&str) -> Ready<()>>,
+        environment,
     )
     .await
 }
@@ -70,10 +96,12 @@ where
         capture_limit,
         cancellation,
         Some(observer),
+        &[],
     )
     .await
 }
 
+#[allow(clippy::too_many_arguments)]
 async fn run_inner<F, Fut>(
     program: &str,
     args: &[&str],
@@ -82,6 +110,7 @@ async fn run_inner<F, Fut>(
     capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
     observer: Option<F>,
+    environment: &[(&str, &OsStr)],
 ) -> Result<CommandOutput>
 where
     F: FnMut(&str) -> Fut + Send,
@@ -95,6 +124,7 @@ where
     let mut command = Command::new(program);
     command
         .args(args)
+        .envs(environment.iter().copied())
         .current_dir(root)
         .stdin(Stdio::null())
         .stdout(if capture_limit.is_some() {
@@ -158,6 +188,17 @@ where
         // parent for every invocation; never prune caller-owned files or GOCACHE.
         command.env("GOTMPDIR", directory.path());
         Some((tests, directory))
+    } else {
+        None
+    };
+    let _cargo_temporary = if program == "cargo" {
+        let tests = tempfile::Builder::new()
+            .prefix("mutie-cargo-test-")
+            .tempdir()?;
+        for variable in ["TMPDIR", "TMP", "TEMP"] {
+            command.env(variable, tests.path());
+        }
+        Some(tests)
     } else {
         None
     };

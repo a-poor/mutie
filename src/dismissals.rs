@@ -491,6 +491,10 @@ fn match_dismissals(store: &Store, mutations: &[Mutation]) -> Vec<MatchStatus> {
 }
 
 pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()> {
+    ensure!(
+        config.lang == crate::cli::Lang::Go,
+        "Rust dismissal commands are not implemented yet"
+    );
     let store = Store::load(&config.module_root)?;
     if store.dismissals.is_empty() {
         println!("No dismissals to check.");

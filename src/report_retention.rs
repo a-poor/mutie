@@ -181,7 +181,9 @@ fn check_logs(logs: &SavedLogs, prefix: &str) -> Result<()> {
     ] {
         if let Some(path) = path {
             ensure!(
-                path == Path::new(&format!("logs/{prefix}{suffix}")),
+                path == Path::new(&format!("logs/{prefix}{suffix}"))
+                    || (suffix == ".stdout.jsonl"
+                        && path == Path::new(&format!("logs/{prefix}.stdout.log"))),
                 "unexpected log reference {path:?}"
             );
         }
@@ -201,7 +203,7 @@ fn validate_layout(report: &LoadedReport, snapshot: &Snapshot) -> Result<()> {
         logs.push(format!("{:06}", mutation.id));
     }
     for prefix in logs {
-        for suffix in [".log", ".stdout.jsonl", ".stderr.log"] {
+        for suffix in [".log", ".stdout.jsonl", ".stdout.log", ".stderr.log"] {
             allowed.insert(PathBuf::from(format!("logs/{prefix}{suffix}")));
         }
     }

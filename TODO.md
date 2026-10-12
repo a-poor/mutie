@@ -15,21 +15,36 @@ correctness/reliability blockers as needed; explicit user priorities take preced
 ## Next milestone: usable Rust support
 
 See [the Rust milestone](DESIGN.md#next-milestone-usable-rust-support-planned)
-for scope, architecture, and completion criteria. Rust is planned, not implemented.
+for scope, architecture, and completion criteria. The first binary-package Rust
+slice is implemented; the full milestone is still in progress.
 
 - [x] Select Rust as the second language and the next major product milestone.
-- [ ] Choose a small fixture and a representative maintainer-owned Rust project;
-  document required Cargo package/workspace scope, test targets, features,
-  conditional compilation, local dependencies, and unsupported cases. This is
-  the next implementation-planning step; do not assume all workspaces are supported.
-- [ ] Build the first end-to-end Rust slice: project detection/configuration,
+- [x] Choose a small fixture and a representative maintainer-owned Rust project:
+  `tests/fixtures/rust` and Mutie itself. Define the initial binary-package/default
+  feature Cargo scope, source exclusions, unsupported layouts, and owned artifact
+  directories in DESIGN. Verify the fixture's two detected boolean flips and one
+  survivor, plus a stronger-test probe; verify Mutie's baseline in an isolated
+  copy (178 passed, 6 ignored). See `benchmarks/rust-initial-scope.md`. These are
+  direct Cargo checks recorded before implementing mutation execution.
+- [x] Build the first end-to-end Rust slice: project detection/configuration,
   source discovery, one operator, passing baseline, isolated mutation execution,
-  and saved results for one Cargo package. Extract only the shared language
-  boundary needed for Go and Rust while preserving existing Go behavior.
+  and saved results for one Cargo binary package. Share command captures,
+  classification, test dispatch, workers, status and reports with Go. Verify the
+  three-mutation fixture, stronger tests through a fresh run, failures, empty
+  selections, repeated/parallel execution, timeout/cancellation cleanup, and
+  caller artifact preservation. Persist Cargo scope/tool versions and keep
+  unsupported Rust rerun/dismissal actions explicit. Mutie's serial two-mutation
+  score sample finished with one kill and one survivor in 429.59 seconds. See
+  `benchmarks/rust-first-slice.md`, including the noisy parallel-run result.
 - [ ] Make Rust execution reliable: distinguish build/test/tool failures, enforce
   timeouts and cancellation, preserve partial results, and define build-cache
   and target-directory ownership. Verify repeated/parallel mutations execute the
   intended tests without stale artifacts, source edits, or artifact collisions.
+  The first slice covers ordinary Cargo evidence, fresh artifacts, repeated/
+  parallel runs, test timeouts and baseline cancellation. Remaining checks include
+  mutation-stage interruption/partial runs, compilation timeouts, tool/protocol
+  failures and raw-capture limits before expanding the supported scope. Investigate
+  the self-test terminal failure observed under competing parallel Cargo runs.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
   project's workspace/package selection if required by the agreed scope.
@@ -42,6 +57,9 @@ for scope, architecture, and completion criteria. Rust is planned, not implement
 - [ ] Exercise the complete workflow on the selected Rust project with ordinary
   CLI commands. Review survivors, verify a useful stronger-test rerun, and record
   time to an actionable finding, run/build/workspace costs, and noise/limitations.
+  The first real survivor is the presence-mismatch branch in
+  `MutationScore::matches_saved`; add saved-percentage presence/absence regression
+  cases and verify a fresh run catches it, then cover the focused rerun workflow.
 - [ ] Document verified Rust usage and limits in README/design, mark the milestone
   complete, and choose the next major objective from observed user needs.
 

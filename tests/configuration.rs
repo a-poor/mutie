@@ -282,7 +282,7 @@ fn invalid_config_fails_before_running_go_or_creating_reports() {
         ("exclude = ['[']", "invalid glob"),
         ("output_dir = '.'", "module root"),
         ("output_dir = ''", "must not be empty"),
-        ("lang = 'rust'", "only Go"),
+        ("lang = 'rust'", "Cargo.toml"),
         ("operators = ['unknown']", "unknown variant"),
     ] {
         fs::write(fixture.root.join("mutie.toml"), config).unwrap();

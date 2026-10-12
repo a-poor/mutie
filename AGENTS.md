@@ -2,15 +2,20 @@
 
 ## Project Structure & Module Organization
 
-Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
+Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules and an initial
+Rust binary-package workflow.
 
 - `src/main.rs` coordinates runs and workers; `cli.rs` defines CLI arguments.
 - `src/config.rs` loads repository settings and resolves explicit CLI overrides.
 - `src/coordinator.rs` feeds execution events to reports and run-state snapshots;
   `src/status.rs` renders the live Ratatui view and manages terminal cleanup.
 - `src/go.rs` integrates Go tooling; `mutation.rs` discovers mutations with Tree-sitter.
+- `src/language.rs` dispatches language commands; `command.rs` shares captures,
+  classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
+  `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
+  Rust modules for boolean flips.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
-- `src/capture.rs` owns file-backed output and head/tail retention; Go event
+- `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.
 - `src/report.rs` defines outcomes; `saved_report.rs` persists reports, diffs, and logs.
@@ -26,6 +31,13 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
   decisions, implements dismissal CRUD and rediscovery checks, and captures
   validated dismissal snapshots for saved reports and the browser.
 - `tests/go_workflow.rs` covers the Go workflow; `configuration.rs` tests config behavior, `cancellation.rs` tests shutdown, and `terminal.rs` exercises the CLI in a pseudo-terminal. `tests/fixtures/go/` provides the sample Go module.
+- `tests/fixtures/rust/` is an independent Cargo package for the initial Rust
+  slice, with unit/CLI tests and known boolean-flip outcomes. It is not exercised
+  by the root `cargo test`; see its README. Mutie itself is the selected real
+  Rust validation project; `benchmarks/rust-initial-scope.md` records the audit
+  and `benchmarks/rust-first-slice.md` records CLI validation and runtime limits.
+- `tests/rust_workflow.rs` runs real Cargo workflows with `--ignored`; keep these
+  opt-in so Mutie's default self-test suite cannot recursively run mutations.
 - `tests/fixtures/go-branches/` exercises branch forcing with Go type checking,
   unused-name preservation, short-circuit behavior, and focused reruns.
 - `tests/fixtures/go-loops/` checks loop skipping, initializer/condition/body/post
@@ -46,10 +58,10 @@ Mutie is a Rust 2024 CLI for mutation testing, currently supporting Go modules.
 ## Development Status & Versioning
 
 The Go MVP is complete; Mutie is a usable Go-focused alpha. Rust support is the
-next major milestone, motivated by the maintainer's Rust projects, and is not yet
-implemented. Follow the active Rust milestone in `TODO.md` and `DESIGN.md` when
-choosing work. Begin with representative project selection and a defined Cargo
-support scope, then build an end-to-end slice through execution and saved results.
+next major milestone, motivated by the maintainer's Rust projects. Its first
+binary-package slice is implemented; the broader operator/review/rerun workflow
+remains incomplete. Follow the active Rust milestone in `TODO.md` and `DESIGN.md`
+when choosing work, using Mutie itself as the selected real validation project.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
@@ -71,6 +83,7 @@ Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go 
 - `cargo run -- tests/fixtures/go --jobs 2 --timeout 5` — exercise the bundled fixture.
 - `cargo test` — run unit and non-ignored integration tests.
 - `cargo test --test go_workflow -- --ignored` — run the opt-in, real-Go workflow test.
+- `cargo test --test rust_workflow -- --ignored --test-threads=1` — run real Cargo workflows.
 - `cargo fmt --check` — check formatting; use `cargo fmt` to apply it.
 - `cargo clippy --all-targets -- -D warnings` — lint all targets.
 

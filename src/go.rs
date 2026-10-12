@@ -10,22 +10,17 @@ use std::{
 use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;
 
-use crate::{cancellation::Cancellation, capture::Capture, process, report::Outcome};
+use crate::{cancellation::Cancellation, capture::Capture, process};
 
 pub mod selection;
 
-pub struct CommandOutput {
-    raw: process::CommandOutput,
-    pub text: Capture,
-    evidence: Evidence,
-}
-
-impl std::ops::Deref for CommandOutput {
-    type Target = process::CommandOutput;
-    fn deref(&self) -> &Self::Target {
-        &self.raw
-    }
-}
+use crate::command::Failure;
+pub use crate::command::{CommandOutput, TestPhase};
+#[cfg(test)]
+use crate::{
+    command::{classify, text},
+    report::Outcome,
+};
 
 #[derive(Default)]
 struct Evidence {
@@ -45,11 +40,6 @@ impl Evidence {
 }
 
 impl CommandOutput {
-    #[cfg(test)]
-    pub fn mark_interrupted(&mut self) {
-        self.raw.interrupted = true;
-    }
-
     /// Parse every event before applying retention. Only one JSON record is in
     /// memory at a time; the complete raw and rendered streams stay file-backed.
     pub(crate) fn prepare(
@@ -84,7 +74,7 @@ impl CommandOutput {
             if last.is_some_and(|c| c != b'\n') {
                 writeln!(rendered)?;
             }
-            write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;
+            crate::command::write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;
         }
         if let Some(error) = &raw.capture_error {
             writeln!(rendered, "\n[Output capture error: {error}]")?;
@@ -96,47 +86,15 @@ impl CommandOutput {
         Ok(Self {
             raw,
             text,
-            evidence,
+            failure: if evidence.build_failed {
+                Failure::Build
+            } else if !evidence.setup_failed && evidence.test_failed {
+                Failure::Test
+            } else {
+                Failure::Unknown
+            },
+            tool: "Go",
         })
-    }
-}
-
-/// Decode stderr incrementally, retaining partial UTF-8 across chunk boundaries.
-fn write_lossy(reader: &mut impl std::io::Read, writer: &mut impl Write) -> std::io::Result<()> {
-    let mut bytes = [0; 16 * 1024];
-    let mut pending = Vec::new();
-    loop {
-        let count = reader.read(&mut bytes)?;
-        pending.extend_from_slice(&bytes[..count]);
-        let mut offset = 0;
-        while offset < pending.len() {
-            match std::str::from_utf8(&pending[offset..]) {
-                Ok(text) => {
-                    writer.write_all(text.as_bytes())?;
-                    offset = pending.len();
-                }
-                Err(error) => {
-                    let end = offset + error.valid_up_to();
-                    writer.write_all(&pending[offset..end])?;
-                    offset = end;
-                    match error.error_len() {
-                        Some(len) => {
-                            writer.write_all("�".as_bytes())?;
-                            offset += len;
-                        }
-                        None if count == 0 => {
-                            writer.write_all("�".as_bytes())?;
-                            offset = pending.len();
-                        }
-                        None => break,
-                    }
-                }
-            }
-        }
-        pending.drain(..offset);
-        if count == 0 {
-            return Ok(());
-        }
     }
 }
 
@@ -181,28 +139,6 @@ pub fn list_args(scope: crate::cli::TestScope) -> &'static [&'static str] {
         crate::cli::TestScope::Full => &["list", "-json", "./..."],
         crate::cli::TestScope::Affected => &["list", "-deps", "-test", "-json", "./..."],
     }
-}
-
-pub async fn test(
-    root: &Path,
-    limit: Duration,
-    log_limit: Option<NonZeroUsize>,
-    capture_limit: Option<NonZeroUsize>,
-    cancellation: &Cancellation,
-) -> Result<CommandOutput> {
-    prepare(
-        process::run("go", TEST_ARGS, root, limit, capture_limit, cancellation).await?,
-        log_limit,
-    )
-    .await
-}
-
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
-pub enum TestPhase {
-    #[default]
-    Running,
-    Building,
-    Testing,
 }
 
 pub async fn test_observed<F, Fut>(
@@ -339,38 +275,6 @@ struct Event {
     output: String,
 }
 
-pub fn classify(output: &CommandOutput) -> Result<Outcome> {
-    ensure!(
-        !output.interrupted,
-        "cannot classify an interrupted command"
-    );
-    if let Some(error) = &output.capture_error {
-        bail!("Go test output capture failed: {error}");
-    }
-    if output.timed_out {
-        return Ok(Outcome::Timeout);
-    }
-    if output.status.success() {
-        return Ok(Outcome::Missed);
-    }
-    if output.evidence.build_failed {
-        return Ok(Outcome::BuildFailed);
-    }
-    // Setup/tool failures must not inflate the number of killed mutations.
-    if !output.evidence.setup_failed && output.evidence.test_failed {
-        return Ok(Outcome::Killed);
-    }
-    bail!(
-        "Go command failed without a test or build failure ({}):\n{}",
-        output.status,
-        text(output)?
-    );
-}
-
-pub fn text(output: &CommandOutput) -> Result<String> {
-    output.text.text()
-}
-
 #[cfg(all(test, unix))]
 mod tests {
     use super::*;
@@ -382,7 +286,7 @@ mod tests {
         bytes.extend_from_slice("界é\r\n".as_bytes());
         bytes.extend_from_slice(b"\xff\xc0\xe2\x82");
         let mut decoded = Vec::new();
-        write_lossy(&mut bytes.as_slice(), &mut decoded)?;
+        crate::command::write_lossy(&mut bytes.as_slice(), &mut decoded)?;
         assert_eq!(String::from_utf8(decoded)?, String::from_utf8_lossy(&bytes));
         Ok(())
     }

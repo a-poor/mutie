@@ -119,6 +119,10 @@ impl RerunSelection {
     fn read(directory: &Path, filter: &RerunFilter) -> Result<Self> {
         let report = LoadedReport::load(directory)?;
         ensure!(
+            report.run.language() == crate::cli::Lang::Go,
+            "Rust focused reruns are not implemented yet; start a fresh filtered run"
+        );
+        ensure!(
             report.complete,
             "saved run has an incomplete mutation inventory"
         );

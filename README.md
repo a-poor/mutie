@@ -2,9 +2,12 @@
 
 A CLI for performing mutation testing.
 
-The first prototype supports Go modules. It runs a passing baseline, finds small
-source mutations with Tree-sitter, and by default runs the full test suite for each
-mutation in an isolated temporary workspace. Rust and other languages are planned.
+Mutie supports Go modules and an initial Rust binary-package workflow. It runs a
+passing baseline, finds small source mutations with Tree-sitter, and by default
+runs the full test suite for each mutation in an isolated temporary workspace.
+Rust currently supports
+`boolean_flip` in the [initial Cargo scope](DESIGN.md#initial-rust-support-contract);
+the broader Rust milestone, including focused reruns, remains in progress.
 
 See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
@@ -12,7 +15,9 @@ not necessarily available in the current CLI.
 
 ## Try it
 
-Requires Rust/Cargo and Go 1.24+ on `PATH`. The prototype is tested on Linux and macOS.
+Building Mutie requires Rust/Cargo. Testing a Go project also requires Go 1.24+
+on `PATH`. The prototype is tested on Linux and macOS; the initial Rust workflow
+has been validated on macOS.
 
 ```sh
 cargo run -- /path/to/go/module
@@ -33,21 +38,77 @@ cargo run -- prune /path/to/go/module/.mutie --keep-last 5
 cargo run -- dismiss --module /path/to/go/module list
 ```
 
-The path defaults to the current directory and must contain `go.mod`. Glob
+The path defaults to the current directory. A Go project must contain `go.mod`;
+a Rust project must contain `Cargo.toml`. Language detection rejects roots with
+both manifests unless `--lang go` or `--lang rust` is explicit. Glob
 patterns are relative to that directory; quote them so your shell does not expand
 them. Repeat `--include` or `--exclude` to supply multiple patterns. Exclusions
 win. These options control which files are mutated; test selection is controlled
 separately by `--test-scope`. `--list` discovers mutations without running tests.
 
-The bundled fixture deliberately produces all four outcomes:
+The bundled Go fixture deliberately produces all four outcomes:
 
 ```sh
 cargo run -- tests/fixtures/go --jobs 2 --timeout 5
 ```
 
+## Initial Rust support
+
+The first Rust slice supports one ordinary binary package with a usable
+`Cargo.lock`, default features, and standard unit/integration tests on Unix.
+Try the [small fixture](tests/fixtures/rust/README.md):
+
+```sh
+cargo run -- tests/fixtures/rust --list
+cargo run -- tests/fixtures/rust --jobs 2 --timeout 30
+cargo run -- report /path/to/saved/run
+```
+
+The fixture produces three `boolean_flip` mutations: two killed and one missed.
+File/operator filters, live/plain status, saved diffs/logs, scores, failure
+policies, operator totals, and report listing/retention use the shared workflow.
+Rust focused reruns and dismissal commands are not implemented yet; the browser
+shows an explanation when a Rust rerun command is requested.
+
+Cargo metadata validates the package before the baseline. Mutie compiles tests
+with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
+then runs the same command without `--no-run`. Both phases share one timeout;
+captured diagnostics survive failures, timeout and cancellation. Each baseline
+and mutation gets fresh owned target/build directories. The input `target/`,
+caller-selected build directories and source files are preserved; the Cargo
+registry/download cache remains available. Fresh builds can be expensive.
+
+Discovery follows ordinary Rust modules and flips boolean literals in function
+bodies. Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
+macro tokens/expansions, generated files and constants/type-level code are
+excluded. The run prints and saves discovery exclusions. Library/proc-macro
+packages, multi-package or enclosing workspaces, local/git dependencies,
+project build scripts, custom profiles/harnesses, feature selection, and custom
+compiler/runner settings are outside this first scope. Only artifact-location,
+network and terminal Cargo config sections are accepted; in-project artifact
+directories must be under `target/`. Toolchain override files are rejected;
+an inherited `RUSTUP_TOOLCHAIN` selection is preserved and actual tool versions
+are recorded. See [the contract](DESIGN.md#initial-rust-support-contract) for detail.
+
+The first self-testing sample uses two literals in Mutie's score code:
+
+```sh
+cargo run -- . --include src/score.rs --operator boolean_flip \
+  --jobs 1 --timeout 600 --baseline-timeout 300
+```
+
+See [the validation record](benchmarks/rust-first-slice.md) for measured costs and
+results. Fresh builds and the full test suite make self-testing a minutes-long run.
+
+Real Cargo workflow regression tests are opt-in to prevent recursive self-tests:
+
+```sh
+cargo test --test rust_workflow -- --ignored --test-threads=1
+```
+
 ## Repository configuration
 
-Mutie reads an optional `mutie.toml` beside the selected module's `go.mod`.
+Mutie reads an optional `mutie.toml` beside the selected project's manifest.
 Settings apply in this order: built-in defaults, then the file, then explicitly
 supplied CLI arguments. Parent directories are not searched.
 
@@ -69,14 +130,18 @@ verbose = false
 ui = "auto"
 ```
 
-All keys are optional. Defaults are `lang = "auto"` (currently Go), one worker,
+The configuration example above is for Go. Use `lang = "rust"` (or automatic
+detection) and Rust file globs for a Cargo package. Rust accepts only
+`test_scope = "full"` and `boolean_flip` operator selection.
+
+All keys are optional. Defaults are `lang = "auto"` (detect Go or Rust), one worker,
 empty include/exclude/operator lists, a 300-second baseline/discovery timeout, `.mutie`
 under the module root for reports, `ui = "auto"`, `test_scope = "full"`, and no verbose output. Omit
 `timeout` for the automatic policy: `max(10 seconds, 5 * baseline duration)`. Worker counts and
 timeouts must be positive integers; timeouts are in seconds. Unknown keys,
 malformed TOML, and incorrect value types are rejected even if CLI options would
 override them. The merged settings are validated before creating reports or
-running Go, including globs, supported language, and output paths.
+running language tools, including globs, supported language, and output paths.
 
 Globs are always module-relative. A configured `output_dir` is relative to the
 module root; a CLI `--output-dir` is relative to the invocation directory.
@@ -108,7 +173,8 @@ conflicts with `--list`.
 
 ## Mutation operators
 
-All ten operators run by default. Use repeatable or comma-separated
+All ten Go operators run by default; Rust currently runs only `boolean_flip`.
+Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 
 ```sh
@@ -646,9 +712,11 @@ Each run contains:
   planned mutation.
 - `diff/000001.diff`: one unified source diff per planned mutation.
 - `logs/baseline.log`, `logs/discovery.log`, and `logs/000001.log`: readable command
-  output, with separate `.stdout.jsonl` and `.stderr.log` captures alongside each
-  log. Complete discovery stdout contains Go package JSON; complete test stdout
-  contains Go test events. Logs are saved even without `--verbose`. Limited logs
+  output, with separate `.stdout.jsonl` (Go) or `.stdout.log` (Rust) and
+  `.stderr.log` captures alongside each log. Go stdout contains package JSON or
+  test events. Rust discovery stdout contains Cargo metadata; test stdout mixes
+  Cargo build events with standard test-harness output from both phases.
+  Logs are saved even without `--verbose`. Limited logs
   contain head/tail excerpts and an omission marker; see the log limit below.
 - `killed.txt`, `missed.txt`, `timeout.txt`, `build_failed.txt`, and `errors.txt`:
   outcome lists containing IDs and source descriptions, sorted by ID.

@@ -11,9 +11,8 @@ use tokio::sync::watch;
 
 use crate::{
     cancellation::{Cancellation, Interrupted},
+    command::CommandOutput,
     config::RunConfig,
-    go,
-    go::CommandOutput,
     mutation::Mutation,
     report::{
         ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
@@ -45,6 +44,7 @@ impl Phase {
 
 pub enum RunEvent<'a> {
     Phase(Phase),
+    RustScope(&'a crate::rust::ExecutionScope),
     Command {
         phase: Phase,
         output: &'a CommandOutput,
@@ -85,12 +85,12 @@ impl WorkerPhase {
     }
 }
 
-impl From<go::TestPhase> for WorkerPhase {
-    fn from(phase: go::TestPhase) -> Self {
+impl From<crate::command::TestPhase> for WorkerPhase {
+    fn from(phase: crate::command::TestPhase) -> Self {
         match phase {
-            go::TestPhase::Running => Self::Running,
-            go::TestPhase::Building => Self::Building,
-            go::TestPhase::Testing => Self::Testing,
+            crate::command::TestPhase::Running => Self::Running,
+            crate::command::TestPhase::Building => Self::Building,
+            crate::command::TestPhase::Testing => Self::Testing,
         }
     }
 }
@@ -182,6 +182,7 @@ impl RunState {
                     active.phase = progress.phase;
                 }
             }
+            RunEvent::RustScope(_) => {}
             RunEvent::Finished { worker, result } => {
                 self.active.remove(worker);
                 self.summary.record(result);
@@ -225,6 +226,7 @@ pub struct Coordinator {
     updates: watch::Sender<RunState>,
     interactive: bool,
     verbose: bool,
+    lang: crate::cli::Lang,
 }
 
 impl Coordinator {
@@ -247,6 +249,7 @@ impl Coordinator {
                 updates,
                 interactive,
                 verbose: config.verbose,
+                lang: config.lang,
             },
             receiver,
         ))
@@ -284,6 +287,7 @@ impl Coordinator {
         if let Some(report) = &mut self.saved {
             match &event {
                 RunEvent::Phase(phase) => report.phase(phase.name())?,
+                RunEvent::RustScope(scope) => report.rust_scope(scope)?,
                 RunEvent::Command { phase, output } => report.command(phase.name(), output)?,
                 RunEvent::Plan(plan) => report.plan(plan, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
@@ -298,7 +302,11 @@ impl Coordinator {
         if !self.interactive {
             match event {
                 RunEvent::Phase(Phase::Baseline) => {
-                    self.line("Running baseline: go test ./... (test caching disabled)")
+                    self.line(if self.lang == crate::cli::Lang::Rust {
+                        "Running baseline: cargo test --locked --tests (fresh build artifacts)"
+                    } else {
+                        "Running baseline: go test ./... (test caching disabled)"
+                    })
                 }
                 RunEvent::Command {
                     phase: Phase::Baseline,
@@ -313,7 +321,7 @@ impl Coordinator {
                         output.elapsed.as_secs_f64()
                     ));
                     if self.verbose {
-                        print!("{}", go::text(output)?);
+                        print!("{}", crate::command::text(output)?);
                     }
                 }
                 RunEvent::Finished { result, .. } => {
@@ -337,7 +345,7 @@ impl Coordinator {
                     if self.verbose
                         && let Some(output) = &result.output
                     {
-                        let text = go::text(output)?;
+                        let text = crate::command::text(output)?;
                         if !text.is_empty() {
                             self.line(text.trim_end());
                         }

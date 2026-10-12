@@ -64,7 +64,7 @@ impl Scope {
         })
     }
 
-    fn matches(&self, path: &Path) -> bool {
+    pub(crate) fn matches(&self, path: &Path) -> bool {
         (self.include.is_empty() || self.include.is_match(path)) && !self.exclude.is_match(path)
     }
 }
@@ -73,7 +73,7 @@ impl Scope {
 pub struct SourceFile {
     pub path: PathBuf,
     pub fingerprint: String,
-    source: String,
+    pub(crate) source: String,
 }
 
 #[derive(Clone, Debug)]

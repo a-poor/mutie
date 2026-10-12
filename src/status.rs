@@ -536,7 +536,7 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
             Line::from(match state.phase {
                 crate::coordinator::Phase::Snapshot => "   Preparing isolated workspaces...",
                 crate::coordinator::Phase::Baseline => "   Running baseline tests...",
-                crate::coordinator::Phase::Discovery => "   Discovering eligible Go mutations...",
+                crate::coordinator::Phase::Discovery => "   Discovering eligible mutations...",
                 crate::coordinator::Phase::Inventory => "   Saving mutation inventory and diffs...",
                 crate::coordinator::Phase::Mutations => "   Preparing workers...",
             })

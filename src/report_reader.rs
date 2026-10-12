@@ -1,4 +1,4 @@
-//! Read finalized reports independently of Go, the current checkout, and presentation.
+//! Read finalized reports independently of language tools, the current checkout, and presentation.
 use std::{
     collections::BTreeMap,
     fs::File,
@@ -33,9 +33,19 @@ pub struct SavedRun {
     effective_config: Option<ScoreConfig>,
 }
 
+impl SavedRun {
+    pub fn language(&self) -> crate::cli::Lang {
+        self.effective_config
+            .as_ref()
+            .and_then(|config| config.lang)
+            .unwrap_or(crate::cli::Lang::Go)
+    }
+}
+
 /// Only the saved configuration needed to verify score scope and policy.
 #[derive(Debug, Deserialize)]
 struct ScoreConfig {
+    lang: Option<crate::cli::Lang>,
     #[serde(default)]
     include: Vec<String>,
     #[serde(default)]

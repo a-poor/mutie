@@ -6,7 +6,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use anyhow::{Context, Result, ensure};
+use anyhow::{Context, Result, bail, ensure};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -79,11 +79,6 @@ impl RunConfig {
             .join(&cli.path)
             .canonicalize()
             .with_context(|| format!("opening {}", cli.path.display()))?;
-        ensure!(
-            root.join("go.mod").is_file(),
-            "{} must be a Go module root containing go.mod",
-            root.display()
-        );
         let path = root.join("mutie.toml");
         let (file, config_file) = match fs::symlink_metadata(&path) {
             Ok(_) => {
@@ -101,10 +96,29 @@ impl RunConfig {
                     .with_context(|| format!("opening configuration {}", path.display()));
             }
         };
-        let lang = cli.lang.or(file.lang).unwrap_or(Lang::Auto);
+        let lang = match cli.lang.or(file.lang).unwrap_or(Lang::Auto) {
+            Lang::Auto => match (
+                root.join("go.mod").is_file(),
+                root.join("Cargo.toml").is_file(),
+            ) {
+                (true, false) => Lang::Go,
+                (false, true) => Lang::Rust,
+                (true, true) => {
+                    bail!("both go.mod and Cargo.toml exist; select --lang go or --lang rust")
+                }
+                (false, false) => bail!("{} must contain go.mod or Cargo.toml", root.display()),
+            },
+            lang => lang,
+        };
+        let manifest = if lang == Lang::Go {
+            "go.mod"
+        } else {
+            "Cargo.toml"
+        };
         ensure!(
-            lang != Lang::Rust,
-            "Rust support is planned; only Go is supported for now"
+            root.join(manifest).is_file(),
+            "{} must be a project root containing {manifest}",
+            root.display()
         );
         let output_dir = match cli.output_dir {
             Some(path) => nonempty_path(invocation, path)?,
@@ -167,7 +181,7 @@ impl RunConfig {
         let config = Self {
             module_root: root,
             config_file,
-            lang: Lang::Go,
+            lang,
             jobs: cli
                 .jobs
                 .or(file.jobs)
@@ -212,6 +226,23 @@ impl RunConfig {
             rerun,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
+        if config.lang == Lang::Rust {
+            ensure!(
+                config.test_scope == TestScope::Full,
+                "--test-scope affected is only supported for Go"
+            );
+            ensure!(
+                config
+                    .operators
+                    .iter()
+                    .all(|op| *op == Operator::BooleanFlip),
+                "Rust currently supports only boolean_flip"
+            );
+            ensure!(
+                config.rerun.is_none(),
+                "Rust focused reruns are not implemented yet; start a fresh filtered run"
+            );
+        }
         for (name, timeout) in [
             ("timeout", config.timeout),
             ("baseline_timeout", Some(config.baseline_timeout)),
@@ -252,7 +283,7 @@ fn nonempty_path(base: &Path, path: PathBuf) -> Result<PathBuf> {
 /// Resolve existing symlinks and normalize missing path components without
 /// creating report directories. Listing and invalid configurations have no
 /// filesystem side effects. Walk in order so `link/..` respects the link target.
-fn resolve_output_path(path: &Path) -> Result<PathBuf> {
+pub(crate) fn resolve_output_path(path: &Path) -> Result<PathBuf> {
     let mut resolved = PathBuf::new();
     for component in path.components() {
         match component {
@@ -287,6 +318,37 @@ fn resolve_output_path(path: &Path) -> Result<PathBuf> {
 mod tests {
     use super::*;
     use clap::Parser;
+
+    #[test]
+    fn detects_rust_and_rejects_ambiguous_or_language_specific_options() -> Result<()> {
+        let temp = project()?;
+        fs::write(
+            temp.path().join("module/Cargo.toml"),
+            "[package]\nname = 'sample'\nversion = '0.0.0'\n",
+        )?;
+        assert!(
+            resolve(temp.path(), &[])
+                .unwrap_err()
+                .to_string()
+                .contains("both go.mod and Cargo.toml")
+        );
+        assert_eq!(resolve(temp.path(), &["--lang", "rust"])?.lang, Lang::Rust);
+        assert_eq!(resolve(temp.path(), &["--lang", "go"])?.lang, Lang::Go);
+        fs::remove_file(temp.path().join("module/go.mod"))?;
+        assert_eq!(resolve(temp.path(), &[])?.lang, Lang::Rust);
+        for args in [
+            &["--test-scope", "affected"][..],
+            &["--operator", "arithmetic_replace"][..],
+        ] {
+            assert!(resolve(temp.path(), args).is_err());
+        }
+        assert_eq!(
+            resolve(temp.path(), &["--operator", "boolean_flip"])?.operators,
+            [Operator::BooleanFlip]
+        );
+        assert!(!temp.path().join("module/.mutie").exists());
+        Ok(())
+    }
 
     fn project() -> Result<tempfile::TempDir> {
         let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;

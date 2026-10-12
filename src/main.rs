@@ -2,11 +2,13 @@ mod browser;
 mod cancellation;
 mod capture;
 mod cli;
+mod command;
 mod config;
 mod coordinator;
 mod dismissals;
 mod go;
 mod identity;
+mod language;
 mod mutation;
 mod operator_summary;
 mod process;
@@ -15,6 +17,7 @@ mod report_lock;
 mod report_reader;
 mod report_retention;
 mod rerun;
+mod rust;
 mod saved_report;
 mod score;
 mod status;
@@ -28,7 +31,7 @@ use clap::Parser;
 use tokio::{sync::mpsc, task::JoinSet};
 
 use cancellation::{Cancellation, Interrupted};
-use cli::{Cli, TestScope, UiMode};
+use cli::{Cli, Lang, TestScope, UiMode};
 use config::RunConfig;
 use coordinator::{Coordinator, Phase, RunEvent, WorkerPhase, WorkerProgress};
 use mutation::{Mutation, Scope};
@@ -204,6 +207,9 @@ async fn execute(
 ) -> Result<()> {
     let root = &config.module_root;
     let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
+    let mut rust_project = (config.lang == Lang::Rust)
+        .then(|| rust::Project::load(root))
+        .transpose()?;
     coordinator.line(format!("Snapshotting {}", root.display()));
     let mut excluded = vec![root.join(".mutie"), config.output_dir.clone()];
     excluded.extend(
@@ -212,6 +218,9 @@ async fn execute(
             .iter()
             .map(|request| request.source_run.clone()),
     );
+    if let Some(project) = &rust_project {
+        excluded.extend(project.excluded.clone());
+    }
     let snapshot = Arc::new(
         measured_workspace(
             root.to_owned(),
@@ -227,6 +236,11 @@ async fn execute(
     } else {
         Some(dismissals::Store::load(&snapshot.path())?)
     };
+    if rust_project.is_some() {
+        // Scope and lockfile identity must describe the captured input, not a
+        // manifest that could have changed while the snapshot was being copied.
+        rust_project = Some(rust::Project::load(&snapshot.path())?);
+    }
     let baseline_workspace = measured_workspace(
         snapshot.path(),
         vec![],
@@ -235,17 +249,50 @@ async fn execute(
         cancellation,
     )
     .await?;
-    let mut timeout = config
-        .timeout
-        .map(|seconds| Duration::from_secs(seconds.get()));
-    if !config.list {
-        coordinator.emit(RunEvent::Phase(Phase::Baseline), cancellation)?;
-        let baseline = go::test(
+    if let Some(project) = &mut rust_project {
+        coordinator.emit(RunEvent::Phase(Phase::Discovery), cancellation)?;
+        let output = rust::discover(
             &baseline_workspace.path(),
             baseline_limit,
             config.max_log_bytes,
             config.max_capture_bytes,
             cancellation,
+        )
+        .await?;
+        coordinator.emit(
+            RunEvent::Command {
+                phase: Phase::Discovery,
+                output: &output,
+            },
+            cancellation,
+        )?;
+        if output.interrupted {
+            return Err(Interrupted.into());
+        }
+        project.validate_metadata(&baseline_workspace.path(), &rust::metadata(&output)?)?;
+        rust::versions(
+            &mut project.scope,
+            &baseline_workspace.path(),
+            baseline_limit,
+            cancellation,
+        )
+        .await?;
+        coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
+    }
+    let mut timeout = config
+        .timeout
+        .map(|seconds| Duration::from_secs(seconds.get()));
+    if !config.list {
+        coordinator.emit(RunEvent::Phase(Phase::Baseline), cancellation)?;
+        let baseline = language::test(
+            config.lang,
+            &baseline_workspace.path(),
+            &["./...".into()],
+            baseline_limit,
+            config.max_log_bytes,
+            config.max_capture_bytes,
+            cancellation,
+            |_| async {},
         )
         .await?;
         coordinator.emit(
@@ -261,20 +308,20 @@ async fn execute(
         if let Some(error) = &baseline.capture_error {
             bail!(
                 "baseline: {error}; no mutations were run\n{}",
-                go::text(&baseline)?
+                command::text(&baseline)?
             );
         }
         if baseline.timed_out {
             bail!(
                 "baseline timed out after {:.1}s; no mutations were run\n{}",
                 baseline_limit.as_secs_f64(),
-                go::text(&baseline)?
+                command::text(&baseline)?
             );
         }
         if !baseline.status.success() {
             bail!(
                 "baseline tests failed; no mutations were run\n{}",
-                go::text(&baseline)?
+                command::text(&baseline)?
             );
         }
         timeout.get_or_insert_with(|| (baseline.elapsed * 5).max(Duration::from_secs(10)));
@@ -304,48 +351,67 @@ async fn execute(
         result?;
         baseline_workspace
     };
-    let discovery = go::discover(
-        &baseline_workspace.path(),
-        config.test_scope,
-        baseline_limit,
-        config.max_log_bytes,
-        config.max_capture_bytes,
-        cancellation,
-    )
-    .await?;
-    coordinator.emit(
-        RunEvent::Command {
-            phase: Phase::Discovery,
-            output: &discovery,
-        },
-        cancellation,
-    )?;
-    if discovery.interrupted {
-        return Err(Interrupted.into());
-    }
-    let packages = go::packages(&discovery)?;
-    drop(discovery);
-    let graph = if config.test_scope == TestScope::Affected {
-        Some(go::selection::PackageGraph::new(
-            &baseline_workspace.path(),
-            &packages,
-        )?)
-    } else {
-        None
-    };
-    let mut files = match &graph {
-        Some(graph) => graph.files.clone(),
-        None => go::files_in(&baseline_workspace.path(), &packages)?,
-    };
-    drop(baseline_workspace);
-    let mutations = {
-        let snapshot = Arc::clone(&snapshot);
-        let cancellation = cancellation.clone();
-        tokio::task::spawn_blocking(move || {
-            mutation::discover_cancellable(&snapshot.path(), &mut files, &scope, &cancellation)
+    let (mutations, graph) = if let Some(project) = &mut rust_project {
+        drop(baseline_workspace);
+        let source = snapshot.path();
+        let entry = project.scope.source.clone();
+        let discovery_cancellation = cancellation.clone();
+        let found = tokio::task::spawn_blocking(move || {
+            rust::discovery::discover(&source, &entry, &scope, &discovery_cancellation)
         })
         .await
-        .context("mutation discovery panicked")??
+        .context("Rust discovery panicked")??;
+        project.scope.discovery_exclusions = found.exclusions;
+        for exclusion in &project.scope.discovery_exclusions {
+            coordinator.line(format!("Rust discovery excluded {exclusion}"));
+        }
+        coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
+        (found.mutations, None)
+    } else {
+        let discovery = go::discover(
+            &baseline_workspace.path(),
+            config.test_scope,
+            baseline_limit,
+            config.max_log_bytes,
+            config.max_capture_bytes,
+            cancellation,
+        )
+        .await?;
+        coordinator.emit(
+            RunEvent::Command {
+                phase: Phase::Discovery,
+                output: &discovery,
+            },
+            cancellation,
+        )?;
+        if discovery.interrupted {
+            return Err(Interrupted.into());
+        }
+        let packages = go::packages(&discovery)?;
+        drop(discovery);
+        let graph = if config.test_scope == TestScope::Affected {
+            Some(go::selection::PackageGraph::new(
+                &baseline_workspace.path(),
+                &packages,
+            )?)
+        } else {
+            None
+        };
+        let mut files = match &graph {
+            Some(graph) => graph.files.clone(),
+            None => go::files_in(&baseline_workspace.path(), &packages)?,
+        };
+        drop(baseline_workspace);
+        let mutations = {
+            let snapshot = Arc::clone(&snapshot);
+            let cancellation = cancellation.clone();
+            tokio::task::spawn_blocking(move || {
+                mutation::discover_cancellable(&snapshot.path(), &mut files, &scope, &cancellation)
+            })
+            .await
+            .context("mutation discovery panicked")??
+        };
+        (mutations, graph)
     };
     cancellation.check()?;
     let mut dismissals = dismissal_store
@@ -389,7 +455,14 @@ async fn execute(
         .iter()
         .map(|mutation| match &graph {
             Some(graph) => graph.packages_for(&mutation.file.path),
-            None => Ok(vec!["./...".to_owned()]),
+            None => Ok(vec![
+                if config.lang == Lang::Rust {
+                    "--tests"
+                } else {
+                    "./..."
+                }
+                .to_owned(),
+            ]),
         })
         .collect::<Result<_>>()?;
     if config.list {
@@ -437,6 +510,7 @@ async fn execute(
         timeout.as_secs_f64()
     ));
     let context = WorkerContext {
+        lang: config.lang,
         snapshot,
         test_packages: Arc::new(test_packages),
         timeout,
@@ -449,6 +523,7 @@ async fn execute(
 
 #[derive(Clone)]
 struct WorkerContext {
+    lang: Lang,
     snapshot: Arc<Workspace>,
     test_packages: Arc<Vec<Vec<String>>>,
     timeout: Duration,
@@ -529,7 +604,8 @@ impl WorkerJob {
                         phase: WorkerPhase::Running,
                     })
                     .await;
-                go::test_observed(
+                language::test(
+                    context.lang,
                     &workspace.as_ref().unwrap().path(),
                     &context.test_packages[id - 1],
                     context.timeout,
@@ -558,7 +634,7 @@ impl WorkerJob {
                 (ExecutionState::Interrupted, None, Some(output), None)
             }
             Ok(output) => {
-                let (outcome, error) = match go::classify(&output) {
+                let (outcome, error) = match command::classify(&output) {
                     Ok(outcome) => (outcome, None),
                     Err(error) => (
                         Outcome::Error,

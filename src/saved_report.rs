@@ -11,9 +11,10 @@ use serde::Serialize;
 use crate::{
     cancellation::{Cancellation, Interrupted},
     capture::Retention,
+    command::CommandOutput,
     config::RunConfig,
     dismissals::DismissalSnapshot,
-    go::{self, CommandOutput},
+    language,
     mutation::{OPERATOR_CATALOG_VERSION, Operator},
     report::{
         ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
@@ -44,6 +45,10 @@ struct RunReport {
     score: MutationScore,
     score_policy: ScorePolicy,
     baseline_command: Vec<&'static str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    compilation_command: Option<Vec<&'static str>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    rust_scope: Option<crate::rust::ExecutionScope>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
     include: Vec<String>,
@@ -167,6 +172,11 @@ pub struct SavedReport {
 }
 
 impl SavedReport {
+    pub fn rust_scope(&mut self, scope: &crate::rust::ExecutionScope) -> Result<()> {
+        self.run.rust_scope = Some(scope.clone());
+        self.flush()
+    }
+
     pub fn create(config: &RunConfig) -> Result<Self> {
         let root = &config.module_root;
         let output_root = &config.output_dir;
@@ -213,15 +223,25 @@ impl SavedReport {
                     [],
                 ),
                 score_policy: ScorePolicy::Disabled,
-                baseline_command: std::iter::once("go")
-                    .chain(go::TEST_ARGS.iter().copied())
+                baseline_command: language::test_command(config.lang),
+                compilation_command: (config.lang == crate::cli::Lang::Rust).then(|| {
+                    language::test_command(config.lang)
+                        .into_iter()
+                        .chain(["--no-run"])
+                        .collect()
+                }),
+                rust_scope: None,
+                mutation_command_prefix: language::test_command(config.lang)
+                    .into_iter()
+                    .filter(|arg| {
+                        if config.lang == crate::cli::Lang::Rust {
+                            *arg != "--tests"
+                        } else {
+                            *arg != "./..."
+                        }
+                    })
                     .collect(),
-                mutation_command_prefix: std::iter::once("go")
-                    .chain(go::TEST_ARGS[..go::TEST_ARGS.len() - 1].iter().copied())
-                    .collect(),
-                discovery_command: std::iter::once("go")
-                    .chain(go::list_args(config.test_scope).iter().copied())
-                    .collect(),
+                discovery_command: language::discovery_command(config.lang, config.test_scope),
                 include: config.include.clone(),
                 exclude: config.exclude.clone(),
                 requested_workers: config.jobs.get(),
@@ -490,7 +510,14 @@ impl SavedReport {
     fn logs(&self, prefix: &str, output: &CommandOutput) -> Result<Logs> {
         let logs = Logs {
             text: format!("{prefix}.log"),
-            stdout: format!("{prefix}.stdout.jsonl"),
+            stdout: format!(
+                "{prefix}.stdout.{}",
+                if self.run.effective_config.lang == crate::cli::Lang::Rust {
+                    "log"
+                } else {
+                    "jsonl"
+                }
+            ),
             stderr: format!("{prefix}.stderr.log"),
             retention: LogRetention {
                 text: output.text.retention()?,
@@ -586,13 +613,26 @@ impl SavedReport {
         text.push_str(&format!("{}\n", self.run.policy));
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
-        text.push_str(&format!(
-            "Mutation test scope: {} (baseline: full module)\n",
-            match self.run.effective_config.test_scope {
-                crate::cli::TestScope::Full => "full",
-                crate::cli::TestScope::Affected => "affected",
+        if self.run.effective_config.lang == crate::cli::Lang::Rust {
+            text.push_str("Language: Rust\nMutation and baseline test scope: binary unit and integration tests, default features\nBuild artifacts: fresh owned directories per baseline/mutation\n");
+            if let Some(scope) = &self.run.rust_scope {
+                text.push_str(&format!(
+                    "Cargo package: {} | binary: {} | edition: {}\nLockfile: {}\n",
+                    scope.package, scope.binary, scope.edition, scope.lockfile_fingerprint
+                ));
+                for exclusion in &scope.discovery_exclusions {
+                    text.push_str(&format!("Discovery excluded {exclusion}\n"));
+                }
             }
-        ));
+        } else {
+            text.push_str(&format!(
+                "Mutation test scope: {} (baseline: full module)\n",
+                match self.run.effective_config.test_scope {
+                    crate::cli::TestScope::Full => "full",
+                    crate::cli::TestScope::Affected => "affected",
+                }
+            ));
+        }
         if let Some(root) = &self.run.workspace_metrics.temporary_root {
             text.push_str(&format!("Workspace temporary root: {}\n", root.display()));
         }

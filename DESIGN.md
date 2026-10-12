@@ -22,7 +22,7 @@ report artifacts, without requiring compatibility with its CLI or file formats.
 
 ## Current position: Go MVP complete
 
-The current implementation supports one Go module, selected through its `go.mod`.
+The established Go implementation supports one module, selected through its `go.mod`.
 It runs a baseline, discovers active Go files, creates Tree-sitter mutations, and
 executes them in isolated worker copies. It already has file filters, configurable
 workers and timeouts, repository configuration, live and plain terminal output,
@@ -41,7 +41,9 @@ or asset-heavy trees.
 
 The prototype supports rerunning saved mutations by ID, operator, or missed
 outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
-Rust appears in the CLI language enum but is not implemented.
+Rust now has an initial binary-package path through metadata validation, a passing
+baseline, boolean-flip discovery, isolated Cargo execution and saved reports.
+Focused Rust reruns and dismissal commands remain unimplemented.
 
 The project is a usable Go-focused alpha. The execution, inspection, and focused
 rerun workflow is established; further Go operators and presentation refinements
@@ -94,14 +96,144 @@ parser or recognizing `Cargo.toml` alone does not complete this milestone.
    mutations and build-failure noise as well as successes. Use ordinary Mutie
    commands for the user workflow, and document evidence and limitations.
 
+### Initial Rust support contract
+
+The first real validation project is **Mutie itself**, selected by the maintainer.
+The small companion package is [`tests/fixtures/rust`](tests/fixtures/rust/README.md).
+Both have one ordinary binary and standard unit/integration tests. Mutie has no
+package features, local path dependencies, root build script, or library target;
+workspace-member selection is not required for this milestone's selected project.
+The [scope audit and Cargo probes](benchmarks/rust-initial-scope.md) record the
+inspected revision and planning evidence. The first execution slice now implements
+the contract below; see the fixture README and `tests/rust_workflow.rs` for verified
+behavior. The broader Rust milestone remains open.
+The [first-slice validation record](benchmarks/rust-first-slice.md) covers actual
+CLI runs, regression checks and observed self-testing costs/limitations.
+
+#### Package and test execution
+
+Start with a package-root `Cargo.toml`, a checked-in usable `Cargo.lock`, exactly
+one ordinary binary target, and the standard Rust test harness on a Unix host.
+Use the host toolchain, default package features, and the normal test profile.
+Reject multi-package/virtual workspaces, membership in an enclosing workspace,
+path dependencies/overrides, library/proc-macro targets, custom harnesses, and
+project build scripts for this first slice. An explicit single-package workspace
+root is acceptable, as used by the fixture. Registry dependency build scripts and
+derive macros remain necessary to compile Mutie; dependencies are never mutated.
+
+Discover package/target roots using `cargo metadata --format-version 1 --no-deps
+--locked`; validate the dependency sources and layout before executing tests.
+Metadata describes targets, not a complete list of compiled Rust source files.
+[Cargo's metadata reference](https://doc.rust-lang.org/cargo/commands/cargo-metadata.html)
+documents the fields to inspect. Require package identity and all selected source
+paths to remain inside the snapshot, with no references back to the input tree.
+
+The test scope is `cargo test --locked --tests --no-fail-fast`, launched from the
+isolated package root. This includes the binary's unit tests and its integration
+tests, which must exercise that copy's binary through `CARGO_BIN_EXE_<name>`.
+It excludes ignored tests, doctests, examples, and benchmarks in the supported
+layout. Reject nonstandard target declarations that would silently widen that
+scope. No test-name filters, feature selectors, cross-compilation, alternative
+profiles, or custom runners are part of the first slice. Cargo documents the
+[`--tests` selection and binary environment](https://doc.rust-lang.org/cargo/commands/cargo-test.html#target-selection).
+Do not translate Go's affected-package option into a partial Rust test run;
+reject it for Rust and record the actual Cargo selection in saved reports.
+
+Compile the selected tests first with the same scope plus `--no-run
+--message-format=json`, then execute through Cargo. Use compiler diagnostics and
+build completion evidence to separate compilation failures from test failures;
+Cargo's exit code alone is insufficient. Missing tool/protocol evidence is an
+error, not a kill. Preserve both phases' diagnostics and use one overall deadline
+per baseline or mutation. Compilation/test/tool evidence, timeout, baseline
+cancellation, and saved failure diagnostics are covered. Broader interruption/fault cases remain in the reliability
+follow-up before treating all Cargo execution cases as established.
+Cargo's [machine-readable messages](https://doc.rust-lang.org/cargo/reference/external-tools.html#json-messages)
+provide build evidence, not stable structured libtest result events.
+
+#### Source eligibility and first operator
+
+Start with `boolean_flip` (`true` ↔ `false`) in ordinary function/method bodies.
+Walk the selected binary's ordinary external and inline module declarations;
+do not glob every `.rs` file in the repository. Deduplicate canonical source
+locations and apply the existing file filters after determining eligibility.
+Exclude integration-test targets, test functions/modules, dependencies, nested
+packages, unreferenced files, and files with an `@generated` header.
+
+For the first slice, conservatively skip subtrees with `cfg` or `cfg_attr`, even
+when a branch happens to be active on this host. Carry exclusions through module
+declarations and file-level attributes. This intentionally excludes active
+platform-specific code as well as test-only/inactive code; report that limitation
+instead of counting inactive changes as missed tests. Conditional attributes can
+occur below item level, so statement/expression exclusions also need coverage.
+The [Rust conditional compilation reference](https://doc.rust-lang.org/reference/conditional-compilation.html)
+defines the syntax; full cfg evaluation is deferred.
+
+Skip macro definitions, invocation token trees, expanded code, and attribute
+arguments. Ordinary source bodies annotated with macros (for example Mutie's
+`#[tokio::main]`) can still be inspected; mutation discovery does not inspect their
+expansions. `include!`-generated modules, `#[path]` module remapping, and generated
+sources are outside the initial discovery contract and must be surfaced as
+excluded/unsupported scope. Constants/statics, type-level expressions and
+constant patterns are deferred. These rules should yield exactly the fixture's
+three literals: two detected changes and one deliberate survivor.
+
+#### Build artifacts, configuration, and preservation
+
+Snapshot source, lockfile, tests, and required assets. Exclude `.git`, reports,
+the package's `target/`, and any resolved Cargo target/build directory; refuse
+overlapping source/artifact layouts rather than dropping source inputs. The shared
+workspace copier does not automatically exclude `target/`; Rust setup supplies
+these exclusions explicitly. In-project artifact paths outside `target/` are
+rejected so a configured build directory cannot hide source or test inputs.
+Resolve layout before copying, and run Cargo from the isolated package, never
+the caller's source directory.
+
+For the first correct slice, give the baseline and **each mutation** fresh owned
+target/build directories outside the resettable source copy. Never share
+compiled artifacts between concurrent workers or reuse the user's outputs.
+Set both final and intermediate output destinations explicitly, including child
+environment overrides for nested Cargo invocations. Cargo has separate
+[`build.target-dir` and `build.build-dir`](https://doc.rust-lang.org/cargo/reference/config.html#buildbuild-dir)
+settings; overriding only one is insufficient when both are configured. Give
+child commands owned `TMPDIR`/`TMP`/`TEMP` directories, and clean up only owned
+paths after all processes have exited, including timeout/interruption paths.
+
+Retain the normal Cargo registry/download cache; do not run `cargo clean` against
+the source project or delete its caches. Require locked dependency resolution;
+the audit runs offline from the existing cache, but offline-only operation is not
+a new public CLI requirement. Report toolchain, package/target/features/profile,
+lockfile identity and relevant execution settings so reruns can validate scope.
+Existing Go reports must remain readable; no version bump is needed.
+
+Project/ancestor Cargo configuration, compiler wrappers, custom rustflags/cfg,
+toolchain override files and externally redirected sources receive explicit validation;
+unsupported semantic overrides must fail with an explanation rather than be
+silently discarded or read differently after copying. The audited projects do
+not require these overrides. Artifact-location settings are overridden to owned
+paths, not honored as write destinations. Network/terminal config sections are
+allowed; other semantic settings are rejected. Inherited `RUSTUP_TOOLCHAIN` is
+preserved (Cargo/rustup also sets it when launching Mutie), and actual compiler
+and Cargo versions are saved. Do not claim general Cargo-config or custom-build
+support from these two examples.
+
+Fresh builds are a correctness starting point, not a performance solution for
+routine self-testing. Before retaining any per-worker build cache, demonstrate
+changed-source rebuilds, restoration, stronger-test reruns and parallel isolation
+without timestamp-based stale artifacts. Measure dependency compilation separately
+from mutation compilation and tests. A first Mutie sample should filter to
+`src/score.rs` (two eligible boolean literals at the audited revision) while
+running the complete selected test scope. Broaden only after inspecting its
+outcomes and costs. Opt-in real-Go tests remain separate regression checks; future
+nested Cargo fixture tests must not introduce recursive default self-tests.
+
 ### Completion and priorities
 
 Rust support is usable when the chosen supported project can complete the
 run → inspect → improve tests → rerun workflow through the existing CLI, with
 reliable outcome classification and source preservation. Real-project evidence
 and regression coverage for Go are required alongside the Rust fixture. Update
-the README with verified support and limitations as each slice lands; until then
-Rust remains planned. At completion, assess the largest remaining obstacle to
+the README with verified support and limitations as each slice lands; the broader
+Rust milestone remains incomplete. At completion, assess the largest remaining obstacle to
 routine use before choosing another milestone.
 
 Advance this milestone by default when selecting new work. Fix demonstrated
@@ -728,11 +860,11 @@ blocking on worker operations. Process output stays in artifacts, keeping it out
 of the redraw channel. Domain records drive both modes without parsing progress
 messages.
 
-Some Go-specific responsibilities currently live directly in `mutation.rs` and
-`go.rs`. Extract a shared language interface as part of the first working Rust
-slice, guided by both implementations. Keep language-specific tooling and syntax
-behind that boundary while sharing execution state and report semantics. Avoid
-speculative abstractions beyond the needs of Go and Rust.
+`language.rs` dispatches Go and Cargo test/discovery commands, while `command.rs`
+shares captures, classification and progress phases. Go syntax remains in
+`mutation.rs`; Rust project validation, module traversal and Cargo execution live
+under `rust`. Workers, execution state and reports remain shared. Extend this
+boundary only as the two implementations need it.
 
 ## Work after the MVP
 
@@ -1033,13 +1165,14 @@ design. No runtime or plugin ABI is selected now.
     operators, report retention/output limits, and per-operator summaries —
     completed; details and validation are tracked in `TODO.md`.
 11. Deliver usable Rust support through the scope, implementation, and real-project
-    validation steps above — next major milestone, not yet implemented.
+    validation steps above — first binary-package slice implemented, broader
+    milestone in progress.
 
-Immediate open choices concern the selected Rust project's Cargo scope, source
-eligibility, test execution, and build-artifact ownership. Resolve these in the
-first Rust slice. Dismissal editing in the browser, report archival, run-wide
+The initial Rust contract fixes Cargo scope, source eligibility and artifact
+ownership. Next, broaden execution reliability checks and complete Rust review
+and focused reruns. Dismissal editing in the browser, report archival, run-wide
 resource budgets, and mutation matching across source edits remain deferred
-choices; they do not block starting Rust support.
+choices; they do not block advancing Rust support.
 
 ## MVP validation evidence
 

@@ -10,13 +10,13 @@ use crate::mutation::Operator;
     version,
     args_conflicts_with_subcommands = true,
     subcommand_negates_reqs = true,
-    about = "Find gaps in Go tests by making small changes to your code"
+    about = "Find gaps in Go and Rust tests by making small changes to your code"
 )]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Command>,
 
-    /// Go module root (must contain go.mod)
+    /// Project root (go.mod for Go, Cargo.toml for Rust)
     #[arg(default_value = ".")]
     pub path: PathBuf,
 

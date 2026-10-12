@@ -244,6 +244,10 @@ impl Browser {
 
     fn command(&self) -> Result<String> {
         ensure!(
+            self.report.run.language() != crate::cli::Lang::Rust,
+            "Rust focused reruns are not implemented yet; start a fresh filtered run."
+        );
+        ensure!(
             self.report.complete,
             "This run has no complete mutation inventory to rerun."
         );
@@ -1398,6 +1402,40 @@ mod tests {
         assert!(app.export.as_ref().unwrap().ends_with("--id 4"));
         app.module = Some(PathBuf::from("/bad\npath"));
         assert!(app.command().is_err());
+    }
+
+    #[test]
+    fn rust_reports_are_inspectable_without_exporting_unsupported_reruns() {
+        let temp = crate::report_reader::fixture();
+        let path = temp.path().join("run.json");
+        let mut run: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        run["effective_config"] = serde_json::json!({ "lang": "rust" });
+        fs::write(&path, serde_json::to_vec(&run).unwrap()).unwrap();
+        let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
+        key(&mut app, KeyCode::Char('d'));
+        assert!(app.detail.join("\n").contains("+false"));
+        key(&mut app, KeyCode::Char('r'));
+        assert!(
+            app.detail
+                .join("\n")
+                .contains("Rust focused reruns are not implemented")
+        );
+        assert!(!key(&mut app, KeyCode::Char('e')));
+        assert!(app.export.is_none());
+        let mut terminal = Terminal::new(TestBackend::new(100, 24)).unwrap();
+        terminal.draw(|frame| app.render(frame)).unwrap();
+        assert!(text(terminal.backend().buffer()).contains("Rust focused reruns"));
+        assert!(
+            crate::rerun::RerunSelection::load(&crate::rerun::RerunRequest {
+                source_run: temp.path().into(),
+                filter: crate::rerun::RerunFilter::new(
+                    crate::rerun::RerunMode::All,
+                    vec![],
+                    vec![]
+                )
+            })
+            .is_err()
+        );
     }
 
     #[test]
