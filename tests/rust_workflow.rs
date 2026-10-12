@@ -13,6 +13,9 @@ use std::{
 
 use serde_json::Value;
 
+#[path = "support/rust_compilation.rs"]
+mod compilation;
+
 struct Fixture {
     temp: tempfile::TempDir,
     root: PathBuf,
@@ -63,7 +66,7 @@ impl Fixture {
         let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
         command
             .arg(&self.root)
-            .args(["--ui", "plain", "--baseline-timeout", "60"])
+            .args(["--ui", "plain"])
             .args(args)
             .env("CARGO_TARGET_DIR", self.temp.path().join("caller-target"))
             .env(
@@ -71,6 +74,9 @@ impl Fixture {
                 self.temp.path().join("caller-build"),
             )
             .env("TMPDIR", self.temp.path().join("owned"));
+        if !args.contains(&"--baseline-timeout") {
+            command.args(["--baseline-timeout", "60"]);
+        }
         if !args.contains(&"--clear-max-capture-bytes") {
             command.args(["--max-capture-bytes", "1048576"]);
         }
@@ -353,12 +359,15 @@ struct InterruptibleRun {
 
 impl InterruptibleRun {
     fn start(fixture: &Fixture, args: &[&str]) -> Self {
+        Self::start_command(fixture, fixture.command(args))
+    }
+
+    fn start_command(fixture: &Fixture, mut command: Command) -> Self {
         let state = fixture.temp.path().join("state");
         fs::create_dir(&state).unwrap();
         let stdout = fixture.temp.path().join("stdout");
         let stderr = fixture.temp.path().join("stderr");
-        let child = fixture
-            .command(args)
+        let child = command
             .env("MUTIE_RUST_TEST_STATE", &state)
             .stdout(fs::File::create(&stdout).unwrap())
             .stderr(fs::File::create(&stderr).unwrap())
@@ -411,7 +420,7 @@ impl InterruptibleRun {
         {
             assert!(
                 self.child.try_wait().unwrap().is_none() && Instant::now() < deadline,
-                "Cargo mutations did not reach their tests: {}",
+                "Cargo did not reach checkpoints {labels:?}: {}",
                 self.diagnostics()
             );
             thread::sleep(Duration::from_millis(20));
@@ -421,14 +430,18 @@ impl InterruptibleRun {
     fn interrupt(&mut self, signal: i32) -> Output {
         // SAFETY: signal only the child CLI owned by this test.
         assert_eq!(unsafe { libc::kill(self.child.id() as i32, signal) }, 0);
-        let deadline = Instant::now() + Duration::from_secs(15);
+        self.finish(Duration::from_secs(15))
+    }
+
+    fn finish(&mut self, limit: Duration) -> Output {
+        let deadline = Instant::now() + limit;
         let status = loop {
             if let Some(status) = self.child.try_wait().unwrap() {
                 break status;
             }
             assert!(
                 Instant::now() < deadline,
-                "cancellation did not finish: {}",
+                "run did not finish: {}",
                 self.diagnostics()
             );
             thread::sleep(Duration::from_millis(20));

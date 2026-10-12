@@ -230,6 +230,45 @@ failure and bounded shutdown waits. Formatting, strict all-target Clippy and
 `git diff --check` passed. The new test remains ignored by default to avoid
 recursive mutation runs during self-testing.
 
+## Compilation interruption and deadline follow-up
+
+Three more opt-in tests in `tests/support/rust_compilation.rs` exercise real
+Cargo and rustc through test-only PATH proxies. Normal commands delegate to the
+installed tools. For stopped builds, a real rustc reads source from an open stdin
+pipe while its proxy records readiness, PIDs, diagnostics and owned directories.
+That supplies a live compiler checkpoint without depending on compilation speed.
+The proxies and their state stay outside the input project; user compiler
+overrides and project build scripts remain unsupported.
+
+| Case | Expected saved result |
+| --- | --- |
+| SIGTERM during baseline compilation | Interrupted baseline/run; incomplete inventory |
+| SIGINT during parallel mutation compilation | 1 killed, 2 interrupted, 1 pending |
+| 5-second baseline compilation timeout | Failed run; timed-out baseline; no mutations |
+| 10-second parallel mutation compilation timeouts | Completed run; 1 killed, 2 timeouts |
+| 20-second shared compilation/test deadline | Completed run; 1 killed, 1 timeout, 1 missed |
+
+Stopped builds retain their diagnostics and never enter the test phase. Partial
+results, completed logs, pending work, policy precedence and report checkpoints
+are checked. Retention previews accept the reports through the shared reader
+without changing them. Recorded Cargo, compiler proxy, real rustc and helper
+processes stop; owned workspace/build/test files are removed, and all source and
+caller artifact files stay unchanged. Build cancellation uses bounded captures;
+mutation build timeouts also cover direct file captures.
+
+The deadline case completes a real build, holds its completion for eight more
+seconds, then starts a real test that blocks. The mutation must time out within
+20–23 seconds overall, rather than receive another 20 seconds for testing. A
+deliberate reset of the test-phase budget made this regression fail at **28.52
+seconds**. Restoring the existing shared deadline makes it pass. These checks
+needed no production changes.
+
+Validation: the full opt-in Rust workflow suite passed all **6 tests** in
+**106.37 seconds** after restoring the shared deadline. All **7 existing
+cancellation tests** passed, as did formatting (including the standalone proxy),
+strict all-target Clippy and `git diff --check`. All three new tests remain
+ignored by default to avoid recursive self-testing.
+
 ## Remaining limits
 
 Fresh dependency compilation plus the full self-test suite makes even this
@@ -243,6 +282,6 @@ caused by a mutation.
 
 Rust focused reruns, dismissals, additional operators, broader Cargo layouts and
 conditional-code discovery remain unsupported. Further execution checks include
-compilation-stage interruption/timeouts, protocol/tool failures and raw-capture
-limits. Stronger tests have been verified through fresh runs on both the fixture
-and Mutie; the full workflow including focused reruns remains incomplete.
+protocol/tool failures and raw-capture limits. Stronger tests have been verified
+through fresh runs on both the fixture and Mutie; the full workflow including
+focused reruns remains incomplete.

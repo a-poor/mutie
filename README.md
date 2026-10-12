@@ -78,11 +78,15 @@ and mutation gets fresh owned target/build directories. The input `target/`,
 caller-selected build directories and source files are preserved; the Cargo
 registry/download cache remains available. Fresh builds can be expensive.
 
-Interrupting mutation tests with Ctrl-C or SIGTERM preserves completed results
-and active diagnostics in a partial report. Active mutations are marked
-interrupted; queued mutations stay pending, and score/finding policies remain
+Interrupting compilation or mutation tests with Ctrl-C or SIGTERM preserves
+completed results and active diagnostics in a partial report. Active mutations
+are marked interrupted; queued mutations stay pending, and score/finding policies remain
 unevaluated. Serial and parallel real-Cargo regressions verify this behavior,
 process cleanup and source/artifact preservation.
+
+A baseline compilation timeout stops the run; a mutation compilation timeout
+records `timeout`. Tests do not start after either compilation timeout, and time
+spent compiling reduces the time remaining for tests.
 
 Discovery follows ordinary Rust modules and flips boolean literals in function
 bodies. Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),

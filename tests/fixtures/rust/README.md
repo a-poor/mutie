@@ -65,6 +65,10 @@ repeated/parallel runs, saved outcomes and artifact cleanup. In temporary copies
 the cancellation regression adds a fourth mutation and blocking test helpers to
 verify serial SIGTERM and parallel SIGINT after a completed result, retained
 partial reports/diagnostics, pending work, and process/artifact cleanup.
+The compilation regressions use test-only Cargo/rustc proxies to hold a live
+compiler at a checkpoint, verify baseline/parallel build cancellation and
+timeouts, and check the shared compilation/test deadline. They delegate normal
+work to the installed tools and do not broaden the supported Cargo scope.
 
 See [the initial support contract](../../../DESIGN.md#initial-rust-support-contract)
 and [the Cargo probe results](../../../benchmarks/rust-initial-scope.md).

@@ -54,17 +54,23 @@ slice is implemented; the full milestone is still in progress.
   interrupted and pending work, validate the partial report, stop Cargo/test/
   helper processes, and preserve sources and caller artifacts. See the
   cancellation follow-up in `benchmarks/rust-first-slice.md`.
+- [x] Verify compilation-stage cancellation/timeouts for Rust baselines and
+  parallel mutations, using real Cargo and a live rustc checkpoint. Preserve
+  partial reports and build diagnostics, stop compiler/helper descendants, and
+  prevent tests from starting after compilation stops. Verify one deadline spans
+  compilation and testing; deliberately resetting the test deadline makes the
+  regression fail. Keep source/caller artifacts intact and owned directories
+  cleaned up. See `benchmarks/rust-first-slice.md`.
 - [ ] Make Rust execution reliable: distinguish build/test/tool failures, enforce
   timeouts and cancellation, preserve partial results, and define build-cache
   and target-directory ownership. Verify repeated/parallel mutations execute the
   intended tests without stale artifacts, source edits, or artifact collisions.
   The first slice covers ordinary Cargo evidence, fresh artifacts, repeated/
-  parallel runs, test timeouts, baseline cancellation and mutation-test
-  interruption with partial results. Remaining checks include compilation-stage
-  interruption/timeouts, tool/protocol failures and raw-capture limits before
-  expanding the supported scope. The PTY follow-up fixes reproduced harness
-  defects; the original exit-only failure lacks enough diagnostics to establish
-  its specific cause.
+  parallel runs, compilation/test timeouts, shared deadlines, and baseline/
+  mutation cancellation with partial results. Remaining checks include tool/
+  protocol failures and raw-capture limits before expanding the supported scope.
+  The PTY follow-up fixes reproduced harness defects; the original exit-only
+  failure lacks enough diagnostics to establish its specific cause.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
   project's workspace/package selection if required by the agreed scope.
