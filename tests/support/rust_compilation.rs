@@ -1,5 +1,8 @@
 use super::*;
 
+#[path = "rust_failures.rs"]
+mod failures;
+
 struct CompilationFixture {
     fixture: Fixture,
     bin: PathBuf,
@@ -43,7 +46,24 @@ impl CompilationFixture {
     fn start(&self, case: &str, args: &[&str]) -> InterruptibleRun {
         let mut command = self.fixture.command(args);
         let mut paths = vec![self.bin.clone()];
-        paths.extend(std::env::split_paths(&std::env::var_os("PATH").unwrap()));
+        for (index, path) in std::env::split_paths(&std::env::var_os("PATH").unwrap()).enumerate() {
+            if (case == "startup" || case.ends_with(":spawn")) && path.join("cargo").exists() {
+                // Keep linker/helper tools available while removing fallback
+                // Cargo binaries. Some platforms skip unusable PATH entries.
+                let mirror = self.fixture.temp.path().join(format!("path-{index}"));
+                fs::create_dir(&mirror).unwrap();
+                for entry in fs::read_dir(&path).unwrap() {
+                    let entry = entry.unwrap();
+                    if entry.file_name() != "cargo" {
+                        std::os::unix::fs::symlink(entry.path(), mirror.join(entry.file_name()))
+                            .unwrap();
+                    }
+                }
+                paths.push(mirror);
+            } else {
+                paths.push(path);
+            }
+        }
         command
             .env("PATH", std::env::join_paths(paths).unwrap())
             .env("MUTIE_TEST_REAL_CARGO", env!("CARGO"))

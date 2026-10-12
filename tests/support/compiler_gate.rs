@@ -12,6 +12,8 @@ use std::{
     time::Duration,
 };
 
+mod cargo_faults;
+
 unsafe extern "C" {
     fn getpgrp() -> i32;
 }
@@ -52,18 +54,36 @@ fn main() {
     let state = PathBuf::from(env::var_os("MUTIE_RUST_TEST_STATE").unwrap());
     let case = env::var("MUTIE_TEST_COMPILE_CASE").unwrap();
 
-    if cargo && args.first().is_some_and(|arg| arg == "test") {
+    if cargo
+        && args
+            .first()
+            .is_some_and(|arg| arg == "test" || arg == "metadata")
+    {
         let label = label();
         let building = args.iter().any(|arg| arg == "--no-run");
-        let phase = if building { "build" } else { "tests" };
+        let phase = if args[0] == "metadata" {
+            "metadata"
+        } else if building {
+            "build"
+        } else {
+            "tests"
+        };
         record(&state, label, &format!("{phase}.pid"), std::process::id());
         // SAFETY: reads only this process's group.
         record(&state, label, &format!("{phase}.group"), unsafe {
             getpgrp()
         });
         record(&state, label, &format!("{phase}.started"), "started");
-        println!("Cargo {phase} checkpoint {label}");
-        std::io::stdout().flush().unwrap();
+        if phase != "metadata" {
+            println!("Cargo {phase} checkpoint {label}");
+            std::io::stdout().flush().unwrap();
+        }
+        if let Some(fault) = case.strip_prefix("fault:") {
+            let parts: Vec<_> = fault.split(':').collect();
+            if parts[0] == label && parts[1] == phase {
+                cargo_faults::inject(&real, &args, &state, label, phase, parts[2]);
+            }
+        }
         if case == "deadline" && label == "b" && building {
             let status = Command::new(real).args(args).status().unwrap();
             if !status.success() {
@@ -83,7 +103,8 @@ fn main() {
     {
         let label = label();
         let block = (case == "baseline" && label == "baseline")
-            || (case == "mutations" && matches!(label, "b" | "c"));
+            || (case == "mutations" && matches!(label, "b" | "c"))
+            || (case.starts_with("fault:c:") && label == "b");
         if block {
             // A real rustc waits for source on stdin. Keeping the write end
             // open gives us a live compiler without machine-speed assumptions.

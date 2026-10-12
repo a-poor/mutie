@@ -77,7 +77,7 @@ impl Fixture {
         if !args.contains(&"--baseline-timeout") {
             command.args(["--baseline-timeout", "60"]);
         }
-        if !args.contains(&"--clear-max-capture-bytes") {
+        if !args.contains(&"--clear-max-capture-bytes") && !args.contains(&"--max-capture-bytes") {
             command.args(["--max-capture-bytes", "1048576"]);
         }
         if !args.contains(&"--timeout") {

@@ -88,6 +88,11 @@ A baseline compilation timeout stops the run; a mutation compilation timeout
 records `timeout`. Tests do not start after either compilation timeout, and time
 spent compiling reduces the time remaining for tests.
 
+Cargo startup failures, unexpected exits, missing build/test completion evidence,
+and output-capture overflow stop the run as errors. Completed results and active
+diagnostics survive, unfinished work keeps its interrupted/pending state, and
+findings/score policies remain unevaluated.
+
 Discovery follows ordinary Rust modules and flips boolean literals in function
 bodies. Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
 macro tokens/expansions, generated files and constants/type-level code are
@@ -848,10 +853,17 @@ output cannot be recovered from the report; rerun with a larger limit or
 ### Limiting command-output capture
 
 `--max-capture-bytes BYTES` (or `max_capture_bytes` in `mutie.toml`) sets a positive
-byte budget shared by raw stdout and stderr for **each Go command**. It defaults
-to unlimited. This applies to baseline tests, discovery (including `--list` and
-configured `dismiss check`), and mutation tests. Each concurrent command has its
-own budget. Reruns use current settings, not the source report's budget.
+byte budget shared by raw stdout and stderr for **each Go or Cargo invocation**.
+It defaults to unlimited. This applies to baseline tests, discovery (including
+`--list` and Go's configured `dismiss check`), and mutation tests. Each concurrent
+command has its own budget. Go reruns use current settings, not the source
+report's budget.
+
+For Rust, Cargo metadata, compilation (`--no-run`), and test execution each get
+a separate capture budget. The saved baseline/mutation logs combine compilation
+and test execution, so their combined raw byte counts can reach twice the budget
+plus the phase separators Mutie inserts. Compilation and testing still share
+one timeout.
 
 ```sh
 cargo run -- /path/to/go/module --max-capture-bytes 16777216 --max-log-bytes 65536

@@ -89,11 +89,14 @@ pub async fn discover(
 }
 
 pub fn metadata(output: &CommandOutput) -> Result<serde_json::Value> {
+    ensure!(!output.interrupted, "Cargo metadata interrupted");
+    // Capture failures must remain actionable even when retained logs omit the
+    // error notice. Never parse a potentially valid-looking captured prefix.
+    if let Some(error) = &output.capture_error {
+        anyhow::bail!("Cargo metadata: {error}");
+    }
     ensure!(
-        !output.interrupted
-            && !output.timed_out
-            && output.capture_error.is_none()
-            && output.status.success(),
+        !output.timed_out && output.status.success(),
         "Cargo metadata failed:\n{}",
         output.text.text()?
     );
@@ -356,6 +359,28 @@ mod tests {
     use std::os::unix::process::ExitStatusExt;
 
     #[tokio::test]
+    async fn metadata_capture_failure_survives_log_truncation_and_valid_json_prefix() -> Result<()>
+    {
+        let reason =
+            "command output exceeded --max-capture-bytes=16; captured output is incomplete";
+        for code in [0, 1] {
+            let raw = process::CommandOutput {
+                status: std::process::ExitStatus::from_raw(code << 8),
+                timed_out: false,
+                interrupted: false,
+                capture_error: Some(reason.into()),
+                elapsed: Duration::from_millis(1),
+                stdout: Capture::from_bytes(b"{\"packages\":[]}"),
+                stderr: Capture::from_bytes(b""),
+            };
+            let output = prepare(raw, NonZeroUsize::new(1), Failure::Unknown).await?;
+            assert!(!output.text.text()?.contains(reason));
+            assert!(metadata(&output).unwrap_err().to_string().contains(reason));
+        }
+        Ok(())
+    }
+
+    #[tokio::test]
     async fn blocked_phase_updates_respect_cancellation_and_deadlines() {
         let cancellation = Cancellation::default();
         cancellation.cancel();
@@ -411,13 +436,21 @@ mod tests {
                 stderr: Capture::from_bytes(b""),
             };
             let evidence = Evidence::read(&raw)?;
-            let output = prepare(
+            let mut output = prepare(
                 raw,
                 NonZeroUsize::new(1),
                 evidence.failure(Some(code), testing),
             )
             .await?;
             assert_eq!(classify(&output).ok(), expected, "{stdout}");
+            output.raw.capture_error = Some("exceeded --max-capture-bytes".into());
+            assert!(
+                classify(&output)
+                    .unwrap_err()
+                    .to_string()
+                    .contains("--max-capture-bytes"),
+                "capture failure must override compiler/test failure evidence"
+            );
         }
         Ok(())
     }

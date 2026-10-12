@@ -269,6 +269,50 @@ cancellation tests** passed, as did formatting (including the standalone proxy),
 strict all-target Clippy and `git diff --check`. All three new tests remain
 ignored by default to avoid recursive self-testing.
 
+## Tool/protocol and capture failure follow-up
+
+Four further opt-in tests in `tests/support/rust_failures.rs` inject faults at
+the Cargo boundary around real fixture builds/tests. They cover initial startup
+failure, Cargo becoming unavailable after compilation, unexpected exit code 17
+and SIGTERM, missing build/test completion evidence, malformed build completion
+and metadata, and stdout/stderr/mixed capture overflow. A listing-overflow check
+requires an explicit error without publishing a partial inventory or report.
+The startup cases remove fallback Cargo executables from the child PATH while
+retaining other tools, so an unavailable proxy cannot silently use another Cargo.
+
+The nine parallel cases each establish **1 completed kill, 2 active mutations,
+and 1 pending mutation** before releasing the failing command. Every case must
+finish with **1 killed, 1 error, 1 interrupted, and 1 pending**, preserve the
+completed logs/inventory, retain the failure reason with 64-byte saved-log limits,
+and leave finding/score policies unevaluated. Six discovery/baseline cases must
+stop before scheduling mutations. The strict report reader accepts the saved
+runs, source/caller artifacts stay unchanged, and owned processes/directories
+are cleaned up. All tests remain opt-in to avoid recursive self-testing.
+
+These tests exposed a diagnostic bug in Cargo metadata overflow: its failure
+reason was obtained from the retained readable log, so a tiny log could omit
+`--max-capture-bytes` from CLI and run errors. The adapter now reports the
+underlying capture error directly. A unit regression checks a valid-looking JSON
+prefix, success/failure exit codes, and one-byte log retention; the real listing
+check also uses a one-byte log. Capture errors are additionally checked to take
+precedence over valid compiler/test failure evidence.
+
+The raw capture limit applies to **each Cargo invocation**, independently of
+the shared compilation/test timeout. Overflowing metadata or compilation saves
+exactly the 65,536-byte test budget across stdout/stderr. For test-execution
+overflow, saved raw totals also include the completed compilation and the two
+phase separators, bounded by two budgets plus separators. Saved log excerpts
+still obey their separate 64-byte limits. This behavior is now explicit in the
+README and design.
+
+Validation: all **10 opt-in Rust workflow tests** passed, split between the
+four new failure tests (**210.41 seconds**) and six existing workflow tests
+(**131.89 seconds**). All **126 unit tests** and **13 Go cancellation/capture/log
+regressions** passed. Formatting, strict all-target Clippy, standalone proxy
+compilation with warnings denied, and `git diff --check` also passed. The initial
+binary-package execution-reliability checklist is now complete; the broader Rust
+milestone remains open.
+
 ## Remaining limits
 
 Fresh dependency compilation plus the full self-test suite makes even this
@@ -281,7 +325,8 @@ cause; a passing baseline alone cannot establish that every later failure was
 caused by a mutation.
 
 Rust focused reruns, dismissals, additional operators, broader Cargo layouts and
-conditional-code discovery remain unsupported. Further execution checks include
-protocol/tool failures and raw-capture limits. Stronger tests have been verified
-through fresh runs on both the fixture and Mutie; the full workflow including
-focused reruns remains incomplete.
+conditional-code discovery remain unsupported. The execution-reliability
+checklist for the initial binary-package scope is covered; this does not expand
+the supported Cargo layouts or make these injected faults exhaustive. Stronger
+tests have been verified through fresh runs on both the fixture and Mutie; the
+full workflow including focused reruns remains incomplete.

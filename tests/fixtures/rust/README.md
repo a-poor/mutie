@@ -69,6 +69,10 @@ The compilation regressions use test-only Cargo/rustc proxies to hold a live
 compiler at a checkpoint, verify baseline/parallel build cancellation and
 timeouts, and check the shared compilation/test deadline. They delegate normal
 work to the installed tools and do not broaden the supported Cargo scope.
+Additional fault-injection tests cover Cargo startup/exits, missing or malformed
+completion evidence, metadata errors, and stdout/stderr capture overflow. They
+verify partial results and peer cleanup with truncated saved logs, including
+listing failures that must not publish a partial inventory.
 
 See [the initial support contract](../../../DESIGN.md#initial-rust-support-contract)
 and [the Cargo probe results](../../../benchmarks/rust-initial-scope.md).

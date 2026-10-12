@@ -61,14 +61,21 @@ slice is implemented; the full milestone is still in progress.
   compilation and testing; deliberately resetting the test deadline makes the
   regression fail. Keep source/caller artifacts intact and owned directories
   cleaned up. See `benchmarks/rust-first-slice.md`.
-- [ ] Make Rust execution reliable: distinguish build/test/tool failures, enforce
+- [x] Verify Cargo tool/protocol failures and raw-output limits: 17 injected fault
+  scenarios cover startup, unexpected exits/signals, completion evidence,
+  discovery/listing and baseline failures, and parallel overflow/peer cleanup.
+  Preserve failure reasons independently of tiny saved logs; fix metadata
+  overflow diagnostics that previously lost the capture-limit explanation.
+  Document separate per-invocation capture budgets for compilation and testing.
+- [x] Make Rust execution reliable for the initial binary-package scope:
+  distinguish build/test/tool failures, enforce
   timeouts and cancellation, preserve partial results, and define build-cache
   and target-directory ownership. Verify repeated/parallel mutations execute the
   intended tests without stale artifacts, source edits, or artifact collisions.
   The first slice covers ordinary Cargo evidence, fresh artifacts, repeated/
   parallel runs, compilation/test timeouts, shared deadlines, and baseline/
-  mutation cancellation with partial results. Remaining checks include tool/
-  protocol failures and raw-capture limits before expanding the supported scope.
+  mutation cancellation with partial results. Tool/protocol failures and raw
+  capture limits are now covered too; broader Cargo layouts remain unsupported.
   The PTY follow-up fixes reproduced harness defects; the original exit-only
   failure lacks enough diagnostics to establish its specific cause.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
@@ -85,7 +92,7 @@ slice is implemented; the full milestone is still in progress.
   time to an actionable finding, run/build/workspace costs, and noise/limitations.
   Saved-percentage presence/absence regressions now catch the first real survivor
   in `MutationScore::matches_saved` through a fresh run. The focused rerun workflow
-  and broader reliability checks remain to do.
+  and broader operator/review workflows remain to do.
 - [ ] Document verified Rust usage and limits in README/design, mark the milestone
   complete, and choose the next major objective from observed user needs.
 

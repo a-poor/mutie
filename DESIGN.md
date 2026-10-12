@@ -157,8 +157,12 @@ timeout records `timeout`. Neither starts test execution. A controlled delay
 after a real build verifies that testing receives only the remaining deadline;
 resetting the test-phase budget makes that regression fail. Test-only PATH
 proxies provide these checkpoints without enabling user compiler overrides or
-project build scripts. Broader tool/protocol and capture failures remain in the
-reliability follow-up.
+project build scripts. Fault-injection regressions around real Cargo commands
+cover startup failure (including after a completed build), unexpected exit codes
+and signals, missing/malformed completion evidence, invalid metadata, and raw
+capture overflow. They verify partial reports, peer shutdown, pending work,
+unevaluated policies, and input/artifact preservation. Metadata capture failures
+are reported from the underlying error independently of retained log excerpts.
 Cargo's [machine-readable messages](https://doc.rust-lang.org/cargo/reference/external-tools.html#json-messages)
 provide build evidence, not stable structured libtest result events.
 
@@ -649,6 +653,15 @@ and browser error details remain available independently of saved-log retention.
 The readable log also includes a capture-error notice. Retention counts cover only
 captured bytes; do not claim a total for unobserved output. CLI/config overrides
 and a clear flag follow existing settings rules, and reruns use current settings.
+
+Rust applies the configured raw budget independently to each Cargo metadata,
+compilation and test invocation. Baseline/mutation reports merge the latter two
+captures, including separators, so their combined raw retention totals can be
+larger than one command's budget (at most two budgets plus separators). This is
+independent of the single shared compilation/test timeout. Real-Cargo fault
+regressions cover stdout, stderr and mixed overflow, discovery/listing and
+baseline failures, parallel peer cleanup, and tiny retained logs. Unit checks
+also require capture errors to override valid compiler/test failure evidence.
 
 Every child Go command owns two private temporary directories. Build output uses
 `GOTMPDIR`; its parent is the nonempty environment `GOTMPDIR`, or the system
@@ -1181,8 +1194,8 @@ design. No runtime or plugin ABI is selected now.
     milestone in progress.
 
 The initial Rust contract fixes Cargo scope, source eligibility and artifact
-ownership. Next, broaden execution reliability checks and complete Rust review
-and focused reruns. Dismissal editing in the browser, report archival, run-wide
+ownership, with execution reliability verified for that scope. Next, complete
+Rust review and focused reruns. Dismissal editing in the browser, report archival, run-wide
 resource budgets, and mutation matching across source edits remain deferred
 choices; they do not block advancing Rust support.
 
