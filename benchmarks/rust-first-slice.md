@@ -35,7 +35,7 @@ cargo fmt --check
 cargo clippy --all-targets --locked -- -D warnings
 ```
 
-All passed. Both Cargo tests stay ignored by default to prevent recursive
+All passed. The Cargo tests stay ignored by default to prevent recursive
 mutation runs when Mutie tests itself. Their cases cover listing without a
 baseline/report, file filters, empty selections, score-policy failure, limited
 logs, saved scope/versions, retention previews, failed build/test baselines, a
@@ -194,6 +194,42 @@ Local evidence:
 - `/tmp/mutie-rust-score-regression.log`
 - `/tmp/mutie-rust-score-regression-inputs.json`
 
+## Mutation-test cancellation follow-up
+
+The opt-in `rust_mutation_cancellation_preserves_partial_results_and_cleans_processes`
+regression uses real Cargo and the fixture in temporary copies. It adds a fourth
+boolean flip and makes tests for the second/third mutations wait in instrumented
+helpers. The baseline passes and the first mutation is killed. Readiness markers
+and the saved checkpoint establish active test execution before the signal;
+there is no timed guess about when compilation or testing should have finished.
+
+| Workers | Signal | Capture | Completed | Interrupted | Pending |
+| --- | --- | --- | --- | --- | --- |
+| 1 | SIGTERM | Direct files, no raw limit | 1 killed | 1 | 2 |
+| 2 | SIGINT | Drained pipes, 1 MiB raw limit | 1 killed | 2 | 1 |
+
+Both cases exit 1 with an interrupted run and matching report checkpoints.
+The regression verifies unchanged completed results/logs and inventory, merged
+compilation/test diagnostics for interrupted mutations, no outcome or logs for
+pending work, unevaluated finding/score policies, and no partial score percentage.
+The text summary reports the same counts. A retention preview accepts each run
+through the browser's shared strict reader and log/diff layout checks, leaving
+the report unchanged.
+
+Recorded Cargo, test-runner, shell-helper and descendant PIDs all stop. Their
+workspace, target and test-temporary directories disappear; all input files and
+caller target/build sentinels stay unchanged. Checks cover both capture paths,
+but do not exercise raw-capture overflow. The checked-in fixture retains its
+original three mutations. No production change was needed for these cases.
+
+Validation: all three opt-in Rust workflow tests passed (56.75 seconds), along
+with all seven existing cancellation tests. The new regression also passed on
+its own inside the sandbox after replacing a blocked `ps` helper with a direct
+`getpgrp` call. The test harness includes saved command-log tails on readiness
+failure and bounded shutdown waits. Formatting, strict all-target Clippy and
+`git diff --check` passed. The new test remains ignored by default to avoid
+recursive mutation runs during self-testing.
+
 ## Remaining limits
 
 Fresh dependency compilation plus the full self-test suite makes even this
@@ -207,7 +243,6 @@ caused by a mutation.
 
 Rust focused reruns, dismissals, additional operators, broader Cargo layouts and
 conditional-code discovery remain unsupported. Further execution checks include
-mutation-stage cancellation with partial results, compilation timeouts, protocol/
-tool failures and raw-capture limits. Stronger tests have been verified through
-fresh runs on both the fixture and Mutie; the full workflow including focused
-reruns remains incomplete.
+compilation-stage interruption/timeouts, protocol/tool failures and raw-capture
+limits. Stronger tests have been verified through fresh runs on both the fixture
+and Mutie; the full workflow including focused reruns remains incomplete.

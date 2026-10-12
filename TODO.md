@@ -48,16 +48,23 @@ slice is implemented; the full milestone is still in progress.
   overlap with fresh compilation. A fresh two-worker self-run passes all 189
   baseline tests and kills both score mutations through score-validation failures;
   every terminal/browser test passes. See `benchmarks/terminal-reliability.md`.
+- [x] Verify cancellation during Rust mutation test execution with real Cargo:
+  serial SIGTERM and parallel SIGINT after a completed mutation, using both
+  file-backed and pipe-backed captures. Keep completed results/logs, distinguish
+  interrupted and pending work, validate the partial report, stop Cargo/test/
+  helper processes, and preserve sources and caller artifacts. See the
+  cancellation follow-up in `benchmarks/rust-first-slice.md`.
 - [ ] Make Rust execution reliable: distinguish build/test/tool failures, enforce
   timeouts and cancellation, preserve partial results, and define build-cache
   and target-directory ownership. Verify repeated/parallel mutations execute the
   intended tests without stale artifacts, source edits, or artifact collisions.
   The first slice covers ordinary Cargo evidence, fresh artifacts, repeated/
-  parallel runs, test timeouts and baseline cancellation. Remaining checks include
-  mutation-stage interruption/partial runs, compilation timeouts, tool/protocol
-  failures and raw-capture limits before expanding the supported scope. The PTY
-  follow-up fixes reproduced harness defects; the original exit-only failure
-  lacks enough diagnostics to establish its specific cause.
+  parallel runs, test timeouts, baseline cancellation and mutation-test
+  interruption with partial results. Remaining checks include compilation-stage
+  interruption/timeouts, tool/protocol failures and raw-capture limits before
+  expanding the supported scope. The PTY follow-up fixes reproduced harness
+  defects; the original exit-only failure lacks enough diagnostics to establish
+  its specific cause.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
   project's workspace/package selection if required by the agreed scope.

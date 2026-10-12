@@ -61,7 +61,10 @@ It also excludes:
 The fixture has no build script, proc-macro dependency, local dependency, library,
 doctest, example, benchmark, or custom test harness. Execution regressions cover
 failed build/test baselines, mutation timeouts, baseline cancellation,
-repeated/parallel runs, saved outcomes and artifact cleanup.
+repeated/parallel runs, saved outcomes and artifact cleanup. In temporary copies,
+the cancellation regression adds a fourth mutation and blocking test helpers to
+verify serial SIGTERM and parallel SIGINT after a completed result, retained
+partial reports/diagnostics, pending work, and process/artifact cleanup.
 
 See [the initial support contract](../../../DESIGN.md#initial-rust-support-contract)
 and [the Cargo probe results](../../../benchmarks/rust-initial-scope.md).

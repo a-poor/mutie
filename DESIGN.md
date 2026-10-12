@@ -144,9 +144,15 @@ Compile the selected tests first with the same scope plus `--no-run
 build completion evidence to separate compilation failures from test failures;
 Cargo's exit code alone is insufficient. Missing tool/protocol evidence is an
 error, not a kill. Preserve both phases' diagnostics and use one overall deadline
-per baseline or mutation. Compilation/test/tool evidence, timeout, baseline
-cancellation, and saved failure diagnostics are covered. Broader interruption/fault cases remain in the reliability
-follow-up before treating all Cargo execution cases as established.
+per baseline or mutation. Compilation/test/tool evidence, test timeout, baseline
+cancellation, and saved failure diagnostics are covered. Real-Cargo regressions
+also interrupt serial/parallel mutation tests after one result has completed:
+completed results/logs survive, active work becomes interrupted, queued work stays
+pending, and the partial report passes the shared reader. Both capture paths
+retain active diagnostics; Cargo, test runners and helper descendants stop, owned
+workspaces/build/test directories are removed, and source/caller artifacts stay
+unchanged. Compilation-stage interruption/timeouts and broader tool/protocol and
+capture failures remain in the reliability follow-up.
 Cargo's [machine-readable messages](https://doc.rust-lang.org/cargo/reference/external-tools.html#json-messages)
 provide build evidence, not stable structured libtest result events.
 
