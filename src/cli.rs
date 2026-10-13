@@ -164,9 +164,12 @@ pub enum Command {
     },
     /// Manage repository-owned mutation dismissals
     Dismiss {
-        /// Go module root where dismissals are stored
+        /// Project root where dismissals are stored (go.mod or Cargo.toml)
         #[arg(long, global = true, default_value = ".", value_name = "PATH")]
         module: PathBuf,
+        /// Project language (default: auto; check also uses repository configuration)
+        #[arg(long, global = true, value_enum)]
+        lang: Option<Lang>,
         #[command(subcommand)]
         action: DismissAction,
     },
@@ -196,7 +199,7 @@ pub enum DismissAction {
         #[arg(long)]
         note: Option<String>,
     },
-    /// Inspect stored dismissals without running Go or checking current source
+    /// Inspect stored dismissals without running tools or checking current source
     List,
     /// Change a stored dismissal's reason or note (keeps its source identity)
     Update {

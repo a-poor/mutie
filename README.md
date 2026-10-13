@@ -7,8 +7,8 @@ passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports
 `boolean_flip` in the [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
-Focused reruns are supported; the broader operator and dismissal workflow remains
-in progress.
+Focused reruns and dismissal review are supported; the broader operator milestone
+remains in progress.
 
 See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
@@ -69,9 +69,12 @@ The fixture produces three `boolean_flip` mutations: two killed and one missed.
 File/operator filters, live/plain status, saved diffs/logs, scores, failure
 policies, operator totals, and report listing/retention use the shared workflow.
 Rust supports focused reruns by saved ID, operator, or missed outcome, including
-browser command export. Dismissal commands remain unimplemented for Rust.
+browser command export. Rust dismissal commands use the same review, reporting,
+and policy workflow as Go.
 The [focused rerun validation](benchmarks/rust-focused-reruns.md) records the
 fixture and Mutie self-test evidence, including strict matching and runtime costs.
+The [dismissal validation](benchmarks/rust-dismissals.md) covers review commands,
+saved decisions, policies and source/artifact preservation.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
@@ -573,34 +576,54 @@ cargo run -- dismiss --module /path/to/go/module check
 cargo run -- dismiss --module /path/to/go/module update 1 --reason 'equivalent behavior'
 cargo run -- dismiss --module /path/to/go/module update 1 --clear-note
 cargo run -- dismiss --module /path/to/go/module remove 1
+cargo run -- dismiss --module /path/to/rust/package add /path/to/saved/run \
+  --id 3 --reason 'accepted test gap'
+cargo run -- dismiss --module /path/to/rust/package check
 ```
 
-The module defaults to the current directory and must contain `go.mod`.
+The project defaults to the current directory and must contain `go.mod` or
+`Cargo.toml`. Use `dismiss --lang go|rust` to select a language explicitly when
+both exist. Adding requires a saved report of the selected language.
 `add --id` selects a **saved-run mutation ID**; `update` and `remove` use the
 independent **dismissal ID** printed by `add` and `list`. Dismissal IDs are not
 reused after removal. Reasons are required nonblank text; notes are optional.
 `update --note TEXT` replaces a note, and `--clear-note` removes it. Updating a
 reason or note preserves the stored mutation identity.
 
-Decisions live in `mutie.dismissals.toml` beside `go.mod`, separate from generated
-reports and `mutie.toml`. Commit this file to version control. It stores the
-reason, note, module-relative source path, SHA-256 source fingerprint, operator,
-byte range, source coordinates, and original/replacement text. No absolute
+Decisions live in `mutie.dismissals.toml` beside the project manifest, separate
+from generated reports and `mutie.toml`. Commit this file to version control. It
+stores the reason, note, language, module-relative source path, SHA-256 source
+fingerprint, operator, byte range, source coordinates, and original/replacement text. No absolute
 checkout path or run-local ID is used for matching, so the metadata can move
 with the repository. CLI edits validate the entire file and replace it atomically;
 they reformat TOML and do not preserve hand-written comments. Malformed metadata,
 unknown fields, incompatible versions, duplicate IDs, and duplicate additions
 are rejected without overwriting the file.
 
-`add`, `list`, `update`, and `remove` need neither Go nor a valid `mutie.toml`.
+`add`, `list`, `update`, and `remove` need neither language tools nor a valid
+`mutie.toml`; they use manifest detection or explicit `--lang`, without loading
+configuration or validating the full Cargo execution scope.
 Adding records the saved identity without checking current source; listing labels
-it unchecked. `check` uses current Go package discovery and the include/exclude
-patterns and discovery timeout from `mutie.toml`. It runs in disposable workspaces,
+it unchecked. `check` uses current Go package discovery or validated Rust Cargo
+metadata/module discovery, plus the language, include/exclude patterns, discovery
+timeout and output limits from `mutie.toml`. Explicit `dismiss --lang` overrides
+the configured language. It runs in disposable workspaces,
 does not run tests, and creates no reports. With no dismissals, it skips discovery.
+Rust checks enforce the initial Cargo scope, exclude caller build artifacts,
+and discover identities from a pristine snapshot independently of Cargo side
+effects. Timeout, cancellation and capture failures clean up owned directories.
+
+New decisions record `language = "go"` or `"rust"`. Older decisions without a
+language retain their Go meaning; they are never silently applied to Rust.
+Language mismatches require review. Dismissals describe source judgments rather
+than Cargo execution scope: manifest/lockfile/toolchain changes do not invalidate
+an otherwise matching decision, though focused Rust reruns still require their
+separate execution-scope checks.
 
 Matching is strict, using the same source identity as focused reruns. Any edit to
 the mutation's source file invalidates its fingerprint, even a comment or an
-unrelated edit in that file. Test-only edits do not invalidate it. `check` reports
+unrelated edit in that file. Test edits in separate files do not invalidate it;
+edits to inline tests in the selected source file do. `check` reports
 matched, stale, missing (removed/excluded/inactive files or files without mutations),
 unmatched identity, or ambiguous entries. Duplicate identities introduced by a
 manual edit or merge are flagged as ambiguous when they match a current mutation.
@@ -615,8 +638,8 @@ snapshot and matches it against discovery before applying rerun selection. Match
 decisions for selected mutations, with the new run's IDs, and unresolved entries
 are stored in `mutants.json`. Valid decisions outside a rerun selection are omitted,
 without being flagged as missing. Review issues do not fail execution or suppress
-mutations. Invalid metadata fails a run before invoking Go; `--list` remains a
-source-only operation and does not load dismissal metadata.
+mutations. Invalid metadata fails a run before invoking language tools; `--list`
+remains a source-only operation and does not load dismissal metadata.
 
 `summary.txt` separates dismissed and undismissed missed counts and includes reasons,
 notes, and unresolved entries. Execution counts in `outcomes.json` and all outcome
@@ -870,7 +893,7 @@ output cannot be recovered from the report; rerun with a larger limit or
 `--max-capture-bytes BYTES` (or `max_capture_bytes` in `mutie.toml`) sets a positive
 byte budget shared by raw stdout and stderr for **each Go or Cargo invocation**.
 It defaults to unlimited. This applies to baseline tests, discovery (including
-`--list` and Go's configured `dismiss check`), and mutation tests. Each concurrent
+`--list` and configured `dismiss check`), and mutation tests. Each concurrent
 command has its own budget. Reruns use current settings, not the source
 report's budget.
 

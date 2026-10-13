@@ -44,8 +44,8 @@ outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
 Rust now has an initial binary-package path through metadata validation, a passing
 baseline, boolean-flip discovery, isolated Cargo execution and saved reports.
 Focused Rust reruns now reuse shared source matching and ID provenance, with
-Cargo execution-scope checks before the baseline. Rust dismissal commands remain
-unimplemented.
+Cargo execution-scope checks before the baseline. Rust dismissals now support
+CRUD, pristine-source rediscovery, saved review and independent CI policies.
 
 The project is a usable Go-focused alpha. The execution, inspection, and focused
 rerun workflow is established; further Go operators and presentation refinements
@@ -960,17 +960,24 @@ mutation identity into module-root `mutie.dismissals.toml`. Reasons and supplied
 notes must be nonblank. Entries have independent monotonic dismissal IDs for
 inspection, reason/note updates, and removal. The file is repository-owned and
 can be version-controlled independently of generated reports. CRUD commands
-require `go.mod` but no Go installation or configuration loading, and label source
-validity unchecked. They never alter the original report.
+require `go.mod` or `Cargo.toml` but no language tools or configuration loading,
+and label source validity unchecked. They never alter the original report.
+Manifest detection is shared with run configuration. `dismiss --lang go|rust`
+disambiguates roots containing both manifests, and adding rejects a report from
+a different language. CRUD does not enforce the complete Cargo execution contract;
+nonempty Rust checks do. This keeps metadata editable without installed tools.
 
 `identity.rs` shares exact source matching with focused reruns: module-relative
 path, full-file SHA-256 fingerprint, operator, byte range, coordinates, and
 original/replacement text must all agree. `dismiss check` loads repository
-configuration, snapshots the project, runs Go package discovery in a separate
-copy, and discovers mutations from pristine source. It runs no baseline or
-mutation tests and creates no reports. Empty stores skip discovery. Test-only
-changes and moved checkouts preserve identity; edits anywhere in a mutation's
-source file invalidate it. Missing candidates (including excluded/inactive files),
+configuration, snapshots the project, runs Go package discovery or Cargo metadata
+in a separate copy, and discovers mutations from pristine source. It runs no baseline or
+mutation tests and creates no reports. Rust checks use the same project validation,
+artifact exclusions and module discovery as ordinary runs; metadata side effects
+cannot change identities or decisions. They honor timeout/capture limits and
+cancellation with owned workspace/descendant cleanup. Empty stores skip discovery.
+Test changes in separate files and moved checkouts preserve identity; edits
+anywhere in a mutation's source file invalidate it. Missing candidates (including excluded/inactive files),
 changed fingerprints, unmatched identities, and ambiguous matches are printed
 for review with a nonzero exit status. Multiple stored entries matching the same
 current mutation are all ambiguous. Checks never rewrite metadata or retarget a
@@ -986,20 +993,28 @@ the lock. CLI rewrites normalize TOML and discard comments. Duplicate identities
 are rejected on addition; manual/merge duplicates remain inspectable and removable
 so `check` can flag their ambiguity.
 
-New runs load dismissal metadata from the pristine snapshot before Go starts;
-invalid metadata fails the run at that point. Source-only `--list` does not load it.
+Each dismissal stores its language. Missing language defaults to Go for older
+metadata/reports; `auto` is invalid in saved decisions. Matching also requires
+the current language, and mismatches are retained as `language_mismatch` review
+issues rather than applied. Saved-report readers validate this relationship
+against the run's language. A dismissal records source judgment, not an execution
+scope: Cargo manifest/lockfile/toolchain changes alone do not invalidate it.
+Focused reruns continue to enforce their independent, stricter scope contract.
+
+New runs load dismissal metadata from the pristine snapshot before language tools
+start; invalid metadata fails the run at that point. Source-only `--list` does not load it.
 After discovery, `DismissalSnapshot` partitions decisions into uniquely matched
 entries and entries needing review. Matching happens before rerun filtering, so
 valid decisions outside the selection are omitted without being called missing.
 Selected matches are then mapped to the new inventory IDs. The plan event carries
 the review to the report writer, which publishes it with the immutable inventory
-before starting workers. Go command side effects and later checkout changes cannot
+before starting workers. Command side effects and later checkout changes cannot
 alter the captured decisions.
 
 `mutants.json` has an optional `dismissals` object with `matched` and `needs_review`
 arrays. Matched records pair a run-local `mutation_id` with a full dismissal
-(independent ID, reason, optional note, source identity). Review issues pair a
-status with the same record. Readers validate required text, identities, unique
+(independent ID, language, reason, optional note, source identity). Review issues
+pair a status with the same record. Readers validate required text, identities, unique
 IDs/targets, and references to inventory mutations; issues cannot also be applied
 as matches. Missing review data means not recorded for legacy or pre-inventory
 reports; empty arrays mean an explicit empty review. No schema/catalog version
@@ -1210,7 +1225,7 @@ design. No runtime or plugin ABI is selected now.
 
 The initial Rust contract fixes Cargo scope, source eligibility and artifact
 ownership, with execution reliability verified for that scope. Next, complete
-Rust operators and dismissal review. Dismissal editing in the browser, report
+the useful Rust operator set. Dismissal editing in the browser, report
 archival, run-wide resource budgets, and mutation matching across source edits remain deferred
 choices; they do not block advancing Rust support.
 

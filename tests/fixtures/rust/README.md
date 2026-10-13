@@ -17,6 +17,12 @@ adding the assertion below in a temporary copy, `--rerun-missed RUN_DIR` selects
 the saved survivor (source ID 3), assigns it new ID 1, and kills it. ID/operator
 filters, previews, partial/empty runs, moved checkouts, stale source and Cargo
 scope validation are covered too.
+Rust dismissal regressions add/list/update/remove decisions without language
+tools, rediscover them through isolated Cargo metadata, and verify policies,
+language mismatches, frozen report reviews, moved checkouts and stronger-test
+reruns. Dismissed mutations still execute and remain in the raw score. The
+metadata check also covers side effects, truncated logs, overflow, timeout and
+SIGTERM cleanup without compiling tests.
 
 Run the baseline independently of Mutie's own tests:
 

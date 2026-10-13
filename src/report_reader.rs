@@ -241,7 +241,7 @@ impl LoadedReport {
                 "incomplete inventory cannot contain a dismissal review"
             );
             dismissals
-                .validate(&mutations)
+                .validate(run.language(), &mutations)
                 .context("validating saved dismissal review")?;
         }
         for execution in outcomes.mutations {
@@ -847,6 +847,39 @@ mod tests {
             format!("{:#}", LoadedReport::load(temp.path()).unwrap_err())
                 .contains("matched and needing review")
         );
+    }
+
+    #[test]
+    fn saved_reviews_keep_legacy_go_meaning_and_validate_rust_language() {
+        let temp = fixture_with_dismissals();
+        LoadedReport::load(temp.path()).unwrap();
+        update(temp.path(), "run.json", |v| {
+            v["effective_config"] = serde_json::json!({"lang":"rust"});
+        });
+        let error = LoadedReport::load(temp.path()).unwrap_err();
+        assert!(format!("{error:#}").contains("matched dismissal language differs"));
+        update(temp.path(), "mutants.json", |v| {
+            for section in ["matched", "needs_review"] {
+                for entry in v["dismissals"][section].as_array_mut().unwrap() {
+                    entry["dismissal"]["language"] = "rust".into();
+                }
+            }
+        });
+        LoadedReport::load(temp.path()).unwrap();
+        update(temp.path(), "mutants.json", |v| {
+            v["dismissals"]["needs_review"][0]["status"] = "language_mismatch".into();
+        });
+        let error = LoadedReport::load(temp.path()).unwrap_err();
+        assert!(format!("{error:#}").contains("language review disagrees"));
+        update(temp.path(), "mutants.json", |v| {
+            v["dismissals"]["needs_review"][0]["dismissal"]["language"] = "go".into();
+        });
+        LoadedReport::load(temp.path()).unwrap();
+        update(temp.path(), "mutants.json", |v| {
+            v["dismissals"]["matched"][0]["dismissal"]["language"] = "auto".into();
+        });
+        let error = LoadedReport::load(temp.path()).unwrap_err();
+        assert!(format!("{error:#}").contains("language must be go or rust"));
     }
 
     #[test]

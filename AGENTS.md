@@ -39,6 +39,7 @@ Rust binary-package workflow.
   Rust validation project; `benchmarks/rust-initial-scope.md` records the audit
   and `benchmarks/rust-first-slice.md` records CLI validation and runtime limits.
   `benchmarks/rust-focused-reruns.md` records focused rerun validation.
+  `benchmarks/rust-dismissals.md` records Rust review and policy validation.
 - `tests/rust_workflow.rs` runs real Cargo workflows with `--ignored`; keep these
   opt-in so Mutie's default self-test suite cannot recursively run mutations.
 - `tests/fixtures/go-branches/` exercises branch forcing with Go type checking,
@@ -62,9 +63,10 @@ Rust binary-package workflow.
 
 The Go MVP is complete; Mutie is a usable Go-focused alpha. Rust support is the
 next major milestone, motivated by the maintainer's Rust projects. Its first
-binary-package slice and focused reruns are implemented; the broader operator/review
-workflow remains incomplete. Follow the active Rust milestone in `TODO.md` and `DESIGN.md`
-when choosing work, using Mutie itself as the selected real validation project.
+binary-package slice, focused reruns and dismissal review are implemented; the
+broader operator milestone remains incomplete. Follow the active Rust milestone
+in `TODO.md` and `DESIGN.md` when choosing work, using Mutie itself as the selected
+real validation project.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

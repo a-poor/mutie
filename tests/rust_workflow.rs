@@ -15,6 +15,8 @@ use serde_json::Value;
 
 #[path = "support/rust_compilation.rs"]
 mod compilation;
+#[path = "support/rust_dismissals.rs"]
+mod dismissals;
 #[path = "support/rust_reruns.rs"]
 mod reruns;
 

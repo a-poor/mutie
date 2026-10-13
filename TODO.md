@@ -81,7 +81,7 @@ slice is implemented; the full milestone is still in progress.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
   project's workspace/package selection if required by the agreed scope.
-- [ ] Complete the shared user workflow for Rust: filters/configuration,
+- [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;
   preserve existing Go reports and reject unsupported language-specific options.
@@ -89,6 +89,13 @@ slice is implemented; the full milestone is still in progress.
   command export. Validate Cargo scope, manifest/lockfile identity, toolchain and
   current source; preserve legacy report browsing and Go reruns. Verify previews,
   partial/empty runs, moved checkouts and a stronger-test fixture rerun.
+- [x] Add Rust dismissal CRUD, fresh rediscovery, saved review and focused rerun
+  matching. Preserve raw outcomes/scores and legacy Go decisions; distinguish
+  language mismatches. Verify isolated metadata side effects, output limits,
+  timeout/cancellation cleanup, stronger-test reruns and historical browser review.
+  A focused Mutie self-run keeps its dismissed survivor in the raw score while
+  passing the findings policy and failing the minimum-score policy. See
+  `benchmarks/rust-dismissals.md`.
 - [x] Verify fixture outcomes, failed/empty runs, interruption, source/artifact
   preservation, and stronger-test reruns, with Go regressions remaining green.
 - [x] Validate a useful focused rerun on Mutie itself: reproduce the known score
@@ -96,12 +103,13 @@ slice is implemented; the full milestone is still in progress.
   the saved survivor through `--rerun-missed`. Verify browser export, ID mapping,
   a passing fresh baseline, source/report/artifact preservation, and measured
   runtime. See `benchmarks/rust-focused-reruns.md`.
-- [ ] Exercise the complete workflow on the selected Rust project with ordinary
+- [x] Exercise the complete workflow on the selected Rust project with ordinary
   CLI commands. Review survivors, verify a useful stronger-test rerun, and record
   time to an actionable finding, run/build/workspace costs, and noise/limitations.
   Saved-percentage presence/absence regressions now catch the first real survivor
-  in `MutationScore::matches_saved` through fresh and focused runs. Broader
-  operator/review workflows remain to do.
+  in `MutationScore::matches_saved` through fresh and focused runs. Dismissal
+  review, policies and browser export are now verified too. The broader useful
+  Rust operator set remains to do.
 - [ ] Document verified Rust usage and limits in README/design, mark the milestone
   complete, and choose the next major objective from observed user needs.
 

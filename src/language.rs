@@ -1,7 +1,7 @@
 //! The small built-in boundary needed by the Go and Rust execution paths.
 use std::{future::Future, num::NonZeroUsize, path::Path, time::Duration};
 
-use anyhow::Result;
+use anyhow::{Result, bail, ensure};
 
 use crate::{
     cancellation::Cancellation,
@@ -9,6 +9,35 @@ use crate::{
     command::{CommandOutput, TestPhase},
     go, rust,
 };
+
+/// Resolve a manifest without loading run settings or invoking language tools.
+pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
+    let lang = match requested {
+        Lang::Auto => match (
+            root.join("go.mod").is_file(),
+            root.join("Cargo.toml").is_file(),
+        ) {
+            (true, false) => Lang::Go,
+            (false, true) => Lang::Rust,
+            (true, true) => {
+                bail!("both go.mod and Cargo.toml exist; select --lang go or --lang rust")
+            }
+            (false, false) => bail!("{} must contain go.mod or Cargo.toml", root.display()),
+        },
+        lang => lang,
+    };
+    let manifest = if lang == Lang::Go {
+        "go.mod"
+    } else {
+        "Cargo.toml"
+    };
+    ensure!(
+        root.join(manifest).is_file(),
+        "{} must be a project root containing {manifest}",
+        root.display()
+    );
+    Ok(lang)
+}
 
 pub fn test_command(lang: Lang) -> Vec<&'static str> {
     match lang {

@@ -71,14 +71,19 @@ async fn main() -> Result<ExitCode> {
             })
             .await
             .context("report browser panicked")?,
-            cli::Command::Dismiss { module, action } => {
+            cli::Command::Dismiss {
+                module,
+                lang,
+                action,
+            } => {
                 if matches!(action, cli::DismissAction::Check) {
                     cli.path = module;
+                    cli.lang = lang;
                     cli.list = true;
                     let config = RunConfig::resolve(cli)?;
                     dismissals::check(&config, &cancellation).await
                 } else {
-                    dismissals::manage(&module, action)
+                    dismissals::manage(&module, lang.unwrap_or(Lang::Auto), action)
                 }
             }
         };
@@ -421,7 +426,7 @@ async fn execute(
     };
     cancellation.check()?;
     let mut dismissals = dismissal_store
-        .map(|store| store.snapshot(&mutations, cancellation))
+        .map(|store| store.snapshot(config.lang, &mutations, cancellation))
         .transpose()?
         .unwrap_or_default();
     let (mutations, rerun) = match rerun {

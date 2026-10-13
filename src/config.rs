@@ -6,7 +6,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-use anyhow::{Context, Result, bail, ensure};
+use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -96,30 +96,7 @@ impl RunConfig {
                     .with_context(|| format!("opening configuration {}", path.display()));
             }
         };
-        let lang = match cli.lang.or(file.lang).unwrap_or(Lang::Auto) {
-            Lang::Auto => match (
-                root.join("go.mod").is_file(),
-                root.join("Cargo.toml").is_file(),
-            ) {
-                (true, false) => Lang::Go,
-                (false, true) => Lang::Rust,
-                (true, true) => {
-                    bail!("both go.mod and Cargo.toml exist; select --lang go or --lang rust")
-                }
-                (false, false) => bail!("{} must contain go.mod or Cargo.toml", root.display()),
-            },
-            lang => lang,
-        };
-        let manifest = if lang == Lang::Go {
-            "go.mod"
-        } else {
-            "Cargo.toml"
-        };
-        ensure!(
-            root.join(manifest).is_file(),
-            "{} must be a project root containing {manifest}",
-            root.display()
-        );
+        let lang = crate::language::resolve(&root, cli.lang.or(file.lang).unwrap_or(Lang::Auto))?;
         let output_dir = match cli.output_dir {
             Some(path) => nonempty_path(invocation, path)?,
             None => nonempty_path(&root, file.output_dir.unwrap_or_else(|| ".mutie".into()))?,

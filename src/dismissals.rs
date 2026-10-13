@@ -13,7 +13,7 @@ use tempfile::NamedTempFile;
 
 use crate::{
     cancellation::{Cancellation, Interrupted},
-    cli::DismissAction,
+    cli::{DismissAction, Lang},
     config::RunConfig,
     identity::MutationIdentity,
     mutation::{self, Mutation, OPERATOR_CATALOG_VERSION, Scope},
@@ -28,15 +28,25 @@ const LOCK_NAME: &str = ".mutie.dismissals.lock";
 #[serde(deny_unknown_fields)]
 pub struct Dismissal {
     pub id: usize,
+    #[serde(default = "legacy_language")]
+    pub language: Lang,
     pub reason: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub note: Option<String>,
     pub mutation: MutationIdentity,
 }
 
+fn legacy_language() -> Lang {
+    Lang::Go
+}
+
 impl Dismissal {
     fn validate(&self) -> Result<()> {
         ensure!(self.id > 0, "dismissal ID must be positive");
+        ensure!(
+            self.language != Lang::Auto,
+            "dismissal language must be go or rust"
+        );
         validate_text(&self.reason, "reason")?;
         if let Some(note) = &self.note {
             validate_text(note, "note")?;
@@ -108,12 +118,20 @@ impl DismissalSnapshot {
         self.matched.sort_by_key(|entry| entry.mutation_id);
     }
 
-    pub fn validate(&mut self, mutations: &BTreeMap<usize, SavedMutation>) -> Result<()> {
+    pub fn validate(
+        &mut self,
+        language: Lang,
+        mutations: &BTreeMap<usize, SavedMutation>,
+    ) -> Result<()> {
         let mut ids = BTreeSet::new();
         let mut targets = BTreeSet::new();
         let mut identities = BTreeSet::new();
         for entry in &self.matched {
             entry.dismissal.validate()?;
+            ensure!(
+                entry.dismissal.language == language,
+                "matched dismissal language differs from saved run"
+            );
             ensure!(
                 ids.insert(entry.dismissal.id),
                 "duplicate saved dismissal ID {}",
@@ -140,6 +158,11 @@ impl DismissalSnapshot {
         for entry in &self.needs_review {
             entry.dismissal.validate()?;
             ensure!(
+                (entry.dismissal.language != language)
+                    == (entry.status == MatchStatus::LanguageMismatch),
+                "dismissal language review disagrees with saved run"
+            );
+            ensure!(
                 ids.insert(entry.dismissal.id),
                 "duplicate saved dismissal ID {}",
                 entry.dismissal.id
@@ -152,7 +175,8 @@ impl DismissalSnapshot {
                 !self
                     .matched
                     .iter()
-                    .any(|m| m.dismissal.mutation == entry.dismissal.mutation),
+                    .any(|m| m.dismissal.language == entry.dismissal.language
+                        && m.dismissal.mutation == entry.dismissal.mutation),
                 "ambiguous saved dismissal identity appears as matched and needing review"
             );
         }
@@ -230,6 +254,7 @@ impl Store {
 
     pub fn snapshot(
         &self,
+        language: Lang,
         mutations: &[Mutation],
         cancellation: &Cancellation,
     ) -> Result<DismissalSnapshot> {
@@ -237,7 +262,7 @@ impl Store {
         for (entry, status) in self
             .dismissals
             .iter()
-            .zip(match_dismissals(self, mutations))
+            .zip(match_dismissals(self, language, mutations))
         {
             cancellation.check()?;
             let dismissal = entry.clone();
@@ -270,11 +295,16 @@ impl Store {
 
     fn add(
         &mut self,
+        language: Lang,
         mutation: MutationIdentity,
         reason: String,
         note: Option<String>,
     ) -> Result<usize> {
-        if let Some(existing) = self.dismissals.iter().find(|d| d.mutation == mutation) {
+        if let Some(existing) = self
+            .dismissals
+            .iter()
+            .find(|d| d.language == language && d.mutation == mutation)
+        {
             anyhow::bail!(
                 "mutation already has dismissal {}; use dismiss update",
                 existing.id
@@ -284,6 +314,7 @@ impl Store {
         self.next_id = id.checked_add(1).context("dismissal IDs exhausted")?;
         self.dismissals.push(Dismissal {
             id,
+            language,
             reason,
             note,
             mutation,
@@ -319,15 +350,11 @@ impl Drop for WriteLock {
     }
 }
 
-pub fn manage(module: &Path, action: DismissAction) -> Result<()> {
+pub fn manage(module: &Path, requested: Lang, action: DismissAction) -> Result<()> {
     let root = module
         .canonicalize()
         .with_context(|| format!("opening {}", module.display()))?;
-    ensure!(
-        root.join("go.mod").is_file(),
-        "{} must be a Go module root containing go.mod",
-        root.display()
-    );
+    let language = crate::language::resolve(&root, requested)?;
     if matches!(action, DismissAction::List) {
         let store = Store::load(&root)?;
         println!(
@@ -343,6 +370,7 @@ pub fn manage(module: &Path, action: DismissAction) -> Result<()> {
             );
             println!("  {:?} -> {:?}", m.original, m.replacement);
             println!("  Reason: {:?}", entry.reason);
+            println!("  Language: {:?}", entry.language);
             if let Some(note) = entry.note {
                 println!("  Note: {note:?}");
             }
@@ -364,6 +392,12 @@ pub fn manage(module: &Path, action: DismissAction) -> Result<()> {
         } => {
             let report = LoadedReport::load(&run_dir)?;
             ensure!(
+                report.run.language() == language,
+                "saved run language {:?} does not match project language {:?}",
+                report.run.language(),
+                language
+            );
+            ensure!(
                 report.complete,
                 "saved run has an incomplete mutation inventory"
             );
@@ -372,7 +406,8 @@ pub fn manage(module: &Path, action: DismissAction) -> Result<()> {
                 .iter()
                 .find(|m| m.id == id.get())
                 .with_context(|| format!("unknown source mutation ID {id}"))?;
-            let dismissal_id = store.add(MutationIdentity::from(mutation), reason, note)?;
+            let dismissal_id =
+                store.add(language, MutationIdentity::from(mutation), reason, note)?;
             format!(
                 "Added dismissal {dismissal_id} from saved mutation {id}. Current source unchecked; use dismiss check."
             )
@@ -428,6 +463,7 @@ pub enum MatchStatus {
     Stale,
     Unmatched,
     Ambiguous,
+    LanguageMismatch,
 }
 
 impl MatchStatus {
@@ -438,11 +474,12 @@ impl MatchStatus {
             Self::Stale => "stale",
             Self::Unmatched => "unmatched",
             Self::Ambiguous => "ambiguous",
+            Self::LanguageMismatch => "language mismatch",
         }
     }
 }
 
-fn match_dismissals(store: &Store, mutations: &[Mutation]) -> Vec<MatchStatus> {
+fn match_dismissals(store: &Store, language: Lang, mutations: &[Mutation]) -> Vec<MatchStatus> {
     let mut by_file: HashMap<&Path, Vec<(usize, &Mutation)>> = HashMap::new();
     for (index, mutation) in mutations.iter().enumerate() {
         by_file
@@ -454,6 +491,9 @@ fn match_dismissals(store: &Store, mutations: &[Mutation]) -> Vec<MatchStatus> {
         .dismissals
         .iter()
         .map(|entry| {
+            if entry.language != language {
+                return MatchStatus::LanguageMismatch;
+            }
             let target = &entry.mutation;
             let Some(candidates) = by_file.get(target.file.as_path()) else {
                 return MatchStatus::Missing;
@@ -491,53 +531,90 @@ fn match_dismissals(store: &Store, mutations: &[Mutation]) -> Vec<MatchStatus> {
 }
 
 pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()> {
-    ensure!(
-        config.lang == crate::cli::Lang::Go,
-        "Rust dismissal commands are not implemented yet"
-    );
     let store = Store::load(&config.module_root)?;
     if store.dismissals.is_empty() {
         println!("No dismissals to check.");
         return Ok(());
     }
     let scope = Scope::new(&config.include, &config.exclude)?;
-    let snapshot = crate::create_workspace(
-        config.module_root.clone(),
-        vec![config.module_root.join(".mutie"), config.output_dir.clone()],
-        cancellation.clone(),
-    )
-    .await?;
-    // Go list may have side effects. Discover source identities from the pristine
-    // snapshot, and run Go in a separate disposable copy, as normal runs do.
+    let project = (config.lang == Lang::Rust)
+        .then(|| crate::rust::Project::load(&config.module_root))
+        .transpose()?;
+    let mut excluded = vec![config.module_root.join(".mutie"), config.output_dir.clone()];
+    if let Some(project) = &project {
+        excluded.extend(project.excluded.clone());
+    }
+    let snapshot =
+        crate::create_workspace(config.module_root.clone(), excluded, cancellation.clone()).await?;
+    let store = Store::load(&snapshot.path())?;
+    // Language tools may have side effects. Discover source identities from the
+    // pristine snapshot, and run tools in a separate disposable copy.
     let discovery_workspace =
         crate::create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
-    let output = crate::go::discover(
-        &discovery_workspace.path(),
-        crate::cli::TestScope::Full,
-        Duration::from_secs(config.baseline_timeout.get()),
-        config.max_log_bytes,
-        config.max_capture_bytes,
-        cancellation,
-    )
-    .await?;
-    if output.interrupted {
-        return Err(Interrupted.into());
-    }
-    let mut files = crate::go::files(&discovery_workspace.path(), &output)?;
-    drop(discovery_workspace);
-    let discovery_cancellation = cancellation.clone();
-    let mutations = tokio::task::spawn_blocking(move || {
-        mutation::discover_cancellable(
-            &snapshot.path(),
-            &mut files,
-            &scope,
-            &discovery_cancellation,
+    let limit = Duration::from_secs(config.baseline_timeout.get());
+    let mutations = if project.is_some() {
+        let project = crate::rust::Project::load(&snapshot.path())?;
+        let output = crate::rust::discover(
+            &discovery_workspace.path(),
+            limit,
+            config.max_log_bytes,
+            config.max_capture_bytes,
+            cancellation,
         )
-    })
-    .await
-    .context("dismissal discovery panicked")??;
+        .await?;
+        if output.interrupted {
+            return Err(Interrupted.into());
+        }
+        project.validate_metadata(
+            &discovery_workspace.path(),
+            &crate::rust::metadata(&output)?,
+        )?;
+        drop(discovery_workspace);
+        let discovery_cancellation = cancellation.clone();
+        let source = snapshot.path();
+        let found = tokio::task::spawn_blocking(move || {
+            crate::rust::discovery::discover(
+                &source,
+                &project.scope.source,
+                &scope,
+                &discovery_cancellation,
+            )
+        })
+        .await
+        .context("Rust dismissal discovery panicked")??;
+        for exclusion in found.exclusions {
+            println!("Rust discovery excluded {exclusion}");
+        }
+        found.mutations
+    } else {
+        let output = crate::go::discover(
+            &discovery_workspace.path(),
+            crate::cli::TestScope::Full,
+            limit,
+            config.max_log_bytes,
+            config.max_capture_bytes,
+            cancellation,
+        )
+        .await?;
+        if output.interrupted {
+            return Err(Interrupted.into());
+        }
+        let mut files = crate::go::files(&discovery_workspace.path(), &output)?;
+        drop(discovery_workspace);
+        let discovery_cancellation = cancellation.clone();
+        tokio::task::spawn_blocking(move || {
+            mutation::discover_cancellable(
+                &snapshot.path(),
+                &mut files,
+                &scope,
+                &discovery_cancellation,
+            )
+        })
+        .await
+        .context("dismissal discovery panicked")??
+    };
     cancellation.check()?;
-    let statuses = match_dismissals(&store, &mutations);
+    let statuses = match_dismissals(&store, config.lang, &mutations);
     let mut matched = 0;
     for (entry, status) in store.dismissals.iter().zip(statuses) {
         cancellation.check()?;
@@ -555,6 +632,9 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
             }
             MatchStatus::Ambiguous => {
                 "ambiguous (multiple mutations or dismissals share this identity)".to_owned()
+            }
+            MatchStatus::LanguageMismatch => {
+                "language mismatch (decision belongs to another project language)".to_owned()
             }
         };
         println!(
@@ -606,24 +686,52 @@ mod tests {
             diff: None,
         };
         let mut store = Store::default();
-        store.add(MutationIdentity::from(&saved), "reviewed".into(), None)?;
+        store.add(
+            Lang::Go,
+            MutationIdentity::from(&saved),
+            "reviewed".into(),
+            None,
+        )?;
         store.validate()?;
         assert_eq!(
-            match_dismissals(&store, &mutations),
+            match_dismissals(&store, Lang::Go, &mutations),
             [MatchStatus::Matched(2)]
         );
         assert_eq!(
-            match_dismissals(&store, &mutations[1..]),
+            match_dismissals(&store, Lang::Go, &mutations[1..]),
             [MatchStatus::Matched(1)]
         );
         assert_eq!(
-            match_dismissals(&store, &[m.clone(), m.clone()]),
+            match_dismissals(&store, Lang::Go, &[m.clone(), m.clone()]),
             [MatchStatus::Ambiguous]
         );
         assert_eq!(
-            match_dismissals(&store, &mutations[..1]),
+            match_dismissals(&store, Lang::Go, &mutations[..1]),
             [MatchStatus::Unmatched]
         );
+        assert_eq!(
+            match_dismissals(&store, Lang::Rust, &mutations),
+            [MatchStatus::LanguageMismatch]
+        );
+        let mut legacy = serde_json::to_value(&store.dismissals[0])?;
+        legacy.as_object_mut().unwrap().remove("language");
+        let legacy: Dismissal = serde_json::from_value(legacy)?;
+        assert_eq!(legacy.language, Lang::Go);
+        let mut unresolved = store.snapshot(Lang::Rust, &mutations, &Cancellation::default())?;
+        unresolved.validate(Lang::Rust, &BTreeMap::new())?;
+        assert!(unresolved.validate(Lang::Go, &BTreeMap::new()).is_err());
+        store.add(
+            Lang::Rust,
+            MutationIdentity::from(&saved),
+            "other language".into(),
+            None,
+        )?;
+        let mut mixed = store.snapshot(Lang::Go, &mutations, &Cancellation::default())?;
+        let mut saved = saved;
+        saved.id = 2;
+        mixed.validate(Lang::Go, &BTreeMap::from([(2, saved)]))?;
+        assert_eq!(mixed.matched.len(), 1);
+        assert_eq!(mixed.needs_review[0].status, MatchStatus::LanguageMismatch);
         Ok(())
     }
 }
