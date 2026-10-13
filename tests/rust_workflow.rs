@@ -15,6 +15,8 @@ use serde_json::Value;
 
 #[path = "support/rust_compilation.rs"]
 mod compilation;
+#[path = "support/rust_reruns.rs"]
+mod reruns;
 
 struct Fixture {
     temp: tempfile::TempDir,
@@ -224,11 +226,12 @@ fn rust_fixture_runs_lists_filters_and_saves_results_without_touching_inputs() {
         String::from_utf8_lossy(&preview.stdout).contains("Selected runs: 1"),
         "{preview:?}"
     );
-    let rerun = fixture.run(&["--rerun", directory.to_str().unwrap()]);
-    assert!(!rerun.status.success());
-    assert!(
-        String::from_utf8_lossy(&rerun.stderr).contains("Rust focused reruns are not implemented")
-    );
+    let rerun = fixture.run(&["--rerun-missed", directory.to_str().unwrap(), "--list"]);
+    assert!(rerun.status.success(), "{rerun:?}");
+    let preview = String::from_utf8_lossy(&rerun.stdout);
+    assert!(preview.contains("Found 1 mutations"), "{preview}");
+    assert!(preview.contains("source [000003]"), "{preview}");
+    assert!(!preview.contains("Running baseline"));
     assert_eq!(
         fs::read(directory.join("outcomes.json")).unwrap(),
         original_report
@@ -247,15 +250,63 @@ fn rust_fixture_runs_lists_filters_and_saves_results_without_touching_inputs() {
         ),
     )
     .unwrap();
-    let stronger = fixture.run(&["--operator", "boolean_flip", "--jobs", "2"]);
+    let stronger = fixture.run(&[
+        "--rerun-missed",
+        directory.to_str().unwrap(),
+        "--id",
+        "3,1,3",
+        "--operator",
+        "boolean_flip",
+        "--jobs",
+        "2",
+        "--min-score",
+        "100",
+    ]);
     assert!(stronger.status.success(), "{stronger:?}");
-    assert_eq!(report(&stronger).3["summary"]["killed"], 3);
+    let (rerun_dir, rerun, selected, results) = report(&stronger);
+    assert_ne!(rerun_dir, directory);
+    assert_eq!(rerun["planned_mutations"], 1);
+    assert_eq!(rerun["score"]["scope"], "rerun");
+    assert_eq!(rerun["score_policy"]["status"], "passed");
+    assert_eq!(rerun["rerun"]["selection"], "missed");
+    assert_eq!(rerun["rerun"]["source_checkpoint"], run["checkpoint"]);
+    assert_eq!(rerun["rerun"]["source_ids"], serde_json::json!([1, 3]));
+    assert_eq!(
+        rerun["rerun"]["mutations"],
+        serde_json::json!([{"id":1,"source_id":3}])
+    );
+    assert_eq!(selected["mutations"][0]["id"], 1);
+    assert_eq!(
+        selected["mutations"][0]["byte_start"],
+        inventory["mutations"][2]["byte_start"]
+    );
+    assert_eq!(results["baseline"]["outcome"], "passed");
+    assert_eq!(results["summary"]["killed"], 1);
+    let log = results["mutations"][0]["logs"]["text"].as_str().unwrap();
+    assert!(
+        fs::read_to_string(rerun_dir.join(log))
+            .unwrap()
+            .contains("unchecked_flag_smoke_test")
+    );
+    let chained = fixture.run(&[
+        "--rerun",
+        rerun_dir.to_str().unwrap(),
+        "--id",
+        "1",
+        "--list",
+    ]);
+    assert!(chained.status.success(), "{chained:?}");
+    assert!(String::from_utf8_lossy(&chained.stdout).contains("Found 1 mutations"));
+    assert_eq!(
+        fs::read(directory.join("outcomes.json")).unwrap(),
+        original_report
+    );
     assert_eq!(
         fs::read(fixture.root.join("src/flags.rs")).unwrap(),
         original
     );
 
-    let empty = fixture.run(&["--include", "src/main.rs"]);
+    let empty = fixture.run(&["--rerun-missed", rerun_dir.to_str().unwrap()]);
     assert!(empty.status.success(), "{empty:?}");
     assert_eq!(report(&empty).1["planned_mutations"], 0);
     assert_eq!(report(&empty).3["baseline"]["outcome"], "passed");

@@ -28,12 +28,33 @@ pub struct SavedRun {
     pub module_root: Option<PathBuf>,
     pub phase: Option<String>,
     pub error: Option<String>,
+    pub rust_scope: Option<crate::rust::ExecutionScope>,
     pub score: Option<MutationScore>,
     pub score_policy: Option<ScorePolicy>,
     effective_config: Option<ScoreConfig>,
 }
 
 impl SavedRun {
+    pub fn validate_rerun_scope(&self) -> Result<()> {
+        match self.language() {
+            crate::cli::Lang::Rust => self
+                .rust_scope
+                .as_ref()
+                .context(
+                    "saved Rust run lacks execution scope; start a fresh scan before rerunning",
+                )?
+                .validate_rerun_record(),
+            crate::cli::Lang::Go => {
+                ensure!(
+                    self.rust_scope.is_none(),
+                    "saved run has conflicting language and Rust scope"
+                );
+                Ok(())
+            }
+            crate::cli::Lang::Auto => anyhow::bail!("saved run has no resolved language"),
+        }
+    }
+
     pub fn language(&self) -> crate::cli::Lang {
         self.effective_config
             .as_ref()

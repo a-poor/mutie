@@ -243,10 +243,7 @@ impl Browser {
     }
 
     fn command(&self) -> Result<String> {
-        ensure!(
-            self.report.run.language() != crate::cli::Lang::Rust,
-            "Rust focused reruns are not implemented yet; start a fresh filtered run."
-        );
+        self.report.run.validate_rerun_scope()?;
         ensure!(
             self.report.complete,
             "This run has no complete mutation inventory to rerun."
@@ -264,8 +261,13 @@ impl Browser {
         let module = self.module.as_deref().or(self.report.run.module_root.as_deref())
             .context("No module path was recorded. Reopen with --module PATH to generate a rerun command.")?;
         Ok(format!(
-            "mutie {} --rerun {} --id {}",
+            "mutie {}{} --rerun {} --id {}",
             quote_path(module)?,
+            if self.report.run.language() == crate::cli::Lang::Rust {
+                " --lang rust"
+            } else {
+                ""
+            },
             quote_path(&self.report.directory)?,
             ids.iter()
                 .map(ToString::to_string)
@@ -1405,7 +1407,7 @@ mod tests {
     }
 
     #[test]
-    fn rust_reports_are_inspectable_without_exporting_unsupported_reruns() {
+    fn rust_reports_export_explicit_language_and_legacy_reports_remain_inspectable() {
         let temp = crate::report_reader::fixture();
         let path = temp.path().join("run.json");
         let mut run: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
@@ -1415,16 +1417,12 @@ mod tests {
         key(&mut app, KeyCode::Char('d'));
         assert!(app.detail.join("\n").contains("+false"));
         key(&mut app, KeyCode::Char('r'));
-        assert!(
-            app.detail
-                .join("\n")
-                .contains("Rust focused reruns are not implemented")
-        );
+        assert!(app.detail.join("\n").contains("lacks execution scope"));
         assert!(!key(&mut app, KeyCode::Char('e')));
         assert!(app.export.is_none());
         let mut terminal = Terminal::new(TestBackend::new(100, 24)).unwrap();
         terminal.draw(|frame| app.render(frame)).unwrap();
-        assert!(text(terminal.backend().buffer()).contains("Rust focused reruns"));
+        assert!(text(terminal.backend().buffer()).contains("lacks execution scope"));
         assert!(
             crate::rerun::RerunSelection::load(&crate::rerun::RerunRequest {
                 source_run: temp.path().into(),
@@ -1436,6 +1434,32 @@ mod tests {
             })
             .is_err()
         );
+        // Fill the scope as a current report would. The browser does not run
+        // Cargo or require a current checkout to print this command.
+        run["rust_scope"] = serde_json::json!({
+            "package":"sample", "binary":"sample", "source":"src/main.rs",
+            "edition":"2024", "manifest_fingerprint":"sha256:manifest",
+            "lockfile_fingerprint":"sha256:lock", "default_features":true,
+            "test_scope":"binary unit and integration tests; ignored tests excluded",
+            "profile":"test", "rustc":"rustc version", "cargo":"cargo version",
+            "discovery_exclusions":[]
+        });
+        fs::write(&path, serde_json::to_vec(&run).unwrap()).unwrap();
+        let mut app = Browser::new(
+            LoadedReport::load(temp.path()).unwrap(),
+            Some("/moved/a project's checkout".into()),
+        );
+        key(&mut app, KeyCode::Char(' '));
+        key(&mut app, KeyCode::Char('r'));
+        assert!(app.detail.join("\n").contains(" --lang rust --rerun "));
+        terminal.draw(|frame| app.render(frame)).unwrap();
+        assert!(text(terminal.backend().buffer()).contains("--lang rust --rerun"));
+        assert!(key(&mut app, KeyCode::Char('e')));
+        let command = app.export.unwrap();
+        assert!(
+            command.starts_with("mutie '/moved/a project'\\''s checkout' --lang rust --rerun '")
+        );
+        assert!(command.ends_with("--id 1"));
     }
 
     #[test]

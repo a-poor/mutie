@@ -25,6 +25,8 @@ Rust binary-package workflow.
   decisions independently of dismissal-based findings policy.
 - `src/report_reader.rs` validates saved runs for reruns and browsing;
   `src/browser.rs` owns the full-screen report browser and command export.
+- `src/rerun.rs` selects saved findings through fresh source identities; Rust
+  reruns also validate manifest/lockfile, target settings and toolchain identity.
 - `src/report_retention.rs` lists and prunes finalized saved runs;
   `src/report_lock.rs` shares lifetime locks between writers and pruning.
 - `src/identity.rs` shares strict source matching; `dismissals.rs` stores review
@@ -36,6 +38,7 @@ Rust binary-package workflow.
   by the root `cargo test`; see its README. Mutie itself is the selected real
   Rust validation project; `benchmarks/rust-initial-scope.md` records the audit
   and `benchmarks/rust-first-slice.md` records CLI validation and runtime limits.
+  `benchmarks/rust-focused-reruns.md` records focused rerun validation.
 - `tests/rust_workflow.rs` runs real Cargo workflows with `--ignored`; keep these
   opt-in so Mutie's default self-test suite cannot recursively run mutations.
 - `tests/fixtures/go-branches/` exercises branch forcing with Go type checking,
@@ -59,8 +62,8 @@ Rust binary-package workflow.
 
 The Go MVP is complete; Mutie is a usable Go-focused alpha. Rust support is the
 next major milestone, motivated by the maintainer's Rust projects. Its first
-binary-package slice is implemented; the broader operator/review/rerun workflow
-remains incomplete. Follow the active Rust milestone in `TODO.md` and `DESIGN.md`
+binary-package slice and focused reruns are implemented; the broader operator/review
+workflow remains incomplete. Follow the active Rust milestone in `TODO.md` and `DESIGN.md`
 when choosing work, using Mutie itself as the selected real validation project.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,

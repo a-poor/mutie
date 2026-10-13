@@ -6,8 +6,9 @@ Mutie supports Go modules and an initial Rust binary-package workflow. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports
-`boolean_flip` in the [initial Cargo scope](DESIGN.md#initial-rust-support-contract);
-the broader Rust milestone, including focused reruns, remains in progress.
+`boolean_flip` in the [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
+Focused reruns are supported; the broader operator and dismissal workflow remains
+in progress.
 
 See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
@@ -67,8 +68,10 @@ cargo run -- report /path/to/saved/run
 The fixture produces three `boolean_flip` mutations: two killed and one missed.
 File/operator filters, live/plain status, saved diffs/logs, scores, failure
 policies, operator totals, and report listing/retention use the shared workflow.
-Rust focused reruns and dismissal commands are not implemented yet; the browser
-shows an explanation when a Rust rerun command is requested.
+Rust supports focused reruns by saved ID, operator, or missed outcome, including
+browser command export. Dismissal commands remain unimplemented for Rust.
+The [focused rerun validation](benchmarks/rust-focused-reruns.md) records the
+fixture and Mutie self-test evidence, including strict matching and runtime costs.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
@@ -634,11 +637,12 @@ no dismissal command is running before removing the lock and retrying.
 ## Focused reruns
 
 After improving tests, use a saved run directory to select just its completed
-`missed` mutations:
+`missed` mutations. This works for Go modules and supported Rust packages:
 
 ```sh
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
 cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run --list
+cargo run -- /path/to/rust/package --rerun-missed /path/to/saved/run --list
 ```
 
 Use `--rerun` to select mutations regardless of their previous outcome, and
@@ -671,16 +675,27 @@ timed-out, build-failed, error, pending, or interrupted mutations.
 selection inputs. Finalized failed or interrupted runs also work when their
 inventory is complete. `--rerun-missed` selects only completed missed outcomes;
 `--rerun` can retry unfinished work. Running, incomplete, inconsistent, or
-incompatible reports and invalid selectors are rejected before running Go or
+incompatible reports and invalid selectors are rejected before running tools or
 creating a new report.
+
+Rust reruns also require the saved language, Cargo package/binary, source entry,
+edition, default-feature/test/profile settings, complete `Cargo.toml` and
+`Cargo.lock` fingerprints, and compiler/Cargo versions to match the current
+snapshot. Scope mismatches fail before the baseline. Older Rust reports without
+a manifest fingerprint remain browsable but require a fresh scan before rerunning.
+Changing the manifest, lockfile, or toolchain requires a fresh scan too, including
+comment-only manifest/lockfile edits. Worker counts, timeouts, file filters, output
+limits, and policies use current settings. The browser exports Rust commands with
+`--lang rust`, so a moved checkout with both manifests stays unambiguous.
 
 Execution always runs a fresh baseline, rediscovers mutations from the current
 snapshot, and validates every selected target before starting workers. Matching
 requires the same module-relative source path, complete source-file fingerprint,
 operator, original/replacement text, and source coordinates. Editing or adding
-tests is supported; any change to a selected mutation's source file, including
-comments or moved lines, requires a new full scan. Missing, excluded, inactive,
-or ambiguous targets fail the entire selection rather than silently being skipped.
+tests in separate files is supported; any change to a selected mutation's source
+file, including comments or moved lines, requires a new full scan. Missing,
+excluded, inactive, or ambiguous targets fail the entire selection rather than
+silently being skipped.
 Current include/exclude settings still apply; clear configured filters if needed.
 
 The current module can be a moved or copied checkout. Current configuration,
@@ -856,7 +871,7 @@ output cannot be recovered from the report; rerun with a larger limit or
 byte budget shared by raw stdout and stderr for **each Go or Cargo invocation**.
 It defaults to unlimited. This applies to baseline tests, discovery (including
 `--list` and Go's configured `dismiss check`), and mutation tests. Each concurrent
-command has its own budget. Go reruns use current settings, not the source
+command has its own budget. Reruns use current settings, not the source
 report's budget.
 
 For Rust, Cargo metadata, compilation (`--no-run`), and test execution each get

@@ -102,6 +102,8 @@ pub struct MutationMapping {
 }
 
 pub struct RerunSelection {
+    language: crate::cli::Lang,
+    rust_scope: Option<crate::rust::ExecutionScope>,
     provenance: RerunProvenance,
     targets: Vec<SavedMutation>,
 }
@@ -118,10 +120,7 @@ impl RerunSelection {
 
     fn read(directory: &Path, filter: &RerunFilter) -> Result<Self> {
         let report = LoadedReport::load(directory)?;
-        ensure!(
-            report.run.language() == crate::cli::Lang::Go,
-            "Rust focused reruns are not implemented yet; start a fresh filtered run"
-        );
+        report.run.validate_rerun_scope()?;
         ensure!(
             report.complete,
             "saved run has an incomplete mutation inventory"
@@ -140,6 +139,8 @@ impl RerunSelection {
             );
         }
         Ok(Self {
+            language: report.run.language(),
+            rust_scope: report.run.rust_scope,
             provenance: RerunProvenance {
                 source_run: report.directory,
                 source_checkpoint: report.run.checkpoint,
@@ -155,6 +156,23 @@ impl RerunSelection {
                 .filter(|m| filter.operators.is_empty() || filter.operators.contains(&m.operator))
                 .collect(),
         })
+    }
+
+    pub fn validate_language(&self, language: crate::cli::Lang) -> Result<()> {
+        ensure!(
+            self.language == language,
+            "saved run language {:?} does not match current project language {:?}; start a fresh scan",
+            self.language,
+            language
+        );
+        Ok(())
+    }
+
+    pub fn validate_rust_scope(&self, current: &crate::rust::ExecutionScope) -> Result<()> {
+        self.rust_scope
+            .as_ref()
+            .context("saved run lacks Rust execution scope")?
+            .validate_rerun(current)
     }
 
     pub fn select(
@@ -322,6 +340,22 @@ mod tests {
                 filter: RerunFilter::new(mode, ids, operators),
             }
         }
+    }
+
+    #[test]
+    fn saved_language_must_match_the_current_project() -> Result<()> {
+        let fixture = Fixture::new()?;
+        let selection = RerunSelection::load(&fixture.request(RerunMode::All, vec![], vec![]))?;
+        // Legacy Go reports without an explicit language still work for Go.
+        selection.validate_language(crate::cli::Lang::Go)?;
+        assert!(
+            selection
+                .validate_language(crate::cli::Lang::Rust)
+                .unwrap_err()
+                .to_string()
+                .contains("does not match")
+        );
+        Ok(())
     }
 
     #[test]

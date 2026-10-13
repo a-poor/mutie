@@ -14,6 +14,8 @@ pub struct ExecutionScope {
     pub binary: String,
     pub source: PathBuf,
     pub edition: String,
+    // Older reports remain inspectable, but cannot validate a focused rerun.
+    pub manifest_fingerprint: Option<String>,
     pub lockfile_fingerprint: String,
     pub default_features: bool,
     pub test_scope: String,
@@ -21,6 +23,56 @@ pub struct ExecutionScope {
     pub rustc: Option<String>,
     pub cargo: Option<String>,
     pub discovery_exclusions: Vec<String>,
+}
+
+impl ExecutionScope {
+    pub fn validate_rerun_record(&self) -> Result<()> {
+        ensure!(
+            self.manifest_fingerprint
+                .as_ref()
+                .is_some_and(|s| !s.is_empty())
+                && self.rustc.as_ref().is_some_and(|s| !s.is_empty())
+                && self.cargo.as_ref().is_some_and(|s| !s.is_empty()),
+            "saved Rust run lacks manifest or toolchain identity; start a fresh scan before rerunning"
+        );
+        Ok(())
+    }
+
+    pub fn validate_rerun(&self, current: &Self) -> Result<()> {
+        self.validate_rerun_record()?;
+        for (matches, setting) in [
+            (self.package == current.package, "package"),
+            (
+                self.binary == current.binary && self.source == current.source,
+                "binary target",
+            ),
+            (self.edition == current.edition, "edition"),
+            (
+                self.manifest_fingerprint == current.manifest_fingerprint,
+                "Cargo.toml fingerprint",
+            ),
+            (
+                self.lockfile_fingerprint == current.lockfile_fingerprint,
+                "Cargo.lock fingerprint",
+            ),
+            (
+                self.default_features == current.default_features,
+                "features",
+            ),
+            (self.test_scope == current.test_scope, "test scope"),
+            (self.profile == current.profile, "profile"),
+            (self.rustc == current.rustc, "rustc toolchain"),
+            (self.cargo == current.cargo, "Cargo toolchain"),
+        ] {
+            ensure!(
+                matches,
+                "Rust rerun {setting} changed; start a fresh scan; no mutations were run"
+            );
+        }
+        // Discovery exclusions are diagnostics, not execution settings. Tests
+        // and unselected files may change; selected identities are checked later.
+        Ok(())
+    }
 }
 
 pub struct Project {
@@ -207,6 +259,10 @@ impl Project {
                 binary: binary.into(),
                 source,
                 edition: edition.into(),
+                manifest_fingerprint: Some(format!(
+                    "sha256:{:x}",
+                    Sha256::digest(fs::read(root.join("Cargo.toml"))?)
+                )),
                 lockfile_fingerprint: format!(
                     "sha256:{:x}",
                     Sha256::digest(fs::read(root.join(lock))?)
@@ -402,6 +458,60 @@ mod tests {
             format!("[package]\nname = 'sample'\nversion = '0.0.0'\nedition = '2024'\n{extra}"),
         )?;
         Ok(temp)
+    }
+
+    #[test]
+    fn reruns_require_matching_execution_identity_but_allow_discovery_changes() -> Result<()> {
+        let temp = fixture("")?;
+        let mut scope = Project::load(temp.path())?.scope;
+        scope.rustc = Some("rustc test-version with host".into());
+        scope.cargo = Some("cargo test-version".into());
+        let saved = serde_json::to_value(&scope)?;
+        let mut current = scope.clone();
+        current
+            .discovery_exclusions
+            .push("new test-only module".into());
+        scope.validate_rerun(&current)?;
+        for (field, value, expected) in [
+            ("package", serde_json::json!("other"), "package"),
+            ("binary", serde_json::json!("other"), "binary target"),
+            ("source", serde_json::json!("src/other.rs"), "binary target"),
+            ("edition", serde_json::json!("2021"), "edition"),
+            (
+                "manifest_fingerprint",
+                serde_json::json!("changed"),
+                "Cargo.toml",
+            ),
+            (
+                "lockfile_fingerprint",
+                serde_json::json!("changed"),
+                "Cargo.lock",
+            ),
+            ("default_features", serde_json::json!(false), "features"),
+            ("test_scope", serde_json::json!("library"), "test scope"),
+            ("profile", serde_json::json!("release"), "profile"),
+            ("rustc", serde_json::json!("other rustc"), "rustc toolchain"),
+            ("cargo", serde_json::json!("other cargo"), "Cargo toolchain"),
+        ] {
+            let mut changed = saved.clone();
+            changed[field] = value;
+            let changed: ExecutionScope = serde_json::from_value(changed)?;
+            let error = scope.validate_rerun(&changed).unwrap_err();
+            assert!(error.to_string().contains(expected), "{field}: {error}");
+        }
+        for field in ["manifest_fingerprint", "rustc", "cargo"] {
+            let mut legacy = saved.clone();
+            legacy.as_object_mut().unwrap().remove(field);
+            let legacy: ExecutionScope = serde_json::from_value(legacy)?;
+            assert!(
+                legacy
+                    .validate_rerun_record()
+                    .unwrap_err()
+                    .to_string()
+                    .contains("fresh scan")
+            );
+        }
+        Ok(())
     }
 
     #[test]

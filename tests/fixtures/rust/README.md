@@ -12,8 +12,11 @@ cargo run -- tests/fixtures/rust --jobs 2 --timeout 30
 
 The inventory has three mutations: two killed and one missed. The opt-in
 `cargo test --test rust_workflow -- --ignored --test-threads=1` regression checks
-the complete workflow, stronger tests through a fresh run, and preservation.
-Rust focused reruns remain a later step.
+the complete workflow, a stronger-test focused rerun, and preservation. After
+adding the assertion below in a temporary copy, `--rerun-missed RUN_DIR` selects
+the saved survivor (source ID 3), assigns it new ID 1, and kills it. ID/operator
+filters, previews, partial/empty runs, moved checkouts, stale source and Cargo
+scope validation are covered too.
 
 Run the baseline independently of Mutie's own tests:
 

@@ -91,6 +91,9 @@ async fn main() -> Result<ExitCode> {
         .as_ref()
         .map(rerun::RerunSelection::load)
         .transpose()?;
+    if let Some(selection) = &rerun {
+        selection.validate_language(config.lang)?;
+    }
     let interactive = status::select(&config)?;
     let cancellation = Cancellation::default();
     let _signals = cancellation
@@ -278,6 +281,9 @@ async fn execute(
         )
         .await?;
         coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
+        if let Some(selection) = &rerun {
+            selection.validate_rust_scope(&project.scope)?;
+        }
     }
     let mut timeout = config
         .timeout

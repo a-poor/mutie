@@ -238,10 +238,6 @@ impl RunConfig {
                     .all(|op| *op == Operator::BooleanFlip),
                 "Rust currently supports only boolean_flip"
             );
-            ensure!(
-                config.rerun.is_none(),
-                "Rust focused reruns are not implemented yet; start a fresh filtered run"
-            );
         }
         for (name, timeout) in [
             ("timeout", config.timeout),

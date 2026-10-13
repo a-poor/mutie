@@ -43,7 +43,9 @@ The prototype supports rerunning saved mutations by ID, operator, or missed
 outcome, and inspecting finalized reports with `mutie report RUN_DIR`.
 Rust now has an initial binary-package path through metadata validation, a passing
 baseline, boolean-flip discovery, isolated Cargo execution and saved reports.
-Focused Rust reruns and dismissal commands remain unimplemented.
+Focused Rust reruns now reuse shared source matching and ID provenance, with
+Cargo execution-scope checks before the baseline. Rust dismissal commands remain
+unimplemented.
 
 The project is a usable Go-focused alpha. The execution, inspection, and focused
 rerun workflow is established; further Go operators and presentation refinements
@@ -109,6 +111,8 @@ the contract below; see the fixture README and `tests/rust_workflow.rs` for veri
 behavior. The broader Rust milestone remains open.
 The [first-slice validation record](benchmarks/rust-first-slice.md) covers actual
 CLI runs, regression checks and observed self-testing costs/limitations.
+The [focused rerun record](benchmarks/rust-focused-reruns.md) extends that evidence
+with scope validation, browser export and the test-improvement workflow.
 
 #### Package and test execution
 
@@ -220,6 +224,17 @@ the audit runs offline from the existing cache, but offline-only operation is no
 a new public CLI requirement. Report toolchain, package/target/features/profile,
 lockfile identity and relevant execution settings so reruns can validate scope.
 Existing Go reports must remain readable; no version bump is needed.
+
+Focused Rust reruns compare package/binary/source/edition, full manifest and
+lockfile fingerprints, default features, test selection, profile, and actual
+rustc/Cargo version output against the captured current input. Language mismatches
+and missing saved identity fail before tools start; scope changes fail after
+metadata/version validation and before baseline execution. Early Rust reports
+without manifest identity remain inspectable, but require a fresh scan to rerun.
+Whole-file mutation identity still rejects any edit to selected production files,
+including inline tests. Separate test files can change, and fresh discovery
+diagnostics need not be identical. Current timeouts, workers, filters, limits,
+and policies apply. Browser exports explicitly select Rust without executing it.
 
 Project/ancestor Cargo configuration, compiler wrappers, custom rustflags/cfg,
 toolchain override files and externally redirected sources receive explicit validation;
@@ -1195,8 +1210,8 @@ design. No runtime or plugin ABI is selected now.
 
 The initial Rust contract fixes Cargo scope, source eligibility and artifact
 ownership, with execution reliability verified for that scope. Next, complete
-Rust review and focused reruns. Dismissal editing in the browser, report archival, run-wide
-resource budgets, and mutation matching across source edits remain deferred
+Rust operators and dismissal review. Dismissal editing in the browser, report
+archival, run-wide resource budgets, and mutation matching across source edits remain deferred
 choices; they do not block advancing Rust support.
 
 ## MVP validation evidence

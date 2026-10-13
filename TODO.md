@@ -85,14 +85,23 @@ slice is implemented; the full milestone is still in progress.
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;
   preserve existing Go reports and reject unsupported language-specific options.
-- [ ] Verify fixture outcomes, failed/empty runs, interruption, source/artifact
+- [x] Add focused Rust reruns by saved IDs/operators/missed outcomes and browser
+  command export. Validate Cargo scope, manifest/lockfile identity, toolchain and
+  current source; preserve legacy report browsing and Go reruns. Verify previews,
+  partial/empty runs, moved checkouts and a stronger-test fixture rerun.
+- [x] Verify fixture outcomes, failed/empty runs, interruption, source/artifact
   preservation, and stronger-test reruns, with Go regressions remaining green.
+- [x] Validate a useful focused rerun on Mutie itself: reproduce the known score
+  survivor in a temporary copy, restore its two regression tests, and kill only
+  the saved survivor through `--rerun-missed`. Verify browser export, ID mapping,
+  a passing fresh baseline, source/report/artifact preservation, and measured
+  runtime. See `benchmarks/rust-focused-reruns.md`.
 - [ ] Exercise the complete workflow on the selected Rust project with ordinary
   CLI commands. Review survivors, verify a useful stronger-test rerun, and record
   time to an actionable finding, run/build/workspace costs, and noise/limitations.
   Saved-percentage presence/absence regressions now catch the first real survivor
-  in `MutationScore::matches_saved` through a fresh run. The focused rerun workflow
-  and broader operator/review workflows remain to do.
+  in `MutationScore::matches_saved` through fresh and focused runs. Broader
+  operator/review workflows remain to do.
 - [ ] Document verified Rust usage and limits in README/design, mark the milestone
   complete, and choose the next major objective from observed user needs.
 
