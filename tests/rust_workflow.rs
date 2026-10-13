@@ -13,6 +13,8 @@ use std::{
 
 use serde_json::Value;
 
+#[path = "support/rust_boundaries.rs"]
+mod boundaries;
 #[path = "support/rust_compilation.rs"]
 mod compilation;
 #[path = "support/rust_dismissals.rs"]
@@ -27,6 +29,10 @@ struct Fixture {
 
 impl Fixture {
     fn new() -> Self {
+        Self::from_fixture("rust")
+    }
+
+    fn from_fixture(name: &str) -> Self {
         fn copy(from: &Path, to: &Path) {
             fs::create_dir_all(to).unwrap();
             for entry in fs::read_dir(from).unwrap() {
@@ -45,7 +51,9 @@ impl Fixture {
         let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
         let root = temp.path().join("project with spaces");
         copy(
-            &Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/rust"),
+            &Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("tests/fixtures")
+                .join(name),
             &root,
         );
         for directory in [

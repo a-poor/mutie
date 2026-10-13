@@ -170,9 +170,20 @@ are reported from the underlying error independently of retained log excerpts.
 Cargo's [machine-readable messages](https://doc.rust-lang.org/cargo/reference/external-tools.html#json-messages)
 provide build evidence, not stable structured libtest result events.
 
-#### Source eligibility and first operator
+#### Source eligibility and Rust operators
 
-Start with `boolean_flip` (`true` ↔ `false`) in ordinary function/method bodies.
+Rust supports `boolean_flip` (`true` ↔ `false`) and `comparison_boundary`
+(`<` ↔ `<=`, `>` ↔ `>=`) in ordinary function/method bodies, including closures
+and match guards. The first slice began with boolean flips; the boundary operator
+reuses the shared catalog name, filters, identities, reports and focused reruns.
+Only the parsed binary-expression operator token changes. Operands, precedence
+and borrowing remain intact; generic and overloaded comparisons are eligible.
+Rust's [comparison operator reference](https://doc.rust-lang.org/reference/expressions/operator-expr.html#comparison-operators)
+defines the corresponding `PartialOrd` methods. Custom implementations can make
+the semantic difference broader than primitive equality; discovery does not
+perform type analysis or prove equivalence. Equality/inversion, shifts, ranges
+and generic angle brackets are not comparison-boundary candidates.
+
 Walk the selected binary's ordinary external and inline module declarations;
 do not glob every `.rs` file in the repository. Deduplicate canonical source
 locations and apply the existing file filters after determining eligibility.
@@ -193,9 +204,14 @@ arguments. Ordinary source bodies annotated with macros (for example Mutie's
 `#[tokio::main]`) can still be inspected; mutation discovery does not inspect their
 expansions. `include!`-generated modules, `#[path]` module remapping, and generated
 sources are outside the initial discovery contract and must be surfaced as
-excluded/unsupported scope. Constants/statics, type-level expressions and
-constant patterns are deferred. These rules should yield exactly the fixture's
-three literals: two detected changes and one deliberate survivor.
+excluded/unsupported scope. Constants/statics, type-level expressions, array
+repeat lengths and constant patterns are deferred. Match guards are executable
+expressions, even though Tree-sitter nests them under the pattern field; only their condition is
+visited. These rules yield the original fixture's three literals and the separate
+`rust-boundaries` fixture's five comparisons. The boundary fixture covers all
+four replacements, signed/unsigned integers, borrowed generic operands, floats
+including NaN/signed zero, and operand side effects. Its missing equality case
+survives until a stronger integration test is added, then fails a focused rerun.
 
 #### Build artifacts, configuration, and preservation
 

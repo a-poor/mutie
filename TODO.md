@@ -81,6 +81,13 @@ slice is implemented; the full milestone is still in progress.
 - [ ] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
   project's workspace/package selection if required by the agreed scope.
+- [x] Add Rust comparison-boundary mutations (`<` ↔ `<=`, `>` ↔ `>=`), preserving
+  operands and source exclusions. Include executable match guards while keeping
+  patterns excluded. Verify exact edits, generic borrowing, floats, operand
+  effects and a fixture survivor killed by an equality test through focused rerun.
+  Mutie's six score-boundary mutations finish with five kills and one survivor
+  at the saved-percentage tolerance endpoint in 780.31 seconds; retain that narrow
+  review finding and the runtime evidence in `benchmarks/rust-comparison-boundaries.md`.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;

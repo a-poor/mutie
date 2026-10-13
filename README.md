@@ -5,8 +5,8 @@ A CLI for performing mutation testing.
 Mutie supports Go modules and an initial Rust binary-package workflow. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
-Rust currently supports
-`boolean_flip` in the [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
+Rust currently supports `boolean_flip` and `comparison_boundary` in the
+[initial Cargo scope](DESIGN.md#initial-rust-support-contract).
 Focused reruns and dismissal review are supported; the broader operator milestone
 remains in progress.
 
@@ -75,6 +75,11 @@ The [focused rerun validation](benchmarks/rust-focused-reruns.md) records the
 fixture and Mutie self-test evidence, including strict matching and runtime costs.
 The [dismissal validation](benchmarks/rust-dismissals.md) covers review commands,
 saved decisions, policies and source/artifact preservation.
+The [comparison-boundary fixture](tests/fixtures/rust-boundaries/README.md) adds
+five ordering mutations: four killed and one missing an equality test. A stronger
+integration test kills that survivor through a focused rerun.
+See the [boundary validation record](benchmarks/rust-comparison-boundaries.md)
+for regression checks and the Mutie self-run.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
@@ -99,9 +104,13 @@ and output-capture overflow stop the run as errors. Completed results and active
 diagnostics survive, unfinished work keeps its interrupted/pending state, and
 findings/score policies remain unevaluated.
 
-Discovery follows ordinary Rust modules and flips boolean literals in function
-bodies. Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
-macro tokens/expansions, generated files and constants/type-level code are
+Discovery follows ordinary Rust modules and mutates boolean literals and ordering
+comparisons in function/method bodies, including closures and match guards.
+`comparison_boundary` swaps `<` ↔ `<=` and `>` ↔ `>=` by editing only the operator
+token. It leaves operand expressions intact and supports generic/overloaded
+comparisons. It does not change `==`, `!=`, shifts, ranges, or generic brackets.
+Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
+macro tokens/expansions, generated files, constants/type-level code and array repeat lengths are
 excluded. The run prints and saves discovery exclusions. Library/proc-macro
 packages, multi-package or enclosing workspaces, local/git dependencies,
 project build scripts, custom profiles/harnesses, feature selection, and custom
@@ -194,7 +203,8 @@ conflicts with `--list`.
 
 ## Mutation operators
 
-All ten Go operators run by default; Rust currently runs only `boolean_flip`.
+All ten Go operators run by default; Rust runs `boolean_flip` and
+`comparison_boundary`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 

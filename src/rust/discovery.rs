@@ -160,6 +160,16 @@ impl Walker<'_> {
                 }
                 return Ok(());
             }
+            "match_arm" => {
+                // The grammar nests executable guards inside the pattern field.
+                // Visit just the guard; the pattern itself remains excluded below.
+                if let Some(condition) = node
+                    .child_by_field_name("pattern")
+                    .and_then(|pattern| pattern.child_by_field_name("condition"))
+                {
+                    self.visit(condition, file, module_dir, in_body)?;
+                }
+            }
             "mod_item" => {
                 let name = node
                     .child_by_field_name("name")
@@ -184,18 +194,28 @@ impl Walker<'_> {
             }
             "boolean_literal" if in_body && self.scope.matches(&file.path) => {
                 let original = &file.source[node.byte_range()];
-                let start = node.start_position();
-                let end = node.end_position();
-                self.mutations.push(Mutation {
-                    file: Arc::clone(file),
-                    operator: Operator::BooleanFlip,
-                    range: node.byte_range(),
-                    replacement: if original == "true" { "false" } else { "true" }.into(),
-                    line: start.row + 1,
-                    column: start.column + 1,
-                    end_line: end.row + 1,
-                    end_column: end.column + 1,
-                });
+                self.push(
+                    file,
+                    node,
+                    Operator::BooleanFlip,
+                    if original == "true" { "false" } else { "true" },
+                );
+            }
+            "binary_expression" if in_body && self.scope.matches(&file.path) => {
+                if let Some(operator) = node.child_by_field_name("operator") {
+                    let replacement = match &file.source[operator.byte_range()] {
+                        "<" => Some("<="),
+                        "<=" => Some("<"),
+                        ">" => Some(">="),
+                        ">=" => Some(">"),
+                        _ => None,
+                    };
+                    if let Some(replacement) = replacement {
+                        // Replace only the parsed operator: preserve operand evaluation,
+                        // precedence and borrowing, including overloaded comparisons.
+                        self.push(file, operator, Operator::ComparisonBoundary, replacement);
+                    }
+                }
             }
             _ => {}
         }
@@ -219,12 +239,36 @@ impl Walker<'_> {
                 || node
                     .child_by_field_name("type")
                     .is_some_and(|p| p.id() == child.id())
+                // Array repeat lengths are constant expressions, even inside bodies.
+                || (node.kind() == "array_expression"
+                    && node.child_by_field_name("length").is_some_and(|p| p.id() == child.id()))
             {
                 continue;
             }
             self.visit(child, file, module_dir, in_body)?;
         }
         Ok(())
+    }
+
+    fn push(
+        &mut self,
+        file: &Arc<SourceFile>,
+        node: Node<'_>,
+        operator: Operator,
+        replacement: &'static str,
+    ) {
+        let start = node.start_position();
+        let end = node.end_position();
+        self.mutations.push(Mutation {
+            file: Arc::clone(file),
+            operator,
+            range: node.byte_range(),
+            replacement: replacement.into(),
+            line: start.row + 1,
+            column: start.column + 1,
+            end_line: end.row + 1,
+            end_column: end.column + 1,
+        });
     }
 }
 
@@ -368,6 +412,138 @@ fn main() {
                 .to_string()
                 .contains("ambiguous")
         );
+        Ok(())
+    }
+
+    #[test]
+    fn comparison_boundaries_edit_only_ordering_tokens_in_function_bodies() -> Result<()> {
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
+        let root = temp.path();
+        fs::create_dir(root.join("src"))?;
+        let source = "fn compare<T: PartialOrd>(a: T, b: T) -> bool {\r\n\
+            let π = || a /* < */ < b;\r\n\
+            let pairs = (a<=b, a > b, a>=b);\r\n\
+            let nested = (a < b) <= (a > b);\r\n\
+            let equal = a == b || a != b;\r\n\
+            let shifts = (1 << 2, 8 >> 1);\r\n\
+            let generic = Vec::<Vec<u8>>::new();\r\n\
+            let text = \"a <= b\";\r\n\
+            let ranges = (0..=3, 0..3);\r\n\
+            a >= b\r\n\
+        }";
+        fs::write(root.join("src/main.rs"), source)?;
+        let found = scan(root, &[])?;
+        let edits = found
+            .mutations
+            .iter()
+            .map(|m| (m.original(), m.replacement.as_ref()))
+            .collect::<Vec<_>>();
+        assert_eq!(
+            edits,
+            [
+                ("<", "<="),
+                ("<=", "<"),
+                (">", ">="),
+                (">=", ">"),
+                ("<", "<="),
+                ("<=", "<"),
+                (">", ">="),
+                (">=", ">")
+            ]
+        );
+        for mutation in &found.mutations {
+            assert_eq!(mutation.operator, Operator::ComparisonBoundary);
+            let prefix = &source[..mutation.range.start];
+            assert_eq!(
+                mutation.line,
+                prefix.bytes().filter(|b| *b == b'\n').count() + 1
+            );
+            assert_eq!(
+                mutation.column,
+                prefix.rsplit('\n').next().unwrap().len() + 1
+            );
+            assert_eq!(mutation.end_line, mutation.line);
+            assert_eq!(
+                mutation.end_column,
+                mutation.column + mutation.original().len()
+            );
+            mutation.apply(root)?;
+            let changed = fs::read_to_string(root.join("src/main.rs"))?;
+            assert_eq!(&changed[..mutation.range.start], prefix);
+            assert_eq!(
+                &changed[mutation.range.start + mutation.replacement.len()..],
+                &source[mutation.range.end..]
+            );
+            fs::write(root.join("src/main.rs"), source)?;
+        }
+        assert!(
+            found
+                .mutations
+                .last()
+                .unwrap()
+                .diff()
+                .contains("\\ No newline at end of file")
+        );
+        assert!(scan(root, &["src/other.rs".into()])?.mutations.is_empty());
+        Ok(())
+    }
+
+    #[test]
+    fn comparison_boundaries_respect_excluded_source_and_const_contexts() -> Result<()> {
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
+        let root = temp.path();
+        fs::create_dir(root.join("src"))?;
+        fs::write(
+            root.join("src/main.rs"),
+            r#"
+#[cfg(test)] mod tests { fn compare() { let x = 1 < 2; } }
+#[cfg(any())] mod missing;
+#[path = "missing.rs"] mod remapped;
+#[test] fn test() { let x = 1 <= 2; }
+#[tokio::test] async fn async_test() { let x = 1 > 2; }
+#[cfg_attr(unix, allow(dead_code))] fn conditional() { let x = 1 >= 2; }
+macro_rules! compare { () => { 1 < 2 }; }
+const FLAG: bool = 1 < 2;
+static OTHER: bool = 1 > 2;
+mod generated;
+mod nested { pub fn compare(a: i32, b: i32) -> bool { a <= b } }
+fn main() {
+    #[cfg(unix)] let skipped = 1 < 2;
+    let constant = const { 1 < 2 };
+    let typed: [u8; (1 < 2) as usize] = [0];
+    let repeated = [1 < 2; (3 < 4) as usize];
+    let generic = f::<{ 1 > 2 }>();
+    const LOCAL: bool = 1 >= 2;
+    assert!(1 < 2);
+    match 1 {
+        #[cfg(unix)] x if x <= 3 => (),
+        x if x > 4 => (),
+        _ => (),
+    }
+}
+"#,
+        )?;
+        fs::write(
+            root.join("src/generated.rs"),
+            "// @generated\nfn f() { let x = 1 < 2; }",
+        )?;
+        fs::write(root.join("src/orphan.rs"), "fn f() { let x = 1 < 2; }")?;
+        let found = scan(root, &[])?;
+        assert_eq!(
+            found
+                .mutations
+                .iter()
+                .map(Mutation::original)
+                .collect::<Vec<_>>(),
+            ["<=", "<", ">"]
+        );
+        let excluded = discover(
+            root,
+            Path::new("src/main.rs"),
+            &Scope::new(&[], &["src/main.rs".into()])?,
+            &Cancellation::default(),
+        )?;
+        assert!(excluded.mutations.is_empty());
         Ok(())
     }
 }

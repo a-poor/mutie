@@ -212,8 +212,8 @@ impl RunConfig {
                 config
                     .operators
                     .iter()
-                    .all(|op| *op == Operator::BooleanFlip),
-                "Rust currently supports only boolean_flip"
+                    .all(|op| matches!(op, Operator::BooleanFlip | Operator::ComparisonBoundary)),
+                "Rust currently supports only boolean_flip and comparison_boundary"
             );
         }
         for (name, timeout) in [
@@ -318,6 +318,14 @@ mod tests {
         assert_eq!(
             resolve(temp.path(), &["--operator", "boolean_flip"])?.operators,
             [Operator::BooleanFlip]
+        );
+        assert_eq!(
+            resolve(
+                temp.path(),
+                &["--operator", "boolean_flip,comparison_boundary"]
+            )?
+            .operators,
+            [Operator::ComparisonBoundary, Operator::BooleanFlip]
         );
         assert!(!temp.path().join("module/.mutie").exists());
         Ok(())

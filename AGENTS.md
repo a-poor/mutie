@@ -13,7 +13,7 @@ Rust binary-package workflow.
 - `src/language.rs` dispatches language commands; `command.rs` shares captures,
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
-  Rust modules for boolean flips.
+  Rust modules for boolean flips and comparison-boundary mutations.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
 - `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
@@ -42,6 +42,9 @@ Rust binary-package workflow.
   `benchmarks/rust-dismissals.md` records Rust review and policy validation.
 - `tests/rust_workflow.rs` runs real Cargo workflows with `--ignored`; keep these
   opt-in so Mutie's default self-test suite cannot recursively run mutations.
+- `tests/fixtures/rust-boundaries/` checks Rust ordering mutations, generic
+  borrowing, floating-point cases, operand effects and a stronger-test rerun.
+  `benchmarks/rust-comparison-boundaries.md` records fixture and self-run evidence.
 - `tests/fixtures/go-branches/` exercises branch forcing with Go type checking,
   unused-name preservation, short-circuit behavior, and focused reruns.
 - `tests/fixtures/go-loops/` checks loop skipping, initializer/condition/body/post
