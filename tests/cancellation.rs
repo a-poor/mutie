@@ -311,13 +311,21 @@ impl Running {
     }
 
     fn finish(&mut self) -> Output {
-        let mut status = None;
-        wait_until(|| {
-            status = self.child.try_wait().unwrap();
-            status.is_some()
-        });
+        let deadline = Instant::now() + Duration::from_secs(15);
+        let status = loop {
+            if let Some(status) = self.child.try_wait().unwrap() {
+                break status;
+            }
+            assert!(
+                Instant::now() < deadline,
+                "CLI did not finish; stdout: {}\nstderr: {}",
+                fs::read_to_string(&self.stdout).unwrap_or_default(),
+                fs::read_to_string(&self.stderr).unwrap_or_default()
+            );
+            thread::sleep(Duration::from_millis(10));
+        };
         Output {
-            status: status.unwrap(),
+            status,
             stdout: fs::read(&self.stdout).unwrap(),
             stderr: fs::read(&self.stderr).unwrap(),
         }

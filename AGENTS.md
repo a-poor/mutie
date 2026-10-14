@@ -15,6 +15,8 @@ Rust binary-package workflow.
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips and comparison-boundary mutations.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
+  Its bounded process-group shutdown retries signals to catch racing forks;
+  `benchmarks/process-reliability.md` records the regression evidence.
 - `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.
@@ -28,7 +30,8 @@ Rust binary-package workflow.
 - `src/rerun.rs` selects saved findings through fresh source identities; Rust
   reruns also validate manifest/lockfile, target settings and toolchain identity.
 - `src/report_retention.rs` lists and prunes finalized saved runs;
-  `src/report_lock.rs` shares lifetime locks between writers and pruning.
+  `src/report_lock.rs` shares lifetime locks between writers and pruning, with
+  explicit unlock-on-drop so inherited descriptors cannot extend ownership.
 - `src/identity.rs` shares strict source matching; `dismissals.rs` stores review
   decisions, implements dismissal CRUD and rediscovery checks, and captures
   validated dismissal snapshots for saved reports and the browser.

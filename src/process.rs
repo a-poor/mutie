@@ -268,7 +268,7 @@ where
                 _ = &mut observation => unreachable!("observation never completes"),
             }
         };
-        group.kill();
+        group.shutdown().await;
         // Drain bytes already in the pipes even when the child exits first.
         // A descendant outside the process group may still hold a pipe open;
         // bound that wait and explicitly fail rather than silently lose output.
@@ -401,15 +401,38 @@ struct ProcessGroup {
 
 impl ProcessGroup {
     fn kill(&mut self) {
-        if let Some(id) = self.id.take() {
+        if let Some(id) = self.id {
             #[cfg(unix)]
-            // SAFETY: the child created its own process group with its PID. A
-            // negative PID targets only that group; no pointers are involved.
-            unsafe {
-                libc::kill(-(id as i32), libc::SIGKILL);
+            {
+                // SAFETY: the child created its own process group with its PID.
+                // A negative PID targets only that group; no pointers are involved.
+                let result = unsafe { libc::kill(-(id as i32), libc::SIGKILL) };
+                if result == -1
+                    && std::io::Error::last_os_error().raw_os_error() == Some(libc::ESRCH)
+                {
+                    // Never signal this identifier again once its group is gone.
+                    self.id = None;
+                }
             }
             #[cfg(not(unix))]
-            let _ = id;
+            {
+                let _ = id;
+                self.id = None;
+            }
+        }
+    }
+
+    async fn shutdown(&mut self) {
+        // A descendant can fork while a group signal is being delivered. Keep
+        // signaling until the group disappears, including for direct-to-file
+        // captures. Bound the wait: orphan zombies may await an external reaper.
+        let deadline = tokio::time::Instant::now() + Duration::from_secs(1);
+        loop {
+            self.kill();
+            if self.id.is_none() || tokio::time::Instant::now() >= deadline {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(10)).await;
         }
     }
 }
@@ -515,10 +538,77 @@ mod tests {
         )
         .await?;
         assert!(output.status.success());
-        assert!(output.capture_error.is_none());
+        assert!(
+            output.capture_error.is_none(),
+            "{:?}; stderr: {}",
+            output.capture_error,
+            output.stderr.text()?
+        );
         assert_eq!(output.stdout.text()?, "finished\n");
         assert!(output.elapsed < Duration::from_secs(3));
         Ok(())
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 8)]
+    async fn concurrent_captures_reach_eof_after_their_own_process_groups_exit() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let mut runs = tokio::task::JoinSet::new();
+        for index in 0..64 {
+            let path = root.path().to_owned();
+            runs.spawn(async move {
+                let expected = format!("command-{index}\\n");
+                // Each background helper holds the pipe until group cleanup.
+                // Exercise background forks racing with group shutdown.
+                let script = if index % 4 == 0 {
+                    // Keep a mix of live and exiting process groups.
+                    format!("printf '{expected}'; sleep 2")
+                } else {
+                    format!("printf '{expected}'; (sleep 30) & exit 0")
+                };
+                let output = run(
+                    "sh",
+                    &["-c", &script],
+                    &path,
+                    Duration::from_secs(10),
+                    NonZeroUsize::new(128),
+                    &Cancellation::default(),
+                )
+                .await?;
+                anyhow::ensure!(
+                    output.status.success() && !output.timed_out && !output.interrupted,
+                    "command {index}: {:?}, timeout={}, interrupted={}",
+                    output.status,
+                    output.timed_out,
+                    output.interrupted
+                );
+                anyhow::ensure!(
+                    output.capture_error.is_none(),
+                    "command {index}: {:?}",
+                    output.capture_error
+                );
+                anyhow::ensure!(
+                    output.stdout.text()? == format!("command-{index}\n"),
+                    "command {index}: wrong capture"
+                );
+                anyhow::ensure!(
+                    output.stderr.text()?.is_empty(),
+                    "command {index}: unexpected stderr"
+                );
+                Ok::<_, anyhow::Error>(())
+            });
+        }
+        // Drain every task before returning a failure so all child groups and
+        // captures are cleaned up, including when this regression fails.
+        let mut failure = None;
+        while let Some(result) = runs.join_next().await {
+            if let Err(error) = result
+                .context("capture task panicked")
+                .and_then(|result| result)
+            {
+                failure.get_or_insert(error);
+            }
+        }
+        failure.map_or(Ok(()), Err)
     }
 
     #[test]
@@ -561,7 +651,7 @@ mod tests {
                 "sh",
                 &[
                     "-c",
-                    "printf 'captured\\n'; printf 'error output\\n' >&2; (sleep 1; touch leaked) & sleep 30",
+                    "(while [ ! -f release ]; do sleep 0.01; done; touch leaked) & echo $! > descendant.pid; printf 'captured\\n'; printf 'error output\\n' >&2; sleep 30",
                 ],
                 root.path(),
                 Duration::from_millis(400),
@@ -590,7 +680,32 @@ mod tests {
             assert_eq!(output.timed_out, !cancel);
             assert_eq!(output.stdout.text()?, "captured\n");
             assert_eq!(output.stderr.text()?, "error output\n");
-            tokio::time::sleep(Duration::from_millis(1050)).await;
+            // A fixed delayed write can happen before cancellation is even
+            // scheduled on a loaded host. Release the helper only after the
+            // command returns, then verify it is dead, not merely slow.
+            std::fs::write(root.path().join("release"), "")?;
+            let pid: i32 = std::fs::read_to_string(root.path().join("descendant.pid"))?
+                .trim()
+                .parse()?;
+            tokio::time::timeout(Duration::from_secs(5), async {
+                loop {
+                    #[cfg(target_os = "linux")]
+                    if std::fs::read_to_string(format!("/proc/{pid}/status")).is_ok_and(|status| {
+                        status
+                            .lines()
+                            .any(|line| line.starts_with("State:") && line.contains('Z'))
+                    }) {
+                        break;
+                    }
+                    // SAFETY: signal zero only queries the test-owned helper.
+                    if unsafe { libc::kill(pid, 0) } != 0 {
+                        break;
+                    }
+                    tokio::time::sleep(Duration::from_millis(10)).await;
+                }
+            })
+            .await
+            .context("descendant survived command shutdown")?;
             assert!(!root.path().join("leaked").exists());
         }
         Ok(())

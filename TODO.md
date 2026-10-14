@@ -97,11 +97,22 @@ slice is implemented; the full milestone is still in progress.
   records reused and all 14 local targets rebuilt. Whole runs take 846.13 versus
   651.97 seconds, but baseline variation accounts for nearly half the difference.
   See `benchmarks/rust-build-cache.md` for costs, limits and preservation evidence.
-- [ ] Investigate capture-shutdown and retention-lock assertion failures exposed
-  during the paired self-runs. Capture EOF and post-drop lock/selection diagnostics
-  under parallel subprocess load, reproduce on unmutated code, and fix established
-  causes before broadening cache defaults. Intended score failures independently
-  kill the affected mutants; both baselines and survivors pass the complete suite.
+- [x] Reproduce and fix capture-shutdown and retention-lock assertion failures
+  exposed during the paired self-runs. Retry process-group shutdown to catch
+  racing forks and explicitly release report locks before closing their owning
+  descriptors. The isolated EOF regression passes 100/100 runs; all 198 default
+  tests pass. See `benchmarks/process-reliability.md` for evidence and validation
+  limits. Keep cache reuse opt-in.
+- [ ] Stabilize nested parallel Mutie self-testing before accepting new runtime
+  or finding-quality evidence. The reliability follow-up passes 198 default
+  tests; all 16 Rust workflows pass either in the suite or focused rechecks, but
+  the full Rust suite has two intermittent timeout/checkpoint failures. The
+  six-mutation self-run produced four timeouts and an unrelated kill of the
+  previous survivor despite a clean baseline. Original capture/lock assertions
+  did not recur; other cancellation, log-limit and terminal tests stalled or
+  failed. A fixture loader stall is observed, not established as every failure's
+  cause. Preserve deadlines, source isolation and diagnostic logs; see
+  `benchmarks/process-reliability.md`.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;

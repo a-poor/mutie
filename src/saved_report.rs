@@ -164,7 +164,7 @@ struct Execution {
 pub struct SavedReport {
     directory: PathBuf,
     // Hold through the final multi-file flush, not merely until status changes.
-    _lock: fs::File,
+    _lock: report_lock::Lock,
     started: Instant,
     run: RunReport,
     inventory: Inventory,

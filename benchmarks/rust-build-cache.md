@@ -152,8 +152,9 @@ failed its `capture_error.is_none()` check in fresh ID 1 and cached IDs 1–2.
 Cached ID 1 also failed the retention writer-lock test's post-drop selection
 assertion. These extra failures did not determine a kill: each affected mutation
 independently failed score assertions in both modes. They did not occur in either
-baseline or survivor. Their causes are not established; preserve the logs and
-investigate the capture/lock reliability before broadening cache defaults.
+baseline or survivor. The [process reliability follow-up](process-reliability.md)
+records unmutated reproductions, process-group shutdown retries and explicit
+report-lock release. Cache reuse remains opt-in.
 
 Local evidence (temporary, not committed):
 

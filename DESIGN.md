@@ -857,6 +857,15 @@ Rendered logs can expand invalid UTF-8, and reports, caches, workspace files, an
 individual decoded records have separate disk/memory costs. Archival/compression
 and run-wide resource quotas remain future policies.
 
+After a child exits, Unix process-group cleanup retries SIGKILL every 10 ms until
+its group disappears, bounded to one second. A single group signal can miss a
+descendant forking during delivery. Retire the group identifier on ESRCH; retain
+a best-effort Drop signal otherwise. This applies to both piped and direct-to-file
+captures. Orphan zombies can await an external reaper, so group cleanup cannot
+wait indefinitely. Limited captures then retain their separate one-second EOF
+drain bound and explicit incomplete-capture error. See
+`benchmarks/process-reliability.md` for reproduction and checks.
+
 Publish the inventory and diffs before workers begin. Inventory entries without
 final outcomes remain visibly untested or interrupted. Update results and derived
 summaries as execution progresses, using atomic replacement for JSON snapshots.
@@ -905,6 +914,8 @@ protected. Abandoned `running` reports are never inferred to be safe to delete.
 Size calculation uses file metadata, not log contents, and reports logical bytes.
 Each new writer holds an exclusive `.mutie.lock` file lock until drop, including
 the multi-file final flush. The persistent empty file does not itself mean active.
+The owning guard explicitly unlocks before closing its descriptor: an inherited
+or duplicated descriptor must not extend the writer/inspector's lock lifetime.
 Pruning acquires the same lock, revalidates the selected snapshot and directory
 identity, then holds it through removal. Legacy finalized runs gain the lock only
 on apply. Deletion removes only validated artifact paths and uses nonrecursive

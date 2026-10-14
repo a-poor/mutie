@@ -103,6 +103,10 @@ versus 66–73 seconds for the same mutations with fresh artifacts. Whole-run
 timing also varied between fresh baselines; see the
 [cache validation record](benchmarks/rust-build-cache.md) for results and limits.
 
+The [process reliability follow-up](benchmarks/process-reliability.md) records
+parallel capture and report-lock regressions discovered while testing Mutie
+itself, including the fixes and unmutated reproduction checks.
+
 Package cleanup shares the mutation deadline with compilation and testing and
 has its own output-capture budget. A failed cleanup stops the run as a tool error;
 a cleanup timeout records `timeout` without starting compilation or tests.

@@ -353,8 +353,12 @@ fn remove(entry: &Entry, now: u64, cancellation: &Cancellation) -> Result<()> {
     );
     cancellation.check()?;
     // Keep the lock through deletion. Do not interrupt midway through a run.
-    remove_artifacts(&entry.path, current.snapshot.as_ref().unwrap(), &lock)
-        .context("removing report (some files may already have been removed)")
+    remove_artifacts(
+        &entry.path,
+        current.snapshot.as_ref().unwrap(),
+        lock.as_file(),
+    )
+    .context("removing report (some files may already have been removed)")
 }
 
 fn remove_artifacts(directory: &Path, snapshot: &Snapshot, lock: &fs::File) -> Result<()> {
@@ -730,7 +734,11 @@ mod tests {
         drop(report);
         let mut entries = scan(&config.output_dir, now, &cancel).unwrap().0;
         select(&mut entries, &Policy::new(Some(0), None).unwrap(), now);
-        assert!(entries[0].selected);
+        assert!(
+            entries[0].selected,
+            "post-drop protection: {:?}",
+            entries[0].protected
+        );
         remove(&entries[0], now, &cancel).unwrap();
         assert!(!path.exists());
         assert!(module.path().join("go.mod").exists());
@@ -819,7 +827,10 @@ mod tests {
             let inspected = inspect(path.clone(), NOW, &Cancellation::default(), true);
             assert!(inspected.protected.is_none());
             fs::write(path.join(relative), "added during deletion").unwrap();
-            assert!(remove_artifacts(&path, inspected.snapshot.as_ref().unwrap(), &lock).is_err());
+            assert!(
+                remove_artifacts(&path, inspected.snapshot.as_ref().unwrap(), lock.as_file())
+                    .is_err()
+            );
             assert_eq!(
                 fs::read_to_string(path.join(relative)).unwrap(),
                 "added during deletion"
