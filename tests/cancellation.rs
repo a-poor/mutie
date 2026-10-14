@@ -56,6 +56,8 @@ impl Fixture {
             &go,
             r#"#!/bin/sh
 set -eu
+# Separate reaching the shim from reaching a later test checkpoint.
+printf '%s\n' "$$" > "$MUTIE_TEST_STATE/$$.started"
 # Deliberately leave build files even on success. Mutie must own their cleanup.
 mkdir "$GOTMPDIR/go-build-$$"
 printf 'build output\n' > "$GOTMPDIR/go-build-$$/object"
@@ -181,7 +183,23 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
     }
 
     fn ready(&self, name: &str) {
-        wait_until(|| self.state.join(format!("{name}.ready")).exists());
+        wait_until_with(
+            || self.state.join(format!("{name}.ready")).exists(),
+            || {
+                let mut markers: Vec<_> = fs::read_dir(&self.state)
+                    .into_iter()
+                    .flatten()
+                    .flatten()
+                    .map(|entry| entry.file_name())
+                    .collect();
+                markers.sort();
+                format!(
+                    "Go did not reach {name}; state markers: {markers:?}\nstdout: {}\nstderr: {}",
+                    fs::read_to_string(self.state.join("stdout")).unwrap_or_default(),
+                    fs::read_to_string(self.state.join("stderr")).unwrap_or_default()
+                )
+            },
+        );
     }
 
     fn report(&self) -> PathBuf {
@@ -354,13 +372,14 @@ impl Drop for Running {
     }
 }
 
-fn wait_until(mut predicate: impl FnMut() -> bool) {
+fn wait_until(predicate: impl FnMut() -> bool) {
+    wait_until_with(predicate, || "timed out waiting for test process".into());
+}
+
+fn wait_until_with(mut predicate: impl FnMut() -> bool, diagnostic: impl Fn() -> String) {
     let deadline = Instant::now() + Duration::from_secs(15);
     while !predicate() {
-        assert!(
-            Instant::now() < deadline,
-            "timed out waiting for test process"
-        );
+        assert!(Instant::now() < deadline, "{}", diagnostic());
         thread::sleep(Duration::from_millis(10));
     }
 }

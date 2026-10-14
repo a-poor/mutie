@@ -113,6 +113,11 @@ slice is implemented; the full milestone is still in progress.
   failed. A fixture loader stall is observed, not established as every failure's
   cause. Preserve deadlines, source isolation and diagnostic logs; see
   `benchmarks/process-reliability.md`.
+  Unmutated controls now pass all 198 tests in one and two isolated Cargo workers;
+  repeated cancellation suites also pass directly and through Mutie's subprocess
+  runner. The fixture now records shim startup and includes checkpoint/output
+  diagnostics on readiness timeouts. The full Cargo adapter and changing mutant
+  executables remain to be isolated; see `benchmarks/rust-nested-self-tests.md`.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;

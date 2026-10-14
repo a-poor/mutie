@@ -447,6 +447,74 @@ impl Drop for ProcessGroup {
 mod tests {
     use super::*;
 
+    /// Opt-in diagnostic: point at a prebuilt, unmutated integration-test binary
+    /// to separate nested execution from compilation and mutation effects.
+    #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+    #[ignore = "requires MUTIE_REPRO_TEST_BINARY; runs nested real CLI tests"]
+    async fn nested_unmutated_test_binary() -> Result<()> {
+        let binary = std::env::var("MUTIE_REPRO_TEST_BINARY")
+            .context("set MUTIE_REPRO_TEST_BINARY to an absolute integration-test binary path")?;
+        anyhow::ensure!(
+            Path::new(&binary).is_absolute(),
+            "test binary must be absolute"
+        );
+        for jobs in [1, 2] {
+            for round in 0..3 {
+                let mut tasks = tokio::task::JoinSet::new();
+                for worker in 0..jobs {
+                    let binary = binary.clone();
+                    tasks.spawn(async move {
+                        let root = tempfile::tempdir()?;
+                        let output = run_with_env(
+                            &binary,
+                            &["--nocapture"],
+                            root.path(),
+                            Duration::from_secs(120),
+                            None,
+                            &Cancellation::default(),
+                            &[
+                                ("TMPDIR", root.path().as_os_str()),
+                                ("TMP", root.path().as_os_str()),
+                                ("TEMP", root.path().as_os_str()),
+                            ],
+                        )
+                        .await?;
+                        eprintln!(
+                            "nested jobs={jobs} round={round} worker={worker}: {:?}, {:?}",
+                            output.status, output.elapsed
+                        );
+                        anyhow::ensure!(
+                            output.status.success()
+                                && !output.timed_out
+                                && !output.interrupted
+                                && output.capture_error.is_none(),
+                            "nested execution failed: timeout={}, capture={:?}\n{}\n{}",
+                            output.timed_out,
+                            output.capture_error,
+                            output.stdout.text()?,
+                            output.stderr.text()?
+                        );
+                        anyhow::ensure!(
+                            std::fs::read_dir(root.path())?.next().is_none(),
+                            "nested temporary files remain"
+                        );
+                        Ok::<_, anyhow::Error>(())
+                    });
+                }
+                let mut failure = None;
+                while let Some(result) = tasks.join_next().await {
+                    if let Err(error) = result.context("nested task panicked").and_then(|r| r) {
+                        failure.get_or_insert(error);
+                    }
+                }
+                if let Some(error) = failure {
+                    return Err(error);
+                }
+            }
+        }
+        Ok(())
+    }
+
     #[tokio::test]
     async fn capture_budget_is_shared_and_exact_boundary_succeeds_even_on_fast_exit() -> Result<()>
     {

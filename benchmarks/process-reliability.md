@@ -117,3 +117,8 @@ Local evidence (temporary, not committed):
   `mutie-group-cache-recheck.log`, `mutie-group-deadline-recheck.log` and
   `mutie-group-go.log`.
 - Loader sample: `/tmp/mutie-cargo-sample-60993.txt`.
+
+The subsequent [unmutated serial/parallel controls](rust-nested-self-tests.md)
+pass the complete default suite in isolated Cargo workers and add startup and
+checkpoint diagnostics. They narrow the investigation but do not resolve or
+supersede the failed self-run above.

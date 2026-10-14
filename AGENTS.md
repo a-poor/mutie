@@ -17,6 +17,9 @@ Rust binary-package workflow.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
   Its bounded process-group shutdown retries signals to catch racing forks;
   `benchmarks/process-reliability.md` records the regression evidence.
+  Its ignored `nested_unmutated_test_binary` probe accepts a prebuilt integration
+  test through `MUTIE_REPRO_TEST_BINARY`; `benchmarks/rust-nested-self-tests.md`
+  records serial/parallel controls and the remaining self-run investigation.
 - `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.
