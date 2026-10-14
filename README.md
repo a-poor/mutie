@@ -84,10 +84,28 @@ for regression checks and the Mutie self-run.
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
 then runs the same command without `--no-run`. Both phases share one timeout;
-captured diagnostics survive failures, timeout and cancellation. Each baseline
-and mutation gets fresh owned target/build directories. The input `target/`,
+captured diagnostics survive failures, timeout and cancellation. By default each
+baseline and mutation gets fresh owned target/build directories. The input `target/`,
 caller-selected build directories and source files are preserved; the Cargo
 registry/download cache remains available. Fresh builds can be expensive.
+
+Opt into per-worker dependency reuse with `--rust-build-cache worker` (or
+`rust_build_cache = "worker"` in a Rust project's `mutie.toml`). The baseline
+still builds fresh. Each worker retains its own dependency artifacts for that
+run, but runs `cargo clean --locked --package PACKAGE` before every mutation's
+compilation. This forces the package's binary, unit tests and integration tests
+to rebuild even when source timestamps move backwards. Caches are never shared
+between workers or runs and are removed when the run ends. Use
+`--rust-build-cache fresh` to select the default behavior explicitly. Saved
+settings and text summaries identify the mode; focused reruns use the current
+mode. On the six-mutation Mutie sample, warm compilation took 22–46 seconds
+versus 66–73 seconds for the same mutations with fresh artifacts. Whole-run
+timing also varied between fresh baselines; see the
+[cache validation record](benchmarks/rust-build-cache.md) for results and limits.
+
+Package cleanup shares the mutation deadline with compilation and testing and
+has its own output-capture budget. A failed cleanup stops the run as a tool error;
+a cleanup timeout records `timeout` without starting compilation or tests.
 
 Interrupting compilation or mutation tests with Ctrl-C or SIGTERM preserves
 completed results and active diagnostics in a partial report. Active mutations
@@ -162,7 +180,9 @@ ui = "auto"
 
 The configuration example above is for Go. Use `lang = "rust"` (or automatic
 detection) and Rust file globs for a Cargo package. Rust accepts only
-`test_scope = "full"` and `boolean_flip` operator selection.
+`test_scope = "full"` and the `boolean_flip` and `comparison_boundary` operators.
+`rust_build_cache = "fresh"` (default) or `"worker"` applies only to Rust;
+specifying it for Go is rejected.
 
 All keys are optional. Defaults are `lang = "auto"` (detect Go or Rust), one worker,
 empty include/exclude/operator lists, a 300-second baseline/discovery timeout, `.mutie`
@@ -907,11 +927,11 @@ It defaults to unlimited. This applies to baseline tests, discovery (including
 command has its own budget. Reruns use current settings, not the source
 report's budget.
 
-For Rust, Cargo metadata, compilation (`--no-run`), and test execution each get
-a separate capture budget. The saved baseline/mutation logs combine compilation
-and test execution, so their combined raw byte counts can reach twice the budget
-plus the phase separators Mutie inserts. Compilation and testing still share
-one timeout.
+For Rust, Cargo metadata, compilation (`--no-run`), test execution, and optional
+worker-cache package cleanup each get a separate capture budget. Saved
+baseline/mutation logs combine their phases, so combined raw byte counts can
+reach twice the budget (three times for cached mutations), plus phase separators.
+Cleanup, compilation and testing still share one timeout.
 
 ```sh
 cargo run -- /path/to/go/module --max-capture-bytes 16777216 --max-log-bytes 65536

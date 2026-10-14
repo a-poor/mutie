@@ -302,6 +302,7 @@ async fn execute(
             baseline_limit,
             config.max_log_bytes,
             config.max_capture_bytes,
+            None,
             cancellation,
             |_| async {},
         )
@@ -522,6 +523,10 @@ async fn execute(
     ));
     let context = WorkerContext {
         lang: config.lang,
+        rust_cache_package: rust_project
+            .as_ref()
+            .filter(|_| config.rust_build_cache == cli::RustBuildCache::Worker)
+            .map(|project| project.scope.package.clone()),
         snapshot,
         test_packages: Arc::new(test_packages),
         timeout,
@@ -535,6 +540,7 @@ async fn execute(
 #[derive(Clone)]
 struct WorkerContext {
     lang: Lang,
+    rust_cache_package: Option<String>,
     snapshot: Arc<Workspace>,
     test_packages: Arc<Vec<Vec<String>>>,
     timeout: Duration,
@@ -549,12 +555,14 @@ struct WorkerJob {
     worker: usize,
     mutation: Mutation,
     workspace: Option<Workspace>,
+    cache: Option<rust::BuildCache>,
     progress: mpsc::Sender<WorkerProgress>,
 }
 
 struct FinishedWorker {
     worker: usize,
     workspace: Option<Workspace>,
+    cache: Option<rust::BuildCache>,
     result: MutationResult,
     preparation: Option<(WorkspaceKind, WorkspaceMeasurement)>,
 }
@@ -567,6 +575,7 @@ impl WorkerJob {
             worker,
             mutation,
             workspace,
+            mut cache,
             progress,
         } = self;
         let kind = if workspace.is_some() {
@@ -615,28 +624,45 @@ impl WorkerJob {
                         phase: WorkerPhase::Running,
                     })
                     .await;
-                language::test(
-                    context.lang,
-                    &workspace.as_ref().unwrap().path(),
-                    &context.test_packages[id - 1],
-                    context.timeout,
-                    context.max_log_bytes,
-                    context.max_capture_bytes,
-                    &context.cancellation,
-                    move |phase| {
-                        let progress = progress.clone();
-                        async move {
-                            let _ = progress
-                                .send(WorkerProgress {
-                                    worker,
-                                    id,
-                                    phase: phase.into(),
-                                })
-                                .await;
-                        }
-                    },
-                )
-                .await
+                let cache_ready = if cache.is_none() {
+                    context
+                        .rust_cache_package
+                        .as_ref()
+                        .map(|package| {
+                            rust::BuildCache::new(package.clone()).map(|new| cache = Some(new))
+                        })
+                        .transpose()
+                } else {
+                    Ok(None)
+                };
+                match cache_ready {
+                    Err(error) => Err(error),
+                    Ok(_) => {
+                        language::test(
+                            context.lang,
+                            &workspace.as_ref().unwrap().path(),
+                            &context.test_packages[id - 1],
+                            context.timeout,
+                            context.max_log_bytes,
+                            context.max_capture_bytes,
+                            cache.as_ref(),
+                            &context.cancellation,
+                            move |phase| {
+                                let progress = progress.clone();
+                                async move {
+                                    let _ = progress
+                                        .send(WorkerProgress {
+                                            worker,
+                                            id,
+                                            phase: phase.into(),
+                                        })
+                                        .await;
+                                }
+                            },
+                        )
+                        .await
+                    }
+                }
             }
             Err(error) => Err(error),
         };
@@ -676,6 +702,7 @@ impl WorkerJob {
         FinishedWorker {
             worker,
             workspace,
+            cache,
             result: MutationResult {
                 id,
                 mutation,
@@ -697,13 +724,13 @@ async fn run_workers(
 ) -> Result<()> {
     let mut workers = JoinSet::new();
     let (progress, mut progress_events) = mpsc::channel(jobs.saturating_mul(2).clamp(1, 256));
-    let mut available: VecDeque<_> = (1..=jobs).map(|worker| (worker, None)).collect();
+    let mut available: VecDeque<_> = (1..=jobs).map(|worker| (worker, None, None)).collect();
     let mut next = 0;
     let mut failure = None;
     let total = mutations.len();
     loop {
         while failure.is_none() && !context.cancellation.is_cancelled() && next < total {
-            let Some((worker, workspace)) = available.pop_front() else {
+            let Some((worker, workspace, cache)) = available.pop_front() else {
                 break;
             };
             let id = next + 1;
@@ -726,6 +753,7 @@ async fn run_workers(
                     worker,
                     mutation: mutations[next].clone(),
                     workspace,
+                    cache,
                     progress: progress.clone(),
                 }
                 .run(),
@@ -750,10 +778,11 @@ async fn run_workers(
             Ok(FinishedWorker {
                 worker,
                 workspace,
+                cache,
                 result,
                 preparation,
             }) => {
-                available.push_back((worker, workspace));
+                available.push_back((worker, workspace, cache));
                 let measured = if let Some((kind, measurement)) = preparation {
                     coordinator.emit(
                         RunEvent::Workspace {

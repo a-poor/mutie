@@ -1,4 +1,4 @@
-//! Initial Cargo adapter: one binary package, default features, fresh artifacts.
+//! Initial Cargo adapter: one binary package and owned build artifacts.
 use std::{
     ffi::OsStr,
     future::Future,
@@ -29,6 +29,24 @@ pub const TEST_ARGS: &[&str] = &[
     "--message-format=json",
 ];
 pub const METADATA_ARGS: &[&str] = &["metadata", "--format-version", "1", "--no-deps", "--locked"];
+
+/// Owned by one worker for one run; never shared with the baseline or another worker.
+pub struct BuildCache {
+    directory: tempfile::TempDir,
+    package: String,
+}
+
+impl BuildCache {
+    pub fn new(package: String) -> Result<Self> {
+        Ok(Self {
+            directory: tempfile::Builder::new()
+                .prefix("mutie-cargo-worker-")
+                .tempdir()
+                .context("creating worker-local Cargo build cache")?,
+            package,
+        })
+    }
+}
 
 async fn cargo(
     args: &[&str],
@@ -140,6 +158,7 @@ pub async fn test<F, Fut>(
     limit: Duration,
     log_limit: Option<NonZeroUsize>,
     capture_limit: Option<NonZeroUsize>,
+    cache: Option<&BuildCache>,
     cancellation: &Cancellation,
     mut progress: F,
 ) -> Result<CommandOutput>
@@ -149,21 +168,82 @@ where
 {
     let started = Instant::now();
     // The guard spans compilation and execution, outside the resettable source.
-    let artifacts = tempfile::Builder::new()
-        .prefix("mutie-cargo-build-")
-        .tempdir()?;
+    let fresh = cache
+        .is_none()
+        .then(|| {
+            tempfile::Builder::new()
+                .prefix("mutie-cargo-build-")
+                .tempdir()
+        })
+        .transpose()?;
+    let artifacts = cache
+        .map(|cache| cache.directory.path())
+        .unwrap_or_else(|| fresh.as_ref().unwrap().path());
     report_progress(progress(TestPhase::Building), limit, cancellation).await;
+    // Cargo's own package cleanup removes *all* local target/fingerprint outputs,
+    // including integration tests, independently of source mtimes or file size.
+    // Registry dependencies remain in this worker's owned directory.
+    let cleaned = if let Some(cache) = cache {
+        let mut clean = cargo(
+            &["clean", "--locked", "--package", &cache.package],
+            root,
+            artifacts,
+            limit.saturating_sub(started.elapsed()),
+            capture_limit,
+            cancellation,
+        )
+        .await?;
+        if !clean.status.success()
+            || clean.timed_out
+            || clean.interrupted
+            || clean.capture_error.is_some()
+        {
+            if !clean.status.success()
+                && !clean.timed_out
+                && !clean.interrupted
+                && clean.capture_error.is_none()
+            {
+                clean.capture_error =
+                    Some("Cargo package cleanup failed before compilation".into());
+            }
+            clean.elapsed = started.elapsed();
+            return prepare(clean, log_limit, Failure::Unknown).await;
+        }
+        Some(clean)
+    } else {
+        None
+    };
     let build_args: Vec<_> = TEST_ARGS.iter().copied().chain(["--no-run"]).collect();
-    let mut build = cargo(
+    let build = cargo(
         &build_args,
         root,
-        artifacts.path(),
+        artifacts,
         limit.saturating_sub(started.elapsed()),
         capture_limit,
         cancellation,
     )
-    .await?;
+    .await;
+    let mut build = match build {
+        Ok(build) => build,
+        Err(error) => {
+            let Some(mut clean) = cleaned else {
+                return Err(error);
+            };
+            if error.is::<Interrupted>() {
+                clean.interrupted = true;
+            } else {
+                clean.capture_error = Some(format!(
+                    "starting Cargo compilation after cleanup: {error:#}"
+                ));
+            }
+            clean.elapsed = started.elapsed();
+            return prepare(clean, log_limit, Failure::Unknown).await;
+        }
+    };
     let evidence = Evidence::read(&build)?;
+    if let Some(clean) = cleaned {
+        build = merge(clean, build, "Cargo compilation")?;
+    }
     if !build.status.success()
         || build.timed_out
         || build.interrupted
@@ -195,7 +275,7 @@ where
     let tests = cargo(
         TEST_ARGS,
         root,
-        artifacts.path(),
+        artifacts,
         limit.saturating_sub(started.elapsed()),
         capture_limit,
         cancellation,
@@ -216,7 +296,7 @@ where
     };
     let evidence = Evidence::read(&tests)?;
     let failure = evidence.failure(tests.status.code(), true);
-    let mut raw = merge(build, tests)?;
+    let mut raw = merge(build, tests, "Cargo test execution")?;
     raw.elapsed = started.elapsed();
     if raw.status.success()
         && !raw.timed_out
@@ -297,16 +377,17 @@ impl Evidence {
 fn merge(
     first: process::CommandOutput,
     mut last: process::CommandOutput,
+    phase: &str,
 ) -> Result<process::CommandOutput> {
-    fn join(first: Capture, last: Capture) -> Result<Capture> {
+    fn join(first: Capture, last: Capture, phase: &str) -> Result<Capture> {
         let mut file = tempfile::NamedTempFile::new()?;
         std::io::copy(&mut first.reader()?, &mut file)?;
-        writeln!(file, "\n--- Cargo test execution ---")?;
+        writeln!(file, "\n--- {phase} ---")?;
         std::io::copy(&mut last.reader()?, &mut file)?;
         Ok(Capture::new(file)?)
     }
-    last.stdout = join(first.stdout, last.stdout)?;
-    last.stderr = join(first.stderr, last.stderr)?;
+    last.stdout = join(first.stdout, last.stdout, phase)?;
+    last.stderr = join(first.stderr, last.stderr, phase)?;
     Ok(last)
 }
 

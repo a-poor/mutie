@@ -88,6 +88,20 @@ slice is implemented; the full milestone is still in progress.
   Mutie's six score-boundary mutations finish with five kills and one survivor
   at the saved-percentage tolerance endpoint in 780.31 seconds; retain that narrow
   review finding and the runtime evidence in `benchmarks/rust-comparison-boundaries.md`.
+- [x] Validate opt-in per-worker Cargo dependency reuse against fresh builds on
+  the same six Mutie score-boundary mutations. Force package recompilation with
+  Cargo cleanup; verify backdated source, restoration, stronger-test reruns,
+  parallel isolation, failure/timeout/cancellation cleanup and source preservation.
+  Fresh remains the default. Both self-runs produce five kills and one survivor;
+  warm compilation falls from 66–73 to 22–46 seconds, with 155 dependency artifact
+  records reused and all 14 local targets rebuilt. Whole runs take 846.13 versus
+  651.97 seconds, but baseline variation accounts for nearly half the difference.
+  See `benchmarks/rust-build-cache.md` for costs, limits and preservation evidence.
+- [ ] Investigate capture-shutdown and retention-lock assertion failures exposed
+  during the paired self-runs. Capture EOF and post-drop lock/selection diagnostics
+  under parallel subprocess load, reproduce on unmutated code, and fix established
+  causes before broadening cache defaults. Intended score failures independently
+  kill the affected mutants; both baselines and survivors pass the complete suite.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;

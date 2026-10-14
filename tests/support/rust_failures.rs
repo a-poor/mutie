@@ -23,6 +23,22 @@ fn check_logs(directory: &Path, logs: &Value) {
 fn cargo_faults_preserve_partial_results_and_stop_parallel_workers() {
     for (phase, fault, diagnostic) in [
         (
+            "clean",
+            "exit",
+            "Cargo package cleanup failed before compilation",
+        ),
+        (
+            "clean",
+            "signal",
+            "Cargo package cleanup failed before compilation",
+        ),
+        (
+            "clean",
+            "spawn",
+            "starting Cargo compilation after cleanup: could not start cargo",
+        ),
+        ("clean", "overflow-mixed", "--max-capture-bytes"),
+        (
             "build",
             "missing-build",
             "no successful build-finished event",
@@ -72,6 +88,8 @@ fn cargo_faults_preserve_partial_results_and_stop_parallel_workers() {
             &[
                 "--jobs",
                 "2",
+                "--rust-build-cache",
+                if phase == "clean" { "worker" } else { "fresh" },
                 "--timeout",
                 "120",
                 "--max-capture-bytes",
@@ -124,12 +142,15 @@ fn cargo_faults_preserve_partial_results_and_stop_parallel_workers() {
         }
         check_logs(&directory, &failed["logs"]);
         check_logs(&directory, &outcomes["mutations"][1]["logs"]);
-        if phase == "build" {
+        if phase == "build" || phase == "clean" {
             assert!(!child.state.join("c.tests.started").exists());
+        }
+        if phase == "clean" {
+            assert!(!child.state.join("c.build.started").exists());
         }
         if fault.starts_with("overflow") {
             let bytes = raw_bytes(&failed["logs"]);
-            if phase == "build" {
+            if phase == "build" || phase == "clean" {
                 assert_eq!(bytes, CAPTURE_LIMIT);
             } else {
                 // Separate limits for compile and execution, plus the two

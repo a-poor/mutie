@@ -10,7 +10,7 @@ use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    cli::{Cli, Lang, TestScope, UiMode},
+    cli::{Cli, Lang, RustBuildCache, TestScope, UiMode},
     mutation::Operator,
     rerun::{RerunFilter, RerunMode, RerunRequest},
     score::{MinimumScore, ScoreScope},
@@ -22,6 +22,7 @@ use crate::{
 #[serde(deny_unknown_fields)]
 struct RepositoryConfig {
     lang: Option<Lang>,
+    rust_build_cache: Option<RustBuildCache>,
     jobs: Option<NonZeroUsize>,
     test_scope: Option<TestScope>,
     include: Option<Vec<String>>,
@@ -46,6 +47,7 @@ pub struct RunConfig {
     pub module_root: PathBuf,
     pub config_file: Option<PathBuf>,
     pub lang: Lang,
+    pub rust_build_cache: RustBuildCache,
     pub jobs: NonZeroUsize,
     pub test_scope: TestScope,
     pub include: Vec<String>,
@@ -97,6 +99,11 @@ impl RunConfig {
             }
         };
         let lang = crate::language::resolve(&root, cli.lang.or(file.lang).unwrap_or(Lang::Auto))?;
+        let rust_build_cache = cli.rust_build_cache.or(file.rust_build_cache);
+        ensure!(
+            lang == Lang::Rust || rust_build_cache.is_none(),
+            "--rust-build-cache / rust_build_cache is only supported for Rust"
+        );
         let output_dir = match cli.output_dir {
             Some(path) => nonempty_path(invocation, path)?,
             None => nonempty_path(&root, file.output_dir.unwrap_or_else(|| ".mutie".into()))?,
@@ -159,6 +166,7 @@ impl RunConfig {
             module_root: root,
             config_file,
             lang,
+            rust_build_cache: rust_build_cache.unwrap_or_default(),
             jobs: cli
                 .jobs
                 .or(file.jobs)
@@ -291,6 +299,41 @@ pub(crate) fn resolve_output_path(path: &Path) -> Result<PathBuf> {
 mod tests {
     use super::*;
     use clap::Parser;
+
+    #[test]
+    fn rust_build_cache_is_opt_in_configurable_and_rejected_for_go() -> Result<()> {
+        let temp = project()?;
+        for mode in ["fresh", "worker"] {
+            assert!(resolve(temp.path(), &["--rust-build-cache", mode]).is_err());
+        }
+        fs::remove_file(temp.path().join("module/go.mod"))?;
+        fs::write(
+            temp.path().join("module/Cargo.toml"),
+            "[package]\nname='sample'\nversion='0.0.0'",
+        )?;
+        assert_eq!(
+            resolve(temp.path(), &[])?.rust_build_cache,
+            RustBuildCache::Fresh
+        );
+        fs::write(
+            temp.path().join("module/mutie.toml"),
+            "rust_build_cache = 'worker'",
+        )?;
+        assert_eq!(
+            resolve(temp.path(), &[])?.rust_build_cache,
+            RustBuildCache::Worker
+        );
+        assert_eq!(
+            resolve(temp.path(), &["--rust-build-cache", "fresh"])?.rust_build_cache,
+            RustBuildCache::Fresh
+        );
+        fs::write(
+            temp.path().join("module/mutie.toml"),
+            "rust_build_cache = 'shared'",
+        )?;
+        assert!(resolve(temp.path(), &[]).is_err());
+        Ok(())
+    }
 
     #[test]
     fn detects_rust_and_rejects_ambiguous_or_language_specific_options() -> Result<()> {

@@ -15,6 +15,8 @@ use serde_json::Value;
 
 #[path = "support/rust_boundaries.rs"]
 mod boundaries;
+#[path = "support/rust_cache.rs"]
+mod cache;
 #[path = "support/rust_compilation.rs"]
 mod compilation;
 #[path = "support/rust_dismissals.rs"]
@@ -120,9 +122,9 @@ impl Fixture {
                 "caller artifact"
             );
             assert_eq!(
-                fs::read_dir(directory).unwrap().count(),
+                fs::read_dir(&directory).unwrap().count(),
                 1,
-                "Cargo wrote into caller artifacts"
+                "Cargo wrote into caller artifacts: {directory:?}"
             );
         }
         assert_eq!(

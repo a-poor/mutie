@@ -224,8 +224,8 @@ rejected so a configured build directory cannot hide source or test inputs.
 Resolve layout before copying, and run Cargo from the isolated package, never
 the caller's source directory.
 
-For the first correct slice, give the baseline and **each mutation** fresh owned
-target/build directories outside the resettable source copy. Never share
+By default, give the baseline and **each mutation** fresh owned target/build
+directories outside the resettable source copy. Never share
 compiled artifacts between concurrent workers or reuse the user's outputs.
 Set both final and intermediate output destinations explicitly, including child
 environment overrides for nested Cargo invocations. Cargo has separate
@@ -233,6 +233,24 @@ environment overrides for nested Cargo invocations. Cargo has separate
 settings; overriding only one is insufficient when both are configured. Give
 child commands owned `TMPDIR`/`TMP`/`TEMP` directories, and clean up only owned
 paths after all processes have exited, including timeout/interruption paths.
+
+The opt-in `--rust-build-cache worker` mode retains dependency artifacts in a
+`BuildCache` owned by each worker across jobs. The baseline remains fresh. Before
+every mutation build, invoke `cargo clean --locked --package PACKAGE` against
+that worker's owned directories from the restored workspace. Cargo removes the
+package outputs, including binary and test artifacts; registry dependencies stay
+available. No internal Cargo fingerprint paths or source timestamp assumptions
+are used. Incremental compilation stays disabled. Source workspaces still reset
+completely from the pristine snapshot before each mutation. Caches never cross
+worker or run boundaries and drop only after active work has drained.
+
+Cleanup, compilation and execution share a deadline, with one raw capture budget
+per invocation. Failed cleanup is a tool error, timed-out cleanup is a timeout,
+and neither starts compilation/tests. Preserve cleanup diagnostics alongside
+later phase output, including a compiler startup failure. Record the selected
+mode in effective configuration and the text summary. Reruns may select a
+different mode without changing mutation identity; `fresh` remains the reference
+and default. This is dependency artifact reuse, not reuse of test results.
 
 Retain the normal Cargo registry/download cache; do not run `cargo clean` against
 the source project or delete its caches. Require locked dependency resolution;
@@ -263,11 +281,14 @@ preserved (Cargo/rustup also sets it when launching Mutie), and actual compiler
 and Cargo versions are saved. Do not claim general Cargo-config or custom-build
 support from these two examples.
 
-Fresh builds are a correctness starting point, not a performance solution for
-routine self-testing. Before retaining any per-worker build cache, demonstrate
-changed-source rebuilds, restoration, stronger-test reruns and parallel isolation
-without timestamp-based stale artifacts. Measure dependency compilation separately
-from mutation compilation and tests. A first Mutie sample should filter to
+Fresh builds provide the reference for validating dependency reuse. The cache
+regression backdates source and test files before compilation, checks local
+targets rebuild while dependencies become fresh, and verifies restoration,
+parallel isolation, build-failure recovery and stronger-test reruns. Disabling
+package cleanup makes the regression fail with an incorrect kill. Cleanup
+failure, timeout and cancellation checks cover partial reports and owned paths.
+See `benchmarks/rust-build-cache.md` for the controlled Mutie comparison.
+The first Mutie sample filters to
 `src/score.rs` (two eligible boolean literals at the audited revision) while
 running the complete selected test scope. Broaden only after inspecting its
 outcomes and costs. Opt-in real-Go tests remain separate regression checks; future

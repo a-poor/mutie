@@ -57,12 +57,14 @@ fn main() {
     if cargo
         && args
             .first()
-            .is_some_and(|arg| arg == "test" || arg == "metadata")
+            .is_some_and(|arg| arg == "test" || arg == "metadata" || arg == "clean")
     {
         let label = label();
         let building = args.iter().any(|arg| arg == "--no-run");
         let phase = if args[0] == "metadata" {
             "metadata"
+        } else if args[0] == "clean" {
+            "clean"
         } else if building {
             "build"
         } else {
@@ -82,6 +84,18 @@ fn main() {
             let parts: Vec<_> = fault.split(':').collect();
             if parts[0] == label && parts[1] == phase {
                 cargo_faults::inject(&real, &args, &state, label, phase, parts[2]);
+            }
+        }
+        if case == "clean-wait" && phase == "clean" && label == "b" {
+            let mut descendant = Command::new("sleep").arg("300").spawn().unwrap();
+            record(&state, label, "descendant.pid", descendant.id());
+            record(&state, label, "workspace", env::current_dir().unwrap().display());
+            record(&state, label, "target", env::var("CARGO_TARGET_DIR").unwrap());
+            record(&state, label, "tmpdir", env::temp_dir().display());
+            record(&state, label, "ready", "cleanup waiting");
+            loop {
+                assert!(descendant.try_wait().unwrap().is_none());
+                thread::sleep(Duration::from_millis(20));
             }
         }
         if case == "deadline" && label == "b" && building {

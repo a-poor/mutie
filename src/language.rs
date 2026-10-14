@@ -69,6 +69,7 @@ pub async fn test<F, Fut>(
     limit: Duration,
     log_limit: Option<NonZeroUsize>,
     capture_limit: Option<NonZeroUsize>,
+    cache: Option<&rust::BuildCache>,
     cancellation: &Cancellation,
     progress: F,
 ) -> Result<CommandOutput>
@@ -83,6 +84,7 @@ where
                 limit,
                 log_limit,
                 capture_limit,
+                cache,
                 cancellation,
                 progress,
             )

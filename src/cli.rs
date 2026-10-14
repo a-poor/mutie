@@ -24,6 +24,10 @@ pub struct Cli {
     #[arg(long, value_enum)]
     pub lang: Option<Lang>,
 
+    /// Cargo artifact mode: fresh builds or worker-local dependency reuse (default: fresh)
+    #[arg(long, value_enum)]
+    pub rust_build_cache: Option<RustBuildCache>,
+
     /// Number of mutation workers (default: 1)
     #[arg(short, long)]
     pub jobs: Option<NonZeroUsize>,
@@ -244,6 +248,14 @@ pub enum Lang {
     Auto,
     Go,
     Rust,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize, ValueEnum)]
+#[serde(rename_all = "snake_case")]
+pub enum RustBuildCache {
+    #[default]
+    Fresh,
+    Worker,
 }
 
 #[cfg(test)]

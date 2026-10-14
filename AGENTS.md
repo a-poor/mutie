@@ -42,6 +42,9 @@ Rust binary-package workflow.
   `benchmarks/rust-dismissals.md` records Rust review and policy validation.
 - `tests/rust_workflow.rs` runs real Cargo workflows with `--ignored`; keep these
   opt-in so Mutie's default self-test suite cannot recursively run mutations.
+  `tests/support/rust_cache.rs` checks opt-in worker-local Cargo dependency reuse
+  against fresh builds, backdated source, restoration and stronger-test reruns.
+  `benchmarks/rust-build-cache.md` records the controlled Mutie comparison.
 - `tests/fixtures/rust-boundaries/` checks Rust ordering mutations, generic
   borrowing, floating-point cases, operand effects and a stronger-test rerun.
   `benchmarks/rust-comparison-boundaries.md` records fixture and self-run evidence.

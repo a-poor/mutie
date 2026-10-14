@@ -123,7 +123,8 @@ verbose = true
         metadata["effective_config"],
         json!({
             "module_root": fixture.root, "config_file": fixture.root.join("mutie.toml"),
-            "lang": "go", "jobs": 2, "include": ["*.go"], "exclude": ["b.go"],
+            "lang": "go", "rust_build_cache": "fresh", "jobs": 2,
+            "include": ["*.go"], "exclude": ["b.go"],
             "timeout": 4, "max_log_bytes": null, "max_capture_bytes": null,
             "baseline_timeout": 30, "fail_on_missed": false, "min_score": null,
             "output_dir": fixture.temp.path().join("repository-reports"), "verbose": true, "list": false,

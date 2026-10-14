@@ -149,9 +149,10 @@ fn check_unevaluated(run: &Value) {
 #[test]
 #[ignore = "runs real Cargo/rustc and interrupts compilation; opt-in to avoid recursive self-testing"]
 fn compilation_cancellation_preserves_baseline_and_parallel_partial_results() {
-    for (case, signal, active) in [
-        ("baseline", libc::SIGTERM, &["baseline"][..]),
-        ("mutations", libc::SIGINT, &["b", "c"][..]),
+    for (case, signal, active, mode) in [
+        ("baseline", libc::SIGTERM, &["baseline"][..], "fresh"),
+        ("mutations", libc::SIGINT, &["b", "c"][..], "fresh"),
+        ("mutations", libc::SIGTERM, &["b", "c"][..], "worker"),
     ] {
         let fixture = CompilationFixture::new();
         let flags = fixture.fixture.root.join("src/flags.rs");
@@ -169,6 +170,8 @@ fn compilation_cancellation_preserves_baseline_and_parallel_partial_results() {
             &[
                 "--jobs",
                 "2",
+                "--rust-build-cache",
+                mode,
                 "--timeout",
                 "120",
                 "--fail-on-missed",
@@ -361,4 +364,56 @@ fn compilation_and_tests_share_one_deadline() {
     }
     fixture.check_cleanup(&child, &inputs);
     fixture.check_report(&directory);
+}
+
+#[test]
+#[ignore = "runs real Cargo worker-cache cleanup deadlines and cancellation; opt-in to avoid recursive self-testing"]
+fn worker_cache_cleanup_timeout_and_cancellation_preserve_completed_results() {
+    for interrupt in [false, true] {
+        let fixture = CompilationFixture::new();
+        let inputs = files(&fixture.fixture.root);
+        let mut child = fixture.start(
+            "clean-wait",
+            &[
+                "--rust-build-cache",
+                "worker",
+                "--jobs",
+                "1",
+                "--timeout",
+                "8",
+            ],
+        );
+        child.ready(&["b"]);
+        assert!(!child.state.join("b.build.started").exists());
+        let output = if interrupt {
+            child.interrupt(libc::SIGINT)
+        } else {
+            child.finish(Duration::from_secs(30))
+        };
+        assert_eq!(output.status.success(), !interrupt, "{output:?}");
+        let (directory, run, _, outcomes) = report(&output);
+        assert_eq!(outcomes["mutations"][0]["outcome"], "killed");
+        assert!(!child.state.join("b.tests.started").exists());
+        assert!(!child.state.join("b.build.started").exists());
+        let stopped = &outcomes["mutations"][1];
+        let log = fs::read_to_string(directory.join(stopped["logs"]["stdout"].as_str().unwrap()))
+            .unwrap();
+        assert!(log.contains("Cargo clean checkpoint b"), "{log}");
+        if interrupt {
+            assert_eq!(run["status"], "interrupted");
+            assert_eq!(stopped["state"], "interrupted");
+            assert_eq!(outcomes["mutations"][2]["state"], "pending");
+            assert!(!child.state.join("c.clean.started").exists());
+        } else {
+            assert_eq!(run["status"], "completed");
+            assert_eq!(stopped["outcome"], "timeout");
+            let elapsed = stopped["duration_seconds"].as_f64().unwrap();
+            assert!((8.0..11.0).contains(&elapsed), "{elapsed}");
+            // The same worker must clean and rebuild successfully after the
+            // timed-out cleanup, restoring the previous killed mutation too.
+            assert_eq!(outcomes["mutations"][2]["outcome"], "missed");
+        }
+        fixture.check_cleanup(&child, &inputs);
+        fixture.check_report(&directory);
+    }
 }
