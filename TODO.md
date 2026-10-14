@@ -6,17 +6,31 @@ checklist as work lands, checking items off after appropriate verification.
 
 ## Current direction
 
-The Go MVP is complete and usable for its supported scope. Rust support is the
-next major milestone, chosen to enable routine use on the maintainer's Rust
-projects. Prioritize a working end-to-end workflow and real-project findings over
-automatically adding optional Go features or presentation polish. Fix concrete
-correctness/reliability blockers as needed; explicit user priorities take precedence.
+The Go MVP and the initial Rust binary-package milestone are complete for their
+supported scopes. The next objective is shorter focused Rust feedback, driven by
+measured full-suite runtime on Mutie. Preserve outcome correctness, source/artifact
+isolation and the full test scope while identifying the dominant costs. Explicit
+user priorities and demonstrated reliability blockers take precedence.
 
-## Next milestone: usable Rust support
+## Next objective: shorter focused Rust feedback
 
-See [the Rust milestone](DESIGN.md#next-milestone-usable-rust-support-planned)
-for scope, architecture, and completion criteria. The first binary-package Rust
-slice is implemented; the full milestone is still in progress.
+- [ ] Profile compilation, Cargo startup and individual test-target execution in
+  controlled repeated Mutie runs; separate cold/warm cache and worker-load effects.
+- [ ] Choose an optimization from measured costs, retaining full test execution,
+  package rebuilds, deadlines and strict rerun matching. Broader test selection or
+  persistent reuse requires its own design decision.
+- [ ] Compare unchanged saved selections before/after using runtime distributions,
+  exact failure sets, cancellation checks and source/artifact preservation.
+
+See [the acceptance review](benchmarks/rust-milestone-acceptance.md) for evidence,
+limits and the reasoning behind this priority.
+
+## Completed milestone: initial Rust support
+
+See [the Rust milestone](DESIGN.md#completed-milestone-initial-rust-support)
+for the agreed scope and completion criteria. Acceptance applies to one ordinary
+binary package on Unix, three operators, and the verified test-improvement workflow;
+it does not imply general Cargo/workspace support.
 
 - [x] Select Rust as the second language and the next major product milestone.
 - [x] Choose a small fixture and a representative maintainer-owned Rust project:
@@ -78,9 +92,11 @@ slice is implemented; the full milestone is still in progress.
   capture limits are now covered too; broader Cargo layouts remain unsupported.
   The PTY follow-up fixes reproduced harness defects; the original exit-only
   failure lacks enough diagnostics to establish its specific cause.
-- [ ] Add a small useful Rust operator set and document eligibility for test-only
+- [x] Add a small useful Rust operator set and document eligibility for test-only
   code, macros, generated sources, and conditional code. Support the chosen real
-  project's workspace/package selection if required by the agreed scope.
+  project's workspace/package selection if required by the agreed scope. The
+  accepted set is boolean flips, comparison boundaries and logical swaps; Mutie
+  requires no workspace-member selection. See the acceptance review.
 - [x] Add Rust comparison-boundary mutations (`<` ↔ `<=`, `>` ↔ `>=`), preserving
   operands and source exclusions. Include executable match guards while keeping
   patterns excluded. Verify exact edits, generic borrowing, floats, operand
@@ -147,8 +163,8 @@ slice is implemented; the full milestone is still in progress.
   source/report/caller artifacts. Both baselines pass 199 tests; local targets
   rebuild and warm dependencies are reused. Whole runs take 686.16/608.64 seconds.
   This closes the reproduced blocker for this sample, not every possible
-  scheduling issue. See `benchmarks/rust-parallel-score-reruns.md`; resume the
-  useful Rust operator milestone next.
+  scheduling issue. See `benchmarks/rust-parallel-score-reruns.md`. The acceptance
+  review subsequently passes all 17 real-Cargo workflows together.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;
@@ -176,10 +192,11 @@ slice is implemented; the full milestone is still in progress.
   time to an actionable finding, run/build/workspace costs, and noise/limitations.
   Saved-percentage presence/absence regressions now catch the first real survivor
   in `MutationScore::matches_saved` through fresh and focused runs. Dismissal
-  review, policies and browser export are now verified too. The broader useful
-  Rust operator set remains to do.
-- [ ] Document verified Rust usage and limits in README/design, mark the milestone
-  complete, and choose the next major objective from observed user needs.
+  review, policies, browser export and all three initial operators are verified.
+- [x] Document verified Rust usage and limits in README/design and accept the
+  initial milestone. The evidence review is in `benchmarks/rust-milestone-acceptance.md`.
+  Choose shorter focused Rust feedback as the next objective: full-suite runtime
+  remains the dominant observed cost after worker-local dependency reuse.
 
 ## Completed foundation
 

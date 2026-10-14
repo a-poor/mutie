@@ -52,12 +52,14 @@ rerun workflow is established; further Go operators and presentation refinements
 are optional improvements rather than prerequisites for the next milestone.
 Broad adoption and large-repository scaling remain unproven.
 
-## Next milestone: usable Rust support (planned)
+## Completed milestone: initial Rust support
 
-The next major deliverable is the same test-improvement workflow on the
-maintainer's Rust code: passing baseline, mutations in isolated copies, live
-progress, saved findings, review, stronger tests, and focused reruns. Adding a
-parser or recognizing `Cargo.toml` alone does not complete this milestone.
+The accepted initial milestone delivers the same test-improvement workflow on
+the maintainer's supported Rust binary package: passing baseline, mutations in
+isolated copies, live progress, saved findings, review, stronger tests, and focused reruns. Adding a
+parser or recognizing `Cargo.toml` alone would not satisfy this milestone.
+The [acceptance review](benchmarks/rust-milestone-acceptance.md) maps each criterion
+to evidence and records the remaining limits.
 
 ### Scope and sequence
 
@@ -108,7 +110,7 @@ workspace-member selection is not required for this milestone's selected project
 The [scope audit and Cargo probes](benchmarks/rust-initial-scope.md) record the
 inspected revision and planning evidence. The first execution slice now implements
 the contract below; see the fixture README and `tests/rust_workflow.rs` for verified
-behavior. The broader Rust milestone remains open.
+behavior. Acceptance is limited to this initial contract.
 The [first-slice validation record](benchmarks/rust-first-slice.md) covers actual
 CLI runs, regression checks and observed self-testing costs/limitations.
 The [focused rerun record](benchmarks/rust-focused-reruns.md) extends that evidence
@@ -306,20 +308,21 @@ nested Cargo fixture tests must not introduce recursive default self-tests.
 
 ### Completion and priorities
 
-Rust support is usable when the chosen supported project can complete the
-run → inspect → improve tests → rerun workflow through the existing CLI, with
-reliable outcome classification and source preservation. Real-project evidence
-and regression coverage for Go are required alongside the Rust fixture. Update
-the README with verified support and limitations as each slice lands; the broader
-Rust milestone remains incomplete. At completion, assess the largest remaining obstacle to
-routine use before choosing another milestone.
+The initial milestone is complete for the contract above. The selected project
+has demonstrated run → inspect → improve tests → rerun through the CLI, including
+review, policies, strict source identities, reliable outcomes and source preservation.
+Three operators satisfy the scoped catalog requirement. The acceptance review
+records the full real-Cargo suite, Go compatibility evidence, historical failures
+and remaining limits. General libraries/workspaces are separate future scope.
 
-Advance this milestone by default when selecting new work. Fix demonstrated
-correctness or reliability blockers as they arise, and follow explicit user
-priorities. Additional Go operators, UI polish, exports, broader benchmarks,
-coverage-driven selection, incremental result reuse, and plugins remain backlog
-items unless needed for this milestone or supported by concrete user evidence.
-Do not automatically select the next small unchecked feature.
+The next objective is shorter focused Rust feedback. Current Mutie samples take
+roughly four to five minutes for a one-finding rerun despite much faster warm
+compilation. Profile full-suite costs first, then validate a measured optimization
+against unchanged saved selections and exact failure sets. Retain package rebuilds,
+full tests, deadlines, cancellation behavior and source/artifact isolation. Test
+selection or persistent reuse needs a separate design decision; neither is implied
+by this objective. Follow explicit user priorities and fix demonstrated blockers.
+Additional operators, languages and UI polish remain driven by concrete needs.
 
 ## Original Go MVP — completed
 
@@ -975,7 +978,8 @@ boundary only as the two implementations need it.
 ## Work after the MVP
 
 The sections below retain completed follow-ups and deferred design options; their
-order is not the current work queue. The Rust milestone above sets the next priority.
+order is not the current work queue. The focused-feedback objective above sets
+the next priority.
 
 ### 1. Focused reruns and richer inspection
 
@@ -1180,8 +1184,8 @@ including its untracked-input limitations, and
 
 ### 3. Broader mutations and language support
 
-Rust is the selected second language and the next major milestone, with scope and
-validation described above. Further Go operators remain driven by observed gaps.
+Rust is the second supported language within the accepted initial binary-package
+scope described above. Further Go operators remain driven by observed gaps.
 JavaScript/TypeScript and Python are later options; select either only after
 evaluating routine Go/Rust use and a concrete project need.
 
@@ -1286,14 +1290,15 @@ design. No runtime or plugin ABI is selected now.
     operators, report retention/output limits, and per-operator summaries —
     completed; details and validation are tracked in `TODO.md`.
 11. Deliver usable Rust support through the scope, implementation, and real-project
-    validation steps above — first binary-package slice implemented, broader
-    milestone in progress.
+    validation steps above — completed for the initial binary-package scope;
+    see the acceptance review.
 
 The initial Rust contract fixes Cargo scope, source eligibility and artifact
-ownership, with execution reliability verified for that scope. Next, complete
-the useful Rust operator set. Dismissal editing in the browser, report
+ownership, with execution reliability and three operators verified for that scope.
+Next, shorten focused Rust feedback based on measured full-suite costs.
+Dismissal editing in the browser, report
 archival, run-wide resource budgets, and mutation matching across source edits remain deferred
-choices; they do not block advancing Rust support.
+choices; they do not block acceptance of the initial Rust scope.
 
 ## MVP validation evidence
 

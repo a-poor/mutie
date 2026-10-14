@@ -84,12 +84,13 @@ Rust binary-package workflow.
 
 ## Development Status & Versioning
 
-The Go MVP is complete; Mutie is a usable Go-focused alpha. Rust support is the
-next major milestone, motivated by the maintainer's Rust projects. Its first
-binary-package slice, focused reruns and dismissal review are implemented; the
-broader operator milestone remains incomplete. Follow the active Rust milestone
-in `TODO.md` and `DESIGN.md` when choosing work, using Mutie itself as the selected
-real validation project.
+The Go MVP and initial Rust binary-package milestone are complete for their
+supported scopes. Rust supports boolean flips, comparison boundaries, logical
+swaps, focused reruns and dismissal review. `benchmarks/rust-milestone-acceptance.md`
+records scope, evidence and limits; general libraries/workspaces remain unsupported.
+Follow the focused-feedback objective in `TODO.md` and `DESIGN.md`: profile and
+reduce Rust full-suite feedback time using Mutie as the real validation project,
+while preserving outcomes, package rebuilds and source/artifact isolation.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

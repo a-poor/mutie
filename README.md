@@ -7,8 +7,9 @@ passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
 [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
-Focused reruns and dismissal review are supported; the broader operator milestone
-remains in progress.
+Focused reruns and dismissal review are supported. The
+[initial Rust milestone is accepted](benchmarks/rust-milestone-acceptance.md)
+for this binary-package scope; general Cargo/workspace support remains outside it.
 
 See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
@@ -80,6 +81,11 @@ five ordering mutations: four killed and one missing an equality test. A stronge
 integration test kills that survivor through a focused rerun.
 See the [boundary validation record](benchmarks/rust-comparison-boundaries.md)
 for regression checks and the Mutie self-run.
+The [logical-swap fixture](tests/fixtures/rust-logical/README.md) covers grouping,
+short-circuit effects and let-chains, including a saved survivor killed by a mixed-input
+test. The [acceptance review](benchmarks/rust-milestone-acceptance.md) collects the
+verified workflow, scope limits and runtime evidence. Shorter focused Rust feedback
+is the next development objective; current tests still run in full.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
