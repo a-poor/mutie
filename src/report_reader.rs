@@ -613,6 +613,31 @@ mod tests {
         }
     }
 
+    // Keep this regression outside score.rs so saved score mutations remain
+    // eligible for strict source-matched reruns after strengthening their tests.
+    #[test]
+    fn saved_score_tolerance_includes_endpoint_but_not_next_float() {
+        // Zero makes the difference exactly the saved value, avoiding rounding
+        // from subtracting two nonzero percentages at the tolerance boundary.
+        let expected = MutationScore::calculate(
+            ScoreScope::AllDiscovered,
+            RunStatus::Completed,
+            true,
+            [(Some(Outcome::Missed), false)],
+        );
+        assert_eq!(expected.percentage, Some(0.0));
+        let tolerance = 1e-12_f64;
+        for (percentage, accepted) in [
+            (f64::from_bits(tolerance.to_bits() - 1), true),
+            (tolerance, true),
+            (f64::from_bits(tolerance.to_bits() + 1), false),
+        ] {
+            let mut saved = expected.clone();
+            saved.percentage = Some(percentage);
+            assert_eq!(expected.matches_saved(&saved), accepted, "{percentage:?}");
+        }
+    }
+
     #[test]
     fn saved_score_requires_percentage_for_scored_outcomes() {
         let temp = fixture_with_score();

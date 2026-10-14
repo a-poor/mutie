@@ -869,7 +869,10 @@ a best-effort Drop signal otherwise. This applies to both piped and direct-to-fi
 captures. Orphan zombies can await an external reaper, so group cleanup cannot
 wait indefinitely. Limited captures then retain their separate one-second EOF
 drain bound and explicit incomplete-capture error. See
-`benchmarks/process-reliability.md` for reproduction and checks.
+`benchmarks/process-reliability.md` for reproduction and checks. The subsequent
+`benchmarks/rust-parallel-score-reruns.md` comparison verifies six intended kills
+with matching failure sets in fresh and worker-cache modes after both capture
+fixes; it records preservation checks and the limits of this sample.
 
 Publish the inventory and diffs before workers begin. Inventory entries without
 final outcomes remain visibly untested or interrupted. Update results and derived

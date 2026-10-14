@@ -133,3 +133,63 @@ repeating the broader six-mutation comparison.
 Default-suite validation after the fix: `cargo test --locked` passed all 199
 tests (25 ignored diagnostics/real workflows). `cargo fmt --check`,
 `git diff --check`, and `cargo clippy --locked --all-targets -- -D warnings` passed.
+
+
+## Saved-ID rerun with the stronger test
+
+The follow-up to `c26fd16` moves the exact-tolerance regression to the
+`report_reader` test module alongside the saved-percentage presence regressions.
+Its assertions are unchanged. Keeping stronger tests outside `src/score.rs`
+restores that file's exact historical fingerprint, allowing ordinary strict
+rerun matching without weakening source identity checks or editing saved reports.
+
+The available source report is the earlier reliability self-run,
+`/tmp/mutie-reliability-self-_pvnl_6r/reports/run-1791942980-cTkOCu`.
+It recorded source ID 5 as killed through unrelated failures, so this validation
+uses `--rerun SOURCE --id 5`, not missed-only selection. The list preview selects
+exactly that tolerance mutation as new ID 1. The older report remains historical
+evidence; a useful new kill must name the intended boundary assertion.
+
+The validation uses an isolated copy of current source, one worker, worker-local
+Cargo dependency caching, a 300-second baseline limit, a 600-second mutation
+limit, and a 100% minimum score for this selection. The baseline still builds
+fresh; the single mutation starts with an empty worker cache. Both execute the
+complete default suite. Input and source-report hashes, caller target/build
+sentinels, and owned temporary-directory cleanup are checked after execution.
+
+```sh
+target/debug/mutie "$PROJECT" --lang rust --rerun "$SOURCE" --id 5 \
+  --include src/score.rs --operator comparison_boundary --list
+
+target/debug/mutie "$PROJECT" --lang rust --rerun "$SOURCE" --id 5 \
+  --include src/score.rs --operator comparison_boundary \
+  --rust-build-cache worker --jobs 1 --baseline-timeout 300 --timeout 600 \
+  --min-score 100 --ui plain --output-dir "$REPORTS"
+```
+
+
+The saved rerun completed in **256.60 seconds**. Its fresh baseline passed all
+199 default tests in 127.63 seconds. The one selected mutation was **killed**,
+with zero missed, timeouts, build failures or errors, and the selection's 100%
+minimum-score policy passed. The only failing test was
+`report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float`;
+all integration tests passed. This verifies the intended finding through Mutie's
+normal rerun and classification path, rather than the historical unrelated kill.
+
+All copied input files and historical report files retained their hashes. Caller
+target/build directories contained only their original sentinels, and owned
+temporary storage was empty. The new report passed the strict retention-preview
+reader without deletion. The relocated test also passed independently; formatting,
+diff checks and Clippy passed. The full unmutated suite was exercised by the
+rerun baseline rather than repeated separately.
+
+Local evidence: `/tmp/mutie-score-saved-rerun-fta404yp`, with report
+`reports/run-1792007668-nrpQEy`, `preview.log`, `command.json`, `results.json`,
+input/source-report hash maps, and `read.log`. The remaining reliability check is
+the broader six-mutation comparison under parallel workers; this focused success
+does not establish that result.
+
+
+The subsequent [parallel six-mutation comparison](rust-parallel-score-reruns.md)
+passes in both fresh and worker-cache modes, with six intended kills and matching
+failure sets. It completes the broader follow-up described above.

@@ -26,6 +26,8 @@ Rust binary-package workflow.
   candidate from its pristine control; `benchmarks/rust-survivor-isolation.md`
   records score-boundary evidence and a second capture fix: serialize spawning
   to prevent cross-command pipe inheritance.
+  `benchmarks/rust-parallel-score-reruns.md` records the subsequent successful
+  fresh/cached six-mutation comparison and its limits.
 - `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.

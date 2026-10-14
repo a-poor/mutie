@@ -105,7 +105,10 @@ timing also varied between fresh baselines; see the
 
 The [process reliability follow-up](benchmarks/process-reliability.md) records
 parallel capture and report-lock regressions discovered while testing Mutie
-itself, including the fixes and unmutated reproduction checks.
+itself, including the fixes and unmutated reproduction checks. A subsequent
+[parallel score rerun](benchmarks/rust-parallel-score-reruns.md) kills all six
+selected Mutie mutations with matching intended failures in fresh and cached
+modes, including the strengthened saved-percentage tolerance test.
 
 Package cleanup shares the mutation deadline with compilation and testing and
 has its own output-capture budget. A failed cleanup stops the run as a tool error;

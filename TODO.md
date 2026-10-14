@@ -103,7 +103,7 @@ slice is implemented; the full milestone is still in progress.
   descriptors. The isolated EOF regression passes 100/100 runs; all 198 default
   tests pass. See `benchmarks/process-reliability.md` for evidence and validation
   limits. Keep cache reuse opt-in.
-- [ ] Stabilize nested parallel Mutie self-testing before accepting new runtime
+- [x] Stabilize nested parallel Mutie self-testing before accepting new runtime
   or finding-quality evidence. The reliability follow-up passes 198 default
   tests; all 16 Rust workflows pass either in the suite or focused rechecks, but
   the full Rust suite has two intermittent timeout/checkpoint failures. The
@@ -128,9 +128,18 @@ slice is implemented; the full milestone is still in progress.
   assertion and passes before/after restoration. With both changes, all six
   two-worker full adapter controls pass 199 tests across fresh/cold/warm caches;
   source and caller artifacts are preserved and owned temporary storage is empty.
-  Next validate the stronger score test through a saved mutation rerun, then
-  repeat the broader six-mutation comparison; see
-  `benchmarks/rust-survivor-isolation.md`.
+  The stronger test now lives outside score.rs to preserve strict rerun identity.
+  A saved-ID rerun passes all 199 baseline tests and kills only the selected
+  tolerance mutation through that assertion, with the 100% policy passing and
+  source/report/caller artifacts preserved (256.60 seconds); see
+  `benchmarks/rust-survivor-isolation.md`. The subsequent two-worker six-mutation
+  comparison passes in both fresh and cached modes: six intended kills each,
+  identical per-ID failing tests, no timeouts/build failures/errors, and preserved
+  source/report/caller artifacts. Both baselines pass 199 tests; local targets
+  rebuild and warm dependencies are reused. Whole runs take 686.16/608.64 seconds.
+  This closes the reproduced blocker for this sample, not every possible
+  scheduling issue. See `benchmarks/rust-parallel-score-reruns.md`; resume the
+  useful Rust operator milestone next.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;
