@@ -5,7 +5,7 @@ A CLI for performing mutation testing.
 Mutie supports Go modules and an initial Rust binary-package workflow. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
-Rust currently supports `boolean_flip` and `comparison_boundary` in the
+Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
 [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
 Focused reruns and dismissal review are supported; the broader operator milestone
 remains in progress.
@@ -129,11 +129,17 @@ and output-capture overflow stop the run as errors. Completed results and active
 diagnostics survive, unfinished work keeps its interrupted/pending state, and
 findings/score policies remain unevaluated.
 
-Discovery follows ordinary Rust modules and mutates boolean literals and ordering
+Discovery follows ordinary Rust modules and mutates boolean literals, logical operators, and ordering
 comparisons in function/method bodies, including closures and match guards.
 `comparison_boundary` swaps `<` ↔ `<=` and `>` ↔ `>=` by editing only the operator
 token. It leaves operand expressions intact and supports generic/overloaded
 comparisons. It does not change `==`, `!=`, shifts, ranges, or generic brackets.
+`logical_swap` exchanges `&&` and `||`, preserving operand grouping and comments
+with parentheses where required. Operands retain their order and appear once;
+the changed operator intentionally changes short-circuit evaluation. Let-chain
+connectors are excluded, while ordinary boolean expressions inside the chain
+remain eligible. Bitwise operators, reference syntax and closure delimiters are
+not logical-swap candidates.
 Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
 macro tokens/expansions, generated files, constants/type-level code and array repeat lengths are
 excluded. The run prints and saves discovery exclusions. Library/proc-macro
@@ -187,7 +193,7 @@ ui = "auto"
 
 The configuration example above is for Go. Use `lang = "rust"` (or automatic
 detection) and Rust file globs for a Cargo package. Rust accepts only
-`test_scope = "full"` and the `boolean_flip` and `comparison_boundary` operators.
+`test_scope = "full"` and the `boolean_flip`, `comparison_boundary`, and `logical_swap` operators.
 `rust_build_cache = "fresh"` (default) or `"worker"` applies only to Rust;
 specifying it for Go is rejected.
 
@@ -230,8 +236,8 @@ conflicts with `--list`.
 
 ## Mutation operators
 
-All ten Go operators run by default; Rust runs `boolean_flip` and
-`comparison_boundary`.
+All ten Go operators run by default; Rust runs `boolean_flip`,
+`comparison_boundary`, and `logical_swap`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 

@@ -21,6 +21,8 @@ mod cache;
 mod compilation;
 #[path = "support/rust_dismissals.rs"]
 mod dismissals;
+#[path = "support/rust_logical.rs"]
+mod logical;
 #[path = "support/rust_reruns.rs"]
 mod reruns;
 

@@ -201,8 +201,18 @@ impl Walker<'_> {
                     if original == "true" { "false" } else { "true" },
                 );
             }
+            "let_chain" => {
+                self.exclude(
+                    &file.path,
+                    "let-chain connectors (ordinary boolean operands remain eligible)",
+                );
+            }
             "binary_expression" if in_body && self.scope.matches(&file.path) => {
                 if let Some(operator) = node.child_by_field_name("operator") {
+                    if matches!(&file.source[operator.byte_range()], "&&" | "||") {
+                        let replacement = logical_replacement(node, &file.source);
+                        self.push(file, node, Operator::LogicalSwap, replacement);
+                    }
                     let replacement = match &file.source[operator.byte_range()] {
                         "<" => Some("<="),
                         "<=" => Some("<"),
@@ -255,7 +265,7 @@ impl Walker<'_> {
         file: &Arc<SourceFile>,
         node: Node<'_>,
         operator: Operator,
-        replacement: &'static str,
+        replacement: impl Into<std::borrow::Cow<'static, str>>,
     ) {
         let start = node.start_position();
         let end = node.end_position();
@@ -269,6 +279,48 @@ impl Walker<'_> {
             end_line: end.row + 1,
             end_column: end.column + 1,
         });
+    }
+}
+
+/// Preserve the parsed operands when swapping operators with different precedence.
+/// Keep existing trivia and add parentheses only where the new precedence needs them.
+fn logical_replacement(node: Node<'_>, source: &str) -> String {
+    fn operator<'a>(node: Node<'_>, source: &'a str) -> Option<&'a str> {
+        node.child_by_field_name("operator")
+            .map(|op| &source[op.byte_range()])
+    }
+    let op = node.child_by_field_name("operator").unwrap();
+    let replacement = if &source[op.byte_range()] == "&&" {
+        "||"
+    } else {
+        "&&"
+    };
+    let left = node.child_by_field_name("left").unwrap();
+    let right = node.child_by_field_name("right").unwrap();
+    let operand = |child: Node<'_>| {
+        let text = &source[child.byte_range()];
+        if replacement == "&&" && operator(child, source) == Some("||") {
+            format!("({text})")
+        } else {
+            text.to_owned()
+        }
+    };
+    let text = format!(
+        "{}{}{}{}{}",
+        operand(left),
+        &source[left.end_byte()..op.start_byte()],
+        replacement,
+        &source[op.end_byte()..right.start_byte()],
+        operand(right)
+    );
+    if replacement == "||"
+        && node.parent().is_some_and(|parent| {
+            operator(parent, source) == Some("&&") || parent.kind() == "let_chain"
+        })
+    {
+        format!("({text})")
+    } else {
+        text
     }
 }
 
@@ -416,6 +468,78 @@ fn main() {
     }
 
     #[test]
+    fn logical_swaps_preserve_grouping_trivia_and_let_chain_bindings() -> Result<()> {
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
+        fs::create_dir(temp.path().join("src"))?;
+        let source = r#"
+fn f(a: bool, b: bool, c: bool, value: Option<bool>) {
+    let ands = a /* left */ && b && c;
+    let ors = a || b /* right */ || c;
+    let refs = &&a;
+    let bits = a & b | c;
+    if a && b && let Some(x) = value { let y = x || c; }
+    while let Some(x) = value && (a && b) { break; }
+    match value { Some(x) if x && c => (), _ => () }
+    let closure = || a || b;
+    assert!(a && b);
+    const CONST: bool = true && false;
+    let constant = const { true || false };
+    #[cfg(unix)] let skipped = a && b;
+}
+#[test] fn excluded() { let x = true || false; }
+"#;
+        fs::write(temp.path().join("src/main.rs"), source)?;
+        let found = scan(temp.path(), &[])?;
+        let logical: Vec<_> = found
+            .mutations
+            .iter()
+            .filter(|m| m.operator == Operator::LogicalSwap)
+            .collect();
+        let replacements: Vec<_> = logical.iter().map(|m| m.replacement.as_ref()).collect();
+        assert_eq!(
+            replacements,
+            [
+                "a /* left */ && b || c",
+                "(a /* left */ || b)",
+                "(a || b) /* right */ && c",
+                "a && b",
+                "(a || b)",
+                "x && c",
+                "a || b",
+                "x || c",
+                "a && b",
+            ]
+        );
+        let mut parser = Parser::new();
+        parser.set_language(&tree_sitter_rust::LANGUAGE.into())?;
+        for m in logical {
+            m.apply(temp.path())?;
+            let changed = fs::read_to_string(temp.path().join("src/main.rs"))?;
+            assert!(
+                !parser
+                    .parse(&changed, None)
+                    .unwrap()
+                    .root_node()
+                    .has_error(),
+                "{changed}"
+            );
+            assert_eq!(&changed[..m.range.start], &source[..m.range.start]);
+            assert_eq!(
+                &changed[m.range.start + m.replacement.len()..],
+                &source[m.range.end..]
+            );
+            fs::write(temp.path().join("src/main.rs"), source)?;
+        }
+        assert!(
+            found
+                .exclusions
+                .iter()
+                .any(|e| e.contains("let-chain connectors"))
+        );
+        Ok(())
+    }
+
+    #[test]
     fn comparison_boundaries_edit_only_ordering_tokens_in_function_bodies() -> Result<()> {
         let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
         let root = temp.path();
@@ -432,7 +556,10 @@ fn main() {
             a >= b\r\n\
         }";
         fs::write(root.join("src/main.rs"), source)?;
-        let found = scan(root, &[])?;
+        let mut found = scan(root, &[])?;
+        found
+            .mutations
+            .retain(|m| m.operator == Operator::ComparisonBoundary);
         let edits = found
             .mutations
             .iter()

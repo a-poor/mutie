@@ -13,7 +13,7 @@ Rust binary-package workflow.
 - `src/language.rs` dispatches language commands; `command.rs` shares captures,
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
-  Rust modules for boolean flips and comparison-boundary mutations.
+  Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
   Its bounded process-group shutdown retries signals to catch racing forks;
   `benchmarks/process-reliability.md` records the regression evidence.
@@ -62,6 +62,9 @@ Rust binary-package workflow.
 - `tests/fixtures/rust-boundaries/` checks Rust ordering mutations, generic
   borrowing, floating-point cases, operand effects and a stronger-test rerun.
   `benchmarks/rust-comparison-boundaries.md` records fixture and self-run evidence.
+- `tests/fixtures/rust-logical/` checks logical swaps, grouping, short-circuit
+  effects, let-chain exclusions, and a stronger-test focused rerun.
+  `benchmarks/rust-logical-swaps.md` records fixture and Mutie validation.
 - `tests/fixtures/go-branches/` exercises branch forcing with Go type checking,
   unused-name preservation, short-circuit behavior, and focused reruns.
 - `tests/fixtures/go-loops/` checks loop skipping, initializer/condition/body/post

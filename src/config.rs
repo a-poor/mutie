@@ -217,11 +217,11 @@ impl RunConfig {
                 "--test-scope affected is only supported for Go"
             );
             ensure!(
-                config
-                    .operators
-                    .iter()
-                    .all(|op| matches!(op, Operator::BooleanFlip | Operator::ComparisonBoundary)),
-                "Rust currently supports only boolean_flip and comparison_boundary"
+                config.operators.iter().all(|op| matches!(
+                    op,
+                    Operator::BooleanFlip | Operator::ComparisonBoundary | Operator::LogicalSwap
+                )),
+                "Rust currently supports only boolean_flip, comparison_boundary, and logical_swap"
             );
         }
         for (name, timeout) in [
@@ -365,10 +365,17 @@ mod tests {
         assert_eq!(
             resolve(
                 temp.path(),
-                &["--operator", "boolean_flip,comparison_boundary"]
+                &[
+                    "--operator",
+                    "boolean_flip,comparison_boundary,logical_swap"
+                ]
             )?
             .operators,
-            [Operator::ComparisonBoundary, Operator::BooleanFlip]
+            [
+                Operator::ComparisonBoundary,
+                Operator::LogicalSwap,
+                Operator::BooleanFlip
+            ]
         );
         assert!(!temp.path().join("module/.mutie").exists());
         Ok(())

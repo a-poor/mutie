@@ -172,7 +172,7 @@ provide build evidence, not stable structured libtest result events.
 
 #### Source eligibility and Rust operators
 
-Rust supports `boolean_flip` (`true` ↔ `false`) and `comparison_boundary`
+Rust supports `boolean_flip` (`true` ↔ `false`), `logical_swap` (`&&` ↔ `||`), and `comparison_boundary`
 (`<` ↔ `<=`, `>` ↔ `>=`) in ordinary function/method bodies, including closures
 and match guards. The first slice began with boolean flips; the boundary operator
 reuses the shared catalog name, filters, identities, reports and focused reruns.
@@ -183,6 +183,16 @@ defines the corresponding `PartialOrd` methods. Custom implementations can make
 the semantic difference broader than primitive equality; discovery does not
 perform type analysis or prove equivalence. Equality/inversion, shifts, ranges
 and generic angle brackets are not comparison-boundary candidates.
+
+Logical swaps replace the parsed boolean binary expression, preserving trivia
+and adding only the parentheses required by the new precedence. Each operand
+appears once and evaluation order is retained; which right-hand operands execute
+changes according to Rust's [lazy boolean operators](https://doc.rust-lang.org/reference/expressions/operator-expr.html#lazy-boolean-operators).
+Do not mutate `let_chain` connector tokens: `||` cannot replace these bindings.
+Ordinary boolean operands remain eligible, with a swapped disjunction grouped
+inside a chain as required by the [condition grammar](https://doc.rust-lang.org/reference/expressions/if-expr.html).
+Bitwise operators, references, closures' delimiters and excluded source remain
+outside this operator. Overlapping nested expressions remain independent mutations.
 
 Walk the selected binary's ordinary external and inline module declarations;
 do not glob every `.rs` file in the repository. Deduplicate canonical source

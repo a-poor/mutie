@@ -88,6 +88,15 @@ slice is implemented; the full milestone is still in progress.
   Mutie's six score-boundary mutations finish with five kills and one survivor
   at the saved-percentage tolerance endpoint in 780.31 seconds; retain that narrow
   review finding and the runtime evidence in `benchmarks/rust-comparison-boundaries.md`.
+- [x] Add Rust `logical_swap` for lazy boolean operators, preserving grouping,
+  comments and single operand occurrences. Exclude let-chain connectors while
+  retaining valid boolean operands. Verify short-circuit effects, nested truth
+  tables, source exclusions, configuration, parallel caches, reports and a
+  stronger-test saved rerun in `tests/fixtures/rust-logical` (seven kills and one
+  survivor, then one intended kill). A focused Mutie self-run passes 200 baseline
+  tests and kills its invalid-duration conjunction solely through the existing
+  timing regression, preserving sources/artifacts (285.88 seconds); see
+  `benchmarks/rust-logical-swaps.md`.
 - [x] Validate opt-in per-worker Cargo dependency reuse against fresh builds on
   the same six Mutie score-boundary mutations. Force package recompilation with
   Cargo cleanup; verify backdated source, restoration, stronger-test reruns,
