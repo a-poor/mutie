@@ -14,8 +14,13 @@ user priorities and demonstrated reliability blockers take precedence.
 
 ## Next objective: shorter focused Rust feedback
 
-- [ ] Profile compilation, Cargo startup and individual test-target execution in
-  controlled repeated Mutie runs; separate cold/warm cache and worker-load effects.
+- [x] Profile compilation, adapter phase overhead and individual test-target
+  execution in repeated serial/parallel cold/warm Mutie runs. See
+  [the feedback profile](benchmarks/rust-feedback-profile.md). The residual outside
+  harness timings bounds further investigation; it does not isolate Cargo startup.
+- [ ] Isolate subprocess/runtime startup and concurrency costs in the dominant
+  dismissal, terminal and log-limit targets. Compare interleaved controls before
+  changing runtime setup or scheduling; retain every assertion and deadline.
 - [ ] Choose an optimization from measured costs, retaining full test execution,
   package rebuilds, deadlines and strict rerun matching. Broader test selection or
   persistent reuse requires its own design decision.

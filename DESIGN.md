@@ -324,6 +324,13 @@ selection or persistent reuse needs a separate design decision; neither is impli
 by this objective. Follow explicit user priorities and fix demonstrated blockers.
 Additional operators, languages and UI polish remain driven by concrete needs.
 
+The [full-suite feedback profile](benchmarks/rust-feedback-profile.md) separates
+adapter build/cleanup, test execution and individual harness durations across
+cold/warm serial and parallel runs. Warm execution is dominated by test harnesses,
+particularly dismissal, terminal and log-limit workflows. Investigate subprocess
+startup and concurrency within those targets next; the measured residual does not
+identify Cargo startup alone, and no production optimization is selected yet.
+
 ## Original Go MVP — completed
 
 The initial deliverable is a useful local Go tool with a small, predictable scope:
