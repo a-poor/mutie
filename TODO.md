@@ -116,8 +116,12 @@ slice is implemented; the full milestone is still in progress.
   Unmutated controls now pass all 198 tests in one and two isolated Cargo workers;
   repeated cancellation suites also pass directly and through Mutie's subprocess
   runner. The fixture now records shim startup and includes checkpoint/output
-  diagnostics on readiness timeouts. The full Cargo adapter and changing mutant
-  executables remain to be isolated; see `benchmarks/rust-nested-self-tests.md`.
+  diagnostics on readiness timeouts. The complete Cargo adapter also passes all
+  nine focused executions (63 cancellation-test passes) across fresh, cold-cache
+  and warm-cache modes with one/two workers; local targets rebuild every time.
+  No watcher trigger or artifact leak occurs. Next isolate the saved-percentage
+  survivor's changed executable with focused/full suites before another broad
+  mutation run; see `benchmarks/rust-nested-self-tests.md`.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;

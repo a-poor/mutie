@@ -20,6 +20,9 @@ Rust binary-package workflow.
   Its ignored `nested_unmutated_test_binary` probe accepts a prebuilt integration
   test through `MUTIE_REPRO_TEST_BINARY`; `benchmarks/rust-nested-self-tests.md`
   records serial/parallel controls and the remaining self-run investigation.
+  `tests/support/rust_adapter_probe.rs` adds an ignored complete Cargo-adapter
+  comparison using two isolated projects under `MUTIE_REPRO_ROOT`, including
+  fresh, cold-cache and warm-cache executions.
 - `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.

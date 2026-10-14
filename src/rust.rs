@@ -536,3 +536,7 @@ mod tests {
         Ok(())
     }
 }
+
+#[cfg(all(test, unix))]
+#[path = "../tests/support/rust_adapter_probe.rs"]
+mod adapter_probe;
