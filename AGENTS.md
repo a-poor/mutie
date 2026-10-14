@@ -22,7 +22,10 @@ Rust binary-package workflow.
   records serial/parallel controls and the remaining self-run investigation.
   `tests/support/rust_adapter_probe.rs` adds an ignored complete Cargo-adapter
   comparison using two isolated projects under `MUTIE_REPRO_ROOT`, including
-  fresh, cold-cache and warm-cache executions.
+  fresh, cold-cache and warm-cache executions. The paired variant isolates a
+  candidate from its pristine control; `benchmarks/rust-survivor-isolation.md`
+  records score-boundary evidence and a second capture fix: serialize spawning
+  to prevent cross-command pipe inheritance.
 - `src/capture.rs` owns file-backed output and head/tail retention; outcome
   classification reads complete captures independently of the saved-log limit.
 - `src/workspace_metrics.rs` aggregates workspace timings, copy methods, and partial failures.

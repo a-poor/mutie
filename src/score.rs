@@ -388,6 +388,24 @@ mod tests {
     }
 
     #[test]
+    fn saved_score_tolerance_includes_endpoint_but_not_next_float() {
+        // Zero makes the difference exactly the saved value, avoiding rounding
+        // from subtracting two nonzero percentages at the tolerance boundary.
+        let expected = score(&[Some(Outcome::Missed)]);
+        assert_eq!(expected.percentage, Some(0.0));
+        let tolerance = 1e-12_f64;
+        for (percentage, accepted) in [
+            (f64::from_bits(tolerance.to_bits() - 1), true),
+            (tolerance, true),
+            (f64::from_bits(tolerance.to_bits() + 1), false),
+        ] {
+            let mut saved = expected.clone();
+            saved.percentage = Some(percentage);
+            assert_eq!(expected.matches_saved(&saved), accepted, "{percentage:?}");
+        }
+    }
+
+    #[test]
     fn minimum_score_rejects_invalid_percentages() {
         for value in [
             "-1", "101", "NaN", "inf", "1e2", "1.001", "", " 50", "1.2.3",

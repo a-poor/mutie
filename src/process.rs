@@ -5,6 +5,7 @@ use std::{
     num::NonZeroUsize,
     path::Path,
     process::{ExitStatus, Stdio},
+    sync::Mutex,
     time::{Duration, Instant},
 };
 
@@ -15,6 +16,12 @@ use tokio::{
 };
 
 use crate::{cancellation::Cancellation, capture::Capture};
+
+// Pipe creation and close-on-exec setup are not atomic on every platform.
+// Another concurrent spawn can otherwise inherit a capture writer and prevent
+// EOF after the writer's own process group exits. Only spawning is serialized;
+// command execution and capture draining remain concurrent.
+static SPAWN_LOCK: Mutex<()> = Mutex::new(());
 
 pub struct CommandOutput {
     pub status: ExitStatus,
@@ -205,9 +212,13 @@ where
     #[cfg(unix)]
     command.process_group(0);
     let started = Instant::now();
-    let mut child = command
-        .spawn()
-        .with_context(|| format!("could not start {program}; is it installed and on PATH?"))?;
+    let mut child = {
+        // No shared state can be corrupted if a previous spawn panicked.
+        let _guard = SPAWN_LOCK.lock().unwrap_or_else(|error| error.into_inner());
+        command
+            .spawn()
+            .with_context(|| format!("could not start {program}; is it installed and on PATH?"))?
+    };
     let mut group = ProcessGroup { id: child.id() };
     let mut timed_out = false;
     let mut interrupted = false;

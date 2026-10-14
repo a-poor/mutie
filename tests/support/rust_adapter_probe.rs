@@ -1,15 +1,26 @@
-//! Opt-in diagnostic for the complete Cargo adapter, without source mutations.
+//! Opt-in diagnostics for the complete Cargo adapter on caller-prepared copies.
 use super::*;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 #[ignore = "requires MUTIE_REPRO_ROOT with project-0/project-1 and logs directories"]
 async fn unmutated_cargo_adapter() -> Result<()> {
+    adapter_matrix(&[1, 2]).await
+}
+
+/// The caller prepares project-0/project-1 as control and candidate copies.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+#[ignore = "requires MUTIE_REPRO_ROOT with isolated control/candidate projects and logs"]
+async fn paired_cargo_adapter() -> Result<()> {
+    adapter_matrix(&[2]).await
+}
+
+async fn adapter_matrix(job_counts: &[usize]) -> Result<()> {
     let root = std::path::PathBuf::from(
         std::env::var_os("MUTIE_REPRO_ROOT").context("set MUTIE_REPRO_ROOT")?,
     );
     ensure!(root.is_absolute(), "reproduction root must be absolute");
     ensure!(root.join("logs").is_dir(), "create an empty logs directory");
-    for jobs in [1, 2] {
+    for &jobs in job_counts {
         for cached in [false, true] {
             let mut tasks = tokio::task::JoinSet::new();
             for worker in 0..jobs {

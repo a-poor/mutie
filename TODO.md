@@ -119,9 +119,18 @@ slice is implemented; the full milestone is still in progress.
   diagnostics on readiness timeouts. The complete Cargo adapter also passes all
   nine focused executions (63 cancellation-test passes) across fresh, cold-cache
   and warm-cache modes with one/two workers; local targets rebuild every time.
-  No watcher trigger or artifact leak occurs. Next isolate the saved-percentage
-  survivor's changed executable with focused/full suites before another broad
-  mutation run; see `benchmarks/rust-nested-self-tests.md`.
+  No watcher trigger or artifact leak occurs. The subsequent paired survivor
+  comparison passes all six focused executions, but the full pristine cold-cache
+  control reproduces capture EOF. Pipe diagnostics establish cross-command
+  descriptor inheritance after the original group is gone. Serialize spawning
+  alongside the group retry; the combined fix passes 100/100 capture stress runs.
+  A new exact-tolerance test kills the score survivor through its intended boundary
+  assertion and passes before/after restoration. With both changes, all six
+  two-worker full adapter controls pass 199 tests across fresh/cold/warm caches;
+  source and caller artifacts are preserved and owned temporary storage is empty.
+  Next validate the stronger score test through a saved mutation rerun, then
+  repeat the broader six-mutation comparison; see
+  `benchmarks/rust-survivor-isolation.md`.
 - [x] Complete the shared user workflow for Rust: filters/configuration,
   live/plain status, reports/browser, scores/policies, dismissals, and focused
   reruns. Record language and execution scope for correct rerun validation;

@@ -857,6 +857,11 @@ Rendered logs can expand invalid UTF-8, and reports, caches, workspace files, an
 individual decoded records have separate disk/memory costs. Archival/compression
 and run-wide resource quotas remain future policies.
 
+Command spawning holds a shared mutex across pipe creation and child startup.
+On platforms with non-atomic pipe close-on-exec setup, concurrent spawning can
+otherwise leak a capture writer into an unrelated child and delay EOF beyond
+the original group's lifetime. Execution and capture draining remain concurrent.
+
 After a child exits, Unix process-group cleanup retries SIGKILL every 10 ms until
 its group disappears, bounded to one second. A single group signal can miss a
 descendant forking during delivery. Retire the group identifier on ESRCH; retain

@@ -122,3 +122,13 @@ The subsequent [unmutated serial/parallel controls](rust-nested-self-tests.md)
 pass the complete default suite in isolated Cargo workers and add startup and
 checkpoint diagnostics. They narrow the investigation but do not resolve or
 supersede the failed self-run above.
+
+
+## Later descriptor-inheritance reproduction
+
+The earlier 100-run pass did not eliminate every capture failure. The subsequent
+[paired survivor isolation](rust-survivor-isolation.md) reproduced EOF in pristine
+code and identified an unrelated command holding the failed capture's pipe after
+its process group disappeared. Spawning is now serialized in addition to the
+existing group retry. See that follow-up for descriptor evidence and validation;
+the earlier failed mutex-only experiment does not rule out this second cause.
