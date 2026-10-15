@@ -44,7 +44,7 @@ pub(super) async fn run(
     node: &NodeTool,
     mutation: Option<Mutation>,
     limit: Duration,
-    capture_limit: NonZeroUsize,
+    capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
 ) -> Result<Execution> {
     let source = project.root.clone();
@@ -93,13 +93,7 @@ pub(super) async fn run(
         protocol::EVIDENCE_LIMIT
     );
     fs::write(&reporter, constants + include_str!("reporter.mjs"))?;
-    let settings = serde_json::json!({
-        "root": root, "envDir": false, "cacheDir": owned_path.join("cache"),
-        "test": {"reporters": [reporter], "environment":"node", "pool":"forks",
-            "maxWorkers":1, "fileParallelism":false, "isolate":true, "watch":false,
-            "passWithNoTests":false, "allowOnly":false, "retry":0, "bail":0,
-            "coverage":{"enabled":false}, "update":false, "testTimeout":0, "hookTimeout":0}
-    });
+    let settings = settings(&root, &owned_path.join("cache"), &reporter);
     fs::write(
         &config,
         format!("export default {};\n", serde_json::to_string(&settings)?),
@@ -118,7 +112,7 @@ pub(super) async fn run(
         &args,
         &root,
         limit,
-        Some(capture_limit),
+        capture_limit,
         cancellation,
         &[
             ("NODE_OPTIONS", "".as_ref()),
@@ -176,7 +170,7 @@ mod tests {
             node,
             mutation,
             Duration::from_secs(20),
-            NonZeroUsize::new(4 * 1024 * 1024).unwrap(),
+            NonZeroUsize::new(4 * 1024 * 1024),
             &Cancellation::default(),
         )
         .await?
@@ -373,7 +367,7 @@ test('owned files and descendant', async () => {{
             })
             .unwrap();
             let (result, observed) = tokio::join!(
-                run(&project, &node, None, limit, cap, &cancellation),
+                run(&project, &node, None, limit, Some(cap), &cancellation),
                 observe
             );
             observed?;
@@ -408,4 +402,14 @@ test('owned files and descendant', async () => {{
         }
         Ok(())
     }
+}
+
+pub(super) fn settings(root: &Path, cache: &Path, reporter: &Path) -> serde_json::Value {
+    serde_json::json!({
+        "root": root, "envDir": false, "cacheDir": cache,
+        "test": {"reporters": [reporter], "environment":"node", "pool":"forks",
+            "maxWorkers":1, "fileParallelism":false, "isolate":true, "watch":false,
+            "passWithNoTests":false, "allowOnly":false, "retry":0, "bail":0,
+            "coverage":{"enabled":false}, "update":false, "testTimeout":0, "hookTimeout":0}
+    })
 }

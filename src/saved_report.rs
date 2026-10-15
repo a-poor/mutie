@@ -49,6 +49,8 @@ struct RunReport {
     compilation_command: Option<Vec<&'static str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     rust_scope: Option<crate::rust::ExecutionScope>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    vitest_scope: Option<crate::vitest::ExecutionScope>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
     include: Vec<String>,
@@ -172,6 +174,11 @@ pub struct SavedReport {
 }
 
 impl SavedReport {
+    pub fn vitest_scope(&mut self, scope: &crate::vitest::ExecutionScope) -> Result<()> {
+        self.run.vitest_scope = Some(scope.clone());
+        self.flush()
+    }
+
     pub fn rust_scope(&mut self, scope: &crate::rust::ExecutionScope) -> Result<()> {
         self.run.rust_scope = Some(scope.clone());
         self.flush()
@@ -231,6 +238,7 @@ impl SavedReport {
                         .collect()
                 }),
                 rust_scope: None,
+                vitest_scope: None,
                 mutation_command_prefix: language::test_command(config.lang)
                     .into_iter()
                     .filter(|arg| {
@@ -315,7 +323,7 @@ impl SavedReport {
                 "failed"
             } else if output.timed_out {
                 "timeout"
-            } else if output.status.success() {
+            } else if crate::command::classify(output).ok() == Some(Outcome::Missed) {
                 "passed"
             } else {
                 "failed"
@@ -343,7 +351,14 @@ impl SavedReport {
             dismissals,
         } = plan;
         ensure!(
-            mutations.len() == test_packages.len() && test_packages.iter().all(|p| !p.is_empty()),
+            mutations.len() == test_packages.len()
+                && test_packages.iter().all(|p| {
+                    if self.run.effective_config.lang == crate::cli::Lang::Vitest {
+                        p.is_empty()
+                    } else {
+                        !p.is_empty()
+                    }
+                }),
             "every mutation must have a test package selection"
         );
         ensure!(
@@ -512,7 +527,7 @@ impl SavedReport {
             text: format!("{prefix}.log"),
             stdout: format!(
                 "{prefix}.stdout.{}",
-                if self.run.effective_config.lang == crate::cli::Lang::Rust {
+                if self.run.effective_config.lang != crate::cli::Lang::Go {
                     "log"
                 } else {
                     "jsonl"
@@ -634,7 +649,12 @@ impl SavedReport {
         text.push_str(&format!("{}\n", self.run.policy));
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
-        if self.run.effective_config.lang == crate::cli::Lang::Rust {
+        if self.run.effective_config.lang == crate::cli::Lang::Vitest {
+            text.push_str("Runner: Vitest (JavaScript/TypeScript)\nFull suite; fresh command copies; dismissal review and reruns unsupported\n");
+            if let Some(scope) = &self.run.vitest_scope {
+                text.push_str(&format!("Package: {}\nNode: {}; pnpm: {}; Vitest: {}; Vite: {}\nManifest: {}\nLockfile: {}\n", scope.package, scope.node, scope.pnpm, scope.vitest, scope.vite, scope.manifest_fingerprint, scope.lockfile_fingerprint));
+            }
+        } else if self.run.effective_config.lang == crate::cli::Lang::Rust {
             text.push_str("Language: Rust\nMutation and baseline test scope: unit and integration tests, default features; doctests and ignored tests excluded\n");
             text.push_str(match self.run.effective_config.rust_build_cache {
                 crate::cli::RustBuildCache::Fresh => "Build artifacts: fresh owned directories per baseline/mutation\n",

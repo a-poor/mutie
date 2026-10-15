@@ -45,6 +45,7 @@ impl Phase {
 pub enum RunEvent<'a> {
     Phase(Phase),
     RustScope(&'a crate::rust::ExecutionScope),
+    VitestScope(&'a crate::vitest::ExecutionScope),
     Command {
         phase: Phase,
         output: &'a CommandOutput,
@@ -182,7 +183,7 @@ impl RunState {
                     active.phase = progress.phase;
                 }
             }
-            RunEvent::RustScope(_) => {}
+            RunEvent::RustScope(_) | RunEvent::VitestScope(_) => {}
             RunEvent::Finished { worker, result } => {
                 self.active.remove(worker);
                 self.summary.record(result);
@@ -288,6 +289,7 @@ impl Coordinator {
             match &event {
                 RunEvent::Phase(phase) => report.phase(phase.name())?,
                 RunEvent::RustScope(scope) => report.rust_scope(scope)?,
+                RunEvent::VitestScope(scope) => report.vitest_scope(scope)?,
                 RunEvent::Command { phase, output } => report.command(phase.name(), output)?,
                 RunEvent::Plan(plan) => report.plan(plan, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
@@ -302,7 +304,9 @@ impl Coordinator {
         if !self.interactive {
             match event {
                 RunEvent::Phase(Phase::Baseline) => {
-                    self.line(if self.lang == crate::cli::Lang::Rust {
+                    self.line(if self.lang == crate::cli::Lang::Vitest {
+                        "Running baseline: Vitest (fresh isolated copy, full suite)"
+                    } else if self.lang == crate::cli::Lang::Rust {
                         "Running baseline: cargo test --locked --tests (fresh build artifacts)"
                     } else {
                         "Running baseline: go test ./... (test caching disabled)"
@@ -311,10 +315,8 @@ impl Coordinator {
                 RunEvent::Command {
                     phase: Phase::Baseline,
                     output,
-                } if output.status.success()
-                    && !output.interrupted
-                    && !output.timed_out
-                    && output.capture_error.is_none() =>
+                } if crate::command::classify(output).ok()
+                    == Some(crate::report::Outcome::Missed) =>
                 {
                     self.line(format!(
                         "Baseline passed in {:.2}s",

@@ -29,6 +29,7 @@ pub struct SavedRun {
     pub phase: Option<String>,
     pub error: Option<String>,
     pub rust_scope: Option<crate::rust::ExecutionScope>,
+    pub vitest_scope: Option<crate::vitest::ExecutionScope>,
     pub score: Option<MutationScore>,
     pub score_policy: Option<ScorePolicy>,
     effective_config: Option<ScoreConfig>,
@@ -37,6 +38,9 @@ pub struct SavedRun {
 impl SavedRun {
     pub fn validate_rerun_scope(&self) -> Result<()> {
         match self.language() {
+            crate::cli::Lang::Vitest => {
+                anyhow::bail!("Vitest reruns and command export are not supported yet")
+            }
             crate::cli::Lang::Rust => self
                 .rust_scope
                 .as_ref()
@@ -162,6 +166,25 @@ impl LoadedReport {
             .context("opening report directory")?;
         ensure!(directory.is_dir(), "saved report is not a directory");
         let run: SavedRun = read_json(&directory, "run.json")?;
+        ensure!(
+            run.vitest_scope.is_none() || run.language() == crate::cli::Lang::Vitest,
+            "saved run has conflicting language and Vitest scope"
+        );
+        if run.language() == crate::cli::Lang::Vitest {
+            ensure!(
+                run.rust_scope.is_none(),
+                "saved Vitest run has conflicting Rust scope"
+            );
+            if run.status == RunStatus::Completed {
+                ensure!(
+                    run.vitest_scope.is_some(),
+                    "completed Vitest run lacks runner identity"
+                );
+            }
+        }
+        if let Some(scope) = &run.vitest_scope {
+            scope.validate_record()?;
+        }
         let mut inventory: SavedInventory = read_json(&directory, "mutants.json")?;
         let outcomes: SavedOutcomes = read_json(&directory, "outcomes.json")?;
         for (name, version) in [
@@ -204,6 +227,16 @@ impl LoadedReport {
         }
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
+            if run.language() == crate::cli::Lang::Vitest {
+                ensure!(
+                    mutation.operator == Operator::BooleanFlip
+                        && matches!(
+                            mutation.file.extension().and_then(|s| s.to_str()),
+                            Some("js" | "ts")
+                        ),
+                    "saved Vitest mutation is outside the supported scope"
+                );
+            }
             let id = mutation.id;
             ensure!(id > 0 && id <= count, "invalid inventory mutation ID {id}");
             ensure!(

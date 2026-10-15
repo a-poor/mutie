@@ -53,9 +53,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   type and classifier. Require validated completion even after exit zero, preserve
   process-failure precedence, and make shared baselines use outcome classification.
   The real adapter probes now exercise this boundary.
-- [ ] Connect Vitest to shared runs/coordinator/saved reports with runner/tool/config
-  identity. Preserve evidence validation before baseline/outcome acceptance and
-  verify fixture CLI mutation runs before Experimental promotion.
+- [x] Connect Vitest to shared runs/coordinator/saved reports with runner/tool/config
+  identity. Require completion evidence in baseline messages and saved outcomes.
+  Verify six fixture CLI mutations, a stronger-test rescan, report reading,
+  source preservation and infrastructure failure persistence; see
+  [the CLI evidence](benchmarks/vitest-shared-runs.md). Experimental scope is
+  explicit `--lang vitest`, serial full-suite runs; review/reruns/policies deferred.
 - [ ] Resolve broader lifecycle/fixture failure attribution before expanding beyond
   the conservative reported-hook policy.
 - [ ] Validate focused reruns, review/policies, strict dependency/config identity,

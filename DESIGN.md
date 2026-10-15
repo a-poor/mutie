@@ -1479,11 +1479,14 @@ diagnostics. Validated completion outcomes/errors now pass through the shared
 command type and classifier, which requires evidence even after exit zero;
 shared baselines also use outcome classification. Adapter fixture probes cover
 mutation outcomes and cleanup through this boundary;
-the next step is shared run/report integration, followed by review/rerun acceptance
-and real-project usefulness/timing. The Pathe audit missed its
+explicit `--lang vitest` now connects serial full-suite mutation runs to the shared
+coordinator and saved reports. Runner/tool/config identity is persisted and checked
+before each command; package arguments are empty because the entire suite runs.
+See [CLI evidence](benchmarks/vitest-shared-runs.md). The next steps are
+review/rerun acceptance and real-project usefulness/timing. The Pathe audit missed its
 coverage-only Vite config; unmodified Pathe is rejected, and listing evidence uses
 an explicitly adapted temporary copy. Resolve config support before claiming
 unmodified project acceptance.
 No plugin abstraction, affected-test selection or persistent transform cache is
-part of this milestone. SUPPORT.md remains Planned until fixture workflows run
-through Mutie. Existing Go/Rust compatibility and report reading remain required.
+part of this milestone. SUPPORT.md records Experimental fixture acceptance; broader workflows remain
+separate gates. Existing Go/Rust compatibility and report reading remain required.

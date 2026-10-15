@@ -1,9 +1,11 @@
 # Vitest completion evidence and isolated execution
 
 2026-10-15, following discovery commit `da255b1`. This is an adapter milestone,
-not acceptance of the full mutation/review/rerun workflow. Vitest remains Planned:
-`vitest-list` previews mutations and `vitest-check` checks an isolated baseline;
-normal scored runs, saved reports, review and reruns are not wired to Vitest yet.
+not acceptance of the full mutation/review/rerun workflow. At that milestone,
+Vitest remained Planned with discovery and isolated baseline diagnostics.
+Subsequent [shared CLI acceptance](vitest-shared-runs.md) adds scored serial runs
+and saved reports, advancing the fixture scope to Experimental. Review/reruns
+remain deferred.
 
 ## Implemented boundary
 
@@ -120,7 +122,7 @@ cargo fmt --check
 cargo clippy --all-targets -- -D warnings
 ```
 
-Next, connect the adapter to the shared run/coordinator/report pipeline with explicit
+The next step at this milestone was to connect the adapter to the shared run/coordinator/report pipeline with explicit
 runner/tool/config identity. Preserve strict evidence validation before accepting
 a baseline or a mutation result. The shared command boundary now carries validated
 Vitest outcomes or evidence errors, with interruption/capture/timeout precedence;
@@ -136,7 +138,8 @@ and Clippy passed; the expanded startup/missing-evidence matrix was rerun separa
 That initial adapter validation did not change Go/Rust execution, report schema
 or shared classification. The subsequent shared-command integration preserves
 Go/Rust outcome rules while requiring structured Vitest evidence before accepting
-success. Scored Vitest CLI runs and saved-report integration remain unimplemented.
+success. Scored Vitest CLI runs and saved-report integration are recorded separately in
+[shared CLI acceptance](vitest-shared-runs.md).
 
 Shared-command validation: 228 default tests passed (34 ignored), both opt-in
 real Vitest adapter tests passed through the shared classifier, and the baseline

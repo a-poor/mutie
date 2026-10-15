@@ -2,12 +2,12 @@
 
 A CLI for performing mutation testing.
 
-Mutie supports Go modules and an initial Rust binary-package workflow. It runs a
+Mutie supports Go modules, scoped Rust packages, and experimental Vitest packages. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
 [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
-Focused reruns and dismissal review are supported. The
+Go and Rust support focused reruns and dismissal review. The
 [initial Rust milestone is accepted](benchmarks/rust-milestone-acceptance.md)
 for this binary-package scope; general Cargo/workspace support remains outside it.
 
@@ -15,17 +15,19 @@ See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
 not necessarily available in the current CLI.
 
-See [target support](SUPPORT.md) for support levels, verified scopes and gaps for
-Go and Rust, plus planned JavaScript/TypeScript integrations for Vitest, Node's
-test runner and Bun's test runner, and Python integration for pytest. The next
-planned milestone is [scoped Vitest support](benchmarks/vitest-initial-scope.md);
-scored mutation runs are not yet available. A read-only discovery preview is available
-through `mutie vitest-list PATH --include 'src/**/*.ts'` for the pinned ESM/pnpm
-scope. It requires prepared dependencies and does not run tests, save reports, or
-apply `mutie.toml` settings. `mutie vitest-check PATH` checks an isolated baseline
-with a command deadline and bounded output, without writing a report. See the
-[execution boundary](benchmarks/vitest-execution.md) and scope record for setup,
-pinned versions and limitations.
+See [target support](SUPPORT.md) for Go/Rust support and the experimental
+JavaScript/TypeScript Vitest slice. Node's test runner, Bun and pytest remain planned.
+Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
+package to discover boolean flips, run the full suite in isolated copies, and save
+scored outcomes. This initial path supports one worker. Custom runner configs,
+focused reruns, dismissal review and CI policies are not supported yet.
+
+`mutie vitest-list PATH --include 'src/**/*.ts'` remains a read-only preview;
+`mutie vitest-check PATH` checks an isolated baseline with a deadline and bounded
+output. These two diagnostic commands do not apply `mutie.toml` or save reports;
+the scored run does. See [CLI validation](benchmarks/vitest-shared-runs.md) and the
+[execution boundary](benchmarks/vitest-execution.md) for pinned dependencies,
+setup and conservative failure attribution.
 
 ## Try it
 

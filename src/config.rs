@@ -211,6 +211,31 @@ impl RunConfig {
             rerun,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
+        if config.lang == Lang::Vitest {
+            ensure!(
+                config.test_scope == TestScope::Full,
+                "Vitest supports only full test scope"
+            );
+            ensure!(
+                config.jobs.get() == 1,
+                "Vitest currently supports only --jobs 1"
+            );
+            ensure!(
+                config
+                    .operators
+                    .iter()
+                    .all(|op| *op == Operator::BooleanFlip),
+                "Vitest supports only boolean_flip"
+            );
+            ensure!(
+                config.rerun.is_none(),
+                "Vitest reruns are not supported yet"
+            );
+            ensure!(
+                !config.fail_on_missed && config.min_score.is_none(),
+                "Vitest CI policies are not supported yet"
+            );
+        }
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,

@@ -154,6 +154,16 @@ impl Evidence {
             );
             module_errors.extend(&module.errors);
             for test in &module.tests {
+                // Vitest 4.1.9 replaces process.exit with a plain Error in its
+                // fork runner. Treat that pinned diagnostic conservatively as
+                // infrastructure failure, never as evidence of a killed mutant.
+                ensure!(
+                    !test.errors.iter().any(|error| error.name == "Error"
+                        && error
+                            .message
+                            .starts_with("process.exit unexpectedly called with ")),
+                    "Vitest test attempted process.exit"
+                );
                 ensure!(
                     !test.unsupported_options,
                     "Vitest per-test retries/repeats/timeouts are unsupported: {}",
@@ -290,6 +300,10 @@ mod tests {
         failed["modules"][0]["tests"][0]["errors"] = json!([error("")]);
         assert_eq!(classify(failed.clone(), Some(1)).unwrap(), Outcome::Killed);
         assert!(classify(failed.clone(), Some(0)).is_err());
+        let mut exiting = failed.clone();
+        exiting["modules"][0]["tests"][0]["errors"][0]["message"] =
+            json!("process.exit unexpectedly called with \"0\"");
+        assert!(classify(exiting, Some(1)).is_err());
         let mut hooked = failed.clone();
         hooked["hooksSeen"] = json!(true);
         assert!(classify(hooked, Some(1)).is_err());

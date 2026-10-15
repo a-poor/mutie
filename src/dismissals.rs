@@ -355,6 +355,10 @@ pub fn manage(module: &Path, requested: Lang, action: DismissAction) -> Result<(
         .canonicalize()
         .with_context(|| format!("opening {}", module.display()))?;
     let language = crate::language::resolve(&root, requested)?;
+    ensure!(
+        language != Lang::Vitest,
+        "Vitest dismissal review is not supported yet"
+    );
     if matches!(action, DismissAction::List) {
         let store = Store::load(&root)?;
         println!(
@@ -531,6 +535,10 @@ fn match_dismissals(store: &Store, language: Lang, mutations: &[Mutation]) -> Ve
 }
 
 pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()> {
+    ensure!(
+        config.lang != Lang::Vitest,
+        "Vitest dismissal review is not supported yet"
+    );
     let store = Store::load(&config.module_root)?;
     if store.dismissals.is_empty() {
         println!("No dismissals to check.");

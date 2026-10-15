@@ -258,7 +258,7 @@ async fn execute(
         )
         .await?,
     );
-    let dismissal_store = if config.list {
+    let dismissal_store = if config.list || config.lang == Lang::Vitest {
         None
     } else {
         Some(dismissals::Store::load(&snapshot.path())?)
@@ -268,6 +268,13 @@ async fn execute(
         // manifest that could have changed while the snapshot was being copied.
         rust_project = Some(rust::Project::load(&snapshot.path())?);
     }
+    let vitest_scope = if config.lang == Lang::Vitest {
+        let identity = vitest::execution_scope(&snapshot.path(), cancellation).await?;
+        coordinator.emit(RunEvent::VitestScope(&identity), cancellation)?;
+        Some(identity)
+    } else {
+        None
+    };
     let baseline_workspace = measured_workspace(
         snapshot.path(),
         vec![],
@@ -322,6 +329,7 @@ async fn execute(
             config.max_log_bytes,
             config.max_capture_bytes,
             None,
+            vitest_scope.as_ref(),
             cancellation,
             |_| async {},
         )
@@ -405,6 +413,13 @@ async fn execute(
             coordinator.line(format!("Rust discovery excluded {exclusion}"));
         }
         coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
+        (found.mutations, None)
+    } else if config.lang == Lang::Vitest {
+        drop(baseline_workspace);
+        let found = vitest::discovery::discover(&snapshot.path(), &scope, cancellation)?;
+        for exclusion in &found.exclusions {
+            coordinator.line(format!("Vitest discovery excluded {exclusion}"));
+        }
         (found.mutations, None)
     } else {
         let discovery = go::discover(
@@ -494,6 +509,7 @@ async fn execute(
         .iter()
         .map(|mutation| match &graph {
             Some(graph) => graph.packages_for(&mutation.file.path),
+            None if config.lang == Lang::Vitest => Ok(vec![]),
             None => Ok(vec![
                 if config.lang == Lang::Rust {
                     "--tests"
@@ -554,6 +570,7 @@ async fn execute(
             .as_ref()
             .filter(|_| config.rust_build_cache == cli::RustBuildCache::Worker)
             .map(|project| project.scope.package.clone()),
+        vitest_scope: vitest_scope.map(Arc::new),
         snapshot,
         test_packages: Arc::new(test_packages),
         timeout,
@@ -566,6 +583,7 @@ async fn execute(
 
 #[derive(Clone)]
 struct WorkerContext {
+    vitest_scope: Option<Arc<vitest::ExecutionScope>>,
     lang: Lang,
     rust_cache_package: Option<String>,
     snapshot: Arc<Workspace>,
@@ -673,6 +691,7 @@ impl WorkerJob {
                             context.max_log_bytes,
                             context.max_capture_bytes,
                             cache.as_ref(),
+                            context.vitest_scope.as_deref(),
                             &context.cancellation,
                             move |phase| {
                                 let progress = progress.clone();

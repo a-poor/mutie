@@ -1,8 +1,8 @@
 # Vitest scope fixture
 
 This fixture supports Mutie's read-only discovery preview and direct runner probes.
-`vitest-check` also supports an isolated baseline; scored mutation runs are not
-yet integrated.
+`vitest-check` supports an isolated baseline; `--lang vitest` runs and saves
+scored serial mutations.
 It separately exercises ESM JavaScript and TypeScript boolean value expressions.
 Pinned tools: Node 24.22.0, pnpm 11.10.0, Vitest 4.1.9 with Vite 8.3.4; macOS arm64 evidence.
 Root `cargo test` does not run it.
@@ -49,3 +49,18 @@ MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --bin mutie vitest::ex
 The adapter probes run real isolated commands, including deliberate failures,
 timeout/cancellation and output overflow. They exercise mutations internally;
 they do not validate saved reports, CLI focused reruns or score policies.
+
+## Scored CLI workflow
+
+With the pinned dependencies prepared outside the repository:
+
+```sh
+cargo run -- /path/to/prepared-fixture --lang vitest --ui plain
+MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --test vitest_workflow -- --ignored
+```
+
+The full fixture produces six mutations: four killed and two missed. The opt-in
+CLI test adds a stronger JavaScript test, verifies three kills in a filtered fresh
+scan, checks saved identity/logs and exercises zero-exit infrastructure failures.
+Only serial full-suite execution is supported. Review/reruns/policies remain
+explicitly unavailable. See [CLI evidence](../../../benchmarks/vitest-shared-runs.md).

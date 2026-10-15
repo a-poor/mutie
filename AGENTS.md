@@ -17,8 +17,11 @@ Rust binary packages, and validated ordinary Rust library packages.
 - `src/vitest.rs` exposes read-only `vitest-list`; `vitest/project.rs` validates
   pinned ESM/pnpm metadata and `vitest/discovery.rs` lists JS/TS boolean flips.
   `vitest/execution.rs` and `vitest/protocol.rs` implement isolated commands and
-  strict completion evidence; `vitest-check` exposes baseline diagnostics. Shared
-  mutation runs/reports/reruns are not yet integrated. Real adapter tests are
+  strict completion evidence; `vitest-check` exposes baseline diagnostics. Explicit
+  `--lang vitest` connects serial full-suite runs to shared reports and scores.
+  Reruns, dismissal review, CI policies and parallel workers remain unsupported.
+  `tests/vitest_workflow.rs` checks real scored CLI runs and saved failures; see
+  `benchmarks/vitest-shared-runs.md`. Real adapter and CLI tests are
   ignored and require `MUTIE_VITEST_FIXTURE`; `benchmarks/vitest-execution.md`
   records outcome/cleanup evidence and conservative hook limits.
   `tests/vitest_preview.rs` covers the preview CLI;

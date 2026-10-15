@@ -1,4 +1,4 @@
-//! The small built-in boundary needed by the Go and Rust execution paths.
+//! Built-in dispatch for Go, Cargo and the scoped Vitest execution path.
 use std::{future::Future, num::NonZeroUsize, path::Path, time::Duration};
 
 use anyhow::{Result, bail, ensure};
@@ -26,10 +26,10 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
         },
         lang => lang,
     };
-    let manifest = if lang == Lang::Go {
-        "go.mod"
-    } else {
-        "Cargo.toml"
+    let manifest = match lang {
+        Lang::Go => "go.mod",
+        Lang::Vitest => "package.json",
+        _ => "Cargo.toml",
     };
     ensure!(
         root.join(manifest).is_file(),
@@ -41,6 +41,15 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
 
 pub fn test_command(lang: Lang) -> Vec<&'static str> {
     match lang {
+        Lang::Vitest => vec![
+            "node",
+            "node_modules/vitest/vitest.mjs",
+            "run",
+            "--config",
+            "<owned-config>",
+            "--configLoader",
+            "native",
+        ],
         Lang::Rust => std::iter::once("cargo")
             .chain(rust::TEST_ARGS.iter().copied())
             .collect(),
@@ -52,6 +61,7 @@ pub fn test_command(lang: Lang) -> Vec<&'static str> {
 
 pub fn discovery_command(lang: Lang, scope: TestScope) -> Vec<&'static str> {
     match lang {
+        Lang::Vitest => vec!["mutie", "vitest-list"],
         Lang::Rust => std::iter::once("cargo")
             .chain(rust::METADATA_ARGS.iter().copied())
             .collect(),
@@ -70,6 +80,7 @@ pub async fn test<F, Fut>(
     log_limit: Option<NonZeroUsize>,
     capture_limit: Option<NonZeroUsize>,
     cache: Option<&rust::BuildCache>,
+    vitest_scope: Option<&crate::vitest::ExecutionScope>,
     cancellation: &Cancellation,
     progress: F,
 ) -> Result<CommandOutput>
@@ -78,6 +89,17 @@ where
     Fut: Future<Output = ()> + Send,
 {
     match lang {
+        Lang::Vitest => {
+            crate::vitest::test(
+                root,
+                limit,
+                log_limit,
+                capture_limit,
+                vitest_scope.ok_or_else(|| anyhow::anyhow!("missing Vitest execution identity"))?,
+                cancellation,
+            )
+            .await
+        }
         Lang::Rust => {
             rust::test(
                 root,
