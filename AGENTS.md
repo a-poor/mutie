@@ -98,8 +98,11 @@ reruns, fresh/cached agreement and limits. Workspaces remain unsupported.
 The first focused-feedback optimization is validated in
 `benchmarks/rust-report-write-reruns.md`: one saved-selection self-run improved
 from 564 to 393 seconds with matching failures and preserved sources/artifacts.
-Follow `TODO.md`, `DESIGN.md` and `SUPPORT.md` to reassess the next major objective
-now that the ordinary-library milestone is complete. Consider workspaces separately. Preserve the
+Follow the scoped Vitest milestone in `TODO.md`, `DESIGN.md` and
+`benchmarks/vitest-initial-scope.md`: one ESM/pnpm package, separate JS/TS boolean
+discovery, isolated execution and explicit completion/error evidence. The fixture
+and Pathe baseline are direct-runner probes, not implemented Mutie support.
+Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,

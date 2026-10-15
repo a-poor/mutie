@@ -1352,8 +1352,8 @@ design. No runtime or plugin ABI is selected now.
 
 The initial Rust contract fixes Cargo scope, source eligibility and artifact
 ownership, with execution reliability and three operators verified for that scope.
-The first measured Rust feedback-time optimization is accepted; scope ordinary
-library-package support as the proposed next objective using the support ledger.
+The first measured Rust feedback-time optimization and scoped ordinary-library
+milestone are accepted. The next objective is the Vitest slice described below.
 Dismissal editing in the browser, report
 archival, run-wide resource budgets, and mutation matching across source edits remain deferred
 choices; they do not block acceptance of the initial Rust scope.
@@ -1454,3 +1454,25 @@ PTY tests on macOS, independently of Go and the original checkout. Performance
 tuning and report-retention decisions require workload-specific evidence. The
 [subsequent go-cmp measurements](benchmarks/go-cmp-v0.7.0.md) cover a larger
 inventory and report; neither library run establishes general scaling claims.
+
+## Next milestone: scoped Vitest support
+
+The [scope record](benchmarks/vitest-initial-scope.md) defines the planned first
+JavaScript/TypeScript runner: one ESM package, Node environment, pnpm dependencies,
+plain JS/TS and boolean flips. It selects a mixed-syntax fixture and Pathe as the
+real TypeScript project; JavaScript requires independent real-project evidence.
+Direct runner baselines and twelve probes are scope evidence, not an adapter.
+
+Preserve the existing built-in language boundary while introducing explicit runner
+and syntax identity in project/report data. Reuse execution, workspace, review and
+report machinery only where its invariants hold. In particular, a successful exit
+cannot become a miss without validated nonempty completion evidence, and pnpm
+links must remain inside independent workspace dependency copies. A small pinned
+reporter protocol must distinguish test failures from transform and infrastructure
+errors; test its failure modes before integrating outcome classification.
+
+Implement project validation and deterministic JS/TS discovery first, then isolated
+execution, shared review/rerun acceptance and real-project usefulness/timing.
+No plugin abstraction, affected-test selection or persistent transform cache is
+part of this milestone. SUPPORT.md remains Planned until fixture workflows run
+through Mutie. Existing Go/Rust compatibility and report reading remain required.

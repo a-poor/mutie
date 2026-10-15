@@ -1,0 +1,12 @@
+{
+  "name": "mutie-vitest-fixture",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.10.0",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "4.1.9"
+  }
+}

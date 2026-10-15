@@ -14,15 +14,15 @@ See [the acceptance evidence](benchmarks/rust-report-write-reruns.md) for limits
 Ordinary Rust library packages now meet the scoped Validated level: fixture
 acceptance is complemented by Marathon's real-project findings, stronger-test
 reruns, matching fresh/cached outcomes and preservation evidence. See
-[the results](benchmarks/rust-library-marathon.md). Reassess the next major
-objective using SUPPORT.md; workspaces remain a separate scope decision.
+[the results](benchmarks/rust-library-marathon.md). The next milestone is the scoped JavaScript/TypeScript + Vitest workflow below;
+Rust workspaces remain a separate scope decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
 
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
-their ordering and initial scopes are not yet selected.
+Vitest is selected next; the other initial scopes remain undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [ ] Define and implement the first JavaScript/TypeScript + Vitest slice.
@@ -31,8 +31,23 @@ their ordering and initial scopes are not yet selected.
 - [ ] Define and implement the first Python + pytest slice.
 
 Each new slice starts with a fixture and a real validation project, then advances
-through the support gates recorded in the ledger. Tracking these targets does not
-choose their implementation order; the proposed next objective is scoped below.
+through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
+
+## Current milestone: first Vitest slice
+
+- [x] Scope the first package/runner/syntax/dependency boundary; add separate JS/TS
+  fixtures and select Pathe for real TypeScript validation. Record direct baseline,
+  stronger-test and failure probes in [the audit](benchmarks/vitest-initial-scope.md).
+  This is planning evidence, not implemented support.
+- [ ] Validate one ESM/pnpm package, installed dependencies and runner identity;
+  discover JS/TS runtime boolean flips with deterministic listings and exclusions.
+- [ ] Implement bounded completion/error evidence and isolated full-suite execution;
+  verify assertion, transform, config, import/hook, unhandled, empty/skipped,
+  mixed-failure and malformed/missing-result cases before Experimental promotion.
+- [ ] Validate focused reruns, review/policies, strict dependency/config identity,
+  fresh cache isolation, parallel workers, timeout/cancellation and preservation.
+- [ ] Record useful Pathe findings, stronger-test reruns and feedback time. Select
+  and validate a real JavaScript project independently before promoting JS support.
 
 ## Completed: first Rust feedback-time improvement
 

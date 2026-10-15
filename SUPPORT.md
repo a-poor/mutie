@@ -2,7 +2,7 @@
 
 This is the support ledger for Mutie's language and test-runner targets. It tracks
 verified behavior, scope limits, evidence and the work needed to advance each
-target. Last reviewed: 2026-10-14. [README.md](README.md) documents usage;
+target. Last reviewed: 2026-10-15. [README.md](README.md) documents usage;
 [TODO.md](TODO.md) sets implementation priorities. A planned target is not available
 through the CLI, and this table does not set implementation order.
 
@@ -30,7 +30,7 @@ does not by itself validate a new runner.
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
-| JavaScript / TypeScript | Vitest | Planned | None | Define first package, syntax/module scope and fixture |
+| JavaScript / TypeScript | Vitest | Planned | None | Scoped ESM/pnpm slice: implement project validation and JS/TS boolean discovery |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -115,17 +115,23 @@ targets have not been chosen or verified.
 
 **Level: Planned. No adapter, mutation discovery or end-to-end validation yet.**
 
-Desired outcome: the shared mutation/review/rerun workflow for projects using
-Vitest. Before implementation, select a real project and fixture; define supported
-package layout, package manager/lockfile, JavaScript and TypeScript syntax, module
-formats, transformations and runner configuration. Decide how one-shot execution,
-test discovery and structured results distinguish assertion failures from
-transform/configuration errors, missing tests and interrupted runs.
+The [first scope audit](benchmarks/vitest-initial-scope.md) selects one ESM package,
+Node execution, `.js`/`.ts` source, pnpm's self-contained locked dependencies and
+`boolean_flip`. Initial tool evidence is Node 24.22.0, pnpm 11.10.0 and Vitest 4.1.9
+on macOS. Custom configs/plugins, browser environments, JSX/TSX, CommonJS,
+monorepos and other package managers are deferred.
 
-Initial validation must exercise isolated dependencies and caches, prevent watch
-mode from keeping runs alive, and demonstrate a missed mutation killed by stronger
-tests. Monorepos, browser execution, JSX/TSX and custom transformations are scope
-decisions still to make, not promised initial features.
+The mixed-syntax fixture passes four direct Vitest tests; separate JS/TS probes
+show survivors killed by stronger tests. Pathe is selected for real TypeScript
+validation: its direct full Vitest baseline passes 467 tests (8 skipped, 8 todo).
+No Mutie adapter is implemented, no real-project mutation run has occurred, and
+JavaScript still needs its own real-project validation target. Direct probes also
+show why JSON `success` and exit status alone are insufficient: unhandled errors
+and all-skipped runs need explicit rejection.
+
+Next gate: project/installed-dependency validation and separate JS/TS discovery,
+then a completion/error protocol and isolated fixture workflows through Mutie.
+The scope record defines classification, preservation and real-project acceptance.
 
 ## JavaScript / TypeScript — Node.js test runner
 

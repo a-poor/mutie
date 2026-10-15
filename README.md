@@ -17,7 +17,9 @@ not necessarily available in the current CLI.
 
 See [target support](SUPPORT.md) for support levels, verified scopes and gaps for
 Go and Rust, plus planned JavaScript/TypeScript integrations for Vitest, Node's
-test runner and Bun's test runner, and Python integration for pytest.
+test runner and Bun's test runner, and Python integration for pytest. The next
+planned milestone is [scoped Vitest support](benchmarks/vitest-initial-scope.md);
+it is not yet a CLI capability.
 
 ## Try it
 
