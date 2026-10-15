@@ -92,8 +92,10 @@ targets have not been chosen or verified.
   feature selection or cross-compilation. Doctests and ignored tests are outside
   the execution scope. Validation is on macOS; Unix scope is not a claim of equal
   platform evidence. Full-suite feedback time remains a practical constraint.
-- Next support gains: define the next library-package slice against a real project,
-  with workspace expansion scoped separately. Further runtime work should follow
+- Next support gains: implement the [scoped library-package slice](benchmarks/rust-library-scope.md)
+  (library-only or one library plus one binary). The fixture Cargo probes and
+  Marathon's 182-test baseline are planning evidence, not adapter support;
+  workspace expansion remains separate. Further runtime work should follow
   measured costs while preserving full tests. Advancement to
   Established needs additional representative real projects, not just more operators.
 

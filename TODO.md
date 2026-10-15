@@ -59,13 +59,23 @@ choose their implementation order; the proposed next objective is scoped below.
   matrix demonstrates an improvement, not a repeated-run distribution or general
   performance guarantee. See [the results](benchmarks/rust-report-write-reruns.md).
 
-## Proposed next objective: broader Rust project support
+## Next objective: ordinary Rust library packages
 
-- [ ] Scope ordinary library packages using a small fixture and a representative
-  real project. Decide library-only versus library-plus-binary support, default
-  test scope and unsupported layouts before implementation. Workspaces and local
-  dependencies require explicit scope decisions; keep the current binary workflow
-  covered and update the support ledger with verified evidence.
+- [x] Scope ordinary library packages using a small fixture and a representative
+  real project. Support library-only and library-plus-one-binary layouts with the
+  existing unit/integration test scope; doctests remain excluded. Direct Cargo
+  probes verify the fixture's test-improvement scenario, and Marathon's isolated
+  baseline passes 182 tests. These are scope evidence, not implemented adapter
+  support. See [the audit and acceptance gates](benchmarks/rust-library-scope.md).
+- [ ] Generalize production-target identity and metadata validation, preserving
+  strict rerun checks and compatibility with saved binary-only reports.
+- [ ] Discover from all production roots with stable shared-file deduplication;
+  cover explicit names/paths and unsupported target configurations.
+- [ ] Validate fresh/cached fixture workflows, stronger-test focused reruns,
+  local rebuilds and source/artifact preservation through Mutie.
+- [ ] Validate useful findings and focused reruns on Marathon, retaining Mutie as
+  the binary-only control, then update implemented support claims. Workspaces and
+  local dependencies remain separately scoped.
 
 See [the acceptance review](benchmarks/rust-milestone-acceptance.md) for evidence,
 limits and the reasoning behind this priority.

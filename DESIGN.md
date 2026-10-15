@@ -349,9 +349,13 @@ writes and lower prebuilt-suite latency. The
 this first optimization's acceptance: the six-mutation self-run falls from 564
 to 393 seconds in one pair, with identical failure sets, required rebuilds and
 source/artifact preservation. This does not establish a universal speedup.
-The proposed next major objective is ordinary Rust library-package support,
-scoped against a fixture and real project before expanding to workspaces or
-local dependencies. No broader Cargo compatibility is implemented by this work.
+The next major objective is ordinary Rust library-package support. The
+[scope audit](benchmarks/rust-library-scope.md) selects library-only and
+library-plus-one-binary layouts, retaining unit/integration tests and excluding
+doctests. Direct Cargo fixture probes and Marathon's 182-test isolated baseline
+establish validation candidates; target identity, multi-root discovery and full
+adapter acceptance remain implementation work. Workspaces and local dependencies
+remain separate objectives. No broader Cargo compatibility is implemented yet.
 
 ## Original Go MVP — completed
 
