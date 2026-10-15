@@ -20,8 +20,11 @@ Rust binary packages, and validated ordinary Rust library packages.
   strict completion evidence; `vitest-check` exposes baseline diagnostics. Explicit
   `--lang vitest` connects serial full-suite runs to shared reports and scores.
   Focused reruns validate saved source and execution identity; the browser exports
-  explicit runner commands. Dismissal review, CI policies and parallel workers
-  remain unsupported. `benchmarks/vitest-focused-reruns.md` records acceptance.
+  explicit runner commands. Dismissal CRUD/check and CI policies use the shared
+  source-identity and score machinery; `tests/support/vitest_dismissals.rs` and
+  `benchmarks/vitest-dismissals.md` record JS/TS review and policy acceptance.
+  Parallel workers remain unsupported. `benchmarks/vitest-focused-reruns.md`
+  records rerun acceptance.
   `tests/vitest_workflow.rs` checks real scored CLI runs and saved failures; see
   `benchmarks/vitest-shared-runs.md`. Real adapter and CLI tests are
   ignored and require `MUTIE_VITEST_FIXTURE`; `benchmarks/vitest-execution.md`

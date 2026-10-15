@@ -650,7 +650,9 @@ impl SavedReport {
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
         if self.run.effective_config.lang == crate::cli::Lang::Vitest {
-            text.push_str("Runner: Vitest (JavaScript/TypeScript)\nFull suite; fresh command copies; dismissal review unsupported\n");
+            text.push_str(
+                "Runner: Vitest (JavaScript/TypeScript)\nFull suite; fresh command copies\n",
+            );
             if let Some(scope) = &self.run.vitest_scope {
                 text.push_str(&format!("Package: {}\nNode: {}; pnpm: {}; Vitest: {}; Vite: {}\nManifest: {}\nLockfile: {}\n", scope.package, scope.node, scope.pnpm, scope.vitest, scope.vite, scope.manifest_fingerprint, scope.lockfile_fingerprint));
             }

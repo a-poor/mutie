@@ -66,8 +66,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   [rerun evidence](benchmarks/vitest-focused-reruns.md).
 - [ ] Resolve broader lifecycle/fixture failure attribution before expanding beyond
   the conservative reported-hook policy.
-- [ ] Validate review/policies, parallel workers, and broader cache/timeout/
-  cancellation preservation through the complete CLI workflow.
+- [x] Connect Vitest dismissal CRUD/check, saved review snapshots and CI policies.
+  Verify separate JS/TS decisions, stale-source invalidation, unchanged raw
+  outcomes/scores, stronger-test reruns, config/CLI overrides and infrastructure
+  error precedence. See [review evidence](benchmarks/vitest-dismissals.md).
+- [ ] Validate parallel workers and broader cache/timeout/cancellation preservation
+  through the complete CLI workflow.
 - [ ] Resolve Pathe coverage-only config support explicitly, then record useful
   findings, stronger-test reruns and feedback time. Select
   and validate a real JavaScript project independently before promoting JS support.

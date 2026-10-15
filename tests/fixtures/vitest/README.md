@@ -65,4 +65,5 @@ scan, checks saved identity/logs and exercises zero-exit infrastructure failures
 Only serial full-suite execution is supported. Focused reruns now validate saved
 IDs/missed findings after stronger JS/TS tests, with metadata/source rejection
 checks; see [rerun evidence](../../../benchmarks/vitest-focused-reruns.md).
-Review and CI policies remain explicitly unavailable. See [CLI evidence](../../../benchmarks/vitest-shared-runs.md).
+Review and CI policies are covered separately by the ignored `review::` test in
+`vitest_workflow`; see [review evidence](../../../benchmarks/vitest-dismissals.md). See [CLI evidence](../../../benchmarks/vitest-shared-runs.md).

@@ -72,9 +72,10 @@ cargo clippy --all-targets -- -D warnings
 
 Only `--jobs 1`, full-suite selection and `boolean_flip` are supported.
 [Focused reruns and command export](vitest-focused-reruns.md) are now implemented.
-Dismissal review, `--fail-on-missed` and `--min-score` remain explicitly rejected. Custom configs, JSX/TSX/CommonJS and workspaces remain outside
+[Dismissal review, `--fail-on-missed` and `--min-score`](vitest-dismissals.md)
+now have JS/TS fixture acceptance. Custom configs, JSX/TSX/CommonJS and workspaces remain outside
 scope. Reported-hook failure attribution remains conservative; broader lifecycle
-and fixture failures need separate validation. Parallel isolation, review/policies,
+and fixture failures need separate validation. Parallel isolation,
 unmodified Pathe config support, useful real-project findings and
 feedback time remain acceptance gates. JavaScript needs its own real project;
 TypeScript evidence does not promote JavaScript independently.

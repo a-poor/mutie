@@ -7,6 +7,9 @@ use std::{
     process::{Command, Output},
 };
 
+#[path = "support/vitest_dismissals.rs"]
+mod review;
+
 fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
     let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
     command.arg(root).args([
@@ -276,8 +279,6 @@ fn unsupported_vitest_options_fail_before_execution() {
     for (args, message) in [
         (vec!["--jobs", "2"], "only --jobs 1"),
         (vec!["--test-scope", "affected"], "only full test scope"),
-        (vec!["--min-score", "50"], "CI policies"),
-        (vec!["--fail-on-missed"], "CI policies"),
         (
             vec!["--rust-build-cache", "worker"],
             "only supported for Rust",
@@ -298,11 +299,6 @@ fn unsupported_vitest_options_fail_before_execution() {
             .arg(action)
             .output()
             .unwrap();
-        assert!(!output.status.success());
-        assert!(
-            String::from_utf8_lossy(&output.stderr)
-                .contains("Vitest dismissal review is not supported"),
-            "{output:?}"
-        );
+        assert!(output.status.success(), "{output:?}");
     }
 }

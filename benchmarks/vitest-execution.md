@@ -6,7 +6,7 @@ Vitest remained Planned with discovery and isolated baseline diagnostics.
 Subsequent [shared CLI acceptance](vitest-shared-runs.md) adds scored serial runs
 and saved reports, advancing the fixture scope to Experimental.
 [Focused rerun acceptance](vitest-focused-reruns.md) follows that integration;
-dismissal review remains deferred.
+[dismissal review and CI policy acceptance](vitest-dismissals.md) follow reruns.
 
 ## Implemented boundary
 

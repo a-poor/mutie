@@ -72,9 +72,10 @@ cargo clippy --all-targets -- -D warnings
 ```
 
 Vitest remains Experimental: this is fixture evidence for both JS and TS, not
-real-project mutation acceptance. Dismissal review, CI policies, parallel workers,
-broader lifecycle attribution, unmodified Pathe configuration support and useful
-real-project findings remain separate gates.
+real-project mutation acceptance. Subsequent [review/policy acceptance](vitest-dismissals.md)
+adds dismissal snapshots and CI decisions. Parallel workers, broader lifecycle
+attribution, unmodified Pathe configuration support and useful real-project
+findings remain separate gates.
 
 Final validation (2026-10-15): all 231 default tests passed, with 35 opt-in tests
 ignored. Both tests in the real CLI acceptance invocation passed, including the

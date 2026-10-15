@@ -258,7 +258,7 @@ async fn execute(
         )
         .await?,
     );
-    let dismissal_store = if config.list || config.lang == Lang::Vitest {
+    let dismissal_store = if config.list {
         None
     } else {
         Some(dismissals::Store::load(&snapshot.path())?)
