@@ -1,6 +1,7 @@
 # Vitest scope fixture
 
-This is a planned adapter's direct-runner fixture, not implemented Mutie support.
+This fixture supports Mutie's read-only discovery preview and direct runner probes.
+Mutie test execution is not implemented.
 It separately exercises ESM JavaScript and TypeScript boolean value expressions.
 Pinned tools: Node 24.22.0, pnpm 11.10.0, Vitest 4.1.9 with Vite 8.3.4; macOS arm64 evidence.
 Root `cargo test` does not run it.
@@ -26,3 +27,13 @@ The probe creates another disposable copy and checks baseline, separate JS/TS
 kill/survive/stronger-test scenarios, transform failure, no tests, unhandled error,
 config error and all-skipped execution. See
 [the scope record](../../../benchmarks/vitest-initial-scope.md) for acceptance gates.
+
+After preparing the copied fixture, preview mutations from the Mutie checkout:
+
+```sh
+cargo run -- vitest-list /path/to/prepared-fixture
+cargo run -- vitest-list /path/to/prepared-fixture --include 'src/**/*.ts'
+```
+
+These commands list six and three mutations respectively. They query Node identity
+but do not execute Vitest or package scripts, save reports, or read `mutie.toml`.

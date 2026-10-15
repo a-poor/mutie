@@ -19,7 +19,10 @@ See [target support](SUPPORT.md) for support levels, verified scopes and gaps fo
 Go and Rust, plus planned JavaScript/TypeScript integrations for Vitest, Node's
 test runner and Bun's test runner, and Python integration for pytest. The next
 planned milestone is [scoped Vitest support](benchmarks/vitest-initial-scope.md);
-it is not yet a CLI capability.
+test execution is not yet available. A read-only discovery preview is available
+through `mutie vitest-list PATH --include 'src/**/*.ts'` for the pinned ESM/pnpm
+scope. It requires prepared dependencies and does not run tests, save reports, or
+apply `mutie.toml` settings. See the scope record for restrictions and setup.
 
 ## Try it
 

@@ -14,6 +14,11 @@ Rust binary packages, and validated ordinary Rust library packages.
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
+- `src/vitest.rs` exposes read-only `vitest-list`; `vitest/project.rs` validates
+  pinned ESM/pnpm metadata and `vitest/discovery.rs` lists JS/TS boolean flips.
+  Test execution is not implemented. `tests/vitest_preview.rs` covers the CLI;
+  `benchmarks/vitest-initial-scope.md` distinguishes direct probes, adapted Pathe
+  discovery and the remaining execution/configuration acceptance gates.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
   Its bounded process-group shutdown retries signals to catch racing forks;
   `benchmarks/process-reliability.md` records the regression evidence.
@@ -101,7 +106,8 @@ from 564 to 393 seconds with matching failures and preserved sources/artifacts.
 Follow the scoped Vitest milestone in `TODO.md`, `DESIGN.md` and
 `benchmarks/vitest-initial-scope.md`: one ESM/pnpm package, separate JS/TS boolean
 discovery, isolated execution and explicit completion/error evidence. The fixture
-and Pathe baseline are direct-runner probes, not implemented Mutie support.
+and Pathe baseline are direct-runner probes; read-only preview discovery is
+implemented, but mutation execution is not.
 Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 

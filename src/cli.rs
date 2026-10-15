@@ -144,6 +144,17 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Preview Vitest boolean mutations (read-only; execution is not implemented)
+    VitestList {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        /// Include production source paths matching this glob
+        #[arg(long)]
+        include: Vec<String>,
+        /// Exclude production source paths matching this glob
+        #[arg(long)]
+        exclude: Vec<String>,
+    },
     /// List saved runs, their status, age, and logical disk usage
     Runs {
         /// Parent directory of saved runs (relative to the current directory)

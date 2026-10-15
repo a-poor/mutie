@@ -1,8 +1,9 @@
 # First Vitest scope
 
-Recorded 2026-10-15, after Mutie `f51193b`. **Planned, not implemented.**
-This selects the next milestone and records direct runner probes. Neither these
-probes nor the fixture establish Mutie support. Data: [scope results](vitest-initial-scope.json).
+Recorded 2026-10-15, after Mutie `f51193b`. **Planned execution; read-only discovery preview implemented.**
+This selects the next milestone and records direct runner probes. A subsequent
+read-only discovery preview is implemented below; test execution is not. Neither
+the probes nor the fixture establish Experimental support. Data: [scope results](vitest-initial-scope.json).
 
 ## Decision
 
@@ -28,7 +29,9 @@ Avoid expanding the first contract merely to accommodate those applications.
 
 Pathe revision `bc7477a01f0bd60ada017add8142c9f9d69ccdc5` is a single ESM package,
 with five TypeScript source files and four test files importing source directly.
-It has no custom Vitest config and no runtime dependencies. Its pnpm workspace
+It has no runtime dependencies. Correction discovered during preview implementation:
+`vite.config.ts` supplies a coverage-reporter list; the original audit checked
+only Vitest-named configs and incorrectly described the project as config-free. Its pnpm workspace
 settings file only disables esbuild install scripts; the lockfile has one root
 importer. A settings file alone must not be mistaken for a multi-package project.
 The package's `test` script also runs lint and coverage; the selected scope is
@@ -142,7 +145,10 @@ before implementation acceptance; don't infer their origin from a stderr phrase.
    Add a real JavaScript project before claiming JS reaches Validated. Update the
    ledger by syntax and scope rather than raising both labels automatically.
 
-The next implementation task is step 1, not another operator or UI refinement.
+The read-only preview completes step 1 within the limitations below. The next
+implementation task is the completion/error protocol and isolated adapter; decide
+how to accommodate Pathe's coverage-only config explicitly before claiming
+unmodified real-project acceptance.
 
 ## Reproduction
 
@@ -153,3 +159,55 @@ to a temporary directory, applies one change at a time, asserts expected counts
 and exits, and removes its copy. The twelve direct probes also passed through
 this disposable-copy reproduction. They do not test Mutie cancellation, report
 persistence, dependency integrity checking or production mutation discovery.
+
+## Implemented: read-only discovery preview
+
+`mutie vitest-list PATH [--include GLOB] [--exclude GLOB]` validates the initial
+package/install metadata, queries Node identity with bounded capture and a deadline,
+and lists stable file/byte-ordered boolean flips. It never invokes Vitest or
+package scripts, mutates source, saves a run, evaluates scores or runs review/reruns.
+It does not read `mutie.toml`; filters are explicit command arguments. This
+separate preview keeps execution unavailable until its outcome contract exists.
+
+Validation covers the ESM manifest, pnpm 11.10.0 layout, one lockfile importer,
+manifest/direct-installed dependency agreement, unchanged installed lockfile,
+registry integrity metadata, pinned Vitest/Vite versions, dependency-link
+containment, source/configuration restrictions and actual Node 24.22.0 identity.
+This is metadata/containment validation, not a cryptographic audit of all installed
+package bytes or proof of a usable transitive installation. Execution baseline
+and owned dependency copies still require implementation. Source symlinks are
+rejected; internal dependency links are accepted. Source discovery parses JS and
+TS separately, excludes declarations/tests/generated headers and type contexts,
+and rejects unsupported syntax instead of returning partial results.
+
+The initial plain-JSON `tsconfig.json` allowlist covers Pathe's compiler checks
+and basic ESM compiler options; `extends`, paths/baseUrl, custom transforms and
+nested configs are rejected. No `tsc` guarantee is made. Arbitrary Vite/Vitest
+configs are rejected without executing them. TypeScript enums/namespaces,
+ambient declarations and decorators are outside this preview's runtime scope.
+
+Verification on Node 24.22.0/macOS:
+
+- Prepared mixed-syntax fixture: six mutations, three JS and three TS. Include
+  filtering selects three. Source edits are tested for exact bytes and stale-source
+  refusal, including Unicode/CRLF.
+- Unchanged Pathe clone: rejected for `vite.config.ts`, as required by the contract.
+- Explicitly adapted temporary Pathe copy: removed only its coverage-reporter
+  config. Listing finds fourteen boolean flips in `_glob.ts`, `_path.ts` and
+  `utils.ts`. Its direct Vitest baseline still passes 467 tests, with 8 skipped and
+  8 todo. The original clone remains unchanged. This adaptation is not a claim
+  that the CLI accepts upstream Pathe unchanged.
+- Unit and CLI regressions check discovery, config/module boundaries, lock/installed
+  metadata mismatch, external/broken dependency links, deterministic listings,
+  filters, runtime mismatch and read-only behavior. Default tests use synthetic
+  metadata and a fake Node identity; the two real prepared trees supply the
+  separate installation/Node checks. Vitest execution remains outside these tests.
+
+Final checks for the preview: `cargo fmt --check`, `cargo clippy --all-targets --
+-D warnings`, focused Vitest unit/CLI regressions and the complete default
+`cargo test` pass. The first full run failed the existing
+`resizing_preserves_scrollback_and_prompt_near_the_bottom` terminal test; its
+isolated rerun and a subsequent complete run both passed. No terminal code changed.
+The final suite totals are 223 passed, 32 ignored; real runner mutation workflows
+remain opt-in. Adapted Pathe's baseline matches all 483 test names and statuses
+after normalizing the differing temporary project paths.

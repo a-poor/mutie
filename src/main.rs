@@ -21,6 +21,7 @@ mod rust;
 mod saved_report;
 mod score;
 mod status;
+mod vitest;
 mod workspace;
 mod workspace_metrics;
 
@@ -48,6 +49,11 @@ async fn main() -> Result<ExitCode> {
             .listen()
             .context("installing cancellation handlers")?;
         let result = match command {
+            cli::Command::VitestList {
+                path,
+                include,
+                exclude,
+            } => vitest::list(&path, &include, &exclude, &cancellation).await,
             cli::Command::Runs { directory } => tokio::task::spawn_blocking(move || {
                 report_retention::run(&directory, None, false, &cancellation)
             })

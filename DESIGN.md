@@ -1471,8 +1471,13 @@ links must remain inside independent workspace dependency copies. A small pinned
 reporter protocol must distinguish test failures from transform and infrastructure
 errors; test its failure modes before integrating outcome classification.
 
-Implement project validation and deterministic JS/TS discovery first, then isolated
-execution, shared review/rerun acceptance and real-project usefulness/timing.
+Project validation and deterministic JS/TS discovery now have a read-only
+`vitest-list` command, separate from the run/report pipeline. The next step is
+explicit completion/error evidence and isolated execution, then shared review/rerun
+acceptance and real-project usefulness/timing. The Pathe audit missed its
+coverage-only Vite config; unmodified Pathe is rejected, and listing evidence uses
+an explicitly adapted temporary copy. Resolve config support before claiming
+unmodified project acceptance.
 No plugin abstraction, affected-test selection or persistent transform cache is
 part of this milestone. SUPPORT.md remains Planned until fixture workflows run
 through Mutie. Existing Go/Rust compatibility and report reading remain required.

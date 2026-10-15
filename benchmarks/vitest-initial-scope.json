@@ -306,5 +306,17 @@
       "stderr": ""
     }
   ],
-  "fixture_vite": "8.3.4"
+  "fixture_vite": "8.3.4",
+  "preview": {
+    "command": "mutie vitest-list PATH",
+    "fixture_mutations": 6,
+    "javascript_mutations": 3,
+    "typescript_mutations": 3,
+    "pathe_unmodified": "rejected: vite.config.ts",
+    "pathe_adaptation": "only vite.config.ts removed from separate temporary copy",
+    "adapted_pathe_mutations": 14,
+    "adapted_baseline_test_names_and_states_match_after_root_normalization": true,
+    "original_pathe_tracked_checkout_unchanged": true,
+    "execution_adapter_implemented": false
+  }
 }

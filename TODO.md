@@ -39,14 +39,18 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   fixtures and select Pathe for real TypeScript validation. Record direct baseline,
   stronger-test and failure probes in [the audit](benchmarks/vitest-initial-scope.md).
   This is planning evidence, not implemented support.
-- [ ] Validate one ESM/pnpm package, installed dependencies and runner identity;
-  discover JS/TS runtime boolean flips with deterministic listings and exclusions.
+- [x] Add read-only `vitest-list`: validate one ESM/pnpm package, installed
+  dependency metadata and runner identity; discover JS/TS runtime boolean flips
+  with deterministic listings and exclusions. Six fixture mutations and fourteen
+  in an adapted Pathe copy are listed. Correct the audit: upstream Pathe has a
+  coverage-only Vite config and is rejected until explicitly supported.
 - [ ] Implement bounded completion/error evidence and isolated full-suite execution;
   verify assertion, transform, config, import/hook, unhandled, empty/skipped,
   mixed-failure and malformed/missing-result cases before Experimental promotion.
 - [ ] Validate focused reruns, review/policies, strict dependency/config identity,
   fresh cache isolation, parallel workers, timeout/cancellation and preservation.
-- [ ] Record useful Pathe findings, stronger-test reruns and feedback time. Select
+- [ ] Resolve Pathe coverage-only config support explicitly, then record useful
+  findings, stronger-test reruns and feedback time. Select
   and validate a real JavaScript project independently before promoting JS support.
 
 ## Completed: first Rust feedback-time improvement
