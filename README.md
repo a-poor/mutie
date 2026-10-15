@@ -20,8 +20,10 @@ JavaScript/TypeScript Vitest slice. Node's test runner, Bun and pytest remain pl
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker; custom runner configs
-remain unsupported. Failed tests using fixtures, aroundEach or completion callbacks are conservatively
-reported as errors, including body assertions when those lifecycle APIs succeed.
+remain unsupported. Worker evidence distinguishes body failures from fixture, hook and callback
+failures: successful lifecycle work can accompany a genuine kill, while lifecycle
+and mixed failures are errors. Pending async assertions from setup and post-body
+assertion-count failures remain conservatively rejected.
 Worker evidence requires the audited Vitest runner bytes; expected-failure tests
 (`test.fails`) are unsupported. See the [lifecycle evidence](benchmarks/vitest-lifecycle-attribution.md). Dismissal review, `--fail-on-missed`, and `--min-score` are
 available within this scope; see [review/policy validation](benchmarks/vitest-dismissals.md).

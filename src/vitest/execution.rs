@@ -198,7 +198,7 @@ mod tests {
             ),
             (
                 "successful-before",
-                "error",
+                "killed",
                 "beforeEach(()=>{}); test('body',()=>expect(true).toBe(false));",
             ),
             (
@@ -270,6 +270,71 @@ mod tests {
                 "inverted-lifecycle",
                 "error",
                 "test.fails('body',()=>{onTestFinished(()=>expect(true).toBe(false));});",
+            ),
+            (
+                "fixture-body",
+                "killed",
+                "const extended=test.extend({value:async({},use)=>{await use(1);}}); extended('body',({value})=>expect(value).toBe(2));",
+            ),
+            (
+                "around-body",
+                "killed",
+                "aroundEach(async run=>{await run();}); test('body',()=>expect(true).toBe(false));",
+            ),
+            (
+                "finished-body",
+                "killed",
+                "test('body',()=>{onTestFinished(()=>{}); expect(true).toBe(false);});",
+            ),
+            (
+                "failed-body",
+                "killed",
+                "test('body',()=>{onTestFailed(()=>{}); expect(true).toBe(false);});",
+            ),
+            (
+                "mixed-cleanup",
+                "error",
+                "test('body',()=>{onTestFinished(()=>expect(true).toBe(false)); expect(true).toBe(false);});",
+            ),
+            (
+                "fixture-mixed",
+                "error",
+                "const extended=test.extend({value:async({},use)=>{await use(1); expect(true).toBe(false);}}); extended('body',({value})=>expect(value).toBe(2));",
+            ),
+            (
+                "after-body",
+                "killed",
+                "afterEach(()=>{}); test('body',()=>expect(true).toBe(false));",
+            ),
+            (
+                "returned-cleanup-body",
+                "killed",
+                "beforeEach(()=>()=>{}); test('body',()=>expect(true).toBe(false));",
+            ),
+            (
+                "concurrent-body",
+                "killed",
+                "test.concurrent('fail',()=>{onTestFinished(()=>{}); expect(true).toBe(false);}); test.concurrent('pass',()=>{});",
+            ),
+            (
+                "assertion-count",
+                "error",
+                "test('body',()=>{expect.assertions(1);});",
+            ),
+            (
+                "before-async-assertion",
+                "error",
+                "beforeEach(()=>{expect(Promise.resolve(true)).resolves.toBe(false);}); test('body',()=>{});",
+            ),
+            (
+                "body-async-assertion",
+                "killed",
+                "test('body',()=>{expect(Promise.resolve(true)).resolves.toBe(false);});",
+            ),
+            (
+                "fixture-async-assertion",
+                "error",
+                "const extended=test.extend({value:async({},use)=>{expect(Promise.resolve(true)).resolves.toBe(false); await use(1);}}); extended('body',({value})=>expect(value).toBe(1));",
             ),
             (
                 "fixture-setup",

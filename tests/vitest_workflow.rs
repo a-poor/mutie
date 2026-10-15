@@ -324,13 +324,30 @@ fn lifecycle_mutation_failures_do_not_improve_scores() {
     let source = "export const ready = true;\n";
     fs::write(root.join("src/lifecycle.js"), source).unwrap();
     let reports = temp.path().join("reports");
-    for code in [
-        "const extended = test.extend({value: async ({}, use) => { expect(ready).toBe(true); await use(1); }}); extended('fixture', ({value}) => expect(value).toBe(1));",
-        "test('cleanup', () => { onTestFinished(() => expect(ready).toBe(true)); });",
-        "aroundEach(async run => { await run(); expect(ready).toBe(true); }); test('around', () => {});",
+    for (killed, code) in [
+        (
+            false,
+            "const extended = test.extend({value: async ({}, use) => { expect(ready).toBe(true); await use(1); }}); extended('fixture', ({value}) => expect(value).toBe(1));",
+        ),
+        (
+            false,
+            "test('cleanup', () => { onTestFinished(() => expect(ready).toBe(true)); });",
+        ),
+        (
+            false,
+            "aroundEach(async run => { await run(); expect(ready).toBe(true); }); test('around', () => {});",
+        ),
+        (
+            true,
+            "const extended = test.extend({value: async ({}, use) => { await use(1); }}); extended('fixture body', ({value}) => { onTestFinished(() => {}); expect(ready).toBe(true); });",
+        ),
+        (
+            true,
+            "beforeEach(() => () => {}); aroundEach(async run => { await run(); }); test('body', () => expect(ready).toBe(true));",
+        ),
     ] {
         let test_source = format!(
-            "import {{test,expect,onTestFinished,aroundEach}} from 'vitest';\nimport {{ready}} from '../src/lifecycle.js';\n{code}\n"
+            "import {{test,expect,onTestFinished,aroundEach,beforeEach}} from 'vitest';\nimport {{ready}} from '../src/lifecycle.js';\n{code}\n"
         );
         fs::write(root.join("test/lifecycle.test.js"), &test_source).unwrap();
         let output = run(
@@ -344,14 +361,21 @@ fn lifecycle_mutation_failures_do_not_improve_scores() {
                 "100",
             ],
         );
-        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        assert_eq!(
+            output.status.code(),
+            Some(if killed { 0 } else { 1 }),
+            "{output:?}"
+        );
         let (_, saved, inventory, outcomes) = report(&output);
         assert_eq!(inventory["mutations"].as_array().unwrap().len(), 1);
         assert_eq!(outcomes["baseline"]["outcome"], "passed");
-        assert_eq!(outcomes["summary"]["killed"], 0);
-        assert_eq!(outcomes["summary"]["errors"], 1);
-        assert_eq!(outcomes["mutations"][0]["outcome"], "error");
-        assert_eq!(saved["score"]["killed"], 0);
+        assert_eq!(outcomes["summary"]["killed"], u64::from(killed));
+        assert_eq!(outcomes["summary"]["errors"], u64::from(!killed));
+        assert_eq!(
+            outcomes["mutations"][0]["outcome"],
+            if killed { "killed" } else { "error" }
+        );
+        assert_eq!(saved["score"]["killed"], u64::from(killed));
         assert_eq!(fs::read(root.join(runner)).unwrap(), original_runner);
         assert_eq!(
             fs::read_to_string(root.join("src/lifecycle.js")).unwrap(),

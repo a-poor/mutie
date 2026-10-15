@@ -71,9 +71,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   aroundEach and completion callbacks. Reject ambiguous failed tests, require
   audited runner bytes in the isolated copy, and convert audit cases to acceptance
   regressions, including mutation-triggered CLI failures after passing baselines.
-- [ ] Distinguish body failures from lifecycle failures so successful hooks/fixtures
-  can accompany genuine kills; extend file/worker fixture and nested/concurrent
-  lifecycle coverage before relaxing conservative rejection.
+- [x] Distinguish body failures from lifecycle failures so successful hooks,
+  test-scoped fixtures and callbacks can accompany genuine kills. Preserve errors
+  for mixed failures and ambiguous async/assertion-count attribution.
+- [ ] Extend file/worker fixture and nested/concurrent lifecycle coverage; resolve
+  remaining async/assertion-count attribution conservatively.
 - [x] Connect Vitest dismissal CRUD/check, saved review snapshots and CI policies.
   Verify separate JS/TS decisions, stale-source invalidation, unchanged raw
   outcomes/scores, stronger-test reruns, config/CLI overrides and infrastructure

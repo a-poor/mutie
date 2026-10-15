@@ -140,3 +140,43 @@ The three CLI runs passed in 82.83 seconds; the existing outcome/failure matrix
 passed in 60.26 seconds, preserving its ordinary kills, survivors, stronger-test
 kills and transform/import distinctions. The default suite passed (232 passed,
 38 ignored); formatting, diff whitespace checks and all-target Clippy passed.
+
+## Body versus lifecycle failure evidence
+
+The next implementation replaces participation-only rejection with per-test
+failure-phase flags. The source hash requirement, isolated replacement and saved
+execution identity remain unchanged. Within the audited runner, test-handler
+fixture resolution marks body entry only immediately before calling the original
+handler; hooks and fixture functions cannot set that marker. The existing callback
+catch records body failure only after that entry. Other task failure catches mark
+lifecycle failure, including returned cleanup, around hooks, fixture teardown and
+completion callbacks. Mixed failures retain both flags and are rejected.
+
+This avoids wrapping the user handler or changing its argument introspection,
+fixture selection, execution order or error values. Successful traditional hook
+events no longer veto an otherwise proven body kill. Suite/module errors and
+unfinished hooks retain their existing rejection rules.
+
+Two paths intentionally remain conservative. If Vitest already has queued async
+assertions when the body is entered, a later callback failure cannot establish
+that the body created it. Similarly, post-body assertion-count checks can be
+configured from setup. These failures are errors, even if a particular project
+could prove them to be body failures. Ordinary async body assertions remain kills.
+
+The worker regression now includes body kills with successful fixtures, before/
+after hooks, returned cleanup, aroundEach, onTestFinished and onTestFailed. It also
+checks mixed body/cleanup failures, mixed fixture failures, concurrent body versus
+callback failures, and async assertions originating in setup versus the body.
+The complete CLI regression adds two passing-baseline mutation runs that produce
+genuine kills with successful lifecycle work, alongside the three lifecycle-error
+runs. Both policies are enabled, source/test/runner bytes remain unchanged, and
+saved score counts distinguish errors from kills.
+
+File/worker fixture lifetimes and nested lifecycle combinations remain next
+acceptance work; this change does not claim all Vitest lifecycle configurations.
+
+Validation: all 33 worker cases passed (112.19 seconds), the five-run CLI
+regression passed, and the existing outcome/failure matrix passed (59.37 seconds).
+The default suite passed (232 passed, 38 ignored), as did formatting, whitespace
+checks and all-target Clippy. Local logs use `/tmp/mutie-vitest-phases-`
+with `final.log`, `cli.log`, `existing.log`, `default.log` and `clippy.log`.

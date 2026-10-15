@@ -35,7 +35,8 @@ struct Module {
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 struct Test {
     lifecycle_evidence: bool,
-    lifecycle_used: bool,
+    body_failed: bool,
+    lifecycle_failed: bool,
     id: String,
     unsupported_options: bool,
     name: String,
@@ -164,8 +165,8 @@ impl Evidence {
                 }
                 if test.state == "failed" {
                     ensure!(
-                        !test.lifecycle_used,
-                        "Vitest failures using fixtures, around hooks or completion callbacks require review; not counted as kills"
+                        test.body_failed && !test.lifecycle_failed,
+                        "Vitest failure is not exclusively attributed to the test body; not counted as a kill"
                     );
                 }
                 // Vitest 4.1.9 replaces process.exit with a plain Error in its
@@ -227,12 +228,6 @@ impl Evidence {
             "Vitest executed no tests (empty or all skipped)"
         );
         if failed > 0 {
-            // The public reporter API does not reliably attribute returned hook
-            // cleanup/fixture errors. Fail conservatively until that scope is proven.
-            ensure!(
-                !self.hooks_seen,
-                "Vitest failures with lifecycle hooks require review; not counted as kills"
-            );
             ensure!(
                 exit == Some(1) && self.reason == "failed",
                 "inconsistent Vitest test failure status"
@@ -253,7 +248,7 @@ mod tests {
     use super::*;
     use serde_json::{Value, json};
     fn passed() -> Value {
-        json!({"completed":true,"scheduled":["test/a.test.ts"],"reason":"passed","hooksSeen":false,"activeHooks":0,"unhandledErrors":[],"modules":[{"path":"test/a.test.ts","state":"passed","errors":[],"suiteErrors":[],"tests":[{"id":"one","lifecycleEvidence":true,"lifecycleUsed":false,"unsupportedOptions":false,"name":"passes","state":"passed","errors":[]}]}]})
+        json!({"completed":true,"scheduled":["test/a.test.ts"],"reason":"passed","hooksSeen":false,"activeHooks":0,"unhandledErrors":[],"modules":[{"path":"test/a.test.ts","state":"passed","errors":[],"suiteErrors":[],"tests":[{"id":"one","lifecycleEvidence":true,"bodyFailed":false,"lifecycleFailed":false,"unsupportedOptions":false,"name":"passes","state":"passed","errors":[]}]}]})
     }
     fn error(plugin: &str) -> Value {
         json!({"name":"Error","code":"","plugin":plugin,"transformFile":"src/a.ts","message":"probe"})
@@ -308,6 +303,7 @@ mod tests {
     #[test]
     fn test_transform_hook_and_mixed_failures_have_distinct_policies() {
         let mut failed = passed();
+        failed["modules"][0]["tests"][0]["bodyFailed"] = json!(true);
         failed["reason"] = json!("failed");
         failed["modules"][0]["state"] = json!("failed");
         failed["modules"][0]["tests"][0]["state"] = json!("failed");
@@ -319,7 +315,7 @@ mod tests {
             json!("process.exit unexpectedly called with \"0\"");
         assert!(classify(exiting, Some(1)).is_err());
         let mut lifecycle = failed.clone();
-        lifecycle["modules"][0]["tests"][0]["lifecycleUsed"] = json!(true);
+        lifecycle["modules"][0]["tests"][0]["lifecycleFailed"] = json!(true);
         assert!(classify(lifecycle, Some(1)).is_err());
         for (mut missing, exit) in [(passed(), 0), (failed.clone(), 1)] {
             missing["modules"][0]["tests"][0]["lifecycleEvidence"] = json!(false);
@@ -327,7 +323,7 @@ mod tests {
         }
         let mut hooked = failed.clone();
         hooked["hooksSeen"] = json!(true);
-        assert!(classify(hooked, Some(1)).is_err());
+        assert_eq!(classify(hooked, Some(1)).unwrap(), Outcome::Killed);
         let mut mixed = failed.clone();
         mixed["modules"][0]["errors"] = json!([error("vite:oxc")]);
         assert!(classify(mixed, Some(1)).is_err());
