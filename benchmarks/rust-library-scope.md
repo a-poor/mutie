@@ -96,3 +96,23 @@ been attempted, and its discovery syntax/exclusions still need adapter validatio
 The next coding task is target inventory and validation, followed by multi-root
 discovery. These gates deliberately do not expand to workspaces or claim that
 ordinary Cargo baselines alone validate the mutation adapter.
+
+## Implementation progress
+
+Saved target inventory is implemented with legacy binary-report normalization,
+strict target-change rerun checks, and per-target saved-summary details. The
+current binary metadata check also verifies edition and crate type; explicit
+binary edition overrides are recorded. Unit regressions cover legacy migration,
+missing evidence, target changes, invalid inventories and metadata mismatches.
+The opt-in rerun workflow includes executing a focused selection from an
+older-format report and publishing it with the new inventory.
+
+Validation: `cargo test` passes 206 tests (27 opt-in tests ignored),
+`cargo test --test rust_workflow -- --ignored --test-threads=1` passes all 17
+real Cargo workflows, and formatting plus Clippy with warnings denied pass.
+All five opt-in real Go workflows also pass with access to the Go build cache
+(the initial sandboxed attempt could not write that cache).
+
+This is the report/identity foundation only. Manifest and metadata acceptance of
+library packages and multi-root discovery remain the next implementation step;
+the CLI still rejects libraries before execution.

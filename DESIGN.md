@@ -357,6 +357,15 @@ establish validation candidates; target identity, multi-root discovery and full
 adapter acceptance remain implementation work. Workspaces and local dependencies
 remain separate objectives. No broader Cargo compatibility is implemented yet.
 
+The first implementation step replaces the saved single-binary fields with a
+sorted production-target inventory: kind, name, source and edition. Readers
+normalize legacy binary identities; reports missing manifest/toolchain evidence
+remain inspectable but cannot rerun. Mixed identity formats, malformed paths,
+empty inventories and duplicate target kinds are rejected. Reruns compare the
+complete target inventory, and current binary metadata must match its selected
+identity and crate type. Library acceptance remains gated until manifest/metadata
+validation and discovery support every production root together.
+
 ## Original Go MVP — completed
 
 The initial deliverable is a useful local Go tool with a small, predictable scope:

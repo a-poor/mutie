@@ -756,10 +756,12 @@ inventory is complete. `--rerun-missed` selects only completed missed outcomes;
 incompatible reports and invalid selectors are rejected before running tools or
 creating a new report.
 
-Rust reruns also require the saved language, Cargo package/binary, source entry,
-edition, default-feature/test/profile settings, complete `Cargo.toml` and
+Rust reruns also require the saved language, Cargo package and production-target
+inventory (kind, name, source and edition), default-feature/test/profile settings,
+complete `Cargo.toml` and
 `Cargo.lock` fingerprints, and compiler/Cargo versions to match the current
-snapshot. Scope mismatches fail before the baseline. Older Rust reports without
+snapshot. Older single-binary report identities are normalized when read.
+Scope mismatches fail before the baseline. Older Rust reports without
 a manifest fingerprint remain browsable but require a fresh scan before rerunning.
 Changing the manifest, lockfile, or toolchain requires a fresh scan too, including
 comment-only manifest/lockfile edits. Worker counts, timeouts, file filters, output

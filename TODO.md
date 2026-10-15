@@ -67,8 +67,13 @@ choose their implementation order; the proposed next objective is scoped below.
   probes verify the fixture's test-improvement scenario, and Marathon's isolated
   baseline passes 182 tests. These are scope evidence, not implemented adapter
   support. See [the audit and acceptance gates](benchmarks/rust-library-scope.md).
-- [ ] Generalize production-target identity and metadata validation, preserving
-  strict rerun checks and compatibility with saved binary-only reports.
+- [x] Generalize saved production-target identity, preserving strict rerun checks
+  and compatibility with saved binary-only reports. New reports record target
+  kind/name/source/edition; Cargo metadata must match the selected binary's full
+  identity and crate type. Library execution remains gated.
+- [ ] Extend manifest and metadata validation to ordinary libraries, including
+  explicit names/paths, crate types and automatic target discovery, together with
+  multi-root discovery so no accepted production root is silently omitted.
 - [ ] Discover from all production roots with stable shared-file deduplication;
   cover explicit names/paths and unsupported target configurations.
 - [ ] Validate fresh/cached fixture workflows, stronger-test focused reruns,

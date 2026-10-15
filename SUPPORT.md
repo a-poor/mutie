@@ -95,7 +95,9 @@ targets have not been chosen or verified.
 - Next support gains: implement the [scoped library-package slice](benchmarks/rust-library-scope.md)
   (library-only or one library plus one binary). The fixture Cargo probes and
   Marathon's 182-test baseline are planning evidence, not adapter support;
-  workspace expansion remains separate. Further runtime work should follow
+  saved target inventories and legacy binary-report migration are implemented,
+  but library acceptance and multi-root discovery remain pending. Workspace
+  expansion remains separate. Further runtime work should follow
   measured costs while preserving full tests. Advancement to
   Established needs additional representative real projects, not just more operators.
 

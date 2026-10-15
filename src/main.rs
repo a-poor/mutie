@@ -366,7 +366,7 @@ async fn execute(
     let (mutations, graph) = if let Some(project) = &mut rust_project {
         drop(baseline_workspace);
         let source = snapshot.path();
-        let entry = project.scope.source.clone();
+        let entry = project.scope.targets[0].source.clone();
         let discovery_cancellation = cancellation.clone();
         let found = tokio::task::spawn_blocking(move || {
             rust::discovery::discover(&source, &entry, &scope, &discovery_cancellation)

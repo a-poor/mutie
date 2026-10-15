@@ -9,12 +9,11 @@ use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(try_from = "ScopeRecord")]
 pub struct ExecutionScope {
     pub package: String,
-    pub binary: String,
-    pub source: PathBuf,
-    pub edition: String,
-    // Older reports remain inspectable, but cannot validate a focused rerun.
+    pub targets: Vec<ProductionTarget>,
+    // Reports lacking this evidence remain inspectable, but cannot validate a rerun.
     pub manifest_fingerprint: Option<String>,
     pub lockfile_fingerprint: String,
     pub default_features: bool,
@@ -23,6 +22,108 @@ pub struct ExecutionScope {
     pub rustc: Option<String>,
     pub cargo: Option<String>,
     pub discovery_exclusions: Vec<String>,
+}
+
+// Accept the original single-binary report shape without emitting it in new reports.
+#[derive(Deserialize)]
+struct ScopeRecord {
+    package: String,
+    targets: Option<Vec<ProductionTarget>>,
+    binary: Option<String>,
+    source: Option<PathBuf>,
+    edition: Option<String>,
+    // Reports lacking this evidence remain inspectable, but cannot validate a rerun.
+    manifest_fingerprint: Option<String>,
+    lockfile_fingerprint: String,
+    default_features: bool,
+    test_scope: String,
+    profile: String,
+    rustc: Option<String>,
+    cargo: Option<String>,
+    discovery_exclusions: Vec<String>,
+}
+
+impl TryFrom<ScopeRecord> for ExecutionScope {
+    type Error = anyhow::Error;
+
+    fn try_from(record: ScopeRecord) -> Result<Self> {
+        let targets = match (record.targets, record.binary, record.source, record.edition) {
+            (Some(targets), None, None, None) => targets,
+            (None, Some(name), Some(source), Some(edition)) => vec![ProductionTarget {
+                kind: TargetKind::Bin,
+                name,
+                source,
+                edition,
+            }],
+            _ => anyhow::bail!("Rust report requires one unambiguous target identity"),
+        };
+        validate_targets(&targets)?;
+        Ok(Self {
+            targets,
+            package: record.package,
+            manifest_fingerprint: record.manifest_fingerprint,
+            lockfile_fingerprint: record.lockfile_fingerprint,
+            default_features: record.default_features,
+            test_scope: record.test_scope,
+            profile: record.profile,
+            rustc: record.rustc,
+            cargo: record.cargo,
+            discovery_exclusions: record.discovery_exclusions,
+        })
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord)]
+#[serde(rename_all = "snake_case")]
+pub enum TargetKind {
+    Bin,
+    Lib,
+}
+
+impl TargetKind {
+    pub fn label(&self) -> &'static str {
+        match self {
+            Self::Bin => "binary",
+            Self::Lib => "library",
+        }
+    }
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ProductionTarget {
+    pub kind: TargetKind,
+    pub name: String,
+    pub source: PathBuf,
+    pub edition: String,
+}
+
+fn validate_targets(targets: &[ProductionTarget]) -> Result<()> {
+    ensure!(!targets.is_empty(), "Rust target inventory is empty");
+    let mut kinds = BTreeSet::new();
+    for target in targets {
+        ensure!(
+            kinds.insert(&target.kind),
+            "duplicate Rust production target kind"
+        );
+        ensure!(!target.name.is_empty(), "Rust target name is empty");
+        ensure!(
+            matches!(target.edition.as_str(), "2015" | "2018" | "2021" | "2024"),
+            "unsupported Rust target edition"
+        );
+        ensure!(
+            !target.source.as_os_str().is_empty()
+                && target
+                    .source
+                    .components()
+                    .all(|c| matches!(c, std::path::Component::Normal(_))),
+            "Rust target source must be a relative path without traversal"
+        );
+    }
+    ensure!(
+        targets.windows(2).all(|pair| pair[0] < pair[1]),
+        "Rust target inventory is not sorted"
+    );
+    Ok(())
 }
 
 impl ExecutionScope {
@@ -42,11 +143,7 @@ impl ExecutionScope {
         self.validate_rerun_record()?;
         for (matches, setting) in [
             (self.package == current.package, "package"),
-            (
-                self.binary == current.binary && self.source == current.source,
-                "binary target",
-            ),
-            (self.edition == current.edition, "edition"),
+            (self.targets == current.targets, "production targets"),
             (
                 self.manifest_fingerprint == current.manifest_fingerprint,
                 "Cargo.toml fingerprint",
@@ -172,7 +269,10 @@ impl Project {
         let source = inside(root, &root.join(source))?;
         let lock = inside(root, &root.join("Cargo.lock"))
             .context("Rust requires a checked-in usable Cargo.lock")?;
-        let edition = match package.get("edition") {
+        let edition = match bins
+            .and_then(|v| v[0].get("edition"))
+            .or_else(|| package.get("edition"))
+        {
             Some(edition) => edition
                 .as_str()
                 .context("inherited Cargo editions are not supported yet")?,
@@ -253,12 +353,17 @@ impl Project {
                 path.display()
             );
         }
+        let targets = vec![ProductionTarget {
+            kind: TargetKind::Bin,
+            name: binary.into(),
+            source,
+            edition: edition.into(),
+        }];
+        validate_targets(&targets)?;
         Ok(Self {
             scope: ExecutionScope {
                 package: name.into(),
-                binary: binary.into(),
-                source,
-                edition: edition.into(),
+                targets,
                 manifest_fingerprint: Some(format!(
                     "sha256:{:x}",
                     Sha256::digest(fs::read(root.join("Cargo.toml"))?)
@@ -303,7 +408,7 @@ impl Project {
                 == Some(root.join("Cargo.toml").as_path()),
             "Cargo manifest escaped the snapshot"
         );
-        let mut binaries = 0;
+        let mut targets = Vec::new();
         for target in package["targets"]
             .as_array()
             .context("Cargo metadata has no targets")?
@@ -333,17 +438,29 @@ impl Project {
                 "Cargo target lies inside an excluded artifact directory"
             );
             if kind[0] == "bin" {
-                binaries += 1;
                 ensure!(
-                    target["name"].as_str() == Some(&self.scope.binary)
-                        && path == self.scope.source,
-                    "Cargo binary differs from the selected target"
+                    target["crate_types"] == serde_json::json!(["bin"]),
+                    "unsupported Cargo binary crate type"
                 );
+                targets.push(ProductionTarget {
+                    kind: TargetKind::Bin,
+                    name: target["name"]
+                        .as_str()
+                        .context("Cargo target has no name")?
+                        .into(),
+                    source: path,
+                    edition: target["edition"]
+                        .as_str()
+                        .context("Cargo target has no edition")?
+                        .into(),
+                });
             }
         }
+        targets.sort();
+        validate_targets(&targets)?;
         ensure!(
-            binaries == 1,
-            "initial Rust support requires exactly one binary"
+            targets == self.scope.targets,
+            "Cargo production targets differ from the selected manifest"
         );
         Ok(())
     }
@@ -474,9 +591,6 @@ mod tests {
         scope.validate_rerun(&current)?;
         for (field, value, expected) in [
             ("package", serde_json::json!("other"), "package"),
-            ("binary", serde_json::json!("other"), "binary target"),
-            ("source", serde_json::json!("src/other.rs"), "binary target"),
-            ("edition", serde_json::json!("2021"), "edition"),
             (
                 "manifest_fingerprint",
                 serde_json::json!("changed"),
@@ -515,6 +629,151 @@ mod tests {
     }
 
     #[test]
+    fn legacy_binary_reports_normalize_and_preserve_rerun_requirements() -> Result<()> {
+        let temp = fixture("")?;
+        let mut scope = Project::load(temp.path())?.scope;
+        scope.rustc = Some("rustc test-version".into());
+        scope.cargo = Some("cargo test-version".into());
+        let mut legacy = serde_json::to_value(&scope)?;
+        legacy.as_object_mut().unwrap().remove("targets");
+        legacy["binary"] = "sample".into();
+        legacy["source"] = "src/main.rs".into();
+        legacy["edition"] = "2024".into();
+        let restored: ExecutionScope = serde_json::from_value(legacy.clone())?;
+        restored.validate_rerun(&scope)?;
+        scope.validate_rerun(&restored)?;
+        let rewritten = serde_json::to_value(restored)?;
+        assert!(rewritten.get("binary").is_none());
+        assert_eq!(rewritten["targets"], serde_json::to_value(&scope.targets)?);
+        for field in ["manifest_fingerprint", "rustc", "cargo"] {
+            let mut incomplete = legacy.clone();
+            incomplete.as_object_mut().unwrap().remove(field);
+            let readable: ExecutionScope = serde_json::from_value(incomplete)?;
+            assert!(readable.validate_rerun(&scope).is_err());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn target_identity_changes_require_a_fresh_scan() -> Result<()> {
+        let temp = fixture("")?;
+        let mut scope = Project::load(temp.path())?.scope;
+        scope.rustc = Some("rustc test-version".into());
+        scope.cargo = Some("cargo test-version".into());
+        let saved = serde_json::to_value(&scope)?;
+        for (field, value) in [
+            ("name", "renamed"),
+            ("source", "src/other.rs"),
+            ("edition", "2021"),
+            ("kind", "lib"),
+        ] {
+            let mut changed = saved.clone();
+            changed["targets"][0][field] = value.into();
+            let changed: ExecutionScope = serde_json::from_value(changed)?;
+            assert!(
+                scope
+                    .validate_rerun(&changed)
+                    .unwrap_err()
+                    .to_string()
+                    .contains("production targets")
+            );
+        }
+        let mut expanded = scope.clone();
+        let mut library = scope.targets[0].clone();
+        library.kind = TargetKind::Lib;
+        library.source = "src/lib.rs".into();
+        expanded.targets.push(library);
+        // An added target and a removed target both invalidate a saved run.
+        assert!(scope.validate_rerun(&expanded).is_err());
+        assert!(expanded.validate_rerun(&scope).is_err());
+        let roundtrip: ExecutionScope = serde_json::from_value(serde_json::to_value(&expanded)?)?;
+        roundtrip.validate_rerun(&expanded)?;
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_ambiguous_or_malformed_saved_target_inventories() -> Result<()> {
+        let temp = fixture("")?;
+        let saved = serde_json::to_value(Project::load(temp.path())?.scope)?;
+        for (field, value) in [
+            ("name", ""),
+            ("source", ""),
+            ("source", "/tmp/main.rs"),
+            ("source", "../main.rs"),
+            ("edition", "future"),
+            ("kind", "proc-macro"),
+        ] {
+            let mut changed = saved.clone();
+            changed["targets"][0][field] = value.into();
+            assert!(
+                serde_json::from_value::<ExecutionScope>(changed).is_err(),
+                "{field}: {value}"
+            );
+        }
+        let mut duplicate = saved.clone();
+        duplicate["targets"]
+            .as_array_mut()
+            .unwrap()
+            .push(saved["targets"][0].clone());
+        assert!(serde_json::from_value::<ExecutionScope>(duplicate).is_err());
+        let mut empty = saved.clone();
+        empty["targets"] = serde_json::json!([]);
+        assert!(serde_json::from_value::<ExecutionScope>(empty).is_err());
+        let mut ambiguous = saved.clone();
+        ambiguous["binary"] = "other".into();
+        assert!(serde_json::from_value::<ExecutionScope>(ambiguous).is_err());
+        let mut reversed = saved.clone();
+        let mut library = saved["targets"][0].clone();
+        library["kind"] = "lib".into();
+        reversed["targets"] = serde_json::json!([library, saved["targets"][0]]);
+        assert!(serde_json::from_value::<ExecutionScope>(reversed).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn metadata_must_match_selected_target_identity_and_crate_type() -> Result<()> {
+        let temp = fixture("[[bin]]\nname = 'custom'\npath = 'src/main.rs'\nedition = '2021'")?;
+        let root = temp.path();
+        let project = Project::load(root)?;
+        assert_eq!(project.scope.targets[0].edition, "2021");
+        let metadata = serde_json::json!({
+            "workspace_members": ["package-id"], "workspace_root": root,
+            "packages": [{"id": "package-id", "name": "sample",
+                "manifest_path": root.join("Cargo.toml"),
+                "targets": [{"kind": ["bin"], "crate_types": ["bin"], "test": true,
+                    "name": "custom", "src_path": root.join("src/main.rs"), "edition": "2021"}]}]
+        });
+        project.validate_metadata(root, &metadata)?;
+        for (field, value) in [
+            ("name", serde_json::json!("other")),
+            ("edition", serde_json::json!("2024")),
+            ("src_path", serde_json::json!(root.join("Cargo.toml"))),
+            ("crate_types", serde_json::json!(["rlib"])),
+            ("kind", serde_json::json!(["lib"])),
+            ("test", serde_json::json!(false)),
+        ] {
+            let mut changed = metadata.clone();
+            changed["packages"][0]["targets"][0][field] = value;
+            assert!(
+                project.validate_metadata(root, &changed).is_err(),
+                "{field}"
+            );
+        }
+        for targets in [
+            serde_json::json!([]),
+            serde_json::json!([
+                metadata["packages"][0]["targets"][0],
+                metadata["packages"][0]["targets"][0]
+            ]),
+        ] {
+            let mut changed = metadata.clone();
+            changed["packages"][0]["targets"] = targets;
+            assert!(project.validate_metadata(root, &changed).is_err());
+        }
+        Ok(())
+    }
+
+    #[test]
     fn rejects_unsupported_layouts_before_building() -> Result<()> {
         for (extra, expected) in [
             ("build = 'generate.rs'", "build scripts"),
@@ -545,7 +804,7 @@ mod tests {
         let temp = fixture("")?;
         let project = Project::load(temp.path())?;
         assert_eq!(project.scope.package, "sample");
-        assert_eq!(project.scope.source, Path::new("src/main.rs"));
+        assert_eq!(project.scope.targets[0].source, Path::new("src/main.rs"));
         assert!(project.excluded.contains(&temp.path().join("target")));
         Ok(())
     }

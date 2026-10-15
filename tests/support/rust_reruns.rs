@@ -77,6 +77,24 @@ fn rust_reruns_validate_scope_source_partial_runs_and_moved_checkouts() {
     fs::create_dir(&altered).unwrap();
     write_json(&altered.join("mutants.json"), &inventory);
     write_json(&altered.join("outcomes.json"), &outcomes);
+    // Reports written before target inventories normalize to the same identity
+    // and can still execute a focused rerun when the strict evidence is present.
+    let mut legacy = run.clone();
+    let scope = legacy["rust_scope"].as_object_mut().unwrap();
+    let targets = scope.remove("targets").unwrap();
+    scope.insert("binary".into(), targets[0]["name"].clone());
+    scope.insert("source".into(), targets[0]["source"].clone());
+    scope.insert("edition".into(), targets[0]["edition"].clone());
+    write_json(&altered.join("run.json"), &legacy);
+    let legacy_rerun = fixture.run(&["--rerun", altered.to_str().unwrap(), "--id", "3"]);
+    assert!(legacy_rerun.status.success(), "{legacy_rerun:?}");
+    let (_, rewritten, _, rerun_outcomes) = report(&legacy_rerun);
+    assert_eq!(
+        rewritten["rust_scope"]["targets"],
+        run["rust_scope"]["targets"]
+    );
+    assert_eq!(rerun_outcomes["mutations"].as_array().unwrap().len(), 1);
+    fixture.preserved();
     for field in ["rustc", "cargo"] {
         let mut changed = run.clone();
         changed["rust_scope"][field] = "different toolchain".into();

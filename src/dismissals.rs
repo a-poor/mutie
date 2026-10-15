@@ -575,7 +575,7 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
         let found = tokio::task::spawn_blocking(move || {
             crate::rust::discovery::discover(
                 &source,
-                &project.scope.source,
+                &project.scope.targets[0].source,
                 &scope,
                 &discovery_cancellation,
             )

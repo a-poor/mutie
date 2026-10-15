@@ -642,9 +642,18 @@ impl SavedReport {
             });
             if let Some(scope) = &self.run.rust_scope {
                 text.push_str(&format!(
-                    "Cargo package: {} | binary: {} | edition: {}\nLockfile: {}\n",
-                    scope.package, scope.binary, scope.edition, scope.lockfile_fingerprint
+                    "Cargo package: {}\nLockfile: {}\n",
+                    scope.package, scope.lockfile_fingerprint
                 ));
+                for target in &scope.targets {
+                    text.push_str(&format!(
+                        "Cargo {}: {} | source: {} | edition: {}\n",
+                        target.kind.label(),
+                        target.name,
+                        target.source.display(),
+                        target.edition
+                    ));
+                }
                 for exclusion in &scope.discovery_exclusions {
                     text.push_str(&format!("Discovery excluded {exclusion}\n"));
                 }
