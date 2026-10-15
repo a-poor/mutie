@@ -38,12 +38,15 @@ change the current focused-feedback work queue.
   default/one/two Tokio threads in interleaved repetitions. All nine harnesses
   pass; the small 2–3% median difference does not justify changing runtime defaults.
   See [the runtime experiment](benchmarks/rust-runtime-startup.md).
-- [ ] Attribute dismissal workflow time to command execution, report persistence
-  and cleanup, then extend to terminal/log-limit targets as needed. Use isolated
-  opt-in diagnostics; retain every assertion, durable write and deadline.
-- [ ] Choose an optimization from measured costs, retaining full test execution,
-  package rebuilds, deadlines and strict rerun matching. Broader test selection or
-  persistent reuse requires its own design decision.
+- [x] Attribute dismissal workflow time to command execution, report persistence
+  and cleanup using isolated diagnostics. Focused and complete harnesses identify
+  report persistence as substantial; observer overhead is quantified. See
+  [workflow costs](benchmarks/rust-workflow-costs.md). Extend instrumentation to
+  terminal/log-limit targets if needed after evaluating this candidate.
+- [ ] Evaluate avoiding unchanged derived-report writes while retaining matching
+  authoritative checkpoints, atomic durable publication for changed files, missing
+  file/error handling and identical final reports. Keep full tests, package rebuilds,
+  deadlines and strict rerun matching; measure actual write reduction and runtime.
 - [ ] Compare unchanged saved selections before/after using runtime distributions,
   exact failure sets, cancellation checks and source/artifact preservation.
 

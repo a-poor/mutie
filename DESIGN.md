@@ -339,7 +339,11 @@ identify Cargo startup alone. The subsequent
 [runtime experiment](benchmarks/rust-runtime-startup.md) found comparable warm CLI
 startup and only a small dismissal-harness median difference with fewer Tokio
 threads. Keep runtime defaults unchanged; attribute workflow command, persistence
-and cleanup costs next. No production optimization is selected yet.
+and cleanup costs next. The [workflow probe](benchmarks/rust-workflow-costs.md)
+subsequently identified substantial report persistence costs in focused and full
+dismissal tests, with measurable diagnostic overhead. Evaluate avoiding unchanged
+derived-report writes while preserving authoritative checkpoint publication and
+durability for changed files. No production optimization has been implemented yet.
 
 ## Original Go MVP — completed
 

@@ -1,0 +1,134 @@
+{
+  "revision": "d93fdef",
+  "evidence_root": "/tmp/mutie-workflow-profile-c4lg0b0w",
+  "samples": [
+    {
+      "label": "score-0-control",
+      "seconds": 6.942793041991536,
+      "status": 0,
+      "phase_seconds": {},
+      "phase_counts": {},
+      "passed": 1
+    },
+    {
+      "label": "score-0-probe",
+      "seconds": 8.205243124990375,
+      "status": 0,
+      "phase_seconds": {
+        "report_sync": 4.407650603000001,
+        "report_write": 5.585515407000003,
+        "report_flush": 5.665412200999999,
+        "command_to_exit": 0.7846759609999998,
+        "group_shutdown": 0.00013791999999999998,
+        "command_total": 0.8211296670000002,
+        "cli_main": 7.416088207
+      },
+      "phase_counts": {
+        "report_sync": 1053,
+        "report_write": 1053,
+        "report_flush": 127,
+        "command_to_exit": 37,
+        "group_shutdown": 37,
+        "command_total": 37,
+        "cli_main": 12
+      },
+      "passed": 1
+    },
+    {
+      "label": "score-1-probe",
+      "seconds": 7.41357400000561,
+      "status": 0,
+      "phase_seconds": {
+        "report_sync": 4.388797785000003,
+        "report_write": 5.549548521000011,
+        "report_flush": 5.625546368999999,
+        "command_to_exit": 0.7173435800000002,
+        "group_shutdown": 0.000124584,
+        "command_total": 0.745713542,
+        "cli_main": 7.273873791
+      },
+      "phase_counts": {
+        "report_sync": 1053,
+        "report_write": 1053,
+        "report_flush": 127,
+        "command_to_exit": 37,
+        "group_shutdown": 37,
+        "command_total": 37,
+        "cli_main": 12
+      },
+      "passed": 1
+    },
+    {
+      "label": "score-1-control",
+      "seconds": 6.796905291004805,
+      "status": 0,
+      "phase_seconds": {},
+      "phase_counts": {},
+      "passed": 1
+    },
+    {
+      "label": "full-0-control",
+      "seconds": 19.443585625005653,
+      "status": 0,
+      "phase_seconds": {},
+      "phase_counts": {},
+      "passed": 15
+    },
+    {
+      "label": "full-0-probe",
+      "seconds": 21.666359708993696,
+      "status": 0,
+      "phase_seconds": {
+        "report_sync": 31.23479912400012,
+        "report_write": 68.73145195099993,
+        "report_flush": 80.67899624500004,
+        "command_to_exit": 10.614766789000006,
+        "group_shutdown": 0.001744463,
+        "command_total": 12.355140450999997,
+        "cli_main": 111.51022979099999
+      },
+      "phase_counts": {
+        "report_sync": 4347,
+        "report_write": 4347,
+        "report_flush": 524,
+        "command_to_exit": 182,
+        "group_shutdown": 182,
+        "command_total": 182,
+        "cli_main": 131
+      },
+      "passed": 15
+    },
+    {
+      "label": "full-1-probe",
+      "seconds": 23.873522333000437,
+      "status": 0,
+      "phase_seconds": {
+        "report_sync": 34.43897403799995,
+        "report_write": 76.82914916999982,
+        "report_flush": 90.64669758399987,
+        "command_to_exit": 10.379320996999992,
+        "group_shutdown": 0.002230920999999999,
+        "command_total": 12.926724707000002,
+        "cli_main": 123.95258783400004
+      },
+      "phase_counts": {
+        "report_sync": 4347,
+        "report_write": 4347,
+        "report_flush": 524,
+        "command_to_exit": 182,
+        "group_shutdown": 182,
+        "command_total": 182,
+        "cli_main": 131
+      },
+      "passed": 15
+    },
+    {
+      "label": "full-1-control",
+      "seconds": 20.45007025000814,
+      "status": 0,
+      "phase_seconds": {},
+      "phase_counts": {},
+      "passed": 15
+    }
+  ]
+}
