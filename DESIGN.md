@@ -1486,9 +1486,14 @@ See [CLI evidence](benchmarks/vitest-shared-runs.md). The next steps are
 worker-side lifecycle attribution and real-project usefulness/timing. The
 [lifecycle audit](benchmarks/vitest-lifecycle-attribution.md) demonstrates that
 reporter hook events alone miss fixture, around-hook and completion-callback
-failures; all can carry ordinary assertion errors. Preserve conservative scoring
-until evidence distinguishes these from test-body failures, including concurrent
-tests and mixed body/cleanup failures. Vitest dismissal
+failures; all can carry ordinary assertion errors. The isolated copy of the exact audited runner now records per-test lifecycle
+participation in transported task metadata. Failed participating tests are rejected
+conservatively; passing and failed executed tests require an instrumentation marker.
+The reporter fingerprint covers both the reporter and instrumentation source, so
+older saved runs require a fresh scan. Runner source mismatch aborts execution.
+This containment does not distinguish body failures from lifecycle failures;
+retain conservative rejection until that distinction has evidence, including
+concurrent tests and mixed body/cleanup failures. Vitest dismissal
 CRUD/check and CI policies now reuse shared review snapshots and score decisions;
 check performs source rediscovery without invoking Node/Vitest. Review never
 changes outcomes or raw scores. See [review evidence](benchmarks/vitest-dismissals.md).

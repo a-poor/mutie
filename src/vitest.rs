@@ -1,6 +1,7 @@
 //! Vitest discovery preview and isolated baseline diagnostics.
 pub mod discovery;
 pub mod execution;
+mod lifecycle;
 pub mod project;
 mod protocol;
 
@@ -175,7 +176,13 @@ pub async fn execution_scope(root: &Path, cancellation: &Cancellation) -> Result
         ),
         reporter_fingerprint: format!(
             "sha256:{:x}",
-            Sha256::digest(include_bytes!("vitest/reporter.mjs"))
+            Sha256::digest(
+                [
+                    include_bytes!("vitest/reporter.mjs").as_slice(),
+                    include_bytes!("vitest/lifecycle.rs").as_slice()
+                ]
+                .concat()
+            )
         ),
         syntax: vec!["javascript".into(), "typescript".into()],
     })

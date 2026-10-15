@@ -82,3 +82,61 @@ should successful traditional hooks stop preventing genuine assertion kills.
 File/worker-scoped fixtures, nested around hooks, cancellation during lifecycle
 work, and all combinations of concurrency remain outside this audit. This audit
 does not promote Vitest support or change report/operator versions.
+
+## Conservative containment after the audit
+
+The worker copy now records per-test lifecycle participation for aroundEach,
+resolved fixtures (including automatic fixtures), and onFinished/onFailed callbacks.
+The reporter includes that metadata and proof that the worker instrumentation ran.
+Passed and failed executed tests require the proof; a failed participating test is
+an infrastructure error. No message or stack matching is used for these APIs.
+Traditional hooks retain their existing conservative rule. `test.fails` is now
+rejected, since inversion can hide a lifecycle failure behind a passing result.
+
+This is participation evidence, not precise failure attribution: a body assertion
+with a successful fixture or callback is still conservatively rejected. Passing
+fixture, aroundEach and completion-callback controls remain passing. The earlier
+16-case diagnostic has become `real_lifecycle_failure_evidence`, with assertions
+for all cases and four additional passing/inversion controls. Its successful-hook
+body-failure expectation is now Error, explicitly preserving the conservative
+policy rather than claiming support for that genuine kill.
+
+The adapter instruments only the disposable dependency copy. It requires SHA-256
+`c10a7a80fca65fb42e27eabf7655c5ce5ecf36e8aaeb1811499efd063df62556` for
+`@vitest/runner@4.1.9/dist/chunk-artifact.js` before inserting three metadata writes.
+Unknown bytes or ambiguous insertion points abort before Node starts. Replacement
+uses a new inode, preserving any dependency-store hard links. This pinned-source
+integration is deliberate: the public reporter API does not expose fixture
+participation. Supporting another runner build requires a new source audit and
+regression evidence, even when its package metadata claims the same version.
+
+The existing saved `reporter_fingerprint` now covers the reporter and the worker
+instrumentation source. Old saved identities therefore require a fresh scan;
+report and operator versions are unchanged. Isolated dependency contents are
+never reused between commands.
+
+Validation commands:
+
+```sh
+MUTIE_VITEST_FIXTURE=/tmp/mutie-vitest-fixture-scope \
+  cargo test --bin mutie real_lifecycle_failure_evidence -- --ignored --nocapture
+MUTIE_VITEST_FIXTURE=/tmp/mutie-vitest-fixture-scope \
+  cargo test --test vitest_workflow lifecycle_mutation_failures_do_not_improve_scores -- --ignored
+MUTIE_VITEST_FIXTURE=/tmp/mutie-vitest-fixture-scope \
+  cargo test --bin mutie real_fixture_outcomes_and_failure_evidence -- --ignored
+cargo test
+cargo fmt --check
+cargo clippy --all-targets -- -D warnings
+```
+
+The 20-case worker regression passed in 54.02 seconds. The CLI regression uses
+three separate passing-baseline runs: a single boolean flip triggers fixture setup,
+completion-callback cleanup, or aroundEach teardown failure. It checks error exit
+1 with both CI policies enabled, saved error outcomes with zero kills, and unchanged
+input source, tests and runner bytes. This closes the audit's missing
+mutation-triggered evidence without claiming broader lifecycle attribution.
+
+The three CLI runs passed in 82.83 seconds; the existing outcome/failure matrix
+passed in 60.26 seconds, preserving its ordinary kills, survivors, stronger-test
+kills and transform/import distinctions. The default suite passed (232 passed,
+38 ignored); formatting, diff whitespace checks and all-target Clippy passed.

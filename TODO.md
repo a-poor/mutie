@@ -67,10 +67,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Audit broader lifecycle/fixture attribution against pinned Vitest. The
   [16-case audit](benchmarks/vitest-lifecycle-attribution.md) reproduces false kills
   outside the traditional reporter hooks; this is a scoring correctness blocker.
-- [ ] Add worker-side lifecycle evidence for fixtures, around hooks and completion
-  callbacks; reject ambiguous failures before counting kills. Convert audit cases
-  into acceptance regressions, including mutation-triggered failures after a passing
-  baseline. Only then relax the conservative traditional-hook policy.
+- [x] Add conservative worker-side lifecycle participation evidence for fixtures,
+  aroundEach and completion callbacks. Reject ambiguous failed tests, require
+  audited runner bytes in the isolated copy, and convert audit cases to acceptance
+  regressions, including mutation-triggered CLI failures after passing baselines.
+- [ ] Distinguish body failures from lifecycle failures so successful hooks/fixtures
+  can accompany genuine kills; extend file/worker fixture and nested/concurrent
+  lifecycle coverage before relaxing conservative rejection.
 - [x] Connect Vitest dismissal CRUD/check, saved review snapshots and CI policies.
   Verify separate JS/TS decisions, stale-source invalidation, unchanged raw
   outcomes/scores, stronger-test reruns, config/CLI overrides and infrastructure

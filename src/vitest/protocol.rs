@@ -34,6 +34,8 @@ struct Module {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
 struct Test {
+    lifecycle_evidence: bool,
+    lifecycle_used: bool,
     id: String,
     unsupported_options: bool,
     name: String,
@@ -154,6 +156,18 @@ impl Evidence {
             );
             module_errors.extend(&module.errors);
             for test in &module.tests {
+                if test.state == "passed" || test.state == "failed" {
+                    ensure!(
+                        test.lifecycle_evidence,
+                        "Vitest test is missing worker lifecycle evidence"
+                    );
+                }
+                if test.state == "failed" {
+                    ensure!(
+                        !test.lifecycle_used,
+                        "Vitest failures using fixtures, around hooks or completion callbacks require review; not counted as kills"
+                    );
+                }
                 // Vitest 4.1.9 replaces process.exit with a plain Error in its
                 // fork runner. Treat that pinned diagnostic conservatively as
                 // infrastructure failure, never as evidence of a killed mutant.
@@ -239,7 +253,7 @@ mod tests {
     use super::*;
     use serde_json::{Value, json};
     fn passed() -> Value {
-        json!({"completed":true,"scheduled":["test/a.test.ts"],"reason":"passed","hooksSeen":false,"activeHooks":0,"unhandledErrors":[],"modules":[{"path":"test/a.test.ts","state":"passed","errors":[],"suiteErrors":[],"tests":[{"id":"one","unsupportedOptions":false,"name":"passes","state":"passed","errors":[]}]}]})
+        json!({"completed":true,"scheduled":["test/a.test.ts"],"reason":"passed","hooksSeen":false,"activeHooks":0,"unhandledErrors":[],"modules":[{"path":"test/a.test.ts","state":"passed","errors":[],"suiteErrors":[],"tests":[{"id":"one","lifecycleEvidence":true,"lifecycleUsed":false,"unsupportedOptions":false,"name":"passes","state":"passed","errors":[]}]}]})
     }
     fn error(plugin: &str) -> Value {
         json!({"name":"Error","code":"","plugin":plugin,"transformFile":"src/a.ts","message":"probe"})
@@ -304,6 +318,13 @@ mod tests {
         exiting["modules"][0]["tests"][0]["errors"][0]["message"] =
             json!("process.exit unexpectedly called with \"0\"");
         assert!(classify(exiting, Some(1)).is_err());
+        let mut lifecycle = failed.clone();
+        lifecycle["modules"][0]["tests"][0]["lifecycleUsed"] = json!(true);
+        assert!(classify(lifecycle, Some(1)).is_err());
+        for (mut missing, exit) in [(passed(), 0), (failed.clone(), 1)] {
+            missing["modules"][0]["tests"][0]["lifecycleEvidence"] = json!(false);
+            assert!(classify(missing, Some(exit)).is_err());
+        }
         let mut hooked = failed.clone();
         hooked["hooksSeen"] = json!(true);
         assert!(classify(hooked, Some(1)).is_err());

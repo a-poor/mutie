@@ -302,3 +302,64 @@ fn unsupported_vitest_options_fail_before_execution() {
         assert!(output.status.success(), "{output:?}");
     }
 }
+
+#[test]
+#[ignore = "requires prepared MUTIE_VITEST_FIXTURE; mutation-triggered lifecycle errors"]
+fn lifecycle_mutation_failures_do_not_improve_scores() {
+    let prepared =
+        PathBuf::from(std::env::var_os("MUTIE_VITEST_FIXTURE").expect("set MUTIE_VITEST_FIXTURE"));
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("lifecycle project");
+    assert!(
+        Command::new("cp")
+            .arg("-R")
+            .arg(&prepared)
+            .arg(&root)
+            .status()
+            .unwrap()
+            .success()
+    );
+    let runner = "node_modules/.pnpm/@vitest+runner@4.1.9/node_modules/@vitest/runner/dist/chunk-artifact.js";
+    let original_runner = fs::read(root.join(runner)).unwrap();
+    let source = "export const ready = true;\n";
+    fs::write(root.join("src/lifecycle.js"), source).unwrap();
+    let reports = temp.path().join("reports");
+    for code in [
+        "const extended = test.extend({value: async ({}, use) => { expect(ready).toBe(true); await use(1); }}); extended('fixture', ({value}) => expect(value).toBe(1));",
+        "test('cleanup', () => { onTestFinished(() => expect(ready).toBe(true)); });",
+        "aroundEach(async run => { await run(); expect(ready).toBe(true); }); test('around', () => {});",
+    ] {
+        let test_source = format!(
+            "import {{test,expect,onTestFinished,aroundEach}} from 'vitest';\nimport {{ready}} from '../src/lifecycle.js';\n{code}\n"
+        );
+        fs::write(root.join("test/lifecycle.test.js"), &test_source).unwrap();
+        let output = run(
+            &root,
+            &reports,
+            &[
+                "--include",
+                "src/lifecycle.js",
+                "--fail-on-missed",
+                "--min-score",
+                "100",
+            ],
+        );
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        let (_, saved, inventory, outcomes) = report(&output);
+        assert_eq!(inventory["mutations"].as_array().unwrap().len(), 1);
+        assert_eq!(outcomes["baseline"]["outcome"], "passed");
+        assert_eq!(outcomes["summary"]["killed"], 0);
+        assert_eq!(outcomes["summary"]["errors"], 1);
+        assert_eq!(outcomes["mutations"][0]["outcome"], "error");
+        assert_eq!(saved["score"]["killed"], 0);
+        assert_eq!(fs::read(root.join(runner)).unwrap(), original_runner);
+        assert_eq!(
+            fs::read_to_string(root.join("src/lifecycle.js")).unwrap(),
+            source
+        );
+        assert_eq!(
+            fs::read_to_string(root.join("test/lifecycle.test.js")).unwrap(),
+            test_source
+        );
+    }
+}

@@ -23,6 +23,10 @@ Rust binary packages, and validated ordinary Rust library packages.
   explicit runner commands. Dismissal CRUD/check and CI policies use the shared
   source-identity and score machinery; `tests/support/vitest_dismissals.rs` and
   `benchmarks/vitest-dismissals.md` record JS/TS review and policy acceptance.
+  `vitest/lifecycle.rs` instruments only an exact-hash isolated runner copy to
+  reject failed tests using otherwise unreported lifecycle APIs; see
+  `benchmarks/vitest-lifecycle-attribution.md`. Preserve the fail-closed byte
+  check and include instrumentation changes in execution identity.
   Parallel workers remain unsupported. `benchmarks/vitest-focused-reruns.md`
   records rerun acceptance.
   `tests/vitest_workflow.rs` checks real scored CLI runs and saved failures; see

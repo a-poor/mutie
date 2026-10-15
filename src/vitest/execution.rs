@@ -69,6 +69,7 @@ pub(super) async fn run(
             && captured.lockfile_fingerprint == project.lockfile_fingerprint,
         "Vitest package changed during snapshotting"
     );
+    super::lifecycle::instrument(&root)?;
     if let Some(mutation) = mutation {
         mutation.apply(&root)?;
     }
@@ -176,11 +177,10 @@ mod tests {
         .await?
         .into_command(NonZeroUsize::new(64 * 1024)))
     }
-    /// Diagnostic audit, not an acceptance test: prints unresolved attribution gaps.
-    /// Keep separate from regression tests so observed false kills are never required.
+    /// Conservative acceptance boundary for worker-side lifecycle participation.
     #[tokio::test]
-    #[ignore = "requires prepared Vitest fixture; lifecycle attribution audit (use --nocapture)"]
-    async fn real_lifecycle_attribution_audit() -> Result<()> {
+    #[ignore = "requires prepared Vitest fixture; lifecycle failure regressions"]
+    async fn real_lifecycle_failure_evidence() -> Result<()> {
         let input = prepared()?;
         let cancellation = Cancellation::default();
         let work = Workspace::create(&input, &[], &cancellation)?;
@@ -198,7 +198,7 @@ mod tests {
             ),
             (
                 "successful-before",
-                "killed",
+                "error",
                 "beforeEach(()=>{}); test('body',()=>expect(true).toBe(false));",
             ),
             (
@@ -252,6 +252,26 @@ mod tests {
                 "test('body',()=>{onTestFailed(()=>expect(true).toBe(false)); expect(true).toBe(false);});",
             ),
             (
+                "passing-fixture",
+                "missed",
+                "const extended=test.extend({value:async({},use)=>{await use(1);}}); extended('body',({value})=>expect(value).toBe(1));",
+            ),
+            (
+                "passing-around",
+                "missed",
+                "aroundEach(async run=>{await run();}); test('body',()=>{});",
+            ),
+            (
+                "passing-finished",
+                "missed",
+                "test('body',()=>{onTestFinished(()=>{});});",
+            ),
+            (
+                "inverted-lifecycle",
+                "error",
+                "test.fails('body',()=>{onTestFinished(()=>expect(true).toBe(false));});",
+            ),
+            (
                 "fixture-setup",
                 "error",
                 "const extended=test.extend({value:async({},use)=>{expect(true).toBe(false); await use(1);}}); extended('body',({value})=>expect(value).toBe(1));",
@@ -287,15 +307,18 @@ mod tests {
                 &cancellation,
             )
             .await?;
-            // Missing completion is a broken probe, not evidence about attribution.
             let evidence = execution
                 .evidence
                 .as_ref()
                 .map_err(|error| anyhow::anyhow!("{name}: {error:#}"))?;
-            println!(
-                "{name}: expected={expected}, observed={:?}\nevidence={evidence:?}",
-                evidence.classify(execution.raw.status.code())
-            );
+            let classified = evidence.classify(execution.raw.status.code());
+            println!("{name}: expected={expected}, observed={classified:?}");
+            match expected {
+                "killed" => assert_eq!(classified?, Outcome::Killed, "{name}"),
+                "missed" => assert_eq!(classified?, Outcome::Missed, "{name}"),
+                "error" => assert!(classified.is_err(), "{name}: {evidence:?}"),
+                _ => unreachable!(),
+            }
         }
         Ok(())
     }

@@ -32,8 +32,10 @@ export default class MutieReporter {
       errors: module.errors().map(error),
       suiteErrors: [...module.children.allSuites()].flatMap(suite => suite.errors().map(error)),
       tests: [...module.children.allTests()].map(test => ({
+        lifecycleEvidence: test.meta().mutieLifecycleEvidence === true,
+        lifecycleUsed: test.meta().mutieLifecycle === true,
         id: test.id, name: text(test.fullName), state: test.result().state,
-        unsupportedOptions: (test.options.retry != null && test.options.retry !== 0)
+        unsupportedOptions: test.options.fails === true || (test.options.retry != null && test.options.retry !== 0)
           || (test.options.repeats != null && test.options.repeats !== 0)
           || (test.options.timeout != null && test.options.timeout !== 0)
           || (test.diagnostic()?.retryCount || 0) > 0

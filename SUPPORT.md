@@ -149,12 +149,13 @@ policies now have separate JS/TS fixture evidence: accepted gaps remain raw
 survivors, minimum scores still include them, and stale decisions need review.
 See [review/policy acceptance](benchmarks/vitest-dismissals.md). Next gates are
 broader lifecycle attribution, parallel execution and useful real-project findings.
-Traditional hook failures are rejected conservatively, but the
-[lifecycle audit](benchmarks/vitest-lifecycle-attribution.md) found false kills for
-fixture and callback failures that do not emit those hook events. Suites using
-these lifecycle APIs are outside verified scoring support; passing baselines alone
-do not establish safe mutation attribution. Correcting this is the next blocker
-before broader scoring validation.
+The [lifecycle audit](benchmarks/vitest-lifecycle-attribution.md) found false kills
+outside traditional hook events. Worker-side participation evidence now prevents
+those observed false kills: a failed test using fixtures, aroundEach or completion
+callbacks is an error, even when only its body assertion failed. Passing lifecycle
+controls remain supported; `test.fails` is rejected. Instrumentation only modifies
+the disposable dependency copy and requires the exact audited runner bytes.
+Precise failure-phase attribution and broader lifecycle combinations remain open.
 
 ## JavaScript / TypeScript — Node.js test runner
 
