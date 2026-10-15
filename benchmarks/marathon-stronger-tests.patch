@@ -1,0 +1,35 @@
+--- /dev/null
++++ b/tests/mutation_regressions.rs
+@@ -0,0 +1,32 @@
++use marathon::book::{BookBlock, CodeBlock, Runbook};
++
++#[test]
++fn ordinary_json_remains_display_only() {
++    let book = Runbook::new(
++        None::<&str>,
++        "```json\n{\"message\":\"display only\"}\n```\n",
++    )
++    .expect("ordinary JSON does not declare an input prompt");
++    let BookBlock::Code(code) = &book.blocks[0] else {
++        panic!("ordinary JSON must remain a code block");
++    };
++    assert!(!code.is_runnable());
++    assert_eq!(code.content, r#"{"message":"display only"}"#);
++}
++
++#[test]
++fn after_each_preserves_existing_line_boundaries() {
++    let mut book = Runbook::new(None::<&str>, "").unwrap();
++    book.frontmatter.before_each = Some(String::new());
++    book.frontmatter.after_each = Some("echo done".into());
++    for (body, expected) in [("", "echo done"), ("echo body\n", "echo body\necho done")] {
++        let code = CodeBlock::try_from(markdown::mdast::Code {
++            value: body.into(),
++            position: None,
++            lang: Some("sh".into()),
++            meta: None,
++        })
++        .unwrap();
++        assert_eq!(book.script_for(&code), expected);
++    }
++}

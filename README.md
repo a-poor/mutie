@@ -62,8 +62,9 @@ cargo run -- tests/fixtures/go --jobs 2 --timeout 5
 
 Rust supports one ordinary package with a binary, a library, or a library plus
 one binary, with a usable `Cargo.lock`, default features, and standard
-unit/integration tests on Unix. Library support is experimental pending real-project
-mutation validation; binary-only support retains its validated milestone.
+unit/integration tests on Unix. The ordinary-library scope is validated through
+fixtures and [Marathon findings and focused reruns](benchmarks/rust-library-marathon.md);
+Mutie remains the binary-only real-project control.
 Try the [small fixture](tests/fixtures/rust/README.md):
 
 ```sh

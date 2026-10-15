@@ -349,12 +349,16 @@ writes and lower prebuilt-suite latency. The
 this first optimization's acceptance: the six-mutation self-run falls from 564
 to 393 seconds in one pair, with identical failure sets, required rebuilds and
 source/artifact preservation. This does not establish a universal speedup.
-The next major objective is ordinary Rust library-package support. The
+The ordinary Rust library-package milestone is complete within its scope. The
 [scope audit](benchmarks/rust-library-scope.md) selects library-only and
 library-plus-one-binary layouts, retaining unit/integration tests and excluding
 doctests. Direct Cargo fixture probes and Marathon's 182-test isolated baseline
 establish validation candidates. Target identity, library acceptance and multi-root
-discovery are implemented; real-project library mutation acceptance remains.
+discovery are implemented. [Marathon validation](benchmarks/rust-library-marathon.md)
+completes real-project acceptance: 15 initial mutations yield four survivors;
+two stronger tests kill three in matching fresh/cached reruns, while an equivalent
+survivor remains reviewed. This promotes the library slice to Validated, not
+Established; the evidence is one combined library/binary project on macOS.
 Workspaces and local dependencies remain separate objectives.
 
 The first implementation step replaces the saved single-binary fields with a

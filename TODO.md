@@ -11,11 +11,12 @@ supported scopes. The first measured Rust feedback-time improvement is also
 validated: unchanged derived-report writes are skipped, and the saved six-mutation
 self-run fell from 564 to 393 seconds in one controlled pair with matching outcomes.
 See [the acceptance evidence](benchmarks/rust-report-write-reruns.md) for limits.
-Ordinary Rust library packages now have experimental support backed by fixture
-workflows and library-specific review/failure/cancellation checks. Complete
-real-project mutation validation on Marathon next, with workspace scope decided
-separately. Explicit
-user priorities and demonstrated reliability blockers take precedence.
+Ordinary Rust library packages now meet the scoped Validated level: fixture
+acceptance is complemented by Marathon's real-project findings, stronger-test
+reruns, matching fresh/cached outcomes and preservation evidence. See
+[the results](benchmarks/rust-library-marathon.md). Reassess the next major
+objective using SUPPORT.md; workspaces remain a separate scope decision.
+Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
 
@@ -60,7 +61,7 @@ choose their implementation order; the proposed next objective is scoped below.
   matrix demonstrates an improvement, not a repeated-run distribution or general
   performance guarantee. See [the results](benchmarks/rust-report-write-reruns.md).
 
-## Next objective: ordinary Rust library packages
+## Completed: ordinary Rust library packages
 
 - [x] Scope ordinary library packages using a small fixture and a representative
   real project. Support library-only and library-plus-one-binary layouts with the
@@ -83,9 +84,11 @@ choose their implementation order; the proposed next objective is scoped below.
   probes for both library layouts: raw-score/dismissal separation, stale review,
   baseline and mutation failure classification, serial test interruption, saved
   diagnostics and descendant/source/artifact cleanup.
-- [ ] Validate useful findings and focused reruns on Marathon, retaining Mutie as
+- [x] Validate useful findings and focused reruns on Marathon, retaining Mutie as
   the binary-only control, then update implemented support claims. Workspaces and
-  local dependencies remain separately scoped.
+  local dependencies remain separately scoped. The 15-mutation selection yields
+  11 kills and four survivors; two added tests kill three survivors in matching
+  fresh/cached reruns. One equivalent survivor is reviewed, not forced into a kill.
 
 See [the acceptance review](benchmarks/rust-milestone-acceptance.md) for evidence,
 limits and the reasoning behind this priority.

@@ -29,7 +29,7 @@ does not by itself validate a new runner.
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
-| Rust | Cargo / standard Rust test harness | Validated (binary); Experimental (library) | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Real-project library mutation validation; workspaces remain separate |
+| Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
 | JavaScript / TypeScript | Vitest | Planned | None | Define first package, syntax/module scope and fixture |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
@@ -65,7 +65,7 @@ targets have not been chosen or verified.
 
 ## Rust — Cargo
 
-**Level: Validated for binary-only packages; Experimental for ordinary libraries.**
+**Level: Validated within the ordinary single-package scope.**
 
 - Project/test scope: one ordinary package with a binary, library, or library plus
   one binary; usable lockfile, registry
@@ -101,12 +101,15 @@ targets have not been chosen or verified.
   Both layouts also have dismissal/raw-score and stale-review checks, baseline
   compile/test failures, an injected mutation compiler failure, and serial
   baseline/mutation interruption with descendant cleanup. These fixture checks
-  do not establish real-project finding usefulness or runtime.
-- Next support gains: run a useful mutation selection on Marathon and validate
-  findings with stronger-test reruns. Its 182-test baseline is only planning
-  evidence so far. Keep Mutie as the binary-only control and scope workspaces
-  separately. Advancement to Established needs additional representative real
-  projects, not just more operators.
+  complement the [Marathon validation](benchmarks/rust-library-marathon.md): a
+  15-mutation selection finds two useful test gaps; two stronger tests kill three
+  saved survivors in matching fresh/cached reruns, with one equivalent survivor
+  retained and reviewed. Full-suite baselines pass 182/184 tests. Marathon supplies
+  library-plus-binary real-project evidence; library-only evidence is fixture-based.
+- Next support gains: broader project/platform evidence before Established, and
+  separately scoped workspaces/local dependencies. The ordinary-library milestone
+  is complete; reassess the next major objective against the planned JS/TS and
+  Python targets rather than automatically adding another Rust operator.
 
 ## JavaScript / TypeScript — Vitest
 

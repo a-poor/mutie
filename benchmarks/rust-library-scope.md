@@ -3,8 +3,8 @@
 ## Decision
 
 The next adapter slice will support one ordinary library package, either alone
-or with one binary. Keep the existing binary-only workflow. The adapter now implements this as experimental library support, with
-real-project mutation validation still pending.
+or with one binary. Keep the existing binary-only workflow. The adapter now implements this scope at the Validated level;
+[Marathon acceptance](rust-library-marathon.md) completes the real-project gate.
 
 Continue to run default-feature unit and integration tests with
 `cargo test --locked --tests --no-fail-fast`, with compilation separated using
@@ -192,3 +192,16 @@ Running `cargo test --test rust_workflow` without `--ignored` leaves all 22 real
 Cargo workflows ignored. No production-code change was needed for these checks;
 this step extends the acceptance evidence without promoting library support
 beyond Experimental.
+
+
+## Real-project acceptance completed
+
+The [Marathon validation](rust-library-marathon.md) completes the scoped ordinary-
+library milestone. A 15-mutation selection produces useful findings; two added
+API regression tests kill three of four saved survivors, with identical outcomes
+and failed-test sets under fresh and worker-cached artifacts. One reviewed
+behaviorally equivalent survivor remains missed. Full-suite baselines,
+local-package rebuilds, source/report/artifact preservation, and real-project
+dismissal rediscovery are verified. The scope is now Validated; the earlier
+Experimental labels above describe the preceding implementation stages.
+Workspace expansion and additional platform/project evidence remain separate.
