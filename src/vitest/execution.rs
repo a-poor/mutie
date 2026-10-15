@@ -66,8 +66,9 @@ pub(super) async fn run(
     let captured = Project::load(&root, cancellation)?;
     ensure!(
         captured.manifest_fingerprint == project.manifest_fingerprint
-            && captured.lockfile_fingerprint == project.lockfile_fingerprint,
-        "Vitest package changed during snapshotting"
+            && captured.lockfile_fingerprint == project.lockfile_fingerprint
+            && captured.project_config_fingerprints == project.project_config_fingerprints,
+        "Vitest package or configuration changed during snapshotting"
     );
     super::lifecycle::instrument(&root)?;
     if let Some(mutation) = mutation {

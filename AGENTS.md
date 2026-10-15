@@ -16,6 +16,8 @@ Rust binary packages, and validated ordinary Rust library packages.
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
 - `src/vitest.rs` exposes read-only `vitest-list`; `vitest/project.rs` validates
   pinned ESM/pnpm metadata and `vitest/discovery.rs` lists JS/TS boolean flips.
+  `vitest/config.rs` statically recognizes coverage-reporter-only configs without
+  executing them; fingerprint accepted files and reject all other config settings.
   `vitest/execution.rs` and `vitest/protocol.rs` implement isolated commands and
   strict completion evidence; `vitest-check` exposes baseline diagnostics. Explicit
   `--lang vitest` connects serial full-suite runs to shared reports and scores.
@@ -124,10 +126,11 @@ The first focused-feedback optimization is validated in
 from 564 to 393 seconds with matching failures and preserved sources/artifacts.
 Follow the scoped Vitest milestone in `TODO.md`, `DESIGN.md` and
 `benchmarks/vitest-initial-scope.md`: one ESM/pnpm package, separate JS/TS boolean
-discovery, isolated execution and explicit completion/error evidence. The fixture
-and Pathe baseline are direct-runner probes; read-only preview discovery is
-implemented, and the isolated adapter has direct fixture tests. Shared mutation
-runs and reports are not yet integrated.
+discovery, isolated execution and explicit completion/error evidence. Shared runs,
+reports, focused reruns and review/policies are integrated. The first complete
+Pathe run with its original coverage-only config produced 12 kills and two
+survivors in 94 seconds; `benchmarks/vitest-coverage-config.md` records evidence.
+Next validate survivor usefulness and stronger-test reruns on that real project.
 Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 

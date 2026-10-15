@@ -85,9 +85,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   error precedence. See [review evidence](benchmarks/vitest-dismissals.md).
 - [ ] Validate parallel workers and broader cache/timeout/cancellation preservation
   through the complete CLI workflow.
-- [ ] Next real-project gate: resolve Pathe coverage-only config support explicitly,
-  then record useful
-  findings, stronger-test reruns and feedback time. Select
+- [x] Accept Pathe’s original static coverage-reporter-only config without
+  executing it; keep coverage disabled, reject extra settings, and fingerprint
+  the file for snapshots and reruns. See [config evidence](benchmarks/vitest-coverage-config.md).
+- [x] Run Pathe with its original config: 14 mutations, 12 kills, two survivors,
+  zero errors in 94.00 seconds; preserve input files and validate saved reports.
+- [ ] Investigate Pathe survivors 12 and 13 for usefulness/equivalence, add stronger
+  tests where appropriate, and record focused-rerun feedback time. Select
   and validate a real JavaScript project independently before promoting JS support.
 
 ## Completed: first Rust feedback-time improvement

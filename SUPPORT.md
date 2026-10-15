@@ -113,12 +113,13 @@ targets have not been chosen or verified.
 
 ## JavaScript / TypeScript — Vitest
 
-**Level: Experimental within the pinned ESM/pnpm fixture scope.**
+**Level: Experimental within the pinned ESM/pnpm scope.**
 
 The [first scope audit](benchmarks/vitest-initial-scope.md) selects one ESM package,
 Node execution, `.js`/`.ts` source, pnpm's self-contained locked dependencies and
 `boolean_flip`. Initial tool evidence is Node 24.22.0, pnpm 11.10.0 and Vitest 4.1.9
-on macOS. Custom configs/plugins, browser environments, JSX/TSX, CommonJS,
+on macOS. Config support is limited to static coverage-reporter-only declarations;
+other custom configs/plugins, browser environments, JSX/TSX, CommonJS,
 monorepos and other package managers are deferred.
 
 The mixed-syntax fixture passes four direct Vitest tests; separate JS/TS probes
@@ -131,14 +132,18 @@ classifier, including rejection of missing completion after exit zero.
 `mutie PATH --lang vitest` now produces scored fixture runs and saved reports:
 four kills and two survivors across six JS/TS mutations, with a stronger JS test
 killing the remaining survivor in a filtered fresh scan. See
-[CLI acceptance](benchmarks/vitest-shared-runs.md). No real-project mutation run
-has occurred, and JavaScript still needs its own real-project validation target. Direct probes also
+[CLI acceptance](benchmarks/vitest-shared-runs.md). The first complete Pathe run
+with its original config produced 12 kills and two survivors in 94.00 seconds,
+with no execution errors. Survivor usefulness and stronger-test reruns remain
+unverified; JavaScript still needs its own real-project target. Direct probes also
 show why JSON `success` and exit status alone are insufficient: unhandled errors
 and all-skipped runs need explicit rejection.
 
-Preview evidence: six fixture mutations and fourteen in an explicitly adapted
-Pathe copy with its coverage-only Vite config removed. The initial audit missed
-that config; unchanged Pathe is correctly rejected by the preview.
+The initial preview used a Pathe copy with its coverage-only config removed.
+The [coverage-only config gate](benchmarks/vitest-coverage-config.md) now accepts
+the original config without executing it: discovery finds fourteen mutations and
+the isolated baseline passes 467 tests with 16 skipped/todo. Package dependencies
+remain the prepared pinned installation; this is not arbitrary upstream config support.
 
 Current CLI scope is explicit `--lang vitest`, one worker and full-suite tests.
 Focused saved-ID and missed-only reruns now support stronger-test validation for
@@ -158,8 +163,8 @@ from setup and post-body assertion-count failures remain conservatively rejected
 copy and requires the exact audited runner bytes. File/worker fixture setup, body
 and teardown, nested hooks, and concurrent body/cleanup mixtures now have fixture
 evidence. Cross-file fixture reuse, cancellation during scoped teardown and
-parallel workers remain unvalidated. The next real-project gate is unchanged
-Pathe configuration support and useful mutation findings.
+parallel workers remain unvalidated. Useful real-project findings and stronger-test
+reruns remain acceptance gates.
 
 ## JavaScript / TypeScript — Node.js test runner
 

@@ -1,4 +1,5 @@
 //! Vitest discovery preview and isolated baseline diagnostics.
+mod config;
 pub mod discovery;
 pub mod execution;
 mod lifecycle;
@@ -143,24 +144,8 @@ pub async fn execution_scope(root: &Path, cancellation: &Cancellation) -> Result
     use sha2::{Digest, Sha256};
     let project = project::Project::load(root, cancellation)?;
     let node = resolve_node(root, cancellation).await?;
-    let mut project_config_fingerprints = std::collections::BTreeMap::new();
-    for name in ["tsconfig.json", "pnpm-workspace.yaml"] {
-        let path = project.root.join(name);
-        if path.exists() {
-            project_config_fingerprints.insert(
-                name.to_owned(),
-                format!(
-                    "sha256:{:x}",
-                    Sha256::digest(
-                        std::fs::read(&path)
-                            .with_context(|| format!("reading {}", path.display()))?
-                    )
-                ),
-            );
-        }
-    }
     Ok(ExecutionScope {
-        project_config_fingerprints,
+        project_config_fingerprints: project.project_config_fingerprints,
         package: project.name,
         node: "24.22.0".into(),
         node_executable: node.executable,
@@ -236,9 +221,11 @@ impl ExecutionScope {
             "unsupported saved Vitest tool identity"
         );
         ensure!(
-            self.project_config_fingerprints
-                .keys()
-                .all(|name| matches!(name.as_str(), "tsconfig.json" | "pnpm-workspace.yaml")),
+            self.project_config_fingerprints.keys().all(|name| matches!(
+                name.as_str(),
+                "tsconfig.json" | "pnpm-workspace.yaml"
+            ) || config::FILES
+                .contains(&name.as_str())),
             "unsupported saved Vitest project configuration"
         );
         for fingerprint in [

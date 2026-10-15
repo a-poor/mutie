@@ -19,8 +19,10 @@ See [target support](SUPPORT.md) for Go/Rust support and the experimental
 JavaScript/TypeScript Vitest slice. Node's test runner, Bun and pytest remain planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
-scored outcomes. This initial path supports one worker; custom runner configs
-remain unsupported. Worker evidence distinguishes body failures from fixture, hook and callback
+scored outcomes. This initial path supports one worker. A static coverage-reporter-only
+Vite/Vitest config is accepted without executing it; coverage remains disabled.
+Other runner config settings remain unsupported. See
+[config support](benchmarks/vitest-coverage-config.md). Worker evidence distinguishes body failures from fixture, hook and callback
 failures: successful lifecycle work can accompany a genuine kill, while lifecycle
 and mixed failures are errors. Pending async assertions from setup and post-body
 assertion-count failures remain conservatively rejected.

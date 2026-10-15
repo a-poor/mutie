@@ -1506,10 +1506,14 @@ now reuse saved-ID/missed selection and exact fresh source matching, with saved
 package/lock/tool/reporter/config identity checked before the baseline. Tests may
 change independently; original reports are preserved. Browser exports include
 `--lang vitest`. See [rerun evidence](benchmarks/vitest-focused-reruns.md).
-The Pathe audit missed its
-coverage-only Vite config; unmodified Pathe is rejected, and listing evidence uses
-an explicitly adapted temporary copy. Resolve config support before claiming
-unmodified project acceptance.
+The initial Pathe audit missed its coverage-only Vite config. Static recognition
+now accepts that original config without executing or merging it: coverage stays
+disabled in the generated private config. Only an import of `defineConfig` from
+`vitest/config` and an exported object containing `test.coverage.reporter` literal
+strings are accepted. Multiple configs, extra settings and executable expressions
+are rejected. Accepted files are fingerprinted in saved execution identity and
+checked across snapshot copying; edits invalidate reruns. See
+[config acceptance](benchmarks/vitest-coverage-config.md).
 No plugin abstraction, affected-test selection or persistent transform cache is
 part of this milestone. SUPPORT.md records Experimental fixture acceptance; broader workflows remain
 separate gates. Existing Go/Rust compatibility and report reading remain required.

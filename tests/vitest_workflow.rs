@@ -406,3 +406,63 @@ fn lifecycle_cli_cases(cases: &[(bool, &str)]) {
         );
     }
 }
+
+#[test]
+#[ignore = "requires prepared MUTIE_VITEST_FIXTURE; coverage-only config identity"]
+fn coverage_only_config_runs_and_invalidates_reruns() {
+    let prepared =
+        PathBuf::from(std::env::var_os("MUTIE_VITEST_FIXTURE").expect("set MUTIE_VITEST_FIXTURE"));
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("config project");
+    assert!(
+        Command::new("cp")
+            .arg("-R")
+            .arg(prepared)
+            .arg(&root)
+            .status()
+            .unwrap()
+            .success()
+    );
+    let config = "import {defineConfig} from 'vitest/config'; export default defineConfig({test:{coverage:{reporter:['text','json','html','clover']}}});";
+    fs::write(root.join("vite.config.ts"), config).unwrap();
+    let source = "export const ready = true;";
+    fs::write(root.join("src/config-probe.js"), source).unwrap();
+    fs::write(root.join("test/config-probe.test.js"), "import {test,expect} from 'vitest'; import {ready} from '../src/config-probe.js'; test('ready',()=>expect(ready).toBe(true));").unwrap();
+    let reports = temp.path().join("reports");
+    let output = run(&root, &reports, &["--include", "src/config-probe.js"]);
+    assert!(output.status.success(), "{output:?}");
+    let (directory, saved, _, outcomes) = report(&output);
+    assert!(
+        saved["vitest_scope"]["project_config_fingerprints"]["vite.config.ts"]
+            .as_str()
+            .unwrap()
+            .starts_with("sha256:")
+    );
+    assert_eq!(outcomes["baseline"]["outcome"], "passed");
+    assert_eq!(outcomes["summary"]["killed"], 1);
+    assert_eq!(outcomes["summary"]["errors"], 0);
+    assert_eq!(
+        fs::read_to_string(root.join("vite.config.ts")).unwrap(),
+        config
+    );
+    assert_eq!(
+        fs::read_to_string(root.join("src/config-probe.js")).unwrap(),
+        source
+    );
+    assert!(!root.join("coverage").exists());
+    fs::write(root.join("vite.config.ts"), format!("{config}\n")).unwrap();
+    let changed = run(
+        &root,
+        &reports,
+        &["--rerun", directory.to_str().unwrap(), "--id", "1"],
+    );
+    assert!(!changed.status.success(), "{changed:?}");
+    assert!(
+        String::from_utf8_lossy(&changed.stderr).contains("configuration identity changed"),
+        "{changed:?}"
+    );
+    fs::write(root.join("vite.config.ts"), "import {writeFileSync} from 'node:fs'; writeFileSync('config-executed','bad'); export default {};").unwrap();
+    let rejected = run(&root, &reports, &["--list"]);
+    assert!(!rejected.status.success());
+    assert!(!root.join("config-executed").exists());
+}

@@ -4,6 +4,7 @@ use serde_json::Value as Json;
 use serde_yaml_ng::Value as Yaml;
 use sha2::{Digest, Sha256};
 use std::{
+    collections::BTreeMap,
     fs,
     path::{Path, PathBuf},
 };
@@ -11,6 +12,7 @@ use std::{
 #[derive(Debug)]
 pub struct Project {
     pub root: PathBuf,
+    pub project_config_fingerprints: BTreeMap<String, String>,
     pub name: String,
     pub vitest: String,
     pub vite: String,
@@ -89,10 +91,24 @@ impl Project {
                 );
             }
         }
+        let mut project_config_fingerprints = BTreeMap::new();
+        let mut runner_config_seen = false;
         for entry in fs::read_dir(&root)? {
             let entry = entry?;
             let name = entry.file_name();
             let name = name.to_string_lossy();
+            if super::config::FILES.contains(&name.as_ref()) {
+                ensure!(
+                    !runner_config_seen,
+                    "multiple Vite/Vitest config files are unsupported"
+                );
+                runner_config_seen = true;
+                let source = read(&entry.path())?;
+                super::config::validate(&source)
+                    .with_context(|| format!("unsupported Vitest project configuration: {name}"))?;
+                project_config_fingerprints.insert(name.to_string(), fingerprint(&source));
+                continue;
+            }
             ensure!(
                 !name.starts_with("vite.config.")
                     && !name.starts_with("vitest.config.")
@@ -120,6 +136,12 @@ impl Project {
         if root.join("tsconfig.json").exists() {
             // Only the audited plain-JSON compiler settings are accepted.
             validate_tsconfig(&root.join("tsconfig.json"))?;
+        }
+        for name in ["tsconfig.json", "pnpm-workspace.yaml"] {
+            if root.join(name).exists() {
+                project_config_fingerprints
+                    .insert(name.to_owned(), fingerprint(&read(&root.join(name))?));
+            }
         }
         let lock_text = read(&root.join("pnpm-lock.yaml"))?;
         let lock: Yaml = serde_yaml_ng::from_str(&lock_text).context("parsing pnpm-lock.yaml")?;
@@ -268,6 +290,7 @@ impl Project {
             "Vitest preview requires a src directory"
         );
         Ok(Self {
+            project_config_fingerprints,
             root,
             name,
             vitest: "4.1.9".into(),
@@ -424,6 +447,34 @@ mod tests {
             a.manifest_fingerprint
         );
     }
+    #[test]
+    fn coverage_only_configs_are_fingerprinted_and_ambiguity_is_rejected() {
+        let dir = fixture();
+        let source = "import {defineConfig} from 'vitest/config'; export default defineConfig({test:{coverage:{reporter:['text','json','html','clover']}}});";
+        for name in super::super::config::FILES {
+            write(dir.path(), name, source);
+            let original = load(dir.path()).unwrap();
+            assert_eq!(
+                original.project_config_fingerprints[*name],
+                fingerprint(source)
+            );
+            write(dir.path(), name, &format!("{source}\n"));
+            assert_ne!(
+                load(dir.path()).unwrap().project_config_fingerprints,
+                original.project_config_fingerprints
+            );
+            fs::remove_file(dir.path().join(name)).unwrap();
+        }
+        write(dir.path(), "vite.config.ts", source);
+        write(dir.path(), "vitest.config.ts", source);
+        assert!(
+            load(dir.path())
+                .unwrap_err()
+                .to_string()
+                .contains("multiple")
+        );
+    }
+
     #[test]
     fn rejects_manifest_config_and_installation_mismatches() {
         for (path, contents) in [
