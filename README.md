@@ -795,6 +795,11 @@ from the snapshot, and cannot contain the new output directory.
 
 ## Saved reports
 
+Reports keep publishing authoritative JSON checkpoints as a run progresses.
+Derived text summaries and outcome lists are rewritten only when their contents
+change or the file needs recreating. Changed files retain atomic publication and
+disk synchronization; report contents and formats are unchanged.
+
 By default, every test run saves a new directory under `<module>/.mutie/`. The CLI
 prints its location when the run starts and the summary path when it finishes. Earlier runs
 are preserved. Use `--output-dir DIR` to choose the parent directory instead;

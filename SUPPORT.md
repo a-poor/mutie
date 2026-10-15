@@ -81,6 +81,9 @@ targets have not been chosen or verified.
   [milestone acceptance](benchmarks/rust-milestone-acceptance.md) links fixture,
   stronger-test rerun, review, cancellation and preservation evidence. The
   [feedback profile](benchmarks/rust-feedback-profile.md) records current runtime.
+  [Derived-report write validation](benchmarks/derived-report-writes.md) records
+  a measured reduction in prebuilt-suite time; full saved-selection comparisons
+  remain pending.
   Real-Cargo workflows are opt-in in `tests/rust_workflow.rs`.
 - Limits: no libraries/proc macros, multiple binaries, multi-package/enclosing
   workspaces, local/git dependencies, project build scripts, custom harnesses,

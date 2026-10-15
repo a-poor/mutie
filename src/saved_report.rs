@@ -555,7 +555,7 @@ impl SavedReport {
         // let readers detect a crash between publication of outcomes and metadata.
         self.write("outcomes.json", &serde_json::to_vec_pretty(&self.outcomes)?)?;
         self.write("run.json", &serde_json::to_vec_pretty(&self.run)?)?;
-        self.write("summary.txt", self.summary().as_bytes())?;
+        self.write_derived("summary.txt", self.summary().as_bytes())?;
         for (name, outcome) in [
             ("killed", Outcome::Killed),
             ("missed", Outcome::Missed),
@@ -570,9 +570,30 @@ impl SavedReport {
                     text.push('\n');
                 }
             }
-            self.write(&format!("{name}.txt"), text.as_bytes())?;
+            self.write_derived(&format!("{name}.txt"), text.as_bytes())?;
         }
         Ok(())
+    }
+
+    /// Compare against the published file, not a cache: missing or edited output
+    /// must be repaired even when the newly generated contents are unchanged.
+    fn write_derived(&self, name: &str, contents: &[u8]) -> Result<()> {
+        let path = self.directory.join(name);
+        match fs::symlink_metadata(&path) {
+            Ok(metadata) if metadata.is_file() && metadata.len() == contents.len() as u64 => {
+                if fs::read(&path).with_context(|| format!("reading {}", path.display()))?
+                    == contents
+                {
+                    return Ok(());
+                }
+            }
+            Ok(_) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => {
+                return Err(error).with_context(|| format!("inspecting {}", path.display()));
+            }
+        }
+        self.write(name, contents)
     }
 
     /// Publish each file only after its full contents have been written.
@@ -817,6 +838,73 @@ mod tests {
             None,
         )
         .unwrap()
+    }
+
+    #[test]
+    fn unchanged_lists_keep_their_files_while_authoritative_checkpoints_advance() -> Result<()> {
+        use std::os::unix::fs::MetadataExt;
+
+        let root = tempfile::tempdir()?;
+        let mut report = SavedReport::create(&config(root.path())?)?;
+        // Open handles prevent inode reuse from masking a replacement.
+        let list = fs::File::open(report.path().join("missed.txt"))?;
+        let run = fs::File::open(report.path().join("run.json"))?;
+        let outcomes = fs::File::open(report.path().join("outcomes.json"))?;
+        let checkpoint = read(&report, "run.json")["checkpoint"].as_u64().unwrap();
+        report.flush()?;
+        assert_eq!(
+            list.metadata()?.ino(),
+            fs::metadata(report.path().join("missed.txt"))?.ino()
+        );
+        assert_ne!(
+            run.metadata()?.ino(),
+            fs::metadata(report.path().join("run.json"))?.ino()
+        );
+        assert_ne!(
+            outcomes.metadata()?.ino(),
+            fs::metadata(report.path().join("outcomes.json"))?.ino()
+        );
+        assert_eq!(read(&report, "run.json")["checkpoint"], checkpoint + 1);
+        assert_eq!(
+            read(&report, "run.json")["checkpoint"],
+            read(&report, "outcomes.json")["checkpoint"]
+        );
+        fs::remove_file(report.path().join("missed.txt"))?;
+        report.flush()?;
+        assert_eq!(fs::read(report.path().join("missed.txt"))?, b"");
+        Ok(())
+    }
+
+    #[test]
+    fn derived_files_repair_edits_and_links_and_retry_failed_publication() -> Result<()> {
+        use std::os::unix::fs::{MetadataExt, symlink};
+
+        let root = tempfile::tempdir()?;
+        let report = SavedReport::create(&config(root.path())?)?;
+        let path = report.path().join("missed.txt");
+        report.write_derived("missed.txt", b"first")?;
+        let original = fs::File::open(&path)?;
+        report.write_derived("missed.txt", b"first")?;
+        assert_eq!(original.metadata()?.ino(), fs::metadata(&path)?.ino());
+        report.write_derived("missed.txt", b"other")?;
+        assert_ne!(original.metadata()?.ino(), fs::metadata(&path)?.ino());
+        fs::write(&path, b"edits")?;
+        report.write_derived("missed.txt", b"other")?;
+        assert_eq!(fs::read(&path)?, b"other");
+        fs::remove_file(&path)?;
+        let external = root.path().join("external");
+        fs::write(&external, b"other")?;
+        symlink(&external, &path)?;
+        report.write_derived("missed.txt", b"other")?;
+        assert!(!fs::symlink_metadata(&path)?.file_type().is_symlink());
+        assert_eq!(fs::read(&external)?, b"other");
+        fs::remove_file(&path)?;
+        fs::create_dir(&path)?;
+        assert!(report.write_derived("missed.txt", b"other").is_err());
+        fs::remove_dir(&path)?;
+        report.write_derived("missed.txt", b"other")?;
+        assert_eq!(fs::read(&path)?, b"other");
+        Ok(())
     }
 
     #[test]

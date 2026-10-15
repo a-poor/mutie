@@ -333,17 +333,19 @@ Additional operators, languages and UI polish remain driven by concrete needs.
 The [full-suite feedback profile](benchmarks/rust-feedback-profile.md) separates
 adapter build/cleanup, test execution and individual harness durations across
 cold/warm serial and parallel runs. Warm execution is dominated by test harnesses,
-particularly dismissal, terminal and log-limit workflows. Investigate subprocess
-startup and concurrency within those targets next; the measured residual does not
-identify Cargo startup alone. The subsequent
+particularly dismissal, terminal and log-limit workflows. The measured residual
+does not identify Cargo startup alone. The subsequent
 [runtime experiment](benchmarks/rust-runtime-startup.md) found comparable warm CLI
 startup and only a small dismissal-harness median difference with fewer Tokio
-threads. Keep runtime defaults unchanged; attribute workflow command, persistence
-and cleanup costs next. The [workflow probe](benchmarks/rust-workflow-costs.md)
-subsequently identified substantial report persistence costs in focused and full
-dismissal tests, with measurable diagnostic overhead. Evaluate avoiding unchanged
-derived-report writes while preserving authoritative checkpoint publication and
-durability for changed files. No production optimization has been implemented yet.
+threads, so runtime defaults remain unchanged. The
+[workflow probe](benchmarks/rust-workflow-costs.md) identified substantial report
+persistence costs in focused and full dismissal tests, with measurable diagnostic
+overhead. The report writer now compares derived text with
+the actual published regular file and skips identical contents. Missing or edited
+files are repaired; authoritative JSON checkpoints still publish on every update.
+The [controlled comparison](benchmarks/derived-report-writes.md) records fewer
+writes and lower prebuilt-suite latency. The remaining acceptance step is a
+before/after comparison of unchanged saved mutation selections on Mutie itself.
 
 ## Original Go MVP — completed
 
@@ -921,6 +923,13 @@ a partial update. There is no multi-file transaction. Text outputs are derived
 and may lag the JSON snapshots after a forced kill. Before discovery/publication,
 `mutants.json` has `complete: false`; a complete empty inventory is distinguishable
 from discovery that never finished.
+
+Derived `summary.txt` and outcome lists are compared with their existing regular
+files before publication. Identical contents need no replacement or sync; missing,
+changed or symlinked files go through the existing atomic, synced publication path.
+Read/metadata errors other than missing files remain errors. There is no in-memory
+publication cache that could hide deletion or edits. Authoritative `run.json` and
+`outcomes.json` are always rewritten with matching checkpoint numbers.
 
 Workspace operations return their elapsed time and successful file-transfer counts,
 including partial work before a failure or interruption. `workspace_metrics.rs`

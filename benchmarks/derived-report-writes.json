@@ -1,0 +1,460 @@
+{
+  "control_revision": "764c256",
+  "evidence_root": "/tmp/mutie-derived-report-osc7ae9u",
+  "samples": [
+    {
+      "label": "control-1-0",
+      "seconds": 85.3844302919897,
+      "targets": [
+        {
+          "target": "affected_packages",
+          "seconds": 3.073968958007754,
+          "status": 0
+        },
+        {
+          "target": "cancellation",
+          "seconds": 4.494801499997266,
+          "status": 0
+        },
+        {
+          "target": "capture_limits",
+          "seconds": 5.483127666986547,
+          "status": 0
+        },
+        {
+          "target": "configuration",
+          "seconds": 6.3293847080058185,
+          "status": 0
+        },
+        {
+          "target": "dismissals",
+          "seconds": 19.34648904200003,
+          "status": 0
+        },
+        {
+          "target": "go_workflow",
+          "seconds": 1.6300060000066878,
+          "status": 0
+        },
+        {
+          "target": "log_limits",
+          "seconds": 11.665268791999551,
+          "status": 0
+        },
+        {
+          "target": "mutie",
+          "seconds": 4.152644207992125,
+          "status": 0
+        },
+        {
+          "target": "report_browser",
+          "seconds": 0.9718024589965353,
+          "status": 0
+        },
+        {
+          "target": "report_retention",
+          "seconds": 1.393447999987984,
+          "status": 0
+        },
+        {
+          "target": "rerun",
+          "seconds": 7.638473083003191,
+          "status": 0
+        },
+        {
+          "target": "rust_workflow",
+          "seconds": 0.3163015830068616,
+          "status": 0
+        },
+        {
+          "target": "terminal",
+          "seconds": 18.888480541994795,
+          "status": 0
+        }
+      ],
+      "owned_empty": true,
+      "passed": 200,
+      "ignored": 27
+    },
+    {
+      "label": "candidate-1-0",
+      "seconds": 55.062024500002735,
+      "targets": [
+        {
+          "target": "affected_packages",
+          "seconds": 2.042798374997801,
+          "status": 0
+        },
+        {
+          "target": "cancellation",
+          "seconds": 2.989753292000387,
+          "status": 0
+        },
+        {
+          "target": "capture_limits",
+          "seconds": 3.031313166997279,
+          "status": 0
+        },
+        {
+          "target": "configuration",
+          "seconds": 3.649458959000185,
+          "status": 0
+        },
+        {
+          "target": "dismissals",
+          "seconds": 11.37680216699664,
+          "status": 0
+        },
+        {
+          "target": "go_workflow",
+          "seconds": 0.7341000419983175,
+          "status": 0
+        },
+        {
+          "target": "log_limits",
+          "seconds": 7.9517634169897065,
+          "status": 0
+        },
+        {
+          "target": "mutie",
+          "seconds": 2.731864957997459,
+          "status": 0
+        },
+        {
+          "target": "report_browser",
+          "seconds": 0.7057217920082621,
+          "status": 0
+        },
+        {
+          "target": "report_retention",
+          "seconds": 0.5993193339963909,
+          "status": 0
+        },
+        {
+          "target": "rerun",
+          "seconds": 4.735012042001472,
+          "status": 0
+        },
+        {
+          "target": "rust_workflow",
+          "seconds": 0.25474762500380166,
+          "status": 0
+        },
+        {
+          "target": "terminal",
+          "seconds": 14.258578791996115,
+          "status": 0
+        }
+      ],
+      "owned_empty": true,
+      "passed": 202,
+      "ignored": 27
+    },
+    {
+      "label": "candidate-2-0",
+      "seconds": 81.74332558301103,
+      "targets": [
+        {
+          "target": "affected_packages",
+          "seconds": 1.8576665830041748,
+          "status": 0
+        },
+        {
+          "target": "cancellation",
+          "seconds": 4.201438666001195,
+          "status": 0
+        },
+        {
+          "target": "capture_limits",
+          "seconds": 4.754821249996894,
+          "status": 0
+        },
+        {
+          "target": "configuration",
+          "seconds": 6.057272041987744,
+          "status": 0
+        },
+        {
+          "target": "dismissals",
+          "seconds": 21.133961167011876,
+          "status": 0
+        },
+        {
+          "target": "go_workflow",
+          "seconds": 0.8875322919921018,
+          "status": 0
+        },
+        {
+          "target": "log_limits",
+          "seconds": 10.464633291994687,
+          "status": 0
+        },
+        {
+          "target": "mutie",
+          "seconds": 3.1900243330019293,
+          "status": 0
+        },
+        {
+          "target": "report_browser",
+          "seconds": 0.8179821660014568,
+          "status": 0
+        },
+        {
+          "target": "report_retention",
+          "seconds": 0.8795814170007361,
+          "status": 0
+        },
+        {
+          "target": "rerun",
+          "seconds": 7.402205999998841,
+          "status": 0
+        },
+        {
+          "target": "rust_workflow",
+          "seconds": 0.059995457995682955,
+          "status": 0
+        },
+        {
+          "target": "terminal",
+          "seconds": 20.03593883299618,
+          "status": 0
+        }
+      ],
+      "owned_empty": true,
+      "passed": 202,
+      "ignored": 27
+    },
+    {
+      "label": "candidate-2-1",
+      "seconds": 82.06767024999135,
+      "targets": [
+        {
+          "target": "affected_packages",
+          "seconds": 1.8861860410106601,
+          "status": 0
+        },
+        {
+          "target": "cancellation",
+          "seconds": 5.326914917008253,
+          "status": 0
+        },
+        {
+          "target": "capture_limits",
+          "seconds": 4.514350291996379,
+          "status": 0
+        },
+        {
+          "target": "configuration",
+          "seconds": 6.32183258299483,
+          "status": 0
+        },
+        {
+          "target": "dismissals",
+          "seconds": 20.29416062500968,
+          "status": 0
+        },
+        {
+          "target": "go_workflow",
+          "seconds": 0.8299166250071721,
+          "status": 0
+        },
+        {
+          "target": "log_limits",
+          "seconds": 10.491532458006986,
+          "status": 0
+        },
+        {
+          "target": "mutie",
+          "seconds": 3.2514824170066277,
+          "status": 0
+        },
+        {
+          "target": "report_browser",
+          "seconds": 0.7012977080012206,
+          "status": 0
+        },
+        {
+          "target": "report_retention",
+          "seconds": 0.8709395829937421,
+          "status": 0
+        },
+        {
+          "target": "rerun",
+          "seconds": 8.340329666010803,
+          "status": 0
+        },
+        {
+          "target": "rust_workflow",
+          "seconds": 0.03583220799919218,
+          "status": 0
+        },
+        {
+          "target": "terminal",
+          "seconds": 19.2026954160101,
+          "status": 0
+        }
+      ],
+      "owned_empty": true,
+      "passed": 202,
+      "ignored": 27
+    },
+    {
+      "label": "control-2-0",
+      "seconds": 121.07538891700096,
+      "targets": [
+        {
+          "target": "affected_packages",
+          "seconds": 2.998142917000223,
+          "status": 0
+        },
+        {
+          "target": "cancellation",
+          "seconds": 6.749657374995877,
+          "status": 0
+        },
+        {
+          "target": "capture_limits",
+          "seconds": 8.486693790997379,
+          "status": 0
+        },
+        {
+          "target": "configuration",
+          "seconds": 10.10327641699405,
+          "status": 0
+        },
+        {
+          "target": "dismissals",
+          "seconds": 31.75723933300469,
+          "status": 0
+        },
+        {
+          "target": "go_workflow",
+          "seconds": 1.2121554170007585,
+          "status": 0
+        },
+        {
+          "target": "log_limits",
+          "seconds": 16.11860095799784,
+          "status": 0
+        },
+        {
+          "target": "mutie",
+          "seconds": 3.4741904999973485,
+          "status": 0
+        },
+        {
+          "target": "report_browser",
+          "seconds": 0.7672856249992037,
+          "status": 0
+        },
+        {
+          "target": "report_retention",
+          "seconds": 0.9677357500040671,
+          "status": 0
+        },
+        {
+          "target": "rerun",
+          "seconds": 10.973070041989558,
+          "status": 0
+        },
+        {
+          "target": "rust_workflow",
+          "seconds": 0.1467673329898389,
+          "status": 0
+        },
+        {
+          "target": "terminal",
+          "seconds": 27.320228208001936,
+          "status": 0
+        }
+      ],
+      "owned_empty": true,
+      "passed": 200,
+      "ignored": 27
+    },
+    {
+      "label": "control-2-1",
+      "seconds": 122.07234466599766,
+      "targets": [
+        {
+          "target": "affected_packages",
+          "seconds": 3.1139394589990843,
+          "status": 0
+        },
+        {
+          "target": "cancellation",
+          "seconds": 7.678844458001549,
+          "status": 0
+        },
+        {
+          "target": "capture_limits",
+          "seconds": 8.144464750002953,
+          "status": 0
+        },
+        {
+          "target": "configuration",
+          "seconds": 11.04455804200552,
+          "status": 0
+        },
+        {
+          "target": "dismissals",
+          "seconds": 30.51099324999086,
+          "status": 0
+        },
+        {
+          "target": "go_workflow",
+          "seconds": 1.4209459999983665,
+          "status": 0
+        },
+        {
+          "target": "log_limits",
+          "seconds": 16.013315000003786,
+          "status": 0
+        },
+        {
+          "target": "mutie",
+          "seconds": 3.8426132500026142,
+          "status": 0
+        },
+        {
+          "target": "report_browser",
+          "seconds": 0.8779427500121528,
+          "status": 0
+        },
+        {
+          "target": "report_retention",
+          "seconds": 4.0412587500031805,
+          "status": 0
+        },
+        {
+          "target": "rerun",
+          "seconds": 11.562325791994226,
+          "status": 0
+        },
+        {
+          "target": "rust_workflow",
+          "seconds": 0.020835709001403302,
+          "status": 0
+        },
+        {
+          "target": "terminal",
+          "seconds": 23.79872133299068,
+          "status": 0
+        }
+      ],
+      "owned_empty": true,
+      "passed": 200,
+      "ignored": 27
+    }
+  ],
+  "candidate_probe_counts": {
+    "command_to_exit": 182,
+    "group_shutdown": 182,
+    "command_total": 182,
+    "cli_main": 131,
+    "report_sync": 2024,
+    "report_write": 2024,
+    "report_flush": 524
+  },
+  "candidate_probe_root": "/tmp/mutie-workflow-profile-wnr6acxr"
+}

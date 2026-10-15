@@ -85,6 +85,9 @@ received this phase instrumentation.
 
 ## Selected next candidate
 
+Follow-up: [derived-report write validation](derived-report-writes.md) records
+the implementation and controlled measurements for the candidate below.
+
 `SavedReport::flush` currently republishes outcomes, metadata, summary and five
 derived outcome lists at every checkpoint. Inspecting that path shows that lists
 can remain unchanged across checkpoints, for example an empty build-failure list

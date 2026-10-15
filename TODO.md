@@ -43,10 +43,12 @@ change the current focused-feedback work queue.
   report persistence as substantial; observer overhead is quantified. See
   [workflow costs](benchmarks/rust-workflow-costs.md). Extend instrumentation to
   terminal/log-limit targets if needed after evaluating this candidate.
-- [ ] Evaluate avoiding unchanged derived-report writes while retaining matching
+- [x] Avoid unchanged derived-report writes while retaining matching
   authoritative checkpoints, atomic durable publication for changed files, missing
-  file/error handling and identical final reports. Keep full tests, package rebuilds,
-  deadlines and strict rerun matching; measure actual write reduction and runtime.
+  file/error handling and final report semantics. Full prebuilt suites pass serially
+  and in pairs, with roughly one-third less test time in this sample; dismissal
+  report writes drop from 4,347 to 2,024 without dropping checkpoints or commands.
+  See [validation and limits](benchmarks/derived-report-writes.md).
 - [ ] Compare unchanged saved selections before/after using runtime distributions,
   exact failure sets, cancellation checks and source/artifact preservation.
 
