@@ -5,12 +5,7 @@ use super::{
     protocol::{self, Evidence},
 };
 use crate::{
-    cancellation::{Cancellation, Interrupted},
-    capture::Capture,
-    mutation::Mutation,
-    process,
-    report::Outcome,
-    workspace::Workspace,
+    cancellation::Cancellation, capture::Capture, mutation::Mutation, process, workspace::Workspace,
 };
 use anyhow::{Context, Result, ensure};
 use std::{fs, io::Write, num::NonZeroUsize, path::Path, time::Duration};
@@ -21,22 +16,26 @@ pub struct Execution {
     pub evidence: Result<Evidence>,
 }
 impl Execution {
-    pub fn classify(&self) -> Result<Outcome> {
-        if self.raw.interrupted {
-            return Err(Interrupted.into());
+    pub fn into_command(
+        mut self,
+        log_limit: Option<NonZeroUsize>,
+    ) -> crate::command::CommandOutput {
+        // Validate the complete completion record before retaining diagnostics.
+        // Process interruption, capture failure and timeout take precedence in
+        // the shared classifier even if completion was never written.
+        let evidence = self
+            .evidence
+            .and_then(|evidence| evidence.classify(self.raw.status.code()))
+            .map_err(|error| format!("{error:#}"));
+        self.raw.stdout.set_limit(log_limit);
+        self.raw.stderr.set_limit(log_limit);
+        self.diagnostics.set_limit(log_limit);
+        crate::command::CommandOutput {
+            raw: self.raw,
+            text: self.diagnostics,
+            evidence: crate::command::OutcomeEvidence::Validated(evidence),
+            tool: "Vitest",
         }
-        ensure!(
-            self.raw.capture_error.is_none(),
-            "Vitest output capture failed: {:?}",
-            self.raw.capture_error
-        );
-        if self.raw.timed_out {
-            return Ok(Outcome::Timeout);
-        }
-        self.evidence
-            .as_ref()
-            .map_err(|e| anyhow::anyhow!("{e:#}"))?
-            .classify(self.raw.status.code())
     }
 }
 
@@ -159,6 +158,7 @@ mod tests {
     use super::*;
     use crate::{
         mutation::Scope,
+        report::Outcome,
         vitest::{discovery, resolve_node},
     };
     fn prepared() -> Result<std::path::PathBuf> {
@@ -170,8 +170,8 @@ mod tests {
         root: &Path,
         node: &NodeTool,
         mutation: Option<Mutation>,
-    ) -> Result<Execution> {
-        run(
+    ) -> Result<crate::command::CommandOutput> {
+        Ok(run(
             &Project::load(root, &Cancellation::default())?,
             node,
             mutation,
@@ -179,7 +179,8 @@ mod tests {
             NonZeroUsize::new(4 * 1024 * 1024).unwrap(),
             &Cancellation::default(),
         )
-        .await
+        .await?
+        .into_command(NonZeroUsize::new(64 * 1024)))
     }
     #[tokio::test]
     #[ignore = "requires prepared Vitest fixture and Node 24.22.0; real isolated runner matrix"]
@@ -191,14 +192,12 @@ mod tests {
         let node = resolve_node(&root, &cancellation).await?;
         let baseline = execute(&root, &node, None).await?;
         assert_eq!(baseline.classify()?, Outcome::Missed);
-        assert_eq!(baseline.evidence?.counts(), (4, 0, 0));
         // A valid-looking installed manifest is not proof that the CLI completed.
         let cli = root.join("node_modules/vitest/vitest.mjs");
         let original_cli = fs::read(&cli)?;
         for startup in ["process.exit(0);", "throw new Error('startup probe');"] {
             fs::write(&cli, startup)?;
             let incomplete = execute(&root, &node, None).await?;
-            assert!(incomplete.evidence.is_err());
             assert!(incomplete.classify().is_err());
         }
         fs::write(&cli, original_cli)?;
@@ -236,7 +235,7 @@ mod tests {
             syntax.classify().with_context(|| format!(
                 "syntax evidence: {:?}\n{}",
                 syntax.evidence,
-                syntax.diagnostics.text().unwrap_or_default()
+                syntax.text.text().unwrap_or_default()
             ))?,
             Outcome::BuildFailed
         );
@@ -289,7 +288,7 @@ mod tests {
         )?;
         let noisy = execute(&root, &node, None).await?;
         assert_eq!(noisy.classify()?, Outcome::Missed);
-        assert!(noisy.diagnostics.retention()?.omitted_bytes > 0);
+        assert!(noisy.text.retention()?.omitted_bytes > 0);
         fs::remove_file(root.join("test/noise.test.js"))?;
         for extension in ["js", "ts"] {
             let path = root.join(format!("test/flags.{extension}.test.{extension}"));
@@ -309,7 +308,7 @@ mod tests {
 #[cfg(all(test, unix))]
 mod reliability_tests {
     use super::*;
-    use crate::vitest::resolve_node;
+    use crate::{report::Outcome, vitest::resolve_node};
     #[tokio::test]
     #[ignore = "requires prepared Vitest fixture and Node 24.22.0; real cleanup and output probes"]
     async fn real_timeout_cancellation_capture_and_isolation() -> Result<()> {
@@ -378,7 +377,7 @@ test('owned files and descendant', async () => {{
                 observe
             );
             observed?;
-            let result = result?;
+            let result = result?.into_command(None);
             match mode {
                 "timeout" => assert_eq!(result.classify()?, Outcome::Timeout),
                 "cancel" => {

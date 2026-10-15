@@ -349,7 +349,10 @@ async fn execute(
                 command::text(&baseline)?
             );
         }
-        if !baseline.status.success() {
+        if command::classify(&baseline)
+            .context("baseline evidence invalid; no mutations were run")?
+            != Outcome::Missed
+        {
             bail!(
                 "baseline tests failed; no mutations were run\n{}",
                 command::text(&baseline)?

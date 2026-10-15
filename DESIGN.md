@@ -1475,7 +1475,10 @@ Project validation and deterministic JS/TS discovery now have a read-only
 `vitest-list` command, separate from the run/report pipeline. The
 [execution boundary](benchmarks/vitest-execution.md) now adds private bounded
 completion evidence, fresh isolated command workspaces and `vitest-check` baseline
-diagnostics. Direct adapter fixture probes cover mutation outcomes and cleanup;
+diagnostics. Validated completion outcomes/errors now pass through the shared
+command type and classifier, which requires evidence even after exit zero;
+shared baselines also use outcome classification. Adapter fixture probes cover
+mutation outcomes and cleanup through this boundary;
 the next step is shared run/report integration, followed by review/rerun acceptance
 and real-project usefulness/timing. The Pathe audit missed its
 coverage-only Vite config; unmodified Pathe is rejected, and listing evidence uses

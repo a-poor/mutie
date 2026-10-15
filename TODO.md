@@ -49,6 +49,10 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   probes cover fixture kills/survivors/stronger tests, transform/import/hook and
   mixed failures, noisy/empty/early-exit cases and timeout/cancellation/capture
   cleanup. See [the evidence and limits](benchmarks/vitest-execution.md).
+- [x] Route Vitest completion evidence and diagnostics through the shared command
+  type and classifier. Require validated completion even after exit zero, preserve
+  process-failure precedence, and make shared baselines use outcome classification.
+  The real adapter probes now exercise this boundary.
 - [ ] Connect Vitest to shared runs/coordinator/saved reports with runner/tool/config
   identity. Preserve evidence validation before baseline/outcome acceptance and
   verify fixture CLI mutation runs before Experimental promotion.

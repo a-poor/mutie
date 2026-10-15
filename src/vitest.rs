@@ -88,18 +88,24 @@ pub async fn check(
     println!("Checking isolated Vitest baseline; no mutations or saved report.");
     let output =
         execution::run(&project, &node, None, timeout, capture_limit, cancellation).await?;
+    let counts = output
+        .evidence
+        .as_ref()
+        .ok()
+        .map(|evidence| evidence.counts());
+    let output = output.into_command(NonZeroUsize::new(64 * 1024));
     let outcome = output.classify().with_context(|| {
         format!(
             "Vitest baseline failed:\n{}",
-            output.diagnostics.text().unwrap_or_default()
+            output.text.text().unwrap_or_default()
         )
     })?;
     ensure!(
         outcome == crate::report::Outcome::Missed,
         "Vitest baseline did not pass ({outcome:?}):\n{}",
-        output.diagnostics.text()?
+        output.text.text()?
     );
-    let (passed, _, skipped) = output.evidence?.counts();
+    let (passed, _, skipped) = counts.context("passing baseline missing test counts")?;
     println!(
         "Vitest baseline passed: {passed} passed, {skipped} skipped/todo ({:.2}s command time).",
         output.raw.elapsed.as_secs_f64()

@@ -126,7 +126,8 @@ show survivors killed by stronger tests. Pathe is selected for real TypeScript
 validation: its direct full Vitest baseline passes 467 tests (8 skipped, 8 todo).
 `mutie vitest-list` validates metadata and discovers boolean flips.
 [`mutie vitest-check`](benchmarks/vitest-execution.md) now runs an isolated baseline;
-its adapter has direct fixture mutation/failure/cleanup probes. No scored CLI
+its adapter has fixture mutation/failure/cleanup probes through the shared command
+classifier, including rejection of missing completion after exit zero. No scored CLI
 mutation run or real-project mutation run has occurred, and
 JavaScript still needs its own real-project validation target. Direct probes also
 show why JSON `success` and exit status alone are insufficient: unhandled errors

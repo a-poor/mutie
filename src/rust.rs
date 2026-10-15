@@ -425,7 +425,7 @@ async fn prepare(
         Ok(CommandOutput {
             raw,
             text,
-            failure,
+            evidence: crate::command::OutcomeEvidence::ExitStatus(failure),
             tool: "Cargo",
         })
     })

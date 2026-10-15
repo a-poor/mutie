@@ -122,8 +122,10 @@ cargo clippy --all-targets -- -D warnings
 
 Next, connect the adapter to the shared run/coordinator/report pipeline with explicit
 runner/tool/config identity. Preserve strict evidence validation before accepting
-a baseline or a mutation result; the shared classifier's exit-zero shortcut is
-not sufficient for Vitest. Verify saved diagnostics/checkpoints and fixture CLI
+a baseline or a mutation result. The shared command boundary now carries validated
+Vitest outcomes or evidence errors, with interruption/capture/timeout precedence;
+exit zero cannot bypass completion validation. `vitest-check` and the real adapter
+probes use that boundary, and shared baselines call the same classifier. Verify saved diagnostics/checkpoints and fixture CLI
 runs before Experimental promotion. Review/reruns, parallel-worker contamination
 controls, broader lifecycle attribution and useful real-project mutation evidence
 remain subsequent acceptance gates.
@@ -131,4 +133,14 @@ remain subsequent acceptance gates.
 Validation checks: the complete default suite passed (226 passed, 34 ignored).
 Final targeted protocol/preview tests, both opt-in real adapter tests, formatting
 and Clippy passed; the expanded startup/missing-evidence matrix was rerun separately.
-No Go/Rust execution, report schema or shared outcome-classifier behavior changed.
+That initial adapter validation did not change Go/Rust execution, report schema
+or shared classification. The subsequent shared-command integration preserves
+Go/Rust outcome rules while requiring structured Vitest evidence before accepting
+success. Scored Vitest CLI runs and saved-report integration remain unimplemented.
+
+Shared-command validation: 228 default tests passed (34 ignored), both opt-in
+real Vitest adapter tests passed through the shared classifier, and the baseline
+CLI reported four passing fixture tests. Formatting and all-target Clippy passed.
+The classifier retains typed cancellation errors, and regression tests cover
+missing completion after exit zero, retained diagnostics, validated outcomes,
+and interruption/capture/timeout precedence over completion evidence.

@@ -14,8 +14,8 @@ use crate::{cancellation::Cancellation, capture::Capture, process};
 
 pub mod selection;
 
-use crate::command::Failure;
 pub use crate::command::{CommandOutput, TestPhase};
+use crate::command::{Failure, OutcomeEvidence};
 #[cfg(test)]
 use crate::{
     command::{classify, text},
@@ -86,13 +86,13 @@ impl CommandOutput {
         Ok(Self {
             raw,
             text,
-            failure: if evidence.build_failed {
+            evidence: OutcomeEvidence::ExitStatus(if evidence.build_failed {
                 Failure::Build
             } else if !evidence.setup_failed && evidence.test_failed {
                 Failure::Test
             } else {
                 Failure::Unknown
-            },
+            }),
             tool: "Go",
         })
     }
