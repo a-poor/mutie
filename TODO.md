@@ -12,8 +12,9 @@ validated: unchanged derived-report writes are skipped, and the saved six-mutati
 self-run fell from 564 to 393 seconds in one controlled pair with matching outcomes.
 See [the acceptance evidence](benchmarks/rust-report-write-reruns.md) for limits.
 Ordinary Rust library packages now have experimental support backed by fixture
-workflows. Complete library-specific acceptance checks and real-project mutation
-validation on Marathon next, with workspace scope decided separately. Explicit
+workflows and library-specific review/failure/cancellation checks. Complete
+real-project mutation validation on Marathon next, with workspace scope decided
+separately. Explicit
 user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -78,8 +79,10 @@ choose their implementation order; the proposed next objective is scoped below.
   cover explicit names/paths and unsupported target configurations.
 - [x] Validate fresh/cached fixture workflows, stronger-test focused reruns,
   local rebuilds and source/artifact preservation through Mutie.
-- [ ] Add library-specific review, cancellation and build-failure acceptance
-  probes; shared binary coverage does not establish every library behavior.
+- [x] Add library-specific review, cancellation and build-failure acceptance
+  probes for both library layouts: raw-score/dismissal separation, stale review,
+  baseline and mutation failure classification, serial test interruption, saved
+  diagnostics and descendant/source/artifact cleanup.
 - [ ] Validate useful findings and focused reruns on Marathon, retaining Mutie as
   the binary-only control, then update implemented support claims. Workspaces and
   local dependencies remain separately scoped.

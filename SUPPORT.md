@@ -98,8 +98,10 @@ targets have not been chosen or verified.
   covers library-only and library-plus-one-binary fixture workflows, fresh/cached
   execution, stronger-test reruns, local rebuilds and source/artifact preservation.
   Custom library names/paths and `rlib` metadata have real Cargo listing checks.
-  Library-specific review, cancellation and broader failure cases still need
-  evidence; shared binary regressions do not establish every library behavior.
+  Both layouts also have dismissal/raw-score and stale-review checks, baseline
+  compile/test failures, an injected mutation compiler failure, and serial
+  baseline/mutation interruption with descendant cleanup. These fixture checks
+  do not establish real-project finding usefulness or runtime.
 - Next support gains: run a useful mutation selection on Marathon and validate
   findings with stronger-test reruns. Its 182-test baseline is only planning
   evidence so far. Keep Mutie as the binary-only control and scope workspaces

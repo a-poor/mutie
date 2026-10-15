@@ -138,8 +138,8 @@ Two opt-in tests in `tests/support/rust_library.rs` verify:
 Both tests passed on macOS arm64. This is fixture evidence for Experimental
 library support. Mutie's binary-only milestone remains Validated. Marathon still
 needs discovery, useful mutation findings, stronger-test reruns and runtime
-measurements; library-specific dismissal, cancellation and build-failure probes
-also remain acceptance work. No workspace support or real-project library
+measurements. Library-specific dismissal, cancellation and build-failure probes
+are recorded below. No workspace support or real-project library
 mutation validation is claimed by this step.
 
 Validation for this implementation: 210 default tests pass (29 opt-in tests
@@ -148,3 +148,47 @@ ignored), all 19 real Cargo workflows pass with
 and `cargo fmt --check` plus `cargo clippy --all-targets -- -D warnings` pass.
 The explicit-path metadata case also passes with `./src/main.rs`, confirming
 that renamed automatic targets reconcile through normalized source paths.
+
+
+### Library review, failure and cancellation acceptance
+
+Three opt-in `library_acceptance_*` checks in `tests/support/rust_library.rs`
+exercise both library-only and library-plus-one-binary layouts:
+
+- Review checks dismiss a library survivor and, in the combined layout, a
+  separate binary survivor. Metadata-based rediscovery matches both roots.
+  Findings policy passes for dismissed survivors while the raw score remains
+  zero on their focused rerun and the minimum-score policy still fails. A
+  stronger API test kills the dismissed library survivor, bringing its focused
+  raw score to 100%; test edits keep the dismissal valid, while a production
+  source edit requires review. Prior saved reports and current input files are
+  preserved.
+- Failure checks inject `compile_error!` into the isolated mutated library
+  immediately before real Cargo compilation. The ordinary boolean flip itself
+  is valid Rust; this is a controlled classification probe, not a newly found
+  naturally uncompilable mutant. Rustc's diagnostic is retained, the outcome is
+  `build_failed` rather than killed, and mutation tests do not start. A pristine
+  survivor subsequently passes, exercising restoration. Separate invalid-source
+  and failing-test baselines stop before mutation execution and retain diagnostics.
+- Cancellation checks wait for an integration-test checkpoint before signaling
+  Mutie: SIGTERM during baseline tests and SIGINT during mutation tests. Both
+  use one worker with worker caching. Reports retain the appropriate interrupted
+  state, matching checkpoints, unevaluated policies and stderr diagnostics; a
+  pending second mutation stays pending. The test process, shell and sleeping
+  descendant exit, owned temporary storage is empty, and the full input tree and
+  caller artifact sentinels are unchanged.
+
+These are fixture-level acceptance checks. They do not replace the outstanding
+Marathon discovery/findings/test-improvement/rerun validation or extend scope to
+workspaces. Reproduce them with
+`CARGO_NET_OFFLINE=true cargo test --test rust_workflow library_acceptance -- --ignored --test-threads=1`.
+They remain ignored by default to prevent recursive mutation self-tests.
+
+
+Validation: each of the three targeted acceptance checks passes for both layouts.
+The review test was corrected to issue one `dismiss add --id` per finding and
+passed on its focused rerun. Formatting and Clippy with warnings denied pass.
+Running `cargo test --test rust_workflow` without `--ignored` leaves all 22 real
+Cargo workflows ignored. No production-code change was needed for these checks;
+this step extends the acceptance evidence without promoting library support
+beyond Experimental.

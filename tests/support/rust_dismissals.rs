@@ -1,7 +1,7 @@
 use super::*;
 use std::os::unix::fs::PermissionsExt;
 
-fn command(fixture: &Fixture, args: &[&str], tools: bool) -> Command {
+pub(super) fn command(fixture: &Fixture, args: &[&str], tools: bool) -> Command {
     let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
     command
         .args(["dismiss", "--module"])

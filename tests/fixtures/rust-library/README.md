@@ -4,7 +4,10 @@ This independent package exercises experimental Rust library support. Use
 `cargo run -- tests/fixtures/rust-library --jobs 1` from the repository root to
 produce one killed and one missed mutation. The opt-in tests in
 `tests/support/rust_library.rs` cover both layouts, fresh/cached runs and a
-stronger-test focused rerun.
+stronger-test focused rerun. The `library_acceptance_*` checks additionally cover
+dismissal review/raw scores, compiler failures, and interruption with descendant
+cleanup; run them using `cargo test --test rust_workflow library_acceptance --
+--ignored --test-threads=1` from the repository root.
 The root `cargo test` does not exercise this fixture.
 
 Run `cargo test --locked --tests --no-fail-fast` in this directory. The three
