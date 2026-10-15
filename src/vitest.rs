@@ -206,6 +206,16 @@ pub async fn test(
 }
 
 impl ExecutionScope {
+    pub fn validate_rerun(&self, current: &Self) -> Result<()> {
+        self.validate_record()?;
+        current.validate_record()?;
+        ensure!(
+            self == current,
+            "Vitest package, dependency, runner or configuration identity changed; start a fresh scan; no mutations were run"
+        );
+        Ok(())
+    }
+
     pub fn validate_record(&self) -> Result<()> {
         ensure!(
             !self.package.is_empty() && self.node_executable.is_absolute(),
@@ -254,5 +264,69 @@ impl ExecutionScope {
             "unsupported saved Vitest runner settings"
         );
         Ok(())
+    }
+}
+
+#[cfg(test)]
+pub(crate) fn fixture_scope() -> ExecutionScope {
+    ExecutionScope {
+        package: "fixture".into(),
+        node: "24.22.0".into(),
+        node_executable: "/tools/node".into(),
+        pnpm: "11.10.0".into(),
+        vitest: "4.1.9".into(),
+        vite: "8.3.4".into(),
+        manifest_fingerprint: format!("sha256:{}", "a".repeat(64)),
+        lockfile_fingerprint: format!("sha256:{}", "b".repeat(64)),
+        config: execution::settings(
+            Path::new("<project>"),
+            Path::new("<private-cache>"),
+            Path::new("<private-reporter>"),
+        ),
+        project_config_fingerprints: Default::default(),
+        reporter_fingerprint: format!("sha256:{}", "c".repeat(64)),
+        syntax: vec!["javascript".into(), "typescript".into()],
+    }
+}
+
+#[cfg(test)]
+mod scope_tests {
+    use super::*;
+    #[test]
+    fn reruns_require_the_complete_saved_execution_identity() {
+        let original = fixture_scope();
+        original.validate_rerun(&original).unwrap();
+        let value = serde_json::to_value(&original).unwrap();
+        for (field, changed) in [
+            ("package", serde_json::json!("renamed")),
+            ("node", serde_json::json!("24.23.0")),
+            ("node_executable", serde_json::json!("/another/node")),
+            ("pnpm", serde_json::json!("11.11.0")),
+            ("vitest", serde_json::json!("4.1.10")),
+            ("vite", serde_json::json!("8.1.3")),
+            (
+                "manifest_fingerprint",
+                serde_json::json!(format!("sha256:{}", "d".repeat(64))),
+            ),
+            (
+                "lockfile_fingerprint",
+                serde_json::json!(format!("sha256:{}", "d".repeat(64))),
+            ),
+            (
+                "reporter_fingerprint",
+                serde_json::json!(format!("sha256:{}", "d".repeat(64))),
+            ),
+            (
+                "project_config_fingerprints",
+                serde_json::json!({"tsconfig.json": format!("sha256:{}", "d".repeat(64))}),
+            ),
+            ("config", serde_json::json!({"test":{"retry":1}})),
+            ("syntax", serde_json::json!(["typescript"])),
+        ] {
+            let mut changed_scope = value.clone();
+            changed_scope[field] = changed;
+            let changed_scope = serde_json::from_value(changed_scope).unwrap();
+            assert!(original.validate_rerun(&changed_scope).is_err(), "{field}");
+        }
     }
 }

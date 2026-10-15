@@ -38,9 +38,13 @@ pub struct SavedRun {
 impl SavedRun {
     pub fn validate_rerun_scope(&self) -> Result<()> {
         match self.language() {
-            crate::cli::Lang::Vitest => {
-                anyhow::bail!("Vitest reruns and command export are not supported yet")
-            }
+            crate::cli::Lang::Vitest => self
+                .vitest_scope
+                .as_ref()
+                .context(
+                    "saved Vitest run lacks execution scope; start a fresh scan before rerunning",
+                )?
+                .validate_record(),
             crate::cli::Lang::Rust => self
                 .rust_scope
                 .as_ref()

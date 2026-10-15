@@ -104,6 +104,7 @@ pub struct MutationMapping {
 pub struct RerunSelection {
     language: crate::cli::Lang,
     rust_scope: Option<crate::rust::ExecutionScope>,
+    vitest_scope: Option<crate::vitest::ExecutionScope>,
     provenance: RerunProvenance,
     targets: Vec<SavedMutation>,
 }
@@ -141,6 +142,7 @@ impl RerunSelection {
         Ok(Self {
             language: report.run.language(),
             rust_scope: report.run.rust_scope,
+            vitest_scope: report.run.vitest_scope,
             provenance: RerunProvenance {
                 source_run: report.directory,
                 source_checkpoint: report.run.checkpoint,
@@ -166,6 +168,13 @@ impl RerunSelection {
             language
         );
         Ok(())
+    }
+
+    pub fn validate_vitest_scope(&self, current: &crate::vitest::ExecutionScope) -> Result<()> {
+        self.vitest_scope
+            .as_ref()
+            .context("saved run lacks Vitest execution scope")?
+            .validate_rerun(current)
     }
 
     pub fn validate_rust_scope(&self, current: &crate::rust::ExecutionScope) -> Result<()> {

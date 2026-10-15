@@ -30,7 +30,7 @@ does not by itself validate a new runner.
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
-| JavaScript / TypeScript | Vitest | Experimental | One pinned ESM/pnpm package; JS/TS boolean flips; serial full-suite scored runs and saved reports | Review/reruns/policies, lifecycle attribution, real-project findings |
+| JavaScript / TypeScript | Vitest | Experimental | One pinned ESM/pnpm package; JS/TS boolean flips; serial full-suite scored runs, saved reports and focused reruns | Review/policies, lifecycle attribution, real-project findings |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -141,9 +141,13 @@ Pathe copy with its coverage-only Vite config removed. The initial audit missed
 that config; unchanged Pathe is correctly rejected by the preview.
 
 Current CLI scope is explicit `--lang vitest`, one worker and full-suite tests.
-Focused reruns, dismissal review and CI policies are explicitly rejected.
-Next gates: review/reruns/policies and useful real-project findings. Hook-related failure attribution is deliberately conservative; review,
-reruns and broader lifecycle acceptance remain pending. The scope and execution
+Focused saved-ID and missed-only reruns now support stronger-test validation for
+both JS and TS, with fresh source matching and strict package/runner/config
+identity checks. The browser exports explicit `--lang vitest` commands; see
+[rerun acceptance](benchmarks/vitest-focused-reruns.md). Dismissal review and CI
+policies remain explicitly rejected. Next gates: review/policies and useful
+real-project findings. Hook-related failure attribution is deliberately
+conservative; review and broader lifecycle acceptance remain pending. The scope and execution
 records define classification, preservation and real-project acceptance.
 
 ## JavaScript / TypeScript — Node.js test runner

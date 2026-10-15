@@ -58,11 +58,16 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   Verify six fixture CLI mutations, a stronger-test rescan, report reading,
   source preservation and infrastructure failure persistence; see
   [the CLI evidence](benchmarks/vitest-shared-runs.md). Experimental scope is
-  explicit `--lang vitest`, serial full-suite runs; review/reruns/policies deferred.
+  explicit `--lang vitest`, serial full-suite runs.
+- [x] Add Vitest saved-ID/missed-only reruns and browser command export. Match
+  fresh source identities, reject changed package/lock/tool/config identity before
+  baseline, and verify JS/TS survivors killed by stronger tests with saved
+  provenance and original-report preservation. See
+  [rerun evidence](benchmarks/vitest-focused-reruns.md).
 - [ ] Resolve broader lifecycle/fixture failure attribution before expanding beyond
   the conservative reported-hook policy.
-- [ ] Validate focused reruns, review/policies, strict dependency/config identity,
-  fresh cache isolation, parallel workers, timeout/cancellation and preservation.
+- [ ] Validate review/policies, parallel workers, and broader cache/timeout/
+  cancellation preservation through the complete CLI workflow.
 - [ ] Resolve Pathe coverage-only config support explicitly, then record useful
   findings, stronger-test reruns and feedback time. Select
   and validate a real JavaScript project independently before promoting JS support.

@@ -1483,7 +1483,12 @@ explicit `--lang vitest` now connects serial full-suite mutation runs to the sha
 coordinator and saved reports. Runner/tool/config identity is persisted and checked
 before each command; package arguments are empty because the entire suite runs.
 See [CLI evidence](benchmarks/vitest-shared-runs.md). The next steps are
-review/rerun acceptance and real-project usefulness/timing. The Pathe audit missed its
+review/policy acceptance and real-project usefulness/timing. Focused Vitest reruns
+now reuse saved-ID/missed selection and exact fresh source matching, with saved
+package/lock/tool/reporter/config identity checked before the baseline. Tests may
+change independently; original reports are preserved. Browser exports include
+`--lang vitest`. See [rerun evidence](benchmarks/vitest-focused-reruns.md).
+The Pathe audit missed its
 coverage-only Vite config; unmodified Pathe is rejected, and listing evidence uses
 an explicitly adapted temporary copy. Resolve config support before claiming
 unmodified project acceptance.

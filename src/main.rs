@@ -271,6 +271,9 @@ async fn execute(
     let vitest_scope = if config.lang == Lang::Vitest {
         let identity = vitest::execution_scope(&snapshot.path(), cancellation).await?;
         coordinator.emit(RunEvent::VitestScope(&identity), cancellation)?;
+        if let Some(selection) = &rerun {
+            selection.validate_vitest_scope(&identity)?;
+        }
         Some(identity)
     } else {
         None

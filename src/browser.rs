@@ -263,10 +263,10 @@ impl Browser {
         Ok(format!(
             "mutie {}{} --rerun {} --id {}",
             quote_path(module)?,
-            if self.report.run.language() == crate::cli::Lang::Rust {
-                " --lang rust"
-            } else {
-                ""
+            match self.report.run.language() {
+                crate::cli::Lang::Rust => " --lang rust",
+                crate::cli::Lang::Vitest => " --lang vitest",
+                _ => "",
             },
             quote_path(&self.report.directory)?,
             ids.iter()
@@ -1460,6 +1460,47 @@ mod tests {
             command.starts_with("mutie '/moved/a project'\\''s checkout' --lang rust --rerun '")
         );
         assert!(command.ends_with("--id 1"));
+    }
+
+    #[test]
+    fn vitest_exports_explicit_runner_and_requires_saved_identity() {
+        let temp = crate::report_reader::fixture();
+        let path = temp.path().join("run.json");
+        let mut run: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        run["effective_config"] = serde_json::json!({"lang":"vitest"});
+        fs::write(&path, serde_json::to_vec(&run).unwrap()).unwrap();
+        let inventory_path = temp.path().join("mutants.json");
+        let mut inventory: serde_json::Value =
+            serde_json::from_slice(&fs::read(&inventory_path).unwrap()).unwrap();
+        for mutation in inventory["mutations"].as_array_mut().unwrap() {
+            mutation["file"] = format!("src/{}.ts", mutation["id"]).into();
+            mutation["operator"] = "boolean_flip".into();
+        }
+        fs::write(&inventory_path, serde_json::to_vec(&inventory).unwrap()).unwrap();
+        let mut app = Browser::new(LoadedReport::load(temp.path()).unwrap(), None);
+        key(&mut app, KeyCode::Char('r'));
+        assert!(app.detail.join("\n").contains("lacks execution scope"));
+        assert!(!key(&mut app, KeyCode::Char('e')));
+        assert!(app.export.is_none());
+        run["vitest_scope"] = serde_json::to_value(crate::vitest::fixture_scope()).unwrap();
+        fs::write(&path, serde_json::to_vec(&run).unwrap()).unwrap();
+        let mut app = Browser::new(
+            LoadedReport::load(temp.path()).unwrap(),
+            Some("/moved/a project's checkout".into()),
+        );
+        key(&mut app, KeyCode::Char(' '));
+        key(&mut app, KeyCode::End);
+        key(&mut app, KeyCode::Char(' '));
+        key(&mut app, KeyCode::Char('r'));
+        let mut terminal = Terminal::new(TestBackend::new(120, 24)).unwrap();
+        terminal.draw(|frame| app.render(frame)).unwrap();
+        assert!(text(terminal.backend().buffer()).contains("--lang vitest"));
+        assert!(key(&mut app, KeyCode::Char('e')));
+        let command = app.export.unwrap();
+        assert!(
+            command.starts_with("mutie '/moved/a project'\\''s checkout' --lang vitest --rerun '")
+        );
+        assert!(command.ends_with("--id 1,4"));
     }
 
     #[test]

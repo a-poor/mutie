@@ -49,7 +49,9 @@ real CLI processes. The opt-in test checks:
 - A stronger JS test and fresh `--include src/flags.js` scan: three killed, zero
   missed; earlier reports unchanged. This is not a saved-report focused rerun.
 - Shared report loading, rejection of corrupted identity, and explicit rejection
-  of unsupported reruns.
+  of unsupported reruns at that initial gate. Subsequent
+  [focused-rerun acceptance](vitest-focused-reruns.md) replaces that rejection
+  with strict identity validation and stronger-test reruns.
 - A mutation-triggered early exit is an infrastructure error, not a survivor.
 - A runner that exits zero without completion fails the baseline, saves its
   diagnostic, publishes no mutations, and prints no baseline-success message.
@@ -68,12 +70,12 @@ cargo clippy --all-targets -- -D warnings
 
 ## Remaining boundaries
 
-Only `--jobs 1`, full-suite selection and `boolean_flip` are supported. Saved
-reruns/command export, dismissal review, `--fail-on-missed` and `--min-score` are
-explicitly rejected. Custom configs, JSX/TSX/CommonJS and workspaces remain outside
+Only `--jobs 1`, full-suite selection and `boolean_flip` are supported.
+[Focused reruns and command export](vitest-focused-reruns.md) are now implemented.
+Dismissal review, `--fail-on-missed` and `--min-score` remain explicitly rejected. Custom configs, JSX/TSX/CommonJS and workspaces remain outside
 scope. Reported-hook failure attribution remains conservative; broader lifecycle
 and fixture failures need separate validation. Parallel isolation, review/policies,
-focused reruns, unmodified Pathe config support, useful real-project findings and
+unmodified Pathe config support, useful real-project findings and
 feedback time remain acceptance gates. JavaScript needs its own real project;
 TypeScript evidence does not promote JavaScript independently.
 

@@ -8,23 +8,21 @@ use std::{
 };
 
 fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
-    Command::new(env!("CARGO_BIN_EXE_mutie"))
-        .arg(root)
-        .args([
-            "--lang",
-            "vitest",
-            "--ui",
-            "plain",
-            "--timeout",
-            "20",
-            "--baseline-timeout",
-            "30",
-        ])
-        .arg("--output-dir")
-        .arg(reports)
-        .args(args)
-        .output()
-        .unwrap()
+    let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
+    command.arg(root).args([
+        "--lang",
+        "vitest",
+        "--ui",
+        "plain",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+    ]);
+    if !args.contains(&"--list") {
+        command.arg("--output-dir").arg(reports);
+    }
+    command.args(args).output().unwrap()
 }
 fn report(output: &Output) -> (PathBuf, Value, Value, Value) {
     let stdout = String::from_utf8_lossy(&output.stdout);
@@ -131,8 +129,6 @@ fn scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure() {
     .unwrap();
     assert!(String::from_utf8_lossy(&browse().stderr).contains("invalid saved Vitest fingerprint"));
     fs::write(directory.join("run.json"), &run_bytes).unwrap();
-    let rerun = run(&root, &reports, &["--rerun", directory.to_str().unwrap()]);
-    assert!(String::from_utf8_lossy(&rerun.stderr).contains("Vitest reruns are not supported"));
     let original_report = fs::read(directory.join("outcomes.json")).unwrap();
     let test = root.join("test/flags.js.test.js");
     let original = fs::read_to_string(&test).unwrap();
@@ -150,6 +146,101 @@ fn scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure() {
         fs::read(directory.join("outcomes.json")).unwrap(),
         original_report
     );
+    let rerun_args = ["--rerun-missed", directory.to_str().unwrap()];
+    let output = run(&root, &reports, &rerun_args);
+    assert!(output.status.success(), "{output:?}");
+    let (_, rerun, selected, results) = report(&output);
+    assert_eq!(selected["mutations"].as_array().unwrap().len(), 2);
+    assert_eq!(results["summary"]["killed"], 1);
+    assert_eq!(results["summary"]["missed"], 1);
+    assert_eq!(rerun["score"]["scope"], "rerun");
+    assert_eq!(
+        rerun["rerun"]["mutations"],
+        serde_json::json!([{"id":1,"source_id":3},{"id":2,"source_id":6}])
+    );
+    let ts_test = root.join("test/flags.ts.test.ts");
+    let ts_original = fs::read_to_string(&ts_test).unwrap();
+    fs::write(
+        &ts_test,
+        format!("{ts_original}\ntest('stronger',()=>expect(fallback(false)).toBe(false));"),
+    )
+    .unwrap();
+    let output = run(
+        &root,
+        &reports,
+        &["--rerun-missed", directory.to_str().unwrap(), "--id", "6"],
+    );
+    assert!(output.status.success(), "{output:?}");
+    let (_, rerun, selected, results) = report(&output);
+    assert_eq!(selected["mutations"].as_array().unwrap().len(), 1);
+    assert_eq!(results["summary"]["killed"], 1);
+    assert_eq!(results["summary"]["missed"], 0);
+    assert_eq!(rerun["rerun"]["mutations"][0]["source_id"], 6);
+    assert_eq!(
+        fs::read(directory.join("outcomes.json")).unwrap(),
+        original_report
+    );
+    assert_eq!(fs::read(directory.join("run.json")).unwrap(), run_bytes);
+    for file in ["package.json", "pnpm-lock.yaml", "tsconfig.json"] {
+        let path = root.join(file);
+        let original = fs::read(&path).ok();
+        let modified = match &original {
+            Some(bytes) => {
+                let mut bytes = bytes.clone();
+                bytes.push(b'\n');
+                bytes
+            }
+            None => b"{}".to_vec(),
+        };
+        fs::write(&path, modified).unwrap();
+        let output = run(&root, &reports, &rerun_args);
+        assert!(!output.status.success(), "{file}: {output:?}");
+        assert!(
+            String::from_utf8_lossy(&output.stderr).contains("identity changed"),
+            "{file}: {output:?}"
+        );
+        let (_, failed, _, results) = report(&output);
+        assert_eq!(failed["status"], "failed");
+        assert!(results["baseline"].is_null());
+        match original {
+            Some(bytes) => fs::write(&path, bytes).unwrap(),
+            None => fs::remove_file(&path).unwrap(),
+        }
+    }
+    // Source edits invalidate saved IDs even if a boolean remains at the same location.
+    let source = root.join("src/flags.js");
+    let original = fs::read_to_string(&source).unwrap();
+    fs::write(&source, format!("{original}\n// edited source\n")).unwrap();
+    let output = run(
+        &root,
+        &reports,
+        &[
+            "--list",
+            "--rerun",
+            directory.to_str().unwrap(),
+            "--id",
+            "3",
+        ],
+    );
+    assert!(!output.status.success());
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("source fingerprint changed"),
+        "{output:?}"
+    );
+    fs::write(source, original).unwrap();
+    let output = run(
+        &root,
+        &reports,
+        &[
+            "--list",
+            "--rerun-missed",
+            directory.to_str().unwrap(),
+            "--id",
+            "1",
+        ],
+    );
+    assert!(output.status.success(), "{output:?}");
+    assert!(String::from_utf8_lossy(&output.stdout).contains("Found 0 mutations"));
     fs::write(&test, "import {test,expect} from 'vitest'; import {enabled} from '../src/flags.js'; test('early mutation exit',()=>{if (!enabled()) process.exit(0); expect(enabled()).toBe(true);});").unwrap();
     let output = run(&root, &reports, &["--include", "src/flags.js"]);
     assert!(!output.status.success());

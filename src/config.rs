@@ -228,10 +228,6 @@ impl RunConfig {
                 "Vitest supports only boolean_flip"
             );
             ensure!(
-                config.rerun.is_none(),
-                "Vitest reruns are not supported yet"
-            );
-            ensure!(
                 !config.fail_on_missed && config.min_score.is_none(),
                 "Vitest CI policies are not supported yet"
             );

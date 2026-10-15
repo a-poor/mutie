@@ -20,7 +20,11 @@ JavaScript/TypeScript Vitest slice. Node's test runner, Bun and pytest remain pl
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. Custom runner configs,
-focused reruns, dismissal review and CI policies are not supported yet.
+dismissal review and CI policies are not supported yet.
+Use `mutie PATH --lang vitest --rerun-missed RUN_DIR` after improving tests;
+`--rerun RUN_DIR --id ID` selects individual saved mutations. Reruns require
+unchanged source identity and pinned package/runner/config identity; see
+[rerun validation](benchmarks/vitest-focused-reruns.md).
 
 `mutie vitest-list PATH --include 'src/**/*.ts'` remains a read-only preview;
 `mutie vitest-check PATH` checks an isolated baseline with a deadline and bounded

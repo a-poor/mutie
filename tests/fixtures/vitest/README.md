@@ -62,5 +62,7 @@ MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --test vitest_workflow
 The full fixture produces six mutations: four killed and two missed. The opt-in
 CLI test adds a stronger JavaScript test, verifies three kills in a filtered fresh
 scan, checks saved identity/logs and exercises zero-exit infrastructure failures.
-Only serial full-suite execution is supported. Review/reruns/policies remain
-explicitly unavailable. See [CLI evidence](../../../benchmarks/vitest-shared-runs.md).
+Only serial full-suite execution is supported. Focused reruns now validate saved
+IDs/missed findings after stronger JS/TS tests, with metadata/source rejection
+checks; see [rerun evidence](../../../benchmarks/vitest-focused-reruns.md).
+Review and CI policies remain explicitly unavailable. See [CLI evidence](../../../benchmarks/vitest-shared-runs.md).
