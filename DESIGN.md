@@ -321,10 +321,10 @@ Three operators satisfy the scoped catalog requirement. The acceptance review
 records the full real-Cargo suite, Go compatibility evidence, historical failures
 and remaining limits. General libraries/workspaces are separate future scope.
 
-The next objective is shorter focused Rust feedback. Current Mutie samples take
-roughly four to five minutes for a one-finding rerun despite much faster warm
-compilation. Profile full-suite costs first, then validate a measured optimization
-against unchanged saved selections and exact failure sets. Retain package rebuilds,
+The first feedback-time objective followed Mutie samples taking roughly four to
+five minutes for a one-finding rerun despite much faster warm compilation. Profile
+full-suite costs before choosing an optimization, and validate changes against
+unchanged saved selections and exact failure sets. Retain package rebuilds,
 full tests, deadlines, cancellation behavior and source/artifact isolation. Test
 selection or persistent reuse needs a separate design decision; neither is implied
 by this objective. Follow explicit user priorities and fix demonstrated blockers.
@@ -344,8 +344,14 @@ overhead. The report writer now compares derived text with
 the actual published regular file and skips identical contents. Missing or edited
 files are repaired; authoritative JSON checkpoints still publish on every update.
 The [controlled comparison](benchmarks/derived-report-writes.md) records fewer
-writes and lower prebuilt-suite latency. The remaining acceptance step is a
-before/after comparison of unchanged saved mutation selections on Mutie itself.
+writes and lower prebuilt-suite latency. The
+[saved-selection comparison](benchmarks/rust-report-write-reruns.md) completes
+this first optimization's acceptance: the six-mutation self-run falls from 564
+to 393 seconds in one pair, with identical failure sets, required rebuilds and
+source/artifact preservation. This does not establish a universal speedup.
+The proposed next major objective is ordinary Rust library-package support,
+scoped against a fixture and real project before expanding to workspaces or
+local dependencies. No broader Cargo compatibility is implemented by this work.
 
 ## Original Go MVP — completed
 
@@ -1325,7 +1331,8 @@ design. No runtime or plugin ABI is selected now.
 
 The initial Rust contract fixes Cargo scope, source eligibility and artifact
 ownership, with execution reliability and three operators verified for that scope.
-Next, shorten focused Rust feedback based on measured full-suite costs.
+The first measured Rust feedback-time optimization is accepted; scope ordinary
+library-package support as the proposed next objective using the support ledger.
 Dismissal editing in the browser, report
 archival, run-wide resource budgets, and mutation matching across source edits remain deferred
 choices; they do not block acceptance of the initial Rust scope.

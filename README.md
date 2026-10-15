@@ -88,8 +88,10 @@ for regression checks and the Mutie self-run.
 The [logical-swap fixture](tests/fixtures/rust-logical/README.md) covers grouping,
 short-circuit effects and let-chains, including a saved survivor killed by a mixed-input
 test. The [acceptance review](benchmarks/rust-milestone-acceptance.md) collects the
-verified workflow, scope limits and runtime evidence. Shorter focused Rust feedback
-is the next development objective; current tests still run in full.
+verified workflow, scope limits and runtime evidence. The
+[first feedback-time improvement](benchmarks/rust-report-write-reruns.md) reduces
+redundant report writes and preserves the saved-selection outcomes in a measured
+Mutie self-run; tests still run in full. Library/workspace support remains future scope.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,

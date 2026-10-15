@@ -29,7 +29,7 @@ does not by itself validate a new runner.
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
-| Rust | Cargo / standard Rust test harness | Validated | One ordinary binary package on Unix; full supported suite; 3 operators | Feedback time, then separately scoped library/workspace expansion |
+| Rust | Cargo / standard Rust test harness | Validated | One ordinary binary package on Unix; full supported suite; 3 operators | Separately scoped library/workspace expansion and broader project evidence |
 | JavaScript / TypeScript | Vitest | Planned | None | Define first package, syntax/module scope and fixture |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
@@ -82,16 +82,19 @@ targets have not been chosen or verified.
   stronger-test rerun, review, cancellation and preservation evidence. The
   [feedback profile](benchmarks/rust-feedback-profile.md) records current runtime.
   [Derived-report write validation](benchmarks/derived-report-writes.md) records
-  a measured reduction in prebuilt-suite time; full saved-selection comparisons
-  remain pending.
+  a measured reduction in prebuilt-suite time. The
+  [saved-selection comparison](benchmarks/rust-report-write-reruns.md) preserves
+  all six kills and exact failure sets while reducing one self-run from 564 to
+  393 seconds; this is not a universal Rust performance estimate.
   Real-Cargo workflows are opt-in in `tests/rust_workflow.rs`.
 - Limits: no libraries/proc macros, multiple binaries, multi-package/enclosing
   workspaces, local/git dependencies, project build scripts, custom harnesses,
   feature selection or cross-compilation. Doctests and ignored tests are outside
   the execution scope. Validation is on macOS; Unix scope is not a claim of equal
   platform evidence. Full-suite feedback time remains a practical constraint.
-- Next support gains: reduce measured feedback costs while preserving full tests;
-  define separate library/workspace slices when prioritized. Advancement to
+- Next support gains: define the next library-package slice against a real project,
+  with workspace expansion scoped separately. Further runtime work should follow
+  measured costs while preserving full tests. Advancement to
   Established needs additional representative real projects, not just more operators.
 
 ## JavaScript / TypeScript — Vitest

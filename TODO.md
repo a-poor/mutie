@@ -7,10 +7,14 @@ checklist as work lands, checking items off after appropriate verification.
 ## Current direction
 
 The Go MVP and the initial Rust binary-package milestone are complete for their
-supported scopes. The next objective is shorter focused Rust feedback, driven by
-measured full-suite runtime on Mutie. Preserve outcome correctness, source/artifact
-isolation and the full test scope while identifying the dominant costs. Explicit
-user priorities and demonstrated reliability blockers take precedence.
+supported scopes. The first measured Rust feedback-time improvement is also
+validated: unchanged derived-report writes are skipped, and the saved six-mutation
+self-run fell from 564 to 393 seconds in one controlled pair with matching outcomes.
+See [the acceptance evidence](benchmarks/rust-report-write-reruns.md) for limits.
+The next major objective should address a concrete support gap; ordinary Rust
+library packages are the proposed next slice, with workspace scope decided
+separately. Explicit user priorities and demonstrated reliability blockers take
+precedence.
 
 ## Target support tracking
 
@@ -26,9 +30,9 @@ their ordering and initial scopes are not yet selected.
 
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. Tracking these targets does not
-change the current focused-feedback work queue.
+choose their implementation order; the proposed next objective is scoped below.
 
-## Next objective: shorter focused Rust feedback
+## Completed: first Rust feedback-time improvement
 
 - [x] Profile compilation, adapter phase overhead and individual test-target
   execution in repeated serial/parallel cold/warm Mutie runs. See
@@ -49,8 +53,19 @@ change the current focused-feedback work queue.
   and in pairs, with roughly one-third less test time in this sample; dismissal
   report writes drop from 4,347 to 2,024 without dropping checkpoints or commands.
   See [validation and limits](benchmarks/derived-report-writes.md).
-- [ ] Compare unchanged saved selections before/after using runtime distributions,
-  exact failure sets, cancellation checks and source/artifact preservation.
+- [x] Compare the unchanged saved six-score selection before/after: six kills and
+  exact failure sets match, all local targets rebuild, and sources/reports/caller
+  artifacts are preserved. One sequential end-to-end pair plus the prebuilt-suite
+  matrix demonstrates an improvement, not a repeated-run distribution or general
+  performance guarantee. See [the results](benchmarks/rust-report-write-reruns.md).
+
+## Proposed next objective: broader Rust project support
+
+- [ ] Scope ordinary library packages using a small fixture and a representative
+  real project. Decide library-only versus library-plus-binary support, default
+  test scope and unsupported layouts before implementation. Workspaces and local
+  dependencies require explicit scope decisions; keep the current binary workflow
+  covered and update the support ledger with verified evidence.
 
 See [the acceptance review](benchmarks/rust-milestone-acceptance.md) for evidence,
 limits and the reasoning behind this priority.

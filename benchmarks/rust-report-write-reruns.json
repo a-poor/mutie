@@ -1,0 +1,486 @@
+{
+  "shared_source_revision": "bb2f190",
+  "control_saved_report_revision": "764c256",
+  "source_file_count": 159,
+  "evidence_root": "/tmp/mutie-report-score-pair-ixs4n8s2",
+  "runs": {
+    "control": {
+      "exit_code": 0,
+      "report": "/tmp/mutie-report-score-pair-ixs4n8s2/control/reports/run-1792027641-vXRCKt",
+      "wall_seconds": 564.0680393749935,
+      "duration": 563.976796833,
+      "summary": {
+        "killed": 6,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline": "passed",
+      "baseline_passed_tests": 200,
+      "failures": {
+        "1": [
+          "test baseline_failures_and_timeouts_leave_enabled_policy_unevaluated ... FAILED",
+          "test config::tests::minimum_score_config_overrides_and_validation ... FAILED",
+          "test score::tests::minimum_score_rejects_invalid_percentages ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score::tests::unavailable_scores_do_not_silently_pass ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED"
+        ],
+        "2": [
+          "test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... FAILED",
+          "test config::tests::minimum_score_config_overrides_and_validation ... FAILED",
+          "test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... FAILED",
+          "test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... FAILED",
+          "test score::tests::minimum_score_rejects_invalid_percentages ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED"
+        ],
+        "3": [
+          "test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... FAILED",
+          "test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... FAILED",
+          "test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... FAILED",
+          "test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... FAILED",
+          "test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... FAILED",
+          "test score::tests::exclusions_and_dismissals_never_turn_into_kills ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score::tests::unavailable_scores_do_not_silently_pass ... FAILED",
+          "test score_failure_restores_terminal_and_preserves_completed_report ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED",
+          "test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... FAILED"
+        ],
+        "4": [
+          "test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... FAILED",
+          "test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... FAILED",
+          "test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... FAILED",
+          "test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... FAILED",
+          "test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... FAILED",
+          "test score::tests::exclusions_and_dismissals_never_turn_into_kills ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score::tests::unavailable_scores_do_not_silently_pass ... FAILED",
+          "test score_failure_restores_terminal_and_preserves_completed_report ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED",
+          "test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... FAILED"
+        ],
+        "5": [
+          "test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... FAILED"
+        ],
+        "6": [
+          "test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED",
+          "test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... FAILED"
+        ]
+      },
+      "score_policy": {
+        "status": "passed",
+        "minimum": 100.0
+      },
+      "inputs_unchanged": true,
+      "source_report_unchanged": true,
+      "owned_empty": true,
+      "caller_preserved": true,
+      "binary_sha256": "847c6e45f38f1b45c6b4198653b8ce48bcfaa2c215cc5cf9d56089c8a4d5a8e2",
+      "input_hash_manifest_sha256": "6722d1af38791941b7d70bebe846e7e2612fa365b47af45c50513cac4a908ec9",
+      "commands": [
+        {
+          "id": "baseline",
+          "worker": null,
+          "seconds": 121.450138208,
+          "compile": [
+            "35.01s",
+            "0.30s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 0,
+          "harness_seconds": 81.84
+        },
+        {
+          "id": 1,
+          "worker": 1,
+          "seconds": 163.4727125,
+          "compile": [
+            "46.13s",
+            "0.33s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 0,
+          "harness_seconds": 110.81
+        },
+        {
+          "id": 2,
+          "worker": 2,
+          "seconds": 160.940036375,
+          "compile": [
+            "45.31s",
+            "0.25s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 0,
+          "harness_seconds": 110.48
+        },
+        {
+          "id": 3,
+          "worker": 2,
+          "seconds": 134.047509,
+          "compile": [
+            "13.83s",
+            "0.15s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 116.11
+        },
+        {
+          "id": 4,
+          "worker": 1,
+          "seconds": 133.4891645,
+          "compile": [
+            "13.62s",
+            "0.12s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 115.19
+        },
+        {
+          "id": 5,
+          "worker": 2,
+          "seconds": 144.698751,
+          "compile": [
+            "18.59s",
+            "0.15s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 120.01
+        },
+        {
+          "id": 6,
+          "worker": 1,
+          "seconds": 138.622553625,
+          "compile": [
+            "16.64s",
+            "0.34s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 117.87
+        }
+      ]
+    },
+    "candidate": {
+      "exit_code": 0,
+      "report": "/tmp/mutie-report-score-pair-ixs4n8s2/candidate/reports/run-1792028207-QNswCy",
+      "wall_seconds": 393.17783862499346,
+      "duration": 393.121480458,
+      "summary": {
+        "killed": 6,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline": "passed",
+      "baseline_passed_tests": 202,
+      "failures": {
+        "1": [
+          "test baseline_failures_and_timeouts_leave_enabled_policy_unevaluated ... FAILED",
+          "test config::tests::minimum_score_config_overrides_and_validation ... FAILED",
+          "test score::tests::minimum_score_rejects_invalid_percentages ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score::tests::unavailable_scores_do_not_silently_pass ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED"
+        ],
+        "2": [
+          "test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... FAILED",
+          "test config::tests::minimum_score_config_overrides_and_validation ... FAILED",
+          "test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... FAILED",
+          "test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... FAILED",
+          "test score::tests::minimum_score_rejects_invalid_percentages ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED"
+        ],
+        "3": [
+          "test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... FAILED",
+          "test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... FAILED",
+          "test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... FAILED",
+          "test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... FAILED",
+          "test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... FAILED",
+          "test score::tests::exclusions_and_dismissals_never_turn_into_kills ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score::tests::unavailable_scores_do_not_silently_pass ... FAILED",
+          "test score_failure_restores_terminal_and_preserves_completed_report ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED",
+          "test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... FAILED"
+        ],
+        "4": [
+          "test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... FAILED",
+          "test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... FAILED",
+          "test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... FAILED",
+          "test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... FAILED",
+          "test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... FAILED",
+          "test score::tests::exclusions_and_dismissals_never_turn_into_kills ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score::tests::unavailable_scores_do_not_silently_pass ... FAILED",
+          "test score_failure_restores_terminal_and_preserves_completed_report ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED",
+          "test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... FAILED"
+        ],
+        "5": [
+          "test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... FAILED"
+        ],
+        "6": [
+          "test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... FAILED",
+          "test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... FAILED",
+          "test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... FAILED",
+          "test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... FAILED"
+        ]
+      },
+      "score_policy": {
+        "status": "passed",
+        "minimum": 100.0
+      },
+      "inputs_unchanged": true,
+      "source_report_unchanged": true,
+      "owned_empty": true,
+      "caller_preserved": true,
+      "binary_sha256": "963c619c0faa03c41fd3a9566e007730e12e0c64da17dab1e2a44aee3289e7ce",
+      "input_hash_manifest_sha256": "4fa636e41e1568553bd510fb1ecc21586db632deafccedf7a81a4b45c4bee177",
+      "commands": [
+        {
+          "id": "baseline",
+          "worker": null,
+          "seconds": 91.007144458,
+          "compile": [
+            "30.73s",
+            "0.21s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 0,
+          "harness_seconds": 56.03
+        },
+        {
+          "id": 1,
+          "worker": 1,
+          "seconds": 121.106051792,
+          "compile": [
+            "39.62s",
+            "0.27s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 0,
+          "harness_seconds": 74.96
+        },
+        {
+          "id": 2,
+          "worker": 2,
+          "seconds": 121.985576292,
+          "compile": [
+            "39.85s",
+            "0.15s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 0,
+          "harness_seconds": 74.14
+        },
+        {
+          "id": 3,
+          "worker": 1,
+          "seconds": 87.603785875,
+          "compile": [
+            "13.09s",
+            "0.25s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 70.33
+        },
+        {
+          "id": 4,
+          "worker": 2,
+          "seconds": 87.279344125,
+          "compile": [
+            "12.48s",
+            "0.18s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 68.92
+        },
+        {
+          "id": 5,
+          "worker": 1,
+          "seconds": 91.192879792,
+          "compile": [
+            "13.24s",
+            "0.23s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 73.48
+        },
+        {
+          "id": 6,
+          "worker": 2,
+          "seconds": 89.331716209,
+          "compile": [
+            "13.01s",
+            "0.15s"
+          ],
+          "local": 14,
+          "local_fresh": 0,
+          "dependencies": 155,
+          "dependencies_fresh": 155,
+          "harness_seconds": 72.16
+        }
+      ]
+    }
+  },
+  "inventory": {
+    "schema_version": 1,
+    "operator_catalog_version": 1,
+    "complete": true,
+    "mutations": [
+      {
+        "id": 1,
+        "file": "src/score.rs",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:ee2d904134ac9918ffae4a3f1c9005321508227712252c5ed6c3d76e920cdda0",
+        "line": 25,
+        "column": 42,
+        "end_line": 25,
+        "end_column": 43,
+        "byte_start": 1068,
+        "byte_end": 1069,
+        "original": ">",
+        "replacement": ">=",
+        "diff": "diff/000001.diff",
+        "test_packages": [
+          "--tests"
+        ]
+      },
+      {
+        "id": 2,
+        "file": "src/score.rs",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:ee2d904134ac9918ffae4a3f1c9005321508227712252c5ed6c3d76e920cdda0",
+        "line": 47,
+        "column": 31,
+        "end_line": 47,
+        "end_column": 32,
+        "byte_start": 1795,
+        "byte_end": 1796,
+        "original": ">",
+        "replacement": ">=",
+        "diff": "diff/000002.diff",
+        "test_packages": [
+          "--tests"
+        ]
+      },
+      {
+        "id": 3,
+        "file": "src/score.rs",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:ee2d904134ac9918ffae4a3f1c9005321508227712252c5ed6c3d76e920cdda0",
+        "line": 159,
+        "column": 90,
+        "end_line": 159,
+        "end_column": 91,
+        "byte_start": 5202,
+        "byte_end": 5203,
+        "original": ">",
+        "replacement": ">=",
+        "diff": "diff/000003.diff",
+        "test_packages": [
+          "--tests"
+        ]
+      },
+      {
+        "id": 4,
+        "file": "src/score.rs",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:ee2d904134ac9918ffae4a3f1c9005321508227712252c5ed6c3d76e920cdda0",
+        "line": 161,
+        "column": 36,
+        "end_line": 161,
+        "end_column": 37,
+        "byte_start": 5292,
+        "byte_end": 5293,
+        "original": ">",
+        "replacement": ">=",
+        "diff": "diff/000004.diff",
+        "test_packages": [
+          "--tests"
+        ]
+      },
+      {
+        "id": 5,
+        "file": "src/score.rs",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:ee2d904134ac9918ffae4a3f1c9005321508227712252c5ed6c3d76e920cdda0",
+        "line": 185,
+        "column": 78,
+        "end_line": 185,
+        "end_column": 80,
+        "byte_start": 6293,
+        "byte_end": 6295,
+        "original": "<=",
+        "replacement": "<",
+        "diff": "diff/000005.diff",
+        "test_packages": [
+          "--tests"
+        ]
+      },
+      {
+        "id": 6,
+        "file": "src/score.rs",
+        "operator": "comparison_boundary",
+        "source_fingerprint": "sha256:ee2d904134ac9918ffae4a3f1c9005321508227712252c5ed6c3d76e920cdda0",
+        "line": 238,
+        "column": 21,
+        "end_line": 238,
+        "end_column": 23,
+        "byte_start": 8074,
+        "byte_end": 8076,
+        "original": ">=",
+        "replacement": ">",
+        "diff": "diff/000006.diff",
+        "test_packages": [
+          "--tests"
+        ]
+      }
+    ],
+    "dismissals": {
+      "matched": [],
+      "needs_review": []
+    }
+  },
+  "inventories_and_diffs_match": true
+}

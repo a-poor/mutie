@@ -91,9 +91,12 @@ The Go MVP and initial Rust binary-package milestone are complete for their
 supported scopes. Rust supports boolean flips, comparison boundaries, logical
 swaps, focused reruns and dismissal review. `benchmarks/rust-milestone-acceptance.md`
 records scope, evidence and limits; general libraries/workspaces remain unsupported.
-Follow the focused-feedback objective in `TODO.md` and `DESIGN.md`: profile and
-reduce Rust full-suite feedback time using Mutie as the real validation project,
-while preserving outcomes, package rebuilds and source/artifact isolation.
+The first focused-feedback optimization is validated in
+`benchmarks/rust-report-write-reruns.md`: one saved-selection self-run improved
+from 564 to 393 seconds with matching failures and preserved sources/artifacts.
+Follow `TODO.md` and `DESIGN.md` for the next scoped objective; ordinary library
+packages are proposed next, with workspaces considered separately. Preserve the
+existing binary workflow, package rebuilds and full test scope as support expands.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

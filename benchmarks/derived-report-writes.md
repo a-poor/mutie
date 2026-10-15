@@ -99,9 +99,9 @@ checks overlapped diagnostic compilation/counting and, briefly, each other; thei
 durations are validation records, not performance comparison samples. No test
 failed or needed a retry.
 
-## Remaining validation boundary
+## End-to-end follow-up
 
-The unchanged saved six-score-mutation selection on Mutie remains a follow-up
-end-to-end comparison. Do not mark the broader feedback-time objective complete
-from these prebuilt-suite samples. Retain exact failure-set comparisons, package
-rebuild evidence, source/report hashes and caller-artifact preservation in that run.
+The [saved six-score-mutation comparison](rust-report-write-reruns.md) now completes
+the end-to-end acceptance check on Mutie. It retains exact failure sets, package
+rebuild evidence, source/report hashes and caller-artifact preservation. Its
+observed improvement is recorded separately from these prebuilt-suite samples.
