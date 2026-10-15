@@ -1,8 +1,10 @@
 # First Vitest scope
 
-Recorded 2026-10-15, after Mutie `f51193b`. **Planned execution; read-only discovery preview implemented.**
+Recorded 2026-10-15, after Mutie `f51193b`. **Planned full workflow; discovery and baseline diagnostics implemented.**
 This selects the next milestone and records direct runner probes. A subsequent
-read-only discovery preview is implemented below; test execution is not. Neither
+read-only discovery preview is implemented below; the subsequent
+[execution boundary](vitest-execution.md) adds isolated baseline diagnostics and
+direct adapter probes. Neither
 the probes nor the fixture establish Experimental support. Data: [scope results](vitest-initial-scope.json).
 
 ## Decision
@@ -116,7 +118,9 @@ checked against 4.1.9. Emit explicit completion, executed test counts, failed te
 identities, module/collection and hook errors, unhandled errors and interruption
 reason into a private, bounded evidence channel. Keep diagnostics separate.
 Prove this protocol against the pinned implementation before relying on it; the
-custom reporter itself is not implemented here. Missing, malformed, inconsistent
+custom reporter was not implemented during this initial audit; its subsequent
+implementation is covered in the [execution record](vitest-execution.md).
+Missing, malformed, inconsistent
 or truncated evidence is an error even when the process exits zero. The shared
 classifier currently treats zero exit as missed, so validate evidence before
 calling it or extend its contract with Go/Rust regression coverage.
@@ -145,8 +149,9 @@ before implementation acceptance; don't infer their origin from a stderr phrase.
    Add a real JavaScript project before claiming JS reaches Validated. Update the
    ledger by syntax and scope rather than raising both labels automatically.
 
-The read-only preview completes step 1 within the limitations below. The next
-implementation task is the completion/error protocol and isolated adapter; decide
+The read-only preview completes step 1 within the limitations below. The
+[execution boundary](vitest-execution.md) implements the completion/error protocol
+and isolated adapter; shared run/report integration is next. Decide
 how to accommodate Pathe's coverage-only config explicitly before claiming
 unmodified real-project acceptance.
 

@@ -16,7 +16,12 @@ Rust binary packages, and validated ordinary Rust library packages.
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
 - `src/vitest.rs` exposes read-only `vitest-list`; `vitest/project.rs` validates
   pinned ESM/pnpm metadata and `vitest/discovery.rs` lists JS/TS boolean flips.
-  Test execution is not implemented. `tests/vitest_preview.rs` covers the CLI;
+  `vitest/execution.rs` and `vitest/protocol.rs` implement isolated commands and
+  strict completion evidence; `vitest-check` exposes baseline diagnostics. Shared
+  mutation runs/reports/reruns are not yet integrated. Real adapter tests are
+  ignored and require `MUTIE_VITEST_FIXTURE`; `benchmarks/vitest-execution.md`
+  records outcome/cleanup evidence and conservative hook limits.
+  `tests/vitest_preview.rs` covers the preview CLI;
   `benchmarks/vitest-initial-scope.md` distinguishes direct probes, adapted Pathe
   discovery and the remaining execution/configuration acceptance gates.
 - `src/workspace.rs` manages isolated copies; `process.rs` handles subprocesses and timeouts.
@@ -107,7 +112,8 @@ Follow the scoped Vitest milestone in `TODO.md`, `DESIGN.md` and
 `benchmarks/vitest-initial-scope.md`: one ESM/pnpm package, separate JS/TS boolean
 discovery, isolated execution and explicit completion/error evidence. The fixture
 and Pathe baseline are direct-runner probes; read-only preview discovery is
-implemented, but mutation execution is not.
+implemented, and the isolated adapter has direct fixture tests. Shared mutation
+runs and reports are not yet integrated.
 Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 

@@ -44,9 +44,16 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   with deterministic listings and exclusions. Six fixture mutations and fourteen
   in an adapted Pathe copy are listed. Correct the audit: upstream Pathe has a
   coverage-only Vite config and is rejected until explicitly supported.
-- [ ] Implement bounded completion/error evidence and isolated full-suite execution;
-  verify assertion, transform, config, import/hook, unhandled, empty/skipped,
-  mixed-failure and malformed/missing-result cases before Experimental promotion.
+- [x] Implement bounded completion/error evidence and a fresh-copy execution
+  adapter, exposed through `vitest-check` for baseline diagnostics. Direct adapter
+  probes cover fixture kills/survivors/stronger tests, transform/import/hook and
+  mixed failures, noisy/empty/early-exit cases and timeout/cancellation/capture
+  cleanup. See [the evidence and limits](benchmarks/vitest-execution.md).
+- [ ] Connect Vitest to shared runs/coordinator/saved reports with runner/tool/config
+  identity. Preserve evidence validation before baseline/outcome acceptance and
+  verify fixture CLI mutation runs before Experimental promotion.
+- [ ] Resolve broader lifecycle/fixture failure attribution before expanding beyond
+  the conservative reported-hook policy.
 - [ ] Validate focused reruns, review/policies, strict dependency/config identity,
   fresh cache isolation, parallel workers, timeout/cancellation and preservation.
 - [ ] Resolve Pathe coverage-only config support explicitly, then record useful

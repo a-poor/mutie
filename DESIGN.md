@@ -1472,9 +1472,12 @@ reporter protocol must distinguish test failures from transform and infrastructu
 errors; test its failure modes before integrating outcome classification.
 
 Project validation and deterministic JS/TS discovery now have a read-only
-`vitest-list` command, separate from the run/report pipeline. The next step is
-explicit completion/error evidence and isolated execution, then shared review/rerun
-acceptance and real-project usefulness/timing. The Pathe audit missed its
+`vitest-list` command, separate from the run/report pipeline. The
+[execution boundary](benchmarks/vitest-execution.md) now adds private bounded
+completion evidence, fresh isolated command workspaces and `vitest-check` baseline
+diagnostics. Direct adapter fixture probes cover mutation outcomes and cleanup;
+the next step is shared run/report integration, followed by review/rerun acceptance
+and real-project usefulness/timing. The Pathe audit missed its
 coverage-only Vite config; unmodified Pathe is rejected, and listing evidence uses
 an explicitly adapted temporary copy. Resolve config support before claiming
 unmodified project acceptance.

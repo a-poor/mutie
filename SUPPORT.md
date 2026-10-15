@@ -30,7 +30,7 @@ does not by itself validate a new runner.
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
-| JavaScript / TypeScript | Vitest | Planned | Read-only JS/TS boolean discovery preview; no execution | Completion/error protocol and isolated fixture runs |
+| JavaScript / TypeScript | Vitest | Planned | JS/TS discovery and isolated baseline diagnostics; no scored runs | Shared run/report integration and fixture CLI mutation runs |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -113,7 +113,7 @@ targets have not been chosen or verified.
 
 ## JavaScript / TypeScript — Vitest
 
-**Level: Planned. Read-only discovery preview; no execution adapter or end-to-end validation yet.**
+**Level: Planned. Discovery and baseline diagnostics; no complete mutation workflow yet.**
 
 The [first scope audit](benchmarks/vitest-initial-scope.md) selects one ESM package,
 Node execution, `.js`/`.ts` source, pnpm's self-contained locked dependencies and
@@ -124,8 +124,10 @@ monorepos and other package managers are deferred.
 The mixed-syntax fixture passes four direct Vitest tests; separate JS/TS probes
 show survivors killed by stronger tests. Pathe is selected for real TypeScript
 validation: its direct full Vitest baseline passes 467 tests (8 skipped, 8 todo).
-`mutie vitest-list` now validates metadata and discovers boolean flips, but no
-execution adapter is implemented, no real-project mutation run has occurred, and
+`mutie vitest-list` validates metadata and discovers boolean flips.
+[`mutie vitest-check`](benchmarks/vitest-execution.md) now runs an isolated baseline;
+its adapter has direct fixture mutation/failure/cleanup probes. No scored CLI
+mutation run or real-project mutation run has occurred, and
 JavaScript still needs its own real-project validation target. Direct probes also
 show why JSON `success` and exit status alone are insufficient: unhandled errors
 and all-skipped runs need explicit rejection.
@@ -134,8 +136,11 @@ Preview evidence: six fixture mutations and fourteen in an explicitly adapted
 Pathe copy with its coverage-only Vite config removed. The initial audit missed
 that config; unchanged Pathe is correctly rejected by the preview.
 
-Next gate: a completion/error protocol and isolated fixture workflows through Mutie.
-The scope record defines classification, preservation and real-project acceptance.
+Next gate: connect validated completion evidence and isolated execution to shared
+runs and saved reports, then verify fixture CLI mutations before Experimental
+promotion. Hook-related failure attribution is deliberately conservative; review,
+reruns and broader lifecycle acceptance remain pending. The scope and execution
+records define classification, preservation and real-project acceptance.
 
 ## JavaScript / TypeScript — Node.js test runner
 

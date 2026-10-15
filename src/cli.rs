@@ -144,6 +144,17 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Check an isolated Vitest baseline (no mutations, saved reports or reruns)
+    VitestCheck {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        /// Command deadline in seconds
+        #[arg(long, default_value = "60")]
+        timeout: NonZeroU64,
+        /// Combined raw stdout/stderr byte limit
+        #[arg(long, default_value = "4194304")]
+        max_capture_bytes: NonZeroUsize,
+    },
     /// Preview Vitest boolean mutations (read-only; execution is not implemented)
     VitestList {
         #[arg(default_value = ".", value_name = "PATH")]

@@ -1,6 +1,8 @@
-//! Read-only preview of the first Vitest scope. Execution is not implemented.
+//! Vitest discovery preview and isolated baseline diagnostics.
 pub mod discovery;
+pub mod execution;
 pub mod project;
+mod protocol;
 
 use crate::{cancellation::Cancellation, mutation::Scope, process};
 use anyhow::{Context, Result, ensure};
@@ -13,13 +15,39 @@ pub async fn list(
     cancellation: &Cancellation,
 ) -> Result<()> {
     let project = project::Project::load(root, cancellation)?;
+    let node = resolve_node(&project.root, cancellation).await?;
+    let found = discovery::discover(&project.root, &Scope::new(include, exclude)?, cancellation)?;
+    println!("Vitest discovery preview only; tests, reports and reruns are not implemented.");
+    println!(
+        "{}; Node v24.22.0; Vitest {}; Vite {}",
+        project.name, project.vitest, project.vite
+    );
+    println!("Node executable {}", node.executable.display());
+    println!(
+        "Manifest {}; lockfile {}",
+        project.manifest_fingerprint, project.lockfile_fingerprint
+    );
+    for exclusion in found.exclusions {
+        println!("Excluded {exclusion}");
+    }
+    for (index, mutation) in found.mutations.iter().enumerate() {
+        println!("{}: boolean_flip {}", index + 1, mutation.description());
+    }
+    println!("{} mutations", found.mutations.len());
+    Ok(())
+}
+
+struct NodeTool {
+    executable: std::path::PathBuf,
+}
+async fn resolve_node(root: &Path, cancellation: &Cancellation) -> Result<NodeTool> {
     let output = process::run_with_env(
         "node",
         &[
             "--eval",
             "console.log(JSON.stringify({version:process.version,executable:process.execPath}))",
         ],
-        &project.root,
+        root,
         Duration::from_secs(10),
         NonZeroUsize::new(4096),
         cancellation,
@@ -44,26 +72,37 @@ pub async fn list(
     let executable = node["executable"]
         .as_str()
         .context("Node executable identity missing")?;
-    let found = discovery::discover(&project.root, &Scope::new(include, exclude)?, cancellation)?;
-    println!("Vitest discovery preview only; tests, reports and reruns are not implemented.");
-    println!(
-        "{}; Node {}; Vitest {}; Vite {}",
-        project.name,
-        node["version"].as_str().unwrap(),
-        project.vitest,
-        project.vite
+    Ok(NodeTool {
+        executable: executable.into(),
+    })
+}
+
+pub async fn check(
+    root: &Path,
+    timeout: Duration,
+    capture_limit: NonZeroUsize,
+    cancellation: &Cancellation,
+) -> Result<()> {
+    let project = project::Project::load(root, cancellation)?;
+    let node = resolve_node(&project.root, cancellation).await?;
+    println!("Checking isolated Vitest baseline; no mutations or saved report.");
+    let output =
+        execution::run(&project, &node, None, timeout, capture_limit, cancellation).await?;
+    let outcome = output.classify().with_context(|| {
+        format!(
+            "Vitest baseline failed:\n{}",
+            output.diagnostics.text().unwrap_or_default()
+        )
+    })?;
+    ensure!(
+        outcome == crate::report::Outcome::Missed,
+        "Vitest baseline did not pass ({outcome:?}):\n{}",
+        output.diagnostics.text()?
     );
-    println!("Node executable {executable}");
+    let (passed, _, skipped) = output.evidence?.counts();
     println!(
-        "Manifest {}; lockfile {}",
-        project.manifest_fingerprint, project.lockfile_fingerprint
+        "Vitest baseline passed: {passed} passed, {skipped} skipped/todo ({:.2}s command time).",
+        output.raw.elapsed.as_secs_f64()
     );
-    for exclusion in found.exclusions {
-        println!("Excluded {exclusion}");
-    }
-    for (index, mutation) in found.mutations.iter().enumerate() {
-        println!("{}: boolean_flip {}", index + 1, mutation.description());
-    }
-    println!("{} mutations", found.mutations.len());
     Ok(())
 }
