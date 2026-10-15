@@ -65,8 +65,8 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   provenance and original-report preservation. See
   [rerun evidence](benchmarks/vitest-focused-reruns.md).
 - [x] Audit broader lifecycle/fixture attribution against pinned Vitest. The
-  [16-case audit](benchmarks/vitest-lifecycle-attribution.md) reproduces false kills
-  outside the traditional reporter hooks; this is a scoring correctness blocker.
+  [16-case audit](benchmarks/vitest-lifecycle-attribution.md) identified false kills
+  outside traditional reporter hooks, addressed by the worker evidence below.
 - [x] Add conservative worker-side lifecycle participation evidence for fixtures,
   aroundEach and completion callbacks. Reject ambiguous failed tests, require
   audited runner bytes in the isolated copy, and convert audit cases to acceptance
@@ -74,15 +74,19 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Distinguish body failures from lifecycle failures so successful hooks,
   test-scoped fixtures and callbacks can accompany genuine kills. Preserve errors
   for mixed failures and ambiguous async/assertion-count attribution.
-- [ ] Extend file/worker fixture and nested/concurrent lifecycle coverage; resolve
-  remaining async/assertion-count attribution conservatively.
+- [x] Validate file/worker fixture setup, body and teardown attribution, nested
+  hooks and concurrent body/cleanup mixtures. Add mutation-triggered scoped
+  fixture CLI score checks; see [lifecycle evidence](benchmarks/vitest-lifecycle-attribution.md).
+- [ ] Resolve remaining async/assertion-count attribution conservatively; cross-file
+  fixture reuse and cancellation during scoped teardown remain unvalidated.
 - [x] Connect Vitest dismissal CRUD/check, saved review snapshots and CI policies.
   Verify separate JS/TS decisions, stale-source invalidation, unchanged raw
   outcomes/scores, stronger-test reruns, config/CLI overrides and infrastructure
   error precedence. See [review evidence](benchmarks/vitest-dismissals.md).
 - [ ] Validate parallel workers and broader cache/timeout/cancellation preservation
   through the complete CLI workflow.
-- [ ] Resolve Pathe coverage-only config support explicitly, then record useful
+- [ ] Next real-project gate: resolve Pathe coverage-only config support explicitly,
+  then record useful
   findings, stronger-test reruns and feedback time. Select
   and validate a real JavaScript project independently before promoting JS support.
 

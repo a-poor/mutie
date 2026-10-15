@@ -306,25 +306,7 @@ fn unsupported_vitest_options_fail_before_execution() {
 #[test]
 #[ignore = "requires prepared MUTIE_VITEST_FIXTURE; mutation-triggered lifecycle errors"]
 fn lifecycle_mutation_failures_do_not_improve_scores() {
-    let prepared =
-        PathBuf::from(std::env::var_os("MUTIE_VITEST_FIXTURE").expect("set MUTIE_VITEST_FIXTURE"));
-    let temp = tempfile::tempdir().unwrap();
-    let root = temp.path().join("lifecycle project");
-    assert!(
-        Command::new("cp")
-            .arg("-R")
-            .arg(&prepared)
-            .arg(&root)
-            .status()
-            .unwrap()
-            .success()
-    );
-    let runner = "node_modules/.pnpm/@vitest+runner@4.1.9/node_modules/@vitest/runner/dist/chunk-artifact.js";
-    let original_runner = fs::read(root.join(runner)).unwrap();
-    let source = "export const ready = true;\n";
-    fs::write(root.join("src/lifecycle.js"), source).unwrap();
-    let reports = temp.path().join("reports");
-    for (killed, code) in [
+    lifecycle_cli_cases(&[
         (
             false,
             "const extended = test.extend({value: async ({}, use) => { expect(ready).toBe(true); await use(1); }}); extended('fixture', ({value}) => expect(value).toBe(1));",
@@ -345,7 +327,44 @@ fn lifecycle_mutation_failures_do_not_improve_scores() {
             true,
             "beforeEach(() => () => {}); aroundEach(async run => { await run(); }); test('body', () => expect(ready).toBe(true));",
         ),
-    ] {
+    ]);
+}
+
+#[test]
+#[ignore = "requires prepared MUTIE_VITEST_FIXTURE; scoped fixture mutation outcomes"]
+fn scoped_fixture_mutation_failures_preserve_scores() {
+    let mut cases = Vec::new();
+    for scope in ["file", "worker"] {
+        cases.push((true, format!("const extended=test.extend({{value:[async({{}},use)=>{{await use(1);}},{{scope:'{scope}'}}]}}); extended('body',({{value}})=>{{expect(value).toBe(1); expect(ready).toBe(true);}});")));
+        cases.push((false, format!("const extended=test.extend({{value:[async({{}},use)=>{{await use(1); expect(ready).toBe(true);}},{{scope:'{scope}'}}]}}); extended('body',({{value}})=>expect(value).toBe(1));")));
+    }
+    let borrowed: Vec<_> = cases
+        .iter()
+        .map(|(killed, code)| (*killed, code.as_str()))
+        .collect();
+    lifecycle_cli_cases(&borrowed);
+}
+
+fn lifecycle_cli_cases(cases: &[(bool, &str)]) {
+    let prepared =
+        PathBuf::from(std::env::var_os("MUTIE_VITEST_FIXTURE").expect("set MUTIE_VITEST_FIXTURE"));
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("lifecycle project");
+    assert!(
+        Command::new("cp")
+            .arg("-R")
+            .arg(&prepared)
+            .arg(&root)
+            .status()
+            .unwrap()
+            .success()
+    );
+    let runner = "node_modules/.pnpm/@vitest+runner@4.1.9/node_modules/@vitest/runner/dist/chunk-artifact.js";
+    let original_runner = fs::read(root.join(runner)).unwrap();
+    let source = "export const ready = true;\n";
+    fs::write(root.join("src/lifecycle.js"), source).unwrap();
+    let reports = temp.path().join("reports");
+    for &(killed, code) in cases {
         let test_source = format!(
             "import {{test,expect,onTestFinished,aroundEach,beforeEach}} from 'vitest';\nimport {{ready}} from '../src/lifecycle.js';\n{code}\n"
         );

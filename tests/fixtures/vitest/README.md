@@ -67,3 +67,9 @@ IDs/missed findings after stronger JS/TS tests, with metadata/source rejection
 checks; see [rerun evidence](../../../benchmarks/vitest-focused-reruns.md).
 Review and CI policies are covered separately by the ignored `review::` test in
 `vitest_workflow`; see [review evidence](../../../benchmarks/vitest-dismissals.md). See [CLI evidence](../../../benchmarks/vitest-shared-runs.md).
+
+Ignored lifecycle adapter tests in `vitest::execution` cover body versus cleanup
+attribution, scoped fixtures and nested hooks. The ignored CLI test
+`scoped_fixture_mutation_failures_preserve_scores` checks passing baselines followed
+by mutation-triggered body kills or file/worker teardown errors, without changing
+source or installed runner bytes. See [lifecycle evidence](../../../benchmarks/vitest-lifecycle-attribution.md).

@@ -155,8 +155,11 @@ fixtures, traditional hooks, aroundEach and completion callbacks can accompany
 body kills. Lifecycle and mixed failures remain errors. Pending async assertions
 from setup and post-body assertion-count failures remain conservatively rejected;
 `test.fails` is unsupported. Instrumentation only modifies the disposable dependency
-copy and requires the exact audited runner bytes. File/worker fixture scope,
-nested lifecycle combinations and broader concurrent execution remain validation gaps.
+copy and requires the exact audited runner bytes. File/worker fixture setup, body
+and teardown, nested hooks, and concurrent body/cleanup mixtures now have fixture
+evidence. Cross-file fixture reuse, cancellation during scoped teardown and
+parallel workers remain unvalidated. The next real-project gate is unchanged
+Pathe configuration support and useful mutation findings.
 
 ## JavaScript / TypeScript — Node.js test runner
 

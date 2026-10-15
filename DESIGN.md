@@ -1494,7 +1494,9 @@ assertions at body entry and post-body assertion-count failures remain ambiguous
 and are rejected. Passed and failed executed tests require an instrumentation
 marker. The reporter fingerprint covers both reporter and instrumentation source,
 so older saved runs require a fresh scan. Runner source mismatch aborts execution.
-File/worker fixtures, nested lifecycle combinations and broader concurrency still
+File/worker fixture setup and teardown, nested hooks and concurrent body/cleanup
+mixtures now have adapter evidence, with scoped fixture CLI score checks.
+Cross-file fixture reuse, scoped teardown cancellation and parallel workers still
 need acceptance evidence. Vitest dismissal
 CRUD/check and CI policies now reuse shared review snapshots and score decisions;
 check performs source rediscovery without invoking Node/Vitest. Review never

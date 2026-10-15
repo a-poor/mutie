@@ -26,7 +26,9 @@ Rust binary packages, and validated ordinary Rust library packages.
   `vitest/lifecycle.rs` instruments only an exact-hash isolated runner copy to
   distinguish body failures from otherwise unreported lifecycle failures; see
   `benchmarks/vitest-lifecycle-attribution.md`. Preserve the fail-closed byte
-  check and include instrumentation changes in execution identity.
+  check and include instrumentation changes in execution identity. Ignored scoped
+  fixture regressions cover file/worker teardown, nested hooks and concurrent
+  body/cleanup mixtures; they do not establish cross-file fixture reuse.
   Parallel workers remain unsupported. `benchmarks/vitest-focused-reruns.md`
   records rerun acceptance.
   `tests/vitest_workflow.rs` checks real scored CLI runs and saved failures; see
