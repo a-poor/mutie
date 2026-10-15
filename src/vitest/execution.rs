@@ -176,6 +176,130 @@ mod tests {
         .await?
         .into_command(NonZeroUsize::new(64 * 1024)))
     }
+    /// Diagnostic audit, not an acceptance test: prints unresolved attribution gaps.
+    /// Keep separate from regression tests so observed false kills are never required.
+    #[tokio::test]
+    #[ignore = "requires prepared Vitest fixture; lifecycle attribution audit (use --nocapture)"]
+    async fn real_lifecycle_attribution_audit() -> Result<()> {
+        let input = prepared()?;
+        let cancellation = Cancellation::default();
+        let work = Workspace::create(&input, &[], &cancellation)?;
+        let root = work.path();
+        let node = resolve_node(&root, &cancellation).await?;
+        assert_eq!(
+            execute(&root, &node, None).await?.classify()?,
+            Outcome::Missed
+        );
+        for (name, expected, code) in [
+            (
+                "body-assertion",
+                "killed",
+                "test('body',()=>expect(true).toBe(false));",
+            ),
+            (
+                "successful-before",
+                "killed",
+                "beforeEach(()=>{}); test('body',()=>expect(true).toBe(false));",
+            ),
+            (
+                "before-failure",
+                "error",
+                "beforeEach(()=>expect(true).toBe(false)); test('body',()=>{});",
+            ),
+            (
+                "after-failure",
+                "error",
+                "afterEach(()=>expect(true).toBe(false)); test('body',()=>{});",
+            ),
+            (
+                "returned-cleanup",
+                "error",
+                "beforeEach(()=>()=>expect(true).toBe(false)); test('body',()=>{});",
+            ),
+            (
+                "before-all",
+                "error",
+                "beforeAll(()=>expect(true).toBe(false)); test('body',()=>{});",
+            ),
+            (
+                "after-all",
+                "error",
+                "afterAll(()=>expect(true).toBe(false)); test('body',()=>{});",
+            ),
+            (
+                "around-setup",
+                "error",
+                "aroundEach(async run=>{expect(true).toBe(false); await run();}); test('body',()=>{});",
+            ),
+            (
+                "around-teardown",
+                "error",
+                "aroundEach(async run=>{await run(); expect(true).toBe(false);}); test('body',()=>{});",
+            ),
+            (
+                "around-all",
+                "error",
+                "aroundAll(async run=>{await run(); expect(true).toBe(false);}); test('body',()=>{});",
+            ),
+            (
+                "finished-callback",
+                "error",
+                "test('body',()=>{onTestFinished(()=>expect(true).toBe(false));});",
+            ),
+            (
+                "failed-callback",
+                "error",
+                "test('body',()=>{onTestFailed(()=>expect(true).toBe(false)); expect(true).toBe(false);});",
+            ),
+            (
+                "fixture-setup",
+                "error",
+                "const extended=test.extend({value:async({},use)=>{expect(true).toBe(false); await use(1);}}); extended('body',({value})=>expect(value).toBe(1));",
+            ),
+            (
+                "fixture-teardown",
+                "error",
+                "const extended=test.extend({value:async({},use)=>{await use(1); expect(true).toBe(false);}}); extended('body',({value})=>expect(value).toBe(1));",
+            ),
+            (
+                "auto-fixture",
+                "error",
+                "const extended=test.extend({value:[async({},use)=>{await use(1); expect(true).toBe(false);},{auto:true}]}); extended('body',()=>{});",
+            ),
+            (
+                "concurrent-finished",
+                "error",
+                "test.concurrent('cleanup',()=>{onTestFinished(()=>expect(true).toBe(false));}); test.concurrent('pass',async()=>{await new Promise(r=>setTimeout(r,10));});",
+            ),
+        ] {
+            fs::write(
+                root.join("test/lifecycle.test.js"),
+                format!(
+                    "import {{test,expect,beforeEach,afterEach,beforeAll,afterAll,aroundEach,aroundAll,onTestFinished,onTestFailed}} from 'vitest';\n{code}\n"
+                ),
+            )?;
+            let execution = run(
+                &Project::load(&root, &cancellation)?,
+                &node,
+                None,
+                Duration::from_secs(20),
+                NonZeroUsize::new(4 * 1024 * 1024),
+                &cancellation,
+            )
+            .await?;
+            // Missing completion is a broken probe, not evidence about attribution.
+            let evidence = execution
+                .evidence
+                .as_ref()
+                .map_err(|error| anyhow::anyhow!("{name}: {error:#}"))?;
+            println!(
+                "{name}: expected={expected}, observed={:?}\nevidence={evidence:?}",
+                evidence.classify(execution.raw.status.code())
+            );
+        }
+        Ok(())
+    }
+
     #[tokio::test]
     #[ignore = "requires prepared Vitest fixture and Node 24.22.0; real isolated runner matrix"]
     async fn real_fixture_outcomes_and_failure_evidence() -> Result<()> {

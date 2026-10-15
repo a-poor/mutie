@@ -20,7 +20,9 @@ JavaScript/TypeScript Vitest slice. Node's test runner, Bun and pytest remain pl
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker; custom runner configs
-remain unsupported. Dismissal review, `--fail-on-missed`, and `--min-score` are
+remain unsupported. Fixture, around-hook and test-finished callback failures can
+currently be misclassified as kills; those APIs are outside verified scoring support
+(see the [lifecycle audit](benchmarks/vitest-lifecycle-attribution.md)). Dismissal review, `--fail-on-missed`, and `--min-score` are
 available within this scope; see [review/policy validation](benchmarks/vitest-dismissals.md).
 Use `mutie PATH --lang vitest --rerun-missed RUN_DIR` after improving tests;
 `--rerun RUN_DIR --id ID` selects individual saved mutations. Reruns require

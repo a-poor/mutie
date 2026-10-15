@@ -1483,7 +1483,12 @@ explicit `--lang vitest` now connects serial full-suite mutation runs to the sha
 coordinator and saved reports. Runner/tool/config identity is persisted and checked
 before each command; package arguments are empty because the entire suite runs.
 See [CLI evidence](benchmarks/vitest-shared-runs.md). The next steps are
-broader lifecycle attribution and real-project usefulness/timing. Vitest dismissal
+worker-side lifecycle attribution and real-project usefulness/timing. The
+[lifecycle audit](benchmarks/vitest-lifecycle-attribution.md) demonstrates that
+reporter hook events alone miss fixture, around-hook and completion-callback
+failures; all can carry ordinary assertion errors. Preserve conservative scoring
+until evidence distinguishes these from test-body failures, including concurrent
+tests and mixed body/cleanup failures. Vitest dismissal
 CRUD/check and CI policies now reuse shared review snapshots and score decisions;
 check performs source rediscovery without invoking Node/Vitest. Review never
 changes outcomes or raw scores. See [review evidence](benchmarks/vitest-dismissals.md).

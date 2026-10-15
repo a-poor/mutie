@@ -64,8 +64,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   baseline, and verify JS/TS survivors killed by stronger tests with saved
   provenance and original-report preservation. See
   [rerun evidence](benchmarks/vitest-focused-reruns.md).
-- [ ] Resolve broader lifecycle/fixture failure attribution before expanding beyond
-  the conservative reported-hook policy.
+- [x] Audit broader lifecycle/fixture attribution against pinned Vitest. The
+  [16-case audit](benchmarks/vitest-lifecycle-attribution.md) reproduces false kills
+  outside the traditional reporter hooks; this is a scoring correctness blocker.
+- [ ] Add worker-side lifecycle evidence for fixtures, around hooks and completion
+  callbacks; reject ambiguous failures before counting kills. Convert audit cases
+  into acceptance regressions, including mutation-triggered failures after a passing
+  baseline. Only then relax the conservative traditional-hook policy.
 - [x] Connect Vitest dismissal CRUD/check, saved review snapshots and CI policies.
   Verify separate JS/TS decisions, stale-source invalidation, unchanged raw
   outcomes/scores, stronger-test reruns, config/CLI overrides and infrastructure
