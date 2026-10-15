@@ -11,10 +11,10 @@ supported scopes. The first measured Rust feedback-time improvement is also
 validated: unchanged derived-report writes are skipped, and the saved six-mutation
 self-run fell from 564 to 393 seconds in one controlled pair with matching outcomes.
 See [the acceptance evidence](benchmarks/rust-report-write-reruns.md) for limits.
-The next major objective should address a concrete support gap; ordinary Rust
-library packages are the proposed next slice, with workspace scope decided
-separately. Explicit user priorities and demonstrated reliability blockers take
-precedence.
+Ordinary Rust library packages now have experimental support backed by fixture
+workflows. Complete library-specific acceptance checks and real-project mutation
+validation on Marathon next, with workspace scope decided separately. Explicit
+user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
 
@@ -70,14 +70,16 @@ choose their implementation order; the proposed next objective is scoped below.
 - [x] Generalize saved production-target identity, preserving strict rerun checks
   and compatibility with saved binary-only reports. New reports record target
   kind/name/source/edition; Cargo metadata must match the selected binary's full
-  identity and crate type. Library execution remains gated.
-- [ ] Extend manifest and metadata validation to ordinary libraries, including
+  identity and crate type.
+- [x] Extend manifest and metadata validation to ordinary libraries, including
   explicit names/paths, crate types and automatic target discovery, together with
   multi-root discovery so no accepted production root is silently omitted.
-- [ ] Discover from all production roots with stable shared-file deduplication;
+- [x] Discover from all production roots with stable shared-file deduplication;
   cover explicit names/paths and unsupported target configurations.
-- [ ] Validate fresh/cached fixture workflows, stronger-test focused reruns,
+- [x] Validate fresh/cached fixture workflows, stronger-test focused reruns,
   local rebuilds and source/artifact preservation through Mutie.
+- [ ] Add library-specific review, cancellation and build-failure acceptance
+  probes; shared binary coverage does not establish every library behavior.
 - [ ] Validate useful findings and focused reruns on Marathon, retaining Mutie as
   the binary-only control, then update implemented support claims. Workspaces and
   local dependencies remain separately scoped.

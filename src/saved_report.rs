@@ -635,7 +635,7 @@ impl SavedReport {
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
         if self.run.effective_config.lang == crate::cli::Lang::Rust {
-            text.push_str("Language: Rust\nMutation and baseline test scope: binary unit and integration tests, default features\n");
+            text.push_str("Language: Rust\nMutation and baseline test scope: unit and integration tests, default features; doctests and ignored tests excluded\n");
             text.push_str(match self.run.effective_config.rust_build_cache {
                 crate::cli::RustBuildCache::Fresh => "Build artifacts: fresh owned directories per baseline/mutation\n",
                 crate::cli::RustBuildCache::Worker => "Build artifacts: fresh baseline; worker-local dependencies, package cleaned before each mutation build\n",

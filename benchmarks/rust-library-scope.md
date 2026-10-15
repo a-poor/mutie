@@ -3,8 +3,8 @@
 ## Decision
 
 The next adapter slice will support one ordinary library package, either alone
-or with one binary. Keep the existing binary-only workflow. This is a scoped
-implementation objective, not a change to current CLI support.
+or with one binary. Keep the existing binary-only workflow. The adapter now implements this as experimental library support, with
+real-project mutation validation still pending.
 
 Continue to run default-feature unit and integration tests with
 `cargo test --locked --tests --no-fail-fast`, with compilation separated using
@@ -93,9 +93,8 @@ been attempted, and its discovery syntax/exclusions still need adapter validatio
    SUPPORT and CLI claims. Real Cargo integration coverage stays opt-in to avoid
    recursive mutation self-tests.
 
-The next coding task is target inventory and validation, followed by multi-root
-discovery. These gates deliberately do not expand to workspaces or claim that
-ordinary Cargo baselines alone validate the mutation adapter.
+These gates deliberately do not expand to workspaces or claim that ordinary
+Cargo baselines alone validate the mutation adapter.
 
 ## Implementation progress
 
@@ -107,12 +106,45 @@ missing evidence, target changes, invalid inventories and metadata mismatches.
 The opt-in rerun workflow includes executing a focused selection from an
 older-format report and publishing it with the new inventory.
 
-Validation: `cargo test` passes 206 tests (27 opt-in tests ignored),
+Identity-step validation: `cargo test` passes 206 tests (27 opt-in tests ignored),
 `cargo test --test rust_workflow -- --ignored --test-threads=1` passes all 17
 real Cargo workflows, and formatting plus Clippy with warnings denied pass.
 All five opt-in real Go workflows also pass with access to the Go build cache
 (the initial sandboxed attempt could not write that cache).
 
-This is the report/identity foundation only. Manifest and metadata acceptance of
-library packages and multi-root discovery remain the next implementation step;
-the CLI still rejects libraries before execution.
+### Library acceptance and multi-root discovery
+
+The adapter now accepts library-only and library-plus-one-binary packages,
+including explicit names/paths/editions and ordinary `lib`/`rlib` outputs.
+Automatic targets are reconciled with explicit targets and Cargo metadata;
+unsupported target kinds, multiple binaries and disabled/custom harnesses remain
+rejected. All production roots participate in discovery, with stable mutation
+deduplication. When one file is both a crate root and a module, discovery follows
+both child-module resolution contexts before deduplicating its mutations.
+
+Two opt-in tests in `tests/support/rust_library.rs` verify:
+
+- Both layouts produce one killed and one missed boolean flip with fresh and
+  worker-local artifacts; the 100% score policy fails at the expected 50% score.
+- Cargo compile events show local library artifacts rebuilt for every mutation
+  and linked binary artifacts rebuilt in the combined layout.
+- A stronger API test leaves the pristine baseline passing and kills the saved
+  survivor through a focused worker-cache rerun.
+- Library source, stronger tests, previous outcomes and caller artifact sentinels
+  are preserved; owned temporary directories are empty after each run.
+- Real metadata/listing accepts a custom library name/path/edition, `lib` and
+  `rlib`, and a renamed explicit binary. An additional automatic binary fails.
+
+Both tests passed on macOS arm64. This is fixture evidence for Experimental
+library support. Mutie's binary-only milestone remains Validated. Marathon still
+needs discovery, useful mutation findings, stronger-test reruns and runtime
+measurements; library-specific dismissal, cancellation and build-failure probes
+also remain acceptance work. No workspace support or real-project library
+mutation validation is claimed by this step.
+
+Validation for this implementation: 210 default tests pass (29 opt-in tests
+ignored), all 19 real Cargo workflows pass with
+`CARGO_NET_OFFLINE=true cargo test --test rust_workflow -- --ignored --test-threads=1`,
+and `cargo fmt --check` plus `cargo clippy --all-targets -- -D warnings` pass.
+The explicit-path metadata case also passes with `./src/main.rs`, confirming
+that renamed automatic targets reconcile through normalized source paths.

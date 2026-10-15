@@ -29,7 +29,7 @@ does not by itself validate a new runner.
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
-| Rust | Cargo / standard Rust test harness | Validated | One ordinary binary package on Unix; full supported suite; 3 operators | Separately scoped library/workspace expansion and broader project evidence |
+| Rust | Cargo / standard Rust test harness | Validated (binary); Experimental (library) | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Real-project library mutation validation; workspaces remain separate |
 | JavaScript / TypeScript | Vitest | Planned | None | Define first package, syntax/module scope and fixture |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
@@ -65,9 +65,10 @@ targets have not been chosen or verified.
 
 ## Rust — Cargo
 
-**Level: Validated within the initial binary-package scope.**
+**Level: Validated for binary-only packages; Experimental for ordinary libraries.**
 
-- Project/test scope: one ordinary binary package, usable lockfile, registry
+- Project/test scope: one ordinary package with a binary, library, or library plus
+  one binary; usable lockfile, registry
   dependencies, default features and standard unit/integration tests on Unix.
   Executes `cargo test --locked --tests --no-fail-fast`; no affected-test selection.
 - Mutation coverage: `boolean_flip`, `comparison_boundary`, `logical_swap`.
@@ -87,19 +88,23 @@ targets have not been chosen or verified.
   all six kills and exact failure sets while reducing one self-run from 564 to
   393 seconds; this is not a universal Rust performance estimate.
   Real-Cargo workflows are opt-in in `tests/rust_workflow.rs`.
-- Limits: no libraries/proc macros, multiple binaries, multi-package/enclosing
+- Limits: no proc macros or library crate types other than `lib`/`rlib`,
+  multiple binaries, multi-package/enclosing
   workspaces, local/git dependencies, project build scripts, custom harnesses,
   feature selection or cross-compilation. Doctests and ignored tests are outside
   the execution scope. Validation is on macOS; Unix scope is not a claim of equal
   platform evidence. Full-suite feedback time remains a practical constraint.
-- Next support gains: implement the [scoped library-package slice](benchmarks/rust-library-scope.md)
-  (library-only or one library plus one binary). The fixture Cargo probes and
-  Marathon's 182-test baseline are planning evidence, not adapter support;
-  saved target inventories and legacy binary-report migration are implemented,
-  but library acceptance and multi-root discovery remain pending. Workspace
-  expansion remains separate. Further runtime work should follow
-  measured costs while preserving full tests. Advancement to
-  Established needs additional representative real projects, not just more operators.
+- Library evidence: the [scope and implementation record](benchmarks/rust-library-scope.md)
+  covers library-only and library-plus-one-binary fixture workflows, fresh/cached
+  execution, stronger-test reruns, local rebuilds and source/artifact preservation.
+  Custom library names/paths and `rlib` metadata have real Cargo listing checks.
+  Library-specific review, cancellation and broader failure cases still need
+  evidence; shared binary regressions do not establish every library behavior.
+- Next support gains: run a useful mutation selection on Marathon and validate
+  findings with stronger-test reruns. Its 182-test baseline is only planning
+  evidence so far. Keep Mutie as the binary-only control and scope workspaces
+  separately. Advancement to Established needs additional representative real
+  projects, not just more operators.
 
 ## JavaScript / TypeScript — Vitest
 

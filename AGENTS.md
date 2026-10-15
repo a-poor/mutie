@@ -2,8 +2,8 @@
 
 ## Project Structure & Module Organization
 
-Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules and an initial
-Rust binary-package workflow.
+Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules, validated
+Rust binary packages, and experimental ordinary Rust library packages.
 
 - `src/main.rs` coordinates runs and workers; `cli.rs` defines CLI arguments.
 - `src/config.rs` loads repository settings and resolves explicit CLI overrides.
@@ -90,12 +90,15 @@ Rust binary-package workflow.
 The Go MVP and initial Rust binary-package milestone are complete for their
 supported scopes. Rust supports boolean flips, comparison boundaries, logical
 swaps, focused reruns and dismissal review. `benchmarks/rust-milestone-acceptance.md`
-records scope, evidence and limits; general libraries/workspaces remain unsupported.
+records the binary scope, evidence and limits. Ordinary library-only and
+library-plus-one-binary packages now have experimental support;
+`benchmarks/rust-library-scope.md` tracks fixture evidence and remaining real-project
+acceptance. Workspaces remain unsupported.
 The first focused-feedback optimization is validated in
 `benchmarks/rust-report-write-reruns.md`: one saved-selection self-run improved
 from 564 to 393 seconds with matching failures and preserved sources/artifacts.
 Follow `TODO.md` and `DESIGN.md` for the next scoped objective; ordinary library
-packages are proposed next, with workspaces considered separately. Preserve the
+packages need real-project mutation validation next, with workspaces considered separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,

@@ -353,9 +353,9 @@ The next major objective is ordinary Rust library-package support. The
 [scope audit](benchmarks/rust-library-scope.md) selects library-only and
 library-plus-one-binary layouts, retaining unit/integration tests and excluding
 doctests. Direct Cargo fixture probes and Marathon's 182-test isolated baseline
-establish validation candidates; target identity, multi-root discovery and full
-adapter acceptance remain implementation work. Workspaces and local dependencies
-remain separate objectives. No broader Cargo compatibility is implemented yet.
+establish validation candidates. Target identity, library acceptance and multi-root
+discovery are implemented; real-project library mutation acceptance remains.
+Workspaces and local dependencies remain separate objectives.
 
 The first implementation step replaces the saved single-binary fields with a
 sorted production-target inventory: kind, name, source and edition. Readers
@@ -363,8 +363,12 @@ normalize legacy binary identities; reports missing manifest/toolchain evidence
 remain inspectable but cannot rerun. Mixed identity formats, malformed paths,
 empty inventories and duplicate target kinds are rejected. Reruns compare the
 complete target inventory, and current binary metadata must match its selected
-identity and crate type. Library acceptance remains gated until manifest/metadata
-validation and discovery support every production root together.
+identity and crate type. Manifest/metadata validation now accepts ordinary libraries
+alone or alongside one binary, including explicit names/paths and `lib`/`rlib`
+outputs. Discovery traverses all production roots and deduplicates shared source
+mutations in stable file/range order. A shared file used both as a crate root and
+a module is traversed in both module-resolution contexts. Standard harnesses
+and enabled tests are required; doctests remain outside the execution scope.
 
 ## Original Go MVP — completed
 

@@ -22,7 +22,7 @@ pub struct Discovery {
 
 pub fn discover(
     root: &Path,
-    entry: &Path,
+    entries: &[PathBuf],
     scope: &Scope,
     cancellation: &Cancellation,
 ) -> Result<Discovery> {
@@ -38,7 +38,9 @@ pub fn discover(
     walker
         .parser
         .set_language(&tree_sitter_rust::LANGUAGE.into())?;
-    walker.file(entry, true)?;
+    for entry in entries {
+        walker.file(entry, true)?;
+    }
     walker
         .mutations
         .sort_by(|a, b| (&a.file.path, a.range.start).cmp(&(&b.file.path, b.range.start)));
@@ -56,7 +58,9 @@ struct Walker<'a> {
     scope: &'a Scope,
     cancellation: &'a Cancellation,
     parser: Parser,
-    visited: BTreeSet<PathBuf>,
+    // The same file can be both a crate root and a module; child-module paths
+    // differ in those contexts. Mutations are deduplicated after traversal.
+    visited: BTreeSet<(PathBuf, bool)>,
     mutations: Vec<Mutation>,
     exclusions: BTreeSet<String>,
 }
@@ -71,7 +75,7 @@ impl Walker<'_> {
         self.cancellation.check()?;
         let path = super::project::inside(self.root, &self.root.join(path))?;
         ensure!(self.visited.len() < 10_000, "too many Rust module files");
-        if !self.visited.insert(path.clone()) {
+        if !self.visited.insert((path.clone(), entry)) {
             return Ok(());
         }
         let mut parent = path.parent();
@@ -342,10 +346,103 @@ mod tests {
     fn scan(root: &Path, include: &[String]) -> Result<Discovery> {
         discover(
             root,
-            Path::new("src/main.rs"),
+            &[PathBuf::from("src/main.rs")],
             &Scope::new(include, &[])?,
             &Cancellation::default(),
         )
+    }
+
+    #[test]
+    fn multiple_roots_visit_shared_modules_once_and_keep_stable_ids() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path().canonicalize()?;
+        fs::create_dir(root.join("src"))?;
+        fs::write(
+            root.join("src/lib.rs"),
+            "mod shared; pub fn library() -> bool { true }\n#[cfg(test)] mod tests { fn ignored() -> bool { false } }",
+        )?;
+        fs::write(
+            root.join("src/main.rs"),
+            "mod shared; fn main() { let _ = false; }",
+        )?;
+        fs::write(
+            root.join("src/shared.rs"),
+            "pub fn shared() -> bool { true }",
+        )?;
+        let entries = [PathBuf::from("src/lib.rs"), PathBuf::from("src/main.rs")];
+        let found = discover(
+            &root,
+            &entries,
+            &Scope::new(&[], &[])?,
+            &Cancellation::default(),
+        )?;
+        assert_eq!(found.mutations.len(), 3);
+        assert_eq!(
+            found
+                .mutations
+                .iter()
+                .map(|m| m.file.path.clone())
+                .collect::<Vec<_>>(),
+            [
+                PathBuf::from("src/lib.rs"),
+                PathBuf::from("src/main.rs"),
+                PathBuf::from("src/shared.rs")
+            ]
+        );
+        let reversed = discover(
+            &root,
+            &[entries[1].clone(), entries[0].clone()],
+            &Scope::new(&[], &[])?,
+            &Cancellation::default(),
+        )?;
+        assert_eq!(
+            found
+                .mutations
+                .iter()
+                .map(|m| (&m.file.path, &m.range))
+                .collect::<Vec<_>>(),
+            reversed
+                .mutations
+                .iter()
+                .map(|m| (&m.file.path, &m.range))
+                .collect::<Vec<_>>()
+        );
+        let filtered = discover(
+            &root,
+            &entries,
+            &Scope::new(&["src/shared.rs".into()], &[])?,
+            &Cancellation::default(),
+        )?;
+        assert_eq!(filtered.mutations.len(), 1);
+        Ok(())
+    }
+
+    #[test]
+    fn shared_root_and_module_resolve_both_child_module_contexts() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path().canonicalize()?;
+        fs::create_dir_all(root.join("src/shared"))?;
+        fs::write(root.join("src/main.rs"), "mod shared; fn main() {}")?;
+        fs::write(
+            root.join("src/shared.rs"),
+            "mod child; pub fn shared() -> bool { true }",
+        )?;
+        fs::write(
+            root.join("src/child.rs"),
+            "fn root_child() -> bool { true }",
+        )?;
+        fs::write(
+            root.join("src/shared/child.rs"),
+            "fn module_child() -> bool { false }",
+        )?;
+        let found = discover(
+            &root,
+            &["src/main.rs".into(), "src/shared.rs".into()],
+            &Scope::new(&[], &[])?,
+            &Cancellation::default(),
+        )?;
+        assert_eq!(found.mutations.len(), 3);
+        Ok(())
     }
 
     #[test]
@@ -666,7 +763,7 @@ fn main() {
         );
         let excluded = discover(
             root,
-            Path::new("src/main.rs"),
+            &[PathBuf::from("src/main.rs")],
             &Scope::new(&[], &["src/main.rs".into()])?,
             &Cancellation::default(),
         )?;

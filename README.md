@@ -60,8 +60,10 @@ cargo run -- tests/fixtures/go --jobs 2 --timeout 5
 
 ## Initial Rust support
 
-The first Rust slice supports one ordinary binary package with a usable
-`Cargo.lock`, default features, and standard unit/integration tests on Unix.
+Rust supports one ordinary package with a binary, a library, or a library plus
+one binary, with a usable `Cargo.lock`, default features, and standard
+unit/integration tests on Unix. Library support is experimental pending real-project
+mutation validation; binary-only support retains its validated milestone.
 Try the [small fixture](tests/fixtures/rust/README.md):
 
 ```sh
@@ -91,7 +93,9 @@ test. The [acceptance review](benchmarks/rust-milestone-acceptance.md) collects 
 verified workflow, scope limits and runtime evidence. The
 [first feedback-time improvement](benchmarks/rust-report-write-reruns.md) reduces
 redundant report writes and preserves the saved-selection outcomes in a measured
-Mutie self-run; tests still run in full. Library/workspace support remains future scope.
+Mutie self-run; tests still run in full. The [library fixture](tests/fixtures/rust-library/README.md)
+extends discovery to all production roots and exercises fresh/cached execution
+and stronger-test reruns. Workspaces remain future scope.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
@@ -154,14 +158,17 @@ remain eligible. Bitwise operators, reference syntax and closure delimiters are
 not logical-swap candidates.
 Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
 macro tokens/expansions, generated files, constants/type-level code and array repeat lengths are
-excluded. The run prints and saves discovery exclusions. Library/proc-macro
-packages, multi-package or enclosing workspaces, local/git dependencies,
+excluded. The run prints and saves discovery exclusions. Libraries use ordinary
+`lib` or `rlib` crate types; doctests and ignored tests are not run. Proc-macro
+packages, other library crate types, multiple binaries, multi-package or enclosing
+workspaces, local/git dependencies,
 project build scripts, custom profiles/harnesses, feature selection, and custom
 compiler/runner settings are outside this first scope. Only artifact-location,
 network and terminal Cargo config sections are accepted; in-project artifact
 directories must be under `target/`. Toolchain override files are rejected;
 an inherited `RUSTUP_TOOLCHAIN` selection is preserved and actual tool versions
-are recorded. See [the contract](DESIGN.md#initial-rust-support-contract) for detail.
+are recorded. See [the original binary contract](DESIGN.md#initial-rust-support-contract)
+and [library scope](benchmarks/rust-library-scope.md) for detail.
 
 The first self-testing sample uses two literals in Mutie's score code:
 

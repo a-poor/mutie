@@ -200,10 +200,6 @@ impl Project {
             "project build scripts are not supported yet"
         );
         ensure!(
-            manifest.get("lib").is_none() && !root.join("src/lib.rs").exists(),
-            "initial Rust support requires a binary package without a library"
-        );
-        ensure!(
             manifest.get("patch").is_none() && manifest.get("replace").is_none(),
             "Cargo dependency overrides are not supported yet"
         );
@@ -253,31 +249,9 @@ impl Project {
                 }
             }
         }
-        let bins = manifest.get("bin").and_then(toml::Value::as_array);
-        ensure!(
-            bins.is_none_or(|v| v.len() == 1),
-            "initial Rust support requires exactly one binary"
-        );
-        let binary = bins
-            .and_then(|v| v[0].get("name"))
-            .and_then(toml::Value::as_str)
-            .unwrap_or(name);
-        let source = bins
-            .and_then(|v| v[0].get("path"))
-            .and_then(toml::Value::as_str)
-            .unwrap_or("src/main.rs");
-        let source = inside(root, &root.join(source))?;
+        let targets = production_targets(root, &manifest, package, name)?;
         let lock = inside(root, &root.join("Cargo.lock"))
             .context("Rust requires a checked-in usable Cargo.lock")?;
-        let edition = match bins
-            .and_then(|v| v[0].get("edition"))
-            .or_else(|| package.get("edition"))
-        {
-            Some(edition) => edition
-                .as_str()
-                .context("inherited Cargo editions are not supported yet")?,
-            None => "2015",
-        };
         let mut excluded = BTreeSet::from([root.join("target")]);
         validate_environment(root, &mut excluded)?;
         let mut configs = BTreeSet::new();
@@ -340,7 +314,11 @@ impl Project {
             );
             // A conventional artifact directory can be inside the root; never
             // silently exclude the selected source or manifest/lockfile.
-            for input in [&source, Path::new("Cargo.toml"), &lock] {
+            for input in targets
+                .iter()
+                .map(|target| target.source.as_path())
+                .chain([Path::new("Cargo.toml"), &lock])
+            {
                 ensure!(
                     !root.join(input).starts_with(path),
                     "Cargo artifact directory overlaps source input: {}",
@@ -353,13 +331,12 @@ impl Project {
                 path.display()
             );
         }
-        let targets = vec![ProductionTarget {
-            kind: TargetKind::Bin,
-            name: binary.into(),
-            source,
-            edition: edition.into(),
-        }];
-        validate_targets(&targets)?;
+        let test_scope = if targets.iter().any(|target| target.kind == TargetKind::Lib) {
+            "library/binary unit and integration tests; doctests and ignored tests excluded"
+        } else {
+            // Preserve the execution identity of existing binary-only reports.
+            "binary unit and integration tests; ignored tests excluded"
+        };
         Ok(Self {
             scope: ExecutionScope {
                 package: name.into(),
@@ -373,7 +350,7 @@ impl Project {
                     Sha256::digest(fs::read(root.join(lock))?)
                 ),
                 default_features: true,
-                test_scope: "binary unit and integration tests; ignored tests excluded".into(),
+                test_scope: test_scope.into(),
                 profile: "test".into(),
                 rustc: None,
                 cargo: None,
@@ -417,8 +394,9 @@ impl Project {
                 .as_array()
                 .context("Cargo target has no kind")?;
             ensure!(
-                kind.len() == 1 && matches!(kind[0].as_str(), Some("bin" | "test")),
-                "only a binary and integration tests are supported Rust targets"
+                kind.len() == 1
+                    && matches!(kind[0].as_str(), Some("bin" | "test" | "lib" | "rlib")),
+                "only ordinary libraries, one binary and integration tests are supported Rust targets"
             );
             ensure!(target["test"] == true, "Rust targets must enable tests");
             let path = inside(
@@ -437,13 +415,17 @@ impl Project {
                     .any(|p| path.starts_with(p)),
                 "Cargo target lies inside an excluded artifact directory"
             );
-            if kind[0] == "bin" {
+            if kind[0] != "test" {
                 ensure!(
-                    target["crate_types"] == serde_json::json!(["bin"]),
-                    "unsupported Cargo binary crate type"
+                    target["crate_types"] == target["kind"],
+                    "unsupported Cargo production crate type"
                 );
                 targets.push(ProductionTarget {
-                    kind: TargetKind::Bin,
+                    kind: if kind[0] == "bin" {
+                        TargetKind::Bin
+                    } else {
+                        TargetKind::Lib
+                    },
                     name: target["name"]
                         .as_str()
                         .context("Cargo target has no name")?
@@ -464,6 +446,155 @@ impl Project {
         );
         Ok(())
     }
+}
+
+fn production_targets(
+    root: &Path,
+    manifest: &toml::Value,
+    package: &toml::Value,
+    package_name: &str,
+) -> Result<Vec<ProductionTarget>> {
+    let mut targets = Vec::new();
+    let empty = toml::Value::Table(Default::default());
+    let edition = |target: &toml::Value| -> Result<String> {
+        Ok(target
+            .get("edition")
+            .or_else(|| package.get("edition"))
+            .map(|value| {
+                value
+                    .as_str()
+                    .context("inherited Cargo editions are not supported yet")
+            })
+            .transpose()?
+            .unwrap_or("2015")
+            .into())
+    };
+    let string = |target: &toml::Value, key: &str| -> Result<Option<String>> {
+        target
+            .get(key)
+            .map(|value| {
+                value
+                    .as_str()
+                    .map(str::to_owned)
+                    .with_context(|| format!("Cargo target {key} must be a string"))
+            })
+            .transpose()
+    };
+    if manifest.get("lib").is_some()
+        || (package.get("autolib").and_then(toml::Value::as_bool) != Some(false)
+            && root.join("src/lib.rs").is_file())
+    {
+        let library = manifest.get("lib").unwrap_or(&empty);
+        ensure!(library.as_table().is_some(), "Cargo lib must be a table");
+        ensure!(
+            library
+                .get("proc-macro")
+                .is_none_or(|v| v.as_bool() == Some(false)),
+            "Rust proc macros are not supported yet"
+        );
+        ensure!(
+            library
+                .get("crate-type")
+                .is_none_or(|v| v
+                    .as_array()
+                    .is_some_and(|types| types.len() == 1
+                        && matches!(types[0].as_str(), Some("lib" | "rlib")))),
+            "only ordinary lib/rlib crate types are supported"
+        );
+        ensure!(
+            library
+                .get("harness")
+                .is_none_or(|v| v.as_bool() == Some(true))
+                && library
+                    .get("test")
+                    .is_none_or(|v| v.as_bool() == Some(true)),
+            "Rust targets require the standard enabled test harness"
+        );
+        ensure!(
+            library.get("required-features").is_none(),
+            "feature-gated Cargo targets are not supported yet"
+        );
+        targets.push(ProductionTarget {
+            kind: TargetKind::Lib,
+            name: string(library, "name")?.unwrap_or_else(|| package_name.replace('-', "_")),
+            source: inside(
+                root,
+                &root.join(string(library, "path")?.unwrap_or_else(|| "src/lib.rs".into())),
+            )?,
+            edition: edition(library)?,
+        });
+    }
+    let mut binaries = std::collections::BTreeMap::new();
+    {
+        if root.join("src/main.rs").is_file() {
+            binaries.insert(package_name.to_owned(), PathBuf::from("src/main.rs"));
+        }
+        let directory = root.join("src/bin");
+        if directory.is_dir() {
+            for entry in fs::read_dir(directory)? {
+                let path = entry?.path();
+                let candidate = if path.is_file() && path.extension().is_some_and(|e| e == "rs") {
+                    Some((path.file_stem(), path.clone()))
+                } else if path.is_dir() && path.join("main.rs").is_file() {
+                    Some((path.file_name(), path.join("main.rs")))
+                } else {
+                    None
+                };
+                if let Some((name, path)) = candidate {
+                    let name = name
+                        .and_then(|n| n.to_str())
+                        .context("Cargo binary name is not UTF-8")?;
+                    ensure!(
+                        binaries
+                            .insert(name.to_owned(), path.strip_prefix(root)?.to_owned())
+                            .is_none(),
+                        "ambiguous automatic Cargo binary target {name}"
+                    );
+                }
+            }
+        }
+    }
+    let mut explicit_names = BTreeSet::new();
+    if let Some(bins) = manifest.get("bin") {
+        for binary in bins.as_array().context("Cargo bin must be an array")? {
+            let name = string(binary, "name")?.context("explicit Cargo binary requires a name")?;
+            ensure!(
+                explicit_names.insert(name.clone()),
+                "duplicate Cargo binary target {name}"
+            );
+            let path = string(binary, "path")?
+                .map(PathBuf::from)
+                .or_else(|| binaries.get(&name).cloned())
+                .context(
+                    "explicit Cargo binary requires a path when not automatically discovered",
+                )?;
+            let source = inside(root, &root.join(path))?;
+            binaries.remove(&name);
+            binaries.retain(|_, candidate| {
+                root.join(candidate).canonicalize().ok() != Some(root.join(&source))
+            });
+            targets.push(ProductionTarget {
+                kind: TargetKind::Bin,
+                name,
+                source,
+                edition: edition(binary)?,
+            });
+        }
+    }
+    if package.get("autobins").and_then(toml::Value::as_bool) == Some(false) {
+        binaries.clear();
+    }
+    for (name, source) in binaries {
+        targets.push(ProductionTarget {
+            kind: TargetKind::Bin,
+            name,
+            source: inside(root, &root.join(source))?,
+            edition: edition(&empty)?,
+        });
+    }
+    targets.sort();
+    validate_targets(&targets)?;
+    Ok(targets)
 }
 
 pub fn inside(root: &Path, path: &Path) -> Result<PathBuf> {
@@ -777,7 +908,7 @@ mod tests {
     fn rejects_unsupported_layouts_before_building() -> Result<()> {
         for (extra, expected) in [
             ("build = 'generate.rs'", "build scripts"),
-            ("[lib]\npath = 'src/main.rs'", "without a library"),
+            ("[lib]\nproc-macro = true", "proc macros"),
             ("[workspace]\nmembers = ['sibling']", "multi-package"),
             (
                 "[dependencies]\nother = { path = '../other' }",
@@ -806,6 +937,56 @@ mod tests {
         assert_eq!(project.scope.package, "sample");
         assert_eq!(project.scope.targets[0].source, Path::new("src/main.rs"));
         assert!(project.excluded.contains(&temp.path().join("target")));
+        Ok(())
+    }
+
+    #[test]
+    fn library_targets_follow_names_paths_editions_and_auto_discovery() -> Result<()> {
+        let temp = fixture("")?;
+        let root = temp.path();
+        fs::write(root.join("src/lib.rs"), "pub fn enabled() -> bool { true }")?;
+        let combined = Project::load(root)?;
+        assert_eq!(combined.scope.targets.len(), 2);
+        assert_eq!(combined.scope.targets[1].kind, TargetKind::Lib);
+        fs::remove_file(root.join("src/main.rs"))?;
+        assert_eq!(Project::load(root)?.scope.targets.len(), 1);
+        fs::write(
+            root.join("Cargo.toml"),
+            "[package]\nname = 'sample-package'\nversion = '0.0.0'\nedition = '2024'\nautobins = false\n[lib]\nname = 'api'\npath = 'src/lib.rs'\nedition = '2021'\ncrate-type = ['rlib']",
+        )?;
+        let library = Project::load(root)?;
+        assert_eq!(library.scope.targets[0].name, "api");
+        assert_eq!(library.scope.targets[0].edition, "2021");
+        fs::write(root.join("src/main.rs"), "fn main() {}")?;
+        assert_eq!(Project::load(root)?.scope.targets.len(), 1);
+        fs::write(
+            root.join("Cargo.toml"),
+            "[package]\nname = 'sample-package'\nversion = '0.0.0'\nedition = '2024'\nautolib = false",
+        )?;
+        assert_eq!(Project::load(root)?.scope.targets[0].kind, TargetKind::Bin);
+        fs::create_dir(root.join("src/bin"))?;
+        fs::write(root.join("src/bin/extra.rs"), "fn main() {}")?;
+        assert!(Project::load(root).is_err());
+        fs::remove_file(root.join("src/main.rs"))?;
+        assert_eq!(Project::load(root)?.scope.targets[0].name, "extra");
+        Ok(())
+    }
+
+    #[test]
+    fn rejects_unsupported_library_settings_and_paths() -> Result<()> {
+        for extra in [
+            "proc-macro = true",
+            "crate-type = ['cdylib']",
+            "crate-type = ['lib', 'rlib']",
+            "test = false",
+            "harness = false",
+            "required-features = ['optional']",
+            "path = '../outside.rs'",
+        ] {
+            let temp = fixture(&format!("[lib]\n{extra}"))?;
+            fs::write(temp.path().join("src/lib.rs"), "")?;
+            assert!(Project::load(temp.path()).is_err(), "{extra}");
+        }
         Ok(())
     }
 

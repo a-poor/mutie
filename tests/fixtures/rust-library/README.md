@@ -1,7 +1,10 @@
 # Rust library scope fixture
 
-This independent package scopes the next Rust adapter expansion. Mutie currently
-rejects library packages; these Cargo checks do not establish adapter support.
+This independent package exercises experimental Rust library support. Use
+`cargo run -- tests/fixtures/rust-library --jobs 1` from the repository root to
+produce one killed and one missed mutation. The opt-in tests in
+`tests/support/rust_library.rs` cover both layouts, fresh/cached runs and a
+stronger-test focused rerun.
 The root `cargo test` does not exercise this fixture.
 
 Run `cargo test --locked --tests --no-fail-fast` in this directory. The three
@@ -18,5 +21,4 @@ Use temporary copies for mutation experiments:
   layout. Its two baseline tests have the same killed/surviving behavior.
 
 See [the scope audit](../../../benchmarks/rust-library-scope.md) for evidence and
-the adapter acceptance gates. Fresh/cached Mutie runs and saved-report reruns
-remain implementation work.
+the remaining real-project acceptance gates.

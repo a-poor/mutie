@@ -1,4 +1,4 @@
-//! Initial Cargo adapter: one binary package and owned build artifacts.
+//! Cargo adapter: one ordinary package and owned build artifacts.
 use std::{
     ffi::OsStr,
     future::Future,
