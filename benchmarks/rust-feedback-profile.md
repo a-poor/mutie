@@ -119,3 +119,7 @@ The diagnostic and parser change no production behavior. Validation includes the
 nine full suites, formatting and Clippy, parser checks against all retained captures,
 and negative controls rejecting failed executions and missing harness evidence.
 No production speedup is claimed by this profiling change.
+
+Follow-up: the [runtime experiment](rust-runtime-startup.md) records the interleaved
+startup/dismissal measurements. It does not justify a runtime-default change;
+the next diagnostic should attribute costs within the workflow.

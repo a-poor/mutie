@@ -34,9 +34,13 @@ change the current focused-feedback work queue.
   execution in repeated serial/parallel cold/warm Mutie runs. See
   [the feedback profile](benchmarks/rust-feedback-profile.md). The residual outside
   harness timings bounds further investigation; it does not isolate Cargo startup.
-- [ ] Isolate subprocess/runtime startup and concurrency costs in the dominant
-  dismissal, terminal and log-limit targets. Compare interleaved controls before
-  changing runtime setup or scheduling; retain every assertion and deadline.
+- [x] Measure prebuilt CLI startup and full dismissal-harness execution with
+  default/one/two Tokio threads in interleaved repetitions. All nine harnesses
+  pass; the small 2–3% median difference does not justify changing runtime defaults.
+  See [the runtime experiment](benchmarks/rust-runtime-startup.md).
+- [ ] Attribute dismissal workflow time to command execution, report persistence
+  and cleanup, then extend to terminal/log-limit targets as needed. Use isolated
+  opt-in diagnostics; retain every assertion, durable write and deadline.
 - [ ] Choose an optimization from measured costs, retaining full test execution,
   package rebuilds, deadlines and strict rerun matching. Broader test selection or
   persistent reuse requires its own design decision.

@@ -1,0 +1,157 @@
+{
+  "revision": "2e94598",
+  "platform": "macOS arm64",
+  "reported_cpus": null,
+  "toolchain": "Rust/Cargo 1.99.0",
+  "evidence_root": "/tmp/mutie-runtime-startup-6l6ad67y",
+  "binary_sha256_after_measurement": {
+    "target/debug/mutie": "583dac9c1e6580330fc02803b776159e312b3c360416675c07184e32570bed7f",
+    "target/debug/deps/dismissals-ccb9ffed9e3f8496": "9eac90833eaaf11052c49e7f046761bdacb1dfdc1dcbdf7e96603e41d41e9c19"
+  },
+  "samples": [
+    {
+      "phase": "help",
+      "round": 0,
+      "threads": "default",
+      "seconds": 0.05386040830053389,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 0,
+      "threads": "1",
+      "seconds": 0.009629531250539003,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 0,
+      "threads": "2",
+      "seconds": 0.010832322949863738,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 1,
+      "threads": "2",
+      "seconds": 0.010937227099930169,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 1,
+      "threads": "default",
+      "seconds": 0.010435837499971966,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 1,
+      "threads": "1",
+      "seconds": 0.011290879199805204,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 2,
+      "threads": "1",
+      "seconds": 0.010879143750207732,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 2,
+      "threads": "2",
+      "seconds": 0.010406518750096438,
+      "repetitions": 20
+    },
+    {
+      "phase": "help",
+      "round": 2,
+      "threads": "default",
+      "seconds": 0.010147216650511836,
+      "repetitions": 20
+    },
+    {
+      "phase": "dismissals",
+      "round": 0,
+      "threads": "default",
+      "seconds": 19.613494667006307,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 19.6
+    },
+    {
+      "phase": "dismissals",
+      "round": 0,
+      "threads": "1",
+      "seconds": 19.820056666998425,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 19.81
+    },
+    {
+      "phase": "dismissals",
+      "round": 0,
+      "threads": "2",
+      "seconds": 19.69732841599034,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 19.69
+    },
+    {
+      "phase": "dismissals",
+      "round": 1,
+      "threads": "2",
+      "seconds": 19.73787245800486,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 19.73
+    },
+    {
+      "phase": "dismissals",
+      "round": 1,
+      "threads": "default",
+      "seconds": 20.278763084003003,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 20.27
+    },
+    {
+      "phase": "dismissals",
+      "round": 1,
+      "threads": "1",
+      "seconds": 19.6752661250066,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 19.67
+    },
+    {
+      "phase": "dismissals",
+      "round": 2,
+      "threads": "1",
+      "seconds": 20.835086708000745,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 20.83
+    },
+    {
+      "phase": "dismissals",
+      "round": 2,
+      "threads": "2",
+      "seconds": 19.17403666600876,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 19.16
+    },
+    {
+      "phase": "dismissals",
+      "round": 2,
+      "threads": "default",
+      "seconds": 20.66664470899559,
+      "repetitions": 1,
+      "passed": 15,
+      "harness_seconds": 20.65
+    }
+  ]
+}

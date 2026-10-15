@@ -335,7 +335,11 @@ adapter build/cleanup, test execution and individual harness durations across
 cold/warm serial and parallel runs. Warm execution is dominated by test harnesses,
 particularly dismissal, terminal and log-limit workflows. Investigate subprocess
 startup and concurrency within those targets next; the measured residual does not
-identify Cargo startup alone, and no production optimization is selected yet.
+identify Cargo startup alone. The subsequent
+[runtime experiment](benchmarks/rust-runtime-startup.md) found comparable warm CLI
+startup and only a small dismissal-harness median difference with fewer Tokio
+threads. Keep runtime defaults unchanged; attribute workflow command, persistence
+and cleanup costs next. No production optimization is selected yet.
 
 ## Original Go MVP — completed
 
