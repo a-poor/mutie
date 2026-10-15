@@ -81,6 +81,9 @@ Rust binary-package workflow.
   preservation of execution outcomes and saved reports; it also exercises
   dismissal-based and minimum-score CI policies, configuration, and focused runs.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
+- `SUPPORT.md` tracks support levels, scope and validation evidence for each
+  language/test runner. Update it when support changes; planned JavaScript/TypeScript
+  and Python targets are not implemented CLI capabilities.
 
 ## Development Status & Versioning
 

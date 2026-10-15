@@ -5,6 +5,12 @@ project, including work that is not implemented yet. [README.md](README.md)
 documents the current CLI and behavior; [TODO.md](TODO.md) tracks implementation
 progress. Update this reference as decisions change.
 
+[SUPPORT.md](SUPPORT.md) is the target support ledger: it defines maturity levels
+and tracks verified scope separately for Go/go test, Rust/Cargo, and the planned
+JavaScript/TypeScript runners (Vitest, Node and Bun) and Python/pytest. New runner
+support requires its own scope and validation evidence even when language parsing
+or shared reporting can be reused. The ledger is not an implementation ordering.
+
 ## Goal
 
 Mutie is a Rust CLI for finding gaps in tests by making small changes to source

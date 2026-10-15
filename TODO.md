@@ -12,6 +12,22 @@ measured full-suite runtime on Mutie. Preserve outcome correctness, source/artif
 isolation and the full test scope while identifying the dominant costs. Explicit
 user priorities and demonstrated reliability blockers take precedence.
 
+## Target support tracking
+
+[SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
+language/test runner. The planned targets below are explicit roadmap targets;
+their ordering and initial scopes are not yet selected.
+
+- [x] Define support levels and record current Go and Rust evidence and limits.
+- [ ] Define and implement the first JavaScript/TypeScript + Vitest slice.
+- [ ] Define and implement the first JavaScript/TypeScript + Node test runner slice.
+- [ ] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
+- [ ] Define and implement the first Python + pytest slice.
+
+Each new slice starts with a fixture and a real validation project, then advances
+through the support gates recorded in the ledger. Tracking these targets does not
+change the current focused-feedback work queue.
+
 ## Next objective: shorter focused Rust feedback
 
 - [x] Profile compilation, adapter phase overhead and individual test-target
@@ -430,8 +446,9 @@ work; their order is not a priority queue and they do not block the Rust milesto
 
 ## Longer-term options
 
-- [ ] After Rust validation, consider JavaScript/TypeScript or Python based on
-  concrete projects and the largest remaining obstacles to routine use.
+- [ ] Prioritize the planned JavaScript/TypeScript and Python runner slices using
+  concrete projects and the largest remaining obstacles to routine use; see
+  [target support tracking](#target-support-tracking).
 - [ ] Extend project support beyond the chosen Rust milestone scope to additional
   workspace/multi-module layouts and test frameworks as needed.
 - [ ] Consider HTML and standard interchange exports for concrete consumers.

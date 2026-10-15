@@ -15,6 +15,10 @@ See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
 not necessarily available in the current CLI.
 
+See [target support](SUPPORT.md) for support levels, verified scopes and gaps for
+Go and Rust, plus planned JavaScript/TypeScript integrations for Vitest, Node's
+test runner and Bun's test runner, and Python integration for pytest.
+
 ## Try it
 
 Building Mutie requires Rust/Cargo. Testing a Go project also requires Go 1.24+
