@@ -1515,5 +1515,9 @@ are rejected. Accepted files are fingerprinted in saved execution identity and
 checked across snapshot copying; edits invalidate reruns. See
 [config acceptance](benchmarks/vitest-coverage-config.md).
 No plugin abstraction, affected-test selection or persistent transform cache is
-part of this milestone. SUPPORT.md records Experimental fixture acceptance; broader workflows remain
-separate gates. Existing Go/Rust compatibility and report reading remain required.
+part of this milestone. The [Pathe survivor review](benchmarks/vitest-pathe-survivors.md)
+completes the scoped TypeScript run/inspect/improve-tests/rerun milestone: both
+survivors expose observable differences and are killed by stronger tests.
+SUPPORT.md records TypeScript as Validated and JavaScript as Experimental.
+Independent real JavaScript evidence is the next major gate; broader execution
+and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.

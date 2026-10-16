@@ -19,8 +19,8 @@ Saved Vitest execution scope is mandatory for reruns and browser exports. Before
 baseline execution, the current captured project must match package name, raw
 manifest/lockfile fingerprints, pinned Node/pnpm/Vitest/Vite versions, Node
 executable path, generated runner settings, reporter fingerprint, syntax scope,
-and the presence/content of allowed project configs (`tsconfig.json` and the
-settings-only `pnpm-workspace.yaml`). Even whitespace-only manifest/lockfile
+and the presence/content of allowed project configs (`tsconfig.json`, the
+settings-only `pnpm-workspace.yaml`, and accepted coverage-only Vite/Vitest config). Even whitespace-only manifest/lockfile
 changes require a fresh scan. Moving a checkout is allowed; changing the Node
 executable path is conservatively rejected.
 
@@ -83,3 +83,8 @@ JS/TS stronger-test reruns, metadata rejection, stale-source and empty-selection
 checks. Formatting and all-target Clippy passed. The initial extended run exposed
 a test-helper conflict between `--list` and `--output-dir`; after correcting that
 invocation, the complete matrix passed against the unchanged CLI implementation.
+
+Real TypeScript acceptance now supplements these fixtures: the
+[Pathe survivor review](vitest-pathe-survivors.md) reproduces two survivors, adds
+three behavioral assertions, then kills both through missed-only reruns in
+18.79 seconds while preserving production source and the original report.

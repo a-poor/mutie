@@ -2,7 +2,7 @@
 
 A CLI for performing mutation testing.
 
-Mutie supports Go modules, scoped Rust packages, and experimental Vitest packages. It runs a
+Mutie supports Go modules, scoped Rust packages, and pinned Vitest packages. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
@@ -15,8 +15,8 @@ See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
 not necessarily available in the current CLI.
 
-See [target support](SUPPORT.md) for Go/Rust support and the experimental
-JavaScript/TypeScript Vitest slice. Node's test runner, Bun and pytest remain planned.
+See [target support](SUPPORT.md) for Go/Rust support, validated scoped
+TypeScript/Vitest support, and experimental JavaScript/Vitest support. Node's test runner, Bun and pytest remain planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only

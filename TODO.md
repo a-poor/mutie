@@ -90,9 +90,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   the file for snapshots and reruns. See [config evidence](benchmarks/vitest-coverage-config.md).
 - [x] Run Pathe with its original config: 14 mutations, 12 kills, two survivors,
   zero errors in 94.00 seconds; preserve input files and validate saved reports.
-- [ ] Investigate Pathe survivors 12 and 13 for usefulness/equivalence, add stronger
-  tests where appropriate, and record focused-rerun feedback time. Select
-  and validate a real JavaScript project independently before promoting JS support.
+- [x] Investigate Pathe survivors 12 and 13: both are distinguishable boundary
+  behaviors. Three stronger tests kill both in an 18.79-second focused rerun;
+  record preservation and [TypeScript milestone acceptance](benchmarks/vitest-pathe-survivors.md).
+- [ ] Next major evidence gate: select and validate a real JavaScript project
+  independently before promoting JS support.
 
 ## Completed: first Rust feedback-time improvement
 

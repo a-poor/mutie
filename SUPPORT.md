@@ -30,7 +30,8 @@ does not by itself validate a new runner.
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
-| JavaScript / TypeScript | Vitest | Experimental | One pinned ESM/pnpm package; JS/TS boolean flips; serial full-suite scored runs, saved reports, focused reruns and review/policies | Lifecycle attribution, parallel execution, real-project findings |
+| TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
+| JavaScript | Vitest | Experimental | Same pinned ESM/pnpm execution scope; JS fixtures, reports, reruns and review/policies | Independent real JavaScript project and useful findings |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -113,7 +114,7 @@ targets have not been chosen or verified.
 
 ## JavaScript / TypeScript — Vitest
 
-**Level: Experimental within the pinned ESM/pnpm scope.**
+**Levels: TypeScript Validated; JavaScript Experimental within the pinned ESM/pnpm scope.**
 
 The [first scope audit](benchmarks/vitest-initial-scope.md) selects one ESM package,
 Node execution, `.js`/`.ts` source, pnpm's self-contained locked dependencies and
@@ -134,8 +135,11 @@ four kills and two survivors across six JS/TS mutations, with a stronger JS test
 killing the remaining survivor in a filtered fresh scan. See
 [CLI acceptance](benchmarks/vitest-shared-runs.md). The first complete Pathe run
 with its original config produced 12 kills and two survivors in 94.00 seconds,
-with no execution errors. Survivor usefulness and stronger-test reruns remain
-unverified; JavaScript still needs its own real-project target. Direct probes also
+with no execution errors. Both survivors expose observable boundary behaviors:
+an empty-cwd path fallback and repeated alias expansion. Three stronger tests
+kill both in an 18.79-second focused rerun; see
+[TypeScript milestone acceptance](benchmarks/vitest-pathe-survivors.md). JavaScript
+still needs its own real-project target. Direct probes also
 show why JSON `success` and exit status alone are insufficient: unhandled errors
 and all-skipped runs need explicit rejection.
 
@@ -153,7 +157,7 @@ identity checks. The browser exports explicit `--lang vitest` commands; see
 policies now have separate JS/TS fixture evidence: accepted gaps remain raw
 survivors, minimum scores still include them, and stale decisions need review.
 See [review/policy acceptance](benchmarks/vitest-dismissals.md). Next gates are
-broader lifecycle attribution, parallel execution and useful real-project findings.
+independent real JavaScript findings, broader lifecycle/config scope and parallel execution.
 The [lifecycle evidence](benchmarks/vitest-lifecycle-attribution.md) now distinguishes
 body failures from lifecycle failures in the pinned worker. Successful test-scoped
 fixtures, traditional hooks, aroundEach and completion callbacks can accompany
@@ -163,8 +167,8 @@ from setup and post-body assertion-count failures remain conservatively rejected
 copy and requires the exact audited runner bytes. File/worker fixture setup, body
 and teardown, nested hooks, and concurrent body/cleanup mixtures now have fixture
 evidence. Cross-file fixture reuse, cancellation during scoped teardown and
-parallel workers remain unvalidated. Useful real-project findings and stronger-test
-reruns remain acceptance gates.
+parallel workers remain unvalidated. The TypeScript milestone does not promote
+JavaScript, JSX or TSX support.
 
 ## JavaScript / TypeScript — Node.js test runner
 

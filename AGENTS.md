@@ -130,7 +130,10 @@ discovery, isolated execution and explicit completion/error evidence. Shared run
 reports, focused reruns and review/policies are integrated. The first complete
 Pathe run with its original coverage-only config produced 12 kills and two
 survivors in 94 seconds; `benchmarks/vitest-coverage-config.md` records evidence.
-Next validate survivor usefulness and stronger-test reruns on that real project.
+Both survivors now have observable boundary cases killed by stronger tests in
+an 18.79-second focused rerun; `benchmarks/vitest-pathe-survivors.md` records
+Validated TypeScript milestone acceptance. Next select an independent real
+JavaScript project; JavaScript remains Experimental.
 Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 
