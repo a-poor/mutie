@@ -1,7 +1,8 @@
 # JavaScript target: Hyparquet
 
-Date: 2026-10-15. JavaScript remains Experimental: this establishes discovery
-and an isolated baseline, not mutation outcomes or useful survivor evidence.
+Date: 2026-10-15. This initial audit established discovery and an isolated
+baseline while JavaScript was Experimental. Subsequent [findings and acceptance](vitest-hyparquet-findings.md)
+complete the scoped JavaScript workflow; the baseline alone did not establish it.
 
 ## Candidate and preparation
 
@@ -56,9 +57,8 @@ Local diagnostics: `/tmp/mutie-hyparquet-baseline.json`,
 `/tmp/mutie-hyparquet-check.log`. Temporary paths are evidence from this
 session, not committed fixtures.
 
-## Next gate
+## Subsequent evidence
 
-Run scored JavaScript mutations, inspect surviving findings, add stronger tests
-for observable gaps and perform saved-selection reruns. Record end-to-end time,
-classification and source/report preservation before promoting JavaScript support.
-The isolated baseline alone does not establish any of these acceptance gates.
+The [findings review](vitest-hyparquet-findings.md) records scored samples, survivor
+usefulness, stronger-test reruns, end-to-end time and preservation. Remaining
+work includes feedback-time investigation and broader mutation coverage.

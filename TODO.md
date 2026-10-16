@@ -14,7 +14,8 @@ See [the acceptance evidence](benchmarks/rust-report-write-reruns.md) for limits
 Ordinary Rust library packages now meet the scoped Validated level: fixture
 acceptance is complemented by Marathon's real-project findings, stronger-test
 reruns, matching fresh/cached outcomes and preservation evidence. See
-[the results](benchmarks/rust-library-marathon.md). The next milestone is the scoped JavaScript/TypeScript + Vitest workflow below;
+[the results](benchmarks/rust-library-marathon.md). The scoped JavaScript/TypeScript + Vitest workflow now has independent real-project
+acceptance. Next investigate Hyparquet focused feedback time before broader runs;
 Rust workspaces remain a separate scope decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
@@ -22,10 +23,10 @@ Explicit user priorities and demonstrated reliability blockers take precedence.
 
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
-Vitest is selected next; the other initial scopes remain undecided.
+Vitest has a validated first scope; the other initial scopes remain undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
-- [ ] Define and implement the first JavaScript/TypeScript + Vitest slice.
+- [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
 - [ ] Define and implement the first JavaScript/TypeScript + Node test runner slice.
 - [ ] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
 - [ ] Define and implement the first Python + pytest slice.
@@ -33,7 +34,7 @@ Vitest is selected next; the other initial scopes remain undecided.
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
 
-## Current milestone: first Vitest slice
+## Validated first Vitest slice and follow-up work
 
 - [x] Scope the first package/runner/syntax/dependency boundary; add separate JS/TS
   fixtures and select Pathe for real TypeScript validation. Record direct baseline,
@@ -96,8 +97,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Select Hyparquet for independent JavaScript validation; accept its original
   JavaScript-only NodeNext type-checking config. Discover 133 flips and pass the
   724-test isolated baseline; see [audit](benchmarks/vitest-javascript-hyparquet.md).
-- [ ] Run scored Hyparquet mutations, review usefulness and validate stronger-test
-  saved-selection reruns before promoting JavaScript support.
+- [x] Run 19 sampled Hyparquet mutations: 17 kills and two survivors. Three stronger
+  tests kill both survivors in a 55.60-second rerun; record independent scoped
+  [JavaScript acceptance](benchmarks/vitest-hyparquet-findings.md).
+- [ ] Investigate Hyparquet focused feedback time with repeated unchanged selections
+  and phase measurements. Separate launcher/host variation from adapter preparation
+  before expanding to all 133 candidates; the 12-mutation sample took 978.11 seconds.
 
 ## Completed: first Rust feedback-time improvement
 

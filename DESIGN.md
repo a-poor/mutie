@@ -1455,12 +1455,12 @@ tuning and report-retention decisions require workload-specific evidence. The
 [subsequent go-cmp measurements](benchmarks/go-cmp-v0.7.0.md) cover a larger
 inventory and report; neither library run establishes general scaling claims.
 
-## Next milestone: scoped Vitest support
+## Scoped Vitest support and remaining work
 
 The [scope record](benchmarks/vitest-initial-scope.md) defines the planned first
 JavaScript/TypeScript runner: one ESM package, Node environment, pnpm dependencies,
 plain JS/TS and boolean flips. It selects a mixed-syntax fixture and Pathe as the
-real TypeScript project; JavaScript requires independent real-project evidence.
+real TypeScript project; Hyparquet later supplies independent JavaScript evidence.
 Direct runner baselines and twelve probes are scope evidence, not an adapter.
 
 Preserve the existing built-in language boundary while introducing explicit runner
@@ -1518,9 +1518,10 @@ No plugin abstraction, affected-test selection or persistent transform cache is
 part of this milestone. The [Pathe survivor review](benchmarks/vitest-pathe-survivors.md)
 completes the scoped TypeScript run/inspect/improve-tests/rerun milestone: both
 survivors expose observable differences and are killed by stronger tests.
-SUPPORT.md records TypeScript as Validated and JavaScript as Experimental.
+SUPPORT.md records both TypeScript and JavaScript as Validated within this scope.
 Hyparquet now supplies JavaScript discovery and isolated-baseline evidence with
 its original JavaScript-only NodeNext type-checking config; runtime TypeScript
-under NodeNext remains unsupported. Scored findings and stronger-test reruns are
-the next JavaScript gate; broader execution
-and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.
+under NodeNext remains unsupported. The [JavaScript findings review](benchmarks/vitest-hyparquet-findings.md)
+adds 19 sampled mutations and two survivors killed by stronger tests. Next
+investigate focused feedback time before expanding mutation coverage; broader
+execution and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.

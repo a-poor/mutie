@@ -132,16 +132,18 @@ Pathe run with its original coverage-only config produced 12 kills and two
 survivors in 94 seconds; `benchmarks/vitest-coverage-config.md` records evidence.
 Both survivors now have observable boundary cases killed by stronger tests in
 an 18.79-second focused rerun; `benchmarks/vitest-pathe-survivors.md` records
-Validated TypeScript milestone acceptance. Next select an independent real
-JavaScript project; JavaScript remains Experimental.
+Validated TypeScript milestone acceptance. Independent JavaScript acceptance is
+recorded in `benchmarks/vitest-hyparquet-findings.md`: 19 sampled candidates, two
+survivors and a stronger-test rerun killing both.
 Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 
 JavaScript validation now targets Hyparquet: `benchmarks/vitest-javascript-hyparquet.md`
 records 133 discovered flips and a passing 724-test isolated baseline. NodeNext
 tsconfig support is limited to JavaScript-only type checking; runtime TypeScript
-remains ESNext-only. Next run scored mutations and validate useful stronger-test
-reruns; JavaScript remains Experimental.
+remains ESNext-only. JavaScript is Validated within the pinned serial scope.
+Next investigate focused feedback time and launcher/host variation before
+expanding the sample to all 133 candidates; do not infer a whole-project score.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

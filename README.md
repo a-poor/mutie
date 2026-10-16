@@ -15,15 +15,16 @@ See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
 not necessarily available in the current CLI.
 
-See [target support](SUPPORT.md) for Go/Rust support, validated scoped
-TypeScript/Vitest support, and experimental JavaScript/Vitest support. Node's test runner, Bun and pytest remain planned.
+See [target support](SUPPORT.md) for Go/Rust support and validated scoped
+JavaScript/TypeScript support through Vitest. Node's test runner, Bun and pytest remain planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
 Vite/Vitest config is accepted without executing it; coverage remains disabled.
 Plain-JSON NodeNext type-checking configs are accepted only for JavaScript-only
 projects with `allowJs`, `checkJs` and `noEmit` enabled; runtime TypeScript still
-requires ESNext. See the [Hyparquet scope audit](benchmarks/vitest-javascript-hyparquet.md).
+requires ESNext. See the [Hyparquet scope audit](benchmarks/vitest-javascript-hyparquet.md) and
+[JavaScript findings and stronger-test reruns](benchmarks/vitest-hyparquet-findings.md).
 Other runner config settings remain unsupported. See
 [config support](benchmarks/vitest-coverage-config.md). Worker evidence distinguishes body failures from fixture, hook and callback
 failures: successful lifecycle work can accompany a genuine kill, while lifecycle
