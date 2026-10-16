@@ -93,8 +93,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Investigate Pathe survivors 12 and 13: both are distinguishable boundary
   behaviors. Three stronger tests kill both in an 18.79-second focused rerun;
   record preservation and [TypeScript milestone acceptance](benchmarks/vitest-pathe-survivors.md).
-- [ ] Next major evidence gate: select and validate a real JavaScript project
-  independently before promoting JS support.
+- [x] Select Hyparquet for independent JavaScript validation; accept its original
+  JavaScript-only NodeNext type-checking config. Discover 133 flips and pass the
+  724-test isolated baseline; see [audit](benchmarks/vitest-javascript-hyparquet.md).
+- [ ] Run scored Hyparquet mutations, review usefulness and validate stronger-test
+  saved-selection reruns before promoting JavaScript support.
 
 ## Completed: first Rust feedback-time improvement
 

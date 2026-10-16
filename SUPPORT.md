@@ -139,7 +139,10 @@ with no execution errors. Both survivors expose observable boundary behaviors:
 an empty-cwd path fallback and repeated alias expansion. Three stronger tests
 kill both in an 18.79-second focused rerun; see
 [TypeScript milestone acceptance](benchmarks/vitest-pathe-survivors.md). JavaScript
-still needs its own real-project target. Direct probes also
+now has a real-project target: [Hyparquet](benchmarks/vitest-javascript-hyparquet.md)
+provides 133 discovered flips and a passing 724-test isolated baseline. Its
+NodeNext config is accepted only for JavaScript-only type checking; scored
+findings and stronger-test reruns remain pending. Direct probes also
 show why JSON `success` and exit status alone are insufficient: unhandled errors
 and all-skipped runs need explicit rejection.
 

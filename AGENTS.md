@@ -137,6 +137,12 @@ JavaScript project; JavaScript remains Experimental.
 Track JS and TS validation independently. Consider Rust workspaces separately. Preserve the
 existing binary workflow, package rebuilds and full test scope as support expands.
 
+JavaScript validation now targets Hyparquet: `benchmarks/vitest-javascript-hyparquet.md`
+records 133 discovered flips and a passing 724-test isolated baseline. NodeNext
+tsconfig support is limited to JavaScript-only type checking; runtime TypeScript
+remains ESNext-only. Next run scored mutations and validate useful stronger-test
+reruns; JavaScript remains Experimental.
+
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
 operator, or UI refinement because it is an unchecked backlog item. Judge progress

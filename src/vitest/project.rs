@@ -135,7 +135,7 @@ impl Project {
         }
         if root.join("tsconfig.json").exists() {
             // Only the audited plain-JSON compiler settings are accepted.
-            validate_tsconfig(&root.join("tsconfig.json"))?;
+            validate_tsconfig(&root.join("tsconfig.json"), cancellation)?;
         }
         for name in ["tsconfig.json", "pnpm-workspace.yaml"] {
             if root.join(name).exists() {
@@ -301,7 +301,7 @@ impl Project {
     }
 }
 
-fn validate_tsconfig(path: &Path) -> Result<()> {
+fn validate_tsconfig(path: &Path, cancellation: &Cancellation) -> Result<()> {
     let config = json(path).context("only plain JSON tsconfig is supported")?;
     let object = config.as_object().context("tsconfig must be an object")?;
     for key in object.keys() {
@@ -315,10 +315,27 @@ fn validate_tsconfig(path: &Path) -> Result<()> {
             .as_object()
             .context("compilerOptions must be an object")?;
         if let Some(module) = options.get("module") {
-            ensure!(
-                module.as_str() == Some("ESNext"),
-                "only ESNext TypeScript modules are supported"
-            );
+            if matches!(module.as_str(), Some("nodenext" | "NodeNext")) {
+                ensure!(
+                    ["allowJs", "checkJs", "noEmit"]
+                        .iter()
+                        .all(|key| options.get(*key).and_then(serde_json::Value::as_bool)
+                            == Some(true)),
+                    "NodeNext requires JavaScript-only type checking with allowJs, checkJs and noEmit"
+                );
+                let root = path.parent().context("tsconfig has no parent")?;
+                validate_javascript_only(root, root, cancellation, &mut 0)?;
+            } else {
+                ensure!(
+                    module.as_str() == Some("ESNext"),
+                    "only ESNext TypeScript modules are supported"
+                );
+            }
+        }
+        for key in ["allowJs", "checkJs"] {
+            if let Some(value) = options.get(key) {
+                ensure!(value.is_boolean(), "tsconfig {key} must be boolean");
+            }
         }
         for key in options.keys() {
             ensure!(
@@ -327,6 +344,8 @@ fn validate_tsconfig(path: &Path) -> Result<()> {
                     "target"
                         | "module"
                         | "moduleResolution"
+                        | "allowJs"
+                        | "checkJs"
                         | "strict"
                         | "noEmit"
                         | "skipLibCheck"
@@ -345,6 +364,59 @@ fn validate_tsconfig(path: &Path) -> Result<()> {
                 "unsupported tsconfig compiler option: {key}"
             );
         }
+    }
+    Ok(())
+}
+
+// NodeNext is accepted only as an audited JavaScript type-checking configuration.
+// Scan the whole project, not just discovery's src directory: tests and helpers
+// are executed too. Declarations have no runtime semantics.
+fn validate_javascript_only(
+    root: &Path,
+    path: &Path,
+    cancellation: &Cancellation,
+    count: &mut usize,
+) -> Result<()> {
+    cancellation.check()?;
+    *count += 1;
+    ensure!(
+        *count <= 200_000 && path.components().count() - root.components().count() < 100,
+        "JavaScript-only project exceeds validation limit"
+    );
+    let metadata = fs::symlink_metadata(path)?;
+    ensure!(
+        !metadata.file_type().is_symlink(),
+        "JavaScript-only validation does not support project symlinks: {}",
+        path.display()
+    );
+    if metadata.is_dir() {
+        for entry in fs::read_dir(path)? {
+            let entry = entry?;
+            if matches!(
+                entry.file_name().to_str(),
+                Some("node_modules" | ".git" | ".mutie")
+            ) {
+                continue;
+            }
+            validate_javascript_only(root, &entry.path(), cancellation, count)?;
+        }
+    } else {
+        let name = path
+            .file_name()
+            .and_then(|name| name.to_str())
+            .unwrap_or("");
+        let declaration = [".d.ts", ".d.mts", ".d.cts"]
+            .iter()
+            .any(|suffix| name.ends_with(suffix));
+        ensure!(
+            declaration
+                || !matches!(
+                    path.extension().and_then(|ext| ext.to_str()),
+                    Some("ts" | "tsx" | "mts" | "cts")
+                ),
+            "NodeNext type checking requires a JavaScript-only project; found {}",
+            path.display()
+        );
     }
     Ok(())
 }
@@ -473,6 +545,68 @@ mod tests {
                 .to_string()
                 .contains("multiple")
         );
+    }
+
+    #[test]
+    fn nodenext_type_checking_requires_javascript_only_and_tracks_config() {
+        let config = r#"{"compilerOptions":{"module":"nodenext","allowJs":true,"checkJs":true,"noEmit":true}}"#;
+        let dir = fixture();
+        write(dir.path(), "tsconfig.json", config);
+        write(
+            dir.path(),
+            "types/index.d.ts",
+            "export declare const flag: boolean;",
+        );
+        assert_eq!(
+            load(dir.path()).unwrap().project_config_fingerprints["tsconfig.json"],
+            fingerprint(config)
+        );
+        for path in [
+            "src/a.ts",
+            "test/a.test.ts",
+            "scripts/helper.mts",
+            "helper.cts",
+            "view.tsx",
+        ] {
+            write(dir.path(), path, "export const flag = true;");
+            assert!(
+                load(dir.path())
+                    .unwrap_err()
+                    .to_string()
+                    .contains("JavaScript-only"),
+                "{path}"
+            );
+            fs::remove_file(dir.path().join(path)).unwrap();
+        }
+        for key in ["allowJs", "checkJs", "noEmit"] {
+            for value in [
+                serde_json::Value::Bool(false),
+                serde_json::Value::String("true".into()),
+                serde_json::Value::Null,
+            ] {
+                let mut invalid: serde_json::Value = serde_json::from_str(config).unwrap();
+                invalid["compilerOptions"][key] = value;
+                write(dir.path(), "tsconfig.json", &invalid.to_string());
+                assert!(load(dir.path()).is_err(), "{key}");
+            }
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn javascript_only_guard_rejects_symlinks_and_honors_cancellation() {
+        let dir = fixture();
+        let cancellation = Cancellation::default();
+        std::os::unix::fs::symlink("a.js", dir.path().join("src/link.js")).unwrap();
+        assert!(
+            validate_javascript_only(dir.path(), dir.path(), &cancellation, &mut 0)
+                .unwrap_err()
+                .to_string()
+                .contains("symlinks")
+        );
+        fs::remove_file(dir.path().join("src/link.js")).unwrap();
+        cancellation.cancel();
+        assert!(validate_javascript_only(dir.path(), dir.path(), &cancellation, &mut 0).is_err());
     }
 
     #[test]

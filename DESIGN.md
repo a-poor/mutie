@@ -1519,5 +1519,8 @@ part of this milestone. The [Pathe survivor review](benchmarks/vitest-pathe-surv
 completes the scoped TypeScript run/inspect/improve-tests/rerun milestone: both
 survivors expose observable differences and are killed by stronger tests.
 SUPPORT.md records TypeScript as Validated and JavaScript as Experimental.
-Independent real JavaScript evidence is the next major gate; broader execution
+Hyparquet now supplies JavaScript discovery and isolated-baseline evidence with
+its original JavaScript-only NodeNext type-checking config; runtime TypeScript
+under NodeNext remains unsupported. Scored findings and stronger-test reruns are
+the next JavaScript gate; broader execution
 and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.

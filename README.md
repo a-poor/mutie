@@ -21,6 +21,9 @@ Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
 Vite/Vitest config is accepted without executing it; coverage remains disabled.
+Plain-JSON NodeNext type-checking configs are accepted only for JavaScript-only
+projects with `allowJs`, `checkJs` and `noEmit` enabled; runtime TypeScript still
+requires ESNext. See the [Hyparquet scope audit](benchmarks/vitest-javascript-hyparquet.md).
 Other runner config settings remain unsupported. See
 [config support](benchmarks/vitest-coverage-config.md). Worker evidence distinguishes body failures from fixture, hook and callback
 failures: successful lifecycle work can accompany a genuine kill, while lifecycle
