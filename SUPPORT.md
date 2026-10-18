@@ -164,11 +164,11 @@ identity checks. The browser exports explicit `--lang vitest` commands; see
 policies now have separate JS/TS fixture evidence: accepted gaps remain raw
 survivors, minimum scores still include them, and stale decisions need review.
 See [review/policy acceptance](benchmarks/vitest-dismissals.md). Next gates are
-avoiding repeated Node launcher resolution, broader lifecycle/config scope and
-parallel execution. The [feedback profile](benchmarks/vitest-feedback-profile.md)
+broader lifecycle/config scope and parallel execution. The [feedback profile](benchmarks/vitest-feedback-profile.md)
 records stable roughly 26-second survivor reruns, a slower launcher PATH pair,
-and test-only copy/validation/cleanup timings. No production optimization is
-claimed from those measurements.
+and test-only copy/validation/cleanup timings. The subsequent
+[Node reuse change](benchmarks/vitest-node-reuse.md) resolves the launcher once per
+run while retaining per-command executable and project identity checks.
 The [lifecycle evidence](benchmarks/vitest-lifecycle-attribution.md) now distinguishes
 body failures from lifecycle failures in the pinned worker. Successful test-scoped
 fixtures, traditional hooks, aroundEach and completion callbacks can accompany

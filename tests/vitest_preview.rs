@@ -108,3 +108,50 @@ fn rejects_configuration_without_executing_it_and_rejects_runtime_mismatch() {
     assert!(!result.status.success());
     assert!(String::from_utf8_lossy(&result.stderr).contains("requires Node 24.22.0"));
 }
+
+#[test]
+fn scored_baseline_rechecks_pinned_node_without_repeating_launcher() {
+    for replacement in [
+        Some("echo '{\"version\":\"v24.22.0\",\"executable\":\"/different/node\"}'"),
+        Some("echo '{\"version\":\"v20.0.0\",\"executable\":\"/different/node\"}'"),
+        None,
+    ] {
+        let project = fixture();
+        let tools = tempfile::tempdir().unwrap();
+        let pinned = tools.path().join("pinned node");
+        let calls = tools.path().join("launcher-calls");
+        let identity = serde_json::json!({"version":"v24.22.0", "executable": pinned});
+        write(
+            tools.path(),
+            "node",
+            format!(
+                "#!/bin/sh\necho called >> '{}'\nprintf '%s\\n' '{}'\n",
+                calls.display(),
+                identity
+            )
+            .as_bytes(),
+        );
+        fs::set_permissions(tools.path().join("node"), fs::Permissions::from_mode(0o755)).unwrap();
+        if let Some(body) = replacement {
+            fs::write(&pinned, format!("#!/bin/sh\n{body}\n")).unwrap();
+            fs::set_permissions(&pinned, fs::Permissions::from_mode(0o755)).unwrap();
+        }
+        let reports = tempfile::tempdir().unwrap();
+        let result = Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .arg(project.path())
+            .args(["--lang", "vitest", "--ui", "plain", "--output-dir"])
+            .arg(reports.path())
+            .env("PATH", tools.path())
+            .output()
+            .unwrap();
+        assert!(!result.status.success());
+        let stderr = String::from_utf8_lossy(&result.stderr);
+        assert!(
+            stderr.contains("identity changed during the run")
+                || stderr.contains("requires Node 24.22.0")
+                || stderr.contains("could not start"),
+            "{stderr}"
+        );
+        assert_eq!(fs::read_to_string(calls).unwrap(), "called\n");
+    }
+}

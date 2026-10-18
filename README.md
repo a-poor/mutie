@@ -25,9 +25,9 @@ Plain-JSON NodeNext type-checking configs are accepted only for JavaScript-only
 projects with `allowJs`, `checkJs` and `noEmit` enabled; runtime TypeScript still
 requires ESNext. See the [Hyparquet scope audit](benchmarks/vitest-javascript-hyparquet.md) and
 [JavaScript findings and stronger-test reruns](benchmarks/vitest-hyparquet-findings.md).
-If a Node version-manager launcher is slow, putting the installed pinned Node
-binary directory first on PATH can reduce repeated identity-check overhead; see
-the measured [feedback profile](benchmarks/vitest-feedback-profile.md).
+Vitest resolves Node through PATH once per run, then rechecks the pinned executable
+version/path and project identity before each baseline or mutation command. See
+the [Node reuse validation](benchmarks/vitest-node-reuse.md).
 Other runner config settings remain unsupported. See
 [config support](benchmarks/vitest-coverage-config.md). Worker evidence distinguishes body failures from fixture, hook and callback
 failures: successful lifecycle work can accompany a genuine kill, while lifecycle

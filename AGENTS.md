@@ -143,8 +143,8 @@ records 133 discovered flips and a passing 724-test isolated baseline. NodeNext
 tsconfig support is limited to JavaScript-only type checking; runtime TypeScript
 remains ESNext-only. JavaScript is Validated within the pinned serial scope.
 `benchmarks/vitest-feedback-profile.md` records repeated focused runs and test-only
-phase timings. Next resolve Node once per run and revalidate the pinned executable
-without repeating the launcher; preserve identity checks and verify failures.
+phase timings. Node now resolves once per run and revalidates the pinned executable
+without repeating the launcher; `benchmarks/vitest-node-reuse.md` records validation.
 Expand mutation coverage separately; do not infer a whole-project score.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,

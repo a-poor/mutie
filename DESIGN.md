@@ -1522,8 +1522,10 @@ SUPPORT.md records both TypeScript and JavaScript as Validated within this scope
 Hyparquet now supplies JavaScript discovery and isolated-baseline evidence with
 its original JavaScript-only NodeNext type-checking config; runtime TypeScript
 under NodeNext remains unsupported. The [JavaScript findings review](benchmarks/vitest-hyparquet-findings.md)
-adds 19 sampled mutations and two survivors killed by stronger tests. Next
-avoid repeated Node launcher resolution while preserving executable and project
-identity checks, based on the [feedback profile](benchmarks/vitest-feedback-profile.md).
+adds 19 sampled mutations and two survivors killed by stronger tests. Node is now
+resolved through PATH once at startup (including focused reruns), then its saved
+absolute path is invoked for version/path revalidation before each command. Project
+and runner/config identity are still reloaded and compared; there is no fallback
+to PATH if the pinned executable fails. See [validation](benchmarks/vitest-node-reuse.md).
 Test-only phase instrumentation does not change the production runner or reports; broader
 execution and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.

@@ -43,8 +43,16 @@ struct NodeTool {
     executable: std::path::PathBuf,
 }
 async fn resolve_node(root: &Path, cancellation: &Cancellation) -> Result<NodeTool> {
+    identify_node("node", root, cancellation).await
+}
+
+async fn identify_node(
+    program: &str,
+    root: &Path,
+    cancellation: &Cancellation,
+) -> Result<NodeTool> {
     let output = process::run_with_env(
-        "node",
+        program,
         &[
             "--eval",
             "console.log(JSON.stringify({version:process.version,executable:process.execPath}))",
@@ -62,18 +70,22 @@ async fn resolve_node(root: &Path, cancellation: &Cancellation) -> Result<NodeTo
             && !output.timed_out
             && output.capture_error.is_none()
             && output.status.success(),
-        "could not identify Node for Vitest preview"
+        "could not identify Node for Vitest"
     );
     let node: serde_json::Value =
         serde_json::from_str(&output.stdout.text()?).context("invalid Node identity output")?;
     ensure!(
         node["version"] == "v24.22.0",
-        "Vitest preview currently requires Node 24.22.0; found {}",
+        "Vitest currently requires Node 24.22.0; found {}",
         node["version"]
     );
     let executable = node["executable"]
         .as_str()
         .context("Node executable identity missing")?;
+    ensure!(
+        Path::new(executable).is_absolute(),
+        "Node executable identity must be absolute"
+    );
     Ok(NodeTool {
         executable: executable.into(),
     })
@@ -141,9 +153,17 @@ pub struct ExecutionScope {
 }
 
 pub async fn execution_scope(root: &Path, cancellation: &Cancellation) -> Result<ExecutionScope> {
+    execution_scope_with_node(root, "node", cancellation).await
+}
+
+async fn execution_scope_with_node(
+    root: &Path,
+    program: &str,
+    cancellation: &Cancellation,
+) -> Result<ExecutionScope> {
     use sha2::{Digest, Sha256};
     let project = project::Project::load(root, cancellation)?;
-    let node = resolve_node(root, cancellation).await?;
+    let node = identify_node(program, root, cancellation).await?;
     Ok(ExecutionScope {
         project_config_fingerprints: project.project_config_fingerprints,
         package: project.name,
@@ -181,7 +201,14 @@ pub async fn test(
     expected: &ExecutionScope,
     cancellation: &Cancellation,
 ) -> Result<crate::command::CommandOutput> {
-    let actual = execution_scope(root, cancellation).await?;
+    // Resolve through PATH only at run startup. Recheck the pinned executable and
+    // reload project identity for every command; neither validation is cached.
+    expected.validate_record()?;
+    let program = expected
+        .node_executable
+        .to_str()
+        .context("Node path is not UTF-8")?;
+    let actual = execution_scope_with_node(root, program, cancellation).await?;
     ensure!(
         &actual == expected,
         "Vitest runner or package identity changed during the run"
@@ -286,6 +313,68 @@ pub(crate) fn fixture_scope() -> ExecutionScope {
 #[cfg(test)]
 mod scope_tests {
     use super::*;
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn node_identity_rechecks_replacements_and_rejects_failures() {
+        use std::{fs, os::unix::fs::PermissionsExt};
+        let temp = tempfile::tempdir().unwrap();
+        let executable = temp.path().join("node with spaces");
+        let write = |body: &str| {
+            fs::write(&executable, format!("#!/bin/sh\n{body}\n")).unwrap();
+            fs::set_permissions(&executable, fs::Permissions::from_mode(0o755)).unwrap();
+        };
+        let cancellation = Cancellation::default();
+        let program = executable.to_str().unwrap();
+        let valid = format!(
+            "printf '%s\\n' '{}'",
+            serde_json::json!({"version":"v24.22.0", "executable":program})
+        );
+        write(&valid);
+        assert_eq!(
+            identify_node(program, temp.path(), &cancellation)
+                .await
+                .unwrap()
+                .executable,
+            executable
+        );
+        for body in [
+            "echo '{\"version\":\"v24.23.0\",\"executable\":\"/node\"}'",
+            "echo '{\"version\":\"v24.22.0\",\"executable\":\"relative/node\"}'",
+            "echo '{\"version\":\"v24.22.0\"}'",
+            "echo invalid-json",
+            "exit 1",
+            "kill -TERM $$",
+        ] {
+            write(body);
+            assert!(
+                identify_node(program, temp.path(), &cancellation)
+                    .await
+                    .is_err(),
+                "{body}"
+            );
+        }
+        write(&valid);
+        fs::set_permissions(&executable, fs::Permissions::from_mode(0o644)).unwrap();
+        assert!(
+            identify_node(program, temp.path(), &cancellation)
+                .await
+                .is_err()
+        );
+        fs::remove_file(&executable).unwrap();
+        assert!(
+            identify_node(program, temp.path(), &cancellation)
+                .await
+                .is_err()
+        );
+        write(&valid);
+        cancellation.cancel();
+        assert!(
+            identify_node(program, temp.path(), &cancellation)
+                .await
+                .is_err()
+        );
+    }
+
     #[test]
     fn reruns_require_the_complete_saved_execution_identity() {
         let original = fixture_scope();

@@ -15,9 +15,9 @@ Ordinary Rust library packages now meet the scoped Validated level: fixture
 acceptance is complemented by Marathon's real-project findings, stronger-test
 reruns, matching fresh/cached outcomes and preservation evidence. See
 [the results](benchmarks/rust-library-marathon.md). The scoped JavaScript/TypeScript + Vitest workflow now has independent real-project
-acceptance. The feedback profile identifies repeated Node launcher resolution as
-a measurable optimization candidate before broader runs;
-Rust workspaces remain a separate scope decision.
+acceptance. Repeated Node launcher resolution is now avoided while preserving per-command
+identity checks; see [validation](benchmarks/vitest-node-reuse.md). Broader Hyparquet
+runs remain the next evidence gate. Rust workspaces remain a separate scope decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -105,10 +105,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   roughly 26 seconds; test-only phase profiles separate copy/validation/cleanup.
   A PATH comparison takes 58.81 seconds through the Node launcher versus 27.56
   through the same resolved binary; see [profile](benchmarks/vitest-feedback-profile.md).
-- [ ] Resolve Node once per run and revalidate the pinned executable without
+- [x] Resolve Node once per run and revalidate the pinned executable without
   repeating the launcher. Preserve executable/version and project/config identity
-  checks; verify failures and compare unchanged saved selections before expanding
-  to all 133 candidates. The earlier 978-second sample remains partly unexplained.
+  checks; regression tests cover identity failures and a controlled saved-selection
+  comparison is recorded in [validation](benchmarks/vitest-node-reuse.md).
+- [ ] Expand Hyparquet validation to all 133 candidates. The earlier 978-second
+  sample remains partly unexplained.
 
 ## Completed: first Rust feedback-time improvement
 
