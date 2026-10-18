@@ -1,0 +1,79 @@
+--- a/test/read.test.js
++++ b/test/read.test.js
+@@ -155,16 +155,12 @@
+ 
+   it('read a list-like column', async () => {
+     const file = await asyncBufferFromFile('test/files/datapage_v2.snappy.parquet')
++    const chunks = []
+     await parquetRead({
+       file,
+       columns: ['e'],
+       onChunk(chunk) {
+-        expect(chunk).toEqual({
+-          columnName: 'e',
+-          columnData: [[1, 2, 3], undefined, undefined, [1, 2, 3], [1, 2]],
+-          rowStart: 0,
+-          rowEnd: 5,
+-        })
++        chunks.push(chunk)
+       },
+       onComplete(rows) {
+         expect(rows).toEqual([
+@@ -176,28 +172,22 @@
+         ])
+       },
+     })
++    expect(chunks).toEqual([{
++      columnName: 'e',
++      columnData: [[1, 2, 3], undefined, undefined, [1, 2, 3], [1, 2]],
++      rowStart: 0,
++      rowEnd: 5,
++    }])
+   })
+ 
+   it('read a map-like column', async () => {
+     const file = await asyncBufferFromFile('test/files/nullable.impala.parquet')
++    const chunks = []
+     await parquetRead({
+       file,
+       columns: ['int_map'],
+       onChunk(chunk) {
+-        expect(chunk).toEqual({
+-          columnName: 'int_map',
+-          columnData: [
+-            { k1: 1, k2: 100 },
+-            { k1: 2, k2: null },
+-            { },
+-            { },
+-            { },
+-            undefined,
+-            { k1: null, k3: null },
+-          ],
+-          rowStart: 0,
+-          rowEnd: 7,
+-        })
++        chunks.push(chunk)
+       },
+       onComplete(rows) {
+         expect(rows).toEqual([
+@@ -211,6 +201,20 @@
+         ])
+       },
+     })
++    expect(chunks).toEqual([{
++      columnName: 'int_map',
++      columnData: [
++        { k1: 1, k2: 100 },
++        { k1: 2, k2: null },
++        { },
++        { },
++        { },
++        undefined,
++        { k1: null, k3: null },
++      ],
++      rowStart: 0,
++      rowEnd: 7,
++    }])
+   })
+ 
+   it('format row as object', async () => {

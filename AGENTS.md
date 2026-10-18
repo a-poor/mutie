@@ -145,7 +145,13 @@ remains ESNext-only. JavaScript is Validated within the pinned serial scope.
 `benchmarks/vitest-feedback-profile.md` records repeated focused runs and test-only
 phase timings. Node now resolves once per run and revalidates the pinned executable
 without repeating the launcher; `benchmarks/vitest-node-reuse.md` records validation.
-Expand mutation coverage separately; do not infer a whole-project score.
+`benchmarks/vitest-hyparquet-full.md` records all 133 attempted candidates across
+three runs (89 kills, 41 survivors, two callback errors, one timeout). A separate
+test-only review rerun kills 36 survivors and both error candidates; five remain
+(four redundant scan settings, one unknown-filter-operator policy case). Preserve
+failed-report scores and distinguish combined inventory accounting from a full
+score. Retained boundary tests and awaited-callback patch are under
+`benchmarks/fixtures/`. Reassess the next major scope objective.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

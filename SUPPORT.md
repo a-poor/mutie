@@ -31,7 +31,7 @@ does not by itself validate a new runner.
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
-| JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet sampled findings, stronger-test reruns and review/policies | Feedback time; broader mutation/project/config evidence |
+| JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -146,7 +146,13 @@ sampled mutations produced 17 kills and two survivors. Stronger tests kill both
 in a 55.60-second saved-selection rerun; the byte-length gap affects binary filter
 equality, while default strictness is a lower-priority helper contract. See
 [JavaScript acceptance and runtime limits](benchmarks/vitest-hyparquet-findings.md).
-This is not a full-project mutation score. Direct probes also
+The [full inventory review](benchmarks/vitest-hyparquet-full.md) subsequently
+attempts all 133 candidates across preserved runs: 89 kills, 41 survivors, two
+unhandled callback errors and one timeout. Original failed runs retain unavailable
+scores; the aggregate is not a full-project score. Test-only improvements kill
+36 survivors and turn both callback errors into ordinary kills in a 43-candidate
+rerun; five remain (four redundant scan settings and an unknown-operator policy
+case). No classification rule was relaxed. Direct probes also
 show why JSON `success` and exit status alone are insufficient: unhandled errors
 and all-skipped runs need explicit rejection.
 

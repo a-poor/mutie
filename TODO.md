@@ -16,8 +16,10 @@ acceptance is complemented by Marathon's real-project findings, stronger-test
 reruns, matching fresh/cached outcomes and preservation evidence. See
 [the results](benchmarks/rust-library-marathon.md). The scoped JavaScript/TypeScript + Vitest workflow now has independent real-project
 acceptance. Repeated Node launcher resolution is now avoided while preserving per-command
-identity checks; see [validation](benchmarks/vitest-node-reuse.md). Broader Hyparquet
-runs remain the next evidence gate. Rust workspaces remain a separate scope decision.
+identity checks; see [validation](benchmarks/vitest-node-reuse.md). The complete
+133-candidate Hyparquet inventory has now been attempted, with stronger-test
+review and explicit callback-error/timeout accounting; see [full evidence](benchmarks/vitest-hyparquet-full.md).
+Reassess the next major scope objective; Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -109,8 +111,14 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   repeating the launcher. Preserve executable/version and project/config identity
   checks; regression tests cover identity failures and a controlled saved-selection
   comparison is recorded in [validation](benchmarks/vitest-node-reuse.md).
-- [ ] Expand Hyparquet validation to all 133 candidates. The earlier 978-second
-  sample remains partly unexplained.
+- [x] Attempt all 133 Hyparquet candidates across explicit saved continuations:
+  89 killed, 41 survivors, two unhandled callback errors and one timeout. Preserve
+  failed reports without manufacturing a full-project score.
+- [x] Review all survivors and retain stronger tests plus an awaited-callback test
+  patch. A 43-candidate rerun kills 36 former survivors and both error candidates,
+  leaving four redundant scan settings and one unknown-operator policy case;
+  see [full evidence](benchmarks/vitest-hyparquet-full.md). No production changes
+  or dismissals were needed. The earlier 978-second sample remains partly unexplained.
 
 ## Completed: first Rust feedback-time improvement
 

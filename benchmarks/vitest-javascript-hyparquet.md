@@ -61,4 +61,6 @@ session, not committed fixtures.
 
 The [findings review](vitest-hyparquet-findings.md) records scored samples, survivor
 usefulness, stronger-test reruns, end-to-end time and preservation. Remaining
-work includes feedback-time investigation and broader mutation coverage.
+work at that point included feedback-time investigation and broader mutation
+coverage. Subsequent [Node reuse](vitest-node-reuse.md) and the
+[full-inventory review](vitest-hyparquet-full.md) record those follow-ups.

@@ -5,6 +5,10 @@ Date: 2026-10-15. Project preparation and pinned toolchain are recorded in
 prepared Hyparquet source and tests, with its original JavaScript-only NodeNext
 config. They are deliberately filtered samples, not a full 133-mutation score.
 
+Subsequent [full-inventory validation](vitest-hyparquet-full.md) attempts all 133
+candidates, records callback errors and a timeout separately, and extends the
+stronger-test review. The sample results below remain historical evidence.
+
 ## Bloom-filter sample
 
 Selected all seven boolean flips in `src/bloom.js` to exercise membership results

@@ -25,6 +25,8 @@ Plain-JSON NodeNext type-checking configs are accepted only for JavaScript-only
 projects with `allowJs`, `checkJs` and `noEmit` enabled; runtime TypeScript still
 requires ESNext. See the [Hyparquet scope audit](benchmarks/vitest-javascript-hyparquet.md) and
 [JavaScript findings and stronger-test reruns](benchmarks/vitest-hyparquet-findings.md).
+The [full Hyparquet inventory review](benchmarks/vitest-hyparquet-full.md) records
+all 133 attempted candidates, useful test gaps, and remaining errors/limits.
 Vitest resolves Node through PATH once per run, then rechecks the pinned executable
 version/path and project identity before each baseline or mutation command. See
 the [Node reuse validation](benchmarks/vitest-node-reuse.md).

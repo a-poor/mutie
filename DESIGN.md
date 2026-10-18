@@ -1522,7 +1522,15 @@ SUPPORT.md records both TypeScript and JavaScript as Validated within this scope
 Hyparquet now supplies JavaScript discovery and isolated-baseline evidence with
 its original JavaScript-only NodeNext type-checking config; runtime TypeScript
 under NodeNext remains unsupported. The [JavaScript findings review](benchmarks/vitest-hyparquet-findings.md)
-adds 19 sampled mutations and two survivors killed by stronger tests. Node is now
+adds 19 sampled mutations and two survivors killed by stronger tests. The
+[subsequent full inventory](benchmarks/vitest-hyparquet-full.md) attempts all 133
+candidates across explicit continuations: 89 kills, 41 survivors, two unhandled
+callback errors and one timeout. Failed reports retain unavailable scores; the
+combined inventory is not a synthesized full-project score. A test-only review
+kills 36 survivors and both error candidates in a 43-candidate rerun; four
+redundant scan settings and one unknown-operator policy case remain. Callback
+assertions are moved into awaited test bodies, preserving Mutie’s unhandled-error
+precedence. Node is now
 resolved through PATH once at startup (including focused reruns), then its saved
 absolute path is invoked for version/path revalidation before each command. Project
 and runner/config identity are still reloaded and compared; there is no fallback
