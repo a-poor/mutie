@@ -15,7 +15,8 @@ Ordinary Rust library packages now meet the scoped Validated level: fixture
 acceptance is complemented by Marathon's real-project findings, stronger-test
 reruns, matching fresh/cached outcomes and preservation evidence. See
 [the results](benchmarks/rust-library-marathon.md). The scoped JavaScript/TypeScript + Vitest workflow now has independent real-project
-acceptance. Next investigate Hyparquet focused feedback time before broader runs;
+acceptance. The feedback profile identifies repeated Node launcher resolution as
+a measurable optimization candidate before broader runs;
 Rust workspaces remain a separate scope decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
@@ -100,9 +101,14 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Run 19 sampled Hyparquet mutations: 17 kills and two survivors. Three stronger
   tests kill both survivors in a 55.60-second rerun; record independent scoped
   [JavaScript acceptance](benchmarks/vitest-hyparquet-findings.md).
-- [ ] Investigate Hyparquet focused feedback time with repeated unchanged selections
-  and phase measurements. Separate launcher/host variation from adapter preparation
-  before expanding to all 133 candidates; the 12-mutation sample took 978.11 seconds.
+- [x] Investigate Hyparquet focused feedback time: three unchanged reruns take
+  roughly 26 seconds; test-only phase profiles separate copy/validation/cleanup.
+  A PATH comparison takes 58.81 seconds through the Node launcher versus 27.56
+  through the same resolved binary; see [profile](benchmarks/vitest-feedback-profile.md).
+- [ ] Resolve Node once per run and revalidate the pinned executable without
+  repeating the launcher. Preserve executable/version and project/config identity
+  checks; verify failures and compare unchanged saved selections before expanding
+  to all 133 candidates. The earlier 978-second sample remains partly unexplained.
 
 ## Completed: first Rust feedback-time improvement
 

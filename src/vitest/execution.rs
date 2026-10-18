@@ -14,7 +14,31 @@ pub struct Execution {
     pub raw: process::CommandOutput,
     pub diagnostics: Capture,
     pub evidence: Result<Evidence>,
+    #[cfg(test)]
+    timings: Vec<(&'static str, f64)>,
 }
+// Test-only phase observations: no CLI flags, report schema or runner identity changes.
+#[cfg(test)]
+struct PhaseTimings {
+    last: std::time::Instant,
+    values: Vec<(&'static str, f64)>,
+}
+#[cfg(test)]
+impl PhaseTimings {
+    fn new() -> Self {
+        Self {
+            last: std::time::Instant::now(),
+            values: Vec::new(),
+        }
+    }
+    fn finish(&mut self, name: &'static str) {
+        let now = std::time::Instant::now();
+        self.values
+            .push((name, now.duration_since(self.last).as_secs_f64()));
+        self.last = now;
+    }
+}
+
 impl Execution {
     pub fn into_command(
         mut self,
@@ -47,6 +71,8 @@ pub(super) async fn run(
     capture_limit: Option<NonZeroUsize>,
     cancellation: &Cancellation,
 ) -> Result<Execution> {
+    #[cfg(test)]
+    let mut timings = PhaseTimings::new();
     let source = project.root.clone();
     let copying = cancellation.clone();
     let workspace = tokio::task::spawn_blocking(move || {
@@ -63,6 +89,8 @@ pub(super) async fn run(
     .await
     .context("Vitest workspace preparation panicked")??;
     let root = workspace.path();
+    #[cfg(test)]
+    timings.finish("adapter_copy");
     let captured = Project::load(&root, cancellation)?;
     ensure!(
         captured.manifest_fingerprint == project.manifest_fingerprint
@@ -70,6 +98,8 @@ pub(super) async fn run(
             && captured.project_config_fingerprints == project.project_config_fingerprints,
         "Vitest package or configuration changed during snapshotting"
     );
+    #[cfg(test)]
+    timings.finish("copied_project_validation");
     super::lifecycle::instrument(&root)?;
     if let Some(mutation) = mutation {
         mutation.apply(&root)?;
@@ -109,6 +139,8 @@ pub(super) async fn run(
         "--configLoader",
         "native",
     ];
+    #[cfg(test)]
+    timings.finish("instrumentation_and_command_setup");
     let raw = process::run_with_env(
         utf8(&node.executable)?,
         &args,
@@ -126,6 +158,8 @@ pub(super) async fn run(
         ],
     )
     .await?;
+    #[cfg(test)]
+    timings.finish("process_runner");
     // Read before cleanup, independently of diagnostic truncation. A killed or
     // timed-out child can leave no evidence; classification gives process facts priority.
     let evidence = protocol::read(&evidence);
@@ -135,13 +169,19 @@ pub(super) async fn run(
     crate::command::write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;
     let mut diagnostics = Capture::utf8(rendered)?;
     diagnostics.set_limit(NonZeroUsize::new(64 * 1024));
+    #[cfg(test)]
+    timings.finish("evidence_and_diagnostics");
     // The shared process runner has drained output and shut down the process group.
     drop(owned);
     drop(workspace);
+    #[cfg(test)]
+    timings.finish("cleanup");
     Ok(Execution {
         raw,
         diagnostics,
         evidence,
+        #[cfg(test)]
+        timings: timings.values,
     })
 }
 fn utf8(path: &Path) -> Result<&str> {
@@ -178,6 +218,72 @@ mod tests {
         .await?
         .into_command(NonZeroUsize::new(64 * 1024)))
     }
+    /// Measures the actual adapter path, without recursively running Mutie mutations.
+    /// Keep opt-in: the external project must have a passing pinned Vitest baseline.
+    #[tokio::test]
+    #[ignore = "requires MUTIE_VITEST_PROFILE_PROJECT; prints three baseline phase profiles"]
+    async fn real_feedback_phase_profile() -> Result<()> {
+        let source = std::env::var_os("MUTIE_VITEST_PROFILE_PROJECT")
+            .map(std::path::PathBuf::from)
+            .context("set MUTIE_VITEST_PROFILE_PROJECT")?;
+        let cancellation = Cancellation::default();
+        let expected = crate::vitest::execution_scope(&source, &cancellation).await?;
+        for repeat in 1..=3 {
+            let total = std::time::Instant::now();
+            let mut outer = PhaseTimings::new();
+            let workspace = Workspace::create(&source, &[], &cancellation)?;
+            outer.finish("outer_workspace_copy");
+            let root = workspace.path();
+            let actual = crate::vitest::execution_scope(&root, &cancellation).await?;
+            ensure!(
+                actual == expected,
+                "profile copy execution identity changed"
+            );
+            outer.finish("execution_identity");
+            let project = Project::load(&root, &cancellation)?;
+            outer.finish("project_reload");
+            let node = NodeTool {
+                executable: actual.node_executable,
+            };
+            let output = run(
+                &project,
+                &node,
+                None,
+                Duration::from_secs(120),
+                NonZeroUsize::new(4 * 1024 * 1024),
+                &cancellation,
+            )
+            .await?;
+            let phases = output.timings.clone();
+            let command_seconds = output.raw.elapsed.as_secs_f64();
+            let counts = output
+                .evidence
+                .as_ref()
+                .map_err(|e| anyhow::anyhow!("{e:#}"))?
+                .counts();
+            ensure!(
+                output.into_command(None).classify()? == Outcome::Missed,
+                "profile baseline must pass"
+            );
+            outer.finish("adapter_total");
+            drop(workspace);
+            outer.finish("outer_workspace_cleanup");
+            println!(
+                "vitest-profile {}",
+                serde_json::json!({
+                    "repeat": repeat, "total_seconds": total.elapsed().as_secs_f64(),
+                    "outer_phases": outer.values, "adapter_phases": phases,
+                    "command_seconds": command_seconds, "counts": counts
+                })
+            );
+        }
+        ensure!(
+            crate::vitest::execution_scope(&source, &cancellation).await? == expected,
+            "source execution identity changed during profiling"
+        );
+        Ok(())
+    }
+
     /// Acceptance boundary for worker-side failure-phase evidence.
     #[tokio::test]
     #[ignore = "requires prepared Vitest fixture; lifecycle failure regressions"]

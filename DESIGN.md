@@ -1523,5 +1523,7 @@ Hyparquet now supplies JavaScript discovery and isolated-baseline evidence with
 its original JavaScript-only NodeNext type-checking config; runtime TypeScript
 under NodeNext remains unsupported. The [JavaScript findings review](benchmarks/vitest-hyparquet-findings.md)
 adds 19 sampled mutations and two survivors killed by stronger tests. Next
-investigate focused feedback time before expanding mutation coverage; broader
+avoid repeated Node launcher resolution while preserving executable and project
+identity checks, based on the [feedback profile](benchmarks/vitest-feedback-profile.md).
+Test-only phase instrumentation does not change the production runner or reports; broader
 execution and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.

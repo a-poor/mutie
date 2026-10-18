@@ -142,8 +142,10 @@ JavaScript validation now targets Hyparquet: `benchmarks/vitest-javascript-hypar
 records 133 discovered flips and a passing 724-test isolated baseline. NodeNext
 tsconfig support is limited to JavaScript-only type checking; runtime TypeScript
 remains ESNext-only. JavaScript is Validated within the pinned serial scope.
-Next investigate focused feedback time and launcher/host variation before
-expanding the sample to all 133 candidates; do not infer a whole-project score.
+`benchmarks/vitest-feedback-profile.md` records repeated focused runs and test-only
+phase timings. Next resolve Node once per run and revalidate the pinned executable
+without repeating the launcher; preserve identity checks and verify failures.
+Expand mutation coverage separately; do not infer a whole-project score.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
