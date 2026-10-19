@@ -100,7 +100,9 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Audit safe native `node --test` discovery and validate Bragkit without the
   script adaptation. Match all 23 outcomes and kill the three saved HTML-list findings;
   reject out-of-scope tests and snapshot exclusions that would drop tests.
-- [ ] Review the 18 remaining Bragkit CLI/collector/browser-fallback survivors.
+- [x] Review the 18 remaining Bragkit CLI/collector/browser-fallback survivors:
+  all killed by 13 stronger tests in a 53.39-second focused rerun; see
+  [review evidence](benchmarks/node-bragkit-survivors.md).
 - [x] Reassess TypeScript maturity independently: Validated within the native,
   dependency-free ESM scope; see [unchanged-project evidence](benchmarks/node-default-discovery.md).
 

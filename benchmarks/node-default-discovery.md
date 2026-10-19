@@ -79,8 +79,9 @@ Its baseline passes **63 tests**. A focused rerun of original source IDs **20, 2
 22** kills all three in **10.95 seconds**, with no errors/timeouts. The tests observe
 an unmatched list close, a missing reopened list container, and repeated/unclosed
 containers for adjacent items. Its 100% score is for that selection only. The other
-**18 survivors remain unreviewed**, covering CLI behavior, collector settings/error
-responses and browser fallback.
+**18 survivors were initially unreviewed**, covering CLI behavior, collector settings/error
+responses and browser fallback. The [subsequent review](node-bragkit-survivors.md)
+kills all 18 with stronger tests.
 
 Hash checks verify all **57** original files in both the original and review
 copies; the original checkout has clean Git status. All **105** files of the new
@@ -122,6 +123,5 @@ Together with the first slice's typed fixture, independent lifecycle/cleanup
 checks and source/report preservation, the unchanged real-project
 run/inspect/improve-tests/rerun loop now meets **Validated**. This does not validate
 arbitrary root/source-adjacent test layouts, declaration files, runtime dependencies,
-loaders/transforms, other Node versions or parallel workers. The next useful
-findings work is the 18 remaining Bragkit survivors; scope expansions remain
-explicit decisions.
+loaders/transforms, other Node versions or parallel workers. The [subsequent findings review](node-bragkit-survivors.md) closes the 18 remaining
+Bragkit survivors; scope expansions remain explicit decisions.

@@ -196,8 +196,10 @@ was adapted to `node --test test/*.test.ts`; source/tests/config were unchanged.
 adaptation. `benchmarks/node-default-discovery.md` now records unchanged Bragkit
 acceptance with matching full outcomes and three stronger-test kills. Native default
 discovery includes nested/helper files, rejects selected files outside audited test/,
-and preserves all original input/report hashes. Eighteen Bragkit survivors remain
-unreviewed. Do not infer broader loaders/dependencies or layouts from this evidence.
+and preserves all original input/report hashes. `benchmarks/node-bragkit-survivors.md`
+records all 18 remaining survivor kills with 13 stronger tests, a 76-test baseline
+and unchanged source/report hashes. Original full scores remain unchanged.
+Do not infer broader loaders/dependencies or layouts from this evidence.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

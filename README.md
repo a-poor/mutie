@@ -116,7 +116,9 @@ adds five further kills and establishes Validated maturity within the same pinne
 That milestone is JavaScript-only. Native TypeScript's first audit required a
 Bragkit script adaptation; [the follow-up](benchmarks/node-default-discovery.md)
 now runs the unchanged package and kills the same three HTML-list survivors with
-stronger tests, establishing separate Validated acceptance.
+stronger tests, establishing separate Validated acceptance. The
+[remaining Bragkit review](benchmarks/node-bragkit-survivors.md) kills all 18 other
+survivors with tests for CLI defaults, collector behavior and browser fallback.
 
 ## Try it
 

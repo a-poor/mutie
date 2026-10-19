@@ -33,7 +33,7 @@ does not by itself validate a new runner.
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
-| TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence; 18 unreviewed Bragkit survivors |
+| TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
@@ -252,8 +252,10 @@ Whole-tree discovery rejects any selected test outside audited `test/` sources,
 validates the native file set and implementation, and rejects snapshot exclusions
 that would hide tests. Default-discovery JS/TS fixtures cover nested helpers,
 new-test reruns, empty files and preservation; native-default cleanup also passes.
-This independently meets the scoped TypeScript Validated gate. Eighteen other
-Bragkit survivors remain unreviewed; broader layouts and dependencies are not implied.
+This independently meets the scoped TypeScript Validated gate. The
+[remaining survivor review](benchmarks/node-bragkit-survivors.md) kills all 18 other
+findings in 53.39 seconds with a 76-test baseline and preserved sources/reports.
+Broader layouts and dependencies are not implied.
 
 ## JavaScript / TypeScript — Bun test runner
 

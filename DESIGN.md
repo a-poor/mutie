@@ -1680,6 +1680,8 @@ the audited selection. Test additions on a focused rerun remain allowed.
 native TS milestone: Bragkit's original package/config/source/tests produce the
 same 23 outcomes, and the retained HTML-list tests kill the same three survivors.
 Together with the independent TS failure, cleanup, review and identity evidence,
-this meets Validated within the declared scope. Eighteen findings remain open;
-test layouts beyond the audited test directory, dependencies and loaders remain
-separate scope decisions.
+this meets Validated within the declared scope. The
+[remaining findings review](benchmarks/node-bragkit-survivors.md) kills all 18 other
+survivors with a 76-test baseline in 53.39 seconds. Original sources/reports and
+full-scan scores remain unchanged. Test layouts beyond the audited test directory,
+dependencies and loaders remain separate scope decisions.
