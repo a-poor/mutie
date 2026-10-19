@@ -139,3 +139,10 @@ Rust adapter with strict package/import/config validation, complete source/test-
 accounting, execution-identity hashing, bounded capture and process cleanup. Only
 then connect shared reports/reruns/policies and perform scored real-project
 acceptance. No existing runner behavior, recipe or project version changes here.
+
+## Rust reader follow-up
+
+The [Rust protocol replay](bun-rust-protocol.md) ports this classifier and adds
+strict bounded parsing plus an independent expected-file inventory. All 112
+recorded cases and four full Composer records agree. The reader is staged through
+an integration test; isolated Bun execution and scored CLI support remain pending.

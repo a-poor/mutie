@@ -75,7 +75,10 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   30 malformed-evidence controls and matching Composer baseline/finding outcomes;
   see [attribution evidence](benchmarks/bun-body-attribution.md). Inspector shutdown
   loss and successful-callback checkpointing were rejected approaches.
-- [ ] Port the observer/protocol into Rust with complete file/global accounting,
+- [x] Port the evidence reader to Rust and replay all 112 recorded JS/TS cases
+  plus four Composer controls. Require an independent expected-file inventory
+  and bounded, strict XML/JSONL parsing; see [Rust replay](benchmarks/bun-rust-protocol.md).
+- [ ] Connect the observer/protocol to isolated execution with complete file/global accounting,
   bounded capture and execution identity; ambiguous failures must remain errors.
 - [ ] Validate package/import/config/discovery boundaries, then connect isolated
   execution to reports, reruns, review and policies.

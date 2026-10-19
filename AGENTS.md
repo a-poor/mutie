@@ -14,6 +14,11 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
+- `src/bun/protocol.rs` stages the conservative Bun evidence reader, compiled by
+  `tests/bun_protocol.rs` until the isolated adapter is connected. It requires an
+  independent test-file inventory, bounded XML/JSONL evidence and positive body
+  failure checkpoints. `benchmarks/bun-rust-protocol.md` records replay evidence;
+  this is not CLI execution support and Bun remains Planned.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
   dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
