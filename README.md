@@ -16,8 +16,8 @@ See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 not necessarily available in the current CLI.
 
 See [target support](SUPPORT.md) for Go/Rust support and validated scoped
-JavaScript/TypeScript support through Vitest. The Node runner has an experimental
-JavaScript-only slice; TypeScript on Node, Bun and pytest remain planned.
+JavaScript/TypeScript support through Vitest. The Node runner has a validated
+JavaScript-only scope; TypeScript on Node, Bun and pytest remain planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
@@ -51,7 +51,7 @@ the scored run does. See [CLI validation](benchmarks/vitest-shared-runs.md) and 
 [execution boundary](benchmarks/vitest-execution.md) for pinned dependencies,
 setup and conservative failure attribution.
 
-## Experimental Node test runner
+## Scoped Node test runner
 
 ```sh
 mutie PATH --lang node --ui plain
@@ -91,6 +91,8 @@ The [remaining SRI findings review](benchmarks/node-sri-final-review.md) explain
 pending-promise timeout and preserves the cleanup survivor without claiming equivalence.
 [Second-project acceptance](benchmarks/node-openclaw.md) records an unchanged
 39-candidate `openclaw-cc` scan and three stronger-test kills.
+The [storage/profile review and milestone audit](benchmarks/node-storage-profiles.md)
+adds five further kills and establishes Validated maturity within the same pinned scope.
 This is JavaScript acceptance only and does not imply TypeScript support.
 
 ## Try it

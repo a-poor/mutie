@@ -1541,7 +1541,7 @@ execution and configuration scopes remain separate work. Existing Go/Rust compat
 
 ## Initial Node test-runner contract
 
-The experimental `--lang node` path supports one dependency-free ESM JavaScript
+The validated `--lang node` path supports one dependency-free ESM JavaScript
 package on audited Node 24.22.0. The package has the exact test script
 `node --test test/*.test.js`; the adapter expands that immediate-directory file
 set and runs it with serial process isolation. Only `.js` runtime files under
@@ -1607,3 +1607,9 @@ tests is evidence of an unresolved survivor, not proof of semantic equivalence.
 [Second-project evidence](benchmarks/node-openclaw.md) exercises the same contract
 on unchanged `openclaw-cc`: 39 candidates and a three-finding stronger-test rerun.
 Neither test-only review changes nor diagnostic subsets replace original scores.
+
+The [storage/profile review and milestone audit](benchmarks/node-storage-profiles.md)
+closes five more useful findings and establishes Validated maturity for the
+existing Node JavaScript scope. This does not add package layouts, dependencies,
+native TypeScript or runtime versions. Seven other `openclaw-cc` survivors and the
+SRI limits remain explicit; no combined improved whole-project score is inferred.

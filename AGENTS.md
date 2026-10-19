@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 
 Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules, validated
-Rust packages and scoped Vitest packages, plus an experimental JavaScript Node runner.
+Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Node runner.
 
 - `src/main.rs` coordinates runs and workers; `cli.rs` defines CLI arguments.
 - `src/config.rs` loads repository settings and resolves explicit CLI overrides.
@@ -14,7 +14,7 @@ Rust packages and scoped Vitest packages, plus an experimental JavaScript Node r
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
-- `src/node.rs` implements the experimental pinned Node 24.22.0 runner for one
+- `src/node.rs` implements the validated pinned Node 24.22.0 runner for one
   dependency-free ESM JavaScript package. `node/project.rs` validates the original
   root and copies; `node/protocol.rs` requires file/global completion and hook
   evidence. The exact-hash `node/observer.mjs` detects cleanup errors suppressed
@@ -165,7 +165,7 @@ test-only review rerun kills 36 survivors and both error candidates; five remain
 (four redundant scan settings, one unknown-filter-operator policy case). Preserve
 failed-report scores and distinguish combined inventory accounting from a full
 score. Retained boundary tests and awaited-callback patch are under
-`benchmarks/fixtures/`. The first Node test-runner slice is now Experimental for
+`benchmarks/fixtures/`. The first Node test-runner slice is now Validated for
 JavaScript only; `benchmarks/node-initial-scope.md` records the real-project loop.
 Body-error attribution now matches exact worker evidence and includes process-level
 late-failure checks; see `benchmarks/node-body-attribution.md`.
@@ -174,9 +174,12 @@ pending-promise diagnostic: the survivor is not proven equivalent and the full-s
 timeout remains excluded from scores. `benchmarks/node-openclaw.md` records a
 second unchanged project: 39 candidates (22 kills, 15 survivors, two timeouts, no
 errors), plus three stronger-test kills and two timeout-to-kill reruns after
-a test-only teardown fix. Next review storage-locking and workspace
-profile survivors, then reassess the scoped Node milestone. Do not promote
-TypeScript from JavaScript evidence.
+a test-only teardown fix. `benchmarks/node-storage-profiles.md` records five more
+kills (storage locking and workspace profiles), source/report preservation and the
+Validated milestone audit. Seven scheduling/delivery/entry-point survivors remain
+open; SRI's cleanup survivor is unresolved and its semantic hang remains a timeout.
+The existing pinned JavaScript scope is unchanged. Choose the next major scope
+explicitly; do not promote TypeScript from JavaScript evidence.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

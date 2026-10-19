@@ -29,8 +29,9 @@ The original full run completed all 39 candidates in **255.44s**: **22 killed,
 boolean inventory, not coverage of all possible mutation operators or behaviors.
 
 The survivors are source IDs 3, 5, 6, 10, 12, 13, 15, 16, 18, 21, 28 and 34–37.
-The review below validates three useful findings. The other twelve remain open;
-they have not been dismissed or established equivalent. In particular, the
+The review below validates three useful findings. At this checkpoint twelve others remained open;
+the [storage/profile follow-up](node-storage-profiles.md) later kills five, leaving
+seven unreviewed. None has been dismissed or established equivalent. In particular, the
 unimported entry point, storage locking and workspace-profile boundaries should
 not be inferred covered from a passing baseline.
 

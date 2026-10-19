@@ -1,0 +1,73 @@
+{
+  "project": "https://github.com/yukiharukonishi/openclaw-cc",
+  "commit": "e323faa446f03b5438fa9edc58781b4ef8dd52df",
+  "runtime": "Node 24.22.0",
+  "node_scope": {
+    "package": "openclaw-cc",
+    "node": "24.22.0",
+    "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+    "manifest_fingerprint": "sha256:74f4e82c8f1e93b7206c8ac5c3fce6160c90c39ea4e602d42370b2e53f2f4ef3",
+    "recipe_fingerprint": "sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56"
+  },
+  "source_run": "/tmp/mutie-node-openclaw-reports/run-1792372052-gJgqgF",
+  "run": "run-1792372725-k69vxW",
+  "duration_seconds": 33.07720275,
+  "baseline_seconds": 5.339922084,
+  "baseline_tests": 67,
+  "summary": {
+    "killed": 5,
+    "missed": 0,
+    "timeout": 0,
+    "build_failed": 0,
+    "errors": 0
+  },
+  "score": {
+    "scope": "rerun",
+    "killed": 5,
+    "missed": 0,
+    "timeout": 0,
+    "build_failed": 0,
+    "errors": 0,
+    "unfinished": 0,
+    "dismissed_in_score": 0,
+    "percentage": 100.0,
+    "unavailable_reason": null
+  },
+  "mutations": [
+    {
+      "source_id": 28,
+      "outcome": "killed",
+      "duration_seconds": 4.693932333
+    },
+    {
+      "source_id": 34,
+      "outcome": "killed",
+      "duration_seconds": 4.7640062499999996
+    },
+    {
+      "source_id": 35,
+      "outcome": "killed",
+      "duration_seconds": 4.974613958
+    },
+    {
+      "source_id": 36,
+      "outcome": "killed",
+      "duration_seconds": 4.866225666
+    },
+    {
+      "source_id": 37,
+      "outcome": "killed",
+      "duration_seconds": 4.826797708
+    }
+  ],
+  "added_test_sha256": {
+    "mutie-storage-profiles.test.js": "ff0dc5992c30ee55627a4421ddb6df20005ffbd4af4b6e6d3320abc5f666e1b6",
+    "mutie-lock-owner.js": "663eb9dd4aac011fad52209b13fdfdd197bb1136a5865e218ff1e867fd0a6b41"
+  },
+  "preservation": {
+    "original_files_in_each_copy": 63,
+    "historical_report_files": 215,
+    "hashes_and_inventories_unchanged": true,
+    "original_identity_record": "node-openclaw-results.json"
+  }
+}

@@ -32,7 +32,7 @@ does not by itself validate a new runner.
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
-| JavaScript | Node.js test runner | Experimental | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Remaining finding review; reassess scoped milestone |
+| JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Planned | None | Define native TypeScript execution and independent acceptance |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -190,7 +190,7 @@ TypeScript milestone; neither promotes JSX or TSX support.
 
 ## JavaScript / TypeScript — Node.js test runner
 
-**JavaScript: Experimental. TypeScript: Planned.**
+**JavaScript: Validated within the pinned scope. TypeScript: Planned.**
 
 Explicit `--lang node` supports one dependency-free ESM package with `.js` files
 under `src/` and `test/`, exact `node --test test/*.test.js` script, no installed
@@ -221,9 +221,14 @@ equivalent. [Second-project acceptance](benchmarks/node-openclaw.md) completes
 errors. Three added tests kill three selected survivors in a full-suite rerun. A separate
 test-only teardown patch makes both original timeouts complete as kills; original
 reports and scores are preserved.
-Keep this Experimental while remaining findings and the scoped milestone are
-reviewed. Do not infer a whole-project score from combined attempts or promote
-TypeScript from this JavaScript evidence.
+[Storage/profile follow-up](benchmarks/node-storage-profiles.md) adds a passing
+67-test baseline and five further survivor kills, including independent-process
+lock contention and profile inclusion/exclusion checks. Its milestone audit meets
+Validated within the existing pinned JavaScript scope. Seven `openclaw-cc`
+survivors remain open; the SRI cleanup survivor remains unresolved. Neither
+unresolved findings nor separate rerun scores are silently removed from the
+original accounting. Broader dependencies/layouts, native TypeScript, runtime
+versions and parallelism need separate acceptance; this is not Established.
 
 ## JavaScript / TypeScript — Bun test runner
 

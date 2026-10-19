@@ -19,7 +19,7 @@ acceptance. Repeated Node launcher resolution is now avoided while preserving pe
 identity checks; see [validation](benchmarks/vitest-node-reuse.md). The complete
 133-candidate Hyparquet inventory has now been attempted, with stronger-test
 review and explicit callback-error/timeout accounting; see [full evidence](benchmarks/vitest-hyparquet-full.md).
-The first Node test-runner slice is now experimental and JavaScript-only; see
+The first Node test-runner slice is now Validated and JavaScript-only; see
 [scope and evidence](benchmarks/node-initial-scope.md). Body-exception attribution now uses exact worker evidence and rejects mixed
 lifecycle/process failures; see [the audit](benchmarks/node-body-attribution.md).
 The remaining SRI findings are reviewed in [the follow-up](benchmarks/node-sri-final-review.md):
@@ -28,8 +28,11 @@ equivalent. The second unchanged package, `openclaw-cc`, completes 39 candidates
 with 22 kills, 15 survivors, two timeouts and no errors; three stronger tests kill
 three selected survivors. A test-only teardown fix turns both timeouts into
 completed kills in a separate rerun. See [acceptance](benchmarks/node-openclaw.md).
-Next review its storage-locking and workspace-profile survivors before deciding
-on broader Node scope or maturity.
+The [storage/profile review](benchmarks/node-storage-profiles.md) kills five more
+survivors and records the scoped Node milestone as Validated. Seven scheduling,
+delivery and entry-point survivors remain open. The milestone is complete within
+its pinned scope; choose the next major package/runner scope explicitly rather
+than defaulting to another small operator or UI change.
 TypeScript and Rust workspaces remain separate decisions.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
@@ -37,7 +40,7 @@ Explicit user priorities and demonstrated reliability blockers take precedence.
 
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
-Vitest has a validated first scope and Node has an experimental JavaScript slice;
+Vitest and Node have validated first scopes (Node is JavaScript-only);
 the other initial scopes remain undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
@@ -50,7 +53,7 @@ the other initial scopes remain undecided.
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
 
-## Experimental Node test-runner slice
+## Validated first Node test-runner slice
 
 - [x] Select Node 24.22.0, a dependency-free ESM fixture and `sri-dynamic-loader`.
 - [x] Audit completion, nested results, imports, early exits and hidden cleanup
@@ -68,8 +71,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Validate another real package before broadening dependency/module scope:
   `openclaw-cc` full inventory and three stronger-test kills are recorded in
   [acceptance](benchmarks/node-openclaw.md).
-- [ ] Review remaining high-value `openclaw-cc` findings (storage locking and
-  workspace profiles), then reassess the Node milestone and scope.
+- [x] Review storage-locking and workspace-profile findings: all five are killed
+  by stronger tests; see [evidence and milestone audit](benchmarks/node-storage-profiles.md).
+- [x] Reassess the Node milestone: Validated within the unchanged pinned JavaScript
+  scope. Preserve seven open `openclaw-cc` survivors and the SRI limits.
+- [ ] Choose the next major scope with an explicit real-project acceptance target;
+  native TypeScript on Node, broader package support and Rust workspaces remain
+  independent candidates.
 
 ## Validated first Vitest slice and follow-up work
 
