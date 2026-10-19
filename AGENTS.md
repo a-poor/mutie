@@ -14,11 +14,14 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
-- `src/bun/protocol.rs` stages the conservative Bun evidence reader, compiled by
-  `tests/bun_protocol.rs` until the isolated adapter is connected. It requires an
-  independent test-file inventory, bounded XML/JSONL evidence and positive body
-  failure checkpoints. `benchmarks/bun-rust-protocol.md` records replay evidence;
-  this is not CLI execution support and Bun remains Planned.
+- `src/bun.rs` implements baseline-only `bun-check` with the pinned Bun runtime,
+  owned workspaces and bounded process/evidence captures. `bun/project.rs` validates
+  the first dependency-free, unconfigured JS/TS scope and independent test inventory.
+  `bun/protocol.rs` requires complete XML/JSONL and positive body checkpoints;
+  `tests/bun_protocol.rs` retains native replay controls. See
+  `benchmarks/bun-isolated-execution.md`. Unix per-file limits apply to Bun and its
+  descendants; this is not a total disk quota. Scored runs, tsconfig/Composer scope
+  and saved execution identity remain pending; Bun remains Planned.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
   dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
@@ -214,8 +217,8 @@ observer in `benchmarks/bun-body-attribution.md` passes 112 paired JS/TS cases a
 30 evidence-rejection checks; Composer baseline/finding controls match. A failure-only
 checkpoint exposes suppressed pending rejections without delaying successful
 callbacks. Inspector terminal events can be lost at exit and cannot be guessed.
-The classifier is still experimental benchmark code: strict package/file inventory,
-Rust integration and cleanup gates remain open. Direct probes do not implement
+The Rust reader now supports a scoped isolated baseline diagnostic; real-project
+configuration and scored workflow gates remain open. Direct probes do not implement
 `--lang bun` or promote support. JS/TS fixtures under `tests/fixtures/bun-*` remain
 opt-in native probes.
 

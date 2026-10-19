@@ -1717,7 +1717,12 @@ or incomplete evidence remain errors. Native Promise observation and failure-pat
 scheduling remain explicit instrumentation boundaries.
 
 Inspector transports were rejected as an execution authority after final events
-were lost at shutdown. The working classifier is benchmark Python code, not a
-production adapter. A Rust port must validate complete file inventory, package and
-config scope, bounded captures, execution identity and cleanup before scored runs
-and shared rerun/review integration. Bun support remains Planned.
+were lost at shutdown. The Rust reader now drives a baseline-only `bun-check` diagnostic through fresh
+workspaces, a private config/path/to/home directory, independent expected-file
+inventory, bounded captures and Unix regular-file limits. It requires the pinned
+runtime and compares executable and observer bytes around execution. Input files
+and test inventory are compared before executing the snapshot. The first scope
+rejects tsconfig, custom Bun config, installed dependencies and nonlocal imports
+other than node: builtins and bun:test. It does not execute package scripts.
+Real-project configuration, saved execution identity and the shared scored
+report/rerun/review workflow remain gates. Bun support remains Planned.

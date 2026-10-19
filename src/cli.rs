@@ -144,6 +144,16 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Check an isolated scoped Bun baseline (no mutations or saved reports)
+    BunCheck {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        #[arg(long, default_value = "60")]
+        timeout: NonZeroU64,
+        /// Combined raw stdout/stderr byte limit
+        #[arg(long, default_value = "4194304")]
+        max_capture_bytes: NonZeroUsize,
+    },
     /// Check an isolated Vitest baseline (no mutations, saved reports or reruns)
     VitestCheck {
         #[arg(default_value = ".", value_name = "PATH")]

@@ -78,11 +78,16 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Port the evidence reader to Rust and replay all 112 recorded JS/TS cases
   plus four Composer controls. Require an independent expected-file inventory
   and bounded, strict XML/JSONL parsing; see [Rust replay](benchmarks/bun-rust-protocol.md).
-- [ ] Connect the observer/protocol to isolated execution with complete file/global accounting,
-  bounded capture and execution identity; ambiguous failures must remain errors.
+- [x] Connect the Rust reader to baseline-only `bun-check`: owned copies, independent
+  test inventory, pinned runtime/observer checks, bounded captures and per-file OS
+  limits. Fixture outcomes and cleanup probes are recorded in
+  [isolated execution](benchmarks/bun-isolated-execution.md).
+- [ ] Extend configuration acceptance to unchanged Composer, then persist execution
+  identity and connect scored runs; ambiguous failures must remain errors.
 - [ ] Validate package/import/config/discovery boundaries, then connect isolated
   execution to reports, reruns, review and policies.
-- [ ] Verify timeout/cancellation/capture limits and descendant cleanup.
+- [x] Verify baseline diagnostic timeout/cancellation/capture limits and descendant cleanup.
+- [ ] Preserve those guarantees when connecting scored Bun mutation runs.
 - [ ] Complete the real-project run/inspect/improve-tests/rerun loop through Mutie,
   with independent JavaScript and TypeScript acceptance before promotion.
 

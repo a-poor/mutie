@@ -1,5 +1,5 @@
 //! Replay the native Bun audit without installing Bun or executing project code.
-//! The adapter is staged here until package and isolated-execution gates are ready.
+//! These controls exercise the reader independently of the isolated executor.
 #[path = "../src/bun/protocol.rs"]
 mod protocol;
 
@@ -129,6 +129,8 @@ fn rejects_damaged_and_insufficient_evidence_in_both_syntaxes() {
         reject(&altered);
         let mut altered = body.clone();
         altered["run"]["stderr"] = json!("Unhandled error between tests");
+        reject(&altered);
+        altered["run"]["stderr"] = json!("EFBIG: file too large, write");
         reject(&altered);
         // A provisional failure may never be converted to a successful return.
         let mut altered = body.clone();

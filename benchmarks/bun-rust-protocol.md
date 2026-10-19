@@ -56,3 +56,8 @@ cargo clippy --offline --all-targets -- -D warnings
 The full local Composer evidence path is also recorded in
 [`bun-observer-composer-results.json`](bun-observer-composer-results.json).
 It is optional and not required for the default suite.
+
+The [isolated baseline follow-up](bun-isolated-execution.md) now connects this
+reader to `bun-check` and moves XML parsing into runtime dependencies. It also
+rejects native `EFBIG` diagnostics so the file-size limit cannot supply positive
+body-failure evidence. Scored runs remain pending.

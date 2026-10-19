@@ -52,6 +52,7 @@ pub async fn run(
         cancellation,
         None::<fn(&str) -> Ready<()>>,
         &[],
+        None,
     )
     .await
 }
@@ -76,6 +77,34 @@ pub async fn run_with_env(
         cancellation,
         None::<fn(&str) -> Ready<()>>,
         environment,
+        None,
+    )
+    .await
+}
+
+/// Bound each regular file written by the command and its descendants.
+/// Combined stdout/stderr are independently bounded by the shared capture budget.
+#[allow(clippy::too_many_arguments)]
+pub async fn run_with_file_limit(
+    program: &str,
+    args: &[&str],
+    root: &Path,
+    limit: Duration,
+    capture_limit: NonZeroUsize,
+    cancellation: &Cancellation,
+    environment: &[(&str, &OsStr)],
+    file_limit: u64,
+) -> Result<CommandOutput> {
+    run_inner(
+        program,
+        args,
+        root,
+        limit,
+        Some(capture_limit),
+        cancellation,
+        None::<fn(&str) -> Ready<()>>,
+        environment,
+        Some(file_limit),
     )
     .await
 }
@@ -104,6 +133,7 @@ where
         cancellation,
         Some(observer),
         &[],
+        None,
     )
     .await
 }
@@ -118,6 +148,7 @@ async fn run_inner<F, Fut>(
     cancellation: &Cancellation,
     observer: Option<F>,
     environment: &[(&str, &OsStr)],
+    file_limit: Option<u64>,
 ) -> Result<CommandOutput>
 where
     F: FnMut(&str) -> Fut + Send,
@@ -211,6 +242,24 @@ where
     };
     #[cfg(unix)]
     command.process_group(0);
+    if let Some(bytes) = file_limit {
+        #[cfg(unix)]
+        // SAFETY: only the async-signal-safe setrlimit syscall runs after fork.
+        unsafe {
+            command.pre_exec(move || {
+                let bound = libc::rlimit {
+                    rlim_cur: bytes as libc::rlim_t,
+                    rlim_max: bytes as libc::rlim_t,
+                };
+                if libc::setrlimit(libc::RLIMIT_FSIZE, &bound) != 0 {
+                    return Err(std::io::Error::last_os_error());
+                }
+                Ok(())
+            });
+        }
+        #[cfg(not(unix))]
+        anyhow::bail!("bounded evidence files require Unix (requested {bytes} bytes)");
+    }
     let started = Instant::now();
     let mut child = {
         // No shared state can be corrupted if a previous spawn panicked.
@@ -862,6 +911,39 @@ mod tests {
         assert!(output.timed_out);
         tokio::time::sleep(Duration::from_millis(600)).await;
         assert!(!root.path().join("leaked").exists());
+        Ok(())
+    }
+    #[cfg(unix)]
+    #[tokio::test]
+    async fn regular_file_limit_applies_to_children_without_changing_parent() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        let output = run_with_file_limit(
+            "sh",
+            &["-c", "dd if=/dev/zero of=limited bs=1024 count=16"],
+            root.path(),
+            Duration::from_secs(3),
+            NonZeroUsize::new(4096).unwrap(),
+            &Cancellation::default(),
+            &[],
+            4096,
+        )
+        .await?;
+        assert!(!output.status.success());
+        assert!(std::fs::metadata(root.path().join("limited"))?.len() <= 4096);
+        let output = run(
+            "sh",
+            &["-c", "dd if=/dev/zero of=unlimited bs=1024 count=16"],
+            root.path(),
+            Duration::from_secs(3),
+            NonZeroUsize::new(4096),
+            &Cancellation::default(),
+        )
+        .await?;
+        assert!(output.status.success());
+        assert_eq!(
+            std::fs::metadata(root.path().join("unlimited"))?.len(),
+            16 * 1024
+        );
         Ok(())
     }
 }

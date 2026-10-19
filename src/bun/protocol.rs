@@ -1,4 +1,4 @@
-//! Conservative Bun evidence reader, staged for the isolated adapter.
+//! Conservative evidence reader for the isolated Bun diagnostic.
 //!
 //! A successful result requires trusted, complete command captures and an independently
 //! discovered test-file inventory. This reader does not establish package scope, process
@@ -119,11 +119,18 @@ pub fn classify(evidence: Evidence<'_>) -> Result<Completion> {
         !evidence.outer_timeout && matches!(evidence.exit_code, Some(0 | 1)),
         "command did not complete normally"
     );
-    let marker = b"Unhandled error between tests";
-    ensure!(
-        !evidence.stderr.windows(marker.len()).any(|w| w == marker),
-        "native unhandled error diagnostic"
-    );
+    // Negative evidence only: resource-limit failures are infrastructure errors,
+    // even when Bun exposes them as rejected body promises. User text may cause
+    // conservative errors, but can never supply positive failure evidence.
+    for marker in [
+        b"Unhandled error between tests".as_slice(),
+        b"EFBIG".as_slice(),
+    ] {
+        ensure!(
+            !evidence.stderr.windows(marker.len()).any(|w| w == marker),
+            "native process or file-limit error diagnostic"
+        );
+    }
     ensure!(
         !evidence.observer.is_empty() && evidence.observer.len() <= MAX_EVIDENCE_BYTES,
         "missing or oversized observer evidence"

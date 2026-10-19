@@ -123,8 +123,13 @@ survivors with tests for CLI defaults, collector behavior and browser fallback.
 The next selected runner is Bun. Its [initial audit](benchmarks/bun-initial-scope.md)
 records JS/TS fixtures and real-project probes. A
 [bounded observer prototype](benchmarks/bun-body-attribution.md) now distinguishes
-body failures from unsafe outcomes in paired probes. Production integration remains
-open; Bun is not an available CLI language yet.
+body failures from unsafe outcomes in paired probes. `mutie bun-check PATH` now
+checks a baseline in a fresh copy using pinned Bun 1.3.11+af24e281e. This diagnostic
+accepts dependency-free ESM packages with `scripts.test: "bun test"`, `.js`/`.ts`
+source under `src/`, and `.test.js`/`.test.ts` tests under `test/` or `tests/`.
+It currently rejects tsconfig, custom Bun configuration, installed dependencies,
+symlinks and dynamic imports. See [execution evidence](benchmarks/bun-isolated-execution.md).
+Bun remains Planned: `--lang bun`, mutation runs and saved reruns are not available.
 
 ## Try it
 

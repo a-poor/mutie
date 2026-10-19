@@ -11,6 +11,7 @@ globset = "0.4.20"
 # Writer access batches each frame with its cursor anchor; keep the API pinned.
 ratatui = { version = "=0.30.1", default-features = false, features = ["crossterm_0_29", "unstable-backend-writer"] }
 reflink-copy = "0.1.30"
+roxmltree = "=0.21.1"
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.151"
 sha2 = "0.10.9"
@@ -30,6 +31,4 @@ serde_yaml_ng = "0.10.0"
 libc = "0.2.189"
 
 [dev-dependencies]
-# Bun protocol is replay-tested here until the isolated adapter is connected.
-roxmltree = "=0.21.1"
 vt100 = "0.16.2"

@@ -259,7 +259,7 @@ Broader layouts and dependencies are not implied.
 
 ## JavaScript / TypeScript — Bun test runner
 
-**Level: Planned. No adapter, mutation discovery or end-to-end validation yet.**
+**Level: Planned. Baseline-only `bun-check` diagnostic; no scored runs or reruns.**
 
 The [selected initial audit](benchmarks/bun-initial-scope.md) pins Bun 1.3.11,
 retains 24 JUnit/inspector cases per syntax, and establishes an unchanged 272-test
@@ -267,8 +267,10 @@ Composer baseline plus a useful manual stronger-test finding. Native failure
 signals conflate test bodies, hooks and unhandled errors. Positive provenance is
 required before scored execution. The [bounded observer follow-up](benchmarks/bun-body-attribution.md)
 passes 112 paired JS/TS cases, 30 evidence-rejection checks and matching Composer
-baseline/finding controls. Rust integration and complete inventory/cleanup acceptance
-remain open; the experimental classifier does not promote support.
+baseline/finding controls. The [isolated diagnostic](benchmarks/bun-isolated-execution.md)
+now connects the Rust reader to fresh copies and shared process cleanup. JS/TS
+fixtures pass independently; configuration-bearing Composer remains outside the
+diagnostic scope. Complete scored real-project acceptance remains open.
 
 Desired outcome: the shared workflow for projects using Bun's test runner.
 The version, real project and fixtures are selected; next define package/lockfile handling,
@@ -282,7 +284,7 @@ need explicit scope decisions.
 
 ## Python — pytest
 
-**Level: Planned. No adapter, mutation discovery or end-to-end validation yet.**
+**Level: Planned. Baseline-only `bun-check` diagnostic; no scored runs or reruns.**
 
 Desired outcome: the shared workflow for pytest projects. Choose Python/pytest
 versions, a real project and fixture; define package layouts, source/test discovery,

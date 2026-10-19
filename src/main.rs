@@ -1,4 +1,5 @@
 mod browser;
+mod bun;
 mod cancellation;
 mod capture;
 mod cli;
@@ -51,6 +52,19 @@ async fn main() -> Result<ExitCode> {
             .listen()
             .context("installing cancellation handlers")?;
         let result = match command {
+            cli::Command::BunCheck {
+                path,
+                timeout,
+                max_capture_bytes,
+            } => {
+                bun::check(
+                    &path,
+                    Duration::from_secs(timeout.get()),
+                    max_capture_bytes,
+                    &cancellation,
+                )
+                .await
+            }
             cli::Command::VitestCheck {
                 path,
                 timeout,
