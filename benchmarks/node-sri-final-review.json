@@ -1,0 +1,142 @@
+{
+  "project": "https://github.com/subresource-integrity/sri-dynamic-loader",
+  "commit": "370652c304d6fee0c59cfb51bf097e72f6ebf13a",
+  "runtime": "Node 24.22.0",
+  "source_run": "run-1792371294-hkKpgW",
+  "runs": [
+    {
+      "run": "run-1792372035-YW3bil",
+      "duration_seconds": 5.697272834,
+      "rerun": {
+        "source_run": "/tmp/mutie-node-body-final-reports/run-1792371294-hkKpgW",
+        "source_checkpoint": 51,
+        "source_status": "completed",
+        "selection": "all",
+        "source_ids": [
+          9
+        ],
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 9
+          }
+        ]
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_seconds": 2.08239925,
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 2.098689375
+        }
+      ]
+    },
+    {
+      "run": "run-1792372078-uGB2kr",
+      "duration_seconds": 12.462760208,
+      "rerun": {
+        "source_run": "/tmp/mutie-node-body-final-reports/run-1792371294-hkKpgW",
+        "source_checkpoint": 51,
+        "source_status": "completed",
+        "selection": "all",
+        "source_ids": [
+          8
+        ],
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 8
+          }
+        ]
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 1,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_seconds": 0.962879334,
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "timeout",
+          "duration_seconds": 10.01746575
+        }
+      ]
+    }
+  ],
+  "direct_probes": [
+    {
+      "source_id": null,
+      "exit_code": 0,
+      "files": [
+        "test/mutie-completion.test.js",
+        "test/mutie-cleanup.test.js"
+      ]
+    },
+    {
+      "source_id": 8,
+      "exit_code": 1,
+      "files": [
+        "test/mutie-completion.test.js"
+      ]
+    },
+    {
+      "source_id": 9,
+      "exit_code": 0,
+      "files": [
+        "test/mutie-completion.test.js",
+        "test/mutie-cleanup.test.js"
+      ]
+    }
+  ],
+  "original_file_sha256": {
+    "LICENSE": "93f293ce8b9094ee0f32df33a59bfcb41935d0f201c9f007dd6db79960748b78",
+    "README.md": "7eab0d0cdfe299722a33b6d21bc7cb74abdc45eabc667cf889276819828d2dd8",
+    ".gitignore": "b9366afd639186c51d3414261ec8e9f7d31110dd7214d7f31929dfd3637bbf41",
+    "package-lock.json": "0bdc61d7be66687d8e85a66500c51f38c7ec22812053500ab0d1cc4f6cdd1051",
+    "package.json": "cb29bdca6a38953e2de6dc47df97220dcbffdebb9a11c30af522c3afd3f1cc59",
+    "eslint.config.js": "791faaa2f0c55f80ab7e3eefbce62cce0fe6672e7a1d2fa67f29bee50610732f",
+    "types/index.d.ts": "399e4f74489dec7fa66996947a842bca221d3289eba6a63590ca3fae48d2a0ac",
+    "test/preflight.test.js": "12a0b5f2f3be0ae06e8b9439f2b7dd4800f0e9fd66badc879d5b0ee486befd98",
+    "test/registry.test.js": "8bb3bd279c631d2f3b2edfaaccb7df0bd2e3998b7478d89ba1a2fa760aed8b25",
+    "test/loader.test.js": "7037884fc71867c3b8372ff90e8526fd63f8050e59f382a1787ca5ea7f3cf21d",
+    "test/dom-stub.js": "639afd40f1733d0fea7534230051a5cca5fb8d4a6f4d9d3b8fcb027dcbdd2952",
+    "test/integrity.test.js": "792fd22f45314627592c3de90521118e751c5181b272d25960a107e74e2e2b85",
+    "dist/sizes.json": "39ec9a9fe1655f119a59c1dcef534f23dec44f62855676e73bb5cda51b88fb60",
+    "dist/sri-dynamic-loader.min.js": "fb5943171c00de5cde4d5cbfa85bac8b5f2bc81f42a70853bc60dd6b1d68707b",
+    "dist/sri-dynamic-loader.js": "0a97b4795660aecb3ab6d35f5175947592da1313d303fed9aea61855e3f07761",
+    "dist/sri-dynamic-loader.esm.min.js": "91bb43f802a5988ea77b4ccd82b2c17b8f42d630f0d8815f21a34d4ef94fc0d4",
+    "examples/index.html": "cc68debbb07b360ee5308d46e98314b9bfe4670490df9e27aa52ca8d8aa2f39f",
+    "examples/demo.js": "5fbc456904f1b9abdf24a91cdabcfda003cc86442dc514238b9b17e33dffe334",
+    "scripts/build.js": "fbdf96a06d4f10f714b5ee8439648d6a08dcbc6264828bedf476ea960153b161",
+    "scripts/serve-example.js": "6df73e7d4c7ace2ba5d849dc70ca75724be2704f48d901e704721e938828e3e6",
+    "src/registry.js": "471262786f2d0bd3610e429d456fb85bcd08777c2f278ab3131e79b144aae356",
+    "src/index.js": "0f115d92f596351fb875943c1661b4308c93c9ddc6a363eebe07592d74c33657",
+    "src/errors.js": "1324f8475d206ae290385a34adfacaffc71f73af2d009e72f04d55851b923a26",
+    "src/preflight.js": "b5cca97e38198f38068990933f7b4090978e4f020e2fe1e7043552bdd0ffc4cb",
+    "src/integrity.js": "06a417e38acd585d1a3dcf4739d6f38f626c8c5cecd4938cf180424d04cd658f",
+    "src/sources.js": "e9f6c6ac72a901be10fd3b17076a7f5f79f6a01cf06b5c4340bf564bdce49f00",
+    "src/diagnose.js": "376a8425617088d1a9c3423ad95495cbb5b26dbbcc04dd8261ddf1a0cf5f98ce",
+    "src/loader.js": "bee313bac27b7f25ef9521eb523950fdcbbebaba6d6b9f25d6713bf426f6f1ed",
+    ".github/workflows/ci.yml": "ef3c15b174c74d493cd7d9513f2111c423594ba82d8cb76e7fbcb67b4450709a",
+    "examples/vendor/theme.css": "f4857ce2d8d1f1608dcb32f428c36204d5ee791b58c6fc0547bced0f974e6f29",
+    "examples/vendor/greeting-mirror.js": "4b0813b6991569eac956faa47214542c367161da5dbaa12858f05d8e171bd58f",
+    "examples/vendor/greeting-cdn.js": "5394e137d528c757b92c66c2e90925cf06a656467f3e7f996c95973fc58cec63"
+  },
+  "preservation": {
+    "original_files": 32,
+    "review_files": 34,
+    "body_audit_report_files": 171,
+    "historical_report_files": 271,
+    "all_hashes_and_inventories_unchanged": true
+  }
+}

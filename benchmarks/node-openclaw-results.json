@@ -1,0 +1,969 @@
+{
+  "project": "https://github.com/yukiharukonishi/openclaw-cc",
+  "commit": "e323faa446f03b5438fa9edc58781b4ef8dd52df",
+  "runtime": "Node 24.22.0",
+  "node_scope": {
+    "package": "openclaw-cc",
+    "node": "24.22.0",
+    "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+    "manifest_fingerprint": "sha256:74f4e82c8f1e93b7206c8ac5c3fce6160c90c39ea4e602d42370b2e53f2f4ef3",
+    "recipe_fingerprint": "sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56"
+  },
+  "full": {
+    "run": "run-1792372052-gJgqgF",
+    "status": "completed",
+    "duration_seconds": 255.438573375,
+    "baseline_seconds": 5.064794458,
+    "summary": {
+      "killed": 22,
+      "missed": 15,
+      "timeout": 2,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "score": {
+      "scope": "all_discovered",
+      "killed": 22,
+      "missed": 15,
+      "timeout": 2,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 59.45945945945946,
+      "unavailable_reason": null
+    },
+    "rerun": null,
+    "outcomes": [
+      {
+        "id": 1,
+        "outcome": "killed",
+        "duration_seconds": 4.80867075
+      },
+      {
+        "id": 2,
+        "outcome": "timeout",
+        "duration_seconds": 15.006642209
+      },
+      {
+        "id": 3,
+        "outcome": "missed",
+        "duration_seconds": 4.896756916
+      },
+      {
+        "id": 4,
+        "outcome": "timeout",
+        "duration_seconds": 15.010062625
+      },
+      {
+        "id": 5,
+        "outcome": "missed",
+        "duration_seconds": 5.352845167
+      },
+      {
+        "id": 6,
+        "outcome": "missed",
+        "duration_seconds": 5.005740042
+      },
+      {
+        "id": 7,
+        "outcome": "killed",
+        "duration_seconds": 5.001423083
+      },
+      {
+        "id": 8,
+        "outcome": "killed",
+        "duration_seconds": 5.396638833
+      },
+      {
+        "id": 9,
+        "outcome": "killed",
+        "duration_seconds": 5.318145583
+      },
+      {
+        "id": 10,
+        "outcome": "missed",
+        "duration_seconds": 4.945985916
+      },
+      {
+        "id": 11,
+        "outcome": "killed",
+        "duration_seconds": 4.972338541
+      },
+      {
+        "id": 12,
+        "outcome": "missed",
+        "duration_seconds": 5.0707665
+      },
+      {
+        "id": 13,
+        "outcome": "missed",
+        "duration_seconds": 4.9792525
+      },
+      {
+        "id": 14,
+        "outcome": "killed",
+        "duration_seconds": 5.004632916
+      },
+      {
+        "id": 15,
+        "outcome": "missed",
+        "duration_seconds": 4.871132417
+      },
+      {
+        "id": 16,
+        "outcome": "missed",
+        "duration_seconds": 4.9531005
+      },
+      {
+        "id": 17,
+        "outcome": "killed",
+        "duration_seconds": 4.804166208
+      },
+      {
+        "id": 18,
+        "outcome": "missed",
+        "duration_seconds": 4.863671792
+      },
+      {
+        "id": 19,
+        "outcome": "killed",
+        "duration_seconds": 5.694471083
+      },
+      {
+        "id": 20,
+        "outcome": "killed",
+        "duration_seconds": 4.973358875
+      },
+      {
+        "id": 21,
+        "outcome": "missed",
+        "duration_seconds": 5.243875875
+      },
+      {
+        "id": 22,
+        "outcome": "killed",
+        "duration_seconds": 4.8126711669999995
+      },
+      {
+        "id": 23,
+        "outcome": "killed",
+        "duration_seconds": 5.311523584
+      },
+      {
+        "id": 24,
+        "outcome": "killed",
+        "duration_seconds": 5.216433583
+      },
+      {
+        "id": 25,
+        "outcome": "killed",
+        "duration_seconds": 9.707263917
+      },
+      {
+        "id": 26,
+        "outcome": "killed",
+        "duration_seconds": 4.971463
+      },
+      {
+        "id": 27,
+        "outcome": "killed",
+        "duration_seconds": 6.2718665
+      },
+      {
+        "id": 28,
+        "outcome": "missed",
+        "duration_seconds": 4.68800625
+      },
+      {
+        "id": 29,
+        "outcome": "killed",
+        "duration_seconds": 1.629181917
+      },
+      {
+        "id": 30,
+        "outcome": "killed",
+        "duration_seconds": 4.992857084
+      },
+      {
+        "id": 31,
+        "outcome": "killed",
+        "duration_seconds": 5.102008584
+      },
+      {
+        "id": 32,
+        "outcome": "killed",
+        "duration_seconds": 6.068771334
+      },
+      {
+        "id": 33,
+        "outcome": "killed",
+        "duration_seconds": 5.5516499580000005
+      },
+      {
+        "id": 34,
+        "outcome": "missed",
+        "duration_seconds": 5.074235625
+      },
+      {
+        "id": 35,
+        "outcome": "missed",
+        "duration_seconds": 4.886731833
+      },
+      {
+        "id": 36,
+        "outcome": "missed",
+        "duration_seconds": 4.943238709
+      },
+      {
+        "id": 37,
+        "outcome": "missed",
+        "duration_seconds": 4.908579833
+      },
+      {
+        "id": 38,
+        "outcome": "killed",
+        "duration_seconds": 5.574660625
+      },
+      {
+        "id": 39,
+        "outcome": "killed",
+        "duration_seconds": 5.022340833
+      }
+    ]
+  },
+  "stronger": {
+    "run": "run-1792372311-5qqLUY",
+    "status": "completed",
+    "duration_seconds": 24.498862542,
+    "baseline_seconds": 5.281546583,
+    "summary": {
+      "killed": 3,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "score": {
+      "scope": "rerun",
+      "killed": 3,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 100.0,
+      "unavailable_reason": null
+    },
+    "rerun": {
+      "source_run": "/tmp/mutie-node-openclaw-reports/run-1792372052-gJgqgF",
+      "source_checkpoint": 87,
+      "source_status": "completed",
+      "selection": "all",
+      "source_ids": [
+        3,
+        5,
+        6
+      ],
+      "mutations": [
+        {
+          "id": 1,
+          "source_id": 3
+        },
+        {
+          "id": 2,
+          "source_id": 5
+        },
+        {
+          "id": 3,
+          "source_id": 6
+        }
+      ]
+    },
+    "outcomes": [
+      {
+        "id": 1,
+        "outcome": "killed",
+        "duration_seconds": 5.067453292
+      },
+      {
+        "id": 2,
+        "outcome": "killed",
+        "duration_seconds": 5.45239025
+      },
+      {
+        "id": 3,
+        "outcome": "killed",
+        "duration_seconds": 5.177863167
+      }
+    ]
+  },
+  "candidates": [
+    {
+      "id": 1,
+      "file": "src/agent-runner.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:b007b75d1c67a419b6ee6a023a438d2966d761291ccbdfdbcf4b6feb44fecaa5",
+      "line": 74,
+      "column": 28,
+      "end_line": 74,
+      "end_column": 33,
+      "byte_start": 2863,
+      "byte_end": 2868,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 2,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 58,
+      "column": 23,
+      "end_line": 58,
+      "end_column": 28,
+      "byte_start": 2273,
+      "byte_end": 2278,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 3,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 107,
+      "column": 23,
+      "end_line": 107,
+      "end_column": 27,
+      "byte_start": 3625,
+      "byte_end": 3629,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 4,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 131,
+      "column": 25,
+      "end_line": 131,
+      "end_column": 30,
+      "byte_start": 4347,
+      "byte_end": 4352,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 5,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 188,
+      "column": 72,
+      "end_line": 188,
+      "end_column": 77,
+      "byte_start": 6025,
+      "byte_end": 6030,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 6,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 234,
+      "column": 49,
+      "end_line": 234,
+      "end_column": 54,
+      "byte_start": 7733,
+      "byte_end": 7738,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 7,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 241,
+      "column": 43,
+      "end_line": 241,
+      "end_column": 47,
+      "byte_start": 7957,
+      "byte_end": 7961,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 8,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 243,
+      "column": 65,
+      "end_line": 243,
+      "end_column": 69,
+      "byte_start": 8087,
+      "byte_end": 8091,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 9,
+      "file": "src/channel-receivers/telegram-poller.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "line": 247,
+      "column": 12,
+      "end_line": 247,
+      "end_column": 17,
+      "byte_start": 8119,
+      "byte_end": 8124,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 10,
+      "file": "src/cron-scheduler.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:572cdc80ccedf990924a48b2bd063bb1efcaf101f4990b99e231e25b157396b0",
+      "line": 47,
+      "column": 21,
+      "end_line": 47,
+      "end_column": 26,
+      "byte_start": 1698,
+      "byte_end": 1703,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 11,
+      "file": "src/cron-scheduler.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:572cdc80ccedf990924a48b2bd063bb1efcaf101f4990b99e231e25b157396b0",
+      "line": 54,
+      "column": 21,
+      "end_line": 54,
+      "end_column": 26,
+      "byte_start": 1790,
+      "byte_end": 1795,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 12,
+      "file": "src/cron-scheduler.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:572cdc80ccedf990924a48b2bd063bb1efcaf101f4990b99e231e25b157396b0",
+      "line": 69,
+      "column": 21,
+      "end_line": 69,
+      "end_column": 25,
+      "byte_start": 2127,
+      "byte_end": 2131,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 13,
+      "file": "src/cron-scheduler.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:572cdc80ccedf990924a48b2bd063bb1efcaf101f4990b99e231e25b157396b0",
+      "line": 274,
+      "column": 50,
+      "end_line": 274,
+      "end_column": 54,
+      "byte_start": 7906,
+      "byte_end": 7910,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 14,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 55,
+      "column": 22,
+      "end_line": 55,
+      "end_column": 27,
+      "byte_start": 1774,
+      "byte_end": 1779,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 15,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 78,
+      "column": 55,
+      "end_line": 78,
+      "end_column": 59,
+      "byte_start": 2450,
+      "byte_end": 2454,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 16,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 113,
+      "column": 22,
+      "end_line": 113,
+      "end_column": 26,
+      "byte_start": 3492,
+      "byte_end": 3496,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 17,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 131,
+      "column": 24,
+      "end_line": 131,
+      "end_column": 29,
+      "byte_start": 4139,
+      "byte_end": 4144,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 18,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 150,
+      "column": 26,
+      "end_line": 150,
+      "end_column": 31,
+      "byte_start": 4732,
+      "byte_end": 4737,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 19,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 155,
+      "column": 24,
+      "end_line": 155,
+      "end_column": 28,
+      "byte_start": 4917,
+      "byte_end": 4921,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 20,
+      "file": "src/delivery-queue.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "line": 171,
+      "column": 30,
+      "end_line": 171,
+      "end_column": 34,
+      "byte_start": 5641,
+      "byte_end": 5645,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 21,
+      "file": "src/index.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:7257382e664c933cbc67fe79a45a752288b70c4e24efe9301a384e8b727ff6d3",
+      "line": 195,
+      "column": 68,
+      "end_line": 195,
+      "end_column": 73,
+      "byte_start": 6202,
+      "byte_end": 6207,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 22,
+      "file": "src/session-manager.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "line": 88,
+      "column": 58,
+      "end_line": 88,
+      "end_column": 62,
+      "byte_start": 2806,
+      "byte_end": 2810,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 23,
+      "file": "src/session-manager.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "line": 94,
+      "column": 53,
+      "end_line": 94,
+      "end_column": 58,
+      "byte_start": 3001,
+      "byte_end": 3006,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 24,
+      "file": "src/session-manager.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "line": 103,
+      "column": 54,
+      "end_line": 103,
+      "end_column": 58,
+      "byte_start": 3321,
+      "byte_end": 3325,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 25,
+      "file": "src/session-manager.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "line": 116,
+      "column": 14,
+      "end_line": 116,
+      "end_column": 18,
+      "byte_start": 3645,
+      "byte_end": 3649,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 26,
+      "file": "src/session-manager.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "line": 134,
+      "column": 14,
+      "end_line": 134,
+      "end_column": 18,
+      "byte_start": 4420,
+      "byte_end": 4424,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 27,
+      "file": "src/session-manager.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "line": 137,
+      "column": 12,
+      "end_line": 137,
+      "end_column": 17,
+      "byte_start": 4444,
+      "byte_end": 4449,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 28,
+      "file": "src/utils/storage.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:8730f8cfe0bf2bf1313730d95f85940f2e4a0d8d636e27632596ccf23c7039e3",
+      "line": 65,
+      "column": 10,
+      "end_line": 65,
+      "end_column": 14,
+      "byte_start": 1974,
+      "byte_end": 1978,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 29,
+      "file": "src/utils/storage.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:8730f8cfe0bf2bf1313730d95f85940f2e4a0d8d636e27632596ccf23c7039e3",
+      "line": 108,
+      "column": 40,
+      "end_line": 108,
+      "end_column": 44,
+      "byte_start": 3124,
+      "byte_end": 3128,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 30,
+      "file": "src/utils/storage.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:8730f8cfe0bf2bf1313730d95f85940f2e4a0d8d636e27632596ccf23c7039e3",
+      "line": 117,
+      "column": 12,
+      "end_line": 117,
+      "end_column": 16,
+      "byte_start": 3273,
+      "byte_end": 3277,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 31,
+      "file": "src/utils/storage.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:8730f8cfe0bf2bf1313730d95f85940f2e4a0d8d636e27632596ccf23c7039e3",
+      "line": 119,
+      "column": 12,
+      "end_line": 119,
+      "end_column": 17,
+      "byte_start": 3302,
+      "byte_end": 3307,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 32,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 35,
+      "column": 12,
+      "end_line": 35,
+      "end_column": 16,
+      "byte_start": 1277,
+      "byte_end": 1281,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 33,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 36,
+      "column": 16,
+      "end_line": 36,
+      "end_column": 20,
+      "byte_start": 1298,
+      "byte_end": 1302,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 34,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 41,
+      "column": 12,
+      "end_line": 41,
+      "end_column": 17,
+      "byte_start": 1399,
+      "byte_end": 1404,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 35,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 42,
+      "column": 16,
+      "end_line": 42,
+      "end_column": 21,
+      "byte_start": 1421,
+      "byte_end": 1426,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 36,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 47,
+      "column": 12,
+      "end_line": 47,
+      "end_column": 16,
+      "byte_start": 1554,
+      "byte_end": 1558,
+      "original": "true",
+      "replacement": "false"
+    },
+    {
+      "id": 37,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 48,
+      "column": 16,
+      "end_line": 48,
+      "end_column": 21,
+      "byte_start": 1575,
+      "byte_end": 1580,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 38,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 95,
+      "column": 24,
+      "end_line": 95,
+      "end_column": 29,
+      "byte_start": 2948,
+      "byte_end": 2953,
+      "original": "false",
+      "replacement": "true"
+    },
+    {
+      "id": 39,
+      "file": "src/workspace-loader.js",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "line": 103,
+      "column": 24,
+      "end_line": 103,
+      "end_column": 28,
+      "byte_start": 3308,
+      "byte_end": 3312,
+      "original": "true",
+      "replacement": "false"
+    }
+  ],
+  "original_file_sha256": {
+    "README.md": "1b5197ab05575c96ed97d9652149ed1d1d745fb3609be026469498757cea6f18",
+    "README.ja.md": "2456ab41f2e783a13de6c4e8df13ef7711ac375ea5c5184e723517aa24e15c9e",
+    ".gitignore": "9d49a287c5970402827d3d321dfa1eb558633f45fc837e7e54a2450930e08629",
+    "package.json": "74f4e82c8f1e93b7206c8ac5c3fce6160c90c39ea4e602d42370b2e53f2f4ef3",
+    ".env.example": "cbbcd3492495502aeea47f82e16276637a543c6ef8102e5d6add63bd05403a16",
+    "test/agent-runner.test.js": "cd978e8fc88e44e4fa046cd6d36681c41bef0d277c5ebb3d71e1af5aef13214d",
+    "test/cron-scheduler.test.js": "7fae9de80ba0a697968a9ec241ee4824392ba9b725e93a7584dc119e0611758c",
+    "test/workspace-loader.test.js": "485e43b3a17641339077690debb4d76351ca5b12118de48cbb1b259a2eb326ba",
+    "test/delivery-queue.test.js": "95fbcd1d4e3f031648ed1932249f86383ac9382187b329cfff5f9ea399fd107f",
+    "test/session-manager.test.js": "5c8fce751afa9a53a47b1568cfbbe05b8da401fcb59ece13671d9f4d5740a8cc",
+    "test/telegram-poller.test.js": "a7827ee60b31337b57ab2fd08e48a165f4fd97751d62a49dc2452c0e26a16ec2",
+    "test/memory-manager.test.js": "4dd58a0776eeda251d2fbf62978935c0ea50e3907b5f71392191f67d6614166d",
+    "config/default.example.json": "ab2b7296a56e21a4dd45e6e00c12f2b04af6d1e2890184162c2dec17382bb10f",
+    "workspace/MEMORY.example.md": "ee953f58cf77d6d53f4eb47f8a18430d1d03feee36d4b058b8e1b081dc7bc2a0",
+    "workspace/IDENTITY.md": "e0707c98c45d8651eac0b5cb97f8801a1b087aae6817d2179e25b1e84c1cd0e4",
+    "workspace/USER.example.md": "17e98cc8f9c192deec50c2472968ee4b4197536c38d7d5183030373e6f1e4190",
+    "workspace/HEARTBEAT.md": "2c1ad2e526fc516af42eea8d1c572bb857fa462439b93e1e5ec4eaefccdbe34c",
+    "workspace/GROUP_MEMORY.example.md": "feb2d4f93093eaff402b86fc4a2b54d56766f197266c4830c7b8e62d396c61d9",
+    "workspace/BOOTSTRAP.md": "14c3022e5bf14f909b60333b17608de4b85f57dcdb0da6017720c3773bd80daf",
+    "workspace/SOUL.md": "0316ca9673a6684332d48219665b33db5a00fb27b9081cbefd9795a85a435e65",
+    "workspace/AGENTS.md": "f2525c10258c5e461faeaa00471458edc490e5281956d497cf3ec6800c37ef05",
+    "workspace/TOOLS.md": "2ef07f210966932f6b60dd524e5d1d7fcb296407c78edd2cb1b028ce619b2f18",
+    "examples/jobs.example.json": "59fd1a92a247b9a0501c54b8ca017adb094aef5d8d6e6e4436271adfb8c9d9a1",
+    "examples/jobs.example.md": "4eb3775d49d60b37bb66a5c1eaff257987e1ee9b8714c2b150d3fcbc67639f01",
+    "src/agent-runner.js": "b007b75d1c67a419b6ee6a023a438d2966d761291ccbdfdbcf4b6feb44fecaa5",
+    "src/session-manager.js": "4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+    "src/cron-scheduler.js": "572cdc80ccedf990924a48b2bd063bb1efcaf101f4990b99e231e25b157396b0",
+    "src/delivery-queue.js": "83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+    "src/index.js": "7257382e664c933cbc67fe79a45a752288b70c4e24efe9301a384e8b727ff6d3",
+    "src/memory-manager.js": "08f3c7c43ad147011eff7cfbb1fb965586f2ba7f5a21d23ab0797e92fcfb7dd9",
+    "src/workspace-loader.js": "5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+    "src/channel-receivers/telegram-poller.js": "11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+    "src/channel-adapters/telegram.js": "51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+    "src/utils/logger.js": "759bed7d2152e1217bb1d963b64a67822d3d3a10ec53cdd770ed1a56038e0e55",
+    "src/utils/session-key.js": "b500f00f177cbac7511aa3796653a093452f21a936ebf6a9ed7e4c4eb98e14fd",
+    "src/utils/storage.js": "8730f8cfe0bf2bf1313730d95f85940f2e4a0d8d636e27632596ccf23c7039e3",
+    ".github/workflows/ci.yml": "9a7908c325408e4046d5ea5de40e89a5f99fc3e3b3b3f6c2e491b355b54688d0",
+    "examples/bunshin/README.md": "3dbf92160f8b53a811a735fc47594a4796c22ffc599407c20d16f654b2b7d70f",
+    "examples/dev-assistant/README.md": "59c7800f92aa0278e4e8550ea2ad5357abc1d5e79860a3c356371e3db55a967e",
+    "examples/dev-assistant/workspace/TOOLS.example.md": "0d8eb351060b671ed86e1dc0b8a5cb0a510bae663500e31e7da09f9ccd2e6aed",
+    "examples/dev-assistant/workspace/MEMORY.example.md": "4ff382e1fe66d63e1a7bcbb03f8c5021db8c4e3d348d271a0c892a28a80637d0",
+    "examples/dev-assistant/workspace/USER.example.md": "3cd6ae1e0fbe918346776406289bf31d3662c3b36e9e395a7291654684ec739f",
+    "examples/dev-assistant/workspace/IDENTITY.example.md": "38449ea585cfeb58cfc36829ab248b563ad670a21d459d43367682bb13a4796f",
+    "examples/dev-assistant/workspace/HEARTBEAT.md": "2c1ad2e526fc516af42eea8d1c572bb857fa462439b93e1e5ec4eaefccdbe34c",
+    "examples/dev-assistant/workspace/GROUP_MEMORY.example.md": "23dd2f30dc81410779daab5fa6a9e3f3042a51515eea142dcae1c742c0d1be81",
+    "examples/dev-assistant/workspace/SOUL.md": "4986aa269bc8324c117b6c27e9fbba856073fb716becb51d78626948e4bdbecc",
+    "examples/dev-assistant/workspace/AGENTS.md": "c2c01dcdbbc36587f3dbfad9a4f16dc67bfe393c6807694271187bd9f3c8a422",
+    "examples/dev-assistant/rules/safety.md": "7e6565735295aee7a60c2753d80d2b5c5228c96e6e2ebb9f563eb12365de88b1",
+    "examples/dev-assistant/cron/jobs.example.json": "1a501d348ff70fc1d3d513cb29176d51442a973e107831c7cf9b77b24cbe7315",
+    "examples/bunshin/workspace/TOOLS.example.md": "cfcceca9cf98f465470f2f72a6f48ea9f391dbe92809c5fd86dba916c185e67e",
+    "examples/bunshin/workspace/MEMORY.example.md": "5bda4254703f84134d3d9f7048cb5d8f93c0575d8ecb8f158942a67575822147",
+    "examples/bunshin/workspace/USER.example.md": "3b599ccae0625b1a2466a2c2b27691f7be53c4254486a35dc97320e1f527908c",
+    "examples/bunshin/workspace/IDENTITY.example.md": "9f4bb37c5dacd2816ea6564bf713d82e960b0c0148ffd172b13d74cca62bf0b5",
+    "examples/bunshin/workspace/HEARTBEAT.md": "2c1ad2e526fc516af42eea8d1c572bb857fa462439b93e1e5ec4eaefccdbe34c",
+    "examples/bunshin/workspace/GROUP_MEMORY.example.md": "feb2d4f93093eaff402b86fc4a2b54d56766f197266c4830c7b8e62d396c61d9",
+    "examples/bunshin/workspace/SOUL.md": "9451909b804bbe8b5e71297c8d6a98bc52fc50e13a82f461d7664fe827b97d83",
+    "examples/bunshin/workspace/AGENTS.md": "9ae62cb5371ac3670a4090ef1ca59a64386ac326c05ba256ccb7b344d6cd1371",
+    "examples/bunshin/rules/architecture.md": "1f138fff582c094920ac93391e089d232627d006a691d3461fe42f599b7f70d5",
+    "examples/bunshin/rules/safety.md": "0a0e426226906a36760f8b8940026920f0a25f6b87b436356ee1ff2be85d5ddd",
+    "examples/bunshin/cron/jobs.example.json": "f1b38b23b56497381e53b071f06e007baad6bbacd9e4577bc8b157a379b961a1",
+    "examples/bunshin/data/projects/project.example.md": "a5caba559abebeae61856a512a350d2d0838820fe9c683248964360d6db5edd2",
+    "examples/bunshin/data/people/contact.example.md": "c4fc53b5af7355661da1aa97716e632ee744632157c32bbcb0152015be80056f",
+    "workspace/memory/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "preservation": {
+    "original_files_in_each_copy": 63,
+    "full_report_files": 169,
+    "hashes_and_inventories_unchanged": true
+  },
+  "timeout_teardown_rerun": {
+    "run": "run-1792372363-WcCig7",
+    "duration_seconds": 18.00632225,
+    "baseline_seconds": 4.788256084,
+    "summary": {
+      "killed": 2,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "score": {
+      "scope": "rerun",
+      "killed": 2,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 100.0,
+      "unavailable_reason": null
+    },
+    "rerun": {
+      "source_run": "/tmp/mutie-node-openclaw-reports/run-1792372052-gJgqgF",
+      "source_checkpoint": 87,
+      "source_status": "completed",
+      "selection": "all",
+      "source_ids": [
+        2,
+        4
+      ],
+      "mutations": [
+        {
+          "id": 1,
+          "source_id": 2
+        },
+        {
+          "id": 2,
+          "source_id": 4
+        }
+      ]
+    },
+    "changed_original_test_files": [
+      "test/telegram-poller.test.js"
+    ],
+    "production_and_manifest_preserved": true,
+    "patch_sha256": "36afd1c43702ad310d427cb0d819b5a2444e38c9d015cdbc72d86c0595c099bc"
+  }
+}

@@ -87,6 +87,10 @@ findings, stronger-test reruns, cleanup evidence and remaining attribution limit
 [Body-exception attribution](benchmarks/node-body-attribution.md) extends the
 initial assertion-only boundary. Its observer changes execution identity; start
 a fresh scan instead of rerunning an old Node recipe. Existing reports are preserved.
+The [remaining SRI findings review](benchmarks/node-sri-final-review.md) explains the
+pending-promise timeout and preserves the cleanup survivor without claiming equivalence.
+[Second-project acceptance](benchmarks/node-openclaw.md) records an unchanged
+39-candidate `openclaw-cc` scan and three stronger-test kills.
 This is JavaScript acceptance only and does not imply TypeScript support.
 
 ## Try it

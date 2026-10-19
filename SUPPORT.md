@@ -32,7 +32,7 @@ does not by itself validate a new runner.
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
-| JavaScript | Node.js test runner | Experimental | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Additional project evidence; remaining survivor/timeout review |
+| JavaScript | Node.js test runner | Experimental | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Remaining finding review; reassess scoped milestone |
 | TypeScript | Node.js test runner | Planned | None | Define native TypeScript execution and independent acceptance |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -214,9 +214,16 @@ production source and original tests are preserved. The body-attribution audit
 completes the unchanged 21-candidate inventory with 12 kills, eight survivors,
 one timeout and zero errors; all four formerly unclassified candidates are kills.
 The initial generic-error boundary is superseded by that audit.
-Keep this Experimental pending additional real-project evidence and review of the
-remaining survivor/timeout. Do not infer a whole-project score from combined
-attempts or promote TypeScript from this JavaScript evidence.
+[SRI follow-up](benchmarks/node-sri-final-review.md) explains the pending-promise
+timeout; five further cleanup tests leave the survivor unresolved, not proven
+equivalent. [Second-project acceptance](benchmarks/node-openclaw.md) completes
+`openclaw-cc` unchanged: 39 candidates, 22 kills, 15 survivors, two timeouts and no
+errors. Three added tests kill three selected survivors in a full-suite rerun. A separate
+test-only teardown patch makes both original timeouts complete as kills; original
+reports and scores are preserved.
+Keep this Experimental while remaining findings and the scoped milestone are
+reviewed. Do not infer a whole-project score from combined attempts or promote
+TypeScript from this JavaScript evidence.
 
 ## JavaScript / TypeScript — Bun test runner
 

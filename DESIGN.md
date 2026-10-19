@@ -1598,3 +1598,12 @@ executable and runner recipe. Each command revalidates the pinned executable;
 focused reruns validate this identity plus the shared source identity while allowing
 test edits. Shared reporting, review, scores and browser command exports retain
 language explicitly. JavaScript results do not establish native TypeScript support.
+
+The [SRI follow-up](benchmarks/node-sri-final-review.md) preserves a timeout even
+when a bounded standalone test exposes the pending promise: a diagnostic subset
+is not full-suite completion. Cleanup-guard survival after additional late-event
+tests is evidence of an unresolved survivor, not proof of semantic equivalence.
+
+[Second-project evidence](benchmarks/node-openclaw.md) exercises the same contract
+on unchanged `openclaw-cc`: 39 candidates and a three-finding stronger-test rerun.
+Neither test-only review changes nor diagnostic subsets replace original scores.

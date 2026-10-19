@@ -22,8 +22,15 @@ review and explicit callback-error/timeout accounting; see [full evidence](bench
 The first Node test-runner slice is now experimental and JavaScript-only; see
 [scope and evidence](benchmarks/node-initial-scope.md). Body-exception attribution now uses exact worker evidence and rejects mixed
 lifecycle/process failures; see [the audit](benchmarks/node-body-attribution.md).
-Next review the remaining cleanup-guard survivor/timeout and validate another
-real package. TypeScript and Rust workspaces remain separate decisions.
+The remaining SRI findings are reviewed in [the follow-up](benchmarks/node-sri-final-review.md):
+the timeout is a reproducible pending promise; the cleanup survivor remains unproven
+equivalent. The second unchanged package, `openclaw-cc`, completes 39 candidates
+with 22 kills, 15 survivors, two timeouts and no errors; three stronger tests kill
+three selected survivors. A test-only teardown fix turns both timeouts into
+completed kills in a separate rerun. See [acceptance](benchmarks/node-openclaw.md).
+Next review its storage-locking and workspace-profile survivors before deciding
+on broader Node scope or maturity.
+TypeScript and Rust workspaces remain separate decisions.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -56,8 +63,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   preserving sources and original reports. See [evidence](benchmarks/node-initial-scope.md).
 - [x] Broaden non-assertion body-error attribution with exact body evidence and
   mixed hook/import/late-process regressions. Reject ambiguous dynamic imports.
-- [ ] Review the remaining cleanup-guard survivor and timeout separately.
-- [ ] Validate another real package before broadening dependency/module scope.
+- [x] Review the remaining cleanup-guard survivor and timeout separately; retain
+  the unresolved survivor and timeout classifications. See [review](benchmarks/node-sri-final-review.md).
+- [x] Validate another real package before broadening dependency/module scope:
+  `openclaw-cc` full inventory and three stronger-test kills are recorded in
+  [acceptance](benchmarks/node-openclaw.md).
+- [ ] Review remaining high-value `openclaw-cc` findings (storage locking and
+  workspace profiles), then reassess the Node milestone and scope.
 
 ## Validated first Vitest slice and follow-up work
 

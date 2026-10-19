@@ -1,0 +1,19 @@
+--- a/test/telegram-poller.test.js
++++ b/test/telegram-poller.test.js
+@@ -304,7 +304,7 @@
+     assert.equal(mocks.sendCalls[0].to, "-100123:topic:6");
+   });
+ 
+-  it("Agent エラー時も polling が継続する", async () => {
++  it("Agent エラー時も polling が継続する", async (t) => {
+     const agentCallCount = { n: 0 };
+     const mocks = createMocks();
+     mocks.mockAgentRunner.run = async () => {
+@@ -346,6 +346,7 @@
+ 
+     const poller = createPoller(mocks);
+     poller._fetch = mocks.mockFetch; // 上書き
++    t.after(() => poller.stop()); // Always stop, including when an assertion fails.
+     await poller.start();
+     await new Promise((r) => setTimeout(r, 100));
+ 

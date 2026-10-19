@@ -168,8 +168,15 @@ score. Retained boundary tests and awaited-callback patch are under
 `benchmarks/fixtures/`. The first Node test-runner slice is now Experimental for
 JavaScript only; `benchmarks/node-initial-scope.md` records the real-project loop.
 Body-error attribution now matches exact worker evidence and includes process-level
-late-failure checks; see `benchmarks/node-body-attribution.md`. Next review the
-remaining cleanup-guard survivor/timeout and validate another real package. Do not promote TypeScript from JavaScript evidence.
+late-failure checks; see `benchmarks/node-body-attribution.md`.
+`benchmarks/node-sri-final-review.md` records five more cleanup tests and a bounded
+pending-promise diagnostic: the survivor is not proven equivalent and the full-suite
+timeout remains excluded from scores. `benchmarks/node-openclaw.md` records a
+second unchanged project: 39 candidates (22 kills, 15 survivors, two timeouts, no
+errors), plus three stronger-test kills and two timeout-to-kill reruns after
+a test-only teardown fix. Next review storage-locking and workspace
+profile survivors, then reassess the scoped Node milestone. Do not promote
+TypeScript from JavaScript evidence.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
