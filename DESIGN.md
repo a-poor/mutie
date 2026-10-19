@@ -1545,7 +1545,7 @@ The experimental `--lang node` path supports one dependency-free ESM JavaScript
 package on audited Node 24.22.0. The package has the exact test script
 `node --test test/*.test.js`; the adapter expands that immediate-directory file
 set and runs it with serial process isolation. Only `.js` runtime files under
-`src/` and `test/`, literal local/`node:` imports, full-suite tests, one worker and
+`src/` and `test/`, static literal local/`node:` imports, full-suite tests, one worker and
 boolean flips are accepted. Unused build-only devDependencies need not be installed.
 Workspaces, installed/runtime dependencies, CommonJS, TypeScript, custom loaders,
 retry and expected-failure modes are outside this contract.
@@ -1572,12 +1572,26 @@ both before execution and in each worker. Observer/reporter bytes are part of th
 saved recipe identity. There is no uninstrumented fallback. Successful hooks can
 accompany kills; any failed/incomplete observed hook prevents a kill.
 
-Initially only `testCodeFailure` with an `ERR_ASSERTION` cause is a kill; parent
-`subtestsFailed` events do not count as extra mutants. Other exceptions remain
-execution errors even when an inspected real case is plainly a body failure.
-This deliberate limit keeps Node Experimental. Broader classification requires
-new evidence for body, lifecycle, import and mixed failures, not just more exit
-status cases. See [the audit and real-project results](benchmarks/node-initial-scope.md).
+The body observer wraps the test function with an arity-preserving Proxy. It
+records values escaping synchronous calls, native Promise rejections and error-first
+callbacks. After native execution it requires the identical value in the native
+`testCodeFailure` cause, then exports the file-local test ID. Reporter failures
+must consume exactly one matching file/ID entry; plans, suite definition failures
+and hooks cannot borrow another body's proof. Parent `subtestsFailed` events are
+structural evidence, not extra mutants. Non-native thenable rejection remains
+unclassified. Dynamic imports are rejected because their evaluation exceptions
+can otherwise resemble body exceptions; static module failures still require
+file completion and remain errors.
+
+Hook fail() observation records errors before another invocation can reset shared
+hook state. Process event observation records unhandled exceptions/rejections and
+errors thrown by exit listeners: Node can reduce a late failure to a diagnostic
+when another test already failed. The observer delegates process.emit unchanged,
+including return/throw behavior, without adding error listeners. It persists after
+exit listeners and on unhandled events so an already-written completion file
+cannot hide a later error. Any such signal prevents both success and a kill.
+Instrumentation bytes remain part of recipe identity; older Node recipes require
+a fresh scan. See [the expanded audit](benchmarks/node-body-attribution.md).
 
 Saved Node identity includes package manifest fingerprint, Node version/resolved
 executable and runner recipe. Each command revalidates the pinned executable;

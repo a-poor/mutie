@@ -10,11 +10,12 @@ export default async function* (source) {
     if (event.type === 'test:interrupted') evidence.interrupted = true;
     if (event.type === 'test:fail') {
       const e = d.details?.error;
-      evidence.failures.push({ file: d.file, name: d.name, type: d.details?.type,
-        failure: e?.failureType, code: e?.cause?.code, todo: !!d.todo, message: String(e?.message).slice(0, 2000) });
+      evidence.failures.push({ file: d.file, id: d.testId, name: d.name, type: d.details?.type,
+        failure: e?.failureType, todo: !!d.todo, message: String(e?.message).slice(0, 2000) });
       yield `${d.file}: ${d.name}: ${String(e?.message)}\n`;
     }
     if (event.type === 'test:stdout' || event.type === 'test:stderr') yield d.message;
+    if (event.type === 'test:diagnostic') yield `${d.message}\n`;
     size += 1;
     if (size > 100000 || evidence.failures.length > 10000 || evidence.summaries.length > 10000)
       throw new Error('Node completion evidence limit exceeded');

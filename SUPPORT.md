@@ -32,7 +32,7 @@ does not by itself validate a new runner.
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
-| JavaScript | Node.js test runner | Experimental | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broaden non-assertion failure attribution; additional project evidence |
+| JavaScript | Node.js test runner | Experimental | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Additional project evidence; remaining survivor/timeout review |
 | TypeScript | Node.js test runner | Planned | None | Define native TypeScript execution and independent acceptance |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
@@ -194,7 +194,7 @@ TypeScript milestone; neither promotes JSX or TSX support.
 
 Explicit `--lang node` supports one dependency-free ESM package with `.js` files
 under `src/` and `test/`, exact `node --test test/*.test.js` script, no installed
-dependencies, and audited Node 24.22.0. Literal relative and `node:` imports only;
+dependencies, and audited Node 24.22.0. Static literal relative and `node:` imports only;
 no runtime package dependencies, CommonJS, workspaces, loaders, TypeScript or
 parallel workers. Test files run serially in isolated processes and fresh copies.
 
@@ -202,17 +202,21 @@ Boolean discovery shares the concrete JS/TS parser with Vitest. The CLI supports
 saved reports, focused source-identity reruns, browser exports, dismissal CRUD/check
 and shared raw-score/findings policies. Completion requires per-file/global
 agreement and hook evidence from the pinned internal implementation. Only
-assertion failures are kills; generic body exceptions remain errors, as do hidden
-hook failures, incomplete/empty/early-exit cases and ambiguous attribution.
+body failures matched to exact worker-observed exceptions are kills. Hook failures,
+unhandled process errors, incomplete/empty/early-exit cases and ambiguous attribution
+remain errors. Dynamic imports are now rejected; rejected non-native thenables
+remain unclassified. See [the attribution audit](benchmarks/node-body-attribution.md).
 
 [Acceptance evidence](benchmarks/node-initial-scope.md) records the fixture,
-20 mutation-triggered classification cases, real timeout/cancellation/capture
+mutation-triggered classification cases, real timeout/cancellation/capture
 cleanup, and `sri-dynamic-loader` findings with stronger-test reruns. Its original
-production source and original tests are preserved. The conservative generic-error
-boundary limits campaign usability, so this remains Experimental despite the
-working review loop. Do not infer a whole-project score from combined attempts,
-or promote TypeScript from this JavaScript evidence. The next gate is broader
-body-error attribution without weakening lifecycle/import/completion checks.
+production source and original tests are preserved. The body-attribution audit
+completes the unchanged 21-candidate inventory with 12 kills, eight survivors,
+one timeout and zero errors; all four formerly unclassified candidates are kills.
+The initial generic-error boundary is superseded by that audit.
+Keep this Experimental pending additional real-project evidence and review of the
+remaining survivor/timeout. Do not infer a whole-project score from combined
+attempts or promote TypeScript from this JavaScript evidence.
 
 ## JavaScript / TypeScript — Bun test runner
 

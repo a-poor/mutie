@@ -1,7 +1,10 @@
 # Experimental Node test-runner slice
 
 Recorded 2026-10-18 on macOS. This is JavaScript-only acceptance for a narrow first
-adapter, not general Node/TypeScript support. Implementation is exposed as
+adapter, not general Node/TypeScript support. The assertion-only attribution limit
+below is historical; [the follow-up audit](node-body-attribution.md) records its
+replacement with exact body evidence and additional late-failure checks.
+Implementation is exposed as
 `mutie PATH --lang node`; no package/schema/catalog version was changed.
 
 ## Scope and selected project

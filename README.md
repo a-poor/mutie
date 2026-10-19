@@ -63,7 +63,7 @@ The initial scope is one dependency-free ESM package using audited Node **24.22.
 on PATH, `.js` files under `src/` and `test/`, and exactly
 `"test": "node --test test/*.test.js"` in `package.json`. There must be no installed
 `node_modules`; unused build-only devDependencies are allowed. Imports must be
-literal relative paths within those directories or `node:` built-ins. TypeScript,
+static literal relative paths within those directories or `node:` built-ins. TypeScript,
 CommonJS, custom loaders/runner flags, workspaces and runtime dependencies are
 unsupported. Only `boolean_flip`, `--jobs 1` and full-suite testing are accepted.
 
@@ -72,14 +72,21 @@ directories and bounded captures. Saved reports, browser command export, reruns,
 dismissal review and score policies use the shared workflow. Reruns accept improved
 tests but require unchanged mutation source and package/runner identity.
 
-Only completed assertion failures count as kills in this slice. Generic thrown
-errors, import/parse failures, lifecycle failures (including mixed body/cleanup
-failures), incomplete runs and ambiguous evidence are errors. Expected-failure
+Completed body exceptions count as kills only when worker evidence matches the
+exact thrown/rejected value to the same file and test ID. This covers assertions,
+synchronous exceptions, native Promise rejections and error-first callbacks.
+Import/parse failures, plan failures, lifecycle failures (including mixed body/cleanup
+and late-process failures), incomplete runs and ambiguous evidence remain errors.
+Dynamic imports are rejected because their evaluation errors can escape through
+the body; rejected non-native thenables remain conservatively unclassified. Expected-failure
 and retry modes, todo tests, and empty/all-skipped files are unsupported. The hook
 observer requires the exact audited Node implementation; no fallback is attempted.
 
 The [Node acceptance record](benchmarks/node-initial-scope.md) covers real-project
 findings, stronger-test reruns, cleanup evidence and remaining attribution limits.
+[Body-exception attribution](benchmarks/node-body-attribution.md) extends the
+initial assertion-only boundary. Its observer changes execution identity; start
+a fresh scan instead of rerunning an old Node recipe. Existing reports are preserved.
 This is JavaScript acceptance only and does not imply TypeScript support.
 
 ## Try it

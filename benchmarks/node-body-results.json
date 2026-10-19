@@ -1,0 +1,259 @@
+{
+  "project": "https://github.com/subresource-integrity/sri-dynamic-loader",
+  "commit": "370652c304d6fee0c59cfb51bf097e72f6ebf13a",
+  "runtime": "Node 24.22.0",
+  "recipe_fingerprint": "sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56",
+  "initial_evidence": "node-sri-results.json",
+  "full": {
+    "run": "run-1792371294-hkKpgW",
+    "status": "completed",
+    "duration_seconds": 46.849742875,
+    "baseline_seconds": 0.890651958,
+    "summary": {
+      "killed": 12,
+      "missed": 8,
+      "timeout": 1,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "score": {
+      "scope": "all_discovered",
+      "killed": 12,
+      "missed": 8,
+      "timeout": 1,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 60.0,
+      "unavailable_reason": null
+    },
+    "mutations": [
+      {
+        "source_id": 1,
+        "outcome": "killed",
+        "duration_seconds": 0.861461
+      },
+      {
+        "source_id": 2,
+        "outcome": "missed",
+        "duration_seconds": 0.920665125
+      },
+      {
+        "source_id": 3,
+        "outcome": "killed",
+        "duration_seconds": 0.856320083
+      },
+      {
+        "source_id": 4,
+        "outcome": "killed",
+        "duration_seconds": 1.35268425
+      },
+      {
+        "source_id": 5,
+        "outcome": "killed",
+        "duration_seconds": 1.567857708
+      },
+      {
+        "source_id": 6,
+        "outcome": "killed",
+        "duration_seconds": 1.785831167
+      },
+      {
+        "source_id": 7,
+        "outcome": "killed",
+        "duration_seconds": 1.481445125
+      },
+      {
+        "source_id": 8,
+        "outcome": "timeout",
+        "duration_seconds": 5.019082209
+      },
+      {
+        "source_id": 9,
+        "outcome": "missed",
+        "duration_seconds": 1.291146875
+      },
+      {
+        "source_id": 10,
+        "outcome": "killed",
+        "duration_seconds": 2.288647416
+      },
+      {
+        "source_id": 11,
+        "outcome": "missed",
+        "duration_seconds": 1.3813066250000001
+      },
+      {
+        "source_id": 12,
+        "outcome": "missed",
+        "duration_seconds": 1.127749667
+      },
+      {
+        "source_id": 13,
+        "outcome": "killed",
+        "duration_seconds": 1.7334723749999998
+      },
+      {
+        "source_id": 14,
+        "outcome": "killed",
+        "duration_seconds": 1.237309792
+      },
+      {
+        "source_id": 15,
+        "outcome": "killed",
+        "duration_seconds": 1.208969125
+      },
+      {
+        "source_id": 16,
+        "outcome": "killed",
+        "duration_seconds": 2.272424542
+      },
+      {
+        "source_id": 17,
+        "outcome": "killed",
+        "duration_seconds": 1.331142416
+      },
+      {
+        "source_id": 18,
+        "outcome": "missed",
+        "duration_seconds": 1.504758917
+      },
+      {
+        "source_id": 19,
+        "outcome": "missed",
+        "duration_seconds": 1.384786042
+      },
+      {
+        "source_id": 20,
+        "outcome": "missed",
+        "duration_seconds": 1.278426459
+      },
+      {
+        "source_id": 21,
+        "outcome": "missed",
+        "duration_seconds": 1.192194
+      }
+    ]
+  },
+  "four_original_errors": {
+    "run": "run-1792371341-fjwZ7d",
+    "status": "completed",
+    "duration_seconds": 10.241975584,
+    "baseline_seconds": 1.356807083,
+    "summary": {
+      "killed": 4,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "score": {
+      "scope": "rerun",
+      "killed": 4,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 100.0,
+      "unavailable_reason": null
+    },
+    "mutations": [
+      {
+        "source_id": 10,
+        "outcome": "killed",
+        "duration_seconds": 2.155294417
+      },
+      {
+        "source_id": 13,
+        "outcome": "killed",
+        "duration_seconds": 1.284630333
+      },
+      {
+        "source_id": 15,
+        "outcome": "killed",
+        "duration_seconds": 0.964387959
+      },
+      {
+        "source_id": 16,
+        "outcome": "killed",
+        "duration_seconds": 1.2966260410000001
+      }
+    ]
+  },
+  "stronger_survivors": {
+    "run": "run-1792371351-Zyq4uG",
+    "status": "completed",
+    "duration_seconds": 21.027853209,
+    "baseline_seconds": 1.6821975,
+    "summary": {
+      "killed": 7,
+      "missed": 1,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "score": {
+      "scope": "rerun",
+      "killed": 7,
+      "missed": 1,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 87.5,
+      "unavailable_reason": null
+    },
+    "mutations": [
+      {
+        "source_id": 2,
+        "outcome": "killed",
+        "duration_seconds": 1.6751875410000001
+      },
+      {
+        "source_id": 9,
+        "outcome": "missed",
+        "duration_seconds": 2.2878425
+      },
+      {
+        "source_id": 11,
+        "outcome": "killed",
+        "duration_seconds": 1.5460604999999998
+      },
+      {
+        "source_id": 12,
+        "outcome": "killed",
+        "duration_seconds": 1.9159030000000001
+      },
+      {
+        "source_id": 18,
+        "outcome": "killed",
+        "duration_seconds": 1.660212458
+      },
+      {
+        "source_id": 19,
+        "outcome": "killed",
+        "duration_seconds": 1.628111584
+      },
+      {
+        "source_id": 20,
+        "outcome": "killed",
+        "duration_seconds": 1.46503125
+      },
+      {
+        "source_id": 21,
+        "outcome": "killed",
+        "duration_seconds": 1.6401325
+      }
+    ]
+  },
+  "preservation": {
+    "original_files_in_each_checkout": 32,
+    "historical_report_files": 271,
+    "fresh_full_report_files": 97,
+    "old_recipe_rejected_before_baseline": true
+  }
+}

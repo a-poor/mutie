@@ -19,8 +19,10 @@ Rust packages and scoped Vitest packages, plus an experimental JavaScript Node r
   root and copies; `node/protocol.rs` requires file/global completion and hook
   evidence. The exact-hash `node/observer.mjs` detects cleanup errors suppressed
   after body failures. Preserve fail-closed checks and include observer/reporter
-  changes in execution identity. Only assertion failures are kills; generic body
-  exceptions remain errors. `tests/node_workflow.rs` and the ignored cleanup probe
+  changes in execution identity. Body exceptions require exact worker evidence matched to file/test ID; hooks,
+  plans, unhandled process errors and ambiguous failures remain errors. Dynamic
+  imports are rejected; non-native thenable rejections remain unclassified.
+  `benchmarks/node-body-attribution.md` records the expanded boundary. `tests/node_workflow.rs` and the ignored cleanup probe
   exercise real Node runs; `benchmarks/node-initial-scope.md` records scope and
   real-project findings. TypeScript remains planned for this runner.
 - `src/javascript.rs` shares concrete boolean discovery with Vitest and Node.
@@ -165,8 +167,9 @@ failed-report scores and distinguish combined inventory accounting from a full
 score. Retained boundary tests and awaited-callback patch are under
 `benchmarks/fixtures/`. The first Node test-runner slice is now Experimental for
 JavaScript only; `benchmarks/node-initial-scope.md` records the real-project loop.
-Next audit non-assertion body-error attribution while preserving lifecycle/import
-and completion checks. Do not promote TypeScript from JavaScript evidence.
+Body-error attribution now matches exact worker evidence and includes process-level
+late-failure checks; see `benchmarks/node-body-attribution.md`. Next review the
+remaining cleanup-guard survivor/timeout and validate another real package. Do not promote TypeScript from JavaScript evidence.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

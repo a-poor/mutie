@@ -188,7 +188,8 @@ fn mutation_triggered_lifecycle_errors_do_not_raise_scores() {
         "export const enabled = () => true;\n",
     )
     .unwrap();
-    let header = "import { test, before, after, beforeEach, afterEach } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { enabled } from '../src/flags.js';\n";
+    let header = "import { test, describe, before, after, beforeEach, afterEach } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { enabled } from '../src/flags.js';\n";
+    fs::write(root.join("test/imported.js"), "import {enabled} from '../src/flags.js'; if(!enabled()) throw new Error('module evaluation');").unwrap();
     let cases = [
         ("body", "test('body',()=>assert.ok(enabled()));", "killed"),
         (
@@ -252,9 +253,94 @@ fn mutation_triggered_lifecycle_errors_do_not_raise_scores() {
             "errors",
         ),
         (
+            "custom numeric error code",
+            "test('body',()=>{if(!enabled()) throw Object.assign(new Error('body'),{code:400})});",
+            "killed",
+        ),
+        (
             "generic error",
             "test('body',()=>{if(!enabled()) throw new TypeError('body')});",
+            "killed",
+        ),
+        (
+            "static module evaluation",
+            "import './imported.js'; test('body',()=>{});",
             "errors",
+        ),
+        (
+            "concurrent distinct hooks",
+            "test('parent',{concurrency:true},async t=>{t.afterEach(async c=>{if(c.name==='bad'&&!enabled()) throw new Error('cleanup'); await new Promise(r=>setImmediate(r))}); await Promise.all([t.test('bad',()=>{if(!enabled()) throw new Error('body')}),t.test('good',()=>{})])});",
+            "errors",
+        ),
+        (
+            "same names mixed",
+            "test('same',()=>{if(!enabled()) throw new Error('body')}); test('same',t=>{t.plan(enabled()?1:2); t.assert.ok(true)});",
+            "errors",
+        ),
+        (
+            "generic body with successful hooks",
+            "beforeEach(async()=>{}); afterEach((_t,done)=>done()); test('body',async()=>{if(!enabled()) throw new RangeError('body')});",
+            "killed",
+        ),
+        (
+            "callback and promise",
+            "test('body',(_t,done)=>{done(); if(!enabled()) return Promise.reject(new Error('body'))});",
+            "errors",
+        ),
+        (
+            "thenable rejection",
+            "test('body',()=>enabled()?undefined:{then(_ok,bad){bad(new Error('thenable'))}});",
+            "errors",
+        ),
+        (
+            "async body",
+            "test('body',async()=>{await Promise.resolve(); if(!enabled()) throw new Error('body')});",
+            "killed",
+        ),
+        (
+            "callback body",
+            "test('body',(_t,done)=>setImmediate(()=>done(enabled()?null:new Error('body'))));",
+            "killed",
+        ),
+        (
+            "primitive body",
+            "test('body',()=>{if(!enabled()) throw 'body'});",
+            "killed",
+        ),
+        (
+            "generic mixed",
+            "afterEach(()=>{if(!enabled()) throw new Error('cleanup')}); test('body',()=>{if(!enabled()) throw new Error('body')});",
+            "errors",
+        ),
+        (
+            "async generic mixed",
+            "afterEach(async()=>{await Promise.resolve(); if(!enabled()) throw new Error('cleanup')}); test('body',async()=>{if(!enabled()) throw new Error('body')});",
+            "errors",
+        ),
+        (
+            "callback generic cleanup",
+            "afterEach((_t,done)=>done(enabled()?null:new Error('cleanup'))); test('body',()=>{if(!enabled()) throw new Error('body')});",
+            "errors",
+        ),
+        (
+            "same message plan",
+            "test('body',()=>{if(!enabled()) throw new Error('body')}); test('plan',t=>{t.plan(enabled()?1:2); t.assert.ok(true)});",
+            "errors",
+        ),
+        (
+            "unhandled body rejection",
+            "test('body',()=>{if(!enabled()) Promise.reject(new Error('late'))});",
+            "errors",
+        ),
+        (
+            "suite definition",
+            "describe('suite',()=>{if(!enabled()) throw new Error('definition'); test('body',()=>{})});",
+            "errors",
+        ),
+        (
+            "nested generic body",
+            "test('parent',async t=>{await t.test('child',()=>{if(!enabled()) throw new Error('body')})});",
+            "killed",
         ),
         (
             "zero exit",
@@ -345,4 +431,77 @@ fn rejects_unsupported_scope_before_invoking_node() {
     fs::remove_file(temp.path().join("package.json")).unwrap();
     fs::write(root.join("src/unsupported.ts"), "export const a=true;").unwrap();
     check(&[], "supports JavaScript .js only");
+}
+
+#[test]
+#[ignore = "requires audited Node 24.22.0 on PATH"]
+fn body_failure_does_not_mask_file_or_late_failures() {
+    let (temp, root) = fixture();
+    let reports = temp.path().join("reports");
+    fs::write(
+        root.join("src/flags.js"),
+        "export const enabled = () => true;\n",
+    )
+    .unwrap();
+    let header =
+        "import {test,afterEach} from 'node:test'; import {enabled} from '../src/flags.js';\n";
+    let body = "test('body',()=>{if(!enabled()) throw new Error('body')});\n";
+    for (name, extra, separate) in [
+        (
+            "cross-file hook",
+            "afterEach(()=>{if(!enabled()) throw new Error('cleanup')}); test('other',()=>{});",
+            true,
+        ),
+        (
+            "cross-file import",
+            "if(!enabled()) throw new Error('module'); test('other',()=>{});",
+            true,
+        ),
+        (
+            "late body mixture",
+            "test('late',()=>{if(!enabled()) setImmediate(()=>{throw new Error('late')})});",
+            false,
+        ),
+        (
+            "top-level await mixture",
+            "await new Promise(r=>setImmediate(r)); if(!enabled()) throw new Error('module');",
+            false,
+        ),
+        (
+            "exit mixture",
+            "process.on('exit',()=>{if(!enabled()) throw new Error('exit cleanup')});",
+            false,
+        ),
+    ] {
+        fs::write(
+            root.join("test/flags.test.js"),
+            format!("{header}{body}{}", if separate { "" } else { extra }),
+        )
+        .unwrap();
+        fs::write(
+            root.join("test/other.test.js"),
+            format!(
+                "{header}{}",
+                if separate {
+                    extra
+                } else {
+                    "test('other',()=>{});"
+                }
+            ),
+        )
+        .unwrap();
+        let output = run(&root, &reports, &[]);
+        let (directory, saved, _, results) = report(&output);
+        assert_eq!(saved["status"], "failed", "{name}: {output:?}");
+        assert_eq!(results["summary"]["errors"], 1, "{name}: {results}");
+        assert_eq!(results["summary"]["killed"], 0, "{name}: {results}");
+        if name == "late body mixture" {
+            let log = results["mutations"][0]["logs"]["text"].as_str().unwrap();
+            assert!(
+                fs::read_to_string(directory.join(log))
+                    .unwrap()
+                    .contains("generated asynchronous activity")
+            );
+        }
+    }
 }

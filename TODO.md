@@ -20,9 +20,10 @@ identity checks; see [validation](benchmarks/vitest-node-reuse.md). The complete
 133-candidate Hyparquet inventory has now been attempted, with stronger-test
 review and explicit callback-error/timeout accounting; see [full evidence](benchmarks/vitest-hyparquet-full.md).
 The first Node test-runner slice is now experimental and JavaScript-only; see
-[scope and evidence](benchmarks/node-initial-scope.md). Next audit non-assertion body
-failures so legitimate runtime-error kills can be accepted without admitting
-lifecycle/import failures. TypeScript and Rust workspaces remain separate decisions.
+[scope and evidence](benchmarks/node-initial-scope.md). Body-exception attribution now uses exact worker evidence and rejects mixed
+lifecycle/process failures; see [the audit](benchmarks/node-body-attribution.md).
+Next review the remaining cleanup-guard survivor/timeout and validate another
+real package. TypeScript and Rust workspaces remain separate decisions.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -53,8 +54,9 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Verify mutation-triggered failures and timeout/cancellation/capture cleanup.
 - [x] Attempt the real inventory, inspect survivors and rerun stronger tests while
   preserving sources and original reports. See [evidence](benchmarks/node-initial-scope.md).
-- [ ] Broaden non-assertion body-error attribution with mixed-failure regressions;
-  review the remaining cleanup-guard survivor and timeout separately.
+- [x] Broaden non-assertion body-error attribution with exact body evidence and
+  mixed hook/import/late-process regressions. Reject ambiguous dynamic imports.
+- [ ] Review the remaining cleanup-guard survivor and timeout separately.
 - [ ] Validate another real package before broadening dependency/module scope.
 
 ## Validated first Vitest slice and follow-up work

@@ -155,7 +155,7 @@ fn validate_imports(
     let mut pending = vec![tree.root_node()];
     while let Some(node) = pending.pop() {
         cancellation.check()?;
-        let mut import = node.child_by_field_name("source");
+        let import = node.child_by_field_name("source");
         if node.kind() == "call_expression"
             && let Some(function) = node.child_by_field_name("function")
         {
@@ -165,12 +165,10 @@ fn validate_imports(
                 "CommonJS require is unsupported in {}",
                 file.display()
             );
-            if name == "import" {
-                import = node
-                    .child_by_field_name("arguments")
-                    .and_then(|n| n.named_child(0));
-                ensure!(import.is_some(), "dynamic import requires a literal");
-            }
+            ensure!(
+                name != "import",
+                "dynamic imports are unsupported: body exceptions cannot distinguish module evaluation failures"
+            );
         }
         if let Some(import) = import {
             ensure!(
@@ -242,6 +240,7 @@ mod tests {
             "import x from 'dependency';",
             "import('../outside.js');",
             "import(foo);",
+            "import('../test/flags.test.js');",
             "import {test} from 'node:test';",
             "require('fs');",
             "const x = ;",
