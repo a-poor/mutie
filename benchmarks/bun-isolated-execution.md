@@ -86,3 +86,11 @@ validation, snapshotting and executable hashing; it is not end-to-end latency.
 Next: audit Composer's configuration/import/layout boundary, establish unchanged
 real-project baseline acceptance through this executor, then connect discovery,
 scored runs and persisted execution identity to the shared workflow.
+
+## Configuration follow-up
+
+[Composer executor acceptance](bun-composer-execution.md) now admits its narrow
+plain-JSON tsconfig and non-executable examples/release scripts. The unchanged
+baseline and retained stronger-test controls pass through the executor. This
+supersedes the initial configuration/layout exclusions above for that audited scope;
+scored runs and persisted execution identity remain pending.

@@ -1721,8 +1721,9 @@ were lost at shutdown. The Rust reader now drives a baseline-only `bun-check` di
 workspaces, a private config/path/to/home directory, independent expected-file
 inventory, bounded captures and Unix regular-file limits. It requires the pinned
 runtime and compares executable and observer bytes around execution. Input files
-and test inventory are compared before executing the snapshot. The first scope
-rejects tsconfig, custom Bun config, installed dependencies and nonlocal imports
-other than node: builtins and bun:test. It does not execute package scripts.
-Real-project configuration, saved execution identity and the shared scored
+and test inventory are compared before executing the snapshot. The scope accepts the audited plain-JSON NodeNext/ES2022 configuration and
+fingerprints ancillary examples/release scripts without making them importable.
+It rejects aliases/inheritance, custom Bun config, installed dependencies and
+nonlocal imports other than node: builtins and bun:test. It does not execute package scripts.
+Unchanged Composer baseline/finding controls pass; saved execution identity and the shared scored
 report/rerun/review workflow remain gates. Bun support remains Planned.

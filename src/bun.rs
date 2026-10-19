@@ -1,4 +1,5 @@
 //! Baseline-only Bun diagnostic. Scored execution remains gated on acceptance.
+mod config;
 mod project;
 mod protocol;
 
@@ -247,7 +248,7 @@ mod tests {
         assert_eq!(load().unwrap().tests, ["test/flags.test.js"]);
         for (path, contents) in [
             ("bunfig.toml", "[test]\npreload=['evil.js']"),
-            ("tsconfig.json", "{}"),
+            ("tsconfig.json", "{\"extends\":\"evil\"}"),
             (".env", "BUN_OPTIONS=evil"),
             ("outside.test.js", ""),
             ("test/flags.spec.js", ""),
@@ -426,6 +427,134 @@ mod tests {
             tokio::time::sleep(Duration::from_millis(1700)).await;
             assert!(!path.exists(), "descendant outlived command shutdown");
         }
+        Ok(())
+    }
+    #[test]
+    fn accepts_scoped_config_but_keeps_ancillary_files_out_of_imports_and_discovery() -> Result<()>
+    {
+        let root = fixture("ts");
+        let load = || project::Project::load(root.path(), &Cancellation::default());
+        let config = root.path().join("tsconfig.json");
+        fs::write(
+            &config,
+            r#"{"compilerOptions":{"module":"NodeNext","moduleResolution":"NodeNext","target":"ES2022","moduleDetection":"force","lib":["ESNext","DOM"],"strict":true,"noEmit":true},"include":["src","tests","examples"]}"#,
+        )?;
+        fs::create_dir(root.path().join("scripts"))?;
+        fs::write(
+            root.path().join("scripts/release.ts"),
+            "import 'uninstalled-release-tool';",
+        )?;
+        let before = load()?.files;
+        fs::write(&config, r#"{"compilerOptions":{"strict":false}}"#)?;
+        assert_ne!(before, load()?.files);
+        for path in [
+            "scripts/hidden.test.ts",
+            "scripts/hidden.spec.ts",
+            "src/tsconfig.json",
+            "jsconfig.json",
+        ] {
+            let path = root.path().join(path);
+            fs::write(&path, "{}")?;
+            assert!(load().is_err(), "{}", path.display());
+            fs::remove_file(path)?;
+        }
+        fs::write(
+            root.path().join("src/flags.ts"),
+            "import '../scripts/release.ts';",
+        )?;
+        assert!(load().is_err());
+        Ok(())
+    }
+
+    #[tokio::test]
+    #[ignore = "requires pinned Bun and unchanged MUTIE_BUN_COMPOSER; real baseline/finding controls"]
+    async fn real_composer_baseline_and_stronger_finding() -> Result<()> {
+        let source = std::path::PathBuf::from(
+            std::env::var("MUTIE_BUN_COMPOSER").context("set MUTIE_BUN_COMPOSER")?,
+        );
+        let cancellation = Cancellation::default();
+        let before = project::Project::load(&source, &cancellation)?.files;
+        let recorded: serde_json::Value = serde_json::from_str(include_str!(
+            "../benchmarks/bun-observer-composer-results.json"
+        ))?;
+        let raw_hashes: std::collections::BTreeMap<_, _> = before
+            .iter()
+            .map(|(k, v)| (k.clone(), v.trim_start_matches("sha256:").to_owned()))
+            .collect();
+        ensure!(
+            serde_json::to_value(&raw_hashes)? == recorded["original_file_sha256"],
+            "Composer does not match the unchanged audited revision"
+        );
+        let copy = Workspace::create(&source, &[], &cancellation)?;
+        let root = copy.path();
+        let path = root.join("src/utils.ts");
+        let original = fs::read_to_string(&path)?;
+        ensure!(
+            original.matches("configurable: true,").count() == 1,
+            "candidate changed"
+        );
+        let mut records = Vec::new();
+        for (mode, stronger, candidate, expected, count) in [
+            ("baseline", false, false, Outcome::Missed, "272 pass"),
+            ("candidate", false, true, Outcome::Missed, "272 pass"),
+            (
+                "stronger_baseline",
+                true,
+                false,
+                Outcome::Missed,
+                "273 pass",
+            ),
+            (
+                "stronger_candidate",
+                true,
+                true,
+                Outcome::Killed,
+                "272 pass",
+            ),
+        ] {
+            fs::write(
+                &path,
+                if candidate {
+                    original.replace("configurable: true,", "configurable: false,")
+                } else {
+                    original.clone()
+                },
+            )?;
+            if stronger {
+                fs::write(
+                    root.join("tests/mutie-stronger.test.ts"),
+                    include_bytes!("../benchmarks/fixtures/bun-audit/composer-stronger.test.ts"),
+                )?;
+            }
+            let inputs = project::Project::load(&root, &cancellation)?.files;
+            let output = execute(
+                &root,
+                "bun",
+                Duration::from_secs(15),
+                NonZeroUsize::new(4 * 1024 * 1024).unwrap(),
+                &cancellation,
+            )
+            .await?;
+            let text = output.text.text()?;
+            assert_eq!(output.classify()?, expected, "{mode}: {text}");
+            assert!(text.contains(count), "{mode}: {text}");
+            if expected == Outcome::Killed {
+                assert!(
+                    text.contains("1 fail") && text.contains("middleware can be named again"),
+                    "{text}"
+                );
+            }
+            assert_eq!(inputs, project::Project::load(&root, &cancellation)?.files);
+            records.push(serde_json::json!({"mode":mode,"outcome":format!("{expected:?}"),"command_seconds":output.raw.elapsed.as_secs_f64(),"passed":if mode=="stronger_baseline"{273}else{272},"failed":if candidate&&stronger{1}else{0},"diagnostics_sha256":fingerprint(text.as_bytes())}));
+        }
+        assert_eq!(
+            before,
+            project::Project::load(&source, &cancellation)?.files
+        );
+        println!(
+            "BUN_COMPOSER_ACCEPTANCE={}",
+            serde_json::json!({"original_file_sha256":raw_hashes,"observer_sha256":fingerprint(include_bytes!("bun/observer.mjs")),"runs":records,"inputs_preserved":true})
+        );
         Ok(())
     }
 }

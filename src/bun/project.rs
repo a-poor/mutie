@@ -56,12 +56,7 @@ impl Project {
                 );
             }
         }
-        // Initial execution accepts no runtime configuration. Native TypeScript
-        // fixtures use Bun defaults; configurable TS projects need a separate audit.
-        ensure!(
-            !root.join("tsconfig.json").exists(),
-            "Bun tsconfig support awaits configuration audit"
-        );
+        super::config::validate(&root)?;
         let tests: Vec<_> = code
             .iter()
             .filter(|p| is_test(p))
@@ -132,7 +127,8 @@ fn collect(
             name != "bunfig.toml"
                 && !name.starts_with(".env")
                 && (relative == Path::new("package.json") || name != "package.json")
-                && name != "tsconfig.json",
+                && (name != "tsconfig.json" || relative == Path::new("tsconfig.json"))
+                && name != "jsconfig.json",
             "unsupported Bun configuration: {}",
             relative.display()
         );
@@ -142,11 +138,16 @@ fn collect(
             "unsupported Bun source extension"
         );
         if matches!(ext, Some("js" | "ts")) {
+            let executable = relative.starts_with("src")
+                || relative.starts_with("test")
+                || relative.starts_with("tests");
             ensure!(
-                relative.starts_with("src")
-                    || relative.starts_with("test")
-                    || relative.starts_with("tests"),
-                "Bun source/test files must be under src/, test/ or tests/"
+                executable || relative.starts_with("examples") || relative.starts_with("scripts"),
+                "Bun source must be audited src/test code or non-executable examples/scripts"
+            );
+            ensure!(
+                executable || !is_test(relative),
+                "Bun tests outside test/ or tests/ are unsupported"
             );
             ensure!(
                 !name.ends_with(".d.ts")
@@ -159,7 +160,9 @@ fn collect(
                 !is_test(relative) || !relative.starts_with("src"),
                 "in-source Bun tests unsupported"
             );
-            code.insert(relative.to_owned());
+            if executable {
+                code.insert(relative.to_owned());
+            }
         }
         files.insert(
             relative

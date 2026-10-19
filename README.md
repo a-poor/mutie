@@ -127,8 +127,11 @@ body failures from unsafe outcomes in paired probes. `mutie bun-check PATH` now
 checks a baseline in a fresh copy using pinned Bun 1.3.11+af24e281e. This diagnostic
 accepts dependency-free ESM packages with `scripts.test: "bun test"`, `.js`/`.ts`
 source under `src/`, and `.test.js`/`.test.ts` tests under `test/` or `tests/`.
-It currently rejects tsconfig, custom Bun configuration, installed dependencies,
-symlinks and dynamic imports. See [execution evidence](benchmarks/bun-isolated-execution.md).
+A narrow plain-JSON NodeNext/ES2022 tsconfig is accepted; aliases, inherited config,
+custom Bun configuration, installed dependencies, symlinks and dynamic imports
+remain unsupported. Examples/release scripts may be present but cannot be imported
+by audited source/tests. The unchanged 272-test Composer baseline and stronger-test
+finding now pass through this executor; see [acceptance](benchmarks/bun-composer-execution.md).
 Bun remains Planned: `--lang bun`, mutation runs and saved reruns are not available.
 
 ## Try it

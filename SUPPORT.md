@@ -269,8 +269,10 @@ required before scored execution. The [bounded observer follow-up](benchmarks/bu
 passes 112 paired JS/TS cases, 30 evidence-rejection checks and matching Composer
 baseline/finding controls. The [isolated diagnostic](benchmarks/bun-isolated-execution.md)
 now connects the Rust reader to fresh copies and shared process cleanup. JS/TS
-fixtures pass independently; configuration-bearing Composer remains outside the
-diagnostic scope. Complete scored real-project acceptance remains open.
+fixtures pass independently. [Unchanged Composer acceptance](benchmarks/bun-composer-execution.md)
+adds a narrow plain-JSON tsconfig and non-executable ancillary-file scope: 272-test
+baseline, surviving manual candidate, and one stronger-test body failure. Complete
+scored real-project acceptance remains open.
 
 Desired outcome: the shared workflow for projects using Bun's test runner.
 The version, real project and fixtures are selected; next define package/lockfile handling,

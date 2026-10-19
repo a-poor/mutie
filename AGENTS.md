@@ -16,12 +16,14 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
 - `src/bun.rs` implements baseline-only `bun-check` with the pinned Bun runtime,
   owned workspaces and bounded process/evidence captures. `bun/project.rs` validates
-  the first dependency-free, unconfigured JS/TS scope and independent test inventory.
+  the dependency-free JS/TS scope and independent test inventory. `bun/config.rs`
+  admits the audited plain-JSON NodeNext/ES2022 settings; ancillary examples/scripts
+  cannot be imported or contain tests. `benchmarks/bun-composer-execution.md` records
+  unchanged Composer baseline and stronger-test acceptance.
   `bun/protocol.rs` requires complete XML/JSONL and positive body checkpoints;
   `tests/bun_protocol.rs` retains native replay controls. See
   `benchmarks/bun-isolated-execution.md`. Unix per-file limits apply to Bun and its
-  descendants; this is not a total disk quota. Scored runs, tsconfig/Composer scope
-  and saved execution identity remain pending; Bun remains Planned.
+  descendants; this is not a total disk quota. Scored runs and saved execution identity remain pending; Bun remains Planned.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
   dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook

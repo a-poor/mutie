@@ -82,8 +82,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   test inventory, pinned runtime/observer checks, bounded captures and per-file OS
   limits. Fixture outcomes and cleanup probes are recorded in
   [isolated execution](benchmarks/bun-isolated-execution.md).
-- [ ] Extend configuration acceptance to unchanged Composer, then persist execution
-  identity and connect scored runs; ambiguous failures must remain errors.
+- [x] Accept unchanged Composer's audited configuration/layout: 272-test baseline,
+  surviving candidate and stronger-test body failure through isolated execution;
+  see [Composer acceptance](benchmarks/bun-composer-execution.md).
+- [ ] Persist Bun execution identity and connect discovery/scored runs; ambiguous
+  failures must remain errors.
 - [ ] Validate package/import/config/discovery boundaries, then connect isolated
   execution to reports, reruns, review and policies.
 - [x] Verify baseline diagnostic timeout/cancellation/capture limits and descendant cleanup.

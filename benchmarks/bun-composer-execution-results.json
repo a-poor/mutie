@@ -1,0 +1,80 @@
+{
+  "inputs_preserved": true,
+  "observer_sha256": "sha256:a42761dc9713b85fc391cd9522968543ab2b3075f78cabcbaa3ec6977ae8bc1b",
+  "original_file_sha256": {
+    ".github/workflows/publish.yml": "4f4fae3ba0cdc894f6ea9600324cc4b3c92e4c758c9029bacc2432f482870313",
+    ".gitignore": "73fdd9cfa8b4724590f7339671e39d1aa7f9445dc6ddb3c76e2b31a63d143423",
+    "CLAUDE.md": "b0e5dd892e2cebd9ceecbcb1ffebf78e66bd5cce9ee28a03ce942649a1b925c4",
+    "LICENSE": "b8e8bb22e1dc011b7c6ce0db81509cffdb1ac0c4888c14b9b6e6428f3e5a70b0",
+    "README.md": "249b781548194b5a60526d723e978d4dbd6697569bd07a349bc69f4a69e67c92",
+    "biome.json": "00fb41348d1c9c9e110c864ca7b8c5eaded9afd81758edba9ee7a3e0363b0a05",
+    "bun.lock": "3717b4a79b5331739c978b45346e53c3deb7d11258ad151df14ef4503293f3cc",
+    "deno.json": "8d7c9f4d1686c257e0c24c51a1cf9fb3a3021f785f86622697f3c421d155d767",
+    "docs/SPEC.md": "a3cbad4da185bb4bfde408df7311fe54dea545ad1d3b82e6f43a59792136265e",
+    "docs/layered-composers.md": "921ba56d1bb658a67411d302645c201d527fd6864d59d1b18d54eb9fecbb5066",
+    "examples/bot.ts": "e8fc5d9741ccb7448712a3b741c49c65855d7394277c8401647febca05c55412",
+    "package.json": "2c9c47a03a5014fd3fa77c4582d628dc618075bedaaf96752d568b5c88816700",
+    "scripts/generate-changelog.ts": "87cbdc20449a5767ff1c57e2881fe6e1021615cd1cde9c72471b35f1651e24d9",
+    "scripts/prepare-jsr.ts": "d0fc4013173523ebf28d8075515ad3a3364fa8492677afd8e487c210af4aa251",
+    "src/compose.ts": "ce9201b54b08eba417e8438a4ac710b4efe5bd83085ab463a3b7d81131aa7666",
+    "src/composer.ts": "11b8f5e6b236c2f0aaf46a7cb772df887ad4c893c8782fa22bab4b1e86ceda9e",
+    "src/factory.ts": "40965586cbc29042bc002147b9140224df1bda3cbad57af13cbe3b688a4dc8fd",
+    "src/index.ts": "97074b376ae5d15966e52443e37bd42c9df82ecdb76c36ce3a614836a452cc63",
+    "src/macros.ts": "f499afc1950b22473b32caa6d8001372702f99d396e8f2ff4e1f2fc9d02d7ab3",
+    "src/queue.ts": "5db0dd3d93b5ef494f446c0a171335f9ab943987506b406f36b8a0c488d6ba73",
+    "src/types.ts": "466421ce2a5a0477a080cc98a6b87580931f8572d2f657cb7772f5f028282247",
+    "src/utils.ts": "2fe7df1fce368e9f2b70a97ec37caad7c90a344523af3832ffa61168cfea1734",
+    "tests/compose.test.ts": "196d517612053f057a26706f05fedc725b7139beacbfe2b32e9036a42dd5a51f",
+    "tests/composer.test.ts": "e34d74c050374ecf5626fa63a953bfd03c996ff235a92f7801074775b754701d",
+    "tests/dedup.test.ts": "c3986dbe81d02078e972649b5a4a631365aad1d9cc3042d262041d0200013852",
+    "tests/factory.test.ts": "846e42b714e5955a4b51e8cb7e84ac792f00108eed7f26f65e26695944e04e7b",
+    "tests/macros.test.ts": "9053b5a3410b75cca115be3b68690b275d95905232f8bd455fe5922ee79c1ac7",
+    "tests/observability.test.ts": "22b014d9e52c44f308e68399c0a299217bc2fde036f09cea6172581e753a330f",
+    "tests/queue.test.ts": "5c9ef5c31efdb9a28a6e36ef39c3dfb7d442a357d23b58794477e9f0269e6237",
+    "tests/registered-events.test.ts": "997f4db20c1339ca1a18f403cccac7ee23f93d1e8210d74f89915aea5e5c2b8d",
+    "tests/scope.test.ts": "8b203ccfc8f3b364a6d8e8a65e598cb2f3187d38756a4abe6570c15b40b6ca96",
+    "tests/types.test.ts": "5ffe73e785407609c3d57c0df13166d7522a3b3934e0ca09181c555fcd0f62d5",
+    "tests/utils.test.ts": "f22ca767d68c5756f145dbd0f9e69851766c84f995dbf30fbc38a2066a7ad035",
+    "tsconfig.build.json": "3f8f3004a5df3b5498fb34d844dad587f087dfc95b17b2eb64ae4ac1c637aa24",
+    "tsconfig.json": "a5257cd0b99a47367029b1b9f45018afed9b5bea5789917bfb31a8a287f25d8e"
+  },
+  "runs": [
+    {
+      "command_seconds": 0.503575208,
+      "diagnostics_sha256": "sha256:063eee975d61a1a7a01eb07d7d3b74abcdb91894365fec5b5e1a92cfe79ad138",
+      "failed": 0,
+      "mode": "baseline",
+      "outcome": "Missed",
+      "passed": 272
+    },
+    {
+      "command_seconds": 0.492281458,
+      "diagnostics_sha256": "sha256:6df51c777a13f9ba47d25ce6062f40b000d186d85c90178a1481c5e7045097dc",
+      "failed": 0,
+      "mode": "candidate",
+      "outcome": "Missed",
+      "passed": 272
+    },
+    {
+      "command_seconds": 0.494270334,
+      "diagnostics_sha256": "sha256:c0b8f1d1dba7c094a2818a7e96808c1fbd77ae4e0bf26cf4290f5a2e9866afb1",
+      "failed": 0,
+      "mode": "stronger_baseline",
+      "outcome": "Missed",
+      "passed": 273
+    },
+    {
+      "command_seconds": 0.496417834,
+      "diagnostics_sha256": "sha256:01587bdde491d78a7a89ff491beeeb5e73f742d9c99b384e63ae700df3339348",
+      "failed": 1,
+      "mode": "stronger_candidate",
+      "outcome": "Killed",
+      "passed": 272
+    }
+  ],
+  "recorded": "2026-10-19",
+  "runtime": "1.3.11+af24e281e",
+  "project": "https://github.com/gramiojs/composer",
+  "project_commit": "3de15b846e3f5ef46cf8aebd5d136908baa43b54",
+  "scope": "isolated baseline/finding controls, not scored mutation runs"
+}
