@@ -1615,7 +1615,10 @@ native TypeScript or runtime versions. Seven other `openclaw-cc` survivors and t
 SRI limits remain explicit; no combined improved whole-project score is inferred.
 
 
-## Experimental native TypeScript on Node
+## Initial native TypeScript on Node
+
+The following describes the first explicit-glob slice; the default-discovery
+extension and subsequent Validated milestone are recorded in the next section.
 
 The native TS extension uses the same pinned Node 24.22.0 runner and fail-closed
 observer/protocol. `.ts` source and tests join `.js` under the audited `src/` and
@@ -1652,3 +1655,31 @@ run with three useful stronger-test kills. Bragkit's default test script require
 one explicit-glob adaptation, despite matching direct test inventories. Native TS
 therefore remains Experimental pending unchanged-project findings acceptance;
 JavaScript's Validated status and its unresolved survivors are unaffected.
+
+
+## Audited native default test discovery
+
+Exact `scripts.test: node --test` is now accepted for JS and native TS. A bounded
+whole-project scan applies the audited default naming/extension rules, ignoring
+dot components and `node_modules`. It rejects visible symlinks and any selected
+file outside the audited `test/` `.js`/`.ts` set. Helpers and nested files count as
+entries, even without a `.test` suffix; empty/all-skipped entries still fail the
+completion contract. Existing explicit-glob recipes keep their original identities.
+
+For default mode, each Node identity check uses the pinned runtime's native glob
+to verify the complete sorted selection without executing project code. Exact
+hashes pin `internal/test_runner/runner`, `utils` and `internal/fs/glob`. The
+pattern, implementation hashes and discovery mode join the recipe. TS scope also
+records `native-default`; conflicting saved modes are rejected. Original and
+snapshot selections must match so output/report exclusions cannot remove tests.
+The final command copy is checked again, then the runner is invoked without file
+arguments, using its own native default discovery. Per-file completion must match
+the audited selection. Test additions on a focused rerun remain allowed.
+
+[Unchanged-project acceptance](benchmarks/node-default-discovery.md) completes the
+native TS milestone: Bragkit's original package/config/source/tests produce the
+same 23 outcomes, and the retained HTML-list tests kill the same three survivors.
+Together with the independent TS failure, cleanup, review and identity evidence,
+this meets Validated within the declared scope. Eighteen findings remain open;
+test layouts beyond the audited test directory, dependencies and loaders remain
+separate scope decisions.

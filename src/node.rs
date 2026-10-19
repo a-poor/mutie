@@ -1,4 +1,5 @@
 //! Pinned, dependency-free ESM JavaScript / native TypeScript node:test adapter.
+mod discovery;
 pub mod project;
 mod protocol;
 mod typescript;
@@ -30,8 +31,22 @@ pub struct ExecutionScope {
     pub recipe_fingerprint: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub typescript: Option<typescript::TypeScriptScope>,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub default_discovery: bool,
 }
-fn recipe(typescript: bool) -> String {
+fn recipe(typescript: bool, default_discovery: bool) -> String {
+    if default_discovery {
+        return fingerprint(
+            [
+                recipe(typescript, false).as_bytes(),
+                discovery::PATTERN.as_bytes(),
+                discovery::HASHES.join(":").as_bytes(),
+                b"native-default-selection-audited-test-root",
+            ]
+            .concat()
+            .as_slice(),
+        );
+    }
     let mode: &[u8] = if typescript {
         b"node-test-serial-process-native-strip-types-explicit-js-or-ts-test-glob"
     } else {
@@ -57,7 +72,7 @@ impl ExecutionScope {
             "invalid saved Node identity"
         );
         ensure!(
-            self.recipe_fingerprint == recipe(self.typescript.is_some()),
+            self.recipe_fingerprint == recipe(self.typescript.is_some(), self.default_discovery),
             "unsupported saved Node runner recipe"
         );
         ensure!(
@@ -66,10 +81,17 @@ impl ExecutionScope {
         );
         if let Some(scope) = &self.typescript {
             scope.validate_record()?;
+            ensure!(
+                (scope.test_pattern == typescript::TestPattern::Default) == self.default_discovery,
+                "conflicting saved Node discovery mode"
+            );
         }
         Ok(())
     }
     pub fn test_command(&self) -> Vec<&'static str> {
+        if self.default_discovery {
+            return vec!["node", "--test", "--test-concurrency=1"];
+        }
         vec![
             "node",
             "--test",
@@ -95,13 +117,22 @@ async fn scope_with(
     cancellation: &Cancellation,
 ) -> Result<ExecutionScope> {
     let project = project::Project::load(root, cancellation)?;
-    let expression = "console.log(JSON.stringify({version:process.version,executable:process.execPath,hash:require('node:crypto').createHash('sha256').update(process.binding('natives')['internal/test_runner/test']).digest('hex')}))";
+    let mut expression = if project.default_discovery {
+        discovery::expression()
+    } else {
+        "const files=undefined,discoveryHashes=undefined;".into()
+    };
+    expression.push_str("console.log(JSON.stringify({files,discoveryHashes,version:process.version,executable:process.execPath,hash:require('node:crypto').createHash('sha256').update(process.binding('natives')['internal/test_runner/test']).digest('hex')}))");
     let out = process::run_with_env(
         program,
-        &["--eval", expression],
+        &["--eval", &expression],
         root,
         Duration::from_secs(10),
-        NonZeroUsize::new(4096),
+        NonZeroUsize::new(if project.default_discovery {
+            4 * 1024 * 1024
+        } else {
+            4096
+        }),
         cancellation,
         &[("NODE_OPTIONS", "".as_ref()), ("NODE_PATH", "".as_ref())],
     )
@@ -116,6 +147,9 @@ async fn scope_with(
         value["version"] == "v24.22.0" && value["hash"] == HOOK_HASH,
         "Node runner requires audited Node 24.22.0 test implementation"
     );
+    if project.default_discovery {
+        discovery::validate_native(&value, &project.tests)?;
+    }
     let scope = ExecutionScope {
         package: project.name,
         node: "24.22.0".into(),
@@ -124,7 +158,8 @@ async fn scope_with(
             .context("missing Node executable")?
             .into(),
         manifest_fingerprint: project.manifest,
-        recipe_fingerprint: recipe(project.typescript.is_some()),
+        recipe_fingerprint: recipe(project.typescript.is_some(), project.default_discovery),
+        default_discovery: project.default_discovery,
         typescript: project.typescript,
     };
     scope.validate_record()?;
@@ -165,9 +200,22 @@ pub async fn test(
     let project = project::Project::load(&root, cancellation)?;
     ensure!(
         project.manifest == expected.manifest_fingerprint
-            && project.typescript == expected.typescript,
+            && project.typescript == expected.typescript
+            && project.default_discovery == expected.default_discovery,
         "Node manifest or native TypeScript configuration changed during snapshotting"
     );
+    if project.default_discovery {
+        let copied = scope_with(
+            &root,
+            expected.node_executable.to_str().unwrap(),
+            cancellation,
+        )
+        .await?;
+        ensure!(
+            &copied == expected,
+            "Node identity changed during snapshotting"
+        );
+    }
     let owned = tempfile::Builder::new()
         .prefix("mutie-node-command-")
         .tempdir()?;
@@ -205,7 +253,9 @@ pub async fn test(
         "--test-concurrency=1".into(),
         format!("--test-reporter={}", reporter.display()),
     ];
-    args.extend(project.tests.iter().cloned());
+    if !project.default_discovery {
+        args.extend(project.tests.iter().cloned());
+    }
     let raw = process::run_with_env(
         expected.node_executable.to_str().unwrap(),
         &args.iter().map(String::as_str).collect::<Vec<_>>(),
@@ -263,23 +313,40 @@ mod tests {
             tsconfig_fingerprint: None,
         });
         assert!(typescript.validate_record().is_err());
-        typescript.recipe_fingerprint = recipe(true);
+        typescript.recipe_fingerprint = recipe(true, false);
         typescript.validate_record().unwrap();
         assert!(javascript.validate_rerun(&typescript).is_err());
+        let mut native = typescript.clone();
+        native.default_discovery = true;
+        native.recipe_fingerprint = recipe(true, true);
+        assert!(native.validate_record().is_err());
+        native.typescript.as_mut().unwrap().test_pattern = typescript::TestPattern::Default;
+        native.validate_record().unwrap();
+        assert!(typescript.validate_rerun(&native).is_err());
+        // The already saved explicit TS recipe remains readable, as does JS.
+        assert_eq!(
+            typescript.recipe_fingerprint,
+            "sha256:ad3c7bccc8ef0781e8384c7b6d21c31e4a0e7de8f41a8c30ea40924428d82e59"
+        );
         typescript.typescript.as_mut().unwrap().tsconfig_fingerprint = Some("invalid".into());
         assert!(typescript.validate_record().is_err());
     }
     #[tokio::test]
     #[ignore = "requires audited Node 24.22.0 on PATH; real process cleanup"]
     async fn timeout_cancellation_capture_and_owned_files() -> Result<()> {
-        cleanup(false).await
+        cleanup(false, false).await
     }
     #[tokio::test]
     #[ignore = "requires audited Node 24.22.0 on PATH; real process cleanup"]
     async fn typescript_timeout_cancellation_capture_and_owned_files() -> Result<()> {
-        cleanup(true).await
+        cleanup(true, false).await
     }
-    async fn cleanup(typescript: bool) -> Result<()> {
+    #[tokio::test]
+    #[ignore = "requires audited Node 24.22.0 on PATH; real process cleanup"]
+    async fn default_discovery_timeout_cancellation_capture_and_owned_files() -> Result<()> {
+        cleanup(true, true).await
+    }
+    async fn cleanup(typescript: bool, default_discovery: bool) -> Result<()> {
         let source = Path::new(env!("CARGO_MANIFEST_DIR")).join(if typescript {
             "tests/fixtures/node-typescript"
         } else {
@@ -289,6 +356,12 @@ mod tests {
         let source_file = format!("src/flags.{extension}");
         let work = Workspace::create(&source, &[], &Cancellation::default())?;
         let root = work.path();
+        if default_discovery {
+            let manifest = root.join("package.json");
+            let mut value: serde_json::Value = serde_json::from_slice(&fs::read(&manifest)?)?;
+            value["scripts"]["test"] = "node --test".into();
+            fs::write(manifest, serde_json::to_vec(&value)?)?;
+        }
         let original = fs::read(root.join(&source_file))?;
         for mode in ["timeout", "cancel", "capture"] {
             let control = tempfile::tempdir()?;

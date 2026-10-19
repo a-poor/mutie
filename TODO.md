@@ -33,8 +33,10 @@ survivors and records the scoped Node milestone as Validated. Seven scheduling,
 delivery and entry-point survivors remain open. The milestone is complete within
 its pinned scope; choose the next major package/runner scope explicitly rather
 than defaulting to another small operator or UI change.
-Native TypeScript on Node is the selected next scope; its first Experimental
+Native TypeScript on Node followed that milestone; its first Experimental
 slice and independent evidence are recorded in [the audit](benchmarks/node-typescript-scope.md).
+[Unchanged Bragkit acceptance](benchmarks/node-default-discovery.md) now closes the
+native-discovery gate and establishes scoped TypeScript validation.
 Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
@@ -42,15 +44,15 @@ Explicit user priorities and demonstrated reliability blockers take precedence.
 
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
-Vitest and Node have validated first scopes (Node validation is JavaScript-only).
-Native TypeScript on Node is Experimental; the other initial scopes remain undecided.
+Vitest and Node have independently validated JavaScript and TypeScript scopes;
+the other initial scopes remain undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
 - [x] Define and implement the first JavaScript + Node test runner slice.
 - [x] Define and implement the first native TypeScript + Node slice with independent
   fixture and adapted real-project evidence.
-- [ ] Complete unchanged-project TypeScript + Node acceptance before promoting maturity.
+- [x] Complete unchanged-project TypeScript + Node acceptance before promoting maturity.
 - [ ] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
 - [ ] Define and implement the first Python + pytest slice.
 
@@ -82,7 +84,7 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Select native TypeScript on Node as the next major scope, using Bragkit for
   mutation findings and dependency-atlas as an unchanged baseline control.
 
-## Experimental native TypeScript on Node
+## Validated native TypeScript on Node
 
 - [x] Audit native stripping, explicit `.ts` imports and NodeNext type-checking config;
   reject syntax requiring transforms and keep type-only booleans out of discovery.
@@ -95,10 +97,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   23 candidates, two killed, 21 survived, no errors/timeouts, 31.17 seconds.
 - [x] Retain two HTML-list tests; kill source IDs 20–22 in an 11-second focused rerun
   with a passing 63-test baseline and preserved source/report hashes.
-- [ ] Audit safe native `node --test` discovery and validate Bragkit without the
-  script adaptation, or find another unchanged package with useful findings.
+- [x] Audit safe native `node --test` discovery and validate Bragkit without the
+  script adaptation. Match all 23 outcomes and kill the three saved HTML-list findings;
+  reject out-of-scope tests and snapshot exclusions that would drop tests.
 - [ ] Review the 18 remaining Bragkit CLI/collector/browser-fallback survivors.
-- [ ] Reassess TypeScript maturity independently; see [scope/evidence](benchmarks/node-typescript-scope.md).
+- [x] Reassess TypeScript maturity independently: Validated within the native,
+  dependency-free ESM scope; see [unchanged-project evidence](benchmarks/node-default-discovery.md).
 
 ## Validated first Vitest slice and follow-up work
 

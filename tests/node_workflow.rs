@@ -683,3 +683,96 @@ fn javascript_entry_points_can_test_native_typescript_and_missing_type_imports_f
         "{output:?}"
     );
 }
+
+#[test]
+#[ignore = "requires audited Node 24.22.0 on PATH"]
+fn default_discovery_includes_nested_helpers_and_preserves_reruns() {
+    for typescript in [false, true] {
+        let (temp, root) = if typescript {
+            typescript_fixture()
+        } else {
+            fixture()
+        };
+        let reports = temp.path().join("reports");
+        let extension = if typescript { "ts" } else { "js" };
+        let mut manifest: Value =
+            serde_json::from_slice(&fs::read(root.join("package.json")).unwrap()).unwrap();
+        manifest["scripts"]["test"] = "node --test".into();
+        fs::write(
+            root.join("package.json"),
+            serde_json::to_vec(&manifest).unwrap(),
+        )
+        .unwrap();
+        // Native default discovery executes every supported file under test/,
+        // even when its name is not *.test.* and its directory is nested.
+        fs::create_dir(root.join("test/nested")).unwrap();
+        let helper = root.join(format!("test/nested/boundary.{extension}"));
+        fs::write(&helper, format!("import {{test}} from 'node:test'; import assert from 'node:assert/strict'; import {{fallback}} from '../../src/flags.{extension}'; test('nested helper',()=>assert.equal(fallback(false),true));")).unwrap();
+        // Native dot-file exclusions must agree with the static selection.
+        fs::write(
+            root.join(format!("test/.hidden.{extension}")),
+            "throw new Error('must not execute');",
+        )
+        .unwrap();
+        let output = run(&root, &reports, &[]);
+        assert!(output.status.success(), "{output:?}");
+        let (directory, saved, _, outcomes) = report(&output);
+        assert_eq!(saved["node_scope"]["default_discovery"], true);
+        assert_eq!(
+            saved["baseline_command"],
+            serde_json::json!(["node", "--test", "--test-concurrency=1"])
+        );
+        assert_eq!(outcomes["summary"]["killed"], 3);
+        let original_report = fs::read(directory.join("outcomes.json")).unwrap();
+        // Adding a test is allowed on a focused rerun; the discovered set is
+        // recomputed and checked against Node inside the new command snapshot.
+        fs::write(
+            root.join(format!("test/[extra].{extension}")),
+            "import {test} from 'node:test'; test('extra',()=>{});",
+        )
+        .unwrap();
+        // Unicode filenames must use Node's UTF-16 order, including astral
+        // characters that sort differently from their UTF-8 representation.
+        for name in ["\u{e000}", "\u{10000}"] {
+            fs::write(
+                root.join(format!("test/{name}.{extension}")),
+                "import {test} from 'node:test'; test('unicode entry',()=>{});",
+            )
+            .unwrap();
+        }
+        let output = run(
+            &root,
+            &reports,
+            &["--rerun", directory.to_str().unwrap(), "--id", "3"],
+        );
+        assert!(output.status.success(), "{output:?}");
+        let (_, _, _, rerun) = report(&output);
+        assert_eq!(rerun["summary"]["killed"], 1);
+        assert_eq!(
+            fs::read(directory.join("outcomes.json")).unwrap(),
+            original_report
+        );
+        // Output exclusions cannot silently remove a natively selected test.
+        let excluded = run(&root, &root.join("test/nested"), &[]);
+        assert!(
+            String::from_utf8_lossy(&excluded.stderr)
+                .contains("test selection changed during snapshotting"),
+            "{excluded:?}"
+        );
+        // A discovered helper with no completed tests is an error, never omitted.
+        fs::write(&helper, "export const helper = 1;").unwrap();
+        let empty = run(&root, &reports, &[]);
+        assert!(!empty.status.success(), "{empty:?}");
+        let (_, saved, _, _) = report(&empty);
+        assert_eq!(saved["status"], "failed");
+        assert_eq!(saved["score"]["killed"], 0);
+        // An unsupported test anywhere in the visible tree must reject the
+        // original project, before snapshot exclusions can hide it.
+        fs::write(root.join("outside.test.js"), "throw new Error('outside');").unwrap();
+        let outside = run(&root, &reports, &[]);
+        assert!(
+            String::from_utf8_lossy(&outside.stderr).contains("outside audited test/"),
+            "{outside:?}"
+        );
+    }
+}

@@ -239,9 +239,9 @@ async fn execute(
     let mut rust_project = (config.lang == Lang::Rust)
         .then(|| rust::Project::load(root))
         .transpose()?;
-    if config.lang == Lang::Node {
-        node::project::Project::load(root, cancellation)?;
-    }
+    let node_project = (config.lang == Lang::Node)
+        .then(|| node::project::Project::load(root, cancellation))
+        .transpose()?;
     coordinator.line(format!("Snapshotting {}", root.display()));
     let mut excluded = vec![root.join(".mutie"), config.output_dir.clone()];
     excluded.extend(
@@ -263,6 +263,15 @@ async fn execute(
         )
         .await?,
     );
+    if let Some(original) = &node_project
+        && original.default_discovery
+    {
+        let copied = node::project::Project::load(&snapshot.path(), cancellation)?;
+        anyhow::ensure!(
+            original.tests == copied.tests,
+            "Node default test selection changed during snapshotting; an excluded output/report directory must not contain tests"
+        );
+    }
     let dismissal_store = if config.list {
         None
     } else {

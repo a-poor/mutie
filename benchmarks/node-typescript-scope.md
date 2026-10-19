@@ -1,5 +1,9 @@
 # Native TypeScript on Node: first scoped execution
 
+Follow-up: [native default discovery](node-default-discovery.md) removes the Bragkit
+script adaptation and completes independent Validated acceptance. The initial
+scope and results below remain the historical Experimental checkpoint.
+
 Recorded 2026-10-18 on macOS with Node **24.22.0**. Native TypeScript is now
 **Experimental** through `mutie PATH --lang node`. This record is independent of
 Node JavaScript's Validated milestone and Vitest's TypeScript acceptance. No

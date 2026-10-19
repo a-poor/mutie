@@ -10,6 +10,8 @@ pub struct TypeScriptScope {
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub enum TestPattern {
+    #[serde(rename = "native-default")]
+    Default,
     #[serde(rename = "test/*.test.js")]
     JavaScript,
     #[serde(rename = "test/*.test.ts")]
@@ -18,12 +20,14 @@ pub enum TestPattern {
 impl TestPattern {
     pub fn glob(self) -> &'static str {
         match self {
+            Self::Default => super::discovery::PATTERN,
             Self::JavaScript => "test/*.test.js",
             Self::TypeScript => "test/*.test.ts",
         }
     }
     pub fn suffix(self) -> &'static str {
         match self {
+            Self::Default => unreachable!("default discovery does not use a suffix"),
             Self::JavaScript => ".test.js",
             Self::TypeScript => ".test.ts",
         }

@@ -17,7 +17,7 @@ not necessarily available in the current CLI.
 
 See [target support](SUPPORT.md) for Go/Rust support and validated scoped
 JavaScript/TypeScript support through Vitest. The Node runner has a validated
-JavaScript scope and an Experimental native TypeScript slice. Bun and pytest remain planned.
+JavaScript scope and a separately validated native TypeScript scope. Bun and pytest remain planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
@@ -60,15 +60,15 @@ mutie PATH --lang node --rerun-missed RUN_DIR
 ```
 
 The initial scope is one dependency-free ESM package using audited Node **24.22.0**
-on PATH, `.js` files under `src/` and `test/`, and exactly
-`"test": "node --test test/*.test.js"` in `package.json`. There must be no installed
+on PATH and `.js` files under `src/` and `test/`. The package test script may be
+exactly `node --test` or `node --test test/*.test.js`. There must be no installed
 `node_modules`; unused build-only devDependencies are allowed. Imports must be
 static literal relative paths within those directories or `node:` built-ins.
 CommonJS, custom loaders/runner flags, workspaces and runtime dependencies are
 unsupported. Only `boolean_flip`, `--jobs 1` and full-suite testing are accepted.
 
-The Experimental native TypeScript extension also accepts erasable `.ts` files
-under `src/` and `test/`, using exactly `"test": "node --test test/*.test.ts"`.
+The validated native TypeScript extension also accepts erasable `.ts` files
+under `src/` and `test/`, using `node --test` or exactly `node --test test/*.test.ts`.
 JavaScript tests may import `.ts` sources, and TypeScript tests may import `.js`
 helpers. Local imports must include the real file extension, including `import type`.
 Only runtime booleans are mutated. Node strips types without type-checking or
@@ -78,6 +78,14 @@ its absence. Config edits require a fresh scan. Enums, namespaces, parameter
 properties, angle-bracket assertions, decorators, declarations (`.d.ts`/`declare`),
 TSX, MTS/CTS, path aliases and build/loader transforms remain unsupported. See the
 [scope and independent TypeScript evidence](benchmarks/node-typescript-scope.md).
+
+For `node --test`, Mutie audits the complete native default selection across the
+project and checks it against the pinned Node implementation. All selected files
+must be audited `.js`/`.ts` files under `test/`, including nested files and helpers.
+Matching tests elsewhere cause rejection; they are never silently omitted. Every
+selected file must complete real tests. Visible symlinks are unsupported, and
+report-directory exclusions cannot remove tests. See [default discovery and
+unchanged-project acceptance](benchmarks/node-default-discovery.md).
 
 Baseline and mutations run in fresh copies, with serial test files, owned temporary
 directories and bounded captures. Saved reports, browser command export, reruns,
@@ -105,9 +113,10 @@ pending-promise timeout and preserves the cleanup survivor without claiming equi
 39-candidate `openclaw-cc` scan and three stronger-test kills.
 The [storage/profile review and milestone audit](benchmarks/node-storage-profiles.md)
 adds five further kills and establishes Validated maturity within the same pinned scope.
-That milestone is JavaScript-only. Native TypeScript has separate Experimental
-acceptance: a 23-candidate Bragkit campaign and three stronger-test kills, with an
-explicit test-script adaptation recorded in the [audit](benchmarks/node-typescript-scope.md).
+That milestone is JavaScript-only. Native TypeScript's first audit required a
+Bragkit script adaptation; [the follow-up](benchmarks/node-default-discovery.md)
+now runs the unchanged package and kills the same three HTML-list survivors with
+stronger tests, establishing separate Validated acceptance.
 
 ## Try it
 

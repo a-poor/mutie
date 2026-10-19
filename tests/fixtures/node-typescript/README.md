@@ -23,3 +23,8 @@ rejection, review/policies, test-only reruns, manifest/config identity and sourc
 preservation. Native TS repeats all 42 mutation-triggered body/hook/import/late
 failure scenarios. Cleanup checks timeout, cancellation, output overflow and
 spawned descendants. These real process tests remain ignored by default.
+
+The workflow also changes only the test script to `node --test` to exercise native
+default selection: nested helpers and newly added test files participate, empty
+helpers fail, and out-of-scope tests or output exclusions cannot shrink the suite.
+A separate default-discovery cleanup probe covers the same process limits.

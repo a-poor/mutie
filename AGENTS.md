@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 
 Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules, validated
-Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Node runner.
+Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/native TypeScript Node runner.
 
 - `src/main.rs` coordinates runs and workers; `cli.rs` defines CLI arguments.
 - `src/config.rs` loads repository settings and resolves explicit CLI overrides.
@@ -15,7 +15,7 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Nod
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
-  dependency-free ESM package: JavaScript is Validated; native TypeScript is Experimental.
+  dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
   evidence. The exact-hash `node/observer.mjs` detects cleanup errors suppressed
   after body failures. Preserve fail-closed checks and include observer/reporter
@@ -28,8 +28,12 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Nod
   plain-JSON NodeNext config without type checking or transforms. Config presence/bytes
   and the test glob join TS execution identity; legacy JS identity stays compatible.
   `benchmarks/node-typescript-scope.md` records the typed fixture, 42 attribution
-  cases, cleanup and independent real-project evidence. Bragkit needs one test-script
-  adaptation; unchanged-project findings acceptance remains open.
+  cases, cleanup and independent real-project evidence. `node/discovery.rs` audits
+  native default selection across the whole tree, rejects tests outside the audited
+  test directory, and verifies native selection plus implementation hashes.
+  Preserve the original/snapshot test-set check so report exclusions cannot hide tests.
+  `benchmarks/node-default-discovery.md` closes unchanged Bragkit acceptance; explicit
+  JS/TS recipes remain compatible and default mode has a distinct identity.
 - `src/javascript.rs` shares concrete boolean discovery with Vitest and Node.
   Literal NUL masking is parse-only, preserves byte offsets, and rejects NULs in
   executable code; source fingerprints and writes always use original bytes.
@@ -127,8 +131,8 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Nod
   dismissal-based and minimum-score CI policies, configuration, and focused runs.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
-  language/test runner. Update it when support changes; planned Node TypeScript,
-  Bun and Python targets are not implemented CLI capabilities.
+  language/test runner. Update it when support changes; planned Bun and Python
+  targets are not implemented CLI capabilities.
 
 ## Development Status & Versioning
 
@@ -183,15 +187,17 @@ a test-only teardown fix. `benchmarks/node-storage-profiles.md` records five mor
 kills (storage locking and workspace profiles), source/report preservation and the
 Validated milestone audit. Seven scheduling/delivery/entry-point survivors remain
 open; SRI's cleanup survivor is unresolved and its semantic hang remains a timeout.
-The existing pinned JavaScript scope is unchanged. Native TypeScript on Node is now
-selected and implemented as Experimental: dependency-atlas passes nine tests with
+Existing explicit-glob JavaScript behavior remains compatible. Native TypeScript on Node is now
+selected and independently Validated: dependency-atlas passes nine tests with
 no boolean sites; Bragkit has 23 candidates (two kills, 21 survivors), and a separate
 stronger-test rerun kills three HTML-list survivors. Bragkit's `node --test` script
 was adapted to `node --test test/*.test.ts`; source/tests/config were unchanged.
-`benchmarks/node-typescript-scope.md` and its results record preserve that distinction.
-Audit native default test discovery or find an unchanged project with useful findings
-before promoting TS; 18 Bragkit survivors remain unreviewed. Do not promote TypeScript
-from JavaScript evidence or add loaders/dependencies implicitly.
+`benchmarks/node-typescript-scope.md` and its results record preserve that initial
+adaptation. `benchmarks/node-default-discovery.md` now records unchanged Bragkit
+acceptance with matching full outcomes and three stronger-test kills. Native default
+discovery includes nested/helper files, rejects selected files outside audited test/,
+and preserves all original input/report hashes. Eighteen Bragkit survivors remain
+unreviewed. Do not infer broader loaders/dependencies or layouts from this evidence.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

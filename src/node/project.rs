@@ -13,6 +13,7 @@ pub struct Project {
     pub manifest: String,
     pub tests: Vec<String>,
     pub typescript: Option<TypeScriptScope>,
+    pub default_discovery: bool,
 }
 impl Project {
     pub fn load(root: &Path, cancellation: &Cancellation) -> Result<Self> {
@@ -35,10 +36,11 @@ impl Project {
             .context("Node package requires a name")?
             .to_owned();
         let test_pattern = match manifest["scripts"]["test"].as_str() {
+            Some("node --test") => TestPattern::Default,
             Some("node --test test/*.test.js") => TestPattern::JavaScript,
             Some("node --test test/*.test.ts") => TestPattern::TypeScript,
             _ => anyhow::bail!(
-                "Node scope requires scripts.test: node --test test/*.test.js or node --test test/*.test.ts (no loaders or custom runner flags)"
+                "Node scope requires scripts.test: node --test, node --test test/*.test.js or node --test test/*.test.ts (no loaders or custom runner flags)"
             ),
         };
         for key in [
@@ -76,14 +78,19 @@ impl Project {
         for dir in ["src", "test"] {
             collect(&root, Path::new(dir), &mut files, cancellation)?;
         }
-        let tests = files
-            .iter()
-            .filter(|p| {
-                p.parent() == Some(Path::new("test"))
-                    && p.to_string_lossy().ends_with(test_pattern.suffix())
-            })
-            .map(|p| p.to_string_lossy().into_owned())
-            .collect::<Vec<_>>();
+        let default_discovery = test_pattern == TestPattern::Default;
+        let tests = if default_discovery {
+            super::discovery::select(&root, &files, cancellation)?
+        } else {
+            files
+                .iter()
+                .filter(|p| {
+                    p.parent() == Some(Path::new("test"))
+                        && p.to_string_lossy().ends_with(test_pattern.suffix())
+                })
+                .map(|p| p.to_string_lossy().into_owned())
+                .collect::<Vec<_>>()
+        };
         ensure!(
             !tests.is_empty(),
             "Node scope requires {} files",
@@ -103,6 +110,7 @@ impl Project {
             manifest: super::fingerprint(text.as_bytes()),
             tests,
             typescript,
+            default_discovery,
         })
     }
 }
@@ -347,7 +355,7 @@ mod tests {
     #[test]
     fn rejects_custom_scripts_and_runtime_dependencies() {
         for change in [
-            serde_json::json!({"scripts":{"test":"node --test"}}),
+            serde_json::json!({"scripts":{"test":"node --test --watch"}}),
             serde_json::json!({"dependencies":{"foo":"1"}}),
             serde_json::json!({"workspaces":["packages/*"]}),
             serde_json::json!({"imports":{"#x":"./src/flags.js"}}),
