@@ -1,6 +1,7 @@
-//! Pinned, dependency-free ESM JavaScript / node:test adapter.
+//! Pinned, dependency-free ESM JavaScript / native TypeScript node:test adapter.
 pub mod project;
 mod protocol;
+mod typescript;
 use crate::{cancellation::Cancellation, command, process, workspace::Workspace};
 use anyhow::{Context, Result, ensure};
 use sha2::{Digest, Sha256};
@@ -14,6 +15,11 @@ const HOOK_HASH: &str = "6329a64a8825bf217d60526f7a53fd89af6fc5107ad9f15d41b825b
 pub fn fingerprint(bytes: &[u8]) -> String {
     format!("sha256:{:x}", Sha256::digest(bytes))
 }
+pub fn valid_fingerprint(value: &str) -> bool {
+    value
+        .strip_prefix("sha256:")
+        .is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
+}
 #[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ExecutionScope {
@@ -22,14 +28,21 @@ pub struct ExecutionScope {
     pub node_executable: PathBuf,
     pub manifest_fingerprint: String,
     pub recipe_fingerprint: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub typescript: Option<typescript::TypeScriptScope>,
 }
-fn recipe() -> String {
+fn recipe(typescript: bool) -> String {
+    let mode: &[u8] = if typescript {
+        b"node-test-serial-process-native-strip-types-explicit-js-or-ts-test-glob"
+    } else {
+        b"node-test-serial-process-test/*.test.js"
+    };
     fingerprint(
         [
             include_bytes!("node/observer.mjs").as_slice(),
             include_bytes!("node/reporter.mjs").as_slice(),
             HOOK_HASH.as_bytes(),
-            b"node-test-serial-process-test/*.test.js",
+            mode,
         ]
         .concat()
         .as_slice(),
@@ -44,16 +57,27 @@ impl ExecutionScope {
             "invalid saved Node identity"
         );
         ensure!(
-            self.recipe_fingerprint == recipe(),
+            self.recipe_fingerprint == recipe(self.typescript.is_some()),
             "unsupported saved Node runner recipe"
         );
         ensure!(
-            self.manifest_fingerprint
-                .strip_prefix("sha256:")
-                .is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit())),
+            valid_fingerprint(&self.manifest_fingerprint),
             "invalid saved Node manifest fingerprint"
         );
+        if let Some(scope) = &self.typescript {
+            scope.validate_record()?;
+        }
         Ok(())
+    }
+    pub fn test_command(&self) -> Vec<&'static str> {
+        vec![
+            "node",
+            "--test",
+            "--test-concurrency=1",
+            self.typescript
+                .as_ref()
+                .map_or("test/*.test.js", |scope| scope.test_pattern.glob()),
+        ]
     }
     pub fn validate_rerun(&self, current: &Self) -> Result<()> {
         self.validate_record()?;
@@ -100,7 +124,8 @@ async fn scope_with(
             .context("missing Node executable")?
             .into(),
         manifest_fingerprint: project.manifest,
-        recipe_fingerprint: recipe(),
+        recipe_fingerprint: recipe(project.typescript.is_some()),
+        typescript: project.typescript,
     };
     scope.validate_record()?;
     Ok(scope)
@@ -139,8 +164,9 @@ pub async fn test(
     let root = workspace.path();
     let project = project::Project::load(&root, cancellation)?;
     ensure!(
-        project.manifest == expected.manifest_fingerprint,
-        "Node manifest changed during snapshotting"
+        project.manifest == expected.manifest_fingerprint
+            && project.typescript == expected.typescript,
+        "Node manifest or native TypeScript configuration changed during snapshotting"
     );
     let owned = tempfile::Builder::new()
         .prefix("mutie-node-command-")
@@ -221,13 +247,49 @@ pub async fn test(
 mod tests {
     use super::*;
     use crate::report::Outcome;
+    #[test]
+    fn preserves_legacy_javascript_identity_and_separates_native_typescript() {
+        let old = serde_json::json!({
+            "package":"fixture", "node":"24.22.0", "node_executable":"/node",
+            "manifest_fingerprint":fingerprint(b"manifest"),
+            "recipe_fingerprint":"sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56"
+        });
+        let javascript: ExecutionScope = serde_json::from_value(old.clone()).unwrap();
+        javascript.validate_record().unwrap();
+        assert_eq!(serde_json::to_value(&javascript).unwrap(), old);
+        let mut typescript = javascript.clone();
+        typescript.typescript = Some(typescript::TypeScriptScope {
+            test_pattern: typescript::TestPattern::TypeScript,
+            tsconfig_fingerprint: None,
+        });
+        assert!(typescript.validate_record().is_err());
+        typescript.recipe_fingerprint = recipe(true);
+        typescript.validate_record().unwrap();
+        assert!(javascript.validate_rerun(&typescript).is_err());
+        typescript.typescript.as_mut().unwrap().tsconfig_fingerprint = Some("invalid".into());
+        assert!(typescript.validate_record().is_err());
+    }
     #[tokio::test]
     #[ignore = "requires audited Node 24.22.0 on PATH; real process cleanup"]
     async fn timeout_cancellation_capture_and_owned_files() -> Result<()> {
-        let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/node");
+        cleanup(false).await
+    }
+    #[tokio::test]
+    #[ignore = "requires audited Node 24.22.0 on PATH; real process cleanup"]
+    async fn typescript_timeout_cancellation_capture_and_owned_files() -> Result<()> {
+        cleanup(true).await
+    }
+    async fn cleanup(typescript: bool) -> Result<()> {
+        let source = Path::new(env!("CARGO_MANIFEST_DIR")).join(if typescript {
+            "tests/fixtures/node-typescript"
+        } else {
+            "tests/fixtures/node"
+        });
+        let extension = if typescript { "ts" } else { "js" };
+        let source_file = format!("src/flags.{extension}");
         let work = Workspace::create(&source, &[], &Cancellation::default())?;
         let root = work.path();
-        let original = fs::read(root.join("src/flags.js"))?;
+        let original = fs::read(root.join(&source_file))?;
         for mode in ["timeout", "cancel", "capture"] {
             let control = tempfile::tempdir()?;
             let checkpoint = control.path().join("checkpoint.json");
@@ -238,7 +300,7 @@ mod tests {
                 ""
             };
             fs::write(
-                root.join("test/probe.test.js"),
+                root.join(format!("test/probe.test.{extension}")),
                 format!(
                     r#"
 import {{test}} from 'node:test';
@@ -313,7 +375,7 @@ test('owned files', async () => {{
                 "descendant remains after {mode}"
             );
             assert!(!root.join("src/owned-marker.txt").exists());
-            assert_eq!(fs::read(root.join("src/flags.js"))?, original);
+            assert_eq!(fs::read(root.join(&source_file))?, original);
         }
         Ok(())
     }

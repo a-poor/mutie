@@ -176,6 +176,8 @@ pub struct SavedReport {
 
 impl SavedReport {
     pub fn node_scope(&mut self, scope: &crate::node::ExecutionScope) -> Result<()> {
+        self.run.baseline_command = scope.test_command();
+        self.run.mutation_command_prefix = scope.test_command();
         self.run.node_scope = Some(scope.clone());
         self.flush()
     }
@@ -660,7 +662,17 @@ impl SavedReport {
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
         if self.run.effective_config.lang == crate::cli::Lang::Node {
-            text.push_str("Runner: Node test runner (JavaScript)\nFull suite; serial files; fresh command copies\n");
+            let typescript = self
+                .run
+                .node_scope
+                .as_ref()
+                .is_some_and(|s| s.typescript.is_some());
+            text.push_str(if typescript {
+                "Runner: Node test runner (JavaScript/native TypeScript)\nType stripping only; no type checking or tsconfig transforms\n"
+            } else {
+                "Runner: Node test runner (JavaScript)\n"
+            });
+            text.push_str("Full suite; serial files; fresh command copies\n");
             if let Some(scope) = &self.run.node_scope {
                 text.push_str(&format!(
                     "Package: {}\nNode: {}\nManifest: {}\n",

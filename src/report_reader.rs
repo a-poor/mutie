@@ -267,7 +267,13 @@ impl LoadedReport {
             if run.language() == crate::cli::Lang::Node {
                 ensure!(
                     mutation.operator == Operator::BooleanFlip
-                        && mutation.file.extension().and_then(|s| s.to_str()) == Some("js"),
+                        && (mutation.file.extension().and_then(|s| s.to_str()) == Some("js")
+                            || (mutation.file.extension().and_then(|s| s.to_str()) == Some("ts")
+                                && !mutation.file.to_string_lossy().ends_with(".d.ts")
+                                && run
+                                    .node_scope
+                                    .as_ref()
+                                    .is_some_and(|s| s.typescript.is_some()))),
                     "saved Node mutation is outside the supported scope"
                 );
             }

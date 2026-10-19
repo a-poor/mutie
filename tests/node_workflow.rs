@@ -22,6 +22,28 @@ fn fixture() -> (tempfile::TempDir, PathBuf) {
     }
     (temp, root)
 }
+fn typescript_fixture() -> (tempfile::TempDir, PathBuf) {
+    let (temp, root) = fixture();
+    fs::remove_file(root.join("src/flags.js")).unwrap();
+    fs::remove_file(root.join("test/flags.test.js")).unwrap();
+    for name in [
+        "package.json",
+        "tsconfig.json",
+        "src/flags.ts",
+        "src/types.ts",
+        "src/identity.js",
+        "test/flags.test.ts",
+    ] {
+        fs::copy(
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("tests/fixtures/node-typescript")
+                .join(name),
+            root.join(name),
+        )
+        .unwrap();
+    }
+    (temp, root)
+}
 fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
     Command::new(env!("CARGO_BIN_EXE_mutie"))
         .arg(root)
@@ -74,9 +96,24 @@ fn ok(output: Output) -> String {
 #[test]
 #[ignore = "requires audited Node 24.22.0 on PATH"]
 fn reports_reruns_review_policies_and_preservation() {
-    let (temp, root) = fixture();
+    workflow(false);
+}
+#[test]
+#[ignore = "requires audited Node 24.22.0 on PATH"]
+fn typescript_reports_reruns_review_policies_and_preservation() {
+    workflow(true);
+}
+fn workflow(typescript: bool) {
+    let (temp, root) = if typescript {
+        typescript_fixture()
+    } else {
+        fixture()
+    };
+    let extension = if typescript { "ts" } else { "js" };
+    let source_file = format!("src/flags.{extension}");
+    let test_file = format!("test/flags.test.{extension}");
     let reports = temp.path().join("reports");
-    let source = fs::read(root.join("src/flags.js")).unwrap();
+    let source = fs::read(root.join(&source_file)).unwrap();
     let manifest = fs::read(root.join("package.json")).unwrap();
     let output = run(
         &root,
@@ -87,6 +124,20 @@ fn reports_reruns_review_policies_and_preservation() {
     let (directory, saved, inventory, outcomes) = report(&output);
     assert_eq!(saved["status"], "completed");
     assert_eq!(saved["node_scope"]["node"], "24.22.0");
+    assert_eq!(saved["node_scope"]["typescript"].is_object(), typescript);
+    let summary = fs::read_to_string(directory.join("summary.txt")).unwrap();
+    assert_eq!(
+        summary.contains("Type stripping only; no type checking or tsconfig transforms"),
+        typescript
+    );
+    assert_eq!(
+        saved["baseline_command"][3],
+        format!("test/*.test.{extension}")
+    );
+    assert_eq!(
+        saved["mutation_command_prefix"][3],
+        format!("test/*.test.{extension}")
+    );
     assert_eq!(saved["score"]["killed"], 2);
     assert_eq!(saved["score"]["missed"], 1);
     assert_eq!(inventory["mutations"].as_array().unwrap().len(), 3);
@@ -111,6 +162,24 @@ fn reports_reruns_review_policies_and_preservation() {
     assert!(
         String::from_utf8_lossy(&browse().stderr).contains("unsupported saved Node runner recipe")
     );
+    if typescript {
+        let mut corrupt = saved.clone();
+        corrupt["node_scope"]
+            .as_object_mut()
+            .unwrap()
+            .remove("typescript");
+        corrupt["node_scope"]["recipe_fingerprint"] =
+            "sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56".into();
+        fs::write(
+            directory.join("run.json"),
+            serde_json::to_vec(&corrupt).unwrap(),
+        )
+        .unwrap();
+        assert!(
+            String::from_utf8_lossy(&browse().stderr)
+                .contains("saved Node mutation is outside the supported scope")
+        );
+    }
     fs::write(directory.join("run.json"), &run_bytes).unwrap();
     ok(dismiss(
         &root,
@@ -136,7 +205,7 @@ fn reports_reruns_review_policies_and_preservation() {
     assert_eq!(reviewed["score_policy"]["status"], "failed");
     assert_eq!(review_outcomes["summary"], outcomes["summary"]);
     ok(dismiss(&root, &["remove", "1"]));
-    let test = root.join("test/flags.test.js");
+    let test = root.join(&test_file);
     let old = fs::read_to_string(&test).unwrap();
     fs::write(
         &test,
@@ -158,9 +227,34 @@ fn reports_reruns_review_policies_and_preservation() {
         fs::read(directory.join("outcomes.json")).unwrap(),
         original_report
     );
-    assert_eq!(fs::read(root.join("src/flags.js")).unwrap(), source);
+    assert_eq!(fs::read(root.join(&source_file)).unwrap(), source);
     assert_eq!(fs::read(root.join("package.json")).unwrap(), manifest);
     assert!(!root.join(".mutie").exists());
+    if typescript {
+        let config = root.join("tsconfig.json");
+        let original = fs::read(&config).unwrap();
+        fs::write(&config, [original.as_slice(), b"\n"].concat()).unwrap();
+        let changed = run(
+            &root,
+            &reports,
+            &["--rerun-missed", directory.to_str().unwrap()],
+        );
+        assert!(
+            String::from_utf8_lossy(&changed.stderr).contains("identity changed"),
+            "{changed:?}"
+        );
+        fs::remove_file(&config).unwrap();
+        let removed = run(
+            &root,
+            &reports,
+            &["--rerun-missed", directory.to_str().unwrap()],
+        );
+        assert!(
+            String::from_utf8_lossy(&removed.stderr).contains("identity changed"),
+            "{removed:?}"
+        );
+        fs::write(&config, original).unwrap();
+    }
     // Test edits are allowed; execution manifest edits require a fresh scan.
     fs::write(
         root.join("package.json"),
@@ -181,15 +275,32 @@ fn reports_reruns_review_policies_and_preservation() {
 #[test]
 #[ignore = "requires audited Node 24.22.0 on PATH"]
 fn mutation_triggered_lifecycle_errors_do_not_raise_scores() {
-    let (temp, root) = fixture();
+    lifecycle(false);
+}
+#[test]
+#[ignore = "requires audited Node 24.22.0 on PATH"]
+fn typescript_lifecycle_errors_do_not_raise_scores() {
+    lifecycle(true);
+}
+fn lifecycle(typescript: bool) {
+    let (temp, root) = if typescript {
+        typescript_fixture()
+    } else {
+        fixture()
+    };
+    let extension = if typescript { "ts" } else { "js" };
     let reports = temp.path().join("reports");
     fs::write(
-        root.join("src/flags.js"),
-        "export const enabled = () => true;\n",
+        root.join(format!("src/flags.{extension}")),
+        if typescript {
+            "export const enabled = (): true => true;\n"
+        } else {
+            "export const enabled = () => true;\n"
+        },
     )
     .unwrap();
     let header = "import { test, describe, before, after, beforeEach, afterEach } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { enabled } from '../src/flags.js';\n";
-    fs::write(root.join("test/imported.js"), "import {enabled} from '../src/flags.js'; if(!enabled()) throw new Error('module evaluation');").unwrap();
+    fs::write(root.join(format!("test/imported.{extension}")), "import {enabled} from '../src/flags.js'; if(!enabled()) throw new Error('module evaluation');".replace(".js", &format!(".{extension}"))).unwrap();
     let cases = [
         ("body", "test('body',()=>assert.ok(enabled()));", "killed"),
         (
@@ -370,7 +481,11 @@ fn mutation_triggered_lifecycle_errors_do_not_raise_scores() {
         ),
     ];
     for (name, body, outcome) in cases {
-        fs::write(root.join("test/flags.test.js"), format!("{header}{body}\n")).unwrap();
+        fs::write(
+            root.join(format!("test/flags.test.{extension}")),
+            format!("{header}{body}\n").replace(".js", &format!(".{extension}")),
+        )
+        .unwrap();
         let output = run(
             &root,
             &reports,
@@ -429,22 +544,40 @@ fn rejects_unsupported_scope_before_invoking_node() {
     fs::write(temp.path().join("package.json"), r#"{"workspaces":["*"]}"#).unwrap();
     check(&[], "enclosing workspace is unsupported");
     fs::remove_file(temp.path().join("package.json")).unwrap();
-    fs::write(root.join("src/unsupported.ts"), "export const a=true;").unwrap();
-    check(&[], "supports JavaScript .js only");
+    fs::write(root.join("src/unsupported.tsx"), "export const a=true;").unwrap();
+    check(&[], "supports .js and erasable .ts only");
 }
 
 #[test]
 #[ignore = "requires audited Node 24.22.0 on PATH"]
 fn body_failure_does_not_mask_file_or_late_failures() {
-    let (temp, root) = fixture();
+    mixtures(false);
+}
+#[test]
+#[ignore = "requires audited Node 24.22.0 on PATH"]
+fn typescript_body_failure_does_not_mask_file_or_late_failures() {
+    mixtures(true);
+}
+fn mixtures(typescript: bool) {
+    let (temp, root) = if typescript {
+        typescript_fixture()
+    } else {
+        fixture()
+    };
+    let extension = if typescript { "ts" } else { "js" };
     let reports = temp.path().join("reports");
     fs::write(
-        root.join("src/flags.js"),
-        "export const enabled = () => true;\n",
+        root.join(format!("src/flags.{extension}")),
+        if typescript {
+            "export const enabled = (): true => true;\n"
+        } else {
+            "export const enabled = () => true;\n"
+        },
     )
     .unwrap();
     let header =
-        "import {test,afterEach} from 'node:test'; import {enabled} from '../src/flags.js';\n";
+        "import {test,afterEach} from 'node:test'; import {enabled} from '../src/flags.js';\n"
+            .replace(".js", &format!(".{extension}"));
     let body = "test('body',()=>{if(!enabled()) throw new Error('body')});\n";
     for (name, extra, separate) in [
         (
@@ -474,12 +607,12 @@ fn body_failure_does_not_mask_file_or_late_failures() {
         ),
     ] {
         fs::write(
-            root.join("test/flags.test.js"),
+            root.join(format!("test/flags.test.{extension}")),
             format!("{header}{body}{}", if separate { "" } else { extra }),
         )
         .unwrap();
         fs::write(
-            root.join("test/other.test.js"),
+            root.join(format!("test/other.test.{extension}")),
             format!(
                 "{header}{}",
                 if separate {
@@ -504,4 +637,49 @@ fn body_failure_does_not_mask_file_or_late_failures() {
             );
         }
     }
+}
+
+#[test]
+#[ignore = "requires audited Node 24.22.0 on PATH"]
+fn javascript_entry_points_can_test_native_typescript_and_missing_type_imports_fail() {
+    let (temp, root) = typescript_fixture();
+    let reports = temp.path().join("reports");
+    let manifest = fs::read_to_string(root.join("package.json")).unwrap();
+    fs::write(
+        root.join("package.json"),
+        manifest.replace("test/*.test.ts", "test/*.test.js"),
+    )
+    .unwrap();
+    fs::remove_file(root.join("test/flags.test.ts")).unwrap();
+    fs::write(root.join("test/flags.test.js"), "import {test} from 'node:test'; import assert from 'node:assert/strict'; import {enabled,disabled,fallback} from '../src/flags.ts'; test('flags',()=>{assert.equal(enabled(),true);assert.equal(disabled(),false);assert.equal(fallback(true),true)});").unwrap();
+    let output = run(&root, &reports, &[]);
+    assert!(output.status.success(), "{output:?}");
+    let (directory, saved, _, outcomes) = report(&output);
+    assert_eq!(
+        saved["node_scope"]["typescript"]["test_pattern"],
+        "test/*.test.js"
+    );
+    assert_eq!(outcomes["summary"]["killed"], 2);
+    assert_eq!(outcomes["summary"]["missed"], 1);
+    let browse = Command::new(env!("CARGO_BIN_EXE_mutie"))
+        .arg("report")
+        .arg(&directory)
+        .output()
+        .unwrap();
+    assert!(String::from_utf8_lossy(&browse.stderr).contains("requires interactive terminal"));
+    // Native Node preserves value imports. A type imported without `type` fails
+    // module linking before the body; it must never earn a mutation kill.
+    fs::write(root.join("package.json"), manifest).unwrap();
+    fs::remove_file(root.join("test/flags.test.js")).unwrap();
+    fs::write(root.join("test/flags.test.ts"), "import {test} from 'node:test'; import {Flag} from '../src/types.ts'; test('type import',()=>{});").unwrap();
+    let output = run(&root, &reports, &[]);
+    assert!(!output.status.success(), "{output:?}");
+    let (_, saved, _, outcomes) = report(&output);
+    assert_eq!(saved["status"], "failed");
+    assert_eq!(saved["score"]["killed"], 0);
+    assert_eq!(outcomes["summary"]["killed"], 0);
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("baseline"),
+        "{output:?}"
+    );
 }

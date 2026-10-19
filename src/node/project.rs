@@ -1,3 +1,4 @@
+use super::typescript::{TestPattern, TypeScriptScope};
 use crate::cancellation::Cancellation;
 use anyhow::{Context, Result, ensure};
 use std::{
@@ -11,6 +12,7 @@ pub struct Project {
     pub name: String,
     pub manifest: String,
     pub tests: Vec<String>,
+    pub typescript: Option<TypeScriptScope>,
 }
 impl Project {
     pub fn load(root: &Path, cancellation: &Cancellation) -> Result<Self> {
@@ -32,10 +34,13 @@ impl Project {
             .filter(|s| !s.is_empty())
             .context("Node package requires a name")?
             .to_owned();
-        ensure!(
-            manifest["scripts"]["test"] == "node --test test/*.test.js",
-            "Node scope requires scripts.test: node --test test/*.test.js (no loaders or custom runner flags)"
-        );
+        let test_pattern = match manifest["scripts"]["test"].as_str() {
+            Some("node --test test/*.test.js") => TestPattern::JavaScript,
+            Some("node --test test/*.test.ts") => TestPattern::TypeScript,
+            _ => anyhow::bail!(
+                "Node scope requires scripts.test: node --test test/*.test.js or node --test test/*.test.ts (no loaders or custom runner flags)"
+            ),
+        };
         for key in [
             "workspaces",
             "imports",
@@ -74,14 +79,21 @@ impl Project {
         let tests = files
             .iter()
             .filter(|p| {
-                p.parent() == Some(Path::new("test")) && p.to_string_lossy().ends_with(".test.js")
+                p.parent() == Some(Path::new("test"))
+                    && p.to_string_lossy().ends_with(test_pattern.suffix())
             })
             .map(|p| p.to_string_lossy().into_owned())
             .collect::<Vec<_>>();
         ensure!(
             !tests.is_empty(),
-            "Node scope requires test/*.test.js files"
+            "Node scope requires {} files",
+            test_pattern.glob()
         );
+        let typescript = files
+            .iter()
+            .any(|p| p.extension().is_some_and(|e| e == "ts"))
+            .then(|| TypeScriptScope::load(&root, test_pattern))
+            .transpose()?;
         for file in &files {
             validate_imports(&root, file, &files, cancellation)?;
         }
@@ -90,6 +102,7 @@ impl Project {
             name,
             manifest: super::fingerprint(text.as_bytes()),
             tests,
+            typescript,
         })
     }
 }
@@ -113,8 +126,8 @@ fn collect(
     );
     if meta.is_dir() {
         ensure!(
-            !path.join("package.json").exists(),
-            "nested Node packages are unsupported"
+            !path.join("package.json").exists() && !path.join("tsconfig.json").exists(),
+            "nested Node packages/configurations are unsupported"
         );
         for entry in fs::read_dir(path)? {
             collect(
@@ -128,14 +141,15 @@ fn collect(
         ensure!(meta.is_file(), "unsupported Node project entry");
         let ext = path.extension().and_then(|s| s.to_str());
         ensure!(
-            !matches!(
-                ext,
-                Some("ts" | "tsx" | "jsx" | "mjs" | "cjs" | "mts" | "cts")
-            ),
-            "Node initial scope supports JavaScript .js only: {}",
+            !matches!(ext, Some("tsx" | "jsx" | "mjs" | "cjs" | "mts" | "cts")),
+            "Node scope supports .js and erasable .ts only: {}",
             relative.display()
         );
-        if ext == Some("js") {
+        ensure!(
+            !relative.to_string_lossy().ends_with(".d.ts"),
+            "Node declaration files are outside the initial native TypeScript scope"
+        );
+        if matches!(ext, Some("js" | "ts")) {
             files.insert(relative.to_owned());
         }
     }
@@ -149,12 +163,21 @@ fn validate_imports(
 ) -> Result<()> {
     let source = fs::read_to_string(root.join(file))?;
     let mut parser = tree_sitter::Parser::new();
-    parser.set_language(&tree_sitter_javascript::LANGUAGE.into())?;
+    let typescript = file.extension().is_some_and(|e| e == "ts");
+    let language = if typescript {
+        tree_sitter_typescript::LANGUAGE_TYPESCRIPT
+    } else {
+        tree_sitter_javascript::LANGUAGE
+    };
+    parser.set_language(&language.into())?;
     let tree = crate::javascript::parse(&mut parser, &source)
         .with_context(|| format!("cannot parse Node file {}", file.display()))?;
     let mut pending = vec![tree.root_node()];
     while let Some(node) = pending.pop() {
         cancellation.check()?;
+        if typescript {
+            super::typescript::validate_syntax(node, file)?;
+        }
         let import = node.child_by_field_name("source");
         if node.kind() == "call_expression"
             && let Some(function) = node.child_by_field_name("function")
@@ -197,7 +220,7 @@ fn validate_imports(
                     .context("Node imports must stay inside the project")?;
                 ensure!(
                     files.contains(relative),
-                    "Node imports must resolve to audited src/test .js files: {spec}"
+                    "Node imports must resolve to audited src/test .js/.ts files: {spec}"
                 );
             }
         }
@@ -254,13 +277,71 @@ mod tests {
         )
         .unwrap();
         fs::write(
-            root.path().join("src/unsupported.ts"),
+            root.path().join("src/unsupported.tsx"),
             "export const a=true;",
         )
         .unwrap();
         assert!(load().is_err());
-        fs::remove_file(root.path().join("src/unsupported.ts")).unwrap();
+        fs::remove_file(root.path().join("src/unsupported.tsx")).unwrap();
         fs::create_dir(root.path().join("node_modules")).unwrap();
+        assert!(load().is_err());
+    }
+    #[test]
+    fn audits_native_typescript_sources_tests_and_mixed_imports() {
+        let original = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/node-typescript");
+        let project = Project::load(&original, &Cancellation::default()).unwrap();
+        assert_eq!(project.tests, vec!["test/flags.test.ts"]);
+        assert!(project.typescript.is_some());
+        let discovery = crate::javascript::discover(
+            &original,
+            &crate::mutation::Scope::new(&[], &[]).unwrap(),
+            &Cancellation::default(),
+        )
+        .unwrap();
+        assert_eq!(discovery.mutations.len(), 3);
+        assert!(
+            discovery
+                .mutations
+                .iter()
+                .all(|m| m.file.path == Path::new("src/flags.ts"))
+        );
+        let root = fixture();
+        let load = || Project::load(root.path(), &Cancellation::default());
+        // Even helpers outside the mutation selection must pass the syntax audit.
+        for source in [
+            "enum E { Yes = 1 }",
+            "namespace N { export const flag = true }",
+            "namespace N { export type Flag = true }",
+            "class C { constructor(public flag: boolean) {} }",
+            "class C { constructor(readonly flag: boolean) {} }",
+            "class C { constructor(private flag?: boolean) {} }",
+            "const flag = <boolean>true;",
+            "import fs = require('node:fs');",
+            "import Alias = N.Value;",
+            "declare const flag: boolean;",
+            "@decorator class C {}",
+            "import('../src/flags.js');",
+            "import type {Flag} from 'external';",
+            "import {enabled} from '../src/flags';",
+        ] {
+            fs::write(root.path().join("test/helper.ts"), source).unwrap();
+            assert!(load().is_err(), "{source}");
+        }
+        fs::write(
+            root.path().join("test/helper.ts"),
+            "import '../src/flags.js'; export type Flag = true | false;",
+        )
+        .unwrap();
+        let mixed = load().unwrap();
+        assert_eq!(
+            mixed.typescript.unwrap().test_pattern,
+            TestPattern::JavaScript
+        );
+        fs::write(
+            root.path().join("src/types.d.ts"),
+            "export type Flag = true;",
+        )
+        .unwrap();
         assert!(load().is_err());
     }
     #[test]

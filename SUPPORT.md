@@ -33,7 +33,7 @@ does not by itself validate a new runner.
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
-| TypeScript | Node.js test runner | Planned | None | Define native TypeScript execution and independent acceptance |
+| TypeScript | Node.js test runner | Experimental | Native erasable `.ts` on Node 24.22.0; serial boolean flips, reports, reruns and review/policies; Bragkit with explicit test-glob adaptation | Accept an unchanged real project with useful findings; audit native default test discovery |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
@@ -190,12 +190,12 @@ TypeScript milestone; neither promotes JSX or TSX support.
 
 ## JavaScript / TypeScript — Node.js test runner
 
-**JavaScript: Validated within the pinned scope. TypeScript: Planned.**
+**JavaScript: Validated within the pinned scope. Native TypeScript: Experimental.**
 
 Explicit `--lang node` supports one dependency-free ESM package with `.js` files
 under `src/` and `test/`, exact `node --test test/*.test.js` script, no installed
 dependencies, and audited Node 24.22.0. Static literal relative and `node:` imports only;
-no runtime package dependencies, CommonJS, workspaces, loaders, TypeScript or
+no runtime package dependencies, CommonJS, workspaces, loaders or
 parallel workers. Test files run serially in isolated processes and fresh copies.
 
 Boolean discovery shares the concrete JS/TS parser with Vitest. The CLI supports
@@ -227,8 +227,27 @@ lock contention and profile inclusion/exclusion checks. Its milestone audit meet
 Validated within the existing pinned JavaScript scope. Seven `openclaw-cc`
 survivors remain open; the SRI cleanup survivor remains unresolved. Neither
 unresolved findings nor separate rerun scores are silently removed from the
-original accounting. Broader dependencies/layouts, native TypeScript, runtime
-versions and parallelism need separate acceptance; this is not Established.
+original accounting. Broader dependencies/layouts, runtime versions and parallelism
+need separate acceptance; this is not Established.
+
+The [native TypeScript slice](benchmarks/node-typescript-scope.md) extends the same
+runner to erasable `.ts`, explicit local imports and an exact `test/*.test.ts`
+script (or `.js` test entries importing TS). It performs no type checking or
+configuration transforms. Optional audited plain-JSON NodeNext tsconfig bytes and
+absence join the saved execution identity. Declaration files, enums, namespaces,
+parameter properties, angle assertions, decorators, TSX/MTS/CTS and loaders are
+outside this scope. Existing JavaScript recipe identity is unchanged.
+
+Independent evidence includes a typed automated fixture, 42 TS attribution cases,
+timeout/cancellation/capture cleanup, review/policies and config-sensitive reruns.
+Unchanged dependency-atlas passes its nine-test isolated baseline but contains no
+runtime boolean candidates. Bragkit has 23 candidates: two killed and 21 survived;
+two retained tests kill three HTML-list survivors in a separate focused rerun.
+All original production/test files and reports are preserved. Bragkit required
+changing only `scripts.test` from `node --test` to the explicit TS glob; direct
+runs confirm the same 61 tests, but default discovery is not implemented. Keep
+TypeScript Experimental until unchanged-project acceptance with useful findings
+closes that gate. Eighteen other Bragkit survivors remain unreviewed.
 
 ## JavaScript / TypeScript — Bun test runner
 

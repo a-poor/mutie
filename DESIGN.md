@@ -1613,3 +1613,42 @@ closes five more useful findings and establishes Validated maturity for the
 existing Node JavaScript scope. This does not add package layouts, dependencies,
 native TypeScript or runtime versions. Seven other `openclaw-cc` survivors and the
 SRI limits remain explicit; no combined improved whole-project score is inferred.
+
+
+## Experimental native TypeScript on Node
+
+The native TS extension uses the same pinned Node 24.22.0 runner and fail-closed
+observer/protocol. `.ts` source and tests join `.js` under the audited `src/` and
+`test/` directories. The manifest must declare exactly `node --test test/*.test.ts`
+or the existing JS script. The selected immediate test-file set runs serially;
+default recursive discovery is not supported. Mixed static `.js`/`.ts` imports
+are allowed only within the audited set, with explicit extensions. Even erased
+local type imports must resolve to an audited file; bare dependencies and dynamic
+imports remain rejected.
+
+`node/typescript.rs` rejects syntax outside this stripping-only contract in both
+production and test/helper files, including enums, all namespaces, parameter
+properties, angle assertions, decorators and ambient declarations. `.d.ts`, TSX,
+MTS and CTS files are excluded from the supported project scope. Shared discovery
+continues to skip type-only booleans without changing Vitest's TS contract.
+
+An optional plain-JSON tsconfig accepts only scoped NodeNext/type-checking settings.
+Node never applies it, and Mutie neither runs `tsc` nor transforms code. Includes
+and excludes do not change the declared test suite or mutation selection. Runtime
+booleans can violate a literal type after mutation; that alone is not a kill.
+A missing `import type` can instead cause module-linking failure, which remains
+an error under the existing completion evidence contract.
+
+Saved native TS identity adds the selected test glob and optional tsconfig hash;
+absence is also significant. Config is revalidated in each copied command tree.
+A distinct TS recipe prevents a JS-only saved identity from claiming TS mutations,
+while legacy JavaScript records still deserialize and retain their original recipe.
+Saved command descriptions use the selected glob; text summaries state that no
+type checking occurs. Test-only edits still permit focused reruns.
+
+[Independent evidence](benchmarks/node-typescript-scope.md) records the typed fixture,
+42 attribution cases, cleanup and review/policy checks, and a 23-candidate Bragkit
+run with three useful stronger-test kills. Bragkit's default test script required
+one explicit-glob adaptation, despite matching direct test inventories. Native TS
+therefore remains Experimental pending unchanged-project findings acceptance;
+JavaScript's Validated status and its unresolved survivors are unaffected.

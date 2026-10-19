@@ -14,9 +14,9 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Nod
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
-- `src/node.rs` implements the validated pinned Node 24.22.0 runner for one
-  dependency-free ESM JavaScript package. `node/project.rs` validates the original
-  root and copies; `node/protocol.rs` requires file/global completion and hook
+- `src/node.rs` implements the pinned Node 24.22.0 runner for one
+  dependency-free ESM package: JavaScript is Validated; native TypeScript is Experimental.
+  `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
   evidence. The exact-hash `node/observer.mjs` detects cleanup errors suppressed
   after body failures. Preserve fail-closed checks and include observer/reporter
   changes in execution identity. Body exceptions require exact worker evidence matched to file/test ID; hooks,
@@ -24,7 +24,12 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript Nod
   imports are rejected; non-native thenable rejections remain unclassified.
   `benchmarks/node-body-attribution.md` records the expanded boundary. `tests/node_workflow.rs` and the ignored cleanup probe
   exercise real Node runs; `benchmarks/node-initial-scope.md` records scope and
-  real-project findings. TypeScript remains planned for this runner.
+  real-project findings. `node/typescript.rs` audits native erasable TS and optional
+  plain-JSON NodeNext config without type checking or transforms. Config presence/bytes
+  and the test glob join TS execution identity; legacy JS identity stays compatible.
+  `benchmarks/node-typescript-scope.md` records the typed fixture, 42 attribution
+  cases, cleanup and independent real-project evidence. Bragkit needs one test-script
+  adaptation; unchanged-project findings acceptance remains open.
 - `src/javascript.rs` shares concrete boolean discovery with Vitest and Node.
   Literal NUL masking is parse-only, preserves byte offsets, and rejects NULs in
   executable code; source fingerprints and writes always use original bytes.
@@ -178,8 +183,15 @@ a test-only teardown fix. `benchmarks/node-storage-profiles.md` records five mor
 kills (storage locking and workspace profiles), source/report preservation and the
 Validated milestone audit. Seven scheduling/delivery/entry-point survivors remain
 open; SRI's cleanup survivor is unresolved and its semantic hang remains a timeout.
-The existing pinned JavaScript scope is unchanged. Choose the next major scope
-explicitly; do not promote TypeScript from JavaScript evidence.
+The existing pinned JavaScript scope is unchanged. Native TypeScript on Node is now
+selected and implemented as Experimental: dependency-atlas passes nine tests with
+no boolean sites; Bragkit has 23 candidates (two kills, 21 survivors), and a separate
+stronger-test rerun kills three HTML-list survivors. Bragkit's `node --test` script
+was adapted to `node --test test/*.test.ts`; source/tests/config were unchanged.
+`benchmarks/node-typescript-scope.md` and its results record preserve that distinction.
+Audit native default test discovery or find an unchanged project with useful findings
+before promoting TS; 18 Bragkit survivors remain unreviewed. Do not promote TypeScript
+from JavaScript evidence or add loaders/dependencies implicitly.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
