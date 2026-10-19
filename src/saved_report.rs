@@ -51,6 +51,7 @@ struct RunReport {
     rust_scope: Option<crate::rust::ExecutionScope>,
     #[serde(skip_serializing_if = "Option::is_none")]
     vitest_scope: Option<crate::vitest::ExecutionScope>,
+    node_scope: Option<crate::node::ExecutionScope>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
     include: Vec<String>,
@@ -174,6 +175,11 @@ pub struct SavedReport {
 }
 
 impl SavedReport {
+    pub fn node_scope(&mut self, scope: &crate::node::ExecutionScope) -> Result<()> {
+        self.run.node_scope = Some(scope.clone());
+        self.flush()
+    }
+
     pub fn vitest_scope(&mut self, scope: &crate::vitest::ExecutionScope) -> Result<()> {
         self.run.vitest_scope = Some(scope.clone());
         self.flush()
@@ -239,6 +245,7 @@ impl SavedReport {
                 }),
                 rust_scope: None,
                 vitest_scope: None,
+                node_scope: None,
                 mutation_command_prefix: language::test_command(config.lang)
                     .into_iter()
                     .filter(|arg| {
@@ -353,7 +360,10 @@ impl SavedReport {
         ensure!(
             mutations.len() == test_packages.len()
                 && test_packages.iter().all(|p| {
-                    if self.run.effective_config.lang == crate::cli::Lang::Vitest {
+                    if matches!(
+                        self.run.effective_config.lang,
+                        crate::cli::Lang::Vitest | crate::cli::Lang::Node
+                    ) {
                         p.is_empty()
                     } else {
                         !p.is_empty()
@@ -649,7 +659,15 @@ impl SavedReport {
         text.push_str(&format!("{}\n", self.run.policy));
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
-        if self.run.effective_config.lang == crate::cli::Lang::Vitest {
+        if self.run.effective_config.lang == crate::cli::Lang::Node {
+            text.push_str("Runner: Node test runner (JavaScript)\nFull suite; serial files; fresh command copies\n");
+            if let Some(scope) = &self.run.node_scope {
+                text.push_str(&format!(
+                    "Package: {}\nNode: {}\nManifest: {}\n",
+                    scope.package, scope.node, scope.manifest_fingerprint
+                ));
+            }
+        } else if self.run.effective_config.lang == crate::cli::Lang::Vitest {
             text.push_str(
                 "Runner: Vitest (JavaScript/TypeScript)\nFull suite; fresh command copies\n",
             );

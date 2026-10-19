@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 
 Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules, validated
-Rust binary packages, and validated ordinary Rust library packages.
+Rust packages and scoped Vitest packages, plus an experimental JavaScript Node runner.
 
 - `src/main.rs` coordinates runs and workers; `cli.rs` defines CLI arguments.
 - `src/config.rs` loads repository settings and resolves explicit CLI overrides.
@@ -14,6 +14,18 @@ Rust binary packages, and validated ordinary Rust library packages.
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
+- `src/node.rs` implements the experimental pinned Node 24.22.0 runner for one
+  dependency-free ESM JavaScript package. `node/project.rs` validates the original
+  root and copies; `node/protocol.rs` requires file/global completion and hook
+  evidence. The exact-hash `node/observer.mjs` detects cleanup errors suppressed
+  after body failures. Preserve fail-closed checks and include observer/reporter
+  changes in execution identity. Only assertion failures are kills; generic body
+  exceptions remain errors. `tests/node_workflow.rs` and the ignored cleanup probe
+  exercise real Node runs; `benchmarks/node-initial-scope.md` records scope and
+  real-project findings. TypeScript remains planned for this runner.
+- `src/javascript.rs` shares concrete boolean discovery with Vitest and Node.
+  Literal NUL masking is parse-only, preserves byte offsets, and rejects NULs in
+  executable code; source fingerprints and writes always use original bytes.
 - `src/vitest.rs` exposes read-only `vitest-list`; `vitest/project.rs` validates
   pinned ESM/pnpm metadata and `vitest/discovery.rs` lists JS/TS boolean flips.
   `vitest/config.rs` statically recognizes coverage-reporter-only configs without
@@ -108,8 +120,8 @@ Rust binary packages, and validated ordinary Rust library packages.
   dismissal-based and minimum-score CI policies, configuration, and focused runs.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
-  language/test runner. Update it when support changes; planned JavaScript/TypeScript
-  and Python targets are not implemented CLI capabilities.
+  language/test runner. Update it when support changes; planned Node TypeScript,
+  Bun and Python targets are not implemented CLI capabilities.
 
 ## Development Status & Versioning
 
@@ -151,7 +163,10 @@ test-only review rerun kills 36 survivors and both error candidates; five remain
 (four redundant scan settings, one unknown-filter-operator policy case). Preserve
 failed-report scores and distinguish combined inventory accounting from a full
 score. Retained boundary tests and awaited-callback patch are under
-`benchmarks/fixtures/`. Reassess the next major scope objective.
+`benchmarks/fixtures/`. The first Node test-runner slice is now Experimental for
+JavaScript only; `benchmarks/node-initial-scope.md` records the real-project loop.
+Next audit non-assertion body-error attribution while preserving lifecycle/import
+and completion checks. Do not promote TypeScript from JavaScript evidence.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

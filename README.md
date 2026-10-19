@@ -2,7 +2,7 @@
 
 A CLI for performing mutation testing.
 
-Mutie supports Go modules, scoped Rust packages, and pinned Vitest packages. It runs a
+Mutie supports Go modules, scoped Rust packages, pinned Vitest packages, and a scoped Node test runner. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
@@ -16,7 +16,8 @@ See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 not necessarily available in the current CLI.
 
 See [target support](SUPPORT.md) for Go/Rust support and validated scoped
-JavaScript/TypeScript support through Vitest. Node's test runner, Bun and pytest remain planned.
+JavaScript/TypeScript support through Vitest. The Node runner has an experimental
+JavaScript-only slice; TypeScript on Node, Bun and pytest remain planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
@@ -49,6 +50,37 @@ output. These two diagnostic commands do not apply `mutie.toml` or save reports;
 the scored run does. See [CLI validation](benchmarks/vitest-shared-runs.md) and the
 [execution boundary](benchmarks/vitest-execution.md) for pinned dependencies,
 setup and conservative failure attribution.
+
+## Experimental Node test runner
+
+```sh
+mutie PATH --lang node --ui plain
+mutie PATH --lang node --list
+mutie PATH --lang node --rerun-missed RUN_DIR
+```
+
+The initial scope is one dependency-free ESM package using audited Node **24.22.0**
+on PATH, `.js` files under `src/` and `test/`, and exactly
+`"test": "node --test test/*.test.js"` in `package.json`. There must be no installed
+`node_modules`; unused build-only devDependencies are allowed. Imports must be
+literal relative paths within those directories or `node:` built-ins. TypeScript,
+CommonJS, custom loaders/runner flags, workspaces and runtime dependencies are
+unsupported. Only `boolean_flip`, `--jobs 1` and full-suite testing are accepted.
+
+Baseline and mutations run in fresh copies, with serial test files, owned temporary
+directories and bounded captures. Saved reports, browser command export, reruns,
+dismissal review and score policies use the shared workflow. Reruns accept improved
+tests but require unchanged mutation source and package/runner identity.
+
+Only completed assertion failures count as kills in this slice. Generic thrown
+errors, import/parse failures, lifecycle failures (including mixed body/cleanup
+failures), incomplete runs and ambiguous evidence are errors. Expected-failure
+and retry modes, todo tests, and empty/all-skipped files are unsupported. The hook
+observer requires the exact audited Node implementation; no fallback is attempted.
+
+The [Node acceptance record](benchmarks/node-initial-scope.md) covers real-project
+findings, stronger-test reruns, cleanup evidence and remaining attribution limits.
+This is JavaScript acceptance only and does not imply TypeScript support.
 
 ## Try it
 

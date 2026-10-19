@@ -105,6 +105,7 @@ pub struct RerunSelection {
     language: crate::cli::Lang,
     rust_scope: Option<crate::rust::ExecutionScope>,
     vitest_scope: Option<crate::vitest::ExecutionScope>,
+    node_scope: Option<crate::node::ExecutionScope>,
     provenance: RerunProvenance,
     targets: Vec<SavedMutation>,
 }
@@ -143,6 +144,7 @@ impl RerunSelection {
             language: report.run.language(),
             rust_scope: report.run.rust_scope,
             vitest_scope: report.run.vitest_scope,
+            node_scope: report.run.node_scope,
             provenance: RerunProvenance {
                 source_run: report.directory,
                 source_checkpoint: report.run.checkpoint,
@@ -168,6 +170,13 @@ impl RerunSelection {
             language
         );
         Ok(())
+    }
+
+    pub fn validate_node_scope(&self, current: &crate::node::ExecutionScope) -> Result<()> {
+        self.node_scope
+            .as_ref()
+            .context("saved run lacks Node execution scope")?
+            .validate_rerun(current)
     }
 
     pub fn validate_vitest_scope(&self, current: &crate::vitest::ExecutionScope) -> Result<()> {

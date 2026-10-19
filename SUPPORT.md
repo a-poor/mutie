@@ -2,7 +2,7 @@
 
 This is the support ledger for Mutie's language and test-runner targets. It tracks
 verified behavior, scope limits, evidence and the work needed to advance each
-target. Last reviewed: 2026-10-16. [README.md](README.md) documents usage;
+target. Last reviewed: 2026-10-18. [README.md](README.md) documents usage;
 [TODO.md](TODO.md) sets implementation priorities. A planned target is not available
 through the CLI, and this table does not set implementation order.
 
@@ -32,7 +32,8 @@ does not by itself validate a new runner.
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
 | TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
-| JavaScript / TypeScript | Node.js test runner | Planned | None | Define runtime, module/TypeScript execution scope and fixture |
+| JavaScript | Node.js test runner | Experimental | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broaden non-assertion failure attribution; additional project evidence |
+| TypeScript | Node.js test runner | Planned | None | Define native TypeScript execution and independent acceptance |
 | JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
@@ -189,18 +190,29 @@ TypeScript milestone; neither promotes JSX or TSX support.
 
 ## JavaScript / TypeScript — Node.js test runner
 
-**Level: Planned. No adapter, mutation discovery or end-to-end validation yet.**
+**JavaScript: Experimental. TypeScript: Planned.**
 
-Desired outcome: the shared workflow for projects using Node's test runner.
-Choose a runtime version, real project and fixture; specify package/module formats,
-test discovery, and whether TypeScript uses a supported native execution path or
-an explicitly supported transformation setup. These choices require verification
-against the selected runtime rather than assumptions based on Vitest support.
+Explicit `--lang node` supports one dependency-free ESM package with `.js` files
+under `src/` and `test/`, exact `node --test test/*.test.js` script, no installed
+dependencies, and audited Node 24.22.0. Literal relative and `node:` imports only;
+no runtime package dependencies, CommonJS, workspaces, loaders, TypeScript or
+parallel workers. Test files run serially in isolated processes and fresh copies.
 
-Initial validation must distinguish test failures from import/parse/loader errors,
-handle nested test results without double counting, and verify worker/child-process
-cleanup, isolated source resolution and stronger-test reruns. Custom loaders and
-multi-package layouts remain undecided scope.
+Boolean discovery shares the concrete JS/TS parser with Vitest. The CLI supports
+saved reports, focused source-identity reruns, browser exports, dismissal CRUD/check
+and shared raw-score/findings policies. Completion requires per-file/global
+agreement and hook evidence from the pinned internal implementation. Only
+assertion failures are kills; generic body exceptions remain errors, as do hidden
+hook failures, incomplete/empty/early-exit cases and ambiguous attribution.
+
+[Acceptance evidence](benchmarks/node-initial-scope.md) records the fixture,
+20 mutation-triggered classification cases, real timeout/cancellation/capture
+cleanup, and `sri-dynamic-loader` findings with stronger-test reruns. Its original
+production source and original tests are preserved. The conservative generic-error
+boundary limits campaign usability, so this remains Experimental despite the
+working review loop. Do not infer a whole-project score from combined attempts,
+or promote TypeScript from this JavaScript evidence. The next gate is broader
+body-error attribution without weakening lifecycle/import/completion checks.
 
 ## JavaScript / TypeScript — Bun test runner
 

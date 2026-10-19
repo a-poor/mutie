@@ -30,6 +30,7 @@ pub struct SavedRun {
     pub error: Option<String>,
     pub rust_scope: Option<crate::rust::ExecutionScope>,
     pub vitest_scope: Option<crate::vitest::ExecutionScope>,
+    pub node_scope: Option<crate::node::ExecutionScope>,
     pub score: Option<MutationScore>,
     pub score_policy: Option<ScorePolicy>,
     effective_config: Option<ScoreConfig>,
@@ -38,6 +39,11 @@ pub struct SavedRun {
 impl SavedRun {
     pub fn validate_rerun_scope(&self) -> Result<()> {
         match self.language() {
+            crate::cli::Lang::Node => self
+                .node_scope
+                .as_ref()
+                .context("saved Node run lacks execution scope")?
+                .validate_record(),
             crate::cli::Lang::Vitest => self
                 .vitest_scope
                 .as_ref()
@@ -189,6 +195,23 @@ impl LoadedReport {
         if let Some(scope) = &run.vitest_scope {
             scope.validate_record()?;
         }
+        ensure!(
+            run.node_scope.is_none() || run.language() == crate::cli::Lang::Node,
+            "saved run has conflicting language and Node scope"
+        );
+        if run.language() == crate::cli::Lang::Node {
+            ensure!(
+                run.rust_scope.is_none() && run.vitest_scope.is_none(),
+                "saved Node run has conflicting runner scope"
+            );
+            ensure!(
+                run.status != RunStatus::Completed || run.node_scope.is_some(),
+                "completed Node run lacks runner identity"
+            );
+        }
+        if let Some(scope) = &run.node_scope {
+            scope.validate_record()?;
+        }
         let mut inventory: SavedInventory = read_json(&directory, "mutants.json")?;
         let outcomes: SavedOutcomes = read_json(&directory, "outcomes.json")?;
         for (name, version) in [
@@ -239,6 +262,13 @@ impl LoadedReport {
                             Some("js" | "ts")
                         ),
                     "saved Vitest mutation is outside the supported scope"
+                );
+            }
+            if run.language() == crate::cli::Lang::Node {
+                ensure!(
+                    mutation.operator == Operator::BooleanFlip
+                        && mutation.file.extension().and_then(|s| s.to_str()) == Some("js"),
+                    "saved Node mutation is outside the supported scope"
                 );
             }
             let id = mutation.id;

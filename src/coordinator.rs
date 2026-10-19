@@ -46,6 +46,7 @@ pub enum RunEvent<'a> {
     Phase(Phase),
     RustScope(&'a crate::rust::ExecutionScope),
     VitestScope(&'a crate::vitest::ExecutionScope),
+    NodeScope(&'a crate::node::ExecutionScope),
     Command {
         phase: Phase,
         output: &'a CommandOutput,
@@ -183,7 +184,7 @@ impl RunState {
                     active.phase = progress.phase;
                 }
             }
-            RunEvent::RustScope(_) | RunEvent::VitestScope(_) => {}
+            RunEvent::RustScope(_) | RunEvent::VitestScope(_) | RunEvent::NodeScope(_) => {}
             RunEvent::Finished { worker, result } => {
                 self.active.remove(worker);
                 self.summary.record(result);
@@ -290,6 +291,7 @@ impl Coordinator {
                 RunEvent::Phase(phase) => report.phase(phase.name())?,
                 RunEvent::RustScope(scope) => report.rust_scope(scope)?,
                 RunEvent::VitestScope(scope) => report.vitest_scope(scope)?,
+                RunEvent::NodeScope(scope) => report.node_scope(scope)?,
                 RunEvent::Command { phase, output } => report.command(phase.name(), output)?,
                 RunEvent::Plan(plan) => report.plan(plan, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
@@ -306,6 +308,8 @@ impl Coordinator {
                 RunEvent::Phase(Phase::Baseline) => {
                     self.line(if self.lang == crate::cli::Lang::Vitest {
                         "Running baseline: Vitest (fresh isolated copy, full suite)"
+                    } else if self.lang == crate::cli::Lang::Node {
+                        "Running baseline: Node test runner (fresh isolated copy, serial full suite)"
                     } else if self.lang == crate::cli::Lang::Rust {
                         "Running baseline: cargo test --locked --tests (fresh build artifacts)"
                     } else {

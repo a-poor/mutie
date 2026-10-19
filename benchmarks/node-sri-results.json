@@ -1,0 +1,307 @@
+{
+  "project": "https://github.com/subresource-integrity/sri-dynamic-loader",
+  "commit": "370652c304d6fee0c59cfb51bf097e72f6ebf13a",
+  "runtime": "Node 24.22.0",
+  "recipe_fingerprint": "sha256:b6a440618f342d26253f4c8e0abe6af14067f74f6a06dabe2f72dedccac92f9f",
+  "initial_test_count": 60,
+  "inventory": 21,
+  "combined_attempt_counts": {
+    "killed": 8,
+    "missed": 8,
+    "timeout": 1,
+    "error": 4
+  },
+  "runs": [
+    {
+      "run": "run-1792366484-SQ7GS3",
+      "status": "failed",
+      "duration_seconds": 38.924177,
+      "source_ids_attempted": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "run": "run-1792366566-OpyLDC",
+      "status": "failed",
+      "duration_seconds": 16.866247416,
+      "source_ids_attempted": [
+        11,
+        12,
+        13
+      ]
+    },
+    {
+      "run": "run-1792366596-Kqoiu6",
+      "status": "failed",
+      "duration_seconds": 9.258098791,
+      "source_ids_attempted": [
+        14,
+        15
+      ]
+    },
+    {
+      "run": "run-1792366636-84P9aN",
+      "status": "failed",
+      "duration_seconds": 4.954472084,
+      "source_ids_attempted": [
+        16
+      ]
+    },
+    {
+      "run": "run-1792366641-QEhWt8",
+      "status": "completed",
+      "duration_seconds": 6.186857709,
+      "source_ids_attempted": [
+        17
+      ]
+    },
+    {
+      "run": "run-1792366647-a1Uhl0",
+      "status": "completed",
+      "duration_seconds": 6.817013667,
+      "source_ids_attempted": [
+        18
+      ]
+    },
+    {
+      "run": "run-1792366654-IUTeBG",
+      "status": "completed",
+      "duration_seconds": 5.740138291,
+      "source_ids_attempted": [
+        19
+      ]
+    },
+    {
+      "run": "run-1792366660-eLEVBi",
+      "status": "completed",
+      "duration_seconds": 3.957792417,
+      "source_ids_attempted": [
+        20
+      ]
+    },
+    {
+      "run": "run-1792366664-hoUH2b",
+      "status": "completed",
+      "duration_seconds": 3.434642958,
+      "source_ids_attempted": [
+        21
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "id": 1,
+      "file": "src/integrity.js",
+      "line": 136,
+      "outcome": "killed"
+    },
+    {
+      "id": 2,
+      "file": "src/integrity.js",
+      "line": 138,
+      "outcome": "missed"
+    },
+    {
+      "id": 3,
+      "file": "src/loader.js",
+      "line": 165,
+      "outcome": "killed"
+    },
+    {
+      "id": 4,
+      "file": "src/loader.js",
+      "line": 170,
+      "outcome": "killed"
+    },
+    {
+      "id": 5,
+      "file": "src/loader.js",
+      "line": 201,
+      "outcome": "killed"
+    },
+    {
+      "id": 6,
+      "file": "src/loader.js",
+      "line": 210,
+      "outcome": "killed"
+    },
+    {
+      "id": 7,
+      "file": "src/loader.js",
+      "line": 248,
+      "outcome": "killed"
+    },
+    {
+      "id": 8,
+      "file": "src/loader.js",
+      "line": 315,
+      "outcome": "timeout"
+    },
+    {
+      "id": 9,
+      "file": "src/loader.js",
+      "line": 322,
+      "outcome": "missed"
+    },
+    {
+      "id": 10,
+      "file": "src/loader.js",
+      "line": 429,
+      "outcome": "error",
+      "error": "running src/loader.js:429:26: \"true\" -> \"false\": Node failure is not a validated assertion: a stylesheet resolves from the sheet-polling backstop when no load event fires: failed to load https://cdn.example/silent.css: loading https://cdn.example/silent.css exceeded 1000ms. The element has been removed from the document; a slow CDN and a silently dropped connection look identical here."
+    },
+    {
+      "id": 11,
+      "file": "src/loader.js",
+      "line": 432,
+      "outcome": "missed"
+    },
+    {
+      "id": 12,
+      "file": "src/loader.js",
+      "line": 434,
+      "outcome": "missed"
+    },
+    {
+      "id": 13,
+      "file": "src/loader.js",
+      "line": 436,
+      "outcome": "error",
+      "error": "running src/loader.js:436:10: \"false\" -> \"true\": Node failure is not a validated assertion: a stylesheet that never applies fails on the timeout rather than hanging: Cannot read properties of undefined (reading '0')"
+    },
+    {
+      "id": 14,
+      "file": "src/preflight.js",
+      "line": 106,
+      "outcome": "killed"
+    },
+    {
+      "id": 15,
+      "file": "src/registry.js",
+      "line": 49,
+      "outcome": "error",
+      "error": "running src/registry.js:49:50: \"true\" -> \"false\": Node failure is not a validated assertion: redefining a name needs an explicit replace: source \"jquery\" is already defined. Pass { replace: true } to override it deliberately."
+    },
+    {
+      "id": 16,
+      "file": "src/sources.js",
+      "line": 108,
+      "outcome": "error",
+      "error": "running src/sources.js:108:54: \"true\" -> \"false\": Node failure is not a validated assertion: allowUnverified is the only way past the fail-closed default: refusing to load https://cdn.example/jquery.min.js without integrity metadata. Pass an integrity value, or pass allowUnverified: true if this resource genuinely cannot be pinned."
+    },
+    {
+      "id": 17,
+      "file": "src/sources.js",
+      "line": 145,
+      "outcome": "killed"
+    },
+    {
+      "id": 18,
+      "file": "src/sources.js",
+      "line": 160,
+      "outcome": "missed"
+    },
+    {
+      "id": 19,
+      "file": "src/sources.js",
+      "line": 161,
+      "outcome": "missed"
+    },
+    {
+      "id": 20,
+      "file": "src/sources.js",
+      "line": 179,
+      "outcome": "missed"
+    },
+    {
+      "id": 21,
+      "file": "src/sources.js",
+      "line": 183,
+      "outcome": "missed"
+    }
+  ],
+  "stronger_rerun": {
+    "run": "run-1792366754-DwsuMi",
+    "duration_seconds": 16.541887833,
+    "status": "completed",
+    "scope": "rerun",
+    "mutations": [
+      {
+        "source_id": 2,
+        "outcome": "killed"
+      },
+      {
+        "source_id": 9,
+        "outcome": "missed"
+      },
+      {
+        "source_id": 11,
+        "outcome": "killed"
+      },
+      {
+        "source_id": 12,
+        "outcome": "killed"
+      },
+      {
+        "source_id": 18,
+        "outcome": "killed"
+      },
+      {
+        "source_id": 19,
+        "outcome": "killed"
+      },
+      {
+        "source_id": 20,
+        "outcome": "killed"
+      },
+      {
+        "source_id": 21,
+        "outcome": "killed"
+      }
+    ],
+    "additional_test_sha256": "8dbf066229dc6811294b2b7c86e40ad83536dee20216d7a4eff97fa8024ec645"
+  },
+  "original_file_sha256": {
+    "LICENSE": "93f293ce8b9094ee0f32df33a59bfcb41935d0f201c9f007dd6db79960748b78",
+    "README.md": "7eab0d0cdfe299722a33b6d21bc7cb74abdc45eabc667cf889276819828d2dd8",
+    ".gitignore": "b9366afd639186c51d3414261ec8e9f7d31110dd7214d7f31929dfd3637bbf41",
+    "package-lock.json": "0bdc61d7be66687d8e85a66500c51f38c7ec22812053500ab0d1cc4f6cdd1051",
+    "package.json": "cb29bdca6a38953e2de6dc47df97220dcbffdebb9a11c30af522c3afd3f1cc59",
+    "eslint.config.js": "791faaa2f0c55f80ab7e3eefbce62cce0fe6672e7a1d2fa67f29bee50610732f",
+    "types/index.d.ts": "399e4f74489dec7fa66996947a842bca221d3289eba6a63590ca3fae48d2a0ac",
+    "test/preflight.test.js": "12a0b5f2f3be0ae06e8b9439f2b7dd4800f0e9fd66badc879d5b0ee486befd98",
+    "test/registry.test.js": "8bb3bd279c631d2f3b2edfaaccb7df0bd2e3998b7478d89ba1a2fa760aed8b25",
+    "test/loader.test.js": "7037884fc71867c3b8372ff90e8526fd63f8050e59f382a1787ca5ea7f3cf21d",
+    "test/dom-stub.js": "639afd40f1733d0fea7534230051a5cca5fb8d4a6f4d9d3b8fcb027dcbdd2952",
+    "test/integrity.test.js": "792fd22f45314627592c3de90521118e751c5181b272d25960a107e74e2e2b85",
+    "dist/sizes.json": "39ec9a9fe1655f119a59c1dcef534f23dec44f62855676e73bb5cda51b88fb60",
+    "dist/sri-dynamic-loader.min.js": "fb5943171c00de5cde4d5cbfa85bac8b5f2bc81f42a70853bc60dd6b1d68707b",
+    "dist/sri-dynamic-loader.js": "0a97b4795660aecb3ab6d35f5175947592da1313d303fed9aea61855e3f07761",
+    "dist/sri-dynamic-loader.esm.min.js": "91bb43f802a5988ea77b4ccd82b2c17b8f42d630f0d8815f21a34d4ef94fc0d4",
+    "examples/index.html": "cc68debbb07b360ee5308d46e98314b9bfe4670490df9e27aa52ca8d8aa2f39f",
+    "examples/demo.js": "5fbc456904f1b9abdf24a91cdabcfda003cc86442dc514238b9b17e33dffe334",
+    "scripts/build.js": "fbdf96a06d4f10f714b5ee8439648d6a08dcbc6264828bedf476ea960153b161",
+    "scripts/serve-example.js": "6df73e7d4c7ace2ba5d849dc70ca75724be2704f48d901e704721e938828e3e6",
+    "src/registry.js": "471262786f2d0bd3610e429d456fb85bcd08777c2f278ab3131e79b144aae356",
+    "src/index.js": "0f115d92f596351fb875943c1661b4308c93c9ddc6a363eebe07592d74c33657",
+    "src/errors.js": "1324f8475d206ae290385a34adfacaffc71f73af2d009e72f04d55851b923a26",
+    "src/preflight.js": "b5cca97e38198f38068990933f7b4090978e4f020e2fe1e7043552bdd0ffc4cb",
+    "src/integrity.js": "06a417e38acd585d1a3dcf4739d6f38f626c8c5cecd4938cf180424d04cd658f",
+    "src/sources.js": "e9f6c6ac72a901be10fd3b17076a7f5f79f6a01cf06b5c4340bf564bdce49f00",
+    "src/diagnose.js": "376a8425617088d1a9c3423ad95495cbb5b26dbbcc04dd8261ddf1a0cf5f98ce",
+    "src/loader.js": "bee313bac27b7f25ef9521eb523950fdcbbebaba6d6b9f25d6713bf426f6f1ed",
+    ".github/workflows/ci.yml": "ef3c15b174c74d493cd7d9513f2111c423594ba82d8cb76e7fbcb67b4450709a",
+    "examples/vendor/theme.css": "f4857ce2d8d1f1608dcb32f428c36204d5ee791b58c6fc0547bced0f974e6f29",
+    "examples/vendor/greeting-mirror.js": "4b0813b6991569eac956faa47214542c367161da5dbaa12858f05d8e171bd58f",
+    "examples/vendor/greeting-cdn.js": "5394e137d528c757b92c66c2e90925cf06a656467f3e7f996c95973fc58cec63"
+  }
+}

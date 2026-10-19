@@ -266,6 +266,7 @@ impl Browser {
             match self.report.run.language() {
                 crate::cli::Lang::Rust => " --lang rust",
                 crate::cli::Lang::Vitest => " --lang vitest",
+                crate::cli::Lang::Node => " --lang node",
                 _ => "",
             },
             quote_path(&self.report.directory)?,

@@ -19,23 +19,43 @@ acceptance. Repeated Node launcher resolution is now avoided while preserving pe
 identity checks; see [validation](benchmarks/vitest-node-reuse.md). The complete
 133-candidate Hyparquet inventory has now been attempted, with stronger-test
 review and explicit callback-error/timeout accounting; see [full evidence](benchmarks/vitest-hyparquet-full.md).
-Reassess the next major scope objective; Rust workspaces remain a separate decision.
+The first Node test-runner slice is now experimental and JavaScript-only; see
+[scope and evidence](benchmarks/node-initial-scope.md). Next audit non-assertion body
+failures so legitimate runtime-error kills can be accepted without admitting
+lifecycle/import failures. TypeScript and Rust workspaces remain separate decisions.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
 
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
-Vitest has a validated first scope; the other initial scopes remain undecided.
+Vitest has a validated first scope and Node has an experimental JavaScript slice;
+the other initial scopes remain undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
-- [ ] Define and implement the first JavaScript/TypeScript + Node test runner slice.
+- [x] Define and implement the first JavaScript + Node test runner slice.
+- [ ] Define TypeScript + Node execution and validate it independently.
 - [ ] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
 - [ ] Define and implement the first Python + pytest slice.
 
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
+
+## Experimental Node test-runner slice
+
+- [x] Select Node 24.22.0, a dependency-free ESM fixture and `sri-dynamic-loader`.
+- [x] Audit completion, nested results, imports, early exits and hidden cleanup
+  failures; pin the hook observer to the audited internal implementation.
+- [x] Share boolean discovery with Vitest, including byte-preserving parsing of
+  literal NUL text found in the real project.
+- [x] Connect isolated execution to reports, reruns, review and policies.
+- [x] Verify mutation-triggered failures and timeout/cancellation/capture cleanup.
+- [x] Attempt the real inventory, inspect survivors and rerun stronger tests while
+  preserving sources and original reports. See [evidence](benchmarks/node-initial-scope.md).
+- [ ] Broaden non-assertion body-error attribution with mixed-failure regressions;
+  review the remaining cleanup-guard survivor and timeout separately.
+- [ ] Validate another real package before broadening dependency/module scope.
 
 ## Validated first Vitest slice and follow-up work
 

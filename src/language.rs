@@ -1,4 +1,4 @@
-//! Built-in dispatch for Go, Cargo and the scoped Vitest execution path.
+//! Built-in dispatch for Go, Cargo, Vitest and the scoped Node test runner.
 use std::{future::Future, num::NonZeroUsize, path::Path, time::Duration};
 
 use anyhow::{Result, bail, ensure};
@@ -28,7 +28,7 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
     };
     let manifest = match lang {
         Lang::Go => "go.mod",
-        Lang::Vitest => "package.json",
+        Lang::Vitest | Lang::Node => "package.json",
         _ => "Cargo.toml",
     };
     ensure!(
@@ -41,6 +41,7 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
 
 pub fn test_command(lang: Lang) -> Vec<&'static str> {
     match lang {
+        Lang::Node => vec!["node", "--test", "--test-concurrency=1", "test/*.test.js"],
         Lang::Vitest => vec![
             "node",
             "node_modules/vitest/vitest.mjs",
@@ -62,6 +63,7 @@ pub fn test_command(lang: Lang) -> Vec<&'static str> {
 pub fn discovery_command(lang: Lang, scope: TestScope) -> Vec<&'static str> {
     match lang {
         Lang::Vitest => vec!["mutie", "vitest-list"],
+        Lang::Node => vec!["mutie", "--lang", "node", "--list"],
         Lang::Rust => std::iter::once("cargo")
             .chain(rust::METADATA_ARGS.iter().copied())
             .collect(),
@@ -81,6 +83,7 @@ pub async fn test<F, Fut>(
     capture_limit: Option<NonZeroUsize>,
     cache: Option<&rust::BuildCache>,
     vitest_scope: Option<&crate::vitest::ExecutionScope>,
+    node_scope: Option<&crate::node::ExecutionScope>,
     cancellation: &Cancellation,
     progress: F,
 ) -> Result<CommandOutput>
@@ -89,6 +92,17 @@ where
     Fut: Future<Output = ()> + Send,
 {
     match lang {
+        Lang::Node => {
+            crate::node::test(
+                root,
+                limit,
+                log_limit,
+                capture_limit,
+                node_scope.ok_or_else(|| anyhow::anyhow!("missing Node execution identity"))?,
+                cancellation,
+            )
+            .await
+        }
         Lang::Vitest => {
             crate::vitest::test(
                 root,

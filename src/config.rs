@@ -211,21 +211,26 @@ impl RunConfig {
             rerun,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
-        if config.lang == Lang::Vitest {
+        if matches!(config.lang, Lang::Vitest | Lang::Node) {
+            let runner = if config.lang == Lang::Node {
+                "Node"
+            } else {
+                "Vitest"
+            };
             ensure!(
                 config.test_scope == TestScope::Full,
-                "Vitest supports only full test scope"
+                "{runner} supports only full test scope"
             );
             ensure!(
                 config.jobs.get() == 1,
-                "Vitest currently supports only --jobs 1"
+                "{runner} currently supports only --jobs 1"
             );
             ensure!(
                 config
                     .operators
                     .iter()
                     .all(|op| *op == Operator::BooleanFlip),
-                "Vitest supports only boolean_flip"
+                "{runner} supports only boolean_flip"
             );
         }
         if config.lang == Lang::Rust {

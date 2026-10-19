@@ -1537,3 +1537,50 @@ and runner/config identity are still reloaded and compared; there is no fallback
 to PATH if the pinned executable fails. See [validation](benchmarks/vitest-node-reuse.md).
 Test-only phase instrumentation does not change the production runner or reports; broader
 execution and configuration scopes remain separate work. Existing Go/Rust compatibility and report reading remain required.
+
+
+## Initial Node test-runner contract
+
+The experimental `--lang node` path supports one dependency-free ESM JavaScript
+package on audited Node 24.22.0. The package has the exact test script
+`node --test test/*.test.js`; the adapter expands that immediate-directory file
+set and runs it with serial process isolation. Only `.js` runtime files under
+`src/` and `test/`, literal local/`node:` imports, full-suite tests, one worker and
+boolean flips are accepted. Unused build-only devDependencies need not be installed.
+Workspaces, installed/runtime dependencies, CommonJS, TypeScript, custom loaders,
+retry and expected-failure modes are outside this contract.
+
+`javascript.rs` owns concrete boolean discovery shared with Vitest. Literal NUL
+bytes inside strings/comments/templates are masked only while parsing, at the
+same offsets, and their syntactic location is checked; executable NULs are rejected.
+Fingerprints, diffs and mutation writes always use original source bytes.
+`node/project.rs` validates the original root before snapshotting (including its
+workspace ancestry), then validates copies and static import resolution.
+
+The Node command uses a fresh workspace and separate owned reporter, hook observer
+and temporary directory. The event stream must end; every selected file must have
+one matching summary and worker record; global counts must equal file totals.
+Exit status alone is insufficient. Unknown failures, empty/all-skipped files,
+todo/cancelled results, and missing completion are errors. Known interruption,
+capture overflow and timeout retain shared classifier precedence.
+
+Node suppresses an afterEach/after error when a body has already failed. Therefore
+reporter-only attribution is unsafe. An async-hooks observer wraps the native
+TestHook resource's run method, counts completion and records its error before
+Node suppresses it. This uses an exact hash of `internal/test_runner/test`, checked
+both before execution and in each worker. Observer/reporter bytes are part of the
+saved recipe identity. There is no uninstrumented fallback. Successful hooks can
+accompany kills; any failed/incomplete observed hook prevents a kill.
+
+Initially only `testCodeFailure` with an `ERR_ASSERTION` cause is a kill; parent
+`subtestsFailed` events do not count as extra mutants. Other exceptions remain
+execution errors even when an inspected real case is plainly a body failure.
+This deliberate limit keeps Node Experimental. Broader classification requires
+new evidence for body, lifecycle, import and mixed failures, not just more exit
+status cases. See [the audit and real-project results](benchmarks/node-initial-scope.md).
+
+Saved Node identity includes package manifest fingerprint, Node version/resolved
+executable and runner recipe. Each command revalidates the pinned executable;
+focused reruns validate this identity plus the shared source identity while allowing
+test edits. Shared reporting, review, scores and browser command exports retain
+language explicitly. JavaScript results do not establish native TypeScript support.

@@ -536,6 +536,9 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
         println!("No dismissals to check.");
         return Ok(());
     }
+    if config.lang == Lang::Node {
+        crate::node::project::Project::load(&config.module_root, cancellation)?;
+    }
     let scope = Scope::new(&config.include, &config.exclude)?;
     let project = (config.lang == Lang::Rust)
         .then(|| crate::rust::Project::load(&config.module_root))
@@ -591,18 +594,23 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
             println!("Rust discovery excluded {exclusion}");
         }
         found.mutations
-    } else if config.lang == Lang::Vitest {
+    } else if matches!(config.lang, Lang::Vitest | Lang::Node) {
         drop(discovery_workspace);
         let source = snapshot.path();
         let discovery_cancellation = cancellation.clone();
+        let language = config.lang;
         let found = tokio::task::spawn_blocking(move || {
-            crate::vitest::project::Project::load(&source, &discovery_cancellation)?;
-            crate::vitest::discovery::discover(&source, &scope, &discovery_cancellation)
+            if language == Lang::Node {
+                crate::node::project::Project::load(&source, &discovery_cancellation)?;
+            } else {
+                crate::vitest::project::Project::load(&source, &discovery_cancellation)?;
+            }
+            crate::javascript::discover(&source, &scope, &discovery_cancellation)
         })
         .await
-        .context("Vitest dismissal discovery panicked")??;
+        .context("JavaScript dismissal discovery panicked")??;
         for exclusion in found.exclusions {
-            println!("Vitest discovery excluded {exclusion}");
+            println!("JavaScript discovery excluded {exclusion}");
         }
         found.mutations
     } else {

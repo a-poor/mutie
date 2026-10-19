@@ -10,13 +10,13 @@ use crate::mutation::Operator;
     version,
     args_conflicts_with_subcommands = true,
     subcommand_negates_reqs = true,
-    about = "Find gaps in Go, Rust and Vitest tests by making small changes to your code"
+    about = "Find gaps in Go, Rust, Vitest and Node tests by making small changes to your code"
 )]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Command>,
 
-    /// Project root (go.mod, Cargo.toml, or package.json with --lang vitest)
+    /// Project root (go.mod, Cargo.toml, or package.json with --lang vitest or --lang node)
     #[arg(default_value = ".")]
     pub path: PathBuf,
 
@@ -155,7 +155,7 @@ pub enum Command {
         #[arg(long, default_value = "4194304")]
         max_capture_bytes: NonZeroUsize,
     },
-    /// Preview Vitest boolean mutations (read-only; execution is not implemented)
+    /// Preview Vitest boolean mutations (read-only)
     VitestList {
         #[arg(default_value = ".", value_name = "PATH")]
         path: PathBuf,
@@ -271,6 +271,7 @@ pub enum Lang {
     Go,
     Rust,
     Vitest,
+    Node,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize, ValueEnum)]
