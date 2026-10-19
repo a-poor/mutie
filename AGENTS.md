@@ -201,6 +201,19 @@ records all 18 remaining survivor kills with 13 stronger tests, a 76-test baseli
 and unchanged source/report hashes. Original full scores remain unchanged.
 Do not infer broader loaders/dependencies or layouts from this evidence.
 
+Bun is the selected next runner. `benchmarks/bun-initial-scope.md` pins
+1.3.11+af24e281e, records 24 native reporting cases per syntax and an unchanged
+272-test Composer baseline with a manual stronger-test finding. JUnit and inspector
+failure status conflate bodies, hooks and process errors. The file-backed phase
+observer in `benchmarks/bun-body-attribution.md` passes 112 paired JS/TS cases and
+30 evidence-rejection checks; Composer baseline/finding controls match. A failure-only
+checkpoint exposes suppressed pending rejections without delaying successful
+callbacks. Inspector terminal events can be lost at exit and cannot be guessed.
+The classifier is still experimental benchmark code: strict package/file inventory,
+Rust integration and cleanup gates remain open. Direct probes do not implement
+`--lang bun` or promote support. JS/TS fixtures under `tests/fixtures/bun-*` remain
+opt-in native probes.
+
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
 operator, or UI refinement because it is an unchecked backlog item. Judge progress

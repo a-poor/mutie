@@ -37,7 +37,11 @@ Native TypeScript on Node followed that milestone; its first Experimental
 slice and independent evidence are recorded in [the audit](benchmarks/node-typescript-scope.md).
 [Unchanged Bragkit acceptance](benchmarks/node-default-discovery.md) now closes the
 native-discovery gate and establishes scoped TypeScript validation.
-Rust workspaces remain a separate decision.
+Bun is now the selected next runner. The [initial audit](benchmarks/bun-initial-scope.md)
+pins 1.3.11, adds independent JS/TS fixtures and selects Composer (272 passing tests).
+Native reports conflate body, hook and process failures. A bounded file-backed
+[observer prototype](benchmarks/bun-body-attribution.md) now passes 112 paired cases
+and Composer controls; production integration and complete file accounting remain open. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -45,7 +49,7 @@ Explicit user priorities and demonstrated reliability blockers take precedence.
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
 Vitest and Node have independently validated JavaScript and TypeScript scopes;
-the other initial scopes remain undecided.
+Bun's initial audit is selected below; Python's initial scope remains undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
@@ -58,6 +62,26 @@ the other initial scopes remain undecided.
 
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
+
+## Selected first Bun test-runner slice
+
+- [x] Pin Bun 1.3.11+af24e281e and add independent dependency-free JS/TS fixtures.
+- [x] Audit JUnit and inspector evidence with 24 cases per syntax. Retain the
+  body/hook/process ambiguity and incomplete-run controls; see [audit](benchmarks/bun-initial-scope.md).
+- [x] Select unchanged GramIO Composer: 272-test baseline and three manual mutation
+  probes; a stronger test exposes a passing name-configurability flip with 273 tests.
+  These are direct probes, not adapter acceptance or scored outcomes.
+- [x] Validate a bounded file-backed phase observer: 112 paired JS/TS cases,
+  30 malformed-evidence controls and matching Composer baseline/finding outcomes;
+  see [attribution evidence](benchmarks/bun-body-attribution.md). Inspector shutdown
+  loss and successful-callback checkpointing were rejected approaches.
+- [ ] Port the observer/protocol into Rust with complete file/global accounting,
+  bounded capture and execution identity; ambiguous failures must remain errors.
+- [ ] Validate package/import/config/discovery boundaries, then connect isolated
+  execution to reports, reruns, review and policies.
+- [ ] Verify timeout/cancellation/capture limits and descendant cleanup.
+- [ ] Complete the real-project run/inspect/improve-tests/rerun loop through Mutie,
+  with independent JavaScript and TypeScript acceptance before promotion.
 
 ## Validated first Node test-runner slice
 

@@ -34,13 +34,13 @@ does not by itself validate a new runner.
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
-| JavaScript / TypeScript | Bun test runner | Planned | None | Define runtime, package scope and fixture |
+| JavaScript / TypeScript | Bun test runner | Planned | Direct Bun 1.3.11 JS/TS fixtures and Composer probes only; no adapter | Production integration, complete inventory and cleanup acceptance |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
-silently promote TypeScript, JSX or TSX support. Version ranges for planned
-targets have not been chosen or verified.
+silently promote TypeScript, JSX or TSX support. Bun 1.3.11 is selected for direct audit probes; Python/pytest versions remain
+undecided. Neither planned target has an implemented adapter.
 
 ## Go — go test
 
@@ -261,8 +261,17 @@ Broader layouts and dependencies are not implied.
 
 **Level: Planned. No adapter, mutation discovery or end-to-end validation yet.**
 
+The [selected initial audit](benchmarks/bun-initial-scope.md) pins Bun 1.3.11,
+retains 24 JUnit/inspector cases per syntax, and establishes an unchanged 272-test
+Composer baseline plus a useful manual stronger-test finding. Native failure
+signals conflate test bodies, hooks and unhandled errors. Positive provenance is
+required before scored execution. The [bounded observer follow-up](benchmarks/bun-body-attribution.md)
+passes 112 paired JS/TS cases, 30 evidence-rejection checks and matching Composer
+baseline/finding controls. Rust integration and complete inventory/cleanup acceptance
+remain open; the experimental classifier does not promote support.
+
 Desired outcome: the shared workflow for projects using Bun's test runner.
-Choose a Bun version, real project and fixture; define package/lockfile handling,
+The version, real project and fixtures are selected; next define package/lockfile handling,
 JavaScript/TypeScript syntax and module scope, test discovery and result capture.
 Do not infer runner compatibility from the Node integration or vice versa.
 

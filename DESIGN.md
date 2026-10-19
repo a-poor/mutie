@@ -1685,3 +1685,39 @@ this meets Validated within the declared scope. The
 survivors with a 76-test baseline in 53.39 seconds. Original sources/reports and
 full-scan scores remain unchanged. Test layouts beyond the audited test directory,
 dependencies and loaders remain separate scope decisions.
+
+
+## Selected Bun runner: attribution before scoring
+
+The [initial audit](benchmarks/bun-initial-scope.md) selects pinned Bun
+1.3.11+af24e281e, separate dependency-free JS/TS fixtures and GramIO Composer as
+an unchanged real TS project. JUnit and native inspector reports cannot alone
+separate body failures from beforeEach/afterEach and unhandled process failures.
+They do expose IDs, incomplete selection and timeout status. A future adapter
+must combine complete execution accounting with positive failure provenance;
+nonzero exit, JUnit AssertionError and inspector fail status are insufficient.
+
+Retained probes cover 24 scenarios per syntax, including mixed cleanup failures,
+early exit, only/skip/todo, imports and pending promises. Composer passes 272 tests;
+a manual name-configurability flip passes until a stronger test is added (273-test
+baseline). Direct probes establish feasibility and a useful finding, not scored
+support. Observer semantics, package/config validation, command cleanup and the
+shared report/rerun/policy workflow remain acceptance gates. Bun remains Planned.
+
+
+The [attribution follow-up](benchmarks/bun-body-attribution.md) validates a bounded
+file-backed observer and classifier across 112 paired JS/TS cases and Composer's
+272/273-test controls. Callback registration/invocation IDs and sequenced phase
+records provide positive body evidence; complete JUnit structure/counts provide
+native test completion. The native unhandled-error diagnostic is negative evidence
+only. Caught body failures remain provisional until an event-loop checkpoint,
+which exposes pending rejection mixtures otherwise lost on synchronous failure.
+Successful callbacks are not delayed. Hook failures, unsupported APIs, mismatched
+or incomplete evidence remain errors. Native Promise observation and failure-path
+scheduling remain explicit instrumentation boundaries.
+
+Inspector transports were rejected as an execution authority after final events
+were lost at shutdown. The working classifier is benchmark Python code, not a
+production adapter. A Rust port must validate complete file inventory, package and
+config scope, bounded captures, execution identity and cleanup before scored runs
+and shared rerun/review integration. Bun support remains Planned.

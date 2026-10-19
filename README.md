@@ -120,6 +120,12 @@ stronger tests, establishing separate Validated acceptance. The
 [remaining Bragkit review](benchmarks/node-bragkit-survivors.md) kills all 18 other
 survivors with tests for CLI defaults, collector behavior and browser fallback.
 
+The next selected runner is Bun. Its [initial audit](benchmarks/bun-initial-scope.md)
+records JS/TS fixtures and real-project probes. A
+[bounded observer prototype](benchmarks/bun-body-attribution.md) now distinguishes
+body failures from unsafe outcomes in paired probes. Production integration remains
+open; Bun is not an available CLI language yet.
+
 ## Try it
 
 Building Mutie requires Rust/Cargo. Testing a Go project also requires Go 1.24+
