@@ -140,6 +140,8 @@ mod tests {
     fn structured(result: Result<Outcome, String>, code: i32) -> CommandOutput {
         CommandOutput {
             raw: process::CommandOutput {
+                pid: 1,
+                group_remaining: false,
                 status: std::process::ExitStatus::from_raw(code << 8),
                 timed_out: false,
                 interrupted: false,

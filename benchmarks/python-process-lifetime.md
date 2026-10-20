@@ -1,8 +1,10 @@
 # Python process-lifetime observer
 
 Recorded 2026-10-20, following scope-audit commit `efb5650`. The native observer
-uses the same CPython 3.14.7 / pytest 9.0.2 environment. Python remains Planned:
+uses the same CPython 3.14.7 / pytest 9.0.2 environment. Python was Planned at this stage:
 this adds an experiment and evidence reader, not a Rust adapter or scored run.
+Later [scoped milestone acceptance](python-scrubify-findings.md) records current
+support; this document preserves the original lifecycle evidence.
 
 ## Evidence boundaries
 

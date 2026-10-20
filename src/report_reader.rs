@@ -32,6 +32,7 @@ pub struct SavedRun {
     pub vitest_scope: Option<crate::vitest::ExecutionScope>,
     pub node_scope: Option<crate::node::ExecutionScope>,
     pub bun_scope: Option<crate::bun::ExecutionScope>,
+    pub python_scope: Option<crate::python::ExecutionScope>,
     pub score: Option<MutationScore>,
     pub score_policy: Option<ScorePolicy>,
     effective_config: Option<ScoreConfig>,
@@ -40,6 +41,11 @@ pub struct SavedRun {
 impl SavedRun {
     pub fn validate_rerun_scope(&self) -> Result<()> {
         match self.language() {
+            crate::cli::Lang::Python => self
+                .python_scope
+                .as_ref()
+                .context("saved Python run lacks execution identity")?
+                .validate_ready(),
             crate::cli::Lang::Bun => self
                 .bun_scope
                 .as_ref()
@@ -235,6 +241,26 @@ impl LoadedReport {
         if let Some(scope) = &run.bun_scope {
             scope.validate_record()?;
         }
+        ensure!(
+            run.python_scope.is_none() || run.language() == crate::cli::Lang::Python,
+            "saved run has conflicting Python scope"
+        );
+        if run.language() == crate::cli::Lang::Python {
+            ensure!(
+                run.rust_scope.is_none()
+                    && run.node_scope.is_none()
+                    && run.vitest_scope.is_none()
+                    && run.bun_scope.is_none(),
+                "saved Python run has conflicting runner scope"
+            );
+            ensure!(
+                run.status != RunStatus::Completed || run.python_scope.is_some(),
+                "completed Python run lacks runner identity"
+            );
+        }
+        if let Some(scope) = &run.python_scope {
+            scope.validate_ready()?;
+        }
         let mut inventory: SavedInventory = read_json(&directory, "mutants.json")?;
         let outcomes: SavedOutcomes = read_json(&directory, "outcomes.json")?;
         for (name, version) in [
@@ -277,6 +303,22 @@ impl LoadedReport {
         }
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
+            if run.language() == crate::cli::Lang::Python {
+                ensure!(
+                    mutation.operator == Operator::BooleanFlip
+                        && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
+                        && !mutation.file.starts_with("tests")
+                        && matches!(
+                            (mutation.original.as_str(), mutation.replacement.as_str()),
+                            ("True", "False") | ("False", "True")
+                        )
+                        && run
+                            .python_scope
+                            .as_ref()
+                            .is_none_or(|scope| scope.admits_source(&mutation.file)),
+                    "saved Python mutation is outside supported source scope"
+                );
+            }
             if matches!(
                 run.language(),
                 crate::cli::Lang::Vitest | crate::cli::Lang::Bun

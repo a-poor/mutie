@@ -150,7 +150,7 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
   language/test runner. Update it when support changes; Bun JS/TS are independently Validated within
-  their scope and Python remains Planned.
+  their scope; Python/pytest is Validated within its pinned serial flat-package scope.
 
 ## Development Status & Versioning
 
@@ -251,7 +251,7 @@ checks dominate, not copying. Prefer release builds for real feedback. Developme
 and test profiles optimize only the sha2 dependency, preserving byte-verification
 rules; `src/bun/profile.rs` remains an ignored opt-in measurement probe.
 
-Python/pytest is the next audited scope, still Planned with no CLI adapter.
+Python/pytest's initial pinned, serial scope is Validated.
 `benchmarks/python-initial-scope.md` pins CPython 3.14.7 / pytest 9.0.2 and records
 39 native probes plus five evidence-rejection controls. Adapted Inflection runs
 467 tests; a manual Unicode-digit regex survivor is killed with a 468-test
@@ -263,7 +263,35 @@ scores. `benchmarks/python-process-lifetime.md` records a separate native lifeti
 observer that rejects late cleanup, incomplete evidence, unittest and
 thread-starting suites. Keep uncaptured stderr fail-closed and wait for process
 exit before accepting checkpoints; destructor errors can follow atexit.
-Strict scope validation and production baseline/process integration remain open.
+`src/python.rs` exposes static `python-list` and isolated `python-check`, using
+the pinned explicit venv launcher without canonicalizing its symlink.
+`src/python/scope.py` never imports project code; `runtime.py` checks the
+environment with site initialization disabled. `python/protocol.rs` requires
+complete passing phases and process-lifetime evidence bound to the actual PID.
+`benchmarks/python-baseline-integration.md` records this narrow preview.
+`benchmarks/python-process-integration.md` records 18 production observer cases,
+including bounded captures/files and descendant shutdown on exit/timeout/cancel.
+Python rejects the shared runner's `group_remaining` flag after interpreter exit.
+Typed execution identity includes observer/validator/classifier/process recipes.
+`python/project.rs` validates shared mutation spans and source hashes.
+The runner returns shared command outputs, including failure captures; direct
+fixture controls verify kills/survivors and reject runtime/collection errors.
+Explicit `--lang python --python PATH` now connects shared runs/reports/reruns
+and review/policies. Candidate test IDs must match isolated pristine collection;
+stronger-test reruns collect a new pristine inventory. See
+`benchmarks/python-shared-runs.md` for native workflow tests, preservation,
+review/policy and corrupt-identity controls. Nested command futures are boxed to
+fit ordinary Tokio worker stacks. Scored timeout/cancellation/capture/file-limit
+probes pass. `benchmarks/python-scrubify-findings.md` records the real-project
+loop: six tests, one kill/two survivors, then nine tests and a focused kill for
+blank query preservation. Source/test bytes were unchanged in the documented
+layout/metadata adaptation, and all 28 original report files remain unchanged.
+The doseq survivor remains recorded. Additional 107-test case-converter evidence
+preserves conservative runtime-error classification. Keep the standard-library
+API whitelist narrow; basic logging/StringIO, shallow copy, index-protocol access,
+and named fnmatch/urllib.parse string helpers do not imply filesystem/network or
+general reflection support. Broader layouts, dependencies and runtimes require
+new acceptance; do not infer unchanged-project compatibility from adapted inputs.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

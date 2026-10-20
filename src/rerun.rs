@@ -107,6 +107,7 @@ pub struct RerunSelection {
     vitest_scope: Option<crate::vitest::ExecutionScope>,
     node_scope: Option<crate::node::ExecutionScope>,
     bun_scope: Option<crate::bun::ExecutionScope>,
+    python_scope: Option<crate::python::ExecutionScope>,
     provenance: RerunProvenance,
     targets: Vec<SavedMutation>,
 }
@@ -147,6 +148,7 @@ impl RerunSelection {
             vitest_scope: report.run.vitest_scope,
             node_scope: report.run.node_scope,
             bun_scope: report.run.bun_scope,
+            python_scope: report.run.python_scope,
             provenance: RerunProvenance {
                 source_run: report.directory,
                 source_checkpoint: report.run.checkpoint,
@@ -174,6 +176,12 @@ impl RerunSelection {
         Ok(())
     }
 
+    pub fn validate_python_scope(&self, current: &crate::python::ExecutionScope) -> Result<()> {
+        self.python_scope
+            .as_ref()
+            .context("saved run lacks Python execution scope")?
+            .validate_rerun(current)
+    }
     pub fn validate_bun_scope(&self, current: &crate::bun::ExecutionScope) -> Result<()> {
         self.bun_scope
             .as_ref()

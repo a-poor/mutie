@@ -46,13 +46,13 @@ review/policies and scored cleanup pass. TypeScript and JavaScript are independe
 JavaScript now has unchanged pp-is layout acceptance following the documented adaptation. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
-Python/pytest is now the next scope audit: CPython 3.14.7 / pytest 9.0.2,
-synthetic fixtures and an adapted Inflection runtime suite. The
-[native audit](benchmarks/python-initial-scope.md) proves a stronger-test finding
-and exposes stale-bytecode, unittest phase and late-atexit boundaries. Python
-remains Planned. The [native process-lifetime observer](benchmarks/python-process-lifetime.md)
-now rejects the demonstrated late-cleanup failures and excludes unittest/threads;
-strict scope validation and isolated baseline integration are the next gates.
+Python/pytest's first scoped milestone is Validated on CPython 3.14.7 / pytest
+9.0.2. [Scrubify acceptance](benchmarks/python-scrubify-findings.md) records a
+useful blank-query survivor, stronger tests and a focused kill, with unchanged
+source and old reports. Scored review/policies and cleanup have fixture coverage.
+The [lifetime observer](benchmarks/python-process-lifetime.md) preserves strict
+late-cleanup evidence and excludes unittest/thread-starting suites. Broader
+layouts/dependencies and runtime overhead need separate follow-up decisions.
 
 ## Target support tracking
 
@@ -60,7 +60,7 @@ strict scope validation and isolated baseline integration are the next gates.
 language/test runner. The planned targets below are explicit roadmap targets;
 Vitest and Node have independently validated JavaScript and TypeScript scopes;
 Bun also has independently validated JavaScript and TypeScript scopes; Python's
-initial scope proposal and remaining gates are recorded below.
+validated initial scope and follow-up limits are recorded below.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
@@ -69,7 +69,7 @@ initial scope proposal and remaining gates are recorded below.
   fixture and adapted real-project evidence.
 - [x] Complete unchanged-project TypeScript + Node acceptance before promoting maturity.
 - [x] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
-- [ ] Define and implement the first Python + pytest slice.
+- [x] Define and implement the first Python + pytest slice.
 
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
@@ -86,10 +86,25 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   direct audit evidence, not automatic discovery or a score.
 - [x] Add native process-lifetime evidence for late cleanup and strict
   completion/replay validation; reject unittest and thread-starting suites.
-- [ ] Validate cancellation, bounded captures, descendants and resource limits.
-- [ ] Implement strict project/config/import scope, discovery and isolated baseline;
-  select real-project acceptance within the exact supported test recipe.
-- [ ] Connect scored runs, focused reruns and review only after those gates pass.
+- [x] Validate production observer cancellation, bounded captures, ordinary
+  process-group descendants and per-file resource limits; see
+  [integration controls](benchmarks/python-process-integration.md).
+- [x] Implement initial project/config/import scope, discovery and isolated baseline
+  previews; see [integration boundary](benchmarks/python-baseline-integration.md).
+- [x] Select real-project acceptance within the exact supported test recipe.
+  Adapted [case-converter](benchmarks/python-case-converter.md) passes all 107
+  original tests; six candidates account for five kills and one conservative
+  error across two runs. Adapted [Scrubify](benchmarks/python-scrubify-findings.md)
+  completes the useful finding and stronger-test loop without changing source bytes.
+- [x] Convert Python discovery and execution to shared mutation/command types,
+  retaining failure diagnostics and conservative outcome classification.
+- [x] Bind each candidate's collected test IDs to the pristine baseline inventory.
+- [x] Connect scored runs, saved reports, focused reruns and dismissal review/policies;
+  [fixture acceptance](benchmarks/python-shared-runs.md) preserves inputs and old reports.
+- [x] Validate scored timeout/cancellation/resource-limit boundaries; the running
+  mutant checkpoint, interrupted report and empty owned temporary parent are
+  covered in [fixture acceptance](benchmarks/python-shared-runs.md).
+- [x] Complete the real-project findings/stronger-test/rerun loop and support audit.
 
 ## Selected first Bun test-runner slice
 

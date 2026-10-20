@@ -1,8 +1,10 @@
 # Python / pytest initial scope audit
 
 Recorded 2026-10-20. This is a native feasibility audit, not an implemented Mutie
-runner. Python remains **Planned**. No `--lang python`, Python score, saved-run
+runner. Python was **Planned** at this stage. No `--lang python`, Python score, saved-run
 integration or support promotion is introduced.
+Later [scoped milestone acceptance](python-scrubify-findings.md) supersedes this
+historical status; the negative controls below remain evidence.
 
 ## Selected environment and project
 

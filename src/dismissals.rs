@@ -597,6 +597,28 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
             println!("Rust discovery excluded {exclusion}");
         }
         found.mutations
+    } else if config.lang == Lang::Python {
+        let launcher = config
+            .python
+            .as_deref()
+            .context("Python requires a pinned launcher")?;
+        let original =
+            crate::python::project::Project::load(&config.module_root, launcher, cancellation)
+                .await?;
+        let copied =
+            crate::python::project::Project::load(&snapshot.path(), launcher, cancellation).await?;
+        original.validate_snapshot(&copied)?;
+        crate::python::discovery_scope(
+            &copied,
+            launcher,
+            Duration::from_secs(config.baseline_timeout.get()),
+            config
+                .max_capture_bytes
+                .context("Python requires bounded captures")?,
+            cancellation,
+        )
+        .await?;
+        copied.discover(&scope)?
     } else if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) {
         drop(discovery_workspace);
         let source = snapshot.path();

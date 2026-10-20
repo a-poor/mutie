@@ -10,19 +10,23 @@ use crate::mutation::Operator;
     version,
     args_conflicts_with_subcommands = true,
     subcommand_negates_reqs = true,
-    about = "Find gaps in Go, Rust, Vitest and Node tests by making small changes to your code"
+    about = "Find gaps in tests by making small changes to your code"
 )]
 pub struct Cli {
     #[command(subcommand)]
     pub command: Option<Command>,
 
-    /// Project root (go.mod, Cargo.toml, or package.json with --lang vitest or --lang node)
+    /// Project root (select --lang explicitly for JavaScript, TypeScript or Python)
     #[arg(default_value = ".")]
     pub path: PathBuf,
 
     /// Project language (default: auto)
     #[arg(long, value_enum)]
     pub lang: Option<Lang>,
+
+    /// Pinned virtual-environment launcher for --lang python
+    #[arg(long, value_name = "EXECUTABLE")]
+    pub python: Option<PathBuf>,
 
     /// Cargo artifact mode: fresh builds or worker-local dependency reuse (default: fresh)
     #[arg(long, value_enum)]
@@ -144,6 +148,30 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Check an isolated scoped Python baseline (no mutations or saved reports)
+    PythonCheck {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        /// CPython 3.14.7 launcher in the pinned pytest virtual environment
+        #[arg(long, value_name = "EXECUTABLE")]
+        python: PathBuf,
+        #[arg(long, default_value = "60")]
+        timeout: NonZeroU64,
+        #[arg(long, default_value = "4194304")]
+        max_capture_bytes: NonZeroUsize,
+        #[arg(long)]
+        json: bool,
+    },
+    /// Preview scoped Python boolean mutations without importing project code
+    PythonList {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        /// CPython 3.14.7 launcher in the pinned pytest virtual environment
+        #[arg(long, value_name = "EXECUTABLE")]
+        python: PathBuf,
+        #[arg(long)]
+        json: bool,
+    },
     /// Preview scoped Bun boolean mutations without executing Bun or tests
     BunList {
         #[arg(default_value = ".", value_name = "PATH")]
@@ -214,12 +242,15 @@ pub enum Command {
     },
     /// Manage repository-owned mutation dismissals
     Dismiss {
-        /// Project root where dismissals are stored (go.mod or Cargo.toml)
+        /// Project root where dismissals are stored
         #[arg(long, global = true, default_value = ".", value_name = "PATH")]
         module: PathBuf,
         /// Project language (default: auto; check also uses repository configuration)
         #[arg(long, global = true, value_enum)]
         lang: Option<Lang>,
+        /// Pinned Python virtual-environment launcher for rediscovery checks
+        #[arg(long, global = true, value_name = "EXECUTABLE")]
+        python: Option<PathBuf>,
         #[command(subcommand)]
         action: DismissAction,
     },
@@ -297,6 +328,7 @@ pub enum Lang {
     Vitest,
     Node,
     Bun,
+    Python,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize, ValueEnum)]

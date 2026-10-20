@@ -1,0 +1,140 @@
+{
+  "inputs": {
+    "repository": "https://github.com/MartiAble/scrubify-py",
+    "commit": "558265805d942c03d2e6d8522baa0ca2992ec067",
+    "files": [
+      {
+        "path": "LICENSE",
+        "sha256": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650"
+      },
+      {
+        "path": "README.md",
+        "sha256": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85"
+      },
+      {
+        "path": "pyproject.toml",
+        "sha256": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d"
+      },
+      {
+        "path": "scrubify/__init__.py",
+        "sha256": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280"
+      },
+      {
+        "path": "scrubify/core.py",
+        "sha256": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194"
+      },
+      {
+        "path": "tests/test_core.py",
+        "sha256": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "directory": "run-1792524950-SeRYbK",
+      "status": "completed",
+      "score": {
+        "scope": "all_discovered",
+        "killed": 1,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 33.333333333333336,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 1,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "test_nodes": [
+        "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+        "tests/test_core.py::test_redact_headers_is_case_insensitive",
+        "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+        "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+        "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+        "tests/test_core.py::test_custom_patterns_can_be_added"
+      ],
+      "report_sha256": {
+        "run.json": "ffeca41106594dce33dfda1acef89e7ab7a54c743a896b0218fc6b78b8173d12",
+        "outcomes.json": "705cf898622bee41ea3f0daea753ad5dc4cf68e97057d9a712efba92dd4ad7cd"
+      }
+    },
+    {
+      "directory": "run-1792525001-74NIpJ",
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 50.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 1,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "test_nodes": [
+        "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+        "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+        "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+        "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+        "tests/test_core.py::test_redact_headers_is_case_insensitive",
+        "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+        "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+        "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+        "tests/test_core.py::test_custom_patterns_can_be_added"
+      ],
+      "report_sha256": {
+        "run.json": "29d9dfb5b387640118a69cea2ae068f3b47a3528a90e8cdff63110047e43b0cb",
+        "outcomes.json": "4ec8ff018c0232d779043045ed843a4433b2ab41802c80259764359a4a4d9e88"
+      }
+    }
+  ],
+  "original_report_sha256": {
+    "outcomes.json": "705cf898622bee41ea3f0daea753ad5dc4cf68e97057d9a712efba92dd4ad7cd",
+    "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+    "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+    "summary.txt": "78db6c9551b05918f1abebf678e8c3350a3bf04babf170027393dac7ff7f79d6",
+    ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+    "run.json": "ffeca41106594dce33dfda1acef89e7ab7a54c743a896b0218fc6b78b8173d12",
+    "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+    "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+    "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+    "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/000003.stdout.log": "4729102e59db75b5820273a0249979ca622611e03b653c221e4dadacd7a4b70d",
+    "logs/000001.log": "5f61e63aa18544b5eb88ebaaab66867a8f3c240c45011c818974b64690521b0f",
+    "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/000002.log": "1c2a61cc92a25d389b028b2451a3022191e690dbe20a5e8c45c25367893a1d7e",
+    "logs/000003.log": "34adae3b6b86f93e116678513ec92680818e3957ab5fe6d7e47c4cb247894be4",
+    "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/discovery.log": "7cc751b5bff8314d3176df899a5eff371999b8ee5f1c3d3d6f09393043bf3498",
+    "logs/000001.stdout.log": "ba2a747c95429dbb84f07a4c9983b4a83d450fcbf75910c70e4f39de10e0fd70",
+    "logs/discovery.stdout.log": "fd7c7e00a5c10ee6ed328ccd72b8628e3ac02d804cd5560564034dd595279b1e",
+    "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/baseline.log": "1c2a61cc92a25d389b028b2451a3022191e690dbe20a5e8c45c25367893a1d7e",
+    "logs/000002.stdout.log": "a4ce3c4d2d126cf54794b588fe0568dcf174b80e68913316f73e0da7b9f1c64b",
+    "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "logs/baseline.stdout.log": "a4ce3c4d2d126cf54794b588fe0568dcf174b80e68913316f73e0da7b9f1c64b"
+  },
+  "original_inputs_preserved": true,
+  "original_report_preserved": true,
+  "stronger_tests_sha256": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074"
+}

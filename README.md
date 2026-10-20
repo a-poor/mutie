@@ -159,11 +159,32 @@ measured a 22-candidate run at 306.65s in fully unoptimized debug versus 19.76s
 in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
-Python/pytest remains planned. The [initial native audit](benchmarks/python-initial-scope.md)
-records isolated import/cache controls and a real stronger-test finding.
-The [process-lifetime follow-up](benchmarks/python-process-lifetime.md) rejects
-late-cleanup failures within its audited scope; strict scope validation and
-baseline integration remain open, and there is no Python CLI runner yet.
+Python/pytest is Validated within its pinned serial scope on macOS arm64.
+The [Scrubify acceptance](benchmarks/python-scrubify-findings.md) records a real
+blank-query survivor killed by stronger tests, timings and preserved inputs/reports.
+The [scope and baseline integration](benchmarks/python-baseline-integration.md)
+adds `python-list` and `python-check` for one dependency-free flat package with
+explicit `tests/` and a pinned virtual environment supplied through `--python`.
+Explicit `--lang python --python /path/to/venv/bin/python` also supports
+[scored runs, saved reports, focused reruns and review](benchmarks/python-shared-runs.md).
+The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
+Only boolean flips and full tests with one worker are supported. Application
+dependencies, conftest/user plugins, unittest, async/thread-starting suites and
+multi-package layouts remain excluded. Completed assertion bodies can be kills;
+runtime exceptions and ambiguous/lifecycle failures remain errors. See
+[support limits](SUPPORT.md#python--pytest) before using an existing project.
+
+Create a dedicated environment with CPython **3.14.7**, install only the pinned
+[pytest requirements](benchmarks/fixtures/pytest-audit/requirements.txt), and
+pass that environment's launcher without resolving its symlink:
+
+```sh
+mutie python-list /path/to/project --python /path/to/venv/bin/python
+mutie python-check /path/to/project --python /path/to/venv/bin/python
+mutie /path/to/project --lang python --python /path/to/venv/bin/python
+mutie /path/to/project --lang python --python /path/to/venv/bin/python \
+  --rerun-missed /path/to/saved/run
+```
 
 ## Try it
 

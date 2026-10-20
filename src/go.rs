@@ -398,6 +398,8 @@ mod tests {
     fn output(stdout: &str, code: i32) -> CommandOutput {
         CommandOutput::prepare(
             process::CommandOutput {
+                pid: 1,
+                group_remaining: false,
                 status: std::process::ExitStatus::from_raw(code << 8),
                 timed_out: false,
                 interrupted: false,

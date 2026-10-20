@@ -446,6 +446,8 @@ mod tests {
             "command output exceeded --max-capture-bytes=16; captured output is incomplete";
         for code in [0, 1] {
             let raw = process::CommandOutput {
+                pid: 1,
+                group_remaining: false,
                 status: std::process::ExitStatus::from_raw(code << 8),
                 timed_out: false,
                 interrupted: false,
@@ -508,6 +510,8 @@ mod tests {
             ("cargo: registry or linker tool failure\n", 101, true, None),
         ] {
             let raw = process::CommandOutput {
+                pid: 1,
+                group_remaining: false,
                 status: std::process::ExitStatus::from_raw(code << 8),
                 timed_out: false,
                 interrupted: false,

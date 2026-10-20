@@ -1,0 +1,220 @@
+use std::{
+    borrow::Cow,
+    collections::BTreeMap,
+    fs,
+    path::{Component, Path, PathBuf},
+    sync::Arc,
+};
+
+use anyhow::{Context, Result, ensure};
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+
+use crate::{
+    cancellation::Cancellation,
+    mutation::{Mutation, Operator, Scope, SourceFile},
+};
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct Site {
+    file: String,
+    start: usize,
+    end: usize,
+    line: usize,
+    column: usize,
+    end_line: usize,
+    end_column: usize,
+    original: String,
+    replacement: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+struct Document {
+    package: String,
+    files: BTreeMap<String, String>,
+    tests: Vec<String>,
+    sources: Vec<String>,
+    mutations: Vec<Site>,
+}
+
+pub(crate) struct Project {
+    root: PathBuf,
+    document: Document,
+}
+
+impl Project {
+    pub(crate) fn validate_snapshot(&self, copied: &Self) -> Result<()> {
+        ensure!(
+            self.document.package == copied.document.package
+                && self.document.sources == copied.document.sources
+                && self.document.tests == copied.document.tests
+                && self
+                    .document
+                    .sources
+                    .iter()
+                    .chain(self.document.tests.iter())
+                    .map(String::as_str)
+                    .chain(["pyproject.toml"])
+                    .all(|path| self.document.files.get(path) == copied.document.files.get(path)),
+            "Python executable inputs changed during snapshotting; report exclusions cannot hide tests or source"
+        );
+        Ok(())
+    }
+    pub(crate) async fn load(
+        root: &Path,
+        executable: &Path,
+        cancellation: &Cancellation,
+    ) -> Result<Self> {
+        let root = root.canonicalize()?;
+        let raw = super::helper(
+            executable,
+            super::SCOPE,
+            &[root.to_str().context("Python root is not UTF-8")?],
+            cancellation,
+        )
+        .await?;
+        Ok(Self {
+            root,
+            document: serde_json::from_value(raw).context("invalid Python scope evidence")?,
+        })
+    }
+
+    pub(crate) fn value(&self) -> Result<serde_json::Value> {
+        Ok(serde_json::to_value(&self.document)?)
+    }
+
+    pub(crate) fn discover(&self, scope: &Scope) -> Result<Vec<Mutation>> {
+        let mut sources = BTreeMap::<String, Arc<SourceFile>>::new();
+        for name in &self.document.sources {
+            let path = Path::new(name);
+            ensure!(
+                path.starts_with(&self.document.package)
+                    && path.components().all(|c| matches!(c, Component::Normal(_)))
+                    && path.extension().is_some_and(|extension| extension == "py"),
+                "invalid Python source path"
+            );
+            let source = fs::read_to_string(self.root.join(path))?;
+            let fingerprint = format!("sha256:{:x}", Sha256::digest(source.as_bytes()));
+            ensure!(
+                self.document.files.get(name) == Some(&fingerprint),
+                "Python source changed during discovery: {name}"
+            );
+            ensure!(
+                sources
+                    .insert(
+                        name.clone(),
+                        Arc::new(SourceFile {
+                            path: path.to_owned(),
+                            fingerprint,
+                            source,
+                        })
+                    )
+                    .is_none(),
+                "duplicate Python source path"
+            );
+        }
+        let mut found = Vec::new();
+        let mut previous: Option<(&str, usize)> = None;
+        for site in &self.document.mutations {
+            let source = sources
+                .get(&site.file)
+                .context("Python mutation outside admitted source")?;
+            let range = site.start..site.end;
+            ensure!(
+                source.source.get(range.clone()) == Some(site.original.as_str())
+                    && matches!(
+                        (site.original.as_str(), site.replacement.as_str()),
+                        ("True", "False") | ("False", "True")
+                    ),
+                "invalid Python mutation span"
+            );
+            ensure!(
+                previous.is_none_or(|(file, end)| file < site.file.as_str()
+                    || (file == site.file && end <= site.start)),
+                "unordered/overlapping Python mutations"
+            );
+            previous = Some((&site.file, site.end));
+            let prefix = &source.source.as_bytes()[..site.start];
+            let line = prefix.iter().filter(|b| **b == b'\n').count() + 1;
+            let column = prefix.len()
+                - prefix
+                    .iter()
+                    .rposition(|b| *b == b'\n')
+                    .map_or(0, |p| p + 1)
+                + 1;
+            ensure!(
+                site.line == line
+                    && site.end_line == line
+                    && site.column == column
+                    && site.end_column == column + site.original.len(),
+                "Python source coordinates mismatch"
+            );
+            if scope.matches(&source.path) {
+                found.push(Mutation {
+                    file: source.clone(),
+                    operator: Operator::BooleanFlip,
+                    range,
+                    replacement: Cow::Borrowed(if site.original == "True" {
+                        "False"
+                    } else {
+                        "True"
+                    }),
+                    line,
+                    column,
+                    end_line: site.end_line,
+                    end_column: site.end_column,
+                });
+            }
+        }
+        Ok(found)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn shared_mutations_preserve_unicode_spans_and_reject_stale_inputs() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("sample"))?;
+        let source = "label = 'π'; value = True\n";
+        fs::write(root.path().join("sample/__init__.py"), source)?;
+        let start = source.find("True").unwrap();
+        let document = serde_json::from_value(json!({
+            "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source))},
+            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"],
+            "mutations":[{"file":"sample/__init__.py","start":start,"end":start+4,
+                "line":1,"column":start+1,"end_line":1,"end_column":start+5,
+                "original":"True","replacement":"False"}],
+        }))?;
+        let project = Project {
+            root: root.path().to_owned(),
+            document,
+        };
+        let all = Scope::new(&[], &[])?;
+        let found = project.discover(&all)?;
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].original(), "True");
+        assert!(
+            project
+                .discover(&Scope::new(&[], &["sample/**".into()])?)?
+                .is_empty()
+        );
+        found[0].apply(root.path())?;
+        assert_eq!(
+            fs::read_to_string(root.path().join("sample/__init__.py"))?,
+            "label = 'π'; value = False\n"
+        );
+        assert!(project.discover(&all).is_err());
+        assert!(
+            project
+                .discover(&Scope::new(&[], &["sample/**".into()])?)
+                .is_err()
+        );
+        Ok(())
+    }
+}

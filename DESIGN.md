@@ -1809,3 +1809,21 @@ Unittest items and thread starts are explicitly unsupported; pytest can otherwis
 retain late thread exceptions after its last warning drain. The experiment
 establishes these conservative boundaries without adding a Python score or
 substituting for static scope validation and Rust process integration.
+
+The [baseline CLI integration](benchmarks/python-baseline-integration.md) uses a
+trusted, non-importing AST helper under `-I -S` for scope/discovery and a strict
+Rust lifecycle reader for isolated collection and baseline execution. Runtime
+identity includes the venv, executable, shared library, stdlib and installed
+package bytes. Fresh external cache prefixes prevent stale bytecode reads.
+Production process controls now reject a remaining process group after direct
+child exit and cover cancellation, deadlines and output/file bounds. Typed
+execution identity binds the recipe and runtime, permitting stronger tests but
+rejecting runtime/configuration/recipe drift. Explicit Python runs save pristine node IDs and
+require exact candidate selection. Shared scoring, reports, focused reruns and
+review/policies pass the fixture workflow in
+[Python shared runs](benchmarks/python-shared-runs.md). Scored cleanup now passes;
+[Scrubify acceptance](benchmarks/python-scrubify-findings.md) completes the scoped
+real-project loop with a blank-query survivor killed by stronger tests. Original
+source and old reports are preserved. Only the audited flat layout, pinned
+runtime and serial recipe are Validated; broader Python compatibility remains
+separate.

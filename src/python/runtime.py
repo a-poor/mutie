@@ -1,0 +1,83 @@
+"""Identify a pinned, non-editable environment with site initialization disabled."""
+import hashlib
+import importlib.metadata
+import json
+from pathlib import Path
+import sys
+import sysconfig
+
+PINNED = {
+    "pytest": "9.0.2", "pluggy": "1.7.0", "packaging": "26.3",
+    "iniconfig": "2.3.1", "pygments": "2.21.0",
+}
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def fingerprint_tree(root, *, site=False):
+    digest = hashlib.sha256()
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root)
+        if "__pycache__" in relative.parts or path.suffix in {".pyc", ".pyo"}:
+            continue
+        if not site and "site-packages" in relative.parts:
+            continue
+        require(not path.is_symlink() or (not site and path.is_file()),
+                f"Python runtime directory/package symlink unsupported: {relative}")
+        if path.is_dir():
+            continue
+        require(path.is_file(), "Python runtime requires regular files")
+        if site:
+            require(path.suffix not in {".pth", ".egg-link"}
+                    and path.name not in {"sitecustomize.py", "usercustomize.py"},
+                    "Python startup hooks and editable installs unsupported")
+        name = str(relative).encode()
+        digest.update(len(name).to_bytes(8, "big"))
+        digest.update(name)
+        content = path.read_bytes()
+        digest.update(len(content).to_bytes(8, "big"))
+        digest.update(content)
+    return "sha256:" + digest.hexdigest()
+
+
+def identify():
+    require(sys.implementation.name == "cpython" and sys.version_info[:3] == (3, 14, 7),
+            "Python requires CPython 3.14.7")
+    require(sys.flags.no_site and sys.flags.isolated, "Python identity requires -I -S")
+    prefix = Path(sys.prefix)
+    require(sys.prefix != sys.base_prefix and (prefix / "pyvenv.cfg").is_file(),
+            "Python requires a dedicated virtual environment")
+    config = (prefix / "pyvenv.cfg").read_text()
+    require("include-system-site-packages = false" in config,
+            "Python system-site packages unsupported")
+    site = Path(sysconfig.get_path("purelib"))
+    require(site.is_relative_to(prefix), "Python site-packages escaped environment")
+    versions = {}
+    for distribution in importlib.metadata.distributions(path=[str(site)]):
+        name = distribution.metadata["Name"].lower().replace("_", "-")
+        require(name not in versions, "Python duplicate installed distribution")
+        versions[name] = distribution.version
+    require(all(versions.get(k) == v for k, v in PINNED.items()),
+            "Python requires the pinned pytest environment from the fixture requirements")
+    require(set(versions) <= set(PINNED) | {"pip"}, "Python extra installed packages unsupported")
+    stdlib = Path(sysconfig.get_path("stdlib"))
+    executable = Path(sys.executable)
+    library_root = (sysconfig.get_config_var("PYTHONFRAMEWORKPREFIX")
+                    if sysconfig.get_config_var("PYTHONFRAMEWORK")
+                    else sysconfig.get_config_var("LIBDIR"))
+    library = Path(library_root) / sysconfig.get_config_var("LDLIBRARY")
+    require(library.is_file(), "Python shared runtime library not found")
+    return dict(
+        executable=str(executable), python=sys.version, prefix=str(prefix),
+        versions=versions, environment="sha256:" + hashlib.sha256(config.encode()).hexdigest(),
+        executable_fingerprint="sha256:" + hashlib.sha256(executable.read_bytes()).hexdigest(),
+        library_fingerprint="sha256:" + hashlib.sha256(library.read_bytes()).hexdigest(),
+        stdlib=fingerprint_tree(stdlib), packages=fingerprint_tree(site, site=True),
+    )
+
+
+if __name__ == "__main__":
+    print(json.dumps(identify()))

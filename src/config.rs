@@ -22,6 +22,7 @@ use crate::{
 #[serde(deny_unknown_fields)]
 struct RepositoryConfig {
     lang: Option<Lang>,
+    python: Option<PathBuf>,
     rust_build_cache: Option<RustBuildCache>,
     jobs: Option<NonZeroUsize>,
     test_scope: Option<TestScope>,
@@ -47,6 +48,8 @@ pub struct RunConfig {
     pub module_root: PathBuf,
     pub config_file: Option<PathBuf>,
     pub lang: Lang,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub python: Option<PathBuf>,
     pub rust_build_cache: RustBuildCache,
     pub jobs: NonZeroUsize,
     pub test_scope: TestScope,
@@ -163,9 +166,13 @@ impl RunConfig {
             })
             .transpose()?;
         let mut config = Self {
-            module_root: root,
+            module_root: root.clone(),
             config_file,
             lang,
+            python: cli
+                .python
+                .map(|p| invocation.join(p))
+                .or_else(|| file.python.map(|p| root.join(p))),
             rust_build_cache: rust_build_cache.unwrap_or_default(),
             jobs: cli
                 .jobs
@@ -211,17 +218,30 @@ impl RunConfig {
             rerun,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
-        if config.lang == Lang::Bun {
+        ensure!(
+            config.lang == Lang::Python || config.python.is_none(),
+            "--python is only supported for Python"
+        );
+        ensure!(
+            config.lang != Lang::Python || config.python.is_some(),
+            "Python requires --python /path/to/pinned-venv/bin/python"
+        );
+        if matches!(config.lang, Lang::Bun | Lang::Python) {
             ensure!(
                 !cli.clear_max_capture_bytes,
-                "Bun requires bounded raw captures"
+                "Bun/Python require bounded raw captures"
             );
             config.max_capture_bytes = config
                 .max_capture_bytes
                 .or(NonZeroUsize::new(4 * 1024 * 1024));
         }
-        if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) {
-            let runner = if config.lang == Lang::Bun {
+        if matches!(
+            config.lang,
+            Lang::Vitest | Lang::Node | Lang::Bun | Lang::Python
+        ) {
+            let runner = if config.lang == Lang::Python {
+                "Python"
+            } else if config.lang == Lang::Bun {
                 "Bun"
             } else if config.lang == Lang::Node {
                 "Node"
@@ -629,7 +649,7 @@ verbose = true
             "max_log_bytes = -1",
             "max_log_bytes = '1KiB'",
             "baseline_timeout = 0",
-            "lang = 'python'",
+            "lang = 'unknown-runner'",
             "include = '*.go'",
             "exclude = [1]",
             "verbose = 'yes'",

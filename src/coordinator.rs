@@ -48,6 +48,7 @@ pub enum RunEvent<'a> {
     VitestScope(&'a crate::vitest::ExecutionScope),
     NodeScope(&'a crate::node::ExecutionScope),
     BunScope(&'a crate::bun::ExecutionScope),
+    PythonScope(&'a crate::python::ExecutionScope),
     Command {
         phase: Phase,
         output: &'a CommandOutput,
@@ -188,7 +189,8 @@ impl RunState {
             RunEvent::RustScope(_)
             | RunEvent::VitestScope(_)
             | RunEvent::NodeScope(_)
-            | RunEvent::BunScope(_) => {}
+            | RunEvent::BunScope(_)
+            | RunEvent::PythonScope(_) => {}
             RunEvent::Finished { worker, result } => {
                 self.active.remove(worker);
                 self.summary.record(result);
@@ -297,6 +299,7 @@ impl Coordinator {
                 RunEvent::VitestScope(scope) => report.vitest_scope(scope)?,
                 RunEvent::NodeScope(scope) => report.node_scope(scope)?,
                 RunEvent::BunScope(scope) => report.bun_scope(scope)?,
+                RunEvent::PythonScope(scope) => report.python_scope(scope)?,
                 RunEvent::Command { phase, output } => report.command(phase.name(), output)?,
                 RunEvent::Plan(plan) => report.plan(plan, cancellation)?,
                 RunEvent::Started { id, worker, .. } => report.started(*id, *worker)?,
@@ -317,6 +320,8 @@ impl Coordinator {
                         "Running baseline: Bun test runner (fresh isolated copy, serial full suite)"
                     } else if self.lang == crate::cli::Lang::Node {
                         "Running baseline: Node test runner (fresh isolated copy, serial full suite)"
+                    } else if self.lang == crate::cli::Lang::Python {
+                        "Running baseline: pytest (fresh isolated copy, serial full suite)"
                     } else if self.lang == crate::cli::Lang::Rust {
                         "Running baseline: cargo test --locked --tests (fresh build artifacts)"
                     } else {

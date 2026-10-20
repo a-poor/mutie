@@ -24,6 +24,9 @@ use crate::{cancellation::Cancellation, capture::Capture};
 static SPAWN_LOCK: Mutex<()> = Mutex::new(());
 
 pub struct CommandOutput {
+    pub pid: u32,
+    /// A process group remained after reaping the direct child, before cleanup.
+    pub group_remaining: bool,
     pub status: ExitStatus,
     pub timed_out: bool,
     pub interrupted: bool,
@@ -268,7 +271,8 @@ where
             .spawn()
             .with_context(|| format!("could not start {program}; is it installed and on PATH?"))?
     };
-    let mut group = ProcessGroup { id: child.id() };
+    let pid = child.id().context("spawned command has no process ID")?;
+    let mut group = ProcessGroup { id: Some(pid) };
     let mut timed_out = false;
     let mut interrupted = false;
     let mut capture_error = None;
@@ -282,6 +286,7 @@ where
     };
     let stdout_pipe = child.stdout.take();
     let stderr_pipe = child.stderr.take();
+    let group_remaining;
     let status = {
         let capture = async {
             if let Some(budget) = capture_limit {
@@ -328,6 +333,7 @@ where
                 _ = &mut observation => unreachable!("observation never completes"),
             }
         };
+        group_remaining = group.exists();
         group.shutdown().await;
         // Drain bytes already in the pipes even when the child exits first.
         // A descendant outside the process group may still hold a pipe open;
@@ -343,6 +349,8 @@ where
     };
     let elapsed = started.elapsed();
     Ok(CommandOutput {
+        pid,
+        group_remaining,
         status,
         timed_out,
         interrupted,
@@ -460,6 +468,17 @@ struct ProcessGroup {
 }
 
 impl ProcessGroup {
+    fn exists(&self) -> bool {
+        #[cfg(unix)]
+        if let Some(id) = self.id {
+            // SAFETY: signal zero only checks the child's process group.
+            let result = unsafe { libc::kill(-(id as i32), 0) };
+            return result == 0
+                || std::io::Error::last_os_error().raw_os_error() != Some(libc::ESRCH);
+        }
+        false
+    }
+
     fn kill(&mut self) {
         if let Some(id) = self.id {
             #[cfg(unix)]
@@ -506,6 +525,26 @@ impl Drop for ProcessGroup {
 #[cfg(all(test, unix))]
 mod tests {
     use super::*;
+
+    #[tokio::test]
+    async fn reports_remaining_group_after_successful_direct_child_exit() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        for (script, remaining) in [("true", false), ("sleep 30 &", true)] {
+            let output = run(
+                "sh",
+                &["-c", script],
+                root.path(),
+                Duration::from_secs(5),
+                None,
+                &Cancellation::default(),
+            )
+            .await?;
+            assert!(output.status.success());
+            assert!(!output.timed_out);
+            assert_eq!(output.group_remaining, remaining);
+        }
+        Ok(())
+    }
 
     /// Opt-in diagnostic: point at a prebuilt, unmutated integration-test binary
     /// to separate nested execution from compilation and mutation effects.

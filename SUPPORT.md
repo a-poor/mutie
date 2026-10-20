@@ -36,12 +36,12 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Planned | Native scope/lifetime audits and adapted Inflection findings; no adapter | Strict scope validator, isolated baseline and production process controls |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat package, serial boolean flips, reports/reruns/review; adapted Scrubify finding and stronger tests | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
 silently promote TypeScript, JSX or TSX support. Bun pins 1.3.11+af24e281e;
-the Python audit pins CPython 3.14.7 / pytest 9.0.2 without claiming runner support.
+Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
 
 ## Go — go test
 
@@ -305,7 +305,7 @@ unsupported. Do not infer compatibility from Node or Vitest support.
 
 ## Python — pytest
 
-**Level: Planned.**
+**Level: Validated within the pinned serial scope; verified on macOS arm64.**
 
 The [initial audit](benchmarks/python-initial-scope.md) selects CPython 3.14.7,
 pytest 9.0.2 and an adapted Inflection runtime suite. It records 39 native probes,
@@ -316,18 +316,36 @@ exit zero. A fresh cache prefix avoids the demonstrated stale-bytecode false
 result; `-B` alone does not. The [lifetime follow-up](benchmarks/python-process-lifetime.md)
 rejects those controls, validates process completion and explicitly excludes
 thread-starting suites because pytest can suppress late thread failures.
-Uncaptured stderr is conservatively an error. There is no Python CLI adapter or
-scored report; native probes do not replace strict project validation and
-production process/cancellation controls.
+Uncaptured stderr is conservatively an error.
+[`python-list` and `python-check`](benchmarks/python-baseline-integration.md) now
+provide static discovery and an isolated baseline for one dependency-free flat
+package, `tests/test_*.py`, and an explicit pinned virtual environment. They do
+not produce scored reports themselves; explicit `--lang python` connects
+[scored runs, saved reports, reruns and review](benchmarks/python-shared-runs.md).
+[Production process controls](benchmarks/python-process-integration.md)
+cover attribution, cancellation, ordinary process-group descendants and resource
+limits. Scored timeout, cancellation and capture/file-limit probes also pass;
+the [Scrubify milestone](benchmarks/python-scrubify-findings.md) completes the
+real-project loop: six original tests, three candidates (one kill/two survivors),
+then nine tests and a focused rerun killing the blank-query survivor. Original
+inputs and all 28 original report files remain unchanged. Its 28.38-second full
+run and 23.49-second rerun include runtime fingerprinting overhead. The remaining
+`doseq` survivor is documented rather than hidden or counted as a kill.
 
-Desired outcome: the shared workflow for pytest projects. Define package layouts, source/test discovery,
-environment ownership and dependency installation. Resolve import paths and editable
-installs so tests exercise the isolated mutated copy rather than the checkout.
+Scope: one flat package with static `pyproject.toml`, explicit `tests/test_*.py`,
+boolean flips, full tests and one worker. The dedicated venv must match the pinned
+dependency set. The validator admits a small standard-library/API set, rejects
+configuration that could change collection, and verifies original/snapshot
+inputs. Scrubify's source layout and metadata were adapted; production and test
+bytes were unchanged. The 107-test case-converter adaptation supplies additional
+execution/error evidence, not unchanged-layout support.
 
-Initial validation must distinguish assertion failures from collection/import and
-configuration errors, handle parametrized tests and no-tests outcomes, and verify
-bytecode-cache invalidation, cleanup and stronger-test reruns. Plugins, distributed
-testing and multi-environment execution need explicit scope decisions.
+Only completed assertion/pytest.fail body failures count as kills. Other runtime
+exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.
+Application dependencies, conftest/user plugins, unittest, thread-starting and
+async suites, editable installs, namespace/multiple packages, parallel workers
+and affected selection remain unsupported. Unix file limits are not aggregate
+disk quotas. Broader project and platform claims require separate evidence.
 
 ## Updating this ledger
 

@@ -1,0 +1,197 @@
+{
+  "inputs": {
+    "repository": "https://github.com/chrisdoherty4/python-case-converter",
+    "commit": "4b625748db63f7f20353b5b0815e42122d739314",
+    "files": [
+      {
+        "original": "caseconverter/__init__.py",
+        "adapted": "caseconverter/__init__.py",
+        "original_sha256": "af29aaad1ab7567a2b3d645711e3b18c0860bbc9ea28764eff97bfbccdba7acb",
+        "adapted_sha256": "af29aaad1ab7567a2b3d645711e3b18c0860bbc9ea28764eff97bfbccdba7acb"
+      },
+      {
+        "original": "caseconverter/alternating.py",
+        "adapted": "caseconverter/alternating.py",
+        "original_sha256": "fd4b00a3ceebb0cb86d488a200badebcff285de3e3e9a0aba188480e0051278b",
+        "adapted_sha256": "fd4b00a3ceebb0cb86d488a200badebcff285de3e3e9a0aba188480e0051278b"
+      },
+      {
+        "original": "caseconverter/alternating_test.py",
+        "adapted": "tests/test_alternating.py",
+        "original_sha256": "5b1f72545f8d0ceda495b4296ba8c01d385e424811a69b960a2879f83d5eb7f2",
+        "adapted_sha256": "4a072dfffa2310ed9e83ed7a79896d8e1677789b2d1f0ff9ab7c0c6e7945001e"
+      },
+      {
+        "original": "caseconverter/boundaries.py",
+        "adapted": "caseconverter/boundaries.py",
+        "original_sha256": "8506094737655156b99b6e27fc2028a012d9568a14b85af8dc89e60ce258bbe3",
+        "adapted_sha256": "8506094737655156b99b6e27fc2028a012d9568a14b85af8dc89e60ce258bbe3"
+      },
+      {
+        "original": "caseconverter/camel.py",
+        "adapted": "caseconverter/camel.py",
+        "original_sha256": "5c42cdbbb9d36db2bffa6646a92fee909609a9a73a322d8af65cd145f23cc7c0",
+        "adapted_sha256": "5c42cdbbb9d36db2bffa6646a92fee909609a9a73a322d8af65cd145f23cc7c0"
+      },
+      {
+        "original": "caseconverter/camel_test.py",
+        "adapted": "tests/test_camel.py",
+        "original_sha256": "07fa154d7809bea21d3640acfca3650c81be0a1f0f74ed873d7d26584c414b00",
+        "adapted_sha256": "63c807ad7b5fb5e4a336336b329a24bc23d3efa1d01e032725962171c1bb640c"
+      },
+      {
+        "original": "caseconverter/caseconverter.py",
+        "adapted": "caseconverter/caseconverter.py",
+        "original_sha256": "31db705ae173c15eb8e737bff9b6ac60a6d745cc0c66800529de6f9ce991ad4d",
+        "adapted_sha256": "31db705ae173c15eb8e737bff9b6ac60a6d745cc0c66800529de6f9ce991ad4d"
+      },
+      {
+        "original": "caseconverter/caseconverter_test.py",
+        "adapted": "tests/test_caseconverter.py",
+        "original_sha256": "5aa9f555895b46a4633fc3241f0fa2ab13f6e555d46d1268c9ded1354f6f1036",
+        "adapted_sha256": "bd3d55185c31ae407fa78ff7d688cf1b32975e5837858599f07a566874f18685"
+      },
+      {
+        "original": "caseconverter/cobol.py",
+        "adapted": "caseconverter/cobol.py",
+        "original_sha256": "105ab5400129929e801c5ac1d87a1fe9b6a7e8ae4b59b341d1b2d8f7aee66fd4",
+        "adapted_sha256": "105ab5400129929e801c5ac1d87a1fe9b6a7e8ae4b59b341d1b2d8f7aee66fd4"
+      },
+      {
+        "original": "caseconverter/cobol_test.py",
+        "adapted": "tests/test_cobol.py",
+        "original_sha256": "2e58082ac88e738f56566e2cb5d194121ff9591979c4b8c86ecdcee85a1dfb37",
+        "adapted_sha256": "0c9648d86cd601322bf1de0232d66d662de75263fa21c8e79e84b26104e87e1a"
+      },
+      {
+        "original": "caseconverter/flat.py",
+        "adapted": "caseconverter/flat.py",
+        "original_sha256": "97c475387706e4e7df07df2cbfec9414368019b2f22e2693363ffd93ef2fefb1",
+        "adapted_sha256": "97c475387706e4e7df07df2cbfec9414368019b2f22e2693363ffd93ef2fefb1"
+      },
+      {
+        "original": "caseconverter/flat_test.py",
+        "adapted": "tests/test_flat.py",
+        "original_sha256": "a4b528f2fd10c2ab3635144f8fc88d91e144e2a90ebd3806663a5183038925b3",
+        "adapted_sha256": "5a6dfd592f898652c152d78ff92e4f852e6a0edb9ac716d984a05fdb07381aa3"
+      },
+      {
+        "original": "caseconverter/kebab.py",
+        "adapted": "caseconverter/kebab.py",
+        "original_sha256": "f94536c488fbcacb7a549b55cb45370b0c648a22128460b7cc46b965972bda90",
+        "adapted_sha256": "f94536c488fbcacb7a549b55cb45370b0c648a22128460b7cc46b965972bda90"
+      },
+      {
+        "original": "caseconverter/kebab_test.py",
+        "adapted": "tests/test_kebab.py",
+        "original_sha256": "d12ae148437ab3d475e4926bc4b1d032f4886d2613327b5dc3c7b901627b9476",
+        "adapted_sha256": "d0337480a3c5dea566bf9095ee413db470a8305ce59aa1fe6e49b9605652e0e7"
+      },
+      {
+        "original": "caseconverter/macro.py",
+        "adapted": "caseconverter/macro.py",
+        "original_sha256": "e5961cb37ee225f76255ed189f7275b3b93b6d6fc07120ea8739893120e0737e",
+        "adapted_sha256": "e5961cb37ee225f76255ed189f7275b3b93b6d6fc07120ea8739893120e0737e"
+      },
+      {
+        "original": "caseconverter/macro_test.py",
+        "adapted": "tests/test_macro.py",
+        "original_sha256": "b0c06bac432dcebdac8d3f9dfed03b4cdedbbb6ab56bea75089d7b57f64f9afc",
+        "adapted_sha256": "e40a2c3a6cb72ab28ed996d6e29b6e7146edc257cea0bcc731671fa48a631d73"
+      },
+      {
+        "original": "caseconverter/pascal.py",
+        "adapted": "caseconverter/pascal.py",
+        "original_sha256": "e16f1448cd1ac2c387e8e26ff25535fb5a36b717a15b4cbb6c9f94c3142c1777",
+        "adapted_sha256": "e16f1448cd1ac2c387e8e26ff25535fb5a36b717a15b4cbb6c9f94c3142c1777"
+      },
+      {
+        "original": "caseconverter/pascal_test.py",
+        "adapted": "tests/test_pascal.py",
+        "original_sha256": "f827a26c7d1c5658ecac01cc695256fc0505ebd060c4329023b975c8c65fcbfa",
+        "adapted_sha256": "0881f3b22a4e83ec3a1ca6026e690b520ee652a7007caebd9be11f7624efe38b"
+      },
+      {
+        "original": "caseconverter/snake.py",
+        "adapted": "caseconverter/snake.py",
+        "original_sha256": "a435f6df3d4dbae75c1e6851d07a11c92c266d41b25e0f8c84f57ba66752cfc0",
+        "adapted_sha256": "a435f6df3d4dbae75c1e6851d07a11c92c266d41b25e0f8c84f57ba66752cfc0"
+      },
+      {
+        "original": "caseconverter/snake_test.py",
+        "adapted": "tests/test_snake.py",
+        "original_sha256": "df7d4fde51c9f5670a64f4749de0e0fcae55941c7420b4066829648e070be8f8",
+        "adapted_sha256": "dea86786c46a7dc04ed1127aeb7fe0659adf5b41436c3b8168ed476c20698349"
+      },
+      {
+        "original": "caseconverter/title.py",
+        "adapted": "caseconverter/title.py",
+        "original_sha256": "1d2478e461bd22e569114eb47824f7c786d1ff91f8834324419baac316fb0d7f",
+        "adapted_sha256": "1d2478e461bd22e569114eb47824f7c786d1ff91f8834324419baac316fb0d7f"
+      },
+      {
+        "original": "caseconverter/title_test.py",
+        "adapted": "tests/test_title.py",
+        "original_sha256": "f43f492f341ebd295e766a15604c4b18ecc4c73dc3882e3a836159d0542f85bc",
+        "adapted_sha256": "68b04fbdfff6b0da58feae304a788777d282ee5b912cc0661a514baf37f74320"
+      }
+    ]
+  },
+  "runs": [
+    {
+      "directory": "run-1792524329-YvfTaD",
+      "status": "failed",
+      "score": {
+        "scope": "all_discovered",
+        "killed": 3,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 2,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "summary": {
+        "killed": 3,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "report_sha256": {
+        "run.json": "b2e2ee854e9fa165cfed12c917560ea4e42eeaa54a8c33b7e5044bce4c2a32f1",
+        "outcomes.json": "205a7e4132c5c6b32951753eb5d5c6a07188f675fa59ff0804bf95644cb85323"
+      }
+    },
+    {
+      "directory": "run-1792524423-Gkb4E0",
+      "status": "completed",
+      "score": {
+        "scope": "filtered",
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "report_sha256": {
+        "run.json": "6e28fdfdbb75d967058d7e0b579b0eaa4dfd5967de5fcdf83e8967800cd34bf6",
+        "outcomes.json": "3b0391defc66a04eef59255e4d0c29095ca6e9da98e422abb8a295574a290e94"
+      }
+    }
+  ],
+  "inputs_preserved": true
+}

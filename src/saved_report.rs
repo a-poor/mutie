@@ -53,6 +53,8 @@ struct RunReport {
     vitest_scope: Option<crate::vitest::ExecutionScope>,
     node_scope: Option<crate::node::ExecutionScope>,
     bun_scope: Option<crate::bun::ExecutionScope>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    python_scope: Option<crate::python::ExecutionScope>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
     include: Vec<String>,
@@ -176,6 +178,10 @@ pub struct SavedReport {
 }
 
 impl SavedReport {
+    pub fn python_scope(&mut self, scope: &crate::python::ExecutionScope) -> Result<()> {
+        self.run.python_scope = Some(scope.clone());
+        self.flush()
+    }
     pub fn bun_scope(&mut self, scope: &crate::bun::ExecutionScope) -> Result<()> {
         self.run.bun_scope = Some(scope.clone());
         self.flush()
@@ -254,6 +260,7 @@ impl SavedReport {
                 vitest_scope: None,
                 node_scope: None,
                 bun_scope: None,
+                python_scope: None,
                 mutation_command_prefix: language::test_command(config.lang)
                     .into_iter()
                     .filter(|arg| {
@@ -370,7 +377,10 @@ impl SavedReport {
                 && test_packages.iter().all(|p| {
                     if matches!(
                         self.run.effective_config.lang,
-                        crate::cli::Lang::Vitest | crate::cli::Lang::Node | crate::cli::Lang::Bun
+                        crate::cli::Lang::Vitest
+                            | crate::cli::Lang::Node
+                            | crate::cli::Lang::Bun
+                            | crate::cli::Lang::Python
                     ) {
                         p.is_empty()
                     } else {
@@ -667,7 +677,9 @@ impl SavedReport {
         text.push_str(&format!("{}\n", self.run.policy));
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
-        if self.run.effective_config.lang == crate::cli::Lang::Bun {
+        if self.run.effective_config.lang == crate::cli::Lang::Python {
+            text.push_str("Runner: CPython 3.14.7 / pytest 9.0.2\nFull suite; serial; pristine test inventory; owned workspaces\n");
+        } else if self.run.effective_config.lang == crate::cli::Lang::Bun {
             text.push_str("Runner: Bun 1.3.11 test runner (JavaScript/TypeScript)\nFull suite; serial; fresh owned command copies; bounded evidence\n");
         } else if self.run.effective_config.lang == crate::cli::Lang::Node {
             let typescript = self
@@ -894,6 +906,8 @@ mod tests {
     fn output() -> CommandOutput {
         CommandOutput::prepare(
             crate::process::CommandOutput {
+                pid: 1,
+                group_remaining: false,
                 status: std::process::ExitStatus::from_raw(0),
                 timed_out: false,
                 interrupted: false,

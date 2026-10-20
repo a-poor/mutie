@@ -264,11 +264,22 @@ impl Browser {
             "mutie {}{} --rerun {} --id {}",
             quote_path(module)?,
             match self.report.run.language() {
-                crate::cli::Lang::Rust => " --lang rust",
-                crate::cli::Lang::Vitest => " --lang vitest",
-                crate::cli::Lang::Node => " --lang node",
-                crate::cli::Lang::Bun => " --lang bun",
-                _ => "",
+                crate::cli::Lang::Python => format!(
+                    " --lang python --python {}",
+                    quote_path(
+                        self.report
+                            .run
+                            .python_scope
+                            .as_ref()
+                            .context("Missing Python execution identity")?
+                            .executable()
+                    )?
+                ),
+                crate::cli::Lang::Rust => " --lang rust".to_owned(),
+                crate::cli::Lang::Vitest => " --lang vitest".to_owned(),
+                crate::cli::Lang::Node => " --lang node".to_owned(),
+                crate::cli::Lang::Bun => " --lang bun".to_owned(),
+                _ => String::new(),
             },
             quote_path(&self.report.directory)?,
             ids.iter()

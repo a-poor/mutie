@@ -15,6 +15,7 @@ mod mutation;
 mod node;
 mod operator_summary;
 mod process;
+mod python;
 mod report;
 mod report_lock;
 mod report_reader;
@@ -52,6 +53,26 @@ async fn main() -> Result<ExitCode> {
             .listen()
             .context("installing cancellation handlers")?;
         let result = match command {
+            cli::Command::PythonList { path, python, json } => {
+                python::list(&path, &python, json, &cancellation).await
+            }
+            cli::Command::PythonCheck {
+                path,
+                python,
+                timeout,
+                max_capture_bytes,
+                json,
+            } => {
+                python::check(
+                    &path,
+                    &python,
+                    Duration::from_secs(timeout.get()),
+                    max_capture_bytes,
+                    json,
+                    &cancellation,
+                )
+                .await
+            }
             cli::Command::BunList {
                 path,
                 include,
@@ -117,11 +138,13 @@ async fn main() -> Result<ExitCode> {
             cli::Command::Dismiss {
                 module,
                 lang,
+                python,
                 action,
             } => {
                 if matches!(action, cli::DismissAction::Check) {
                     cli.path = module;
                     cli.lang = lang;
+                    cli.python = python;
                     cli.list = true;
                     let config = RunConfig::resolve(cli)?;
                     dismissals::check(&config, &cancellation).await
@@ -165,13 +188,14 @@ async fn main() -> Result<ExitCode> {
     };
     let engine_cancellation = cancellation.clone();
     let engine = tokio::spawn(async move {
-        let result = execute(
+        // Runner futures carry capture state; keep nested dispatch off worker stacks.
+        let result = Box::pin(execute(
             &config,
             scope,
             rerun,
             &mut coordinator,
             &engine_cancellation,
-        )
+        ))
         .await;
         (coordinator, result)
     });
@@ -267,6 +291,21 @@ async fn execute(
     let node_project = (config.lang == Lang::Node)
         .then(|| node::project::Project::load(root, cancellation))
         .transpose()?;
+    let python_project = if config.lang == Lang::Python {
+        Some(
+            python::project::Project::load(
+                root,
+                config
+                    .python
+                    .as_deref()
+                    .context("missing Python launcher")?,
+                cancellation,
+            )
+            .await?,
+        )
+    } else {
+        None
+    };
     coordinator.line(format!("Snapshotting {}", root.display()));
     let mut excluded = vec![root.join(".mutie"), config.output_dir.clone()];
     excluded.extend(
@@ -315,6 +354,82 @@ async fn execute(
             "Bun source, config or test inventory changed during snapshotting; report exclusions cannot hide executable inputs"
         );
     }
+    if let Some(original) = &python_project {
+        let copied = python::project::Project::load(
+            &snapshot.path(),
+            config
+                .python
+                .as_deref()
+                .context("missing Python launcher")?,
+            cancellation,
+        )
+        .await?;
+        original.validate_snapshot(&copied)?;
+    }
+    if config.lang == Lang::Python && config.list {
+        let project = python::project::Project::load(
+            &snapshot.path(),
+            config
+                .python
+                .as_deref()
+                .context("missing Python launcher")?,
+            cancellation,
+        )
+        .await?;
+        let identity = python::discovery_scope(
+            &project,
+            config
+                .python
+                .as_deref()
+                .context("missing Python launcher")?,
+            baseline_limit,
+            config
+                .max_capture_bytes
+                .context("Python requires bounded captures")?,
+            cancellation,
+        )
+        .await?;
+        if let Some(selection) = &rerun {
+            selection.validate_python_scope(&identity)?;
+        }
+    }
+    let python_scope = if config.lang == Lang::Python && !config.list {
+        let (identity, mut collection) = python::execution_scope(
+            &snapshot.path(),
+            config
+                .python
+                .as_deref()
+                .context("missing Python launcher")?,
+            baseline_limit,
+            config
+                .max_capture_bytes
+                .context("Python requires bounded captures")?,
+            cancellation,
+        )
+        .await?;
+        collection.raw.stdout.set_limit(config.max_log_bytes);
+        collection.raw.stderr.set_limit(config.max_log_bytes);
+        collection.text.set_limit(config.max_log_bytes);
+        coordinator.emit(
+            RunEvent::Command {
+                phase: Phase::Discovery,
+                output: &collection,
+            },
+            cancellation,
+        )?;
+        ensure!(
+            collection.classify()? == Outcome::Missed,
+            "Python pristine collection did not pass"
+        );
+        identity.validate_ready()?;
+        if let Some(selection) = &rerun {
+            selection.validate_python_scope(&identity)?;
+        }
+        coordinator.emit(RunEvent::PythonScope(&identity), cancellation)?;
+        Some(identity)
+    } else {
+        None
+    };
     let dismissal_store = if config.list {
         None
     } else {
@@ -409,7 +524,7 @@ async fn execute(
         .map(|seconds| Duration::from_secs(seconds.get()));
     if !config.list {
         coordinator.emit(RunEvent::Phase(Phase::Baseline), cancellation)?;
-        let baseline = language::test(
+        let baseline = Box::pin(language::test(
             config.lang,
             &baseline_workspace.path(),
             &["./...".into()],
@@ -420,9 +535,10 @@ async fn execute(
             vitest_scope.as_ref(),
             node_scope.as_ref(),
             bun_scope.as_ref(),
+            python_scope.as_ref(),
             cancellation,
             |_| async {},
-        )
+        ))
         .await?;
         coordinator.emit(
             RunEvent::Command {
@@ -504,6 +620,18 @@ async fn execute(
         }
         coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
         (found.mutations, None)
+    } else if config.lang == Lang::Python {
+        drop(baseline_workspace);
+        let project = python::project::Project::load(
+            &snapshot.path(),
+            config
+                .python
+                .as_deref()
+                .context("missing Python launcher")?,
+            cancellation,
+        )
+        .await?;
+        (project.discover(&scope)?, None)
     } else if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) {
         drop(baseline_workspace);
         let found = if config.lang == Lang::Bun {
@@ -603,7 +731,13 @@ async fn execute(
         .iter()
         .map(|mutation| match &graph {
             Some(graph) => graph.packages_for(&mutation.file.path),
-            None if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) => Ok(vec![]),
+            None if matches!(
+                config.lang,
+                Lang::Vitest | Lang::Node | Lang::Bun | Lang::Python
+            ) =>
+            {
+                Ok(vec![])
+            }
             None => Ok(vec![
                 if config.lang == Lang::Rust {
                     "--tests"
@@ -667,6 +801,7 @@ async fn execute(
         vitest_scope: vitest_scope.map(Arc::new),
         node_scope: node_scope.map(Arc::new),
         bun_scope: bun_scope.map(Arc::new),
+        python_scope: python_scope.map(Arc::new),
         snapshot,
         test_packages: Arc::new(test_packages),
         timeout,
@@ -682,6 +817,7 @@ struct WorkerContext {
     vitest_scope: Option<Arc<vitest::ExecutionScope>>,
     node_scope: Option<Arc<node::ExecutionScope>>,
     bun_scope: Option<Arc<bun::ExecutionScope>>,
+    python_scope: Option<Arc<python::ExecutionScope>>,
     lang: Lang,
     rust_cache_package: Option<String>,
     snapshot: Arc<Workspace>,
@@ -781,7 +917,7 @@ impl WorkerJob {
                 match cache_ready {
                     Err(error) => Err(error),
                     Ok(_) => {
-                        language::test(
+                        Box::pin(language::test(
                             context.lang,
                             &workspace.as_ref().unwrap().path(),
                             &context.test_packages[id - 1],
@@ -792,6 +928,7 @@ impl WorkerJob {
                             context.vitest_scope.as_deref(),
                             context.node_scope.as_deref(),
                             context.bun_scope.as_deref(),
+                            context.python_scope.as_deref(),
                             &context.cancellation,
                             move |phase| {
                                 let progress = progress.clone();
@@ -805,7 +942,7 @@ impl WorkerJob {
                                         .await;
                                 }
                             },
-                        )
+                        ))
                         .await
                     }
                 }

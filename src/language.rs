@@ -28,6 +28,7 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
     };
     let manifest = match lang {
         Lang::Go => "go.mod",
+        Lang::Python => "pyproject.toml",
         Lang::Vitest | Lang::Node | Lang::Bun => "package.json",
         _ => "Cargo.toml",
     };
@@ -41,6 +42,7 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
 
 pub fn test_command(lang: Lang) -> Vec<&'static str> {
     match lang {
+        Lang::Python => vec!["python", "<owned-observer>", "tests"],
         Lang::Bun => vec!["bun", "test", "--max-concurrency=1", "--no-install"],
         Lang::Node => vec!["node", "--test", "--test-concurrency=1", "test/*.test.js"],
         Lang::Vitest => vec![
@@ -65,6 +67,7 @@ pub fn discovery_command(lang: Lang, scope: TestScope) -> Vec<&'static str> {
     match lang {
         Lang::Vitest => vec!["mutie", "vitest-list"],
         Lang::Bun => vec!["mutie", "bun-list"],
+        Lang::Python => vec!["mutie", "python-list"],
         Lang::Node => vec!["mutie", "--lang", "node", "--list"],
         Lang::Rust => std::iter::once("cargo")
             .chain(rust::METADATA_ARGS.iter().copied())
@@ -87,6 +90,7 @@ pub async fn test<F, Fut>(
     vitest_scope: Option<&crate::vitest::ExecutionScope>,
     node_scope: Option<&crate::node::ExecutionScope>,
     bun_scope: Option<&crate::bun::ExecutionScope>,
+    python_scope: Option<&crate::python::ExecutionScope>,
     cancellation: &Cancellation,
     progress: F,
 ) -> Result<CommandOutput>
@@ -95,6 +99,17 @@ where
     Fut: Future<Output = ()> + Send,
 {
     match lang {
+        Lang::Python => {
+            crate::python::test(
+                root,
+                limit,
+                log_limit,
+                capture_limit,
+                python_scope.ok_or_else(|| anyhow::anyhow!("missing Python execution identity"))?,
+                cancellation,
+            )
+            .await
+        }
         Lang::Bun => {
             crate::bun::test(
                 root,
