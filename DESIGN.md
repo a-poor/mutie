@@ -1805,7 +1805,7 @@ raw evidence descriptor alive through shutdown and combines pytest phase reports
 with return/atexit checkpoints, hook ownership, strict sequence/PID/nonce checks,
 uncaptured stderr and actual process exit. Atexit is not the final boundary:
 module-destructor errors can follow it. Any cleanup error dominates a body failure.
-Unittest items and thread starts are explicitly unsupported; pytest can otherwise
+That initial experiment rejected unittest items and thread starts; pytest can otherwise
 retain late thread exceptions after its last warning drain. The experiment
 establishes these conservative boundaries without adding a Python score or
 substituting for static scope validation and Rust process integration.
@@ -1881,3 +1881,28 @@ mutation. A selected rerun covers the remaining candidates. In a separate copy,
 an added key-set assertion checks composition before rename and turns the error
 into an attributable assertion kill. This improves test diagnostics without
 weakening the classifier or rewriting the original report's score.
+
+## Scoped unittest through pytest
+
+[Pluralizer acceptance](benchmarks/python-unittest-pluralizer.md) extends the
+pinned runner to direct synchronous TestCase subclasses. Pytest queues unittest
+exceptions and can shift or suppress additional cleanup failures, so call-phase
+assertion status alone is insufficient. Before project imports, the driver wraps
+pinned TestCase setup/body/teardown/cleanup dispatchers. It retains the actual body
+exception and requires identity with pytest's reported exception. The Rust reader
+requires the ordered setup/body/teardown/cleanup trace, successful cleanup steps,
+unchanged dispatch methods, all pytest phases and existing process-lifetime checks.
+Multiple failures cannot become kills even when pytest reports only one of them.
+
+Admission excludes custom dispatch/constructors, indirect inheritance,
+metaclasses, decorators beyond class fixtures, subtests, skip/expected-failure
+APIs and module-cleanup registration. Runtime checks independently reject changed
+base/class/instance dispatch. The observed unittest node subset is bound to the
+complete collected inventory. Missing framework inventory or per-call evidence is
+an error. Driver, reader and static scope changes already participate in the
+execution recipe hash, including focused reruns; no schema/version bump is needed.
+
+Pluralizer's static Hatch/Ruff/development/resolver metadata is fingerprinted but
+never executed or installed. Its original script-entry guard is retained because
+pytest imports the test module under a non-main name. This does not enable general
+unittest runners, plugins or dependencies.

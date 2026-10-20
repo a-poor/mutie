@@ -20,6 +20,11 @@ FORBIDDEN_NAMES = {
     "exit", "quit", "__builtins__", "__loader__", "__spec__", "__path__", "__test__",
 }
 PYTEST_MEMBERS = {"fixture", "mark", "param", "raises", "fail", "approx"}
+UNIT_INTERNALS = {"run", "debug", "doCleanups", "doClassCleanups", "subTest", "skipTest",
+                  "failureException", "_outcome", "_cleanups", "_class_cleanups",
+                  "_callSetUp", "_callTestMethod", "_callTearDown", "_callCleanup",
+                  "defaultTestResult", "_addUnexpectedSuccess"}
+UNIT_REGISTRATION = {"addCleanup", "addClassCleanup", "enterContext", "enterClassContext"}
 LOGGING_MEMBERS = {"getLogger", "StreamHandler", "Formatter", "DEBUG", "INFO",
                    "WARNING", "ERROR", "CRITICAL"}
 FROM_MEMBERS = {
@@ -67,7 +72,15 @@ def inspect(root):
     walk(root)
     require("pyproject.toml" in files, "Python requires pyproject.toml")
     config = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
-    require(set(config) <= {"project", "build-system", "tool"}, "unsupported Python project table")
+    require(set(config) <= {"project", "build-system", "tool", "dependency-groups"}, "unsupported Python project table")
+    groups = config.get("dependency-groups", {})
+    dev_tools = {"commitizen", "coverage", "editorconfig-checker", "pyright", "ruff",
+                 "setuptools", "twine", "wheel"}
+    require(isinstance(groups, dict) and set(groups) <= {"dev"} and all(
+        isinstance(items, list) and all(isinstance(item, str) and
+            re.fullmatch(r"[a-z-]+>=[0-9]+(?:\.[0-9]+)*", item) and
+            item.split(">=")[0] in dev_tools for item in items) for items in groups.values()),
+        "Python only accepts audited inert development dependencies")
     project = config.get("project", {})
     require(isinstance(project.get("name"), str) and project["name"],
             "Python requires a named [project]")
@@ -91,7 +104,20 @@ def inspect(root):
     require(project.get("dynamic", []) in ([], ["version"]) and not project.get("entry-points"),
             "Python dynamic metadata and entry-point plugins unsupported")
     tool = config.get("tool", {})
-    require(set(tool) <= {"pytest", "setuptools"}, "unsupported Python tool configuration")
+    require(set(tool) <= {"pytest", "setuptools", "hatch", "ruff", "uv"}, "unsupported Python tool configuration")
+    uv = tool.get("uv", {})
+    require(set(uv) <= {"override-dependencies"} and isinstance(uv.get("override-dependencies", []), list)
+            and all(isinstance(item, str) and re.fullmatch(r"(?:cryptography|urllib3)>=[0-9]+(?:\.[0-9]+)*", item)
+                    for item in uv.get("override-dependencies", [])), "unsupported Python resolver metadata")
+    ruff = tool.get("ruff", {})
+    lint = ruff.get("lint", {})
+    require(set(ruff) <= {"line-length", "lint"} and type(ruff.get("line-length", 88)) is int
+            and set(lint) <= {"select", "fixable", "unfixable", "mccabe"}
+            and all(isinstance(lint.get(key, []), list) and all(isinstance(x, str) for x in lint.get(key, []))
+                    for key in ("select", "fixable", "unfixable"))
+            and set(lint.get("mccabe", {})) <= {"max-complexity"}
+            and type(lint.get("mccabe", {}).get("max-complexity", 10)) is int,
+            "unsupported Python lint metadata")
     pytest_config = tool.get("pytest", {})
     require(set(pytest_config) <= {"ini_options"}, "unsupported pytest configuration")
     options = pytest_config.get("ini_options", {})
@@ -103,11 +129,12 @@ def inspect(root):
     build = config.get("build-system")
     if build is not None:
         require(set(build) <= {"requires", "build-backend"}
-                and build.get("build-backend") == "setuptools.build_meta"
+                and ((build.get("build-backend") == "hatchling.build" and build.get("requires") == ["hatchling"])
+                     or (build.get("build-backend") == "setuptools.build_meta"
                 and isinstance(build.get("requires"), list)
                 and all(isinstance(x, str) and
                         (x == "wheel" or re.fullmatch(r"setuptools(?:>=[0-9]+(?:\.[0-9]+)*)?", x))
-                        for x in build["requires"]),
+                        for x in build["requires"]))),
                 "unsupported Python build metadata")
     flat = [p.name for p in root.iterdir()
             if p.is_dir() and (p / "__init__.py").is_file() and p.name != "tests"]
@@ -123,6 +150,12 @@ def inspect(root):
     source_root = "src" if nested else ""
     import_root = root / source_root
     package = (nested or flat)[0]
+    hatch = tool.get("hatch")
+    if hatch is not None:
+        require(hatch == {"build": {"targets": {
+            "wheel": {"packages": [package]},
+            "sdist": {"include": [package, "tests"], "exclude": ["*.json", "pkg/_compat.py"]}}}},
+            "Python only accepts audited static Hatch package metadata")
     require(package.isidentifier(), "Python package must be an identifier")
     require(options.get("pythonpath", [source_root] if source_root else [])
             == ([source_root] if source_root else []),
@@ -215,6 +248,39 @@ def inspect(root):
         require(encoding == "utf-8", "Python source requires UTF-8 encoding")
         text = data.decode("utf-8")
         tree = ast.parse(text, filename=relative)
+        # A conventional script entry point is inert under pytest's import mode.
+        # Admit only this exact shape, never arbitrary unittest runner calls.
+        main_calls = set()
+        case_bases = set()
+        parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
+        for cls in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
+            bases = [base for base in cls.bases if
+                     (isinstance(base, ast.Name) and base.id == "TestCase") or
+                     (isinstance(base, ast.Attribute) and base.attr == "TestCase"
+                      and isinstance(base.value, ast.Name) and base.value.id == "unittest")]
+            if bases:
+                require(is_test and len(cls.bases) == 1 and not cls.keywords and not cls.decorator_list,
+                        "Python requires a direct undecorated unittest.TestCase subclass")
+                case_bases.update(bases)
+                for member in cls.body:
+                    if isinstance(member, ast.FunctionDef):
+                        require(member.name not in UNIT_INTERNALS | UNIT_REGISTRATION and not member.name.startswith("__"),
+                                "Python unittest dispatch overrides unsupported")
+                        require(not member.decorator_list or
+                                (member.name in {"setUpClass", "tearDownClass"} and
+                                 len(member.decorator_list) == 1 and
+                                 isinstance(member.decorator_list[0], ast.Name) and
+                                 member.decorator_list[0].id == "classmethod"),
+                                "Python unittest method decorators unsupported")
+        for statement in tree.body:
+            if (is_test and isinstance(statement, ast.If) and not statement.orelse
+                    and ast.dump(statement.test) == ast.dump(ast.parse('__name__ == "__main__"', mode='eval').body)
+                    and len(statement.body) == 1):
+                body = statement.body[0]
+                value = body.value if isinstance(body, (ast.Expr, ast.Assign)) else None
+                if (isinstance(value, ast.Call) and not value.args and not value.keywords
+                        and ast.dump(value.func) == ast.dump(ast.parse('unittest.main', mode='eval').body)):
+                    main_calls.add(value.func)
         # A BOM/coding cookie must not change how byte spans map to source bytes.
         require(not text.startswith("\ufeff") and "\x00" not in text,
                 "Python source requires plain UTF-8 without BOM/NUL")
@@ -226,7 +292,7 @@ def inspect(root):
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     top = alias.name.split(".")[0]
-                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest"} if is_test else set()),
+                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest", "unittest"} if is_test else set()),
                             f"unsupported Python import {alias.name} in {relative}")
                     if top == "logging":
                         require(alias.name == "logging", "Python logging submodules unsupported")
@@ -238,6 +304,9 @@ def inspect(root):
                             f"unresolved local Python import: {alias.name}")
                     if top == "pytest":
                         require(alias.asname in (None, "pytest"), "pytest aliasing unsupported")
+                    if top == "unittest":
+                        require(alias.name == "unittest" and alias.asname is None,
+                                "Python only admits unaliased unittest")
                     aliases.add(alias.asname or top)
             elif isinstance(node, ast.ImportFrom):
                 if node.level:
@@ -251,7 +320,7 @@ def inspect(root):
                     top = package
                 else:
                     top = (node.module or "").split(".")[0]
-                    require(top in STDLIB | {package} | ({"pytest"} if is_test else set())
+                    require(top in STDLIB | {package} | ({"pytest", "unittest"} if is_test else set())
                             or node.module in FROM_MEMBERS or node.module == "__future__",
                             f"unsupported Python import {node.module} in {relative}")
                     if node.module in FROM_MEMBERS:
@@ -265,7 +334,11 @@ def inspect(root):
                     require(all(a.name in PYTEST_MEMBERS for a in node.names),
                             "unsupported pytest import")
                     pytest_marks.update(a.asname or a.name for a in node.names if a.name == "mark")
+                if top == "unittest":
+                    require(node.module == "unittest" and all(a.name == "TestCase" and a.asname is None for a in node.names),
+                            "Python only admits unittest.TestCase")
                 aliases.update(a.asname or a.name for a in node.names)
+        unit_module = is_test and bool(aliases & {"unittest", "TestCase"})
         annotation_nodes = set()
         input_parameters = set()
         def parameter_values(node):
@@ -292,6 +365,10 @@ def inspect(root):
                                           ast.AsyncWith, ast.TypeAlias)),
                     f"Python async/type-alias execution unsupported: {relative}")
             if isinstance(node, ast.Name):
+                if unit_module and node.id == "TestCase":
+                    require(node in case_bases, "Python TestCase is only supported as a direct base")
+                if unit_module and node.id == "unittest":
+                    require(isinstance(parents.get(node), ast.Attribute), "Python unittest aliasing unsupported")
                 require((node.id not in FORBIDDEN_NAMES or node in input_parameters)
                         and not node.id.startswith("pytest_"),
                         f"unsupported Python runtime access: {node.id}")
@@ -300,7 +377,14 @@ def inspect(root):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 require(node.func.id != "input", "Python interactive input unsupported")
             if isinstance(node, ast.Attribute):
-                super_init = (node.attr == "__init__" and isinstance(node.value, ast.Call)
+                require(not unit_module or node.attr not in UNIT_INTERNALS,
+                        "Python unittest dispatch/internal APIs unsupported")
+                require(not unit_module or node.attr not in UNIT_REGISTRATION
+                        or isinstance(node.ctx, ast.Load), "Python unittest registration rebinding unsupported")
+                if isinstance(node.value, ast.Name) and node.value.id == "unittest":
+                    require(node in case_bases or node in main_calls,
+                            "Python only admits unittest.TestCase and an inert main guard")
+                super_init = (not unit_module and node.attr == "__init__" and isinstance(node.value, ast.Call)
                               and isinstance(node.value.func, ast.Name)
                               and node.value.func.id == "super")
                 require(super_init or node.attr == "__getitem__"
@@ -319,6 +403,9 @@ def inspect(root):
             if isinstance(node, (ast.FunctionDef, ast.ClassDef)):
                 require(not node.name.startswith("pytest_"), "Python pytest hooks unsupported")
                 require(node.name not in aliases, "Python import rebinding unsupported")
+                if unit_module:
+                    require(node.name not in UNIT_INTERNALS,
+                            "Python unittest dispatch overrides unsupported")
             if isinstance(node, ast.arg):
                 require(node.arg not in aliases, "Python import shadowing unsupported")
             if isinstance(node, ast.ExceptHandler):

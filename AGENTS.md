@@ -260,7 +260,7 @@ pycache prefix defeats a demonstrated stale-cache false result; `-B` alone does
 not. The prototype intentionally retains two unsafe classifications: unittest
 setup as a body failure and late atexit failure as passing. Do not reuse it for
 scores. `benchmarks/python-process-lifetime.md` records a separate native lifetime
-observer that rejects late cleanup, incomplete evidence, unittest and
+observer that initially rejected late cleanup, incomplete evidence, unittest and
 thread-starting suites. Keep uncaptured stderr fail-closed and wait for process
 exit before accepting checkpoints; destructor errors can follow atexit.
 `src/python.rs` exposes static `python-list` and isolated `python-check`, using
@@ -325,6 +325,15 @@ Distinguish planned Rust support from verified behavior in documentation and CLI
 claims. Reassess the next major objective when the milestone is complete.
 
 Mutie is still in local development and has no external users. Breaking changes are acceptable at this stage. Do not bump project versions (including the package, report schema, and operator catalog versions) unless explicitly requested; version bumps for ordinary development changes are unnecessary noise for now.
+
+`benchmarks/python-unittest-pluralizer.md` records scoped synchronous unittest
+support through pytest. Preserve the ordered dispatch trace, exact body-exception
+identity, protected TestCase methods and strict per-node framework evidence.
+Setup/teardown/cleanup mixtures remain errors. Direct subclasses only: no custom
+dispatch/constructors, subtests, skips/expected failures, async cases, mock/runner
+APIs or module cleanup registration. Narrow Hatch/Ruff/development metadata stays
+inert. Original Pluralizer inputs/reports and the redundant membership-value
+survivor must remain distinct from stronger-test evidence.
 
 ## Build, Test, and Development Commands
 

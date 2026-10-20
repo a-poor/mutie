@@ -24,6 +24,7 @@ enum Event {
     },
     Collection {
         nodes: Vec<String>,
+        unittest: Vec<String>,
     },
     Phase {
         node: String,
@@ -33,6 +34,8 @@ enum Event {
         exception: Option<String>,
         assertion: bool,
         xfail: bool,
+        #[serde(deserialize_with = "Option::deserialize")]
+        unittest: Option<UnitEvidence>,
     },
     Finish {
         status: i32,
@@ -46,6 +49,54 @@ enum Event {
         hooks_intact: bool,
         alive_threads: Vec<String>,
     },
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct UnitEvidence {
+    steps: Vec<UnitStep>,
+    intact: bool,
+    body_matches: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct UnitStep {
+    stage: String,
+    outcome: String,
+    assertion: bool,
+}
+
+impl UnitEvidence {
+    fn validate(&self, body_failure: bool) -> Result<()> {
+        ensure!(
+            self.intact && self.body_matches,
+            "Python unittest body identity or dispatch mismatch"
+        );
+        ensure!(
+            self.steps.len() >= 5,
+            "incomplete Python unittest lifecycle"
+        );
+        let last = self.steps.len() - 1;
+        for (index, step) in self.steps.iter().enumerate() {
+            let expected = match index {
+                0 => "setup",
+                1 => "body",
+                2 => "teardown",
+                3 => "cleanups_begin",
+                n if n == last => "cleanups_end",
+                _ => "cleanup",
+            };
+            let failure = index == 1 && body_failure;
+            ensure!(
+                step.stage == expected
+                    && step.outcome == if failure { "failed" } else { "passed" }
+                    && step.assertion == failure,
+                "Python unittest lifecycle failed or incomplete"
+            );
+        }
+        Ok(())
+    }
 }
 
 #[cfg(test)]
@@ -98,10 +149,15 @@ pub(super) fn classify(
         if python.starts_with("3.14.7 ") && pytest == "9.0.2" && observed == root),
         "Python runtime/root evidence mismatch"
     );
-    let Event::Collection { nodes } = &records[2].event else {
+    let Event::Collection { nodes, unittest } = &records[2].event else {
         anyhow::bail!("missing Python collection");
     };
     let unique: BTreeSet<_> = nodes.iter().collect();
+    let unit_nodes: BTreeSet<_> = unittest.iter().collect();
+    ensure!(
+        unit_nodes.len() == unittest.len() && unit_nodes.is_subset(&unique),
+        "invalid Python unittest inventory"
+    );
     ensure!(
         !nodes.is_empty()
             && unique.len() == nodes.len()
@@ -144,6 +200,7 @@ pub(super) fn classify(
             exception,
             assertion,
             xfail,
+            unittest,
         } = &record.event
         else {
             anyhow::bail!("unexpected Python lifecycle evidence");
@@ -158,6 +215,17 @@ pub(super) fn classify(
             "Python run contains an unsupported phase failure"
         );
         failed |= body_failure;
+        if when == "call" && unit_nodes.contains(node) {
+            unittest
+                .as_ref()
+                .context("missing Python unittest body evidence")?
+                .validate(body_failure)?;
+        } else {
+            ensure!(
+                unittest.is_none(),
+                "unexpected Python unittest body evidence"
+            );
+        }
         let index = phases.entry(node).or_default();
         ensure!(
             ["setup", "call", "teardown"].get(*index) == Some(&when.as_str()),
@@ -201,11 +269,72 @@ mod tests {
             json!({"event":"checkpoint","stage":"returned","hooks_intact":true,"alive_threads":[]}),
             json!({"event":"checkpoint","stage":"atexit","hooks_intact":true,"alive_threads":[]}),
         ].into_iter().enumerate().flat_map(|(seq, mut value)| {
+            if value["event"] == "collection" { value["unittest"] = json!([]); }
+            if value["event"] == "phase" { value["unittest"] = json!(null); }
             value["seq"] = json!(seq);
             value["pid"] = json!(17);
             value["nonce"] = json!("token");
             format!("{value}\n").into_bytes()
         }).collect()
+    }
+
+    #[test]
+    fn unittest_requires_exact_complete_dispatch_evidence() {
+        let mut records: Vec<serde_json::Value> = String::from_utf8(evidence())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        records[2]["unittest"] = records[2]["nodes"].clone();
+        records[4]["unittest"] = json!({"intact":true,"body_matches":true,"steps":
+            (["setup","body","teardown","cleanups_begin","cleanup","cleanups_end"].map(|stage|
+                json!({"stage":stage,"outcome":"passed","assertion":false})))});
+        let encode =
+            |r: &[serde_json::Value]| r.iter().map(|v| format!("{v}\n")).collect::<String>();
+        assert!(baseline(encode(&records).as_bytes(), 17, "token", "/repo", false).is_ok());
+        records[4]["outcome"] = json!("failed");
+        records[4]["assertion"] = json!(true);
+        records[4]["exception"] = json!("AssertionError");
+        records[4]["unittest"]["steps"][1]["outcome"] = json!("failed");
+        records[4]["unittest"]["steps"][1]["assertion"] = json!(true);
+        records[6]["status"] = json!(1);
+        records[7]["status"] = json!(1);
+        assert_eq!(
+            classify(encode(&records).as_bytes(), 17, "token", "/repo", false, 1)
+                .unwrap()
+                .1,
+            Outcome::Killed
+        );
+        for index in 0..6 {
+            let mut changed = records.clone();
+            changed[4]["unittest"]["steps"]
+                .as_array_mut()
+                .unwrap()
+                .remove(index);
+            // Removing the sole successful cleanup leaves a valid zero-cleanup run.
+            if index != 4 {
+                assert!(
+                    classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err()
+                );
+            }
+            if index != 1 {
+                let mut changed = records.clone();
+                changed[4]["unittest"]["steps"][index]["outcome"] = json!("failed");
+                assert!(
+                    classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err()
+                );
+            }
+        }
+        for key in ["intact", "body_matches"] {
+            let mut changed = records.clone();
+            changed[4]["unittest"][key] = json!(false);
+            assert!(classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err());
+        }
+        for index in [2, 4] {
+            let mut changed = records.clone();
+            changed[index].as_object_mut().unwrap().remove("unittest");
+            assert!(classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err());
+        }
     }
 
     #[test]

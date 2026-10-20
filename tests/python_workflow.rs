@@ -250,19 +250,19 @@ fn saved(
 #[test]
 #[ignore = "requires MUTIE_PYTHON; real scored reports, stronger tests and identity-checked reruns"]
 fn scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(false, false);
+    scored_review_contract(false, false, false);
 }
 
 #[test]
 #[ignore = "requires MUTIE_PYTHON; native src layout scoring, review and reruns"]
 fn src_scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(true, false);
+    scored_review_contract(true, false, false);
 }
 
 #[test]
 #[ignore = "requires MUTIE_PYTHON; root tests, inert packaging and ancillary files"]
 fn root_scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(false, true);
+    scored_review_contract(false, true, false);
 }
 
 #[test]
@@ -300,8 +300,17 @@ fn flat_package_named_src_preserves_native_execution() {
     );
 }
 
-fn scored_review_contract(src_layout: bool, root_tests: bool) {
+#[test]
+#[ignore = "requires MUTIE_PYTHON; unittest scoring, review and focused reruns"]
+fn unittest_scored_reports_and_stronger_test_reruns() {
+    scored_review_contract(false, false, true);
+}
+
+fn scored_review_contract(src_layout: bool, root_tests: bool, unittest: bool) {
     let root = fixture();
+    if unittest {
+        fs::write(root.path().join("tests/test_sample.py"), "import unittest\nfrom sample import enabled, optional\nclass TestSample(unittest.TestCase):\n def setUp(self): self.addCleanup(self.assertTrue, True)\n def test_enabled(self): self.assertTrue(enabled())\n def test_optional_exists(self): self.assertTrue(callable(optional))\n").unwrap();
+    }
     if root_tests {
         fs::rename(
             root.path().join("tests/test_sample.py"),
@@ -453,7 +462,7 @@ addopts = "-q"
     assert!(removed.status.success(), "{removed:?}");
     fs::write(
         root.path().join("tests/test_stronger.py"),
-        "from sample import optional\ndef test_optional():\n    assert optional() is False\n",
+        if unittest { "from unittest import TestCase\nfrom sample import optional\nclass TestStronger(TestCase):\n def test_optional(self): self.assertFalse(optional())\n" } else { "from sample import optional\ndef test_optional():\n    assert optional() is False\n" },
     )
     .unwrap();
     let rerun = scored_with_timeout(
@@ -517,6 +526,26 @@ fn mutation_cannot_change_parametrized_inventory() {
     assert!(
         text.contains("candidate collection differs from pristine baseline"),
         "{text}"
+    );
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; mixed unittest failures remain saved errors"]
+fn unittest_body_and_cleanup_failure_cannot_be_scored_as_kill() {
+    let root = fixture();
+    let reports = tempfile::tempdir().unwrap();
+    let original = fs::read(root.path().join("sample/__init__.py")).unwrap();
+    fs::write(root.path().join("tests/test_sample.py"),
+        "import unittest\nfrom sample import enabled\nclass TestBody(unittest.TestCase):\n def setUp(self): self.addCleanup(self.assertTrue, enabled())\n def test_body(self): self.assertTrue(enabled())\n").unwrap();
+    let output = scored_with_timeout(root.path(), reports.path(), &[], "15");
+    assert!(!output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["status"], "failed");
+    assert_eq!(outcomes["summary"]["errors"], 1);
+    assert_eq!(outcomes["summary"]["killed"], 0);
+    assert_eq!(
+        fs::read(root.path().join("sample/__init__.py")).unwrap(),
+        original
     );
 }
 

@@ -101,13 +101,100 @@ if sys.version_info[:3] != (3, 14, 7) or pytest.__version__ != "9.0.2":
     raise RuntimeError("runner requires CPython 3.14.7 / pytest 9.0.2")
 
 
+# unittest queues setup/body/cleanup exceptions in pytest's call phase. Observe
+# the pinned dispatchers before project imports and retain exact body exceptions.
+case_type = unittest.TestCase
+protected = ("run", "__call__", "__init__", "__getattribute__", "__setattr__", "__delattr__",
+             "_callSetUp", "_callTestMethod", "_callTearDown", "_callCleanup",
+             "doCleanups", "doClassCleanups", "failureException", "subTest",
+             "addCleanup", "addClassCleanup", "enterContext", "enterClassContext",
+             "defaultTestResult", "_addUnexpectedSuccess")
+original_case = {name: getattr(case_type, name) for name in protected}
+active_case = None
+unit_results = {}
+unit_nodes = set()
+
+
+def observe_dispatch(name, stage):
+    original = original_case[name]
+
+    def wrapped(self, *args, **kwargs):
+        state = active_case
+        if state is None or state["instance"] is not self:
+            emit("unsupported", kind="unittest_dispatch_outside_test")
+            return original(self, *args, **kwargs)
+        if stage == "cleanups":
+            state["steps"].append(dict(stage="cleanups_begin", outcome="passed", assertion=False))
+        outcome, assertion = "passed", False
+        try:
+            return original(self, *args, **kwargs)
+        except BaseException as error:
+            outcome = "failed"
+            assertion = isinstance(error, (AssertionError, pytest.fail.Exception))
+            if stage == "body":
+                state["body_exception"] = error
+            raise
+        finally:
+            state["steps"].append(dict(stage="cleanups_end" if stage == "cleanups" else stage,
+                                       outcome=outcome, assertion=assertion))
+
+    return wrapped
+
+
+for name, stage in (("_callSetUp", "setup"), ("_callTestMethod", "body"),
+                    ("_callTearDown", "teardown"), ("_callCleanup", "cleanup"),
+                    ("doCleanups", "cleanups")):
+    setattr(case_type, name, observe_dispatch(name, stage))
+
+
+def initialize_case(self, *args, **kwargs):
+    if active_case is not None:
+        emit("unsupported", kind="unittest_initialization_during_call")
+    return original_case["__init__"](self, *args, **kwargs)
+
+
+case_type.__init__ = initialize_case
+expected_case = {name: getattr(case_type, name) for name in protected}
+
+
+def case_intact(cls, instance=None):
+    def function(value):
+        return getattr(value, "__func__", value)
+    return (cls.__bases__ == (case_type,)
+            and type(cls) is type
+            and all(function(getattr(case_type, name)) is function(expected_case[name])
+                    and function(getattr(cls, name)) is function(expected_case[name])
+                    for name in protected)
+            and not any(name in cls.__dict__ for name in ("__getattr__", "__del__"))
+            and (instance is None or not any(name in instance.__dict__ for name in protected)))
+
+
 class Observer:
     def pytest_collection_finish(self, session):
         for item in session.items:
             cls = getattr(item, "cls", None)
             if isinstance(cls, type) and issubclass(cls, unittest.TestCase):
-                emit("unsupported", kind="unittest", node=item.nodeid)
-        emit("collection", nodes=[item.nodeid for item in session.items])
+                if not case_intact(cls):
+                    emit("unsupported", kind="unittest_dispatch_override", node=item.nodeid)
+                unit_nodes.add(item.nodeid)
+        emit("collection", nodes=[item.nodeid for item in session.items], unittest=sorted(unit_nodes))
+
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_call(self, item):
+        global active_case
+        if item.nodeid not in unit_nodes:
+            yield
+            return
+        instance = item.instance
+        state = dict(instance=instance, steps=[], body_exception=None,
+                     intact=active_case is None and case_intact(type(instance), instance))
+        active_case = state
+        try:
+            yield
+        finally:
+            state["intact"] = state["intact"] and case_intact(type(instance), instance)
+            unit_results[item.nodeid] = state
+            active_case = None
 
     def pytest_collectreport(self, report):
         if report.failed:
@@ -120,10 +207,17 @@ class Observer:
         # A same-named user exception is not positive assertion evidence.
         assertion = bool(call.excinfo and isinstance(
             call.excinfo.value, (AssertionError, pytest.fail.Exception)))
+        unit = None
+        if call.when == "call" and item.nodeid in unit_nodes:
+            state = unit_results.pop(item.nodeid, None)
+            if state is not None:
+                unit = dict(steps=state["steps"], intact=state["intact"],
+                            body_matches=(call.excinfo.value if call.excinfo else None)
+                            is state["body_exception"])
         emit("phase", node=report.nodeid, when=report.when,
              outcome=report.outcome,
              exception=call.excinfo.typename if call.excinfo else None,
-             assertion=assertion, xfail=hasattr(report, "wasxfail"))
+             assertion=assertion, xfail=hasattr(report, "wasxfail"), unittest=unit)
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
         emit("warning", category=warning_message.category.__name__, node=nodeid)

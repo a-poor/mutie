@@ -179,9 +179,13 @@ documentation/CI files. Its original mixed-failure error stays unscored; one
 additional test assertion in a separate copy makes that mutation a body-failure kill.
 Explicit `--lang python --python /path/to/venv/bin/python` also supports
 [scored runs, saved reports, focused reruns and review](benchmarks/python-shared-runs.md).
+[Scoped unittest acceptance](benchmarks/python-unittest-pluralizer.md) adds direct
+synchronous `unittest.TestCase` classes through pytest, with separate setup,
+body, teardown and cleanup evidence. Custom dispatch, subtests, skips, expected
+failures, mock/runner APIs and asynchronous cases remain excluded.
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
 Only boolean flips and full tests with one worker are supported. Application
-dependencies, conftest/user plugins, unittest, async/thread-starting suites and
+dependencies, conftest/user plugins, async/thread-starting suites and
 multi-package layouts remain excluded. Completed assertion bodies can be kills;
 runtime exceptions and ambiguous/lifecycle failures remain errors. See
 [support limits](SUPPORT.md#python--pytest) before using an existing project.

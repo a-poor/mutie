@@ -65,6 +65,167 @@ async fn shared_mutation_execution_contract() -> Result<()> {
     Ok(())
 }
 
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; unittest body and lifecycle attribution"]
+async fn native_unittest_lifecycle_attribution() -> Result<()> {
+    for (name, members, expected) in [
+        (
+            "pass",
+            "def test_body(self): self.assertEqual(1, 1)",
+            Some(Outcome::Missed),
+        ),
+        (
+            "assert",
+            "def test_body(self): self.assertEqual(1, 2)",
+            Some(Outcome::Killed),
+        ),
+        (
+            "runtime",
+            "def test_body(self): raise ValueError('body')",
+            None,
+        ),
+        (
+            "setup",
+            "def setUp(self): self.assertTrue(False)\ndef test_body(self): pass",
+            None,
+        ),
+        (
+            "teardown",
+            "def tearDown(self): self.assertTrue(False)\ndef test_body(self): pass",
+            None,
+        ),
+        (
+            "mixed_teardown",
+            "def tearDown(self): self.assertTrue(False)\ndef test_body(self): self.fail('body')",
+            None,
+        ),
+        (
+            "cleanup",
+            "def test_body(self): self.addCleanup(self.fail, 'cleanup')",
+            None,
+        ),
+        (
+            "mixed_cleanup",
+            "def test_body(self):\n self.addCleanup(self.fail, 'cleanup')\n self.fail('body')",
+            None,
+        ),
+        (
+            "multiple_cleanup",
+            "def test_body(self):\n self.addCleanup(self.fail, 'one')\n self.addCleanup(self.fail, 'two')\n self.fail('body')",
+            None,
+        ),
+        (
+            "passing_cleanup",
+            "def test_body(self):\n self.addCleanup(self.assertTrue, True)\n self.fail('body')",
+            Some(Outcome::Killed),
+        ),
+        (
+            "class_setup",
+            "@classmethod\ndef setUpClass(cls): assert False\ndef test_body(self): pass",
+            None,
+        ),
+        (
+            "class_teardown",
+            "@classmethod\ndef tearDownClass(cls): assert False\ndef test_body(self): self.fail('body')",
+            None,
+        ),
+        (
+            "class_cleanup",
+            "@classmethod\ndef setUpClass(cls): cls.addClassCleanup(lambda: 1/0)\ndef test_body(self): self.fail('body')",
+            None,
+        ),
+        (
+            "class_cleanup_pass",
+            "@classmethod\ndef setUpClass(cls): cls.addClassCleanup(lambda: None)\ndef test_body(self): self.fail('body')",
+            Some(Outcome::Killed),
+        ),
+        (
+            "setup_and_cleanup",
+            "def setUp(self):\n self.addCleanup(self.fail, 'cleanup')\n self.fail('setup')\ndef test_body(self): pass",
+            None,
+        ),
+        (
+            "suppressed_cleanup",
+            "def test_body(self):\n self.addCleanup(lambda: None)\n self.addCleanup(self.fail, 'cleanup')\n self.fail('body')",
+            None,
+        ),
+        (
+            "fake_exception",
+            "def test_body(self):\n class AssertionError(Exception): pass\n raise AssertionError('fake')",
+            None,
+        ),
+        ("skip", "def test_body(self): self.skipTest('skip')", None),
+        (
+            "expected_failure",
+            "@unittest.expectedFailure\ndef test_body(self): self.fail('expected')",
+            None,
+        ),
+        (
+            "subtest",
+            "def test_body(self):\n with self.subTest(x=1): self.fail('subtest')",
+            None,
+        ),
+        (
+            "override",
+            "def run(self, result=None): result.addSuccess(self)\ndef test_body(self): pass",
+            None,
+        ),
+        ("return_value", "def test_body(self): return 1", None),
+        (
+            "reinitialize",
+            "def test_body(self):\n self.addCleanup(self.fail, 'cleanup')\n super().__init__()\n self.fail('body')",
+            None,
+        ),
+    ] {
+        let source = format!(
+            "import unittest\nclass TestBody(unittest.TestCase):\n {}\n",
+            members.replace('\n', "\n ")
+        );
+        let (raw, result, _) = probe(
+            &source,
+            Duration::from_secs(15),
+            4194304,
+            &Cancellation::default(),
+        )
+        .await?;
+        match expected {
+            Some(expected) => assert_eq!(
+                result.with_context(|| format!(
+                    "{name}: {}",
+                    raw.stdout.text().unwrap_or_default()
+                ))?,
+                expected,
+                "{name}"
+            ),
+            None => assert!(
+                result.is_err(),
+                "{name}: {result:?}\n{}",
+                raw.stdout.text()?
+            ),
+        }
+    }
+    for prefix in [
+        "def setup_module(): assert False\n",
+        "def teardown_module(): assert False\n",
+        "def setUpModule(): assert False\n",
+        "def tearDownModule(): assert False\n",
+        "import atexit\natexit.register(lambda: 1/0)\n",
+    ] {
+        let source = format!(
+            "{prefix}import unittest\nclass TestBody(unittest.TestCase):\n def test_body(self): self.fail('body')\n"
+        );
+        let (_, result, _) = probe(
+            &source,
+            Duration::from_secs(15),
+            4194304,
+            &Cancellation::default(),
+        )
+        .await?;
+        assert!(result.is_err(), "{prefix}: {result:?}");
+    }
+    Ok(())
+}
+
 async fn probe(
     source: &str,
     timeout: Duration,

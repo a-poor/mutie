@@ -51,8 +51,8 @@ Python/pytest's first scoped milestone is Validated on CPython 3.14.7 / pytest
 useful blank-query survivor, stronger tests and a focused kill, with unchanged
 source and old reports. Scored review/policies and cleanup have fixture coverage.
 The [lifetime observer](benchmarks/python-process-lifetime.md) preserves strict
-late-cleanup evidence and excludes unittest/thread-starting suites. Broader
-layouts/dependencies and further startup optimization need separate follow-up decisions.
+late-cleanup evidence and excludes thread-starting suites. Scoped unittest now
+adds separate dispatch evidence; broader layouts/dependencies and further startup optimization need separate follow-up decisions.
 The [Python feedback profile](benchmarks/python-feedback-profile.md) now measures
 full and focused feedback and optimizes runtime traversal without skipping hashes.
 [Native `src/` acceptance](benchmarks/python-src-layout.md) now preserves Scrubify's
@@ -92,7 +92,7 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   survivor → 468-test stronger baseline → assertion-failure loop. This is
   direct audit evidence, not automatic discovery or a score.
 - [x] Add native process-lifetime evidence for late cleanup and strict
-  completion/replay validation; reject unittest and thread-starting suites.
+  completion/replay validation; initially reject unittest and thread-starting suites.
 - [x] Validate production observer cancellation, bounded captures, ordinary
   process-group descendants and per-file resource limits; see
   [integration controls](benchmarks/python-process-integration.md).
@@ -120,6 +120,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Validate a second, larger unchanged Python project: Cycler's 28-test suite,
   complete candidate accounting, preserved failed reports and a separate
   test-only error-to-kill rerun plus full stronger-test run.
+
+- [x] Add scoped synchronous unittest.TestCase through pytest with exact body
+  exception matching, complete lifecycle evidence, static rejection controls,
+  scored review/reruns and unchanged Pluralizer validation. See
+  [acceptance](benchmarks/python-unittest-pluralizer.md).
 
 
 ## Selected first Bun test-runner slice

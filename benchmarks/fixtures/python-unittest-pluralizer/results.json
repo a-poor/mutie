@@ -1,0 +1,1257 @@
+{
+  "repository": "https://github.com/weixu365/pluralizer-py",
+  "commit": "860a8e4514045896e7359aa519888e2f7c93f35c",
+  "input_sha256": {
+    ".editorconfig": "195a84cd4743519d543bc53ecfa8cab110a672ad4b251f0584a4b55e04d6e6af",
+    ".github/workflows/pythonpackage.yml": "65485a8734eaeb7441492200ab9240c4ee02e8e3a981416523857f9f1e5935f3",
+    ".gitignore": "6337fb46a9ea751591d9ea5d20954d7b9577284db3a55508586e588adabda058",
+    ".releaserc.json": "da7406f30d0f90b64085f1d5639cb026548230b652aebb8f54de24b5c749b140",
+    "LICENSE": "28dde329ecc7a24ba07c50135a04fb6ae4842f4b222e5d8ab85539a21af2127a",
+    "Makefile": "1aee08ed917c7ef6511c78b7c47d89adc5ccfd2abfd855a1625c7a1b2ae078db",
+    "README.md": "da1736b7e70b043e0bfd0052a1800174a92399efc078b143010aa344ee13d3fd",
+    "package-lock.json": "888ee1b2ffec952e64ae3b123470c87d2ab1dbad95a77223b6efe8fe04bfd2d7",
+    "package.json": "eabfb426dd7cdc79221be7400ab1b60ac3af245f43d8d7aa23ab8486a4fc87f5",
+    "pluralizer/__init__.py": "40ea0fe3d3ca895d7052780d4a21145d544ce3b9753ea5f4b685350db374babf",
+    "pluralizer/pluralizer.py": "3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+    "pluralizer/pluralizer_rules.py": "f00f58f45ccf84e58b2f3a4da01f182227450d551ad09e82400d3793133746da",
+    "pluralizer/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pyproject.toml": "2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+    "pyrightconfig.json": "a526f051d50d74df936974263330d5f310fabf9a9ff993106d29c29692980022",
+    "renovate.json": "8b9805b1bf9bf1afab5a74fb2671de6ce5de73e5cea8e2948686afdc23f4c22a",
+    "tests/test_pluralize.py": "e56274aa7755b7a33b5c235de539ae15dd196b291d1a3cb75b3714112b7babaf",
+    "uv.lock": "29fe272e2d92ba18df11eb2e13ce0e5ef3fe650af1f4c67862a62c4350093228"
+  },
+  "stronger_input_sha256": {
+    ".editorconfig": "195a84cd4743519d543bc53ecfa8cab110a672ad4b251f0584a4b55e04d6e6af",
+    ".github/workflows/pythonpackage.yml": "65485a8734eaeb7441492200ab9240c4ee02e8e3a981416523857f9f1e5935f3",
+    ".gitignore": "6337fb46a9ea751591d9ea5d20954d7b9577284db3a55508586e588adabda058",
+    ".releaserc.json": "da7406f30d0f90b64085f1d5639cb026548230b652aebb8f54de24b5c749b140",
+    "LICENSE": "28dde329ecc7a24ba07c50135a04fb6ae4842f4b222e5d8ab85539a21af2127a",
+    "Makefile": "1aee08ed917c7ef6511c78b7c47d89adc5ccfd2abfd855a1625c7a1b2ae078db",
+    "README.md": "da1736b7e70b043e0bfd0052a1800174a92399efc078b143010aa344ee13d3fd",
+    "package-lock.json": "888ee1b2ffec952e64ae3b123470c87d2ab1dbad95a77223b6efe8fe04bfd2d7",
+    "package.json": "eabfb426dd7cdc79221be7400ab1b60ac3af245f43d8d7aa23ab8486a4fc87f5",
+    "pluralizer/__init__.py": "40ea0fe3d3ca895d7052780d4a21145d544ce3b9753ea5f4b685350db374babf",
+    "pluralizer/pluralizer.py": "3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+    "pluralizer/pluralizer_rules.py": "f00f58f45ccf84e58b2f3a4da01f182227450d551ad09e82400d3793133746da",
+    "pluralizer/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "pyproject.toml": "2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+    "pyrightconfig.json": "a526f051d50d74df936974263330d5f310fabf9a9ff993106d29c29692980022",
+    "renovate.json": "8b9805b1bf9bf1afab5a74fb2671de6ce5de73e5cea8e2948686afdc23f4c22a",
+    "tests/test_pluralize.py": "e56274aa7755b7a33b5c235de539ae15dd196b291d1a3cb75b3714112b7babaf",
+    "tests/test_uncountable_boundaries.py": "59418e3f2efbc92bbedfec14cbb98fc19a7f1a740f9d7e0c96f5029d6461e6c3",
+    "uv.lock": "29fe272e2d92ba18df11eb2e13ce0e5ef3fe650af1f4c67862a62c4350093228"
+  },
+  "records": [
+    {
+      "label": "discovery",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-list",
+        "/tmp/mutie-python-pluralizer-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--json"
+      ],
+      "seconds": 13.79948541696649,
+      "exit_code": 0,
+      "scope": {
+        "files": {
+          ".editorconfig": "sha256:195a84cd4743519d543bc53ecfa8cab110a672ad4b251f0584a4b55e04d6e6af",
+          ".github/workflows/pythonpackage.yml": "sha256:65485a8734eaeb7441492200ab9240c4ee02e8e3a981416523857f9f1e5935f3",
+          ".gitignore": "sha256:6337fb46a9ea751591d9ea5d20954d7b9577284db3a55508586e588adabda058",
+          ".releaserc.json": "sha256:da7406f30d0f90b64085f1d5639cb026548230b652aebb8f54de24b5c749b140",
+          "LICENSE": "sha256:28dde329ecc7a24ba07c50135a04fb6ae4842f4b222e5d8ab85539a21af2127a",
+          "Makefile": "sha256:1aee08ed917c7ef6511c78b7c47d89adc5ccfd2abfd855a1625c7a1b2ae078db",
+          "README.md": "sha256:da1736b7e70b043e0bfd0052a1800174a92399efc078b143010aa344ee13d3fd",
+          "package-lock.json": "sha256:888ee1b2ffec952e64ae3b123470c87d2ab1dbad95a77223b6efe8fe04bfd2d7",
+          "package.json": "sha256:eabfb426dd7cdc79221be7400ab1b60ac3af245f43d8d7aa23ab8486a4fc87f5",
+          "pluralizer/__init__.py": "sha256:40ea0fe3d3ca895d7052780d4a21145d544ce3b9753ea5f4b685350db374babf",
+          "pluralizer/pluralizer.py": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+          "pluralizer/pluralizer_rules.py": "sha256:f00f58f45ccf84e58b2f3a4da01f182227450d551ad09e82400d3793133746da",
+          "pluralizer/py.typed": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "pyproject.toml": "sha256:2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+          "pyrightconfig.json": "sha256:a526f051d50d74df936974263330d5f310fabf9a9ff993106d29c29692980022",
+          "renovate.json": "sha256:8b9805b1bf9bf1afab5a74fb2671de6ce5de73e5cea8e2948686afdc23f4c22a",
+          "tests/test_pluralize.py": "sha256:e56274aa7755b7a33b5c235de539ae15dd196b291d1a3cb75b3714112b7babaf",
+          "uv.lock": "sha256:29fe272e2d92ba18df11eb2e13ce0e5ef3fe650af1f4c67862a62c4350093228"
+        },
+        "mutations": [
+          {
+            "column": 20,
+            "end": 5569,
+            "end_column": 24,
+            "end_line": 153,
+            "file": "pluralizer/pluralizer.py",
+            "line": 153,
+            "original": "True",
+            "replacement": "False",
+            "start": 5565
+          },
+          {
+            "column": 20,
+            "end": 5626,
+            "end_column": 25,
+            "end_line": 155,
+            "file": "pluralizer/pluralizer.py",
+            "line": 155,
+            "original": "False",
+            "replacement": "True",
+            "start": 5621
+          },
+          {
+            "column": 80,
+            "end": 5778,
+            "end_column": 85,
+            "end_line": 159,
+            "file": "pluralizer/pluralizer.py",
+            "line": 159,
+            "original": "False",
+            "replacement": "True",
+            "start": 5773
+          },
+          {
+            "column": 47,
+            "end": 7701,
+            "end_column": 51,
+            "end_line": 201,
+            "file": "pluralizer/pluralizer.py",
+            "line": 201,
+            "original": "True",
+            "replacement": "False",
+            "start": 7697
+          }
+        ],
+        "package": "pluralizer",
+        "source_root": "",
+        "sources": [
+          "pluralizer/__init__.py",
+          "pluralizer/pluralizer.py",
+          "pluralizer/pluralizer_rules.py"
+        ],
+        "tests": [
+          "tests/test_pluralize.py"
+        ]
+      }
+    },
+    {
+      "label": "native-baseline",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-python-unittest-pluralizer-acceptance/native-cache",
+        "-c",
+        "import sys; sys.path.insert(0, sys.argv[1]); import pytest; raise SystemExit(pytest.main([\"-q\", \"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-python-pluralizer-original"
+      ],
+      "seconds": 1.6269610000308603,
+      "exit_code": 0
+    },
+    {
+      "label": "isolated-baseline",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-check",
+        "/tmp/mutie-python-pluralizer-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "30",
+        "--json"
+      ],
+      "seconds": 7.521594749996439,
+      "exit_code": 0,
+      "tests": [
+        "tests/test_pluralize.py::TestPluralize::test_add_new_irregular_words",
+        "tests/test_pluralize.py::TestPluralize::test_add_new_plural_matching_rules",
+        "tests/test_pluralize.py::TestPluralize::test_add_new_singular_matching_rules",
+        "tests/test_pluralize.py::TestPluralize::test_add_new_uncountable_rules",
+        "tests/test_pluralize.py::TestPluralize::test_allow_new_plural_matching_rules_to_be_strings",
+        "tests/test_pluralize.py::TestPluralize::test_allow_new_singular_matching_rules_to_be_strings",
+        "tests/test_pluralize.py::TestPluralize::test_automatically_convert_plural",
+        "tests/test_pluralize.py::TestPluralize::test_automatically_convert_singular",
+        "tests/test_pluralize.py::TestPluralize::test_methods_is_plural",
+        "tests/test_pluralize.py::TestPluralize::test_methods_is_singular",
+        "tests/test_pluralize.py::TestPluralize::test_methods_plural",
+        "tests/test_pluralize.py::TestPluralize::test_methods_singular",
+        "tests/test_pluralize.py::TestPluralize::test_prepend_count_plural_words",
+        "tests/test_pluralize.py::TestPluralize::test_prepend_count_singular_words",
+        "tests/test_pluralize.py::TestPluralize::test_return_false_for_irregular_words"
+      ],
+      "identity": {
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304,
+        "manifest_fingerprint": "sha256:2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+        "package": "pluralizer",
+        "recipe_fingerprint": "sha256:175647f4e2acaa4afe282c07fac47958b10228ac9db0beb218844684767c27a5",
+        "runtime": {
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          }
+        },
+        "test_files": [
+          "tests/test_pluralize.py"
+        ],
+        "test_nodes": [
+          "tests/test_pluralize.py::TestPluralize::test_add_new_irregular_words",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_plural_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_singular_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_uncountable_rules",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_plural_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_singular_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_plural",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_singular",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_plural_words",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_singular_words",
+          "tests/test_pluralize.py::TestPluralize::test_return_false_for_irregular_words"
+        ],
+        "timeout_millis": 30000
+      }
+    },
+    {
+      "label": "original-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-pluralizer-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/reports"
+      ],
+      "seconds": 45.067988499999046,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532414-ctt8qX",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "pluralizer",
+        "manifest_fingerprint": "sha256:2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+        "recipe_fingerprint": "sha256:175647f4e2acaa4afe282c07fac47958b10228ac9db0beb218844684767c27a5",
+        "test_files": [
+          "tests/test_pluralize.py"
+        ],
+        "test_nodes": [
+          "tests/test_pluralize.py::TestPluralize::test_add_new_irregular_words",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_plural_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_singular_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_uncountable_rules",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_plural_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_singular_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_plural",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_singular",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_plural_words",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_singular_words",
+          "tests/test_pluralize.py::TestPluralize::test_return_false_for_irregular_words"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 3,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 75.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 3,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 153,
+            "column": 20,
+            "end_line": 153,
+            "end_column": 24,
+            "byte_start": 5565,
+            "byte_end": 5569,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 155,
+            "column": 20,
+            "end_line": 155,
+            "end_column": 25,
+            "byte_start": 5621,
+            "byte_end": 5626,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 159,
+            "column": 80,
+            "end_line": 159,
+            "end_column": 85,
+            "byte_start": 5773,
+            "byte_end": 5778,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 201,
+            "column": 47,
+            "end_line": 201,
+            "end_column": 51,
+            "byte_start": 7697,
+            "byte_end": 7701,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.109757541,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1356,
+                "head_bytes": 1356,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1355,
+                "head_bytes": 1355,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.652769499,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 891,
+                "head_bytes": 891,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 890,
+                "head_bytes": 890,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.497622417,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2616,
+                "head_bytes": 2616,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2615,
+                "head_bytes": 2615,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.998490292,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "2c179eab57b564da2d3fdff2149f0b680292c5b4255438f8dd24f0437139606d",
+        "diff/000002.diff": "839c42143e86416268921dc8d20c2ee2a20bfca41e54c71ed91b51cff10f5647",
+        "diff/000003.diff": "fca7f45638b6d1b797d934eee1e0cfa0836e3812738537c06948d5d92b2e02b5",
+        "diff/000004.diff": "4939e33bbade58d9773189b1d393dd81d45e12cc1d014e0bad3aacc522a2673e",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e0df939b4f352ed3cd57defde012cc6be9151050f145893b35b2129a0e8233ec",
+        "logs/000001.log": "a8fa24822fd832b001c8c7bd270ee4795ee4098a3182e0051a42a3cc75e6865c",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "3e0c082aae3dc85b0ce4498360694c37fc6354da14ae4e3d968276c74e60e240",
+        "logs/000002.log": "96da31ccdb2665b63af7b0cb40448da945e5dac098e64bef5dedc71ff7be131a",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "1de2f42d226e2d5beb5146486ff664ca5ce5a332f57b8d6a019e45d80a08b190",
+        "logs/000003.log": "e42b05687a32fa2c65ba33356296508a12e6d6c4292236a3c22db1c43ee4fb68",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "86190df252cb2811e85f6b989f2d6d493898fccb23bf3910dc31d9fa736c59d1",
+        "logs/000004.log": "a7bb923704cf242e53e19d929c421e7530cdabd56c2036a8ad0109e7be528ab4",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "8e3338ae5f30cd4f331e40faba25f2cccbf23a81056f10ae650f7b6e175bf73d",
+        "logs/baseline.log": "8042bdb0283652f2558197f2400f9a7c0b308a8138e0996d38ee26ca30472995",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "b9a76fcd2bde5686a753cbd55e635e9f9837a40067d8a7e6bac433e1d5a36fa1",
+        "logs/discovery.log": "cb497bd40f3321dc3813b4ea95161dbeba6625295b1c105237ae62ddf5fb98e8",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "9eb700f76eda604b2b5184c3525401fb603ac2b4093c2a83ab53a90157a4f379",
+        "missed.txt": "553dca52bce6f79456aa844799886b8fc5bd19fe0546bfa07ab11d11acb7b347",
+        "mutants.json": "78792a8e9264d4f33098de71d3ff20bee4261cecd3ad16487092f17b7550eb2b",
+        "outcomes.json": "11dc681e661d3826c8550b31b5a413ff6fc7432855b9b1f2b2c23b5c9c98479d",
+        "run.json": "53d18c5268977e5ec5fdd5dccedbbbe7364ab2171e562196e6baa36eedac3573",
+        "summary.txt": "6229091657cf33163c41d9461a59f3f6a90f2c51ceeee69a3846924820d0b5c3",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "original-survivor-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-pluralizer-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/reports",
+        "--rerun-missed",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532414-ctt8qX"
+      ],
+      "seconds": 18.56045508303214,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532459-87DVNz",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "pluralizer",
+        "manifest_fingerprint": "sha256:2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+        "recipe_fingerprint": "sha256:175647f4e2acaa4afe282c07fac47958b10228ac9db0beb218844684767c27a5",
+        "test_files": [
+          "tests/test_pluralize.py"
+        ],
+        "test_nodes": [
+          "tests/test_pluralize.py::TestPluralize::test_add_new_irregular_words",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_plural_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_singular_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_uncountable_rules",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_plural_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_singular_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_plural",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_singular",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_plural_words",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_singular_words",
+          "tests/test_pluralize.py::TestPluralize::test_return_false_for_irregular_words"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 201,
+            "column": 47,
+            "end_line": 201,
+            "end_column": 51,
+            "byte_start": 7697,
+            "byte_end": 7701,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.091334541,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "4939e33bbade58d9773189b1d393dd81d45e12cc1d014e0bad3aacc522a2673e",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "a7bb923704cf242e53e19d929c421e7530cdabd56c2036a8ad0109e7be528ab4",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "8e3338ae5f30cd4f331e40faba25f2cccbf23a81056f10ae650f7b6e175bf73d",
+        "logs/baseline.log": "a7bb923704cf242e53e19d929c421e7530cdabd56c2036a8ad0109e7be528ab4",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "8e3338ae5f30cd4f331e40faba25f2cccbf23a81056f10ae650f7b6e175bf73d",
+        "logs/discovery.log": "e42a13920d3c4016f90c615f1185f49c829320b69868fe0a6500fbf329880bc5",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "77912d6cfdbb254752e3a5473631644168eb45182218cca462120b59ad9d787b",
+        "missed.txt": "8899e134ef0d1bfec21510ded8e1d57f28fa861357b45981185f3a8055ba25e6",
+        "mutants.json": "2528e984088de4005579f08bb5781c39b10239c9562201fd694c36f19cbdaad9",
+        "outcomes.json": "87fe913f098795024bddfb09516f19d33e9b00e5dd72aa859dcad5aa7df81a70",
+        "run.json": "41d453486d04e03affbe5651d614ebf95e71130570c7250cda72b091994cee16",
+        "summary.txt": "ae1ad79d89b8a52fa5ca59664e94df3cf2c8fd435b2f8744ce4b14479e30acc1",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-survivor-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/reports",
+        "--rerun-missed",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532414-ctt8qX"
+      ],
+      "seconds": 22.996513250051066,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532478-mRS4E4",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "pluralizer",
+        "manifest_fingerprint": "sha256:2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+        "recipe_fingerprint": "sha256:175647f4e2acaa4afe282c07fac47958b10228ac9db0beb218844684767c27a5",
+        "test_files": [
+          "tests/test_pluralize.py",
+          "tests/test_uncountable_boundaries.py"
+        ],
+        "test_nodes": [
+          "tests/test_pluralize.py::TestPluralize::test_add_new_irregular_words",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_plural_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_singular_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_uncountable_rules",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_plural_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_singular_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_plural",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_singular",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_plural_words",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_singular_words",
+          "tests/test_pluralize.py::TestPluralize::test_return_false_for_irregular_words",
+          "tests/test_uncountable_boundaries.py::TestUncountableBoundaries::test_case_and_count_boundaries"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 201,
+            "column": 47,
+            "end_line": 201,
+            "end_column": 51,
+            "byte_start": 7697,
+            "byte_end": 7701,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 4.121895834,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "4939e33bbade58d9773189b1d393dd81d45e12cc1d014e0bad3aacc522a2673e",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "42675d76cef188d566dc5b4e0ec01178cf559b667ae7b22d0ef5d220f65d9727",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "77c084426ebce9d626cb345c17453df9d150ece707d2baacabddf8855763fefb",
+        "logs/baseline.log": "7e2457f6d09be2620232a7923b6272a487cace53ad239b9ec6be2f9c68c141d8",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "5c43ccb17d01d15e44fb57e7ee67d619e9ad4bc8ffd57457c1427152d78eb341",
+        "logs/discovery.log": "e377af44b50ce749013d19dd3274564fb44448a437b101102ff4abba60e13537",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "27b35fda7981df56b8890709f0727ab6bcfd3de56f1aefd5923bf0add950262f",
+        "missed.txt": "8899e134ef0d1bfec21510ded8e1d57f28fa861357b45981185f3a8055ba25e6",
+        "mutants.json": "2528e984088de4005579f08bb5781c39b10239c9562201fd694c36f19cbdaad9",
+        "outcomes.json": "d62d911142ab619808cd0d5e5dabf3e1580d48dfd0319c5f5a1d4dcdf1aa914a",
+        "run.json": "90af74ed0cdc0dc8845fc84a24723d967c4713adeeb570c4d8f60a63d16c7722",
+        "summary.txt": "9494b7db02a1cd4470c6b785243e2d174c86ef26bced2994cd13b922ae8381a4",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-unittest-pluralizer-acceptance/reports"
+      ],
+      "seconds": 39.72572045808192,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532501-kYbzDW",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "pluralizer",
+        "manifest_fingerprint": "sha256:2a05d7b75bbc7a393b4bdb690d9b2748152cffec9978519b52e0d15a82a6c72d",
+        "recipe_fingerprint": "sha256:175647f4e2acaa4afe282c07fac47958b10228ac9db0beb218844684767c27a5",
+        "test_files": [
+          "tests/test_pluralize.py",
+          "tests/test_uncountable_boundaries.py"
+        ],
+        "test_nodes": [
+          "tests/test_pluralize.py::TestPluralize::test_add_new_irregular_words",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_plural_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_singular_matching_rules",
+          "tests/test_pluralize.py::TestPluralize::test_add_new_uncountable_rules",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_plural_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_allow_new_singular_matching_rules_to_be_strings",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_plural",
+          "tests/test_pluralize.py::TestPluralize::test_automatically_convert_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_is_singular",
+          "tests/test_pluralize.py::TestPluralize::test_methods_plural",
+          "tests/test_pluralize.py::TestPluralize::test_methods_singular",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_plural_words",
+          "tests/test_pluralize.py::TestPluralize::test_prepend_count_singular_words",
+          "tests/test_pluralize.py::TestPluralize::test_return_false_for_irregular_words",
+          "tests/test_uncountable_boundaries.py::TestUncountableBoundaries::test_case_and_count_boundaries"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 3,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 75.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 3,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 153,
+            "column": 20,
+            "end_line": 153,
+            "end_column": 24,
+            "byte_start": 5565,
+            "byte_end": 5569,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 155,
+            "column": 20,
+            "end_line": 155,
+            "end_column": 25,
+            "byte_start": 5621,
+            "byte_end": 5626,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 159,
+            "column": 80,
+            "end_line": 159,
+            "end_column": 85,
+            "byte_start": 5773,
+            "byte_end": 5778,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "pluralizer/pluralizer.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:3be06998e88bce8fd0bfcf7a20456ce57f2a29c09a365eb2553b85e25d56ebc6",
+            "line": 201,
+            "column": 47,
+            "end_line": 201,
+            "end_column": 51,
+            "byte_start": 7697,
+            "byte_end": 7701,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.457638458,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1356,
+                "head_bytes": 1356,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1355,
+                "head_bytes": 1355,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.147030667,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 891,
+                "head_bytes": 891,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 890,
+                "head_bytes": 890,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.7469606669999997,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3523,
+                "head_bytes": 3523,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 3522,
+                "head_bytes": 3522,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.761967709,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "2c179eab57b564da2d3fdff2149f0b680292c5b4255438f8dd24f0437139606d",
+        "diff/000002.diff": "839c42143e86416268921dc8d20c2ee2a20bfca41e54c71ed91b51cff10f5647",
+        "diff/000003.diff": "fca7f45638b6d1b797d934eee1e0cfa0836e3812738537c06948d5d92b2e02b5",
+        "diff/000004.diff": "4939e33bbade58d9773189b1d393dd81d45e12cc1d014e0bad3aacc522a2673e",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e0df939b4f352ed3cd57defde012cc6be9151050f145893b35b2129a0e8233ec",
+        "logs/000001.log": "7e2adfdb4872f41028596abb6603d916f811aa093f1bc1431e544a76aa727530",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "4fe7eb17b73ef090542b05a30d03ac1d607921882e50db19bd8d16f1debf6f4b",
+        "logs/000002.log": "a351047cea02d9bd0801be54c6c3bf2cb3b0e59b2ad7dbd71f5c9f18df748522",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "e4f0a5150cb5ee2df0bca98353cb558dee15981782e61f788c453dd17a90e030",
+        "logs/000003.log": "eb160496b4c2cdc4b9b87edcdf27cae08797a28535e3b2081b440e554bdc2ec2",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "e5098ea1b7ea737a910ef7f0becddcf9d71f707817c22f7f92f9720351fe6fe4",
+        "logs/000004.log": "7ba37ab1159989f7ac819ca02b58d29d9c9fea624e059be56908d42d142cf8cc",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "8b30a9a37a9ca88e96c03888f2df6716eff19acaa042f4df894695ec6ac5d357",
+        "logs/baseline.log": "42675d76cef188d566dc5b4e0ec01178cf559b667ae7b22d0ef5d220f65d9727",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "77c084426ebce9d626cb345c17453df9d150ece707d2baacabddf8855763fefb",
+        "logs/discovery.log": "c2e0c0c26b6be016f0ccbe8105b082ede4b25828b311fec438155bbf6125abbf",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "c63aa46d434678758c7eec3126b131c658727a4c190b916e84982b5d839a6926",
+        "missed.txt": "553dca52bce6f79456aa844799886b8fc5bd19fe0546bfa07ab11d11acb7b347",
+        "mutants.json": "78792a8e9264d4f33098de71d3ff20bee4261cecd3ad16487092f17b7550eb2b",
+        "outcomes.json": "c5466d9100ef8dd4e2888dfdc7e68ec7e45b1dcb39aa0c92f97c1cd05ff3e5b4",
+        "run.json": "f6ac846d5c7566e04c00a03bc5372603a7a0f9bab6774381e58c71ff9ee09b06",
+        "summary.txt": "026d20670ab47abcf2004ac42c32e2c40ccd510af0e201a1fce3f28ecf455757",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "original_inputs_preserved": true,
+  "original_reports_preserved": true
+}

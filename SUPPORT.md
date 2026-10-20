@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, reports/reruns/review; unchanged Scrubify and Cycler evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, reports/reruns/review; unchanged Scrubify, Cycler and unittest/Pluralizer evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -360,9 +360,20 @@ dependencies are installed and no plugins load. `doc/source/conf.py` and direct
 `.circleci/*.py` scripts may be retained but cannot contain tests/hooks or be
 imported by application/tests. Other ancillary Python files remain rejected.
 
+[Scoped unittest validation](benchmarks/python-unittest-pluralizer.md) admits direct
+synchronous `unittest.TestCase` subclasses via pytest. Setup, body, teardown and
+registered instance cleanups need complete dispatch evidence; a call failure must
+match the exact observed body exception. Class/module fixture failures and mixed
+body/cleanup failures remain errors. Custom dispatch/inheritance/metaclasses,
+subtests, skips, expected failures, mock/runner APIs, module cleanup registration
+and async cases remain unsupported. A conventional guarded `unittest.main()` is
+retained but never executed. Narrow static Hatch package metadata, Ruff settings,
+and audited development/resolver dependencies are inert and fingerprinted; no
+build, tool, dependency installer or resolver runs.
+
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.
-Application dependencies, conftest/user plugins, unittest, thread-starting and
+Application dependencies, conftest/user plugins, thread-starting and
 async suites, editable installs, namespace/multiple packages, parallel workers
 and affected selection remain unsupported. Unix file limits are not aggregate
 disk quotas. Broader project and platform claims require separate evidence.

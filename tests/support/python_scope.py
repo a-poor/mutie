@@ -34,6 +34,60 @@ class ScopeTests(unittest.TestCase):
         data = (self.root / mutation["file"]).read_bytes()
         self.assertEqual(data[mutation["start"]:mutation["end"]], b"False")
 
+    def test_unittest_scope_and_inert_main(self):
+        for header, base in [("import unittest", "unittest.TestCase"),
+                             ("from unittest import TestCase", "TestCase")]:
+            self.write("tests/test_sample.py", f"{header}\nclass TestSample({base}):\n"
+                       " def setUp(self): self.addCleanup(self.assertTrue, True)\n"
+                       " def test_body(self): self.assertTrue(True)\n")
+            self.assertEqual(len(scope.inspect(self.root)["tests"]), 1)
+        self.write("tests/test_sample.py", 'import unittest\nclass TestSample(unittest.TestCase):\n'
+                   ' def test_body(self): pass\nif __name__ == "__main__":\n _ = unittest.main()\n')
+        scope.inspect(self.root)
+
+    def test_unittest_reserved_apis_do_not_restrict_ordinary_application_helpers(self):
+        self.write("sample/__init__.py", "class Worker:\n def run(self): return True\n")
+        self.write("tests/test_sample.py", "from sample import Worker\n"
+                   "def run(): return Worker().run()\ndef test_worker(): assert run()\n")
+        self.assertEqual(len(scope.inspect(self.root)["mutations"]), 1)
+
+    def test_unittest_rejects_unobserved_dispatch_and_framework_apis(self):
+        for source in [
+            "import unittest as unit", "from unittest.mock import patch",
+            "from unittest import skip", "import unittest\nunittest.main()",
+            "import unittest\nbase = unittest.TestCase", "import unittest\nunit = unittest",
+            "import unittest\nclass TestSample(unittest.IsolatedAsyncioTestCase): pass",
+            "import unittest\nclass TestSample(unittest.TestCase, object): pass",
+            "import unittest\nclass TestSample(unittest.TestCase):\n def __init__(self): pass",
+            "import unittest\nclass TestSample(unittest.TestCase):\n def run(self): pass",
+            "import unittest\nclass TestSample(unittest.TestCase):\n def test_a(self): self.doCleanups()",
+            "import unittest\nclass TestSample(unittest.TestCase):\n def test_a(self): self.subTest()",
+            "import unittest\nunittest.addModuleCleanup(print)",
+            "import unittest\nclass TestSample(unittest.TestCase):\n def test_a(self): super().__init__()",
+            "import unittest\nclass TestSample(unittest.TestCase):\n def test_a(self): self.addCleanup = lambda: None",
+            "import unittest\nclass TestSample(unittest.TestCase):\n @unittest.expectedFailure\n def test_a(self): pass",
+        ]:
+            with self.subTest(source=source):
+                self.write("tests/test_sample.py", source)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
+    def test_inert_build_and_development_metadata_rejects_hooks(self):
+        base = '[project]\nname="sample"\n[build-system]\nrequires=["hatchling"]\nbuild-backend="hatchling.build"\n'
+        self.write("pyproject.toml", base + '[dependency-groups]\ndev=["ruff>=0.15.7"]\n'
+                   '[tool.ruff]\nline-length=120\n[tool.uv]\noverride-dependencies=["urllib3>=2.6.3"]\n')
+        scope.inspect(self.root)
+        for extra in [
+            '[tool.hatch.build.hooks.custom]\npath="build_hook.py"\n',
+            '[tool.uv]\nindex-url="https://example.invalid"\n',
+            '[dependency-groups]\ndev=["arbitrary-plugin>=1"]\n',
+            '[tool.ruff]\nextend="other.toml"\n',
+        ]:
+            with self.subTest(extra=extra):
+                self.write("pyproject.toml", base + extra)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
     def test_imports_and_runtime_access_fail_closed(self):
         for source in (
             "import threading", "import os", "import unittest", "import subprocess",
