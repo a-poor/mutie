@@ -385,8 +385,13 @@ async fn execute_mode(
             original["package"]
                 .as_str()
                 .context("missing Python package")?,
-            "tests",
         ];
+        for file in original["tests"]
+            .as_array()
+            .context("Python scope omitted test files")?
+        {
+            args.push(file.as_str().context("invalid Python test file")?);
+        }
         if collect_only {
             args.push("--collect-only");
         }

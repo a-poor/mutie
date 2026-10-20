@@ -1858,3 +1858,26 @@ multiple/namespace packages remain excluded. Source-root changes invalidate
 reruns; stronger tests can still establish a fresh pristine inventory. The
 real-project acceptance retains original source/manifest hashes and old report
 hashes across a stronger-test rerun in a separate complete project copy.
+
+## Second unchanged Python project
+
+[Cycler acceptance](benchmarks/python-cycler-unchanged.md) exercises 28 original
+tests at the repository root. The validator now inventories both root
+`test_*.py` and `tests/` files, before exclusions. Execution explicitly selects
+every audited file; collection and candidate inventories must agree. Saved
+identity and protocol readers share the same normal-path validator. Root tests
+excluded by an explicit `testpaths=["tests"]` configuration are rejected.
+
+The additional setuptools metadata is declarative: one flat package, `py.typed`,
+and a dynamic-version declaration backed by a literal top-level string in its
+initializer. Optional audited documentation/test tools are never resolved,
+installed or loaded. Documentation configuration at `doc/source/conf.py` and
+direct `.circleci/*.py` scripts stay fingerprinted and cannot be imported by
+admitted executable code; tests/hooks in those files remain rejected. Native
+fixture controls include raising ancillary scripts to prove they do not execute.
+
+The original Cycler full run remains failed after a mixed assertion/KeyError
+mutation. A selected rerun covers the remaining candidates. In a separate copy,
+an added key-set assertion checks composition before rename and turns the error
+into an attributable assertion kill. This improves test diagnostics without
+weakening the classifier or rewriting the original report's score.

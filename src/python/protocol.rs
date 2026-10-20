@@ -105,9 +105,11 @@ pub(super) fn classify(
     ensure!(
         !nodes.is_empty()
             && unique.len() == nodes.len()
-            && nodes
-                .iter()
-                .all(|n| n.starts_with("tests/") && n.contains("::") && !n.contains('\0')),
+            && nodes.iter().all(|n| !n.contains('\0')
+                && n.split_once("::")
+                    .is_some_and(
+                        |(file, test)| super::identity::is_test_file(file) && !test.is_empty()
+                    )),
         "invalid Python collected test inventory"
     );
     let tail = records.len() - 4;
@@ -204,6 +206,27 @@ mod tests {
             value["nonce"] = json!("token");
             format!("{value}\n").into_bytes()
         }).collect()
+    }
+
+    #[test]
+    fn root_tests_require_normal_paths_and_complete_matching_phases() {
+        let original = String::from_utf8(evidence()).unwrap();
+        let root = original.replace("tests/test_a.py", "test_a.py");
+        assert!(baseline(root.as_bytes(), 17, "token", "/repo", false).is_ok());
+        for path in [
+            "../test_a.py",
+            "/test_a.py",
+            "sample/test_a.py",
+            "test_a.txt",
+            "helper.py",
+            "tests/../test_a.py",
+        ] {
+            let changed = original.replace("tests/test_a.py", path);
+            assert!(
+                baseline(changed.as_bytes(), 17, "token", "/repo", false).is_err(),
+                "{path}"
+            );
+        }
     }
 
     #[test]

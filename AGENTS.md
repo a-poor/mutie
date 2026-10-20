@@ -150,7 +150,7 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
   language/test runner. Update it when support changes; Bun JS/TS are independently Validated within
-  their scope; Python/pytest is Validated within its pinned serial flat-package scope.
+  their scope; Python/pytest is Validated within its pinned serial flat/src-package scope.
 
 ## Development Status & Versioning
 
@@ -305,6 +305,14 @@ setuptools src mapping, matching pythonpath, quiet addopts and a compatible
 pytest-only test extra are admitted; do not execute builds or install project
 extras. The separate stronger-test copy kills the blank-query survivor while
 preserving the clean original checkout and prior report hashes.
+`benchmarks/python-cycler-unchanged.md` records a second unchanged project with
+28 root-level tests. Preserve the combined root/directory test inventory and
+reject root tests hidden by configured testpaths. Flat setuptools literal-version
+metadata and audited optional tool declarations never execute or install anything.
+The narrowly retained documentation/CI scripts stay non-importable and cannot
+hide tests/hooks. The original mixed assertion/KeyError remains an error; a
+separate test-only key-set assertion turns it into a kill without changing the
+classifier or original report scores.
 
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,

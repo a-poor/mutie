@@ -223,6 +223,73 @@ class ScopeTests(unittest.TestCase):
         self.assertEqual(len(result["mutations"]), 2)
         self.assertEqual(result["tests"], ["tests/test_sample.py"])
 
+    def test_root_and_directory_tests_are_both_inventoried(self):
+        self.write('test_root.py', 'def test_root(): assert True\n')
+        result = scope.inspect(self.root)
+        self.assertEqual(result['tests'], ['test_root.py', 'tests/test_sample.py'])
+        self.assertEqual(len(result['mutations']), 1)
+        self.write('pyproject.toml', '[project]\nname="sample"\n[tool.pytest.ini_options]\ntestpaths=["tests"]\n')
+        with self.assertRaisesRegex(ValueError, 'excluded by configured testpaths'):
+            scope.inspect(self.root)
+
+    def test_static_version_and_optional_tools_do_not_execute(self):
+        manifest = ('[project]\nname="sample"\ndynamic=["version"]\n'
+                    '[project.optional-dependencies]\ntests=["pytest","pytest-cov","pytest-xdist"]\n'
+                    'docs=["sphinx"]\n[tool.setuptools]\npackages=["sample"]\n'
+                    '[tool.setuptools.dynamic]\nversion={attr="sample.__version__"}\n'
+                    '[tool.setuptools.package-data]\nsample=["py.typed"]\n')
+        self.write('pyproject.toml', manifest)
+        self.write('sample/__init__.py', '__version__="1.0"\nraise RuntimeError("must not execute")\n')
+        scope.inspect(self.root)
+        for old, new in [('"pytest-cov"', '"unreviewed-plugin"'),
+                         ('"sphinx"', '"requests"'), ('dynamic=["version"]', 'dynamic=["dependencies"]'),
+                         ('attr="sample.__version__"', 'attr="outside.__version__"'),
+                         ('packages=["sample"]', 'packages=["sample","other"]')]:
+            self.write('pyproject.toml', manifest.replace(old, new))
+            with self.assertRaises(ValueError):
+                scope.inspect(self.root)
+        self.write('pyproject.toml', manifest)
+        for source in ['__version__=calculate()', '__version__="1"\n__version__="2"',
+                       '__version__=1', 'from .version import __version__']:
+            self.write('sample/__init__.py', source)
+            with self.assertRaises(ValueError):
+                scope.inspect(self.root)
+
+    def test_ancillary_files_are_fingerprinted_and_cannot_hide_tests(self):
+        for path in ['doc/source/conf.py', '.circleci/build_docs.py']:
+            self.write(path, 'import os\nraise RuntimeError("not executed")\n')
+            result = scope.inspect(self.root)
+            self.assertIn(path, result['files'])
+            self.assertNotIn(path, result['sources'])
+            self.assertNotIn(path, result['tests'])
+            for source in ['def test_hidden(): pass', 'class TestHidden: pass',
+                           'from pytest import fixture', 'import unittest as unit',
+                           'pytest_plugins = []', 'test_hidden = lambda: False']:
+                self.write(path, source)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+            (self.root / path).unlink()
+        for path in ['.circleci/test_hidden.py', '.circleci/hidden_test.py', 'doc/source/test_hidden.py']:
+            self.write(path, '')
+            with self.assertRaises(ValueError):
+                scope.inspect(self.root)
+            (self.root / path).unlink()
+        self.write('sample/__init__.py', 'from doc.source import conf')
+        with self.assertRaises(ValueError):
+            scope.inspect(self.root)
+
+    def test_package_named_doc_cannot_bypass_source_validation(self):
+        (self.root / 'sample').rename(self.root / 'doc')
+        self.write('tests/test_sample.py', 'from doc import enabled\ndef test_enabled(): assert enabled()\n')
+        self.write('doc/source/__init__.py', '')
+        self.write('doc/source/conf.py', 'value = False\n')
+        result = scope.inspect(self.root)
+        self.assertIn('doc/source/conf.py', result['sources'])
+        self.assertEqual(len(result['mutations']), 2)
+        self.write('doc/source/conf.py', 'import os\n')
+        with self.assertRaises(ValueError):
+            scope.inspect(self.root)
+
 
 if __name__ == "__main__":
     unittest.main()

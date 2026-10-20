@@ -57,6 +57,9 @@ The [Python feedback profile](benchmarks/python-feedback-profile.md) now measure
 full and focused feedback and optimizes runtime traversal without skipping hashes.
 [Native `src/` acceptance](benchmarks/python-src-layout.md) now preserves Scrubify's
 original layout and manifest through the complete scored/stronger-test rerun loop.
+[Unchanged Cycler validation](benchmarks/python-cycler-unchanged.md) extends the
+evidence to a 28-test suite: root-test inventory, conservative original error,
+pending-candidate rerun and a separate test-only error-to-kill control.
 
 ## Target support tracking
 
@@ -114,6 +117,9 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Support one native `src/` package with narrowly audited static metadata,
   source-root/import identity, rejection and snapshot/rerun regressions, and
   unchanged Scrubify full-run plus separate-copy stronger-test acceptance.
+- [x] Validate a second, larger unchanged Python project: Cycler's 28-test suite,
+  complete candidate accounting, preserved failed reports and a separate
+  test-only error-to-kill rerun plus full stronger-test run.
 
 
 ## Selected first Bun test-runner slice

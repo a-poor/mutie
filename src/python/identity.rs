@@ -44,6 +44,17 @@ fn fingerprint(bytes: &[u8]) -> String {
     format!("sha256:{:x}", Sha256::digest(bytes))
 }
 
+pub(super) fn is_test_file(file: &str) -> bool {
+    let path = Path::new(file);
+    !file.contains('\0')
+        && (path.starts_with("tests") || path.components().count() == 1)
+        && path.components().all(|c| matches!(c, Component::Normal(_)))
+        && path
+            .file_name()
+            .and_then(|n| n.to_str())
+            .is_some_and(|n| n.starts_with("test_") && n.ends_with(".py"))
+}
+
 fn recipe() -> String {
     fingerprint(
         &[
@@ -202,15 +213,7 @@ impl ExecutionScope {
         ensure!(
             !unique.is_empty()
                 && unique.len() == self.test_files.len()
-                && self.test_files.iter().all(|file| {
-                    let path = Path::new(file);
-                    path.starts_with("tests")
-                        && path.components().all(|c| matches!(c, Component::Normal(_)))
-                        && path
-                            .file_name()
-                            .and_then(|n| n.to_str())
-                            .is_some_and(|n| n.starts_with("test_") && n.ends_with(".py"))
-                }),
+                && self.test_files.iter().all(|file| is_test_file(file)),
             "invalid saved Python test inventory"
         );
         ensure!(

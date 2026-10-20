@@ -1,0 +1,1225 @@
+{
+  "repository": "https://github.com/matplotlib/cycler",
+  "commit": "d1737eb0a42bd451e8770cef245ebe60ebb36bfc",
+  "input_sha256": {
+    ".circleci/config.yml": "51e4a5731d16230d2f5e518849df77193586b3a8590f91abc288237b797a23c6",
+    ".circleci/fetch_doc_logs.py": "e89232dcc71c4dc7283f26507459697f7c5a88c0fb07a7090c1f2cd987fb9beb",
+    ".coveragerc": "608389eded8b57bd07cc1d525086505233b5d2c837421216c30b68be7f238d80",
+    ".flake8": "bb2bfdcfaf7b65729c16c342cd09ee71b2698b635b144353978cb5554e0f6466",
+    ".github/workflows/circleci.yml": "103a36aade5b1e6fe6870f00ffb3d56d5cc1450cd58f2198d8cbbb2519c0f309",
+    ".github/workflows/release.yml": "ba2ad648666f95dcd072a111104a346ba6b5a385945a0be54135007ced5167fe",
+    ".github/workflows/reviewdog.yml": "cca95ec25f7691f4ff860aaf5166137e18c09af142ccf23d6713c17a8ed8c92b",
+    ".github/workflows/tests.yml": "1694903483fc68f7518b6b621fe8d01c25c9b73354659a3ea5ca488d29da7baf",
+    ".gitignore": "95ea0e4e85dc20fe2a5bc00cefbbc779e6c2f6dbb10f465507b87e1e22ac20bf",
+    "LICENSE": "f1218143d766da3fea66f13396b7f15df46a83303f29bf96ba6e98eb4d42f408",
+    "README.rst": "7664a0f6e0adb250944bcbabb55b5d2c533bc8bc857963958e510dda007f8ea7",
+    "SECURITY.md": "3227e4e5a0e744bc0981d0d4be858fd1ab09ef425de7761c9ce770754ffeb3b5",
+    "appveyor.yml": "bb9e585eb6641a9963184028eb944a35963cb8fc0d8831ce523827b3db8581e1",
+    "cycler/__init__.py": "0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+    "cycler/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "doc/Makefile": "79c3bcb74e620cdbd8892a9a5e8b59c6f99b8705c186f24a9813f17ae4abd9f7",
+    "doc/_templates/autosummary/class.rst": "bb15d8c25260dbc4253d635f13b0e06ce2ae2bc44e1bf7121df8a4a8f3273a82",
+    "doc/make.bat": "143b1e6f0a6c15a191439ce556cb284db74117dac946664dd427ef4519bdc31b",
+    "doc/source/conf.py": "6a420793760117c0adae32634059cffe13057eb6b989b01807e75434defe252e",
+    "doc/source/index.rst": "c12f120985279cdb5711cc7ca71cfcf75d955b823c9a8736fcb1156a25ce7d6c",
+    "pyproject.toml": "ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+    "test_cycler.py": "5b9b50d7b359ce3c5670ba2501b2a05ef158bf9c85985582f6023dcd796a3341"
+  },
+  "stronger_input_sha256": {
+    ".circleci/config.yml": "51e4a5731d16230d2f5e518849df77193586b3a8590f91abc288237b797a23c6",
+    ".circleci/fetch_doc_logs.py": "e89232dcc71c4dc7283f26507459697f7c5a88c0fb07a7090c1f2cd987fb9beb",
+    ".coveragerc": "608389eded8b57bd07cc1d525086505233b5d2c837421216c30b68be7f238d80",
+    ".flake8": "bb2bfdcfaf7b65729c16c342cd09ee71b2698b635b144353978cb5554e0f6466",
+    ".github/workflows/circleci.yml": "103a36aade5b1e6fe6870f00ffb3d56d5cc1450cd58f2198d8cbbb2519c0f309",
+    ".github/workflows/release.yml": "ba2ad648666f95dcd072a111104a346ba6b5a385945a0be54135007ced5167fe",
+    ".github/workflows/reviewdog.yml": "cca95ec25f7691f4ff860aaf5166137e18c09af142ccf23d6713c17a8ed8c92b",
+    ".github/workflows/tests.yml": "1694903483fc68f7518b6b621fe8d01c25c9b73354659a3ea5ca488d29da7baf",
+    ".gitignore": "95ea0e4e85dc20fe2a5bc00cefbbc779e6c2f6dbb10f465507b87e1e22ac20bf",
+    "LICENSE": "f1218143d766da3fea66f13396b7f15df46a83303f29bf96ba6e98eb4d42f408",
+    "README.rst": "7664a0f6e0adb250944bcbabb55b5d2c533bc8bc857963958e510dda007f8ea7",
+    "SECURITY.md": "3227e4e5a0e744bc0981d0d4be858fd1ab09ef425de7761c9ce770754ffeb3b5",
+    "appveyor.yml": "bb9e585eb6641a9963184028eb944a35963cb8fc0d8831ce523827b3db8581e1",
+    "cycler/__init__.py": "0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+    "cycler/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "doc/Makefile": "79c3bcb74e620cdbd8892a9a5e8b59c6f99b8705c186f24a9813f17ae4abd9f7",
+    "doc/_templates/autosummary/class.rst": "bb15d8c25260dbc4253d635f13b0e06ce2ae2bc44e1bf7121df8a4a8f3273a82",
+    "doc/make.bat": "143b1e6f0a6c15a191439ce556cb284db74117dac946664dd427ef4519bdc31b",
+    "doc/source/conf.py": "6a420793760117c0adae32634059cffe13057eb6b989b01807e75434defe252e",
+    "doc/source/index.rst": "c12f120985279cdb5711cc7ca71cfcf75d955b823c9a8736fcb1156a25ce7d6c",
+    "pyproject.toml": "ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+    "test_cycler.py": "5b01fceacdf97f52302ad1939779848f83e559180e20092acab7016ff7002600"
+  },
+  "records": [
+    {
+      "label": "discovery",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-list",
+        "/tmp/mutie-python-cycler-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--json"
+      ],
+      "seconds": 2.860480041941628,
+      "exit_code": 0,
+      "scope": {
+        "files": {
+          ".circleci/config.yml": "sha256:51e4a5731d16230d2f5e518849df77193586b3a8590f91abc288237b797a23c6",
+          ".circleci/fetch_doc_logs.py": "sha256:e89232dcc71c4dc7283f26507459697f7c5a88c0fb07a7090c1f2cd987fb9beb",
+          ".coveragerc": "sha256:608389eded8b57bd07cc1d525086505233b5d2c837421216c30b68be7f238d80",
+          ".flake8": "sha256:bb2bfdcfaf7b65729c16c342cd09ee71b2698b635b144353978cb5554e0f6466",
+          ".github/workflows/circleci.yml": "sha256:103a36aade5b1e6fe6870f00ffb3d56d5cc1450cd58f2198d8cbbb2519c0f309",
+          ".github/workflows/release.yml": "sha256:ba2ad648666f95dcd072a111104a346ba6b5a385945a0be54135007ced5167fe",
+          ".github/workflows/reviewdog.yml": "sha256:cca95ec25f7691f4ff860aaf5166137e18c09af142ccf23d6713c17a8ed8c92b",
+          ".github/workflows/tests.yml": "sha256:1694903483fc68f7518b6b621fe8d01c25c9b73354659a3ea5ca488d29da7baf",
+          ".gitignore": "sha256:95ea0e4e85dc20fe2a5bc00cefbbc779e6c2f6dbb10f465507b87e1e22ac20bf",
+          "LICENSE": "sha256:f1218143d766da3fea66f13396b7f15df46a83303f29bf96ba6e98eb4d42f408",
+          "README.rst": "sha256:7664a0f6e0adb250944bcbabb55b5d2c533bc8bc857963958e510dda007f8ea7",
+          "SECURITY.md": "sha256:3227e4e5a0e744bc0981d0d4be858fd1ab09ef425de7761c9ce770754ffeb3b5",
+          "appveyor.yml": "sha256:bb9e585eb6641a9963184028eb944a35963cb8fc0d8831ce523827b3db8581e1",
+          "cycler/__init__.py": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+          "cycler/py.typed": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "doc/Makefile": "sha256:79c3bcb74e620cdbd8892a9a5e8b59c6f99b8705c186f24a9813f17ae4abd9f7",
+          "doc/_templates/autosummary/class.rst": "sha256:bb15d8c25260dbc4253d635f13b0e06ce2ae2bc44e1bf7121df8a4a8f3273a82",
+          "doc/make.bat": "sha256:143b1e6f0a6c15a191439ce556cb284db74117dac946664dd427ef4519bdc31b",
+          "doc/source/conf.py": "sha256:6a420793760117c0adae32634059cffe13057eb6b989b01807e75434defe252e",
+          "doc/source/index.rst": "sha256:c12f120985279cdb5711cc7ca71cfcf75d955b823c9a8736fcb1156a25ce7d6c",
+          "pyproject.toml": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+          "test_cycler.py": "sha256:5b9b50d7b359ce3c5670ba2501b2a05ef158bf9c85985582f6023dcd796a3341"
+        },
+        "mutations": [
+          {
+            "column": 20,
+            "end": 11301,
+            "end_column": 25,
+            "end_line": 390,
+            "file": "cycler/__init__.py",
+            "line": 390,
+            "original": "False",
+            "replacement": "True",
+            "start": 11296
+          },
+          {
+            "column": 20,
+            "end": 11362,
+            "end_column": 25,
+            "end_line": 392,
+            "file": "cycler/__init__.py",
+            "line": 392,
+            "original": "False",
+            "replacement": "True",
+            "start": 11357
+          },
+          {
+            "column": 20,
+            "end": 11422,
+            "end_column": 25,
+            "end_line": 394,
+            "file": "cycler/__init__.py",
+            "line": 394,
+            "original": "False",
+            "replacement": "True",
+            "start": 11417
+          }
+        ],
+        "package": "cycler",
+        "source_root": "",
+        "sources": [
+          "cycler/__init__.py"
+        ],
+        "tests": [
+          "test_cycler.py"
+        ]
+      }
+    },
+    {
+      "label": "native-baseline",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-python-cycler-unchanged-verified/native-cache",
+        "-c",
+        "import sys; sys.path.insert(0, sys.argv[1]); import pytest; raise SystemExit(pytest.main([\"-q\", \"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-python-cycler-original"
+      ],
+      "seconds": 2.587890582974069,
+      "exit_code": 0
+    },
+    {
+      "label": "isolated-baseline",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-check",
+        "/tmp/mutie-python-cycler-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "30",
+        "--json"
+      ],
+      "seconds": 12.43182858300861,
+      "exit_code": 0,
+      "tests": [
+        "test_cycler.py::test_creation[from string]",
+        "test_cycler.py::test_creation[from list]",
+        "test_cycler.py::test_creation[from cycler]",
+        "test_cycler.py::test_add",
+        "test_cycler.py::test_add_len_mismatch",
+        "test_cycler.py::test_prod",
+        "test_cycler.py::test_inplace_add",
+        "test_cycler.py::test_inplace_add_len_mismatch",
+        "test_cycler.py::test_inplace_mul",
+        "test_cycler.py::test_constructor",
+        "test_cycler.py::test_failures",
+        "test_cycler.py::test_simplify",
+        "test_cycler.py::test_multiply",
+        "test_cycler.py::test_mul_fails",
+        "test_cycler.py::test_getitem",
+        "test_cycler.py::test_fail_getime",
+        "test_cycler.py::test_repr",
+        "test_cycler.py::test_call",
+        "test_cycler.py::test_copying",
+        "test_cycler.py::test_keychange",
+        "test_cycler.py::test_eq",
+        "test_cycler.py::test_cycler_exceptions",
+        "test_cycler.py::test_strange_init",
+        "test_cycler.py::test_concat",
+        "test_cycler.py::test_concat_fail",
+        "test_cycler.py::test_by_key_add",
+        "test_cycler.py::test_by_key_mul",
+        "test_cycler.py::test_contains"
+      ],
+      "identity": {
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304,
+        "manifest_fingerprint": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+        "package": "cycler",
+        "recipe_fingerprint": "sha256:2a2820685eaae7b01a76ccb87a9c49aea9f074fcb3c4d16136d56b0893c8fce0",
+        "runtime": {
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          }
+        },
+        "test_files": [
+          "test_cycler.py"
+        ],
+        "test_nodes": [
+          "test_cycler.py::test_creation[from string]",
+          "test_cycler.py::test_creation[from list]",
+          "test_cycler.py::test_creation[from cycler]",
+          "test_cycler.py::test_add",
+          "test_cycler.py::test_add_len_mismatch",
+          "test_cycler.py::test_prod",
+          "test_cycler.py::test_inplace_add",
+          "test_cycler.py::test_inplace_add_len_mismatch",
+          "test_cycler.py::test_inplace_mul",
+          "test_cycler.py::test_constructor",
+          "test_cycler.py::test_failures",
+          "test_cycler.py::test_simplify",
+          "test_cycler.py::test_multiply",
+          "test_cycler.py::test_mul_fails",
+          "test_cycler.py::test_getitem",
+          "test_cycler.py::test_fail_getime",
+          "test_cycler.py::test_repr",
+          "test_cycler.py::test_call",
+          "test_cycler.py::test_copying",
+          "test_cycler.py::test_keychange",
+          "test_cycler.py::test_eq",
+          "test_cycler.py::test_cycler_exceptions",
+          "test_cycler.py::test_strange_init",
+          "test_cycler.py::test_concat",
+          "test_cycler.py::test_concat_fail",
+          "test_cycler.py::test_by_key_add",
+          "test_cycler.py::test_by_key_mul",
+          "test_cycler.py::test_contains"
+        ],
+        "timeout_millis": 30000
+      }
+    },
+    {
+      "label": "original-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-cycler-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-cycler-unchanged-verified/reports"
+      ],
+      "seconds": 38.66597529198043,
+      "exit_code": 1,
+      "report": "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530524-laxgGQ",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "cycler",
+        "manifest_fingerprint": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+        "recipe_fingerprint": "sha256:2a2820685eaae7b01a76ccb87a9c49aea9f074fcb3c4d16136d56b0893c8fce0",
+        "test_files": [
+          "test_cycler.py"
+        ],
+        "test_nodes": [
+          "test_cycler.py::test_creation[from string]",
+          "test_cycler.py::test_creation[from list]",
+          "test_cycler.py::test_creation[from cycler]",
+          "test_cycler.py::test_add",
+          "test_cycler.py::test_add_len_mismatch",
+          "test_cycler.py::test_prod",
+          "test_cycler.py::test_inplace_add",
+          "test_cycler.py::test_inplace_add_len_mismatch",
+          "test_cycler.py::test_inplace_mul",
+          "test_cycler.py::test_constructor",
+          "test_cycler.py::test_failures",
+          "test_cycler.py::test_simplify",
+          "test_cycler.py::test_multiply",
+          "test_cycler.py::test_mul_fails",
+          "test_cycler.py::test_getitem",
+          "test_cycler.py::test_fail_getime",
+          "test_cycler.py::test_repr",
+          "test_cycler.py::test_call",
+          "test_cycler.py::test_copying",
+          "test_cycler.py::test_keychange",
+          "test_cycler.py::test_eq",
+          "test_cycler.py::test_cycler_exceptions",
+          "test_cycler.py::test_strange_init",
+          "test_cycler.py::test_concat",
+          "test_cycler.py::test_concat_fail",
+          "test_cycler.py::test_by_key_add",
+          "test_cycler.py::test_by_key_mul",
+          "test_cycler.py::test_contains"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 2,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "status": "failed",
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 390,
+            "column": 20,
+            "end_line": 390,
+            "end_column": 25,
+            "byte_start": 11296,
+            "byte_end": 11301,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 392,
+            "column": 20,
+            "end_line": 392,
+            "end_column": 25,
+            "byte_start": 11357,
+            "byte_end": 11362,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 394,
+            "column": 20,
+            "end_line": 394,
+            "end_column": 25,
+            "byte_start": 11417,
+            "byte_end": 11422,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running cycler/__init__.py:390:20: \"False\" -> \"True\": Python run contains an unsupported phase failure",
+          "duration_seconds": 12.560221499,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 13819,
+                "head_bytes": 13819,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 13818,
+                "head_bytes": 13818,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 3,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "49a93b5954dac9d1a2e69efdda80ff08de93963fa549722385dab01cf0815677",
+        "diff/000002.diff": "48af2cc54cb1bae406bfd8188b27ac7c51af92515c9bc74cbd24d8c01a3f4e34",
+        "diff/000003.diff": "935478f168e7f6bcdd33e611830dcc2196ac40e6d97164d578c24420deaeeada",
+        "errors.txt": "f8a4bf895b657e09d256e2fa7ad3f9b2d81f20658c8f01ce8740588f78754e46",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "b040fe1300365802d52158187ad5a26b593e286139ff76f0a7870733d85cb720",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "136a1b6b2f51e95194758776aea6272cfabf392e31ec7c8ff91a161dd2299424",
+        "logs/baseline.log": "3634a76d580965b8724489e8c6ca6acd26af73a2c2bfce73ca29db6bdde43cc1",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "5bb8484f80635d08fae9716e51ff418604b55e8392f88eeb6dc7b839bfd2f371",
+        "logs/discovery.log": "c6b8b22e28d8794f0583834b35af6a4f2cf9908f6623173882f3765fa9213e5d",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "f5a6aeeacb23bc361cc0ee1aaa4b287ecbaff6520f7e3f4a7e2f84fb4f1838b8",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "17335af68e50cb2c1b852dac7708af1ee70deea7b3f9a5216f2ed5898210576e",
+        "outcomes.json": "70d1c031bb6f5c4a78e7734c9c3b9cf7f7309aa2c207bbe3446f8f1cd68305c1",
+        "run.json": "97310d7ad0a1812e890d1c2714c1471e5c811b42567e32aa608f08a537d93615",
+        "summary.txt": "72962920aa4a7758298568cfda099eff236e25136c6852c6b0773ae82ba45d37",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "original-pending-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-cycler-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-cycler-unchanged-verified/reports",
+        "--rerun",
+        "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530524-laxgGQ",
+        "--id",
+        "2,3"
+      ],
+      "seconds": 58.14934354193974,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530563-mwi8DT",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "cycler",
+        "manifest_fingerprint": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+        "recipe_fingerprint": "sha256:2a2820685eaae7b01a76ccb87a9c49aea9f074fcb3c4d16136d56b0893c8fce0",
+        "test_files": [
+          "test_cycler.py"
+        ],
+        "test_nodes": [
+          "test_cycler.py::test_creation[from string]",
+          "test_cycler.py::test_creation[from list]",
+          "test_cycler.py::test_creation[from cycler]",
+          "test_cycler.py::test_add",
+          "test_cycler.py::test_add_len_mismatch",
+          "test_cycler.py::test_prod",
+          "test_cycler.py::test_inplace_add",
+          "test_cycler.py::test_inplace_add_len_mismatch",
+          "test_cycler.py::test_inplace_mul",
+          "test_cycler.py::test_constructor",
+          "test_cycler.py::test_failures",
+          "test_cycler.py::test_simplify",
+          "test_cycler.py::test_multiply",
+          "test_cycler.py::test_mul_fails",
+          "test_cycler.py::test_getitem",
+          "test_cycler.py::test_fail_getime",
+          "test_cycler.py::test_repr",
+          "test_cycler.py::test_call",
+          "test_cycler.py::test_copying",
+          "test_cycler.py::test_keychange",
+          "test_cycler.py::test_eq",
+          "test_cycler.py::test_cycler_exceptions",
+          "test_cycler.py::test_strange_init",
+          "test_cycler.py::test_concat",
+          "test_cycler.py::test_concat_fail",
+          "test_cycler.py::test_by_key_add",
+          "test_cycler.py::test_by_key_mul",
+          "test_cycler.py::test_contains"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 392,
+            "column": 20,
+            "end_line": 392,
+            "end_column": 25,
+            "byte_start": 11357,
+            "byte_end": 11362,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 394,
+            "column": 20,
+            "end_line": 394,
+            "end_column": 25,
+            "byte_start": 11417,
+            "byte_end": 11422,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 8.486519458,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 950,
+                "head_bytes": 950,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 949,
+                "head_bytes": 949,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.973317583,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 827,
+                "head_bytes": 827,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 826,
+                "head_bytes": 826,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "48af2cc54cb1bae406bfd8188b27ac7c51af92515c9bc74cbd24d8c01a3f4e34",
+        "diff/000002.diff": "935478f168e7f6bcdd33e611830dcc2196ac40e6d97164d578c24420deaeeada",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "ef8dc72370f05ee12f5ac7392d7efcc5d5b2b12c8194d529a2dd3979c0b28e7c",
+        "logs/000001.log": "70c9e15a1d181c39a85242b7be6d607edb4dedb752018fd1c3aff7cc58bf2a75",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "813d37ff6d656c55f6ec7b222b38e180cb1e78bd018bdf58598e15bb9c52539a",
+        "logs/000002.log": "19bb947c9cb5b0c8dfe63e7e71d7321f805257d5691260e951f282c403a33902",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "1061156b4183ebb0ff7ab29b38810a0ccd42ec0beba047f5a46755a6aff6507c",
+        "logs/baseline.log": "02a780cab6a241611d13ba6fa64a047be84bce950145cfa9309fb41b538c085d",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "ce141df2803b1d3048563d2d257f5ece2dc55718d8d74e776cc87b114232d861",
+        "logs/discovery.log": "7174e53aaad868b0d455d0e1c8af00b6546e70078d249ac42ae5416bb58a9ec4",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "3ed2fe2a30e9c1f6709e9984c4e0f4dea958086f7c00e1d9351a3708327e0a56",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "08c397793b9af3abe85edcf40960bda679bb63204cab1e9c4f1c04f7164c6d98",
+        "outcomes.json": "16f7c12b12ff1e01978b81921dd4f20e9ee7f6d5a1ca170359fdb73c435bbdc5",
+        "run.json": "9f4075ea630d19b97a2d96d8e88f741eb6926caa79175e0aceb928e4bb9110a5",
+        "summary.txt": "fec6531bc76074cfcfaaa57d19792fdceb20b45f6c2ebab02e93e1f16bcf0724",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-error-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-cycler-unchanged-verified/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-cycler-unchanged-verified/reports",
+        "--rerun",
+        "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530524-laxgGQ",
+        "--id",
+        "1"
+      ],
+      "seconds": 39.666264625033364,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530621-rx169i",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "cycler",
+        "manifest_fingerprint": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+        "recipe_fingerprint": "sha256:2a2820685eaae7b01a76ccb87a9c49aea9f074fcb3c4d16136d56b0893c8fce0",
+        "test_files": [
+          "test_cycler.py"
+        ],
+        "test_nodes": [
+          "test_cycler.py::test_creation[from string]",
+          "test_cycler.py::test_creation[from list]",
+          "test_cycler.py::test_creation[from cycler]",
+          "test_cycler.py::test_add",
+          "test_cycler.py::test_add_len_mismatch",
+          "test_cycler.py::test_prod",
+          "test_cycler.py::test_inplace_add",
+          "test_cycler.py::test_inplace_add_len_mismatch",
+          "test_cycler.py::test_inplace_mul",
+          "test_cycler.py::test_constructor",
+          "test_cycler.py::test_failures",
+          "test_cycler.py::test_simplify",
+          "test_cycler.py::test_multiply",
+          "test_cycler.py::test_mul_fails",
+          "test_cycler.py::test_getitem",
+          "test_cycler.py::test_fail_getime",
+          "test_cycler.py::test_repr",
+          "test_cycler.py::test_call",
+          "test_cycler.py::test_copying",
+          "test_cycler.py::test_keychange",
+          "test_cycler.py::test_eq",
+          "test_cycler.py::test_cycler_exceptions",
+          "test_cycler.py::test_strange_init",
+          "test_cycler.py::test_concat",
+          "test_cycler.py::test_concat_fail",
+          "test_cycler.py::test_by_key_add",
+          "test_cycler.py::test_by_key_mul",
+          "test_cycler.py::test_contains"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 390,
+            "column": 20,
+            "end_line": 390,
+            "end_column": 25,
+            "byte_start": 11296,
+            "byte_end": 11301,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.911177126,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 13037,
+                "head_bytes": 13037,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 13036,
+                "head_bytes": 13036,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "49a93b5954dac9d1a2e69efdda80ff08de93963fa549722385dab01cf0815677",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "f8a4bf895b657e09d256e2fa7ad3f9b2d81f20658c8f01ce8740588f78754e46",
+        "logs/000001.log": "cca50b57a9b143b5ea03eabd6bdc7e420be27f537968cce1846109807ea51f61",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "575b21570fab069d75cc99c0ad853c40d33847305515050adc65786190daa1cc",
+        "logs/baseline.log": "82e073a38df3f3bf96153ed56c555e033e285fb8c1630134d7d040b7c0e6b484",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "4a07bfd533e460c43cf49ccdb23b34064931fa29d81da1a28d599f3a6448dc7f",
+        "logs/discovery.log": "31e548ac4dd36c39166ff9f21509d21ca9da274bb7e424d95081144aed1156fb",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "c30198670ed349e126ff38eb0afb2880406d2b397d3ad744a2ef1fd558e174ee",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "4b6e88dd3ca4f9b20e2c0ff12c3c41a143e590e6ea6a5e90582ae045bd4c017e",
+        "outcomes.json": "7c1a956be1db95e673b52e23eb59686fc73f112c6569e6b0cad1cbb85c046c2f",
+        "run.json": "68e7e153cbfd560ed156528db0e437122a6ec1a02e61928d82c013b8eee99c78",
+        "summary.txt": "bb8af8976ba69151901bb15c526d3d1beb95465071e95e961c91545f7e37996a",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-cycler-unchanged-verified/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-cycler-unchanged-verified/reports"
+      ],
+      "seconds": 45.73686045897193,
+      "exit_code": 0,
+      "report": "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530661-TZUjnv",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "cycler",
+        "manifest_fingerprint": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+        "recipe_fingerprint": "sha256:2a2820685eaae7b01a76ccb87a9c49aea9f074fcb3c4d16136d56b0893c8fce0",
+        "test_files": [
+          "test_cycler.py"
+        ],
+        "test_nodes": [
+          "test_cycler.py::test_creation[from string]",
+          "test_cycler.py::test_creation[from list]",
+          "test_cycler.py::test_creation[from cycler]",
+          "test_cycler.py::test_add",
+          "test_cycler.py::test_add_len_mismatch",
+          "test_cycler.py::test_prod",
+          "test_cycler.py::test_inplace_add",
+          "test_cycler.py::test_inplace_add_len_mismatch",
+          "test_cycler.py::test_inplace_mul",
+          "test_cycler.py::test_constructor",
+          "test_cycler.py::test_failures",
+          "test_cycler.py::test_simplify",
+          "test_cycler.py::test_multiply",
+          "test_cycler.py::test_mul_fails",
+          "test_cycler.py::test_getitem",
+          "test_cycler.py::test_fail_getime",
+          "test_cycler.py::test_repr",
+          "test_cycler.py::test_call",
+          "test_cycler.py::test_copying",
+          "test_cycler.py::test_keychange",
+          "test_cycler.py::test_eq",
+          "test_cycler.py::test_cycler_exceptions",
+          "test_cycler.py::test_strange_init",
+          "test_cycler.py::test_concat",
+          "test_cycler.py::test_concat_fail",
+          "test_cycler.py::test_by_key_add",
+          "test_cycler.py::test_by_key_mul",
+          "test_cycler.py::test_contains"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 3,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 3,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 390,
+            "column": 20,
+            "end_line": 390,
+            "end_column": 25,
+            "byte_start": 11296,
+            "byte_end": 11301,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 392,
+            "column": 20,
+            "end_line": 392,
+            "end_column": 25,
+            "byte_start": 11357,
+            "byte_end": 11362,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "cycler/__init__.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 394,
+            "column": 20,
+            "end_line": 394,
+            "end_column": 25,
+            "byte_start": 11417,
+            "byte_end": 11422,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.177037124,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 13037,
+                "head_bytes": 13037,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 13036,
+                "head_bytes": 13036,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.251202917,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 950,
+                "head_bytes": 950,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 949,
+                "head_bytes": 949,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.448557833,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 827,
+                "head_bytes": 827,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 826,
+                "head_bytes": 826,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "49a93b5954dac9d1a2e69efdda80ff08de93963fa549722385dab01cf0815677",
+        "diff/000002.diff": "48af2cc54cb1bae406bfd8188b27ac7c51af92515c9bc74cbd24d8c01a3f4e34",
+        "diff/000003.diff": "935478f168e7f6bcdd33e611830dcc2196ac40e6d97164d578c24420deaeeada",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "12ea31c19657343b86732c01d1a4728524d5582b70fe2ff805ada3992225dfdd",
+        "logs/000001.log": "3fea71d8e178e398ece4f619eb4c4cc6a9555b37c76c1801bef8dd35fcc230db",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "c168acf15c5a3e2cc04a16b4be108a41e52a2b82678ef257529082e16336e1b9",
+        "logs/000002.log": "4ebb10ffa94b7d57ced8be4a6377622f95701750b168d82273bf33466f0481ea",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "1929be7823995ab620fcd4a2a2499d054c3103c99c9edc849aebaee55420f03c",
+        "logs/000003.log": "1df373d291330dc7e830b55abbbef8920a3fe54f32b14b6f5839152e4db3eed8",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "542e0900e8e9f9a77b62f9c16fbe7a5d565fd1f55d315389ccdeffcc583e62a1",
+        "logs/baseline.log": "3b51e56b1e73877b6ff24d2f7659e7f7ab135088c26064f438b64ef2582937e7",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "d73bf64838588341b4746b09375dec064652ceebb89e31f5cab788ce4a42c8bf",
+        "logs/discovery.log": "31e548ac4dd36c39166ff9f21509d21ca9da274bb7e424d95081144aed1156fb",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "c30198670ed349e126ff38eb0afb2880406d2b397d3ad744a2ef1fd558e174ee",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "17335af68e50cb2c1b852dac7708af1ee70deea7b3f9a5216f2ed5898210576e",
+        "outcomes.json": "5f7c0afe0f213443404b9ae3fd8e8d6089af1a5370ea88bf571c147d04dd5ac3",
+        "run.json": "39289a2acd42667cc1dddbb8b30b50de86e87ae82896b0b631b4adf2b5f00842",
+        "summary.txt": "8ac8772bc52bc7b4d5d04bce9fa07d869193c13aaa1fd53e3276f61d569680a6",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "original_inputs_preserved": true,
+  "original_reports_preserved": true
+}

@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, serial boolean flips, reports/reruns/review; unchanged Scrubify finding and stronger tests | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, reports/reruns/review; unchanged Scrubify and Cycler evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -319,7 +319,7 @@ thread-starting suites because pytest can suppress late thread failures.
 Uncaptured stderr is conservatively an error.
 [`python-list` and `python-check`](benchmarks/python-baseline-integration.md) now
 provide static discovery and an isolated baseline for one dependency-free flat
-or `src/` package, `tests/test_*.py`, and an explicit pinned virtual environment. They do
+or `src/` package, root or `tests/` `test_*.py` files, and an explicit pinned virtual environment. They do
 not produce scored reports themselves; explicit `--lang python` connects
 [scored runs, saved reports, reruns and review](benchmarks/python-shared-runs.md).
 [Production process controls](benchmarks/python-process-integration.md)
@@ -335,7 +335,7 @@ The [feedback follow-up](benchmarks/python-feedback-profile.md) records repeated
 comparisons and a faster runtime tree traversal with unchanged content hashes
 and validation frequency. It does not expand the supported scope.
 
-Scope: one flat or `src/` package with static `pyproject.toml`, explicit `tests/test_*.py`,
+Scope: one flat or `src/` package with audited `pyproject.toml`, root or `tests/` `test_*.py`,
 boolean flips, full tests and one worker. The dedicated venv must match the pinned
 dependency set. The validator admits a small standard-library/API set, rejects
 configuration that could change collection, and verifies original/snapshot
@@ -346,6 +346,19 @@ a nine-test baseline and focused kill in a separate stronger-test copy. Static
 setuptools src discovery, a compatible pytest-only test extra, matching pythonpath
 and quiet output are admitted declaratively; project builds are never executed. The 107-test case-converter adaptation supplies additional
 execution/error evidence, not unchanged-layout support.
+
+[Unchanged Cycler validation](benchmarks/python-cycler-unchanged.md) preserves its
+layout, manifest, source and 28-test suite. The original full run stops at a mixed
+assertion/KeyError error; the two pending candidates are killed in a selected
+rerun. One additional public key-set assertion in a separate copy turns the
+error into an assertion kill. Original failed-report scores remain unavailable.
+Root tests and directory tests share the complete audited inventory; a configured
+`testpaths=["tests"]` cannot silently hide a root test. Narrow flat setuptools
+metadata permits a literal `package.__version__` reference and `py.typed` data.
+Audited optional documentation/test-tool names remain metadata only: no optional
+dependencies are installed and no plugins load. `doc/source/conf.py` and direct
+`.circleci/*.py` scripts may be retained but cannot contain tests/hooks or be
+imported by application/tests. Other ancillary Python files remain rejected.
 
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.

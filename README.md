@@ -166,13 +166,17 @@ The [feedback profile](benchmarks/python-feedback-profile.md) measures repeated
 full and focused runs and optimizes runtime traversal while retaining content checks.
 The [scope and baseline integration](benchmarks/python-baseline-integration.md)
 adds `python-list` and `python-check` for one dependency-free package with
-explicit `tests/` and a pinned virtual environment supplied through `--python`.
+audited `test_*.py` files at the root or under `tests/`, and a pinned virtual environment supplied through `--python`.
 Both flat `package/` and native `src/package/` layouts are supported. The
 [native src acceptance](benchmarks/python-src-layout.md) runs Scrubify with its
 original layout, source, tests and manifest, then kills a survivor with stronger
 tests in a separate copy. Narrow static setuptools metadata, a pytest-only test
 extra, the matching import root and quiet output are admitted without installing
 the project or executing its build backend.
+The [unchanged Cycler validation](benchmarks/python-cycler-unchanged.md) covers a
+second, larger 28-test suite, root tests, literal version metadata and inert
+documentation/CI files. Its original mixed-failure error stays unscored; one
+additional test assertion in a separate copy makes that mutation a body-failure kill.
 Explicit `--lang python --python /path/to/venv/bin/python` also supports
 [scored runs, saved reports, focused reruns and review](benchmarks/python-shared-runs.md).
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.

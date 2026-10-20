@@ -250,13 +250,19 @@ fn saved(
 #[test]
 #[ignore = "requires MUTIE_PYTHON; real scored reports, stronger tests and identity-checked reruns"]
 fn scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(false);
+    scored_review_contract(false, false);
 }
 
 #[test]
 #[ignore = "requires MUTIE_PYTHON; native src layout scoring, review and reruns"]
 fn src_scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(true);
+    scored_review_contract(true, false);
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; root tests, inert packaging and ancillary files"]
+fn root_scored_reports_and_stronger_test_reruns() {
+    scored_review_contract(false, true);
 }
 
 #[test]
@@ -294,8 +300,31 @@ fn flat_package_named_src_preserves_native_execution() {
     );
 }
 
-fn scored_review_contract(src_layout: bool) {
+fn scored_review_contract(src_layout: bool, root_tests: bool) {
     let root = fixture();
+    if root_tests {
+        fs::rename(
+            root.path().join("tests/test_sample.py"),
+            root.path().join("test_sample.py"),
+        )
+        .unwrap();
+        fs::write(root.path().join("pyproject.toml"), "[project]\nname='sample'\ndynamic=['version']\n[project.optional-dependencies]\ntests=['pytest','pytest-cov','pytest-xdist']\n[tool.setuptools]\npackages=['sample']\n[tool.setuptools.dynamic]\nversion={attr='sample.__version__'}\n[tool.setuptools.package-data]\nsample=['py.typed']\n").unwrap();
+        let source = root.path().join("sample/__init__.py");
+        fs::write(
+            &source,
+            "__version__ = '1.0'\n".to_owned() + &fs::read_to_string(&source).unwrap(),
+        )
+        .unwrap();
+        for name in ["doc/source/conf.py", ".circleci/build_docs.py"] {
+            let path = root.path().join(name);
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(
+                path,
+                "raise RuntimeError('ancillary code must never execute')\n",
+            )
+            .unwrap();
+        }
+    }
     let source_name = if src_layout {
         fs::create_dir(root.path().join("src")).unwrap();
         fs::rename(root.path().join("sample"), root.path().join("src/sample")).unwrap();
@@ -316,10 +345,13 @@ addopts = "-q"
     };
     let reports = tempfile::tempdir().unwrap();
     let source = fs::read(root.path().join(source_name)).unwrap();
-    let first = scored(
+    // This verifies reports/review/layout, not deadlines. Interpreter startup
+    // can exceed five seconds under validation load; keep timeout probes separate.
+    let first = scored_with_timeout(
         root.path(),
         reports.path(),
         &["--fail-on-missed", "--max-log-bytes", "32"],
+        "15",
     );
     assert_eq!(first.status.code(), Some(3), "{first:?}");
     let (directory, run, outcomes) = saved(&first);
@@ -403,10 +435,11 @@ addopts = "-q"
         let output = dismiss(&args);
         assert!(output.status.success(), "{output:?}");
     }
-    let reviewed = scored(
+    let reviewed = scored_with_timeout(
         root.path(),
         reports.path(),
         &["--fail-on-missed", "--min-score", "100"],
+        "15",
     );
     assert_eq!(reviewed.status.code(), Some(3), "{reviewed:?}");
     let (_, reviewed_run, reviewed_outcomes) = saved(&reviewed);
@@ -423,7 +456,7 @@ addopts = "-q"
         "from sample import optional\ndef test_optional():\n    assert optional() is False\n",
     )
     .unwrap();
-    let rerun = scored(
+    let rerun = scored_with_timeout(
         root.path(),
         reports.path(),
         &[
@@ -431,6 +464,7 @@ addopts = "-q"
             directory.to_str().unwrap(),
             "--fail-on-missed",
         ],
+        "15",
     );
     assert!(rerun.status.success(), "{rerun:?}");
     let (_, run, outcomes) = saved(&rerun);
@@ -453,10 +487,11 @@ addopts = "-q"
         fs::read_to_string(&manifest).unwrap() + "\n# changed configuration\n",
     )
     .unwrap();
-    let rejected = scored(
+    let rejected = scored_with_timeout(
         root.path(),
         reports.path(),
         &["--rerun-missed", directory.to_str().unwrap()],
+        "15",
     );
     assert!(!rejected.status.success(), "{rejected:?}");
     assert!(

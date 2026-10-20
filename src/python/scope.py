@@ -75,13 +75,20 @@ def inspect(root):
     # The test extra is declarative only: the pinned environment is supplied by
     # the caller, never resolved or installed from this manifest.
     extras = project.get("optional-dependencies", {})
-    require(isinstance(extras, dict) and set(extras) <= {"test"}
+    # These optional tools are inert metadata, never installed or auto-loaded.
+    optional_tools = {"docs": {"ipython", "matplotlib", "numpydoc", "sphinx"},
+                      "tests": {"pytest", "pytest-cov", "pytest-xdist"}}
+    audited_extras = (isinstance(extras, dict) and set(extras) <= optional_tools.keys()
+                      and all(isinstance(items, list) and items
+                              and all(isinstance(item, str) and item in optional_tools[group]
+                                      for item in items) for group, items in extras.items()))
+    require(audited_extras or (isinstance(extras, dict) and set(extras) <= {"test"}
             and all(isinstance(items, list) and items and all(
                 isinstance(item, str) and re.fullmatch(r"pytest(?:>=[0-9]+(?:\.[0-9]+){0,2})?", item)
                 and (">=" not in item or tuple(map(int, item.split(">=")[1].split("."))) <= (9, 0, 2))
-                for item in items) for items in extras.values()),
-            "Python only accepts a declarative pytest test extra")
-    require(not project.get("dynamic") and not project.get("entry-points"),
+                for item in items) for items in extras.values())),
+            "Python only accepts audited declarative test/documentation extras")
+    require(project.get("dynamic", []) in ([], ["version"]) and not project.get("entry-points"),
             "Python dynamic metadata and entry-point plugins unsupported")
     tool = config.get("tool", {})
     require(set(tool) <= {"pytest", "setuptools"}, "unsupported Python tool configuration")
@@ -89,7 +96,7 @@ def inspect(root):
     require(set(pytest_config) <= {"ini_options"}, "unsupported pytest configuration")
     options = pytest_config.get("ini_options", {})
     require(set(options) <= {"testpaths", "pythonpath", "addopts"}
-            and options.get("testpaths", ["tests"]) == ["tests"]
+            and options.get("testpaths", ["tests"]) in (["tests"], ["."])
             and options.get("addopts", "") in ("", "-q"),
             "Python only accepts full tests with optional quiet output")
     # Build metadata is never executed. Admit only a conventional static backend.
@@ -121,10 +128,28 @@ def inspect(root):
             == ([source_root] if source_root else []),
             "Python pythonpath must match the single audited source root")
     setuptools = tool.get("setuptools")
+    static_version = None
+    if project.get("dynamic"):
+        require(isinstance(setuptools, dict), "Python version requires static setuptools metadata")
+        require(setuptools.get("dynamic") == {"version": {"attr": package + ".__version__"}},
+                "Python only accepts a literal package version")
+        version_tree = ast.parse((import_root / package / "__init__.py").read_bytes())
+        versions = [node for node in version_tree.body if isinstance(node, ast.Assign)
+                    and any(isinstance(target, ast.Name) and target.id == "__version__"
+                            for target in node.targets)]
+        require(len(versions) == 1 and len(versions[0].targets) == 1
+                and isinstance(versions[0].value, ast.Constant)
+                and isinstance(versions[0].value.value, str),
+                "Python package version must be a literal string")
+        static_version = {"version": {"attr": package + ".__version__"}}
     if setuptools is not None:
-        require(source_root == "src" and setuptools == {
-            "package-dir": {"": "src"}, "packages": {"find": {"where": ["src"]}}},
-            "Python only accepts static setuptools src package discovery")
+        src_mapping = {"package-dir": {"": "src"}, "packages": {"find": {"where": ["src"]}}}
+        flat_mapping = {"packages": [package], "package-data": {package: ["py.typed"]}}
+        if static_version is not None:
+            flat_mapping["dynamic"] = static_version
+        require((source_root == "src" and setuptools == src_mapping)
+                or (not source_root and setuptools == flat_mapping),
+                "Python only accepts static setuptools package discovery")
     require(package not in sys.stdlib_module_names | {
         "pytest", "_pytest", "tests", "pluggy", "packaging", "iniconfig", "pygments", "pip"},
             "Python package shadows an admitted dependency")
@@ -145,9 +170,29 @@ def inspect(root):
         if path.suffix != ".py":
             continue
         parts = path.parts
-        is_test = parts[0] == "tests"
         package_parts = (source_root, package) if source_root else (package,)
-        require(parts[:len(package_parts)] == package_parts or is_test,
+        in_package = parts[:len(package_parts)] == package_parts
+        if not in_package and (relative == "doc/source/conf.py"
+                               or (len(parts) == 2 and parts[0] == ".circleci")):
+            # Documentation configuration and CI scripts are retained, never
+            # imported or executed. They cannot conceal tests or pytest hooks.
+            require(not path.name.startswith("test_") and not path.name.endswith("_test.py"),
+                    "Python ancillary files cannot be tests")
+            doc_tree = ast.parse((root / path).read_bytes())
+            require(not any(
+                (isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
+                 and (node.name.startswith(("test", "Test", "pytest_"))))
+                or (isinstance(node, ast.Name) and node.id.startswith(("pytest", "test_", "Test")))
+                or (isinstance(node, (ast.Import, ast.ImportFrom)) and any(
+                    alias.name.split(".")[0] in {"pytest", "unittest"} for alias in node.names))
+                or (isinstance(node, ast.ImportFrom) and (node.module or "").split(".")[0]
+                    in {"pytest", "unittest"}) for node in ast.walk(doc_tree)),
+                    "Python ancillary configuration cannot contain tests/hooks")
+            continue
+        is_test = parts[0] == "tests" or (len(parts) == 1 and path.name.startswith("test_"))
+        require(not (is_test and len(parts) == 1 and options.get("testpaths") == ["tests"]),
+                "Python root test is excluded by configured testpaths")
+        require(in_package or is_test,
                 f"Python executable file outside package/tests: {relative}")
         module_parts = parts[1:] if source_root and not is_test else parts
         require("__pycache__" not in parts and all(not p.startswith(".") for p in parts),
@@ -289,7 +334,7 @@ def inspect(root):
                                       column=node.col_offset + 1, end_line=node.end_lineno,
                                       end_column=node.end_col_offset + 1, original=original,
                                       replacement="False" if node.value else "True"))
-    require(tests, "Python requires test_*.py files under tests/")
+    require(tests, "Python requires test_*.py files at the root or under tests/")
     return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), sources=sorted(sources),
                 mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))
 
