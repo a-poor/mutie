@@ -1,0 +1,4661 @@
+{
+  "recorded": "2026-10-20",
+  "mutie_base_commit": "efb5650",
+  "environment": {
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "dependencies": {
+      "pytest": "9.0.2",
+      "pluggy": "1.7.0",
+      "packaging": "26.3",
+      "iniconfig": "2.3.1",
+      "Pygments": "2.21.0"
+    }
+  },
+  "platform": "macOS arm64",
+  "project_commit": "88eefaacf7d0caaa701af7c8ab2d0ab3f17086f1",
+  "native_controls": 54,
+  "replay_controls": 66,
+  "project_preserved": true,
+  "inventory_sets_preserved": true,
+  "post_atexit_destructor_errors_observed": true,
+  "original_project_hashes": {
+    "LICENSE": "9e9f9b4b2e7543ad1486f1328bf9ec50e5a5e2bb9caceb59652496dd61e64133",
+    "requirements.txt": "3e07bb9af84e0883d95ff568abc44fa3d501f606f7293aeb534d0c0b6e94438e",
+    "pyproject.toml": "8c514dfd4fbaa87053481802d096ec25a1a38bf4d8c131a3dc40e2a68563f537",
+    "MANIFEST.in": "853ecc90d436ab8d2101abed0a3c2d680b7d0c683bfcbf21aac6d6def755a595",
+    ".editorconfig": "8c4aa8d6df14f0355b625f1728fabea61374c549357374ae217191cd3a773496",
+    "setup.py": "45dd7e6e530434ee479609c01209e30cb7c1293f03aab1558f853d5793434b3a",
+    ".gitignore": "1fda7cc5d7a7147083547856a3129fdcc9871f8b04334fb2110d2c4ca05d2b13",
+    "tox.ini": "2e028d386f3e397e90166f17efc0fee251f283220eee191747bc84ca17ba3a99",
+    "setup.cfg": "6bcf00e929ecd365bdce62ec4af2fe854bfe67988beab103c2c0abe853da4c6f",
+    "README.rst": "cd1dc3368b42f8dc5b35db896fc6d52b8bb5925267ac122e118becf21f15a54c",
+    "test_inflection.py": "82be5a5d07c6dd244a68b6f41a61a1603172e688cb38ff9807e3f47850f02548",
+    ".travis.yml": "bbffc265ea5b7ffd777de2d7526e90d093a262f3f26788554c7731cd0393daaf",
+    "inflection/__init__.py": "b6b089383f812e6986f917a3c689722c54b8a69f04ded2ac32b627cbcfdaf35e",
+    "inflection/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/index.rst": "faefd7372d9d8d638318c5039edc16780804c56755611e9858e4f56ace561cf6",
+    "docs/Makefile": "bda46b9bf49ebbde00485891036a07c5bee063c075db0ade1b4e6055c5d0f963",
+    "docs/conf.py": "efe390c1f8f8c36ba1d4b2cdefb7b87fc7ed7804407c53e67f3d3019971c5da2"
+  },
+  "probe_sha256": {
+    "audit.py": "0350cf467628cca7a3402b9eb169240e21284216207ea38fb307ce9a1687c08c",
+    "lifetime_driver.py": "aef802b51b31e94b1b69182a585e804aa011cefe82038c42b5d1808bbfe3d6c9",
+    "lifetime_protocol.py": "9b9d12a0f4aff617f3a3b8828f71cb166bbe6b9409534550618443d5c9adefe7",
+    "lifetime_audit.py": "2c85bb45788673413f9de330feeb47d7071b1c6b9c708070b8b09be263e2bb30",
+    "inflection-stronger.py": "bec56b1221e279a0eabcae8f38d2a77817f9dd8c43fcb257d555feea7e1e0ac8"
+  },
+  "raw_results_path": "/tmp/mutie-pytest-lifetime-scoped/results.json",
+  "raw_results_sha256": "0edfbfe145c43be63361e85daf26622424ef43afbfae34160bf5140692ebc0be",
+  "records": [
+    {
+      "name": "clean-pass",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.7054699170403183,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/clean-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/clean-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/clean-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/clean-pass/pytest.ini",
+        "e8d8d07b032043d489548777dceddc9f",
+        "test_subject.py"
+      ],
+      "pid": 64982,
+      "nonce": "e8d8d07b032043d489548777dceddc9f",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64982,
+          "nonce": "e8d8d07b032043d489548777dceddc9f",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64982,
+          "nonce": "e8d8d07b032043d489548777dceddc9f",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 64982,
+          "nonce": "e8d8d07b032043d489548777dceddc9f",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64982,
+          "nonce": "e8d8d07b032043d489548777dceddc9f",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64982,
+          "nonce": "e8d8d07b032043d489548777dceddc9f",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "9850d05f322473ab735529943e3ca42392e332763515f70212b26e72dc857148"
+      }
+    },
+    {
+      "name": "clean-fail",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.5498510840116069,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/clean-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/clean-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/clean-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/clean-fail/pytest.ini",
+        "e6995e57cc2b4abea6c6c83ba1a378ed",
+        "test_subject.py"
+      ],
+      "pid": 64984,
+      "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 64984,
+          "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64984,
+          "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64984,
+          "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 64984,
+          "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64984,
+          "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64984,
+          "nonce": "e6995e57cc2b4abea6c6c83ba1a378ed",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "8adc97e7e6c701498ad7e2e196216cbdf1e8d391d69fe5cf5869c3793bcad445",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "2be1ded9a0aa11453e418bea04bc89db145f1fd7bed97dfc6c1dd16456f52041"
+      }
+    },
+    {
+      "name": "clean_atexit-pass",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.2866645000176504,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/clean_atexit-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/clean_atexit-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/clean_atexit-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/clean_atexit-pass/pytest.ini",
+        "19cf6e0a8c264a77946fa3da607008d0",
+        "test_subject.py"
+      ],
+      "pid": 64986,
+      "nonce": "19cf6e0a8c264a77946fa3da607008d0",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64986,
+          "nonce": "19cf6e0a8c264a77946fa3da607008d0",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64986,
+          "nonce": "19cf6e0a8c264a77946fa3da607008d0",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 64986,
+          "nonce": "19cf6e0a8c264a77946fa3da607008d0",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64986,
+          "nonce": "19cf6e0a8c264a77946fa3da607008d0",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64986,
+          "nonce": "19cf6e0a8c264a77946fa3da607008d0",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "8408a65f2f586e04d4ad42382125f0f0c13a161d3b1b4b0e12394b34303da32e"
+      }
+    },
+    {
+      "name": "clean_atexit-fail",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.6039522079518065,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/clean_atexit-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/clean_atexit-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/clean_atexit-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/clean_atexit-fail/pytest.ini",
+        "8a03674761ff476180c6f52c7f3c9833",
+        "test_subject.py"
+      ],
+      "pid": 64987,
+      "nonce": "8a03674761ff476180c6f52c7f3c9833",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 64987,
+          "nonce": "8a03674761ff476180c6f52c7f3c9833",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64987,
+          "nonce": "8a03674761ff476180c6f52c7f3c9833",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64987,
+          "nonce": "8a03674761ff476180c6f52c7f3c9833",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 64987,
+          "nonce": "8a03674761ff476180c6f52c7f3c9833",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64987,
+          "nonce": "8a03674761ff476180c6f52c7f3c9833",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64987,
+          "nonce": "8a03674761ff476180c6f52c7f3c9833",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "3fda8fbc32f3038a47cf77af0174d34139eecbb7d53e3bf6e5bb18be5210e2cd",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "f5721f09b2923fa00f85ced862cfa0c72ce0d4521ab89132bba2d62d19fdd1cd"
+      }
+    },
+    {
+      "name": "atexit_raise-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.452857874915935,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_raise-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_raise-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_raise-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_raise-pass/pytest.ini",
+        "93d66cce09444b95b60e9d43f38974ec",
+        "test_subject.py"
+      ],
+      "pid": 64988,
+      "nonce": "93d66cce09444b95b60e9d43f38974ec",
+      "stderr_bytes": 285,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64988,
+          "nonce": "93d66cce09444b95b60e9d43f38974ec",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64988,
+          "nonce": "93d66cce09444b95b60e9d43f38974ec",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 64988,
+          "nonce": "93d66cce09444b95b60e9d43f38974ec",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64988,
+          "nonce": "93d66cce09444b95b60e9d43f38974ec",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64988,
+          "nonce": "93d66cce09444b95b60e9d43f38974ec",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 64988,
+          "nonce": "93d66cce09444b95b60e9d43f38974ec",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "3039087819285b722a039f4db9d64a2efaee0bec5c27b374a5f06ba1ed82c249",
+        "evidence.jsonl": "8ce106dc1410a8f1e90236f880bcf7f5db6588f26aa7877971dbeed33458b641"
+      }
+    },
+    {
+      "name": "atexit_raise-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.3959275420056656,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_raise-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_raise-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_raise-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_raise-fail/pytest.ini",
+        "1af2943227af4e329c989836aa913a56",
+        "test_subject.py"
+      ],
+      "pid": 64995,
+      "nonce": "1af2943227af4e329c989836aa913a56",
+      "stderr_bytes": 285,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 64995,
+          "nonce": "1af2943227af4e329c989836aa913a56",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "430efefa4b399b7de93ed6002d11c1a78066c3e63b99f4247e936e0f3d040012",
+        "stderr.log": "89ffb68760b832f115169dee960b6c31c0b5e83546d3f393e27df0620dcec3e7",
+        "evidence.jsonl": "4d6d2f9c27904c4c76202885a775f06a2583a1571241c769ba0a8fea38397b44"
+      }
+    },
+    {
+      "name": "atexit_assert-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.4437185830902308,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_assert-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_assert-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_assert-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_assert-pass/pytest.ini",
+        "b363e8eaf9c241b1bc9293387b15257a",
+        "test_subject.py"
+      ],
+      "pid": 64997,
+      "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+      "stderr_bytes": 282,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 64997,
+          "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 64997,
+          "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 64997,
+          "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 64997,
+          "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 64997,
+          "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 64997,
+          "nonce": "b363e8eaf9c241b1bc9293387b15257a",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "fe8ffb13149e96b15da488bc099d5912eacd305c8f0b974d82e26b2270ca868a",
+        "evidence.jsonl": "6d0414cc52fdb4de2cd5e420413cce7aa41d42265e1f5fa869755dfdd9acc9c8"
+      }
+    },
+    {
+      "name": "atexit_assert-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.7542208330705762,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_assert-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_assert-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_assert-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_assert-fail/pytest.ini",
+        "a202d61953784bd4aa4b179ddfd59cd5",
+        "test_subject.py"
+      ],
+      "pid": 65001,
+      "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+      "stderr_bytes": 282,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 65001,
+          "nonce": "a202d61953784bd4aa4b179ddfd59cd5",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "430efefa4b399b7de93ed6002d11c1a78066c3e63b99f4247e936e0f3d040012",
+        "stderr.log": "aacb9cc739bc8112136898ae1d9ea93118c97d1a11b8f0b10bea085c4c1e76d0",
+        "evidence.jsonl": "0e6ef2e3d393b62d9d6fda8eb4d974e23cd686f0e92711da6a78a72faba2fd50"
+      }
+    },
+    {
+      "name": "atexit_system_exit-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.383511207997799,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-pass/pytest.ini",
+        "2cb7a6af608a45b1a065e253060b589f",
+        "test_subject.py"
+      ],
+      "pid": 65002,
+      "nonce": "2cb7a6af608a45b1a065e253060b589f",
+      "stderr_bytes": 77,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65002,
+          "nonce": "2cb7a6af608a45b1a065e253060b589f",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65002,
+          "nonce": "2cb7a6af608a45b1a065e253060b589f",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65002,
+          "nonce": "2cb7a6af608a45b1a065e253060b589f",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65002,
+          "nonce": "2cb7a6af608a45b1a065e253060b589f",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65002,
+          "nonce": "2cb7a6af608a45b1a065e253060b589f",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 65002,
+          "nonce": "2cb7a6af608a45b1a065e253060b589f",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "b6f6784910d1a5893d3c8d26398a0c428385cc3e2e71d403e31499b854ca12d1",
+        "evidence.jsonl": "0422c92dc6ddf4dd04d7370ef2a4bc8f64f524d26432ff39cb87e49263748cce"
+      }
+    },
+    {
+      "name": "atexit_system_exit-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 2.79918249999173,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_system_exit-fail/pytest.ini",
+        "d03ff47f70e3419ab8852446bba2253a",
+        "test_subject.py"
+      ],
+      "pid": 65004,
+      "nonce": "d03ff47f70e3419ab8852446bba2253a",
+      "stderr_bytes": 77,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 65004,
+          "nonce": "d03ff47f70e3419ab8852446bba2253a",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "343ed50f9d28faeb59c655681a179cf5dd63cc0b5940b0eac91c74bfb9b8a58a",
+        "stderr.log": "b6f6784910d1a5893d3c8d26398a0c428385cc3e2e71d403e31499b854ca12d1",
+        "evidence.jsonl": "08db12656fcf5fda088ec23331ea11104f2ef4c282e7d12cd459081cd69e0019"
+      }
+    },
+    {
+      "name": "atexit_exit_zero-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.3992924588965252,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-pass/pytest.ini",
+        "c42a42fca13f4191b9ab1e07f389ab6a",
+        "test_subject.py"
+      ],
+      "pid": 65233,
+      "nonce": "c42a42fca13f4191b9ab1e07f389ab6a",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65233,
+          "nonce": "c42a42fca13f4191b9ab1e07f389ab6a",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65233,
+          "nonce": "c42a42fca13f4191b9ab1e07f389ab6a",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65233,
+          "nonce": "c42a42fca13f4191b9ab1e07f389ab6a",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65233,
+          "nonce": "c42a42fca13f4191b9ab1e07f389ab6a",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "284bbb1877ccf6e3f16986277c94c1c1d54311b5a18796b7c3685fbe3eb97326"
+      }
+    },
+    {
+      "name": "atexit_exit_zero-fail",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.7321905409917235,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_exit_zero-fail/pytest.ini",
+        "ee38b11f892344ddbddf0007c4749e7c",
+        "test_subject.py"
+      ],
+      "pid": 65238,
+      "nonce": "ee38b11f892344ddbddf0007c4749e7c",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65238,
+          "nonce": "ee38b11f892344ddbddf0007c4749e7c",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65238,
+          "nonce": "ee38b11f892344ddbddf0007c4749e7c",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65238,
+          "nonce": "ee38b11f892344ddbddf0007c4749e7c",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65238,
+          "nonce": "ee38b11f892344ddbddf0007c4749e7c",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65238,
+          "nonce": "ee38b11f892344ddbddf0007c4749e7c",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "edfeddf4e02e400287d737a16a4307035f849d6764af91091bcf158fce310a62",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "9310ef4f34ebfa4b3af8fac944a3f637dfef3b642cdfd820a25a8b479dbe64b7"
+      }
+    },
+    {
+      "name": "atexit_clear-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 2.3394868329633027,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_clear-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_clear-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_clear-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_clear-pass/pytest.ini",
+        "8837f27729e9462ba3f2f90419c77504",
+        "test_subject.py"
+      ],
+      "pid": 65245,
+      "nonce": "8837f27729e9462ba3f2f90419c77504",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65245,
+          "nonce": "8837f27729e9462ba3f2f90419c77504",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65245,
+          "nonce": "8837f27729e9462ba3f2f90419c77504",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65245,
+          "nonce": "8837f27729e9462ba3f2f90419c77504",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65245,
+          "nonce": "8837f27729e9462ba3f2f90419c77504",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "35d86279d96ed65491ba8ff0748e1c8e7891711531404dc5d4b9cd6ae33de3ec",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "859b8fbd76f0cef6b2fa390f9b523aa3fb7c02949ca3d578ab9068d66d68ff45"
+      }
+    },
+    {
+      "name": "atexit_clear-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 3.8648228329839185,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_clear-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_clear-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_clear-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_clear-fail/pytest.ini",
+        "abd3d04fe7134b88b3f06ca6ee0df505",
+        "test_subject.py"
+      ],
+      "pid": 65250,
+      "nonce": "abd3d04fe7134b88b3f06ca6ee0df505",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65250,
+          "nonce": "abd3d04fe7134b88b3f06ca6ee0df505",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65250,
+          "nonce": "abd3d04fe7134b88b3f06ca6ee0df505",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65250,
+          "nonce": "abd3d04fe7134b88b3f06ca6ee0df505",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65250,
+          "nonce": "abd3d04fe7134b88b3f06ca6ee0df505",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65250,
+          "nonce": "abd3d04fe7134b88b3f06ca6ee0df505",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bc6666f10e610ee57c86e80eaed8b081c44dca9a243fa5069096ce0f818cd4a2",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "454c25a802ff9c1a34a98e65afe549ed15891e09a03696f4989ca9af0cb351a4"
+      }
+    },
+    {
+      "name": "atexit_stderr-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.5624989579664543,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-pass/pytest.ini",
+        "4b3110edbc2f473d9c611cc18224aaf9",
+        "test_subject.py"
+      ],
+      "pid": 65573,
+      "nonce": "4b3110edbc2f473d9c611cc18224aaf9",
+      "stderr_bytes": 16,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65573,
+          "nonce": "4b3110edbc2f473d9c611cc18224aaf9",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65573,
+          "nonce": "4b3110edbc2f473d9c611cc18224aaf9",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65573,
+          "nonce": "4b3110edbc2f473d9c611cc18224aaf9",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65573,
+          "nonce": "4b3110edbc2f473d9c611cc18224aaf9",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65573,
+          "nonce": "4b3110edbc2f473d9c611cc18224aaf9",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "092588c0a5ef410a35b19cc04d4be817d5d291509865372951d398821c1648f8",
+        "evidence.jsonl": "14ef345870fae32673d8493facf05cd6fd8450ffcabdabc814635b4bdd4349b9"
+      }
+    },
+    {
+      "name": "atexit_stderr-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 2.4600369159597903,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stderr-fail/pytest.ini",
+        "36f4f768760d41dfb3eada171e7a9898",
+        "test_subject.py"
+      ],
+      "pid": 65575,
+      "nonce": "36f4f768760d41dfb3eada171e7a9898",
+      "stderr_bytes": 16,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65575,
+          "nonce": "36f4f768760d41dfb3eada171e7a9898",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65575,
+          "nonce": "36f4f768760d41dfb3eada171e7a9898",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65575,
+          "nonce": "36f4f768760d41dfb3eada171e7a9898",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65575,
+          "nonce": "36f4f768760d41dfb3eada171e7a9898",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65575,
+          "nonce": "36f4f768760d41dfb3eada171e7a9898",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65575,
+          "nonce": "36f4f768760d41dfb3eada171e7a9898",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "3fda8fbc32f3038a47cf77af0174d34139eecbb7d53e3bf6e5bb18be5210e2cd",
+        "stderr.log": "092588c0a5ef410a35b19cc04d4be817d5d291509865372951d398821c1648f8",
+        "evidence.jsonl": "69122d79eb876555d764db6230baca0855fe9eac370b2f08d8eb8b1957809d2e"
+      }
+    },
+    {
+      "name": "late_gc-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.7414937500143424,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/late_gc-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/late_gc-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/late_gc-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/late_gc-pass/pytest.ini",
+        "48c016d3e8e9434e8cbd88bc02bc0926",
+        "test_subject.py"
+      ],
+      "pid": 65607,
+      "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+      "stderr_bytes": 317,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65607,
+          "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65607,
+          "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65607,
+          "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65607,
+          "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65607,
+          "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 65607,
+          "nonce": "48c016d3e8e9434e8cbd88bc02bc0926",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "edc8fd9a19babde7f35aad93fc4e63130a5b6da2bb6be41cd1c47eca64ab6a73",
+        "evidence.jsonl": "7788e4f09321a10d43256ee27b96b0a9d8179c027d4d331d42bba5802c72f6d0"
+      }
+    },
+    {
+      "name": "late_gc-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.7062725420109928,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/late_gc-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/late_gc-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/late_gc-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/late_gc-fail/pytest.ini",
+        "52a99ab05f8d4d4487942d3a70bc5019",
+        "test_subject.py"
+      ],
+      "pid": 65616,
+      "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+      "stderr_bytes": 317,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 65616,
+          "nonce": "52a99ab05f8d4d4487942d3a70bc5019",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4d735290a61559f6c1683d7ca51f0ea61026154503dc0d8501d42ec35c46304b",
+        "stderr.log": "5ed4d8bdc7172488bd40e9fce8f1b3841b885e113ee448650b967e28d0ddcd80",
+        "evidence.jsonl": "e5da7b505704d6bd8cea2866c1fcd8c434366447ec5dc7d6072d6a623292420c"
+      }
+    },
+    {
+      "name": "module_gc-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.5014526249142364,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/module_gc-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/module_gc-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/module_gc-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/module_gc-pass/pytest.ini",
+        "4e1ce16f793642eb8f48ac86031327b1",
+        "test_subject.py"
+      ],
+      "pid": 65619,
+      "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+      "stderr_bytes": 260,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65619,
+          "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65619,
+          "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65619,
+          "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65619,
+          "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65619,
+          "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 10,
+          "pid": 65619,
+          "nonce": "4e1ce16f793642eb8f48ac86031327b1",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "b2f5e0176757ad96770b80cab96ff402b7c54ece6181426be746039ead12bb95",
+        "evidence.jsonl": "6a03ff030e661f9806f4c8195d5717ece77de2dcf68e671cf0130cb327bdd531"
+      }
+    },
+    {
+      "name": "module_gc-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.5561474999412894,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/module_gc-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/module_gc-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/module_gc-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/module_gc-fail/pytest.ini",
+        "c1a98dde808e4372b87c17d0e3399bb5",
+        "test_subject.py"
+      ],
+      "pid": 65620,
+      "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+      "stderr_bytes": 260,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 10,
+          "pid": 65620,
+          "nonce": "c1a98dde808e4372b87c17d0e3399bb5",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "430efefa4b399b7de93ed6002d11c1a78066c3e63b99f4247e936e0f3d040012",
+        "stderr.log": "801547a70f1b3efd05dde57d014240c44c41032e765b1a6f924a48ed792a03bd",
+        "evidence.jsonl": "e7b550f1d7ea5c7b0b13c9b85d89243773726e8ac6c613ed374407c9b455a75f"
+      }
+    },
+    {
+      "name": "weakref_cleanup-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.4835667919833213,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-pass/pytest.ini",
+        "032cdd05b622422ebb2641b78840603d",
+        "test_subject.py"
+      ],
+      "pid": 65621,
+      "nonce": "032cdd05b622422ebb2641b78840603d",
+      "stderr_bytes": 704,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65621,
+          "nonce": "032cdd05b622422ebb2641b78840603d",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65621,
+          "nonce": "032cdd05b622422ebb2641b78840603d",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65621,
+          "nonce": "032cdd05b622422ebb2641b78840603d",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65621,
+          "nonce": "032cdd05b622422ebb2641b78840603d",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65621,
+          "nonce": "032cdd05b622422ebb2641b78840603d",
+          "event": "lifetime_error",
+          "kind": "uncaught"
+        },
+        {
+          "seq": 10,
+          "pid": 65621,
+          "nonce": "032cdd05b622422ebb2641b78840603d",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "2ce9fb918f0651746f44df9dcebde4bec72add79821b780c842a45277e61e665",
+        "evidence.jsonl": "1b8b133ad72a167b7db97025db888629a8ea701dffe4eeb1dac8c203173d697b"
+      }
+    },
+    {
+      "name": "weakref_cleanup-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.780042166938074,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/weakref_cleanup-fail/pytest.ini",
+        "7e47ae01b47c4417b36fee8c37e9ca32",
+        "test_subject.py"
+      ],
+      "pid": 65626,
+      "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+      "stderr_bytes": 704,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "lifetime_error",
+          "kind": "uncaught"
+        },
+        {
+          "seq": 10,
+          "pid": 65626,
+          "nonce": "7e47ae01b47c4417b36fee8c37e9ca32",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "8464f39752722f9de06d2586676fdba7d5289f2461d48494c9aafc4a2c4bcc74",
+        "stderr.log": "2894f3fc7e714f734eb313f8f3bed610ebdeb1af6e5db2cc4c639f3cffccfe8e",
+        "evidence.jsonl": "7a822db7845c91858d145674b98ef8a977f97f442f1933494ff6faf0abea8dc1"
+      }
+    },
+    {
+      "name": "hook_replaced-pass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.4501124159432948,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/hook_replaced-pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/hook_replaced-pass/project",
+        "/tmp/mutie-pytest-lifetime-scoped/hook_replaced-pass/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/hook_replaced-pass/pytest.ini",
+        "389f75d463b04957bb797b73b557ac3a",
+        "test_subject.py"
+      ],
+      "pid": 65635,
+      "nonce": "389f75d463b04957bb797b73b557ac3a",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65635,
+          "nonce": "389f75d463b04957bb797b73b557ac3a",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65635,
+          "nonce": "389f75d463b04957bb797b73b557ac3a",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65635,
+          "nonce": "389f75d463b04957bb797b73b557ac3a",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65635,
+          "nonce": "389f75d463b04957bb797b73b557ac3a",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65635,
+          "nonce": "389f75d463b04957bb797b73b557ac3a",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": false,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "0032c5938d9b4aae3fe8edc6f999101584bb52d1a04bdd57826c998b23bd8d63"
+      }
+    },
+    {
+      "name": "hook_replaced-fail",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.944292875006795,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/hook_replaced-fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/hook_replaced-fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/hook_replaced-fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/hook_replaced-fail/pytest.ini",
+        "7fa38dc798f341558ec6bba63f88ae19",
+        "test_subject.py"
+      ],
+      "pid": 65637,
+      "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65637,
+          "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65637,
+          "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65637,
+          "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65637,
+          "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65637,
+          "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65637,
+          "nonce": "7fa38dc798f341558ec6bba63f88ae19",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": false,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "edfeddf4e02e400287d737a16a4307035f849d6764af91091bcf158fce310a62",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "2ae294b0848bd3f1e78d3915a6ff8214be95b983cd38bc285f513d810cf39c26"
+      }
+    },
+    {
+      "name": "unittest_setup",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.643129542004317,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/unittest_setup/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/unittest_setup/project",
+        "/tmp/mutie-pytest-lifetime-scoped/unittest_setup/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/unittest_setup/pytest.ini",
+        "152150d6c85c480780514a05f14ff3b0",
+        "test_subject.py"
+      ],
+      "pid": 65659,
+      "nonce": "152150d6c85c480780514a05f14ff3b0",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "c2f34b1bf93324fbbb8ca986bba147a32cf6a55d2b55a04f539fe29ae38b91ec",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 5,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "phase",
+          "node": "test_subject.py::TestExample::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 2,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "unsupported",
+          "kind": "unittest",
+          "node": "test_subject.py::TestExample::test_body"
+        },
+        {
+          "seq": 7,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 8,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 9,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 10,
+          "pid": 65659,
+          "nonce": "152150d6c85c480780514a05f14ff3b0",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "1d93ed43e7d084977af1e73ff9a6b965c255c785d95b8ad8fc2fd5e55d0a11f6",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "59c7e8fe0803529fcdd0eacd3a9ce8df05ee6bb0213cec7c365839cd2acb8d5f"
+      }
+    },
+    {
+      "name": "unittest_body",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.6820590409915894,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/unittest_body/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/unittest_body/project",
+        "/tmp/mutie-pytest-lifetime-scoped/unittest_body/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/unittest_body/pytest.ini",
+        "19340ccd6c2e43839ab6ad7134dbb876",
+        "test_subject.py"
+      ],
+      "pid": 65699,
+      "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "c2f34b1bf93324fbbb8ca986bba147a32cf6a55d2b55a04f539fe29ae38b91ec",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 5,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "phase",
+          "node": "test_subject.py::TestExample::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 2,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "unsupported",
+          "kind": "unittest",
+          "node": "test_subject.py::TestExample::test_body"
+        },
+        {
+          "seq": 7,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 8,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 9,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 10,
+          "pid": 65699,
+          "nonce": "19340ccd6c2e43839ab6ad7134dbb876",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "0a5c2577da367a949adcb1a8d84b585b40d2cae306acbe59f960f26ec7257a3b",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "3341ecaf547bbeb9e39a3baae21c5719da11e2103c991f7034e2c0727889a93d"
+      }
+    },
+    {
+      "name": "setup_failure",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.5449257500004023,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/setup_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/setup_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/setup_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/setup_failure/pytest.ini",
+        "1499ad86fe4a4e26a5162221dcb3eec2",
+        "test_subject.py"
+      ],
+      "pid": 65701,
+      "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 3,
+          "pid": 65701,
+          "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "setup",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65701,
+          "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 5,
+          "pid": 65701,
+          "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 6,
+          "pid": 65701,
+          "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 7,
+          "pid": 65701,
+          "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 8,
+          "pid": 65701,
+          "nonce": "1499ad86fe4a4e26a5162221dcb3eec2",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "821f22dcda699cf07e7ba989f9b6d0aba2d815fac0c16e2d5ea2eebe19f9dbef",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "1ea329d7deb3a8597aa43d83bd0db0dcab816d2b14b3ead7881c33aaa407d1a8"
+      }
+    },
+    {
+      "name": "teardown_failure",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.4793184170266613,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/teardown_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/teardown_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/teardown_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/teardown_failure/pytest.ini",
+        "d5117a6ebd934b6680cd86cbacdaa017",
+        "test_subject.py"
+      ],
+      "pid": 65703,
+      "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:failed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 5,
+          "pid": 65703,
+          "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "teardown",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65703,
+          "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65703,
+          "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65703,
+          "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65703,
+          "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65703,
+          "nonce": "d5117a6ebd934b6680cd86cbacdaa017",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "00ea3c65be49530fd334fd8220d67b3324ab0a5d8a17c514862e9f948a81f0e4",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "e2768ba6f2343e6d478775676b2d48225aa4ca36d63ec6d247425606900c9c91"
+      }
+    },
+    {
+      "name": "body_teardown_failure",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.754622457898222,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/body_teardown_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/body_teardown_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/body_teardown_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/body_teardown_failure/pytest.ini",
+        "1b47d3ef975b4bd7b46d5014a478d97b",
+        "test_subject.py"
+      ],
+      "pid": 65704,
+      "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:failed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        },
+        {
+          "seq": 5,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "teardown",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65704,
+          "nonce": "1b47d3ef975b4bd7b46d5014a478d97b",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "6d092699115d909f5c0ff10eabd10b4ba2f6173969ff008737d10254f75435be",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "5342e2896c7eb6d819b7821720516cc377d0b40782089ae32c012a4b7389c107"
+      }
+    },
+    {
+      "name": "collection_error",
+      "classification": "error",
+      "exit_code": 2,
+      "wall_seconds": 1.6456107079284266,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/collection_error/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/collection_error/project",
+        "/tmp/mutie-pytest-lifetime-scoped/collection_error/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/collection_error/pytest.ini",
+        "c3b4fe5982924f9b8f1118d1a5542e84",
+        "test_subject.py"
+      ],
+      "pid": 65706,
+      "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 0,
+      "sorted_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "phase_counts": {},
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65706,
+          "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 2,
+          "pid": 65706,
+          "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+          "event": "collection_error",
+          "node": "test_subject.py"
+        },
+        {
+          "seq": 4,
+          "pid": 65706,
+          "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+          "event": "finish",
+          "status": 2
+        },
+        {
+          "seq": 5,
+          "pid": 65706,
+          "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+          "event": "returned",
+          "status": 2,
+          "imports": {}
+        },
+        {
+          "seq": 6,
+          "pid": 65706,
+          "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 7,
+          "pid": 65706,
+          "nonce": "c3b4fe5982924f9b8f1118d1a5542e84",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "b588a8ed4046ffe180f3e50b6eb5e313da2429bcc86776a9bdd258df8be08579",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "177446a0652f7c283d76546f0a6ec0ba63c55dce1c0ab73afb6f0bd4774a7a3e"
+      }
+    },
+    {
+      "name": "no_tests",
+      "classification": "error",
+      "exit_code": 5,
+      "wall_seconds": 2.221177167026326,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/no_tests/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/no_tests/project",
+        "/tmp/mutie-pytest-lifetime-scoped/no_tests/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/no_tests/pytest.ini",
+        "a8afd9b313f64a2db4b2952428902960",
+        "test_subject.py"
+      ],
+      "pid": 65708,
+      "nonce": "a8afd9b313f64a2db4b2952428902960",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 0,
+      "sorted_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "phase_counts": {},
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65708,
+          "nonce": "a8afd9b313f64a2db4b2952428902960",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 3,
+          "pid": 65708,
+          "nonce": "a8afd9b313f64a2db4b2952428902960",
+          "event": "finish",
+          "status": 5
+        },
+        {
+          "seq": 4,
+          "pid": 65708,
+          "nonce": "a8afd9b313f64a2db4b2952428902960",
+          "event": "returned",
+          "status": 5,
+          "imports": {}
+        },
+        {
+          "seq": 5,
+          "pid": 65708,
+          "nonce": "a8afd9b313f64a2db4b2952428902960",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 6,
+          "pid": 65708,
+          "nonce": "a8afd9b313f64a2db4b2952428902960",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "a6fc53a5cef0fe8278c459c532a5e372bbe2dd65e4c365a7d7757a210299799f",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "248a00257c1f8b166839a2693a33cc9822df82b08c882a20bddfc64cb348cb20"
+      }
+    },
+    {
+      "name": "early_exit",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.5332540409872308,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/early_exit/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/early_exit/project",
+        "/tmp/mutie-pytest-lifetime-scoped/early_exit/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/early_exit/pytest.ini",
+        "5a7bb8bba8c24b7a9f1d679a0aa388e2",
+        "test_subject.py"
+      ],
+      "pid": 65793,
+      "nonce": "5a7bb8bba8c24b7a9f1d679a0aa388e2",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65793,
+          "nonce": "5a7bb8bba8c24b7a9f1d679a0aa388e2",
+          "event": "lifetime_start"
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "3ab36316e3ce09fe9f2349da242934bbf12fe29d0e6edd0b61c558c68e778aff"
+      }
+    },
+    {
+      "name": "same_named_exception",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.7685104579431936,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/same_named_exception/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/same_named_exception/project",
+        "/tmp/mutie-pytest-lifetime-scoped/same_named_exception/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/same_named_exception/pytest.ini",
+        "c125104d1cc2461eb5f77be5a43ffe16",
+        "test_subject.py"
+      ],
+      "pid": 65795,
+      "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65795,
+          "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": false,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65795,
+          "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65795,
+          "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65795,
+          "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65795,
+          "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65795,
+          "nonce": "c125104d1cc2461eb5f77be5a43ffe16",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "7b398413f99cefbb2c1650a95a89be4ef8b40f1a13af1ce52363c413ec4acd8f",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "11c1804ba957e4be373a641799fe6c41dbea1a3c115a5c5e9851bc8617d1e939"
+      }
+    },
+    {
+      "name": "explicit_body_fail",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.673501625075005,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/explicit_body_fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/explicit_body_fail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/explicit_body_fail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/explicit_body_fail/pytest.ini",
+        "bce27e41c97949c8a6c20bb1ed690951",
+        "test_subject.py"
+      ],
+      "pid": 65801,
+      "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65801,
+          "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "Failed",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65801,
+          "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65801,
+          "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65801,
+          "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65801,
+          "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65801,
+          "nonce": "bce27e41c97949c8a6c20bb1ed690951",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "503a6c056f5683f172dcc48f97aaa973dee5376d28af85d1ca9af2f62de1d9bd",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "90a6f85626703955bbaff7c34b92117e6801898e2e6dc683ba97ce06cdbb6ca8"
+      }
+    },
+    {
+      "name": "parametrized",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.497308542020619,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/parametrized/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/parametrized/project",
+        "/tmp/mutie-pytest-lifetime-scoped/parametrized/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/parametrized/pytest.ini",
+        "f2e07d6084bb4607a7a94027687fa59c",
+        "test_subject.py"
+      ],
+      "pid": 65803,
+      "nonce": "f2e07d6084bb4607a7a94027687fa59c",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 2,
+      "sorted_inventory_sha256": "fbd4b027cf30152628e8efaaf4f652c9c75cb0e456029b38fc4658e9766ddd58",
+      "phase_counts": {
+        "setup:passed": 2,
+        "call:passed": 2,
+        "teardown:passed": 2
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65803,
+          "nonce": "f2e07d6084bb4607a7a94027687fa59c",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 9,
+          "pid": 65803,
+          "nonce": "f2e07d6084bb4607a7a94027687fa59c",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 10,
+          "pid": 65803,
+          "nonce": "f2e07d6084bb4607a7a94027687fa59c",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 11,
+          "pid": 65803,
+          "nonce": "f2e07d6084bb4607a7a94027687fa59c",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 12,
+          "pid": 65803,
+          "nonce": "f2e07d6084bb4607a7a94027687fa59c",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "fcd476841e8af121ff907e81a92a59579b64c007b70cb79f9d096806f703fc7e",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "0e2047b60e81863c13c9822c7295b53e6199dc5623e20b6274f3a0c413cccf3b"
+      }
+    },
+    {
+      "name": "parametrized_failure",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.8082535000285134,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/parametrized_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/parametrized_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/parametrized_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/parametrized_failure/pytest.ini",
+        "f7c88b5bf03d4574877cd5247fe4ff12",
+        "test_subject.py"
+      ],
+      "pid": 65804,
+      "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 2,
+      "sorted_inventory_sha256": "ebf2ee8fa2e450d4bdcdf59a77ad173bb9ccdc0f86eca5f3e90ce0ef6e612170",
+      "phase_counts": {
+        "setup:passed": 2,
+        "call:failed": 1,
+        "teardown:passed": 2,
+        "call:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65804,
+          "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+          "event": "phase",
+          "node": "test_subject.py::test_body[0]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65804,
+          "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 9,
+          "pid": 65804,
+          "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 10,
+          "pid": 65804,
+          "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 11,
+          "pid": 65804,
+          "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 12,
+          "pid": 65804,
+          "nonce": "f7c88b5bf03d4574877cd5247fe4ff12",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "7517d7b399af6a460d8db8596d1365c1b75a0e98815f0bcfd2f718da780d8c78",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "f0d2f8ffa420958e71da27db773ccf4a2f920df901088535bc73f8499becb773"
+      }
+    },
+    {
+      "name": "skip",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.504813625011593,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/skip/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/skip/project",
+        "/tmp/mutie-pytest-lifetime-scoped/skip/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/skip/pytest.ini",
+        "9fd534fd2cc64816bf77793c0fbea4a2",
+        "test_subject.py"
+      ],
+      "pid": 65811,
+      "nonce": "9fd534fd2cc64816bf77793c0fbea4a2",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:skipped": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65811,
+          "nonce": "9fd534fd2cc64816bf77793c0fbea4a2",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 5,
+          "pid": 65811,
+          "nonce": "9fd534fd2cc64816bf77793c0fbea4a2",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 6,
+          "pid": 65811,
+          "nonce": "9fd534fd2cc64816bf77793c0fbea4a2",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 7,
+          "pid": 65811,
+          "nonce": "9fd534fd2cc64816bf77793c0fbea4a2",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 8,
+          "pid": 65811,
+          "nonce": "9fd534fd2cc64816bf77793c0fbea4a2",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "754423c6e70537c5c451405ea3b9301ffcf39aa31bd1de5466c296df5a76e2f5",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "dc6852965a66d235b9c90c2955eb73b0d9d8b58b69a31eaa7776dab9413d2124"
+      }
+    },
+    {
+      "name": "xfail",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.4501293329522014,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/xfail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/xfail/project",
+        "/tmp/mutie-pytest-lifetime-scoped/xfail/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/xfail/pytest.ini",
+        "292a54c2cad748b5ba42d9aba67521a5",
+        "test_subject.py"
+      ],
+      "pid": 65812,
+      "nonce": "292a54c2cad748b5ba42d9aba67521a5",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:skipped": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65812,
+          "nonce": "292a54c2cad748b5ba42d9aba67521a5",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65812,
+          "nonce": "292a54c2cad748b5ba42d9aba67521a5",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65812,
+          "nonce": "292a54c2cad748b5ba42d9aba67521a5",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65812,
+          "nonce": "292a54c2cad748b5ba42d9aba67521a5",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65812,
+          "nonce": "292a54c2cad748b5ba42d9aba67521a5",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "971e435540a4a08b6747382be37e94758e6edc81e8fd6bf56d64fa4f424be50d",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "7878d2a48a35fae5a498562a45c3d184334fee9d51adaeb3fa7e875be37659f6"
+      }
+    },
+    {
+      "name": "joined_thread",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.606167915975675,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/joined_thread/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/joined_thread/project",
+        "/tmp/mutie-pytest-lifetime-scoped/joined_thread/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/joined_thread/pytest.ini",
+        "2e0df98a60964b82b62f3a0f1aceb170",
+        "test_subject.py"
+      ],
+      "pid": 65817,
+      "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65817,
+          "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 4,
+          "pid": 65817,
+          "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+          "event": "unsupported",
+          "kind": "thread_start"
+        },
+        {
+          "seq": 7,
+          "pid": 65817,
+          "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 8,
+          "pid": 65817,
+          "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 9,
+          "pid": 65817,
+          "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 10,
+          "pid": 65817,
+          "nonce": "2e0df98a60964b82b62f3a0f1aceb170",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "2100c176bbed938ca718c4a4679063815dd42e9410d5ea19193b56b2001edf47"
+      }
+    },
+    {
+      "name": "captured_stderr",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.5617217919789255,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/captured_stderr/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/captured_stderr/project",
+        "/tmp/mutie-pytest-lifetime-scoped/captured_stderr/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/captured_stderr/pytest.ini",
+        "f18b4c7491ac4f0f8080b4a1d880aec9",
+        "test_subject.py"
+      ],
+      "pid": 65821,
+      "nonce": "f18b4c7491ac4f0f8080b4a1d880aec9",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65821,
+          "nonce": "f18b4c7491ac4f0f8080b4a1d880aec9",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65821,
+          "nonce": "f18b4c7491ac4f0f8080b4a1d880aec9",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65821,
+          "nonce": "f18b4c7491ac4f0f8080b4a1d880aec9",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65821,
+          "nonce": "f18b4c7491ac4f0f8080b4a1d880aec9",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65821,
+          "nonce": "f18b4c7491ac4f0f8080b4a1d880aec9",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "3b270d91f4a91eb6d5a1015c975cc4bd5b08de1508b4879d2e1caad6f7b5148a"
+      }
+    },
+    {
+      "name": "atexit_stdout",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.452443917049095,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_stdout/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stdout/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stdout/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_stdout/pytest.ini",
+        "a1a3cf8fd76e47f98709b5d79ead23c6",
+        "test_subject.py"
+      ],
+      "pid": 65822,
+      "nonce": "a1a3cf8fd76e47f98709b5d79ead23c6",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65822,
+          "nonce": "a1a3cf8fd76e47f98709b5d79ead23c6",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65822,
+          "nonce": "a1a3cf8fd76e47f98709b5d79ead23c6",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65822,
+          "nonce": "a1a3cf8fd76e47f98709b5d79ead23c6",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65822,
+          "nonce": "a1a3cf8fd76e47f98709b5d79ead23c6",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65822,
+          "nonce": "a1a3cf8fd76e47f98709b5d79ead23c6",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "c8adf419025a4cba1d61aa5815326f1da3c48911be21cac4376ff16917ec6062",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "9543127c4e90cad91449f04920939156eb96b66e6d303d4501a598b717333876"
+      }
+    },
+    {
+      "name": "thread_failure",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.516645458061248,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/thread_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/thread_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/thread_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/thread_failure/pytest.ini",
+        "3473429d2fde419dbeaeb6297e8330eb",
+        "test_subject.py"
+      ],
+      "pid": 65826,
+      "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 4,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "unsupported",
+          "kind": "thread_start"
+        },
+        {
+          "seq": 7,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "warning",
+          "category": "PytestUnhandledThreadExceptionWarning",
+          "node": "test_subject.py::test_body"
+        },
+        {
+          "seq": 8,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 9,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 10,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 11,
+          "pid": 65826,
+          "nonce": "3473429d2fde419dbeaeb6297e8330eb",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bba0090ab5c4efd6c8a93e579039a586ed7f26c0b15351524a6369b5a75efa01",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "2d74f69ee39d13665501cc635fa2eb7271a5c1e081734e1f168df4ded8a34e33"
+      }
+    },
+    {
+      "name": "daemon_pending",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.756381459068507,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/daemon_pending/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/daemon_pending/project",
+        "/tmp/mutie-pytest-lifetime-scoped/daemon_pending/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/daemon_pending/pytest.ini",
+        "60780e8ffe664b6f99826e183a1c11e3",
+        "test_subject.py"
+      ],
+      "pid": 65828,
+      "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65828,
+          "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 4,
+          "pid": 65828,
+          "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+          "event": "unsupported",
+          "kind": "thread_start"
+        },
+        {
+          "seq": 7,
+          "pid": 65828,
+          "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 8,
+          "pid": 65828,
+          "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 9,
+          "pid": 65828,
+          "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": [
+            "Thread-1 (<lambda>)"
+          ]
+        },
+        {
+          "seq": 10,
+          "pid": 65828,
+          "nonce": "60780e8ffe664b6f99826e183a1c11e3",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": [
+            "Thread-1 (<lambda>)"
+          ]
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "8e11f3b91fa63fc7dc561bd86963be25cff4cff204b3f78b75c11add9d2abab7"
+      }
+    },
+    {
+      "name": "late_thread_failure",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.511069791042246,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/late_thread_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/late_thread_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/late_thread_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/late_thread_failure/pytest.ini",
+        "7e940539ebe34069bcd876f9bdfaab53",
+        "test_subject.py"
+      ],
+      "pid": 65829,
+      "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+      "stderr_bytes": 691,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 4,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "unsupported",
+          "kind": "thread_start"
+        },
+        {
+          "seq": 7,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 8,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 9,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": [
+            "Thread-1 (bad)"
+          ]
+        },
+        {
+          "seq": 10,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "lifetime_error",
+          "kind": "thread"
+        },
+        {
+          "seq": 11,
+          "pid": 65829,
+          "nonce": "7e940539ebe34069bcd876f9bdfaab53",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+        "stderr.log": "8ffefd94ebd02c2b340bd5580a43e0eee73387bc75bf1cd601e01c1fa2651bb4",
+        "evidence.jsonl": "f6ebf6ad0cc846fc55abb1fa177637a8847d5a29272a96507c5786ca59b1dfa6"
+      }
+    },
+    {
+      "name": "body_and_thread_failure",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.682703624945134,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/body_and_thread_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/body_and_thread_failure/project",
+        "/tmp/mutie-pytest-lifetime-scoped/body_and_thread_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/body_and_thread_failure/pytest.ini",
+        "d1cd8473ec564c4f818ce5bfe492ec80",
+        "test_subject.py"
+      ],
+      "pid": 65832,
+      "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 5,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 4,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "unsupported",
+          "kind": "thread_start"
+        },
+        {
+          "seq": 7,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "warning",
+          "category": "PytestUnhandledThreadExceptionWarning",
+          "node": "test_subject.py::test_body"
+        },
+        {
+          "seq": 8,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 9,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 10,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 11,
+          "pid": 65832,
+          "nonce": "d1cd8473ec564c4f818ce5bfe492ec80",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "56414486d7d73f0933441e83a8e37a65856f41ee22fad98f6ba6a76177b11e08",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "c54fd1308c1b1338df158fa37c7313d105f422a69dc7096230c16f645179c5c2"
+      }
+    },
+    {
+      "name": "multiple_atexit_failures",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.487616500002332,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/multiple_atexit_failures/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/multiple_atexit_failures/project",
+        "/tmp/mutie-pytest-lifetime-scoped/multiple_atexit_failures/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/multiple_atexit_failures/pytest.ini",
+        "b7ea1503257f482d8296ebe87c719c4a",
+        "test_subject.py"
+      ],
+      "pid": 65841,
+      "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+      "stderr_bytes": 560,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 4,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "phase",
+          "node": "test_subject.py::test_body",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 7,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "returned",
+          "status": 1,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 11,
+          "pid": 65841,
+          "nonce": "b7ea1503257f482d8296ebe87c719c4a",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4fa4d017d26868105929aa292f8e2b269444798f4f2afc935e45144bd1c8fb0f",
+        "stderr.log": "5091d341dd3376784445acf3b4fbe2187a2818baa637467b2d01216a0b58f09c",
+        "evidence.jsonl": "24f9a7f9c910211f34fe395402a55f8ebee969a6adf6090f3f3f5f61e5fb7993"
+      }
+    },
+    {
+      "name": "timeout",
+      "classification": "timeout",
+      "exit_code": -9,
+      "wall_seconds": 3.017240541987121,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/timeout/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/timeout/project",
+        "/tmp/mutie-pytest-lifetime-scoped/timeout/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/timeout/pytest.ini",
+        "b89393e555e643229bcc7d1610449e43",
+        "test_subject.py"
+      ],
+      "pid": 65848,
+      "nonce": "b89393e555e643229bcc7d1610449e43",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65848,
+          "nonce": "b89393e555e643229bcc7d1610449e43",
+          "event": "lifetime_start"
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "1637971e542b75cf5f004c66b2b1ab548ade7fb8be223fd39ff94fe8bbd1b7dd"
+      }
+    },
+    {
+      "name": "atexit_timeout",
+      "classification": "timeout",
+      "exit_code": -9,
+      "wall_seconds": 3.010146665968932,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/atexit_timeout/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_timeout/project",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_timeout/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/atexit_timeout/pytest.ini",
+        "5d55e0b190a54ea2b189bb1b0c706223",
+        "test_subject.py"
+      ],
+      "pid": 65852,
+      "nonce": "5d55e0b190a54ea2b189bb1b0c706223",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 65852,
+          "nonce": "5d55e0b190a54ea2b189bb1b0c706223",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 65852,
+          "nonce": "5d55e0b190a54ea2b189bb1b0c706223",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 65852,
+          "nonce": "5d55e0b190a54ea2b189bb1b0c706223",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 65852,
+          "nonce": "5d55e0b190a54ea2b189bb1b0c706223",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "a71df3ef716cabe43ead70bd8311cda3aeadcb986bea501da0ea9262f31c3925",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "ac44b79af9789fb0063b426f1bad7bbb15ceb291b4a868c83bf7a8845a68e648"
+      }
+    },
+    {
+      "name": "capture_overflow",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.5493049160577357,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/capture_overflow/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/capture_overflow/project",
+        "/tmp/mutie-pytest-lifetime-scoped/capture_overflow/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/capture_overflow/pytest.ini",
+        "7f07ad927ca34b29b3c82202e8605639",
+        "test_subject.py"
+      ],
+      "pid": 66074,
+      "nonce": "7f07ad927ca34b29b3c82202e8605639",
+      "stderr_bytes": 298,
+      "descendants": false,
+      "budget_exceeded": true,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 66074,
+          "nonce": "7f07ad927ca34b29b3c82202e8605639",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 66074,
+          "nonce": "7f07ad927ca34b29b3c82202e8605639",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 66074,
+          "nonce": "7f07ad927ca34b29b3c82202e8605639",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 66074,
+          "nonce": "7f07ad927ca34b29b3c82202e8605639",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 66074,
+          "nonce": "7f07ad927ca34b29b3c82202e8605639",
+          "event": "lifetime_error",
+          "kind": "unraisable"
+        },
+        {
+          "seq": 10,
+          "pid": 66074,
+          "nonce": "7f07ad927ca34b29b3c82202e8605639",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "7955532a4c6aa0f189f5111443e56da508977adc91c5fa5f65ea03fffa48be9a",
+        "stderr.log": "488210c691512213f64345f0739323f33b4b1874aacc1d5e31a049b0d0cb91fa",
+        "evidence.jsonl": "0a0e4e136c25a7a05d49d0353c2d7ce6a8b44d9c189fe2975b1d210579f1d105"
+      }
+    },
+    {
+      "name": "leftover_child",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.380387332988903,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/leftover_child/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/leftover_child/project",
+        "/tmp/mutie-pytest-lifetime-scoped/leftover_child/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/leftover_child/pytest.ini",
+        "af24f20d733b4b719978dc3d112123f2",
+        "test_subject.py"
+      ],
+      "pid": 66077,
+      "nonce": "af24f20d733b4b719978dc3d112123f2",
+      "stderr_bytes": 0,
+      "descendants": true,
+      "budget_exceeded": false,
+      "collected": 1,
+      "sorted_inventory_sha256": "7945852e6ae61b5c6e72cba7f0cb2be0656190b63964e595018278f9f6428c53",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 66077,
+          "nonce": "af24f20d733b4b719978dc3d112123f2",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 6,
+          "pid": 66077,
+          "nonce": "af24f20d733b4b719978dc3d112123f2",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 7,
+          "pid": 66077,
+          "nonce": "af24f20d733b4b719978dc3d112123f2",
+          "event": "returned",
+          "status": 0,
+          "imports": {}
+        },
+        {
+          "seq": 8,
+          "pid": 66077,
+          "nonce": "af24f20d733b4b719978dc3d112123f2",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 9,
+          "pid": 66077,
+          "nonce": "af24f20d733b4b719978dc3d112123f2",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "270e5ee8102bd49097b13641a26aa477b8a1fda861a2a4c187fa1c40de653262"
+      }
+    },
+    {
+      "name": "inflection-baseline",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 2.317743125022389,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/inflection-baseline/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-baseline/project",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-baseline/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-baseline/pytest.ini",
+        "9e560230157c466580a43ce93f065db2",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules"
+      ],
+      "pid": 66081,
+      "nonce": "9e560230157c466580a43ce93f065db2",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 467,
+      "sorted_inventory_sha256": "21e619fa2d2483e49a51ca0946e236649bd971e61040225f878bd243ad9b7426",
+      "phase_counts": {
+        "setup:passed": 467,
+        "call:passed": 467,
+        "teardown:passed": 467
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 66081,
+          "nonce": "9e560230157c466580a43ce93f065db2",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 1404,
+          "pid": 66081,
+          "nonce": "9e560230157c466580a43ce93f065db2",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 1405,
+          "pid": 66081,
+          "nonce": "9e560230157c466580a43ce93f065db2",
+          "event": "returned",
+          "status": 0,
+          "imports": {
+            "inflection": "/tmp/mutie-pytest-lifetime-scoped/inflection-baseline/project/inflection/__init__.py"
+          }
+        },
+        {
+          "seq": 1406,
+          "pid": 66081,
+          "nonce": "9e560230157c466580a43ce93f065db2",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 1407,
+          "pid": 66081,
+          "nonce": "9e560230157c466580a43ce93f065db2",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "d3c7f55a252b3374b48607287bf6ee8ce86a3c1ebe00effa52dc22410a535dfa",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "bc5d6b569512c6a62360004eb4a76c1606341942dec6406b52d6527c2fd0464b"
+      }
+    },
+    {
+      "name": "inflection-survivor",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.8705120000522584,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/inflection-survivor/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-survivor/project",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-survivor/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-survivor/pytest.ini",
+        "fdcc21d9db894240ad386ec135ea1c22",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules"
+      ],
+      "pid": 66087,
+      "nonce": "fdcc21d9db894240ad386ec135ea1c22",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 467,
+      "sorted_inventory_sha256": "21e619fa2d2483e49a51ca0946e236649bd971e61040225f878bd243ad9b7426",
+      "phase_counts": {
+        "setup:passed": 467,
+        "call:passed": 467,
+        "teardown:passed": 467
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 66087,
+          "nonce": "fdcc21d9db894240ad386ec135ea1c22",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 1404,
+          "pid": 66087,
+          "nonce": "fdcc21d9db894240ad386ec135ea1c22",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 1405,
+          "pid": 66087,
+          "nonce": "fdcc21d9db894240ad386ec135ea1c22",
+          "event": "returned",
+          "status": 0,
+          "imports": {
+            "inflection": "/tmp/mutie-pytest-lifetime-scoped/inflection-survivor/project/inflection/__init__.py"
+          }
+        },
+        {
+          "seq": 1406,
+          "pid": 66087,
+          "nonce": "fdcc21d9db894240ad386ec135ea1c22",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 1407,
+          "pid": 66087,
+          "nonce": "fdcc21d9db894240ad386ec135ea1c22",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "9df4de4d7565fad10059c8d45b697e41341cc4cc4c1fe9653d87c7a29a6e2431",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "8796202341616d1e3c577acd36ffac7a0f29cb6e490c6ae38a484e5e872a91a4"
+      }
+    },
+    {
+      "name": "inflection-strong-baseline",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 2.671753624919802,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/inflection-strong-baseline/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-baseline/project",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-baseline/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-baseline/pytest.ini",
+        "b2c313a8b704444eb8c54feec997610c",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules",
+        "test_stronger.py"
+      ],
+      "pid": 66090,
+      "nonce": "b2c313a8b704444eb8c54feec997610c",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 468,
+      "sorted_inventory_sha256": "433a437e42c66d9d44f5668af719762faf31ad37e8b44e1b6ec0cc19767e1244",
+      "phase_counts": {
+        "setup:passed": 468,
+        "call:passed": 468,
+        "teardown:passed": 468
+      },
+      "failed_phases": [],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 66090,
+          "nonce": "b2c313a8b704444eb8c54feec997610c",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 1407,
+          "pid": 66090,
+          "nonce": "b2c313a8b704444eb8c54feec997610c",
+          "event": "finish",
+          "status": 0
+        },
+        {
+          "seq": 1408,
+          "pid": 66090,
+          "nonce": "b2c313a8b704444eb8c54feec997610c",
+          "event": "returned",
+          "status": 0,
+          "imports": {
+            "inflection": "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-baseline/project/inflection/__init__.py"
+          }
+        },
+        {
+          "seq": 1409,
+          "pid": 66090,
+          "nonce": "b2c313a8b704444eb8c54feec997610c",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 1410,
+          "pid": 66090,
+          "nonce": "b2c313a8b704444eb8c54feec997610c",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "9b0192e100a3907fe599c7e54ac1e5a982b883326e5dad75117cbec30acf9d59",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "784a91d7640757b5de1650b4311b05257bb6dacbe2fec3309f449ad68e90dead"
+      }
+    },
+    {
+      "name": "inflection-strong-kill",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 2.0192791250301525,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-lifetime-scoped/inflection-strong-kill/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/lifetime_driver.py",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-kill/project",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-kill/evidence.jsonl",
+        "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-kill/pytest.ini",
+        "d3d661c264f24352bf510e0c2641510a",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules",
+        "test_stronger.py"
+      ],
+      "pid": 66356,
+      "nonce": "d3d661c264f24352bf510e0c2641510a",
+      "stderr_bytes": 0,
+      "descendants": false,
+      "budget_exceeded": false,
+      "collected": 468,
+      "sorted_inventory_sha256": "433a437e42c66d9d44f5668af719762faf31ad37e8b44e1b6ec0cc19767e1244",
+      "phase_counts": {
+        "setup:passed": 468,
+        "call:passed": 467,
+        "teardown:passed": 468,
+        "call:failed": 1
+      },
+      "failed_phases": [
+        {
+          "seq": 1405,
+          "pid": 66356,
+          "nonce": "d3d661c264f24352bf510e0c2641510a",
+          "event": "phase",
+          "node": "test_stronger.py::test_underscore_separates_unicode_digit_from_following_capital",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "assertion": true,
+          "xfail": false
+        }
+      ],
+      "lifetime_events": [
+        {
+          "seq": 0,
+          "pid": 66356,
+          "nonce": "d3d661c264f24352bf510e0c2641510a",
+          "event": "lifetime_start"
+        },
+        {
+          "seq": 1407,
+          "pid": 66356,
+          "nonce": "d3d661c264f24352bf510e0c2641510a",
+          "event": "finish",
+          "status": 1
+        },
+        {
+          "seq": 1408,
+          "pid": 66356,
+          "nonce": "d3d661c264f24352bf510e0c2641510a",
+          "event": "returned",
+          "status": 1,
+          "imports": {
+            "inflection": "/tmp/mutie-pytest-lifetime-scoped/inflection-strong-kill/project/inflection/__init__.py"
+          }
+        },
+        {
+          "seq": 1409,
+          "pid": 66356,
+          "nonce": "d3d661c264f24352bf510e0c2641510a",
+          "event": "checkpoint",
+          "stage": "returned",
+          "hooks_intact": true,
+          "alive_threads": []
+        },
+        {
+          "seq": 1410,
+          "pid": 66356,
+          "nonce": "d3d661c264f24352bf510e0c2641510a",
+          "event": "checkpoint",
+          "stage": "atexit",
+          "hooks_intact": true,
+          "alive_threads": []
+        }
+      ],
+      "artifact_sha256": {
+        "stdout.log": "553dabcc32438b06b0d9a3c89666cc1d2a4ee45ef78cecba3371271482355e10",
+        "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "evidence.jsonl": "2f3b1fb9268288c31f196ed37aa6f62e7ecad1e19ae1b810f2eb1bdafd9a5c3d"
+      }
+    }
+  ]
+}

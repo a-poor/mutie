@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Planned | Native 39-probe feasibility audit and adapted Inflection findings; no adapter | Process-lifetime evidence for late cleanup, strict scope validator and isolated baseline |
+| Python | pytest | Planned | Native scope/lifetime audits and adapted Inflection findings; no adapter | Strict scope validator, isolated baseline and production process controls |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -310,10 +310,15 @@ unsupported. Do not infer compatibility from Node or Vitest support.
 The [initial audit](benchmarks/python-initial-scope.md) selects CPython 3.14.7,
 pytest 9.0.2 and an adapted Inflection runtime suite. It records 39 native probes,
 stale-bytecode controls and a manual Unicode-boundary stronger-test finding.
-Two negative controls remain correctness blockers: unittest setup assertions
+Two negative controls exposed correctness blockers: unittest setup assertions
 appear in the call phase, and an atexit exception can follow pytest success with
 exit zero. A fresh cache prefix avoids the demonstrated stale-bytecode false
-result; `-B` alone does not. There is no Python CLI adapter or scored report.
+result; `-B` alone does not. The [lifetime follow-up](benchmarks/python-process-lifetime.md)
+rejects those controls, validates process completion and explicitly excludes
+thread-starting suites because pytest can suppress late thread failures.
+Uncaptured stderr is conservatively an error. There is no Python CLI adapter or
+scored report; native probes do not replace strict project validation and
+production process/cancellation controls.
 
 Desired outcome: the shared workflow for pytest projects. Define package layouts, source/test discovery,
 environment ownership and dependency installation. Resolve import paths and editable

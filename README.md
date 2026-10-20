@@ -160,8 +160,10 @@ in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
 Python/pytest remains planned. The [initial native audit](benchmarks/python-initial-scope.md)
-records isolated import/cache controls and a real stronger-test finding, but
-late-cleanup attribution remains a blocker; there is no Python CLI runner yet.
+records isolated import/cache controls and a real stronger-test finding.
+The [process-lifetime follow-up](benchmarks/python-process-lifetime.md) rejects
+late-cleanup failures within its audited scope; strict scope validation and
+baseline integration remain open, and there is no Python CLI runner yet.
 
 ## Try it
 

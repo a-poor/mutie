@@ -50,7 +50,9 @@ Python/pytest is now the next scope audit: CPython 3.14.7 / pytest 9.0.2,
 synthetic fixtures and an adapted Inflection runtime suite. The
 [native audit](benchmarks/python-initial-scope.md) proves a stronger-test finding
 and exposes stale-bytecode, unittest phase and late-atexit boundaries. Python
-remains Planned; process-lifetime failure evidence is the next correctness gate.
+remains Planned. The [native process-lifetime observer](benchmarks/python-process-lifetime.md)
+now rejects the demonstrated late-cleanup failures and excludes unittest/threads;
+strict scope validation and isolated baseline integration are the next gates.
 
 ## Target support tracking
 
@@ -82,8 +84,8 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Run adapted Inflection's 467-test baseline and a manual Unicode-digit
   survivor → 468-test stronger baseline → assertion-failure loop. This is
   direct audit evidence, not automatic discovery or a score.
-- [ ] Add process-lifetime evidence for late cleanup and strict completion/replay
-  validation before implementing scored execution.
+- [x] Add native process-lifetime evidence for late cleanup and strict
+  completion/replay validation; reject unittest and thread-starting suites.
 - [ ] Validate cancellation, bounded captures, descendants and resource limits.
 - [ ] Implement strict project/config/import scope, discovery and isolated baseline;
   select real-project acceptance within the exact supported test recipe.

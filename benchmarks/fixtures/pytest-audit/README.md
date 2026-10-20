@@ -54,3 +54,12 @@ output directory. Source hashes are checked after every run. Wall times include
 process startup/wait; they are small local samples, not performance guarantees.
 The helper kills its process group on timeout, but bounded capture, cancellation,
 racing descendants and resource-limit reliability still require dedicated work.
+
+## Process-lifetime follow-up
+
+`lifetime_driver.py`, `lifetime_protocol.py` and `lifetime_audit.py` retain a
+separate observer experiment. It rejects late cleanup, unsupported unittest and
+thread-starting suites, missing completion, and uncaptured stderr after waiting
+for process exit. It leaves the original driver and its known negative controls
+unchanged. See [the lifetime audit](../../python-process-lifetime.md) for the
+scope, replay checks and command. Neither experiment is a scored Mutie adapter.

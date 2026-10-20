@@ -259,7 +259,11 @@ stronger baseline. This is not an implemented operator or scored run. A fresh
 pycache prefix defeats a demonstrated stale-cache false result; `-B` alone does
 not. The prototype intentionally retains two unsafe classifications: unittest
 setup as a body failure and late atexit failure as passing. Do not reuse it for
-scores. Process-lifetime evidence and a strict scope validator are the next gates.
+scores. `benchmarks/python-process-lifetime.md` records a separate native lifetime
+observer that rejects late cleanup, incomplete evidence, unittest and
+thread-starting suites. Keep uncaptured stderr fail-closed and wait for process
+exit before accepting checkpoints; destructor errors can follow atexit.
+Strict scope validation and production baseline/process integration remain open.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

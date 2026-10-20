@@ -1799,3 +1799,13 @@ the upstream mypy/packaging/documentation recipe. A hand-authored Unicode-digit
 regex mutation survives and is killed by a stronger test. This demonstrates
 finding usefulness, not automatic operator support, unchanged-project acceptance
 or readiness to broaden Python beyond the audited scope.
+
+The [process-lifetime follow-up](benchmarks/python-process-lifetime.md) keeps a
+raw evidence descriptor alive through shutdown and combines pytest phase reports
+with return/atexit checkpoints, hook ownership, strict sequence/PID/nonce checks,
+uncaptured stderr and actual process exit. Atexit is not the final boundary:
+module-destructor errors can follow it. Any cleanup error dominates a body failure.
+Unittest items and thread starts are explicitly unsupported; pytest can otherwise
+retain late thread exceptions after its last warning drain. The experiment
+establishes these conservative boundaries without adding a Python score or
+substituting for static scope validation and Rust process integration.

@@ -137,3 +137,9 @@ and cancellation/capture/descendant controls. Then choose a real project within
 the exact admitted scope and implement read-only discovery plus isolated baseline
 checking before connecting scored runs. Keep Python Planned until those gates
 produce an actual usable adapter.
+
+Follow-up: the [process-lifetime observer](python-process-lifetime.md) now rejects
+the demonstrated late-cleanup and unittest controls, adds strict replay validation,
+and explicitly excludes thread-starting suites. The original probe above remains
+unchanged historical evidence. Strict scope validation and production baseline
+integration remain open.
