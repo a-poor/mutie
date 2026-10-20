@@ -1,0 +1,70 @@
+--- a/tests/queue.test.ts
++++ b/tests/queue.test.ts
+@@ -10,6 +10,7 @@
+ 		});
+ 
+ 		queue.add(1);
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 
+ 		expect(results).toEqual([1]);
+@@ -23,6 +24,7 @@
+ 		});
+ 
+ 		queue.addBatch([1, 2, 3]);
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 
+ 		expect(results).toEqual([1, 2, 3]);
+@@ -37,6 +39,7 @@
+ 		});
+ 
+ 		queue.addBatch([1, 2, 3]);
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 
+ 		// 2 and 3 should finish before 1 due to 1's delay
+@@ -48,16 +51,19 @@
+ 		const queue = new EventQueue<number>(async () => {});
+ 
+ 		// Already idle
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 
+ 		// Process something and wait
+ 		queue.add(1);
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 	});
+ 
+ 	it("onIdle() — resolves immediately when no pending", async () => {
+ 		const queue = new EventQueue<number>(async () => {});
+ 		const start = Date.now();
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 		expect(Date.now() - start).toBeLessThan(50);
+ 	});
+@@ -75,6 +81,7 @@
+ 		// After add, should be processing
+ 		expect(queue.pending).toBe(1);
+ 
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 		expect(queue.pending).toBe(0);
+ 	});
+@@ -96,6 +103,7 @@
+ 			results.push(n);
+ 		});
+ 
++		expect(queue.isActive).toBe(true);
+ 		queue.addBatch([1, 2, 3]);
+ 		await queue.stop(5000);
+ 
+@@ -124,6 +132,7 @@
+ 		});
+ 
+ 		queue.addBatch([1, 2, 3]);
++		expect(queue.isActive).toBe(true);
+ 		await queue.onIdle();
+ 
+ 		// Should not throw, queue should be idle

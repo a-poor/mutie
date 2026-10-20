@@ -51,7 +51,8 @@ Explicit user priorities and demonstrated reliability blockers take precedence.
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
 Vitest and Node have independently validated JavaScript and TypeScript scopes;
-Bun's initial audit is selected below; Python's initial scope remains undecided.
+Bun also has independently validated JavaScript and TypeScript scopes; Python's
+initial scope remains undecided.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
@@ -59,7 +60,7 @@ Bun's initial audit is selected below; Python's initial scope remains undecided.
 - [x] Define and implement the first native TypeScript + Node slice with independent
   fixture and adapted real-project evidence.
 - [x] Complete unchanged-project TypeScript + Node acceptance before promoting maturity.
-- [ ] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
+- [x] Define and implement the first JavaScript/TypeScript + Bun test runner slice.
 - [ ] Define and implement the first Python + pytest slice.
 
 Each new slice starts with a fixture and a real validation project, then advances
@@ -116,6 +117,9 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   [profile](benchmarks/bun-feedback-profile.md).
 - [x] Optimize `sha2` in development/test builds while preserving complete
   fingerprints; validate matching full and focused Bun outcomes.
+- [x] Review Composer's four remaining survivors and queue timeout: four new
+  behavioral tests and queue wait preconditions kill all five in a full-suite
+  focused rerun. See [findings](benchmarks/bun-composer-survivors.md).
 - [ ] Reassess the next objective after scoped Bun validation: useful survivor
   review before broader scope.
 

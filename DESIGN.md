@@ -1767,3 +1767,12 @@ override (`opt-level = 3`), also inherited by the test profile. Application code
 keeps its normal development settings; release settings and complete executable
 fingerprints remain unchanged. This benefits all shared SHA-256 callers without
 introducing runner-specific caching.
+
+The [Composer findings review](benchmarks/bun-composer-survivors.md) validates the
+remaining feedback loop: instance overrides, prototype redefinition, enumeration
+and default macro options kill four survivors. Queue tests assert the active
+precondition before waiting for idle, turning a dispatch-blocking mutation from
+a full-suite timeout into a body-failure kill. This changes only project tests;
+the original timeout stays excluded from its saved score. All five selected
+candidates are killed with complete full-suite evidence and preserved source
+and report hashes.

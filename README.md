@@ -141,6 +141,9 @@ JavaScript and TypeScript are independently Validated within this scope. Raw cap
 4 MiB default budget; Unix per-file limits bound evidence, not total disk usage.
 Reruns allow stronger tests but reject runtime bytes, package/config or observer
 recipe changes. See [scored workflow evidence](benchmarks/bun-shared-runs.md).
+The [Composer findings review](benchmarks/bun-composer-survivors.md) kills its four
+remaining survivors and turns the queue timeout into a body-failure kill through
+test-only changes; original full-run scores remain unchanged.
 Independent JS/TS [review and policy checks](benchmarks/bun-dismissals.md) pass;
 [JavaScript project acceptance](benchmarks/bun-javascript-pp-is.md) records seven
 stronger-test kills on an explicitly adapted pp-is copy. Its source/tests are

@@ -240,6 +240,11 @@ checkout now passes under the narrow layout extension recorded in
 `benchmarks/bun-unchanged-layout.md`, matching the adapted inventory and outcomes.
 Implicit ESM is JS-only with static imports/exports; declaration/packaging files
 remain outside executable imports and hidden tests are rejected. See `benchmarks/bun-shared-runs.md`.
+`benchmarks/bun-composer-survivors.md` closes the four remaining Composer survivors
+and queue timeout with test-only changes: all five are killed in a 276-test
+full-suite focused rerun. The queue mutation blocks dispatch; precondition
+assertions avoid waiting for impossible idle. Preserve original full scores and
+distinguish focused evidence from a full stronger-test score.
 `benchmarks/bun-feedback-profile.md` records a debug/release comparison with
 matching identities/outcomes and test-only adapter phases: executable SHA-256
 checks dominate, not copying. Prefer release builds for real feedback. Development

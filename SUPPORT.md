@@ -35,7 +35,7 @@ does not by itself validate a new runner.
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
-| TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence; remaining Composer findings |
+| TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
@@ -287,7 +287,11 @@ Independent JS/TS [scored cleanup regressions](benchmarks/bun-scored-cleanup.md)
 now cover output/file limits, timeout, SIGINT, descendant shutdown and score
 boundaries. Independent JS/TS [review/policy acceptance](benchmarks/bun-dismissals.md) now
 covers CRUD, staleness, raw scores, focused reruns and error precedence. Together
-with Composer, this completes scoped TypeScript validation. Independent
+with Composer, this completes scoped TypeScript validation. The
+[Composer findings review](benchmarks/bun-composer-survivors.md) subsequently kills
+the four remaining survivors and converts the queue timeout to an ordinary
+body-failure kill with stronger tests. Historical scores remain unchanged.
+Independent
 [JavaScript acceptance](benchmarks/bun-javascript-pp-is.md) uses pp-is with all
 runtime source/tests unchanged in an explicitly adapted ESM root: 22 candidates,
 12 kills/10 survivors, then seven stronger-test kills. That first run used a temporary adaptation. [Unchanged-layout acceptance](benchmarks/bun-unchanged-layout.md)
@@ -300,7 +304,7 @@ unsupported. Do not infer compatibility from Node or Vitest support.
 
 ## Python — pytest
 
-**Levels: JavaScript and TypeScript independently Validated within the pinned scope.**
+**Level: Planned.**
 
 Desired outcome: the shared workflow for pytest projects. Choose Python/pytest
 versions, a real project and fixture; define package layouts, source/test discovery,

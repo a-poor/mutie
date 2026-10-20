@@ -68,3 +68,9 @@ preloads or multi-package support is claimed.
 
 Follow-up: [scored cleanup acceptance](bun-scored-cleanup.md) now covers JS/TS
 resource-limit errors, timeout/SIGINT, descendant shutdown and saved-score boundaries.
+
+Later [Composer findings review](bun-composer-survivors.md) closes the four
+remaining survivors and queue timeout through test-only changes and a five-kill
+focused rerun. [Review acceptance](bun-dismissals.md) and independent
+[JavaScript acceptance](bun-javascript-pp-is.md) also close the original gates;
+see [current support](../SUPPORT.md) for the scoped Validated status.
