@@ -29,6 +29,8 @@ struct Runtime {
 pub(crate) struct ExecutionScope {
     runtime: Runtime,
     package: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    source_root: String,
     manifest_fingerprint: String,
     recipe_fingerprint: String,
     test_files: Vec<String>,
@@ -68,7 +70,7 @@ impl ExecutionScope {
     }
 
     pub(crate) fn admits_source(&self, path: &Path) -> bool {
-        path.starts_with(&self.package)
+        path.starts_with(Path::new(&self.source_root).join(&self.package))
             && path.extension().is_some_and(|extension| extension == "py")
             && path.components().all(|c| matches!(c, Component::Normal(_)))
     }
@@ -119,6 +121,12 @@ impl ExecutionScope {
             package: project["package"]
                 .as_str()
                 .context("missing Python package")?
+                .into(),
+            source_root: project
+                .get("source_root")
+                .map(|value| value.as_str().context("invalid Python source root"))
+                .transpose()?
+                .unwrap_or("")
                 .into(),
             manifest_fingerprint: project["files"]["pyproject.toml"]
                 .as_str()
@@ -182,7 +190,8 @@ impl ExecutionScope {
             "invalid saved Python fingerprints"
         );
         ensure!(
-            !self.package.is_empty()
+            matches!(self.source_root.as_str(), "" | "src")
+                && !self.package.is_empty()
                 && Path::new(&self.package).components().count() == 1
                 && Path::new(&self.package)
                     .components()
@@ -221,6 +230,7 @@ impl ExecutionScope {
         ensure!(
             self.runtime == current.runtime
                 && self.package == current.package
+                && self.source_root == current.source_root
                 && self.manifest_fingerprint == current.manifest_fingerprint
                 && self.recipe_fingerprint == current.recipe_fingerprint,
             "Python execution identity changed; start a fresh run"
@@ -277,6 +287,17 @@ mod tests {
                     .validate_rerun(&serde_json::from_value(value)?)
                     .is_err()
             );
+        }
+        let mut relocated = original.clone();
+        relocated.source_root = "src".into();
+        relocated.validate_record()?;
+        assert!(relocated.admits_source(Path::new("src/sample/value.py")));
+        assert!(!relocated.admits_source(Path::new("sample/value.py")));
+        assert!(!relocated.admits_source(Path::new("src/sample/../outside.py")));
+        assert!(original.validate_rerun(&relocated).is_err());
+        for invalid in [".", "../src", "/src", "src/", "other"] {
+            relocated.source_root = invalid.into();
+            assert!(relocated.validate_record().is_err());
         }
         stronger.test_files.push("../hidden.py".into());
         assert!(stronger.validate_record().is_err());

@@ -55,7 +55,8 @@ late-cleanup evidence and excludes unittest/thread-starting suites. Broader
 layouts/dependencies and further startup optimization need separate follow-up decisions.
 The [Python feedback profile](benchmarks/python-feedback-profile.md) now measures
 full and focused feedback and optimizes runtime traversal without skipping hashes.
-Native `src/` layout support remains a separate potential milestone.
+[Native `src/` acceptance](benchmarks/python-src-layout.md) now preserves Scrubify's
+original layout and manifest through the complete scored/stronger-test rerun loop.
 
 ## Target support tracking
 
@@ -110,6 +111,10 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Complete the real-project findings/stronger-test/rerun loop and support audit.
 - [x] Profile Python feedback overhead, optimize repeated runtime traversal and
   compare complete full/stronger-test reruns with preservation checks.
+- [x] Support one native `src/` package with narrowly audited static metadata,
+  source-root/import identity, rejection and snapshot/rerun regressions, and
+  unchanged Scrubify full-run plus separate-copy stronger-test acceptance.
+
 
 ## Selected first Bun test-runner slice
 

@@ -3,6 +3,7 @@ import ast
 import hashlib
 import json
 import io
+import re
 from pathlib import Path
 import sys
 import tomllib
@@ -70,17 +71,27 @@ def inspect(root):
     project = config.get("project", {})
     require(isinstance(project.get("name"), str) and project["name"],
             "Python requires a named [project]")
-    require(not project.get("dependencies") and not project.get("optional-dependencies"),
-            "Python application dependencies unsupported")
+    require(not project.get("dependencies"), "Python application dependencies unsupported")
+    # The test extra is declarative only: the pinned environment is supplied by
+    # the caller, never resolved or installed from this manifest.
+    extras = project.get("optional-dependencies", {})
+    require(isinstance(extras, dict) and set(extras) <= {"test"}
+            and all(isinstance(items, list) and items and all(
+                isinstance(item, str) and re.fullmatch(r"pytest(?:>=[0-9]+(?:\.[0-9]+){0,2})?", item)
+                and (">=" not in item or tuple(map(int, item.split(">=")[1].split("."))) <= (9, 0, 2))
+                for item in items) for items in extras.values()),
+            "Python only accepts a declarative pytest test extra")
     require(not project.get("dynamic") and not project.get("entry-points"),
             "Python dynamic metadata and entry-point plugins unsupported")
     tool = config.get("tool", {})
-    require(set(tool) <= {"pytest"}, "unsupported Python tool configuration")
+    require(set(tool) <= {"pytest", "setuptools"}, "unsupported Python tool configuration")
     pytest_config = tool.get("pytest", {})
     require(set(pytest_config) <= {"ini_options"}, "unsupported pytest configuration")
     options = pytest_config.get("ini_options", {})
-    require(set(options) <= {"testpaths"} and options.get("testpaths", ["tests"]) == ["tests"],
-            "Python only accepts pytest testpaths = ['tests']")
+    require(set(options) <= {"testpaths", "pythonpath", "addopts"}
+            and options.get("testpaths", ["tests"]) == ["tests"]
+            and options.get("addopts", "") in ("", "-q"),
+            "Python only accepts full tests with optional quiet output")
     # Build metadata is never executed. Admit only a conventional static backend.
     build = config.get("build-system")
     if build is not None:
@@ -88,15 +99,32 @@ def inspect(root):
                 and build.get("build-backend") == "setuptools.build_meta"
                 and isinstance(build.get("requires"), list)
                 and all(isinstance(x, str) and
-                        (x == "wheel" or x == "setuptools" or x.startswith("setuptools>="))
+                        (x == "wheel" or re.fullmatch(r"setuptools(?:>=[0-9]+(?:\.[0-9]+)*)?", x))
                         for x in build["requires"]),
                 "unsupported Python build metadata")
-    packages = [p.name for p in root.iterdir()
-                if p.is_dir() and not p.is_symlink() and (p / "__init__.py").is_file()
-                and p.name != "tests"]
-    require(len(packages) == 1 and packages[0].isidentifier(),
-            "Python requires exactly one flat importable package")
-    package = packages[0]
+    flat = [p.name for p in root.iterdir()
+            if p.is_dir() and (p / "__init__.py").is_file() and p.name != "tests"]
+    src = root / "src"
+    nested = []
+    # A regular flat package may itself be named src. Its __init__.py keeps
+    # the old root semantics; only a non-package src directory is an import root.
+    if src.is_dir() and not (src / "__init__.py").is_file():
+        nested = [p.name for p in src.iterdir()
+                  if p.is_dir() and (p / "__init__.py").is_file()]
+    require(len(flat) + len(nested) == 1,
+            "Python requires exactly one flat or src importable package")
+    source_root = "src" if nested else ""
+    import_root = root / source_root
+    package = (nested or flat)[0]
+    require(package.isidentifier(), "Python package must be an identifier")
+    require(options.get("pythonpath", [source_root] if source_root else [])
+            == ([source_root] if source_root else []),
+            "Python pythonpath must match the single audited source root")
+    setuptools = tool.get("setuptools")
+    if setuptools is not None:
+        require(source_root == "src" and setuptools == {
+            "package-dir": {"": "src"}, "packages": {"find": {"where": ["src"]}}},
+            "Python only accepts static setuptools src package discovery")
     require(package not in sys.stdlib_module_names | {
         "pytest", "_pytest", "tests", "pluggy", "packaging", "iniconfig", "pygments", "pip"},
             "Python package shadows an admitted dependency")
@@ -118,8 +146,10 @@ def inspect(root):
             continue
         parts = path.parts
         is_test = parts[0] == "tests"
-        require(parts[0] == package or is_test,
+        package_parts = (source_root, package) if source_root else (package,)
+        require(parts[:len(package_parts)] == package_parts or is_test,
                 f"Python executable file outside package/tests: {relative}")
+        module_parts = parts[1:] if source_root and not is_test else parts
         require("__pycache__" not in parts and all(not p.startswith(".") for p in parts),
                 f"hidden Python executable file: {relative}")
         require(not is_test or path.name.startswith("test_"),
@@ -127,9 +157,11 @@ def inspect(root):
         if not is_test:
             require(not path.name.startswith("test_") and not path.name.endswith("_test.py"),
                     f"Python test outside tests/: {relative}")
-            for count in range(1, len(parts)):
+            for count in range(len(package_parts), len(parts)):
                 require((root.joinpath(*parts[:count]) / "__init__.py").is_file(),
                         "Python namespace packages unsupported")
+            require(not path.with_suffix("").joinpath("__init__.py").as_posix() in files,
+                    "Python ambiguous module/package paths unsupported")
             sources.append(relative)
         else:
             tests.append(relative)
@@ -157,19 +189,19 @@ def inspect(root):
                     if top == "copy":
                         require(alias.name == "copy", "Python copy submodules unsupported")
                         copy_aliases.add(alias.asname or "copy")
-                    require(top != package or module_exists(root, alias.name.split(".")),
+                    require(top != package or module_exists(import_root, alias.name.split(".")),
                             f"unresolved local Python import: {alias.name}")
                     if top == "pytest":
                         require(alias.asname in (None, "pytest"), "pytest aliasing unsupported")
                     aliases.add(alias.asname or top)
             elif isinstance(node, ast.ImportFrom):
                 if node.level:
-                    require(not is_test and node.level < len(parts),
+                    require(not is_test and node.level < len(module_parts),
                             "Python relative import escapes package")
-                    target = list(parts[:-node.level])
+                    target = list(module_parts[:-node.level])
                     if node.module:
                         target += node.module.split(".")
-                    require(target[0] == package and module_exists(root, target),
+                    require(target[0] == package and module_exists(import_root, target),
                             "unresolved relative Python import")
                     top = package
                 else:
@@ -181,7 +213,7 @@ def inspect(root):
                         require(all(a.name in FROM_MEMBERS[node.module] for a in node.names),
                                 f"unsupported Python API from {node.module}")
                     if top == package:
-                        require(module_exists(root, node.module.split(".")),
+                        require(module_exists(import_root, node.module.split(".")),
                                 "unresolved local Python import")
                 require(all(a.name != "*" for a in node.names), "Python wildcard imports unsupported")
                 if top == "pytest":
@@ -258,7 +290,7 @@ def inspect(root):
                                       end_column=node.end_col_offset + 1, original=original,
                                       replacement="False" if node.value else "True"))
     require(tests, "Python requires test_*.py files under tests/")
-    return dict(package=package, files=files, tests=sorted(tests), sources=sorted(sources),
+    return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), sources=sorted(sources),
                 mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))
 
 

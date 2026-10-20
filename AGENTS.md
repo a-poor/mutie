@@ -297,6 +297,15 @@ the serial Scrubify comparison. Preserve byte-for-byte runtime fingerprints,
 every pre/post check and fresh bytecode prefixes when optimizing overhead.
 `tests/support/python_runtime.py` covers traversal compatibility and drift;
 the ignored `python::profile::real_feedback_phase_profile` measures real phases.
+`benchmarks/python-src-layout.md` now records native `src/package/` support and
+unchanged Scrubify layout/manifest acceptance. `source_root` binds snapshot,
+source-path and rerun identity (empty for flat, `src` for native src). Keep exact
+owned application import checks and all original/snapshot tests. Only static
+setuptools src mapping, matching pythonpath, quiet addopts and a compatible
+pytest-only test extra are admitted; do not execute builds or install project
+extras. The separate stronger-test copy kills the blank-query survivor while
+preserving the clean original checkout and prior report hashes.
+
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

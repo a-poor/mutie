@@ -1824,9 +1824,9 @@ review/policies pass the fixture workflow in
 [Python shared runs](benchmarks/python-shared-runs.md). Scored cleanup now passes;
 [Scrubify acceptance](benchmarks/python-scrubify-findings.md) completes the scoped
 real-project loop with a blank-query survivor killed by stronger tests. Original
-source and old reports are preserved. Only the audited flat layout, pinned
-runtime and serial recipe are Validated; broader Python compatibility remains
-separate.
+source and old reports are preserved. That milestone validates the initial
+flat layout, pinned runtime and serial recipe; the native src follow-up below
+extends only its audited layout/metadata boundary.
 
 The [feedback profile](benchmarks/python-feedback-profile.md) separates isolated
 pytest startup, repeated runtime/scope validation and workspace costs. Runtime
@@ -1834,3 +1834,27 @@ fingerprinting uses a directory-entry walk that prunes already-excluded trees,
 preserves component ordering and hashes every included file on every check.
 It does not cache identity by size/mtime or share project bytecode. Phase timers
 are test-only; execution recipe identity still includes validator changes.
+
+
+## Native Python src layout
+
+[Unchanged Scrubify acceptance](benchmarks/python-src-layout.md) validates one
+ordinary package in either the project root or `src/`, with full tests under
+`tests/`. Static scope selects exactly one import root; all Python files are
+validated before report filters, and original/snapshot comparisons include the
+root, executable file identities and complete test set. Relative imports are
+resolved from that root while discovery retains project-relative source paths.
+
+An optional `source_root` execution-identity field defaults to the flat root for
+older records and admits only empty or `src`. Saved mutation paths and reruns
+validate the root alongside package, manifest/runtime/recipe fingerprints.
+The driver inserts the isolated import root and verifies observed application
+module origins against exact owned paths; it never installs the project.
+
+The unchanged project's static setuptools src mapping, pytest-only test extra,
+matching pytest pythonpath and quiet addopts are recognized declaratively.
+Build hooks, dependency installation, arbitrary pytest/setuptools settings and
+multiple/namespace packages remain excluded. Source-root changes invalidate
+reruns; stronger tests can still establish a fresh pristine inventory. The
+real-project acceptance retains original source/manifest hashes and old report
+hashes across a stronger-test rerun in a separate complete project copy.

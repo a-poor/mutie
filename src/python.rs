@@ -379,6 +379,12 @@ async fn execute_mode(
             nonce,
             config.to_str().context("Python config path is not UTF-8")?,
             nonce,
+            original["source_root"]
+                .as_str()
+                .context("missing Python source root")?,
+            original["package"]
+                .as_str()
+                .context("missing Python package")?,
             "tests",
         ];
         if collect_only {

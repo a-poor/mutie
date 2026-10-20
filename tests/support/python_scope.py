@@ -148,6 +148,76 @@ class ScopeTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             scope.inspect(self.root)
 
+    def src_layout(self):
+        (self.root / "src").mkdir()
+        (self.root / "sample").rename(self.root / "src/sample")
+
+    def test_flat_package_named_src_keeps_its_existing_import_root(self):
+        (self.root / "sample").rename(self.root / "src")
+        self.write("src/nested/__init__.py", "value = False\n")
+        self.write("tests/test_sample.py", "from src import enabled\ndef test_enabled(): assert enabled()\n")
+        result = scope.inspect(self.root)
+        self.assertEqual(result["package"], "src")
+        self.assertEqual(result["source_root"], "")
+        self.assertEqual(len(result["mutations"]), 2)
+
+    def test_src_layout_offsets_and_relative_imports(self):
+        self.src_layout()
+        self.write("src/sample/nested/__init__.py", "from .. import enabled\n")
+        self.write("src/sample/nested/value.py", "from . import enabled\nfrom .. import enabled as outer\nactive = False\n")
+        result = scope.inspect(self.root)
+        self.assertEqual(result["source_root"], "src")
+        self.assertEqual([m["file"] for m in result["mutations"]],
+                         ["src/sample/__init__.py", "src/sample/nested/value.py"])
+        for value in ("from .. import escaped", "from ...outside import escaped"):
+            self.write("src/sample/__init__.py", value)
+            with self.assertRaises(ValueError):
+                scope.inspect(self.root)
+
+    def test_src_static_manifest_without_execution(self):
+        self.src_layout()
+        manifest = ('[project]\nname="sample"\n'
+                    '[project.optional-dependencies]\ntest=["pytest>=8.0"]\n'
+                    '[tool.pytest.ini_options]\npythonpath=["src"]\naddopts="-q"\n'
+                    '[tool.setuptools]\npackage-dir={""="src"}\n'
+                    '[tool.setuptools.packages.find]\nwhere=["src"]\n')
+        self.write("pyproject.toml", manifest)
+        scope.inspect(self.root)
+        for old, new in [('pytest>=8.0', 'pytest>=99.0'), ('pytest>=8.0', 'requests'),
+                         ('pytest>=8.0', "pytest>=8.0; python_version >= '3.10'"),
+                         ('addopts="-q"', 'addopts="-k hidden"'),
+                         ('pythonpath=["src"]', 'pythonpath=["../outside"]'),
+                         ('where=["src"]', 'where=["src", "other"]'),
+                         ('where=["src"]', 'where=["src"]\nexclude=["sample"]'),
+                         ('package-dir={""="src"}', 'package-dir={"sample"="src/sample"}')]:
+            self.write("pyproject.toml", manifest.replace(old, new))
+            with self.assertRaises((ValueError, scope.tomllib.TOMLDecodeError)):
+                scope.inspect(self.root)
+
+    def test_src_ambiguity_namespace_and_escaped_files_rejected(self):
+        self.src_layout()
+        for name in ('sample/__init__.py', 'src/second/__init__.py', 'src/namespace/module.py',
+                     'src/__init__.py', 'src/outside.py', 'src/sample/nested/value.py'):
+            self.write(name, '')
+            with self.assertRaises(ValueError):
+                scope.inspect(self.root)
+            (self.root / name).unlink()
+        self.write('src/sample/mod.py', '')
+        self.write('src/sample/mod/__init__.py', '')
+        with self.assertRaises(ValueError):
+            scope.inspect(self.root)
+
+    def test_src_symlink_and_namespace_root_rejected(self):
+        self.src_layout()
+        (self.root / 'src/sample/__init__.py').unlink()
+        self.write('src/sample/value.py', '')
+        with self.assertRaises(ValueError):
+            scope.inspect(self.root)
+        self.write('src/sample/__init__.py', '')
+        (self.root / 'alias').symlink_to(self.root / 'src', target_is_directory=True)
+        with self.assertRaises(ValueError):
+            scope.inspect(self.root)
+
     def test_fixture_has_two_source_flips(self):
         result = scope.inspect(SOURCE.parents[2] / "tests/fixtures/python")
         self.assertEqual(len(result["mutations"]), 2)

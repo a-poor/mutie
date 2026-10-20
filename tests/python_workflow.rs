@@ -203,6 +203,15 @@ fn runtime_fingerprint_regressions() {
 }
 
 fn scored(root: &Path, reports: &Path, args: &[&str]) -> std::process::Output {
+    scored_with_timeout(root, reports, args, "5")
+}
+
+fn scored_with_timeout(
+    root: &Path,
+    reports: &Path,
+    args: &[&str],
+    timeout: &str,
+) -> std::process::Output {
     Command::new(env!("CARGO_BIN_EXE_mutie"))
         .arg(root)
         .args([
@@ -213,7 +222,7 @@ fn scored(root: &Path, reports: &Path, args: &[&str]) -> std::process::Output {
             "--ui",
             "plain",
             "--timeout",
-            "5",
+            timeout,
             "--baseline-timeout",
             "15",
             "--output-dir",
@@ -241,9 +250,72 @@ fn saved(
 #[test]
 #[ignore = "requires MUTIE_PYTHON; real scored reports, stronger tests and identity-checked reruns"]
 fn scored_reports_and_stronger_test_reruns() {
+    scored_review_contract(false);
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; native src layout scoring, review and reruns"]
+fn src_scored_reports_and_stronger_test_reruns() {
+    scored_review_contract(true);
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; preserve flat packages named src with subpackages"]
+fn flat_package_named_src_preserves_native_execution() {
     let root = fixture();
+    fs::rename(root.path().join("sample"), root.path().join("src")).unwrap();
+    fs::create_dir(root.path().join("src/nested")).unwrap();
+    fs::write(root.path().join("src/nested/__init__.py"), "").unwrap();
+    let test = root.path().join("tests/test_sample.py");
+    fs::write(
+        &test,
+        fs::read_to_string(&test).unwrap().replace("sample", "src") + "\nfrom src import nested\n",
+    )
+    .unwrap();
+    let source = fs::read(root.path().join("src/__init__.py")).unwrap();
     let reports = tempfile::tempdir().unwrap();
-    let source = fs::read(root.path().join("sample/__init__.py")).unwrap();
+    // This is a layout control, not a short-deadline probe. Give isolated
+    // interpreter startup the same headroom as the fixture baseline.
+    let output = scored_with_timeout(root.path(), reports.path(), &[], "15");
+    assert!(output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["python_scope"]["package"], "src");
+    assert!(run["python_scope"].get("source_root").is_none());
+    assert_eq!(
+        outcomes["summary"],
+        serde_json::json!({
+            "killed": 1, "missed": 1, "errors": 0, "timeout": 0, "build_failed": 0,
+        }),
+        "{outcomes}"
+    );
+    assert_eq!(
+        fs::read(root.path().join("src/__init__.py")).unwrap(),
+        source
+    );
+}
+
+fn scored_review_contract(src_layout: bool) {
+    let root = fixture();
+    let source_name = if src_layout {
+        fs::create_dir(root.path().join("src")).unwrap();
+        fs::rename(root.path().join("sample"), root.path().join("src/sample")).unwrap();
+        fs::write(
+            root.path().join("pyproject.toml"),
+            r#"[project]
+name = "sample"
+dependencies = []
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "-q"
+"#,
+        )
+        .unwrap();
+        "src/sample/__init__.py"
+    } else {
+        "sample/__init__.py"
+    };
+    let reports = tempfile::tempdir().unwrap();
+    let source = fs::read(root.path().join(source_name)).unwrap();
     let first = scored(
         root.path(),
         reports.path(),
@@ -258,6 +330,13 @@ fn scored_reports_and_stronger_test_reruns() {
     assert_eq!(
         run["python_scope"]["test_nodes"].as_array().unwrap().len(),
         2
+    );
+    assert_eq!(
+        run["python_scope"]
+            .get("source_root")
+            .and_then(|v| v.as_str())
+            .unwrap_or(""),
+        if src_layout { "src" } else { "" }
     );
     let original_report = fs::read(directory.join("outcomes.json")).unwrap();
     let original_run = fs::read(directory.join("run.json")).unwrap();
@@ -283,6 +362,19 @@ fn scored_reports_and_stronger_test_reruns() {
     let rejected = browse();
     assert!(
         String::from_utf8_lossy(&rejected.stderr).contains("pristine test inventory"),
+        "{rejected:?}"
+    );
+    let mut wrong_root = run.clone();
+    wrong_root["python_scope"]["source_root"] =
+        serde_json::json!(if src_layout { "" } else { "src" });
+    fs::write(
+        directory.join("run.json"),
+        serde_json::to_vec(&wrong_root).unwrap(),
+    )
+    .unwrap();
+    let rejected = browse();
+    assert!(
+        String::from_utf8_lossy(&rejected.stderr).contains("outside supported source scope"),
         "{rejected:?}"
     );
     fs::write(directory.join("run.json"), &original_run).unwrap();
@@ -349,10 +441,7 @@ fn scored_reports_and_stronger_test_reruns() {
         3
     );
     assert_eq!(outcomes["summary"]["errors"], 0);
-    assert_eq!(
-        fs::read(root.path().join("sample/__init__.py")).unwrap(),
-        source
-    );
+    assert_eq!(fs::read(root.path().join(source_name)).unwrap(), source);
     assert_eq!(
         fs::read(directory.join("outcomes.json")).unwrap(),
         original_report

@@ -165,8 +165,14 @@ blank-query survivor killed by stronger tests, timings and preserved inputs/repo
 The [feedback profile](benchmarks/python-feedback-profile.md) measures repeated
 full and focused runs and optimizes runtime traversal while retaining content checks.
 The [scope and baseline integration](benchmarks/python-baseline-integration.md)
-adds `python-list` and `python-check` for one dependency-free flat package with
+adds `python-list` and `python-check` for one dependency-free package with
 explicit `tests/` and a pinned virtual environment supplied through `--python`.
+Both flat `package/` and native `src/package/` layouts are supported. The
+[native src acceptance](benchmarks/python-src-layout.md) runs Scrubify with its
+original layout, source, tests and manifest, then kills a survivor with stronger
+tests in a separate copy. Narrow static setuptools metadata, a pytest-only test
+extra, the matching import root and quiet output are admitted without installing
+the project or executing its build backend.
 Explicit `--lang python --python /path/to/venv/bin/python` also supports
 [scored runs, saved reports, focused reruns and review](benchmarks/python-shared-runs.md).
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.

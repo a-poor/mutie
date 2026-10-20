@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat package, serial boolean flips, reports/reruns/review; adapted Scrubify finding and stronger tests | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, serial boolean flips, reports/reruns/review; unchanged Scrubify finding and stronger tests | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -319,7 +319,7 @@ thread-starting suites because pytest can suppress late thread failures.
 Uncaptured stderr is conservatively an error.
 [`python-list` and `python-check`](benchmarks/python-baseline-integration.md) now
 provide static discovery and an isolated baseline for one dependency-free flat
-package, `tests/test_*.py`, and an explicit pinned virtual environment. They do
+or `src/` package, `tests/test_*.py`, and an explicit pinned virtual environment. They do
 not produce scored reports themselves; explicit `--lang python` connects
 [scored runs, saved reports, reruns and review](benchmarks/python-shared-runs.md).
 [Production process controls](benchmarks/python-process-integration.md)
@@ -335,12 +335,16 @@ The [feedback follow-up](benchmarks/python-feedback-profile.md) records repeated
 comparisons and a faster runtime tree traversal with unchanged content hashes
 and validation frequency. It does not expand the supported scope.
 
-Scope: one flat package with static `pyproject.toml`, explicit `tests/test_*.py`,
+Scope: one flat or `src/` package with static `pyproject.toml`, explicit `tests/test_*.py`,
 boolean flips, full tests and one worker. The dedicated venv must match the pinned
 dependency set. The validator admits a small standard-library/API set, rejects
 configuration that could change collection, and verifies original/snapshot
-inputs. Scrubify's source layout and metadata were adapted; production and test
-bytes were unchanged. The 107-test case-converter adaptation supplies additional
+inputs. Initial Scrubify acceptance adapted its layout/metadata; the
+[native src follow-up](benchmarks/python-src-layout.md) now verifies the original
+checkout and manifest unchanged: six tests, one kill/two survivors, followed by
+a nine-test baseline and focused kill in a separate stronger-test copy. Static
+setuptools src discovery, a compatible pytest-only test extra, matching pythonpath
+and quiet output are admitted declaratively; project builds are never executed. The 107-test case-converter adaptation supplies additional
 execution/error evidence, not unchanged-layout support.
 
 Only completed assertion/pytest.fail body failures count as kills. Other runtime

@@ -81,10 +81,16 @@ def install_lifetime(emit):
     return checkpoint
 
 
-root, evidence, config, nonce, *selection = sys.argv[1:]
+root, evidence, config, nonce, source_root, package, *selection = sys.argv[1:]
 root = Path(root).resolve()
 os.chdir(root)
-sys.path.insert(0, str(root))
+if source_root not in ("", "src") or not package.isidentifier():
+    raise RuntimeError("invalid audited Python package root")
+import_root = root / source_root
+package_root = import_root / package
+if not (package_root / "__init__.py").is_file():
+    raise RuntimeError("missing audited Python package")
+sys.path.insert(0, str(import_root))
 emit = make_writer(evidence, nonce)
 checkpoint = install_lifetime(emit)
 emit("lifetime_start")
@@ -138,6 +144,12 @@ status = pytest.main(
 imports = {}
 for name, module in list(sys.modules.items()):
     filename = getattr(module, "__file__", None)
+    if name == package or name.startswith(package + "."):
+        relative = Path(*name.split("."))
+        allowed = {import_root / relative.with_suffix(".py"),
+                   import_root / relative / "__init__.py"}
+        if not filename or Path(filename).resolve() not in allowed:
+            raise RuntimeError("Python application import escaped audited package: " + name)
     if filename and Path(filename).resolve().is_relative_to(root):
         imports[name] = str(Path(filename).resolve())
 emit("returned", status=int(status), imports=imports)

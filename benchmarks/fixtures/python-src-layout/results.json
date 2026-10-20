@@ -1,0 +1,507 @@
+{
+  "commit": "558265805d942c03d2e6d8522baa0ca2992ec067",
+  "input_sha256": {
+    ".gitignore": "c0d61a15423a297d49e250075ea1787522fb18e2f4ebe31f1f61c97c9f7e0192",
+    "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+    "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+    "docs/PLAN.md": "b0354276c3d4df82c85971bfba2c12d96295b57788d6112b550e8d1c72323726",
+    "docs/SPEC.md": "d936b7b9e232f05b350c6f0aacb7bdc14c9404092658542838b7f6dc927e11dc",
+    "pyproject.toml": "6f6a192cbe44d330c302272e7c567545b25e40d54e1bcf61589d1aaea2de8430",
+    "src/scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+    "src/scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+    "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+  },
+  "stronger_input_sha256": {
+    ".gitignore": "c0d61a15423a297d49e250075ea1787522fb18e2f4ebe31f1f61c97c9f7e0192",
+    "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+    "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+    "docs/PLAN.md": "b0354276c3d4df82c85971bfba2c12d96295b57788d6112b550e8d1c72323726",
+    "docs/SPEC.md": "d936b7b9e232f05b350c6f0aacb7bdc14c9404092658542838b7f6dc927e11dc",
+    "pyproject.toml": "6f6a192cbe44d330c302272e7c567545b25e40d54e1bcf61589d1aaea2de8430",
+    "src/scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+    "src/scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+    "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+    "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+  },
+  "records": [
+    {
+      "label": "discovery",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-list",
+        "/tmp/mutie-python-scrubify-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--json"
+      ],
+      "seconds": 2.7170612920308486,
+      "scope": {
+        "files": {
+          ".gitignore": "sha256:c0d61a15423a297d49e250075ea1787522fb18e2f4ebe31f1f61c97c9f7e0192",
+          "LICENSE": "sha256:4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "sha256:86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "docs/PLAN.md": "sha256:b0354276c3d4df82c85971bfba2c12d96295b57788d6112b550e8d1c72323726",
+          "docs/SPEC.md": "sha256:d936b7b9e232f05b350c6f0aacb7bdc14c9404092658542838b7f6dc927e11dc",
+          "pyproject.toml": "sha256:6f6a192cbe44d330c302272e7c567545b25e40d54e1bcf61589d1aaea2de8430",
+          "src/scrubify/__init__.py": "sha256:1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "src/scrubify/core.py": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "sha256:27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "mutations": [
+          {
+            "column": 33,
+            "end": 938,
+            "end_column": 38,
+            "end_line": 47,
+            "file": "src/scrubify/core.py",
+            "line": 47,
+            "original": "False",
+            "replacement": "True",
+            "start": 933
+          },
+          {
+            "column": 68,
+            "end": 1968,
+            "end_column": 72,
+            "end_line": 73,
+            "file": "src/scrubify/core.py",
+            "line": 73,
+            "original": "True",
+            "replacement": "False",
+            "start": 1964
+          },
+          {
+            "column": 91,
+            "end": 2226,
+            "end_column": 95,
+            "end_line": 78,
+            "file": "src/scrubify/core.py",
+            "line": 78,
+            "original": "True",
+            "replacement": "False",
+            "start": 2222
+          }
+        ],
+        "package": "scrubify",
+        "source_root": "src",
+        "sources": [
+          "src/scrubify/__init__.py",
+          "src/scrubify/core.py"
+        ],
+        "tests": [
+          "tests/test_core.py"
+        ]
+      }
+    },
+    {
+      "label": "baseline",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-check",
+        "/tmp/mutie-python-scrubify-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--json"
+      ],
+      "seconds": 13.869779790984467,
+      "identity": {
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304,
+        "manifest_fingerprint": "sha256:6f6a192cbe44d330c302272e7c567545b25e40d54e1bcf61589d1aaea2de8430",
+        "package": "scrubify",
+        "recipe_fingerprint": "sha256:911b67849fdcd84dfa28d3a7eff6ea459c3f343807458576ec2dd32e7a28147c",
+        "runtime": {
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          }
+        },
+        "source_root": "src",
+        "test_files": [
+          "tests/test_core.py"
+        ],
+        "test_nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "timeout_millis": 20000
+      },
+      "tests": [
+        "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+        "tests/test_core.py::test_redact_headers_is_case_insensitive",
+        "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+        "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+        "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+        "tests/test_core.py::test_custom_patterns_can_be_added"
+      ]
+    },
+    {
+      "label": "full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-scrubify-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "10",
+        "--baseline-timeout",
+        "20",
+        "--max-capture-bytes",
+        "4194304",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-native-src-final/reports"
+      ],
+      "seconds": 40.89154470805079,
+      "report": "/tmp/mutie-python-native-src-final/reports/run-1792528888-yVydq6",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "scrubify",
+        "source_root": "src",
+        "manifest_fingerprint": "sha256:6f6a192cbe44d330c302272e7c567545b25e40d54e1bcf61589d1aaea2de8430",
+        "recipe_fingerprint": "sha256:911b67849fdcd84dfa28d3a7eff6ea459c3f343807458576ec2dd32e7a28147c",
+        "test_files": [
+          "tests/test_core.py"
+        ],
+        "test_nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "timeout_millis": 20000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 1,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 33.333333333333336,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 1,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "src/scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "src/scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "src/scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        [
+          1,
+          "killed"
+        ],
+        [
+          2,
+          "missed"
+        ],
+        [
+          3,
+          "missed"
+        ]
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "4e30af9ab96680a5e9af9d9fd9ec4859c7bdf21bc52015bd427e8c5306e2da19",
+        "diff/000002.diff": "9c238987a29b14a75d14766cfba98f274d14621ced45faf9f39ef2450ca5361a",
+        "diff/000003.diff": "3f8843998016b4fb029f9866c6b0d32b98409700099673a8c1abe5f7ac293ad7",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e427a46e4e05248970b2fb2152e5986565f62fdaf76bce31d1b9814ec9503572",
+        "logs/000001.log": "2e37b440e3a16849a108391dd5633ae64b69b4a17a4b15e2878b1bbf760910ad",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "94acf4143046fb8cb1d154a16056188b396a26ed9377e00c54cf96d4bd99e5e4",
+        "logs/000002.log": "cbc8eefd7471e3ce0c8c4f8e06b05e35208ef937f634f28ef30aaeefe162f255",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "d271bc4c61476139fa75efa8c67eb55e8dd295b53d6f286ec6f1c70f6a20e581",
+        "logs/000003.log": "bca89ef32aae4883931b5d4ea9aff022d17c6dff862b4036b5f2fa774c08a905",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "c2c6b596f6326dec34c3110029f10ae752a6b80ef7dd9f3d368c2793a9363a31",
+        "logs/baseline.log": "34adae3b6b86f93e116678513ec92680818e3957ab5fe6d7e47c4cb247894be4",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "4729102e59db75b5820273a0249979ca622611e03b653c221e4dadacd7a4b70d",
+        "logs/discovery.log": "7cc751b5bff8314d3176df899a5eff371999b8ee5f1c3d3d6f09393043bf3498",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "fd7c7e00a5c10ee6ed328ccd72b8628e3ac02d804cd5560564034dd595279b1e",
+        "missed.txt": "05656f89a5fc23a407985fbb761d9ec2feb49fd31dc5adb61f96f8a287140ab1",
+        "mutants.json": "2add37d010cd026f96a7e899b09be2e3cb3f6a6df2b22fa4b5caa7c52383e623",
+        "outcomes.json": "baa147facd122941b480a3d41e96a021bcb8739dec6eb83611eb04b8fee643bc",
+        "run.json": "d8ad2bf918336fc2d9edf801b899a11800fb2de7a3b3bd8265f042c0aa183886",
+        "summary.txt": "0cb1aac3aa8847127edad83dd3fbb915c2019716c4d2cf9f41dca95a0a29d06b",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-native-src-final/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "10",
+        "--baseline-timeout",
+        "20",
+        "--max-capture-bytes",
+        "4194304",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-python-native-src-final/reports",
+        "--rerun-missed",
+        "/tmp/mutie-python-native-src-final/reports/run-1792528888-yVydq6"
+      ],
+      "seconds": 32.62518041697331,
+      "report": "/tmp/mutie-python-native-src-final/reports/run-1792528929-ppR4IA",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "scrubify",
+        "source_root": "src",
+        "manifest_fingerprint": "sha256:6f6a192cbe44d330c302272e7c567545b25e40d54e1bcf61589d1aaea2de8430",
+        "recipe_fingerprint": "sha256:911b67849fdcd84dfa28d3a7eff6ea459c3f343807458576ec2dd32e7a28147c",
+        "test_files": [
+          "tests/test_blank_queries.py",
+          "tests/test_core.py"
+        ],
+        "test_nodes": [
+          "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+          "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+          "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "timeout_millis": 20000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 50.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 1,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "src/scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "src/scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        [
+          1,
+          "killed"
+        ],
+        [
+          2,
+          "missed"
+        ]
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "9c238987a29b14a75d14766cfba98f274d14621ced45faf9f39ef2450ca5361a",
+        "diff/000002.diff": "3f8843998016b4fb029f9866c6b0d32b98409700099673a8c1abe5f7ac293ad7",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "4cf8d53f9347eae5185cf40223591c90b05cf15857efbe98217aac7a645ff73f",
+        "logs/000001.log": "2891311a6cce5ed9af1230e8e311c9f5c10b67974193434073cce7ba0cbf6583",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "4a5c817d0feec908be31761351c21bcc70b0a851bc628f5d653f0c1a6b1df0be",
+        "logs/000002.log": "e08857b7fa26232c6455ef193accac9876c0069e0a7a00769ed15aea11107fd5",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "3f2a7d474201c0ea38d8bf1671a9f35e691f355933bdef622342047561fb3da4",
+        "logs/baseline.log": "aa86d3c766f10123435649e321f71eb5faadec61152d6ce18d97150f1e14f244",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "e45be053ce2b0b4919c09cf65ab4c43793d6c53be59d06c06af9c1360414e1f6",
+        "logs/discovery.log": "be6a799e99b9114c8fd0da0bfb6167991ceb727c5a480cf4057ef446775dd762",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "517f1d1b5f1c89f0258d8b53de7281e6ea8e2fccee5409e80b847d9e8cca9c97",
+        "missed.txt": "2dc9a476e18ca55a8faf4455d033746465b77fbf2316ad947709b2438c8a130a",
+        "mutants.json": "94a61c11dfb366c1147f78282b51cd8acaecdb9e23bbb60812a75d7ee548d7f6",
+        "outcomes.json": "b39e9ef95b5327b7a1f76e1eea9252af58f91442d9a529a171795f608e9e188e",
+        "run.json": "01211e38b64d59bba0bdccb17f2f493c73136719698651b20412a0eccf23c45f",
+        "summary.txt": "795de1feae50d3d9006071d8789b67173c0b5dadcac30965b2eef96ef69a8db8",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "original_inputs_preserved": true,
+  "original_report_preserved": true
+}

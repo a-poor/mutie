@@ -117,7 +117,11 @@ pub(super) fn classify(
     );
     ensure!(
         matches!(&records[tail + 1].event, Event::Returned { status, imports }
-        if *status == code && imports.values().all(|p| std::path::Path::new(p).starts_with(root))),
+        if *status == code && imports.values().all(|p| {
+            let path = std::path::Path::new(p);
+            path.is_absolute() && path.starts_with(root)
+                && !path.components().any(|c| matches!(c, std::path::Component::ParentDir))
+        })),
         "Python return status or imports mismatch"
     );
     for (offset, expected) in [(2, "returned"), (3, "atexit")] {
@@ -281,6 +285,9 @@ mod tests {
             (4, "outcome", json!("skipped")),
             (5, "outcome", json!("failed")),
             (7, "status", json!(0)),
+            (7, "imports", json!({"sample":"/repo/../outside/sample.py"})),
+            (7, "imports", json!({"sample":"relative/sample.py"})),
+            (7, "imports", json!({"sample":"/outside/sample.py"})),
             (9, "hooks_intact", json!(false)),
         ] {
             let mut changed = records.clone();

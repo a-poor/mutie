@@ -75,6 +75,8 @@ async fn probe(
     let owned = directory.path().canonicalize()?;
     let root = owned.join("repo");
     fs::create_dir_all(root.join("tests"))?;
+    fs::create_dir_all(root.join("sample"))?;
+    fs::write(root.join("sample/__init__.py"), "")?;
     fs::write(root.join("tests/test_probe.py"), source)?;
     let driver = owned.join("driver.py");
     fs::write(&driver, DRIVER)?;
@@ -96,6 +98,8 @@ async fn probe(
             evidence.to_str().unwrap(),
             config.to_str().unwrap(),
             "probe-token",
+            "",
+            "sample",
             "tests",
         ],
         &owned,
@@ -180,6 +184,11 @@ async fn native_body_and_lifetime_attribution() -> Result<()> {
         (
             "thread",
             "import threading\ndef test_body():\n t=threading.Thread(target=lambda: None)\n t.start()\n t.join()\n",
+            None,
+        ),
+        (
+            "escaped_application_import",
+            "import sample\nsample.__file__ = '/outside/sample.py'\ndef test_body(): assert False\n",
             None,
         ),
         (

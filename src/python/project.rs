@@ -33,6 +33,8 @@ struct Site {
 #[serde(deny_unknown_fields)]
 struct Document {
     package: String,
+    #[serde(default)]
+    source_root: String,
     files: BTreeMap<String, String>,
     tests: Vec<String>,
     sources: Vec<String>,
@@ -48,6 +50,7 @@ impl Project {
     pub(crate) fn validate_snapshot(&self, copied: &Self) -> Result<()> {
         ensure!(
             self.document.package == copied.document.package
+                && self.document.source_root == copied.document.source_root
                 && self.document.sources == copied.document.sources
                 && self.document.tests == copied.document.tests
                 && self
@@ -90,7 +93,10 @@ impl Project {
         for name in &self.document.sources {
             let path = Path::new(name);
             ensure!(
-                path.starts_with(&self.document.package)
+                matches!(self.document.source_root.as_str(), "" | "src")
+                    && path.starts_with(
+                        Path::new(&self.document.source_root).join(&self.document.package)
+                    )
                     && path.components().all(|c| matches!(c, Component::Normal(_)))
                     && path.extension().is_some_and(|extension| extension == "py"),
                 "invalid Python source path"
@@ -195,6 +201,16 @@ mod tests {
             root: root.path().to_owned(),
             document,
         };
+        let mut copied = Project {
+            root: root.path().to_owned(),
+            document: serde_json::from_value(project.value()?)?,
+        };
+        project.validate_snapshot(&copied)?;
+        copied.document.source_root = "src".into();
+        assert!(project.validate_snapshot(&copied).is_err());
+        copied.document.source_root.clear();
+        copied.document.tests.push("tests/test_hidden.py".into());
+        assert!(project.validate_snapshot(&copied).is_err());
         let all = Scope::new(&[], &[])?;
         let found = project.discover(&all)?;
         assert_eq!(found.len(), 1);
