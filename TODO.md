@@ -41,8 +41,9 @@ Bun is now the selected next runner. The [initial audit](benchmarks/bun-initial-
 pins 1.3.11, adds independent JS/TS fixtures and selects Composer (272 passing tests).
 Native reports conflate body, hook and process failures. A bounded file-backed
 [observer prototype](benchmarks/bun-body-attribution.md) now passes 112 paired cases
-and Composer controls. Shared scored execution and focused reruns are now Experimental;
-review/policy and independent real JavaScript acceptance remain open. Rust workspaces remain a separate decision.
+and Composer controls. Shared scored execution, focused reruns,
+review/policies and scored cleanup pass. TypeScript is now Validated; independent
+real JavaScript acceptance remains open. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -94,12 +95,17 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   [shared workflow](benchmarks/bun-shared-runs.md).
 - [x] Run all 12 Composer candidates and kill the name-configurability survivor
   through a saved-ID stronger-test rerun; preserve original sources/reports.
-- [ ] Validate package/import/config/discovery boundaries, then connect isolated
-  execution to reports, reruns, review and policies.
+- [x] Validate package/import/config/discovery boundaries and connect isolated
+  execution to reports, reruns, review and policies; independent JS/TS CRUD,
+  staleness and error precedence pass. See [review acceptance](benchmarks/bun-dismissals.md).
 - [x] Verify baseline diagnostic timeout/cancellation/capture limits and descendant cleanup.
-- [ ] Preserve those guarantees when connecting scored Bun mutation runs.
-- [ ] Complete the real-project run/inspect/improve-tests/rerun loop through Mutie,
-  with independent JavaScript and TypeScript acceptance before promotion.
+- [x] Verify scored JS/TS output/file limits, timeout, cancellation, descendant
+  shutdown, saved score boundaries and source preservation; see
+  [scored cleanup](benchmarks/bun-scored-cleanup.md).
+- [x] Complete the scoped TypeScript real-project feedback loop and milestone
+  audit using Composer; promote TypeScript independently to Validated.
+- [ ] Complete an independent real JavaScript run/inspect/improve-tests/rerun loop
+  before promoting JavaScript beyond Experimental.
 
 ## Validated first Node test-runner slice
 

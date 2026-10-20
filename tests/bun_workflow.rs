@@ -210,3 +210,143 @@ fn mutation_cleanup_errors_are_not_kills() {
     assert_eq!(outcomes["summary"]["errors"], 1);
     assert_eq!(outcomes["summary"]["killed"], 0);
 }
+
+#[test]
+#[ignore = "requires pinned Bun; scored capture/file limits must remain errors"]
+fn scored_resource_limits_invalidate_scores() {
+    for syntax in ["js", "ts"] {
+        for body in [
+            "console.log('x'.repeat(200000))",
+            "await Bun.write('large.bin',new Uint8Array(9*1024*1024))",
+        ] {
+            let (temp, root) = fixture(syntax);
+            let source = root.join(format!("src/flags.{syntax}"));
+            fs::write(&source, "export function enabled() { return true; }\n").unwrap();
+            let before = fs::read(&source).unwrap();
+            fs::write(root.join(format!("test/flags.test.{syntax}")),format!("import {{test}} from 'bun:test'; import {{enabled}} from '../src/flags.{syntax}'; test('resource',async()=>{{if(!enabled()){{{body}}}}});")).unwrap();
+            let output = run(
+                &root,
+                &temp.path().join("reports"),
+                &[
+                    "--max-capture-bytes",
+                    "32768",
+                    "--max-log-bytes",
+                    "64",
+                    "--fail-on-missed",
+                    "--min-score",
+                    "100",
+                ],
+            );
+            assert!(!output.status.success(), "{output:?}");
+            let (_, saved, _, outcomes) = report(&output);
+            assert_eq!(saved["status"], "failed");
+            assert!(saved["score"]["percentage"].is_null());
+            assert_eq!(saved["score_policy"]["status"], "not_evaluated");
+            assert_eq!(outcomes["baseline"]["outcome"], "passed");
+            assert_eq!(outcomes["summary"]["errors"], 1);
+            assert_eq!(outcomes["summary"]["killed"], 0);
+            assert_eq!(fs::read(source).unwrap(), before);
+            assert!(!root.join("large.bin").exists());
+        }
+    }
+}
+
+#[test]
+#[ignore = "requires pinned Bun; scored timeout/cancellation and descendant cleanup"]
+fn scored_shutdown_stops_descendants_and_preserves_sources() {
+    use std::{
+        process::Stdio,
+        thread,
+        time::{Duration, Instant},
+    };
+    for syntax in ["js", "ts"] {
+        for cancel in [false, true] {
+            let (temp, root) = fixture(syntax);
+            let source = root.join(format!("src/flags.{syntax}"));
+            fs::write(&source, "export function enabled() { return true; }\n").unwrap();
+            let before = fs::read(&source).unwrap();
+            let marker = temp.path().join("leaked");
+            let ready = temp.path().join("ready");
+            let child_script = format!(
+                "setTimeout(()=>require('fs').writeFileSync({},'leaked'),2500)",
+                serde_json::to_string(&marker).unwrap()
+            );
+            fs::write(root.join(format!("test/flags.test.{syntax}")),format!("import {{test}} from 'bun:test'; import {{spawn}} from 'node:child_process'; import {{enabled}} from '../src/flags.{syntax}'; test('pending',async()=>{{if(!enabled()){{spawn(process.execPath,['-e',{}],{{stdio:'ignore'}}); await Bun.write({},process.cwd()); await new Promise(()=>{{}})}}}});",serde_json::to_string(&child_script).unwrap(),serde_json::to_string(&ready).unwrap())).unwrap();
+            let stdout = temp.path().join("stdout");
+            let stderr = temp.path().join("stderr");
+            let mut child = Command::new(env!("CARGO_BIN_EXE_mutie"))
+                .arg(&root)
+                .args([
+                    "--lang",
+                    "bun",
+                    "--ui",
+                    "plain",
+                    "--timeout",
+                    if cancel { "10" } else { "1" },
+                    "--baseline-timeout",
+                    "10",
+                    "--min-score",
+                    "100",
+                    "--output-dir",
+                ])
+                .arg(temp.path().join("reports"))
+                .stdout(Stdio::from(fs::File::create(&stdout).unwrap()))
+                .stderr(Stdio::from(fs::File::create(&stderr).unwrap()))
+                .spawn()
+                .unwrap();
+            let deadline = Instant::now() + Duration::from_secs(45);
+            while !ready.exists() {
+                if let Some(status) = child.try_wait().unwrap() {
+                    panic!(
+                        "exited before mutation: {status}: {}",
+                        fs::read_to_string(&stderr).unwrap()
+                    );
+                }
+                if Instant::now() > deadline {
+                    child.kill().unwrap();
+                    child.wait().unwrap();
+                    panic!("mutation never reached descendant checkpoint");
+                }
+                thread::sleep(Duration::from_millis(20));
+            }
+            if cancel {
+                assert_eq!(unsafe { libc::kill(child.id() as i32, libc::SIGINT) }, 0);
+            }
+            let status = loop {
+                if let Some(status) = child.try_wait().unwrap() {
+                    break status;
+                }
+                if Instant::now() > deadline {
+                    child.kill().unwrap();
+                    child.wait().unwrap();
+                    panic!("scored shutdown did not finish");
+                }
+                thread::sleep(Duration::from_millis(20));
+            };
+            let output = Output {
+                status,
+                stdout: fs::read(stdout).unwrap(),
+                stderr: fs::read(stderr).unwrap(),
+            };
+            let (_, saved, _, outcomes) = report(&output);
+            assert_eq!(outcomes["baseline"]["outcome"], "passed");
+            assert_eq!(outcomes["summary"]["killed"], 0);
+            assert!(saved["score"]["percentage"].is_null());
+            if cancel {
+                assert_eq!(saved["status"], "interrupted");
+                assert_eq!(outcomes["mutations"][0]["state"], "interrupted");
+            } else {
+                assert_eq!(saved["status"], "completed");
+                assert_eq!(outcomes["summary"]["timeout"], 1);
+            }
+            assert_eq!(fs::read(&source).unwrap(), before);
+            let workspace = fs::read_to_string(&ready).unwrap();
+            assert!(!Path::new(&workspace).exists(), "owned workspace leaked");
+            thread::sleep(Duration::from_millis(2700));
+            assert!(!marker.exists(), "descendant survived shutdown");
+        }
+    }
+}
+
+#[path = "support/bun_dismissals.rs"]
+mod review;

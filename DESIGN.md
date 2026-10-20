@@ -1687,7 +1687,7 @@ full-scan scores remain unchanged. Test layouts beyond the audited test director
 dependencies and loaders remain separate scope decisions.
 
 
-## Experimental Bun runner: attributed scoring
+## Scoped Bun runner: attributed scoring
 
 The [initial audit](benchmarks/bun-initial-scope.md) selects pinned Bun
 1.3.11+af24e281e, separate dependency-free JS/TS fixtures and GramIO Composer as
@@ -1741,6 +1741,8 @@ budget changes remain compatible; the test inventory must match every execution
 within a run. Original and snapshot inputs are compared before discovery so report
 exclusions cannot hide executable files. Baselines and each mutation use fresh
 owned copies and bounded captures; only complete positive body evidence can kill.
-Independent JS/TS fixtures and Composer establish Experimental support; see
-[shared runs](benchmarks/bun-shared-runs.md). Review/policy and broader scored
-cleanup acceptance remain explicit gates before promotion.
+Independent JS/TS fixtures and Composer established the initial Experimental scope; see
+[shared runs](benchmarks/bun-shared-runs.md). Independent JS/TS [scored cleanup checks](benchmarks/bun-scored-cleanup.md)
+cover resource limits, timeout/SIGINT and descendant shutdown. [Independent JS/TS review/policy checks](benchmarks/bun-dismissals.md) now pass,
+completing scoped TypeScript validation with Composer. JavaScript remains
+Experimental pending its own real-project feedback loop.

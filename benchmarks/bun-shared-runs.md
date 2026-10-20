@@ -65,3 +65,6 @@ scored cancellation/capture/descendant-cleanup regressions remain gates. Existin
 baseline diagnostic and observer probes do not substitute for those scored-path
 checks. No parallel workers, installed dependencies, custom Bun configuration,
 preloads or multi-package support is claimed.
+
+Follow-up: [scored cleanup acceptance](bun-scored-cleanup.md) now covers JS/TS
+resource-limit errors, timeout/SIGINT, descendant shutdown and saved-score boundaries.

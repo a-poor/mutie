@@ -27,8 +27,9 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   runtime/config/recipe/limit identity in diagnostics and saved reports; focused
   reruns permit stronger tests but reject runtime/config/recipe drift. `benchmarks/bun-discovery-identity.md` records 12
   Composer flips and preserved inputs. Bun-only discovery skips erased ambient
-  declarations without broadening Node/Vitest. JS/TS scored fixture workflows pass independently; Bun
-  remains Experimental. See `benchmarks/bun-shared-runs.md`.
+  declarations without broadening Node/Vitest. JS/TS scored fixture and review workflows pass independently. TypeScript is
+  Validated via Composer; JavaScript remains Experimental pending real-project
+  findings. See `benchmarks/bun-shared-runs.md` and `benchmarks/bun-dismissals.md`.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
   dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
@@ -146,8 +147,8 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   dismissal-based and minimum-score CI policies, configuration, and focused runs.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
-  language/test runner. Update it when support changes; Experimental Bun and planned Python
-  have distinct acceptance gates.
+  language/test runner. Update it when support changes; Bun JavaScript remains Experimental, Bun
+  TypeScript is Validated and Python remains Planned.
 
 ## Development Status & Versioning
 
@@ -225,9 +226,12 @@ observer in `benchmarks/bun-body-attribution.md` passes 112 paired JS/TS cases a
 checkpoint exposes suppressed pending rejections without delaying successful
 callbacks. Inspector terminal events can be lost at exit and cannot be guessed.
 The Rust reader now supports scored serial runs, saved reports and focused reruns.
-Independent JS/TS fixture workflows and Composer evidence establish Experimental
-support; review/policy, scored cleanup and independent real JavaScript acceptance
-remain open. See `benchmarks/bun-shared-runs.md`.
+Independent JS/TS fixture workflows and Composer evidence establish scoped
+TypeScript validation; JavaScript remains Experimental. `benchmarks/bun-scored-cleanup.md` records independent JS/TS scored
+resource limits, timeout/SIGINT, descendant shutdown and score boundaries.
+`benchmarks/bun-dismissals.md` records independent JS/TS CRUD, staleness, raw-score
+preservation and error precedence. Independent real JavaScript acceptance remains
+open. See `benchmarks/bun-shared-runs.md`.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

@@ -2,7 +2,7 @@
 
 This is the support ledger for Mutie's language and test-runner targets. It tracks
 verified behavior, scope limits, evidence and the work needed to advance each
-target. Last reviewed: 2026-10-19. [README.md](README.md) documents usage;
+target. Last reviewed: 2026-10-20. [README.md](README.md) documents usage;
 [TODO.md](TODO.md) sets implementation priorities. A planned target is not available
 through the CLI, and this table does not set implementation order.
 
@@ -34,8 +34,8 @@ does not by itself validate a new runner.
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
-| JavaScript | Bun test runner | Experimental | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports and focused reruns; independent fixture | Real JavaScript project, review/policies and scored cleanup acceptance |
-| TypeScript | Bun test runner | Experimental | Same scope with audited erasable TS/NodeNext config; Composer full run and stronger-test rerun | Review/policies, scored cleanup acceptance and remaining findings |
+| JavaScript | Bun test runner | Experimental | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports and focused reruns; independent fixture | Independent real JavaScript project findings |
+| TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence; remaining Composer findings |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
@@ -259,7 +259,7 @@ Broader layouts and dependencies are not implied.
 
 ## JavaScript / TypeScript — Bun test runner
 
-**Level: Experimental, independently exercised by JavaScript and TypeScript fixtures.**
+**Levels: TypeScript Validated; JavaScript Experimental. Both remain scoped to the pinned runner.**
 
 The [selected initial audit](benchmarks/bun-initial-scope.md) pins Bun 1.3.11,
 retains 24 JUnit/inspector cases per syntax, and establishes an unchanged 272-test
@@ -271,7 +271,7 @@ baseline/finding controls. The [isolated diagnostic](benchmarks/bun-isolated-exe
 now connects the Rust reader to fresh copies and shared process cleanup. JS/TS
 fixtures pass independently. [Unchanged Composer acceptance](benchmarks/bun-composer-execution.md)
 adds a narrow plain-JSON tsconfig and non-executable ancillary-file scope: 272-test
-baseline, surviving manual candidate, and one stronger-test body failure. The later scored workflow is recorded below; full milestone acceptance remains open.
+baseline, surviving manual candidate, and one stronger-test body failure. The later scored workflow and syntax-specific milestone status are recorded below.
 [Discovery and diagnostic identity](benchmarks/bun-discovery-identity.md) now cover
 12 Composer runtime flips and a passing baseline with matching input fingerprints.
 
@@ -283,14 +283,18 @@ validated before exclusions and after copying. Hook/process/ambiguous failures
 remain errors and invalidate scores. See [shared workflow evidence](benchmarks/bun-shared-runs.md)
 for independent JS/TS fixtures, Composer's 12 candidates and stronger-test finding.
 
-Next gates: independent real JavaScript acceptance, scored cancellation/capture
-regressions and Bun-specific review/policy acceptance. Parallel workers,
+Independent JS/TS [scored cleanup regressions](benchmarks/bun-scored-cleanup.md)
+now cover output/file limits, timeout, SIGINT, descendant shutdown and score
+boundaries. Independent JS/TS [review/policy acceptance](benchmarks/bun-dismissals.md) now
+covers CRUD, staleness, raw scores, focused reruns and error precedence. Together
+with Composer, this completes scoped TypeScript validation. Independent real
+JavaScript acceptance remains the next gate. Parallel workers,
 dependencies, preloads, custom Bun configuration and multi-package layouts remain
 unsupported. Do not infer compatibility from Node or Vitest support.
 
 ## Python — pytest
 
-**Level: Experimental, independently exercised by JavaScript and TypeScript fixtures.**
+**Levels: TypeScript Validated; JavaScript Experimental. Both remain scoped to the pinned runner.**
 
 Desired outcome: the shared workflow for pytest projects. Choose Python/pytest
 versions, a real project and fixture; define package layouts, source/test discovery,
