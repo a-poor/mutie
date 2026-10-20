@@ -1,0 +1,2760 @@
+{
+  "reference_commit": "24aff2b",
+  "platform": "macOS arm64",
+  "build": "dev with existing sha2 optimization",
+  "binaries_sha256": {
+    "before": "29e63edffd372091bb6545e6b1ff8023f766659bff1df97a8d629812a2d7f05b",
+    "after": "5e6a7efa13737b6fba132880983a1d7a40efda287e4a7f54b30e2a88756f4419"
+  },
+  "cli": {
+    "source_sha256": {
+      "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+      "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+      "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+      "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+      "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+      "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+      "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+    },
+    "records": [
+      {
+        "mode": "before",
+        "repeat": 1,
+        "workload": "full",
+        "wall_seconds": 40.11376408394426,
+        "command": [
+          "/tmp/mutie-python-before-profile",
+          "/tmp/mutie-python-feedback-comparison/before-1/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/before-1/reports"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/before-1/reports/run-1792526712-0yEGbq",
+        "summary": {
+          "killed": 1,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:46b73188a4464ebf58c77f02ecfaf4f6b2678d6e328129038a028c08a285e794",
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ],
+          [
+            3,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+          "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+          "logs/000001.log": "2e37b440e3a16849a108391dd5633ae64b69b4a17a4b15e2878b1bbf760910ad",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "94acf4143046fb8cb1d154a16056188b396a26ed9377e00c54cf96d4bd99e5e4",
+          "logs/000002.log": "44da9d9d48413f983ab101dd4206a7019bf5bc8617622708e82cb7f84248e640",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "efb4cc1ce219481f3402d2af55e9136236d8c64373d15989442ebcea41df9cb3",
+          "logs/000003.log": "cbc8eefd7471e3ce0c8c4f8e06b05e35208ef937f634f28ef30aaeefe162f255",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "d271bc4c61476139fa75efa8c67eb55e8dd295b53d6f286ec6f1c70f6a20e581",
+          "logs/baseline.log": "34adae3b6b86f93e116678513ec92680818e3957ab5fe6d7e47c4cb247894be4",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "4729102e59db75b5820273a0249979ca622611e03b653c221e4dadacd7a4b70d",
+          "logs/discovery.log": "7cc751b5bff8314d3176df899a5eff371999b8ee5f1c3d3d6f09393043bf3498",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "fd7c7e00a5c10ee6ed328ccd72b8628e3ac02d804cd5560564034dd595279b1e",
+          "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+          "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+          "outcomes.json": "af71576e887b29d7467ac16ab03d25e3d023d1b959783b5839c34cb998411fbb",
+          "run.json": "15e5ac522bbd3e39628c35f7bb41e64f8948189105a3bfc420d03daa47c41f4a",
+          "summary.txt": "b302f54393a83b903b724db41a119f7e2286e8a0c550e5b51d95d397b42b2e88",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "before",
+        "repeat": 1,
+        "workload": "rerun",
+        "wall_seconds": 51.85211754194461,
+        "command": [
+          "/tmp/mutie-python-before-profile",
+          "/tmp/mutie-python-feedback-comparison/before-1/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/before-1/reports",
+          "--rerun-missed",
+          "/tmp/mutie-python-feedback-comparison/before-1/reports/run-1792526712-0yEGbq"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/before-1/reports/run-1792526751-m5X9mb",
+        "summary": {
+          "killed": 1,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:46b73188a4464ebf58c77f02ecfaf4f6b2678d6e328129038a028c08a285e794",
+          "test_files": [
+            "tests/test_blank_queries.py",
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+            "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+            "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000002.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "62b7a1bbb6b123d271741582b4f997b5b6da145545cb098ad91b0b0d90dbdea3",
+          "logs/000001.log": "ddac4494e383cb76cac904d0bbfe379c2465ba2cb0a789d6994280f6964d7f81",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "cba8b28fc491ed7100cb24c0db2e472ae4248bbedc83964ca2d17412662c538e",
+          "logs/000002.log": "226bdb021f609d32288bc9ca8a3b7faa3fd463a7617e3662d32beb978341d198",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "38025b23df21b23d371cb04835992ad56739231045e0683deb6a80c6d699b19d",
+          "logs/baseline.log": "8bf03509a45def8780800339cf1755801cf66bf2d35c7e08158db5173ec3857d",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "45f342b06ddfec11398f7048452e09802f765a8be91964958508e643d9760915",
+          "logs/discovery.log": "e733c164f9b85f8c6dc2d496803acd27cf4e24589c1f713cdaee57e2f4fabeba",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "cfcd5561a1c9cba9b99ed03b18c9ec02fda0b44456d06030f2ac151e65bb4dc9",
+          "missed.txt": "715a259e73c692cc8c516b9aa5168e8f0713629734d9bee074a42c3bddc64c2c",
+          "mutants.json": "3494a25f722aad1fa6f962eaf79aa1074a7dfd4d95c0f8a0750641ba78260770",
+          "outcomes.json": "125f1a9c42702d8aed7d653bcbaef5b4e87aa0c3ffdf09fe651f9646e415a01f",
+          "run.json": "4d53714dcf8cc9e7b747f2966c4619ef2ec95061011842c1c03be64208d76e26",
+          "summary.txt": "5f3c8e18e8bff1169727e4e0defde680054eda647ab7d033c08ff6283dec2610",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "after",
+        "repeat": 1,
+        "workload": "full",
+        "wall_seconds": 45.4559161249781,
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-python-feedback-comparison/after-1/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/after-1/reports"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/after-1/reports/run-1792526804-c7R5AT",
+        "summary": {
+          "killed": 1,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ],
+          [
+            3,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+          "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+          "logs/000001.log": "921cb12289bfd7a06926d9455f6124b5598c42aa388269f79c7cd02d8683bb33",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "f0603d60e9ae66441b5f1830242e650e5c7687a520aae540556702cfc183559f",
+          "logs/000002.log": "cbc8eefd7471e3ce0c8c4f8e06b05e35208ef937f634f28ef30aaeefe162f255",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "d271bc4c61476139fa75efa8c67eb55e8dd295b53d6f286ec6f1c70f6a20e581",
+          "logs/000003.log": "cbc8eefd7471e3ce0c8c4f8e06b05e35208ef937f634f28ef30aaeefe162f255",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "d271bc4c61476139fa75efa8c67eb55e8dd295b53d6f286ec6f1c70f6a20e581",
+          "logs/baseline.log": "34adae3b6b86f93e116678513ec92680818e3957ab5fe6d7e47c4cb247894be4",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "4729102e59db75b5820273a0249979ca622611e03b653c221e4dadacd7a4b70d",
+          "logs/discovery.log": "cb6f94c9e2d3a4c6cf4911049067cc84da0449cc747c7f6ad65e968d417499e3",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "64fad985029b16994222ec590949a602f2944fb0ad7aa4cd2fa50f73aa311722",
+          "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+          "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+          "outcomes.json": "6186d5a7b75cad4f7c9018b64b15fcf03e39db26985f16e72ea436ef7fcc01fb",
+          "run.json": "b0defbb45612f5003a038aca386cee6bc957324246d4e2065970cffec0ddad4a",
+          "summary.txt": "1c6c2ed52aa345c0695833c02b0e11dd94254d3b8e3ab206bbcb25ecd2349ede",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "after",
+        "repeat": 1,
+        "workload": "rerun",
+        "wall_seconds": 27.931844624923542,
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-python-feedback-comparison/after-1/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/after-1/reports",
+          "--rerun-missed",
+          "/tmp/mutie-python-feedback-comparison/after-1/reports/run-1792526804-c7R5AT"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/after-1/reports/run-1792526848-mmfH2l",
+        "summary": {
+          "killed": 1,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "test_files": [
+            "tests/test_blank_queries.py",
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+            "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+            "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000002.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "62b7a1bbb6b123d271741582b4f997b5b6da145545cb098ad91b0b0d90dbdea3",
+          "logs/000001.log": "eb1a874cb3ffaae90091d69ae3d104926d4b6cf7374010b2e0059dd2b5aaf027",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "91ca35b2c466b894350a298b6b7985808d009b4c2e703574db747d252bbc8682",
+          "logs/000002.log": "1d599e2cdd57baebed56313eef6be3845c7e3a246d32b1d71d779b5db03a9ce6",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "8b8ddcd2e7b63fe945152ea4c56d7e74f75ec09c6df6f5afe0311439df55ede7",
+          "logs/baseline.log": "409a67cb5707dae4559e2bbcf851d3639bee544f6ab25f40224b6714d4f9d434",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "edea1fe2e925f38d64cba1ee0f8ba3f25b2723ff28e7e65063c9b7b3e2414e63",
+          "logs/discovery.log": "be6a799e99b9114c8fd0da0bfb6167991ceb727c5a480cf4057ef446775dd762",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "517f1d1b5f1c89f0258d8b53de7281e6ea8e2fccee5409e80b847d9e8cca9c97",
+          "missed.txt": "715a259e73c692cc8c516b9aa5168e8f0713629734d9bee074a42c3bddc64c2c",
+          "mutants.json": "3494a25f722aad1fa6f962eaf79aa1074a7dfd4d95c0f8a0750641ba78260770",
+          "outcomes.json": "8e34234bc12c55fc263e729b85b7c54416100fac499fa7c788f301ba0bab1cab",
+          "run.json": "a0334a50b488c0aef6866da5a7186a79b1f9da55c128448ec46879ec4d72e97c",
+          "summary.txt": "bf5c6d0b9bff7dd6a10fd2ff6199323d39a2bc1d15a4d5f62f5e945607148e7b",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "after",
+        "repeat": 2,
+        "workload": "full",
+        "wall_seconds": 36.97835945908446,
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-python-feedback-comparison/after-2/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/after-2/reports"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/after-2/reports/run-1792526876-1Qmvld",
+        "summary": {
+          "killed": 1,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ],
+          [
+            3,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+          "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+          "logs/000001.log": "921cb12289bfd7a06926d9455f6124b5598c42aa388269f79c7cd02d8683bb33",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "f0603d60e9ae66441b5f1830242e650e5c7687a520aae540556702cfc183559f",
+          "logs/000002.log": "5d90ce9a0ce8d03a424e791f7ab647979f0855862ab144b1adfe945f4a54217c",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "7548474fb14d06939e7c5c04118884c7575e481e66341dcb60a44054161cc931",
+          "logs/000003.log": "bca89ef32aae4883931b5d4ea9aff022d17c6dff862b4036b5f2fa774c08a905",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "c2c6b596f6326dec34c3110029f10ae752a6b80ef7dd9f3d368c2793a9363a31",
+          "logs/baseline.log": "6248796b16b4437d515415f6cc9aff4fba264d689f37abae023aa996b6d66d36",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "ea1e061c27e6d298c1d2880db333e777f6b97cea348da885a5aca09ce6f354a2",
+          "logs/discovery.log": "2bc2e0d7493e729ddf9ccad48ffc4d7feb00560d4a297b1b7a21c0727ce37473",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "4874b67b83671a108c4fefa3cd47ce19b8ece01713f2a7364c2ed3758849a674",
+          "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+          "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+          "outcomes.json": "8a8a28c15e166b46ab3cefe1a16848735a9eefb942c97b86a68234da128c15b8",
+          "run.json": "6183c4c6bea6e7b51b17bddc20c7bcc4d296d6bfd7a34aae1e41524d45662c9f",
+          "summary.txt": "c6fb8621e89c196e196d1e4ad594263a63be5b0d560671111641ed948406dfdb",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "after",
+        "repeat": 2,
+        "workload": "rerun",
+        "wall_seconds": 28.44622145802714,
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-python-feedback-comparison/after-2/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/after-2/reports",
+          "--rerun-missed",
+          "/tmp/mutie-python-feedback-comparison/after-2/reports/run-1792526876-1Qmvld"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/after-2/reports/run-1792526913-FOQBZW",
+        "summary": {
+          "killed": 1,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "test_files": [
+            "tests/test_blank_queries.py",
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+            "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+            "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000002.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "62b7a1bbb6b123d271741582b4f997b5b6da145545cb098ad91b0b0d90dbdea3",
+          "logs/000001.log": "ea2fc7c6abba3f529433c7d4fc728df6d125c4a54049d0d4e498df2378e93cbc",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "b0e6b9dd68710b9e98dd6f5c9b2dc4f3128625809f2dddac98dedf9c92590877",
+          "logs/000002.log": "e08857b7fa26232c6455ef193accac9876c0069e0a7a00769ed15aea11107fd5",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "3f2a7d474201c0ea38d8bf1671a9f35e691f355933bdef622342047561fb3da4",
+          "logs/baseline.log": "e08857b7fa26232c6455ef193accac9876c0069e0a7a00769ed15aea11107fd5",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "3f2a7d474201c0ea38d8bf1671a9f35e691f355933bdef622342047561fb3da4",
+          "logs/discovery.log": "e733c164f9b85f8c6dc2d496803acd27cf4e24589c1f713cdaee57e2f4fabeba",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "cfcd5561a1c9cba9b99ed03b18c9ec02fda0b44456d06030f2ac151e65bb4dc9",
+          "missed.txt": "715a259e73c692cc8c516b9aa5168e8f0713629734d9bee074a42c3bddc64c2c",
+          "mutants.json": "3494a25f722aad1fa6f962eaf79aa1074a7dfd4d95c0f8a0750641ba78260770",
+          "outcomes.json": "2b48a4b088f687593e36ed7d4717d4c918b7af50c9114c402d6e03ea00fdd659",
+          "run.json": "5425fd65b96b4dde6e568adc816fd2d715406f3ce6c4b93e7312a6be6afd16b8",
+          "summary.txt": "0d544fae9f873e304eff4987e4b11e85c158a3c505d9a46133952fba3b118f92",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "before",
+        "repeat": 2,
+        "workload": "full",
+        "wall_seconds": 45.42535008396953,
+        "command": [
+          "/tmp/mutie-python-before-profile",
+          "/tmp/mutie-python-feedback-comparison/before-2/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/before-2/reports"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/before-2/reports/run-1792526942-FjO7IV",
+        "summary": {
+          "killed": 1,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:46b73188a4464ebf58c77f02ecfaf4f6b2678d6e328129038a028c08a285e794",
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ],
+          [
+            3,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+          "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+          "logs/000001.log": "5f61e63aa18544b5eb88ebaaab66867a8f3c240c45011c818974b64690521b0f",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "ba2a747c95429dbb84f07a4c9983b4a83d450fcbf75910c70e4f39de10e0fd70",
+          "logs/000002.log": "cbc8eefd7471e3ce0c8c4f8e06b05e35208ef937f634f28ef30aaeefe162f255",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "d271bc4c61476139fa75efa8c67eb55e8dd295b53d6f286ec6f1c70f6a20e581",
+          "logs/000003.log": "44da9d9d48413f983ab101dd4206a7019bf5bc8617622708e82cb7f84248e640",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "efb4cc1ce219481f3402d2af55e9136236d8c64373d15989442ebcea41df9cb3",
+          "logs/baseline.log": "5d90ce9a0ce8d03a424e791f7ab647979f0855862ab144b1adfe945f4a54217c",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "7548474fb14d06939e7c5c04118884c7575e481e66341dcb60a44054161cc931",
+          "logs/discovery.log": "7cc751b5bff8314d3176df899a5eff371999b8ee5f1c3d3d6f09393043bf3498",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "fd7c7e00a5c10ee6ed328ccd72b8628e3ac02d804cd5560564034dd595279b1e",
+          "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+          "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+          "outcomes.json": "5b1884de1e25382ed84b4aeefc8a35a9d273bee59cf0ba365d2d549a25fa6664",
+          "run.json": "ea89a1e9e45a8a8b03eec28a67b4c3f4105bd3ccbd3ca99f4bf00031190cf450",
+          "summary.txt": "60d14a5d18988842a5dffaf2db6caf6e98f864ac6d672b8e6fb5bb9ca359ebff",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "before",
+        "repeat": 2,
+        "workload": "rerun",
+        "wall_seconds": 33.06412887503393,
+        "command": [
+          "/tmp/mutie-python-before-profile",
+          "/tmp/mutie-python-feedback-comparison/before-2/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/before-2/reports",
+          "--rerun-missed",
+          "/tmp/mutie-python-feedback-comparison/before-2/reports/run-1792526942-FjO7IV"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/before-2/reports/run-1792526987-v4qVNZ",
+        "summary": {
+          "killed": 1,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:46b73188a4464ebf58c77f02ecfaf4f6b2678d6e328129038a028c08a285e794",
+          "test_files": [
+            "tests/test_blank_queries.py",
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+            "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+            "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000002.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "62b7a1bbb6b123d271741582b4f997b5b6da145545cb098ad91b0b0d90dbdea3",
+          "logs/000001.log": "9622b98f7c96972f12af11d44128f6e0fc1563c1ca06f02e72e8f1745a6eb931",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "ff08f040422abd47ebc7a6583e15c9d9ca05d90425eaf78e4bba2b5e2cb9845c",
+          "logs/000002.log": "9f624490b037b27146d3148e0d7e69436f6cf8e64cac32d693c2e28924bf22df",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "45abebc3866c7aaabc61d13e6cb2a483a865d3aaa6de60480622f0f782e9cac2",
+          "logs/baseline.log": "9f624490b037b27146d3148e0d7e69436f6cf8e64cac32d693c2e28924bf22df",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "45abebc3866c7aaabc61d13e6cb2a483a865d3aaa6de60480622f0f782e9cac2",
+          "logs/discovery.log": "e733c164f9b85f8c6dc2d496803acd27cf4e24589c1f713cdaee57e2f4fabeba",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "cfcd5561a1c9cba9b99ed03b18c9ec02fda0b44456d06030f2ac151e65bb4dc9",
+          "missed.txt": "715a259e73c692cc8c516b9aa5168e8f0713629734d9bee074a42c3bddc64c2c",
+          "mutants.json": "3494a25f722aad1fa6f962eaf79aa1074a7dfd4d95c0f8a0750641ba78260770",
+          "outcomes.json": "bace83ea86a7650f7ea6fb71f7f5c8e1bb5e1335057e39fc01fed949b0c1a732",
+          "run.json": "84709274172ca828b506e22422f6d5350c20b8b42028b0ea6ea7f40c5c942071",
+          "summary.txt": "42d89130026cbb4b5222bd9419cafd6180d6bfed8519acb1291a16507a37a82d",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "before",
+        "repeat": 3,
+        "workload": "full",
+        "wall_seconds": 49.60727516596671,
+        "command": [
+          "/tmp/mutie-python-before-profile",
+          "/tmp/mutie-python-feedback-comparison/before-3/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/before-3/reports"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/before-3/reports/run-1792527020-zV8UUr",
+        "summary": {
+          "killed": 1,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:46b73188a4464ebf58c77f02ecfaf4f6b2678d6e328129038a028c08a285e794",
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ],
+          [
+            3,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+          "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+          "logs/000001.log": "946f0ae81c60cfa5291b3585e97239db419f6f9513c99a338f6f2e6c3b07240d",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "a6bd1258a4799f56e39f901a8d6f398879fd8eb62fa3aa6c8e2cd77e6880294e",
+          "logs/000002.log": "44da9d9d48413f983ab101dd4206a7019bf5bc8617622708e82cb7f84248e640",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "efb4cc1ce219481f3402d2af55e9136236d8c64373d15989442ebcea41df9cb3",
+          "logs/000003.log": "34adae3b6b86f93e116678513ec92680818e3957ab5fe6d7e47c4cb247894be4",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "4729102e59db75b5820273a0249979ca622611e03b653c221e4dadacd7a4b70d",
+          "logs/baseline.log": "bca89ef32aae4883931b5d4ea9aff022d17c6dff862b4036b5f2fa774c08a905",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "c2c6b596f6326dec34c3110029f10ae752a6b80ef7dd9f3d368c2793a9363a31",
+          "logs/discovery.log": "7cc751b5bff8314d3176df899a5eff371999b8ee5f1c3d3d6f09393043bf3498",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "fd7c7e00a5c10ee6ed328ccd72b8628e3ac02d804cd5560564034dd595279b1e",
+          "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+          "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+          "outcomes.json": "afb3e3cce2975a6ea77b94301c2efd079f9c60297008562694d3f74bbdeef8ee",
+          "run.json": "b1f5e7bb928cfe7087f4ec423e7c5c7fe66c0cb2578eb5127c3a130e0833897d",
+          "summary.txt": "8db4eaa30e1a53b29a6b3086b7a2a5057e2eef9b55d10185eddb8b30105ac4ee",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "before",
+        "repeat": 3,
+        "workload": "rerun",
+        "wall_seconds": 31.32077849993948,
+        "command": [
+          "/tmp/mutie-python-before-profile",
+          "/tmp/mutie-python-feedback-comparison/before-3/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/before-3/reports",
+          "--rerun-missed",
+          "/tmp/mutie-python-feedback-comparison/before-3/reports/run-1792527020-zV8UUr"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/before-3/reports/run-1792527070-FKmNhP",
+        "summary": {
+          "killed": 1,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:46b73188a4464ebf58c77f02ecfaf4f6b2678d6e328129038a028c08a285e794",
+          "test_files": [
+            "tests/test_blank_queries.py",
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+            "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+            "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000002.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "62b7a1bbb6b123d271741582b4f997b5b6da145545cb098ad91b0b0d90dbdea3",
+          "logs/000001.log": "ea2fc7c6abba3f529433c7d4fc728df6d125c4a54049d0d4e498df2378e93cbc",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "b0e6b9dd68710b9e98dd6f5c9b2dc4f3128625809f2dddac98dedf9c92590877",
+          "logs/000002.log": "e08857b7fa26232c6455ef193accac9876c0069e0a7a00769ed15aea11107fd5",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "3f2a7d474201c0ea38d8bf1671a9f35e691f355933bdef622342047561fb3da4",
+          "logs/baseline.log": "409a67cb5707dae4559e2bbcf851d3639bee544f6ab25f40224b6714d4f9d434",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "edea1fe2e925f38d64cba1ee0f8ba3f25b2723ff28e7e65063c9b7b3e2414e63",
+          "logs/discovery.log": "b16b0670f1be9aa528d2a7fcdd046bc0d43597ddcd8028e96701d0411e2b7d51",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "1f1b772d861b9615742d3b61b43ea0d335799e6bd2ab5ab3e067fcac1de8a314",
+          "missed.txt": "715a259e73c692cc8c516b9aa5168e8f0713629734d9bee074a42c3bddc64c2c",
+          "mutants.json": "3494a25f722aad1fa6f962eaf79aa1074a7dfd4d95c0f8a0750641ba78260770",
+          "outcomes.json": "2f5e7d12a80478367c92e6a2b536f076427d8be5b59ff35d7b59675ed7b56e7a",
+          "run.json": "251952327dce274a4efbe927f08f6a0b812e9beb2aaadb445979a7a44f1dc860",
+          "summary.txt": "8bd0c2aa78c8341682b1efe821c437ae8a304355bed441b62a87a35a13a0f6f7",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "after",
+        "repeat": 3,
+        "workload": "full",
+        "wall_seconds": 64.28697508398909,
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-python-feedback-comparison/after-3/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/after-3/reports"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/after-3/reports/run-1792527101-miK6vb",
+        "summary": {
+          "killed": 1,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 47,
+            "column": 33,
+            "end_line": 47,
+            "end_column": 38,
+            "byte_start": 933,
+            "byte_end": 938,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ],
+          [
+            3,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "7da6041d19b96d27176208b7ecf6eabcd2d0abe544f330a99bf2913f1c54067c",
+          "diff/000002.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000003.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "7faf634b95d0d55fe758766e6271d173dd2612c23fa710600e60be8005bdc48d",
+          "logs/000001.log": "c968088d4606d5f9888ee443ca332665db55ceb3dd6f4e6007422c3a2a729e23",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "9104da5c39f7019d59da445a86c3fa94f55661caa0d776517b76a4874c853b68",
+          "logs/000002.log": "b3b5b1a5bb1105d144113c156a4ac2755a283f4c066f4597c054d2341f54d9cc",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "27c1fbe5f9dd7a34e2bfb09388bea7d58aa15f7c3cb1453f83b8543502dc06c3",
+          "logs/000003.log": "b3b5b1a5bb1105d144113c156a4ac2755a283f4c066f4597c054d2341f54d9cc",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "27c1fbe5f9dd7a34e2bfb09388bea7d58aa15f7c3cb1453f83b8543502dc06c3",
+          "logs/baseline.log": "34adae3b6b86f93e116678513ec92680818e3957ab5fe6d7e47c4cb247894be4",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "4729102e59db75b5820273a0249979ca622611e03b653c221e4dadacd7a4b70d",
+          "logs/discovery.log": "2bc2e0d7493e729ddf9ccad48ffc4d7feb00560d4a297b1b7a21c0727ce37473",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "4874b67b83671a108c4fefa3cd47ce19b8ece01713f2a7364c2ed3758849a674",
+          "missed.txt": "37b7bc25fe85deb3b82db3d88b9d6b450640ad89c0aff5bf8e88661610df1f2b",
+          "mutants.json": "a935afd1f393c99f7d24cb40ac8e858d852d1141fae2086bab764273d49dfcc2",
+          "outcomes.json": "7737780cba7deb662e410ccabfa0faea1d2cbf91111d88bb8f4b53b1068cca81",
+          "run.json": "4863e3196c49b8d4b08647cf5dba9ed300c4ae3f83893f10a112b9ac976db955",
+          "summary.txt": "75ff61a9babf3e7f943fdc7f4c84adb57fe912c9acf4d7fe6253710d188b259c",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      {
+        "mode": "after",
+        "repeat": 3,
+        "workload": "rerun",
+        "wall_seconds": 33.72543783392757,
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-python-feedback-comparison/after-3/project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "10",
+          "--baseline-timeout",
+          "20",
+          "--max-capture-bytes",
+          "4194304",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-python-feedback-comparison/after-3/reports",
+          "--rerun-missed",
+          "/tmp/mutie-python-feedback-comparison/after-3/reports/run-1792527101-miK6vb"
+        ],
+        "report": "/tmp/mutie-python-feedback-comparison/after-3/reports/run-1792527165-smNJAO",
+        "summary": {
+          "killed": 1,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "scrubify",
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "test_files": [
+            "tests/test_blank_queries.py",
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_blank_queries.py::test_redaction_preserves_blank_non_sensitive_parameters",
+            "tests/test_blank_queries.py::test_redaction_masks_blank_sensitive_parameters_without_dropping_them",
+            "tests/test_blank_queries.py::test_redaction_preserves_repeated_values_and_bare_flags",
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 73,
+            "column": 68,
+            "end_line": 73,
+            "end_column": 72,
+            "byte_start": 1964,
+            "byte_end": 1968,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "scrubify/core.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+            "line": 78,
+            "column": 91,
+            "end_line": 78,
+            "end_column": 95,
+            "byte_start": 2222,
+            "byte_end": 2226,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          [
+            1,
+            "killed"
+          ],
+          [
+            2,
+            "missed"
+          ]
+        ],
+        "input_sha256": {
+          "LICENSE": "4271db08a5cbcc5fb9e92ca1435a01bc60be3f36ebc4804b7c076b3a52c59650",
+          "README.md": "86c5575f6e20afe9d98b0a610bd66dd07f354ed7ff25c74439b9a0e2652d9e85",
+          "acceptance-inputs.json": "8c7d5e071df8c27b6cc894c5a4c29bc433749a48804f647538221d1c3f8792a7",
+          "pyproject.toml": "aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "scrubify/__init__.py": "1d443242985d4e28c1f01ac41698cf4a2bab7025188eb90097f1c400e2a8d280",
+          "scrubify/core.py": "dc652aa260d3427a03d4d7c71bb1f101dca09d932ee1a78c924ae1dbd6d8e194",
+          "tests/test_blank_queries.py": "b5efac042b613688964cc4f79c7ea43236932b509ee9070a954d34fa960be074",
+          "tests/test_core.py": "27fb464fceaff54664688b281e0ffb95100150029301978f843e3904a3e9ab30"
+        },
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ee195517c748dd23c834c9e8f09f3448f20074e31da0f7a63a998dd2169fddb7",
+          "diff/000002.diff": "18c41f01cf83c3135d85594dc045bda7882d02d5ed11836772e71123bfbff2b9",
+          "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "killed.txt": "62b7a1bbb6b123d271741582b4f997b5b6da145545cb098ad91b0b0d90dbdea3",
+          "logs/000001.log": "ea2fc7c6abba3f529433c7d4fc728df6d125c4a54049d0d4e498df2378e93cbc",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "b0e6b9dd68710b9e98dd6f5c9b2dc4f3128625809f2dddac98dedf9c92590877",
+          "logs/000002.log": "aa86d3c766f10123435649e321f71eb5faadec61152d6ce18d97150f1e14f244",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "e45be053ce2b0b4919c09cf65ab4c43793d6c53be59d06c06af9c1360414e1f6",
+          "logs/baseline.log": "409a67cb5707dae4559e2bbcf851d3639bee544f6ab25f40224b6714d4f9d434",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "edea1fe2e925f38d64cba1ee0f8ba3f25b2723ff28e7e65063c9b7b3e2414e63",
+          "logs/discovery.log": "b16b0670f1be9aa528d2a7fcdd046bc0d43597ddcd8028e96701d0411e2b7d51",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "1f1b772d861b9615742d3b61b43ea0d335799e6bd2ab5ab3e067fcac1de8a314",
+          "missed.txt": "715a259e73c692cc8c516b9aa5168e8f0713629734d9bee074a42c3bddc64c2c",
+          "mutants.json": "3494a25f722aad1fa6f962eaf79aa1074a7dfd4d95c0f8a0750641ba78260770",
+          "outcomes.json": "5989e5d7a689e5381f8b009e73372c652bfd1cae0455a78618afb53438a7cdad",
+          "run.json": "e7218719f75e6d1e5447e95e62b2137f786d1572c2d47e7cce6c6fb7e47ceae8",
+          "summary.txt": "00ef74242d6b6588598c4ab3901f458dcf941a1c718a95c9801a98ea92ff0e0e",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    ]
+  },
+  "adapter_phases": {
+    "before": [
+      {
+        "adapter_seconds": 11.666722958,
+        "identity": {
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304,
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "package": "scrubify",
+          "recipe_fingerprint": "sha256:521237e59e5351898bb0d37699d6ac80f28e7a0e7b9bc08a2b7f869dc6f1fd37",
+          "runtime": {
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            }
+          },
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000
+        },
+        "nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "phases": [
+          [
+            "runtime_before",
+            2.2085628330000002
+          ],
+          [
+            "scope_original",
+            0.204396125
+          ],
+          [
+            "execution_identity",
+            0.0017045
+          ],
+          [
+            "workspace_copy",
+            0.005070542
+          ],
+          [
+            "scope_copy",
+            0.241849416
+          ],
+          [
+            "private_environment",
+            0.0026665
+          ],
+          [
+            "pytest_process",
+            1.81844625
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.185167584
+          ],
+          [
+            "runtime_after",
+            1.374790041
+          ],
+          [
+            "scope_original_after",
+            0.271611334
+          ],
+          [
+            "pytest_process",
+            3.013517291
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.298024042
+          ],
+          [
+            "runtime_after",
+            1.640842042
+          ],
+          [
+            "scope_original_after",
+            0.380249375
+          ],
+          [
+            "diagnostics",
+            0.001510125
+          ]
+        ],
+        "repeat": 1,
+        "test_command_seconds": 4.83022
+      },
+      {
+        "adapter_seconds": 11.103570209,
+        "identity": {
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304,
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "package": "scrubify",
+          "recipe_fingerprint": "sha256:521237e59e5351898bb0d37699d6ac80f28e7a0e7b9bc08a2b7f869dc6f1fd37",
+          "runtime": {
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            }
+          },
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000
+        },
+        "nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "phases": [
+          [
+            "runtime_before",
+            1.982584417
+          ],
+          [
+            "scope_original",
+            0.323404458
+          ],
+          [
+            "execution_identity",
+            0.001000125
+          ],
+          [
+            "workspace_copy",
+            0.003698542
+          ],
+          [
+            "scope_copy",
+            0.251993958
+          ],
+          [
+            "private_environment",
+            0.002384125
+          ],
+          [
+            "pytest_process",
+            1.931658125
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.231630667
+          ],
+          [
+            "runtime_after",
+            1.556750875
+          ],
+          [
+            "scope_original_after",
+            0.288300875
+          ],
+          [
+            "pytest_process",
+            2.527156875
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.286004666
+          ],
+          [
+            "runtime_after",
+            1.477824584
+          ],
+          [
+            "scope_original_after",
+            0.233952583
+          ],
+          [
+            "diagnostics",
+            0.000874833
+          ]
+        ],
+        "repeat": 2,
+        "test_command_seconds": 4.457382334
+      },
+      {
+        "adapter_seconds": 9.182644917,
+        "identity": {
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304,
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "package": "scrubify",
+          "recipe_fingerprint": "sha256:521237e59e5351898bb0d37699d6ac80f28e7a0e7b9bc08a2b7f869dc6f1fd37",
+          "runtime": {
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            }
+          },
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000
+        },
+        "nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "phases": [
+          [
+            "runtime_before",
+            1.030982
+          ],
+          [
+            "scope_original",
+            0.273491333
+          ],
+          [
+            "execution_identity",
+            0.000693917
+          ],
+          [
+            "workspace_copy",
+            0.003284416
+          ],
+          [
+            "scope_copy",
+            0.248356042
+          ],
+          [
+            "private_environment",
+            0.001456708
+          ],
+          [
+            "pytest_process",
+            1.87892575
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.211304625
+          ],
+          [
+            "runtime_after",
+            1.19762875
+          ],
+          [
+            "scope_original_after",
+            0.189257334
+          ],
+          [
+            "pytest_process",
+            2.248418583
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.312467333
+          ],
+          [
+            "runtime_after",
+            1.2858262919999999
+          ],
+          [
+            "scope_original_after",
+            0.29629425
+          ],
+          [
+            "diagnostics",
+            0.000693667
+          ]
+        ],
+        "repeat": 3,
+        "test_command_seconds": 4.125120417
+      }
+    ],
+    "after": [
+      {
+        "adapter_seconds": 8.771127167,
+        "identity": {
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304,
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "package": "scrubify",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "runtime": {
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            }
+          },
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000
+        },
+        "nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "phases": [
+          [
+            "runtime_before",
+            1.533040625
+          ],
+          [
+            "scope_original",
+            0.225694041
+          ],
+          [
+            "execution_identity",
+            0.002015334
+          ],
+          [
+            "workspace_copy",
+            0.00301425
+          ],
+          [
+            "scope_copy",
+            0.262071583
+          ],
+          [
+            "private_environment",
+            0.000748458
+          ],
+          [
+            "pytest_process",
+            1.7275247500000002
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.218249834
+          ],
+          [
+            "runtime_after",
+            1.164789916
+          ],
+          [
+            "scope_original_after",
+            0.2516825
+          ],
+          [
+            "pytest_process",
+            1.702398875
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.219930834
+          ],
+          [
+            "runtime_after",
+            1.169585125
+          ],
+          [
+            "scope_original_after",
+            0.285191375
+          ],
+          [
+            "diagnostics",
+            0.002192125
+          ]
+        ],
+        "repeat": 1,
+        "test_command_seconds": 3.428283292
+      },
+      {
+        "adapter_seconds": 7.763225709,
+        "identity": {
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304,
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "package": "scrubify",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "runtime": {
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            }
+          },
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000
+        },
+        "nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "phases": [
+          [
+            "runtime_before",
+            0.823839583
+          ],
+          [
+            "scope_original",
+            0.213132959
+          ],
+          [
+            "execution_identity",
+            0.00088525
+          ],
+          [
+            "workspace_copy",
+            0.002642791
+          ],
+          [
+            "scope_copy",
+            0.210290417
+          ],
+          [
+            "private_environment",
+            0.001793458
+          ],
+          [
+            "pytest_process",
+            1.7723071670000001
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.253873625
+          ],
+          [
+            "runtime_after",
+            1.012088958
+          ],
+          [
+            "scope_original_after",
+            0.201384625
+          ],
+          [
+            "pytest_process",
+            1.7187230420000001
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.281538083
+          ],
+          [
+            "runtime_after",
+            0.988042584
+          ],
+          [
+            "scope_original_after",
+            0.279075625
+          ],
+          [
+            "diagnostics",
+            0.000607208
+          ]
+        ],
+        "repeat": 2,
+        "test_command_seconds": 3.489761916
+      },
+      {
+        "adapter_seconds": 7.922676375,
+        "identity": {
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304,
+          "manifest_fingerprint": "sha256:aa5754ad10463ed170440f05e5ffe30f996ddc794f250156d507fbfa319ca23d",
+          "package": "scrubify",
+          "recipe_fingerprint": "sha256:f982a1542e8dbd1401d7b19a986edeb8d45d304ad09f9532b3fdc68110821d78",
+          "runtime": {
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            }
+          },
+          "test_files": [
+            "tests/test_core.py"
+          ],
+          "test_nodes": [
+            "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+            "tests/test_core.py::test_redact_headers_is_case_insensitive",
+            "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+            "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+            "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+            "tests/test_core.py::test_custom_patterns_can_be_added"
+          ],
+          "timeout_millis": 20000
+        },
+        "nodes": [
+          "tests/test_core.py::test_redact_nested_mappings_and_sequences",
+          "tests/test_core.py::test_redact_headers_is_case_insensitive",
+          "tests/test_core.py::test_redact_url_masks_sensitive_query_keys_only",
+          "tests/test_core.py::test_preserve_length_uses_same_number_of_mask_chars",
+          "tests/test_core.py::test_redact_dataclass_supports_safe_logging",
+          "tests/test_core.py::test_custom_patterns_can_be_added"
+        ],
+        "phases": [
+          [
+            "runtime_before",
+            1.016145833
+          ],
+          [
+            "scope_original",
+            0.250902334
+          ],
+          [
+            "execution_identity",
+            0.001296166
+          ],
+          [
+            "workspace_copy",
+            0.0053675
+          ],
+          [
+            "scope_copy",
+            0.249190375
+          ],
+          [
+            "private_environment",
+            0.000738709
+          ],
+          [
+            "pytest_process",
+            1.667537833
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.20173325
+          ],
+          [
+            "runtime_after",
+            0.952146333
+          ],
+          [
+            "scope_original_after",
+            0.23859225
+          ],
+          [
+            "pytest_process",
+            1.966895042
+          ],
+          [
+            "evidence_and_scope_copy",
+            0.197755833
+          ],
+          [
+            "runtime_after",
+            0.909934167
+          ],
+          [
+            "scope_original_after",
+            0.258146083
+          ],
+          [
+            "diagnostics",
+            0.0005515
+          ]
+        ],
+        "repeat": 3,
+        "test_command_seconds": 3.631711625
+      }
+    ]
+  },
+  "runtime_tree_calibration": {
+    "fingerprints": {
+      "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+      "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+    },
+    "records": [
+      {
+        "mode": "before",
+        "repeat": 1,
+        "phases": {
+          "stdlib": 0.41766379203181714,
+          "packages": 0.19271674996707588
+        },
+        "seconds": 0.610380541998893
+      },
+      {
+        "mode": "after",
+        "repeat": 1,
+        "phases": {
+          "stdlib": 0.2025007080519572,
+          "packages": 0.08953083399683237
+        },
+        "seconds": 0.29203154204878956
+      },
+      {
+        "mode": "after",
+        "repeat": 2,
+        "phases": {
+          "stdlib": 0.20815312501508743,
+          "packages": 0.05344287503976375
+        },
+        "seconds": 0.2615960000548512
+      },
+      {
+        "mode": "before",
+        "repeat": 2,
+        "phases": {
+          "stdlib": 0.3956748340278864,
+          "packages": 0.17962841596454382
+        },
+        "seconds": 0.5753032499924302
+      },
+      {
+        "mode": "before",
+        "repeat": 3,
+        "phases": {
+          "stdlib": 0.35656737501267344,
+          "packages": 0.14176249993033707
+        },
+        "seconds": 0.4983298749430105
+      },
+      {
+        "mode": "after",
+        "repeat": 3,
+        "phases": {
+          "stdlib": 0.24314274999778718,
+          "packages": 0.08703787496779114
+        },
+        "seconds": 0.3301806249655783
+      },
+      {
+        "mode": "after",
+        "repeat": 4,
+        "phases": {
+          "stdlib": 0.27782312501221895,
+          "packages": 0.061854250030592084
+        },
+        "seconds": 0.33967737504281104
+      },
+      {
+        "mode": "before",
+        "repeat": 4,
+        "phases": {
+          "stdlib": 0.33077495894394815,
+          "packages": 0.13605124992318451
+        },
+        "seconds": 0.46682620886713266
+      },
+      {
+        "mode": "before",
+        "repeat": 5,
+        "phases": {
+          "stdlib": 0.36229579197242856,
+          "packages": 0.14041899994481355
+        },
+        "seconds": 0.5027147919172421
+      },
+      {
+        "mode": "after",
+        "repeat": 5,
+        "phases": {
+          "stdlib": 0.2006152500398457,
+          "packages": 0.31589991599321365
+        },
+        "seconds": 0.5165151660330594
+      }
+    ]
+  }
+}

@@ -1827,3 +1827,10 @@ real-project loop with a blank-query survivor killed by stronger tests. Original
 source and old reports are preserved. Only the audited flat layout, pinned
 runtime and serial recipe are Validated; broader Python compatibility remains
 separate.
+
+The [feedback profile](benchmarks/python-feedback-profile.md) separates isolated
+pytest startup, repeated runtime/scope validation and workspace costs. Runtime
+fingerprinting uses a directory-entry walk that prunes already-excluded trees,
+preserves component ordering and hashes every included file on every check.
+It does not cache identity by size/mtime or share project bytecode. Phase timers
+are test-only; execution recipe identity still includes validator changes.

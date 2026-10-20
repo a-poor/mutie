@@ -52,7 +52,10 @@ useful blank-query survivor, stronger tests and a focused kill, with unchanged
 source and old reports. Scored review/policies and cleanup have fixture coverage.
 The [lifetime observer](benchmarks/python-process-lifetime.md) preserves strict
 late-cleanup evidence and excludes unittest/thread-starting suites. Broader
-layouts/dependencies and runtime overhead need separate follow-up decisions.
+layouts/dependencies and further startup optimization need separate follow-up decisions.
+The [Python feedback profile](benchmarks/python-feedback-profile.md) now measures
+full and focused feedback and optimizes runtime traversal without skipping hashes.
+Native `src/` layout support remains a separate potential milestone.
 
 ## Target support tracking
 
@@ -105,6 +108,8 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   mutant checkpoint, interrupted report and empty owned temporary parent are
   covered in [fixture acceptance](benchmarks/python-shared-runs.md).
 - [x] Complete the real-project findings/stronger-test/rerun loop and support audit.
+- [x] Profile Python feedback overhead, optimize repeated runtime traversal and
+  compare complete full/stronger-test reruns with preservation checks.
 
 ## Selected first Bun test-runner slice
 

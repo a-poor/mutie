@@ -185,6 +185,23 @@ fn static_scope_regressions() {
     );
 }
 
+#[test]
+#[ignore = "requires MUTIE_PYTHON; runtime fingerprint format, drift and rejection controls"]
+fn runtime_fingerprint_regressions() {
+    let cache = tempfile::tempdir().unwrap();
+    let output = Command::new(python())
+        .args(["-I", "-S", "-B", "-X"])
+        .arg(format!("pycache_prefix={}", cache.path().display()))
+        .arg(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/support/python_runtime.py"))
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+}
+
 fn scored(root: &Path, reports: &Path, args: &[&str]) -> std::process::Output {
     Command::new(env!("CARGO_BIN_EXE_mutie"))
         .arg(root)

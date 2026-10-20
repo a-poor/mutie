@@ -1,5 +1,7 @@
 //! Narrow Python admission. Project code is never imported during discovery.
 mod identity;
+#[cfg(test)]
+mod profile;
 pub(crate) mod project;
 mod protocol;
 pub(crate) use identity::ExecutionScope;
@@ -202,6 +204,8 @@ pub async fn check(
 }
 
 struct Execution {
+    #[cfg(test)]
+    timings: Vec<(&'static str, f64)>,
     command: crate::command::CommandOutput,
     identity: ExecutionScope,
     project: Value,
@@ -297,28 +301,40 @@ async fn execute_mode(
     collection_only: bool,
     expected: Option<&ExecutionScope>,
 ) -> Result<Execution> {
+    #[cfg(test)]
+    let mut timings = profile::PhaseTimings::new();
     let executable = std::path::absolute(executable)?;
     let root = root.canonicalize().context("resolving Python project")?;
     let identity = helper(&executable, RUNTIME, &[], cancellation).await?;
+    #[cfg(test)]
+    timings.finish("runtime_before");
     let root_text = root.to_str().context("Python root is not UTF-8")?;
     let original = helper(&executable, SCOPE, &[root_text], cancellation).await?;
+    #[cfg(test)]
+    timings.finish("scope_original");
     let mut execution_identity =
         identity::ExecutionScope::capture(identity.clone(), &original, timeout, capture_limit)?;
     if let Some(expected) = expected {
         expected.validate_rerun(&execution_identity)?;
     }
     let source = root.clone();
+    #[cfg(test)]
+    timings.finish("execution_identity");
     let cancel = cancellation.clone();
     let workspace = tokio::task::spawn_blocking(move || {
         crate::workspace::Workspace::create(&source, &[], &cancel)
     })
     .await??;
+    #[cfg(test)]
+    timings.finish("workspace_copy");
     let copied = workspace.path().canonicalize()?;
     let copied_text = copied.to_str().context("Python workspace is not UTF-8")?;
     ensure!(
         original == helper(&executable, SCOPE, &[copied_text], cancellation).await?,
         "Python inputs changed while creating the workspace"
     );
+    #[cfg(test)]
+    timings.finish("scope_copy");
     let owned = tempfile::tempdir().context("creating Python command workspace")?;
     let directory = owned.path().canonicalize()?;
     let driver = directory.join("driver.py");
@@ -329,6 +345,8 @@ async fn execute_mode(
     std::fs::write(&config, "[pytest]\n")?;
     std::fs::create_dir(&home)?;
     std::fs::create_dir(&tmp)?;
+    #[cfg(test)]
+    timings.finish("private_environment");
     let mut inventory = None;
     let mut elapsed = Duration::ZERO;
     for collect_only in [true, false] {
@@ -389,6 +407,8 @@ async fn execute_mode(
         ))
         .await?;
         elapsed += output.elapsed;
+        #[cfg(test)]
+        timings.finish("pytest_process");
         let validated = async {
             let (nodes, outcome) =
                 read_evidence(&output, &evidence, nonce, copied_text, collect_only)?;
@@ -424,6 +444,8 @@ async fn execute_mode(
                 original == helper(&executable, SCOPE, &[copied_text], cancellation).await?,
                 "Python workspace inputs changed during execution"
             );
+            #[cfg(test)]
+            timings.finish("evidence_and_scope_copy");
             let current_identity = ExecutionScope::capture(
                 helper(&executable, RUNTIME, &[], cancellation).await?,
                 &original,
@@ -431,10 +453,14 @@ async fn execute_mode(
                 capture_limit,
             )?;
             execution_identity.validate_rerun(&current_identity)?;
+            #[cfg(test)]
+            timings.finish("runtime_after");
             ensure!(
                 original == helper(&executable, SCOPE, &[root_text], cancellation).await?,
                 "Python original inputs changed during execution"
             );
+            #[cfg(test)]
+            timings.finish("scope_original_after");
             Ok::<_, anyhow::Error>((nodes, outcome))
         }
         .await;
@@ -461,7 +487,11 @@ async fn execute_mode(
         crate::command::write_lossy(&mut output.stderr.reader()?, &mut rendered)?;
         let text = crate::capture::Capture::utf8(rendered)?;
         output.elapsed = elapsed;
+        #[cfg(test)]
+        timings.finish("diagnostics");
         return Ok(Execution {
+            #[cfg(test)]
+            timings: timings.values,
             command: crate::command::CommandOutput {
                 raw: output,
                 text,

@@ -162,6 +162,8 @@ in release with matching outcomes. Development and test builds now optimize the
 Python/pytest is Validated within its pinned serial scope on macOS arm64.
 The [Scrubify acceptance](benchmarks/python-scrubify-findings.md) records a real
 blank-query survivor killed by stronger tests, timings and preserved inputs/reports.
+The [feedback profile](benchmarks/python-feedback-profile.md) measures repeated
+full and focused runs and optimizes runtime traversal while retaining content checks.
 The [scope and baseline integration](benchmarks/python-baseline-integration.md)
 adds `python-list` and `python-check` for one dependency-free flat package with
 explicit `tests/` and a pinned virtual environment supplied through `--python`.

@@ -292,6 +292,11 @@ API whitelist narrow; basic logging/StringIO, shallow copy, index-protocol acces
 and named fnmatch/urllib.parse string helpers do not imply filesystem/network or
 general reflection support. Broader layouts, dependencies and runtimes require
 new acceptance; do not infer unchanged-project compatibility from adapted inputs.
+`benchmarks/python-feedback-profile.md` records runtime traversal profiling and
+the serial Scrubify comparison. Preserve byte-for-byte runtime fingerprints,
+every pre/post check and fresh bytecode prefixes when optimizing overhead.
+`tests/support/python_runtime.py` covers traversal compatibility and drift;
+the ignored `python::profile::real_feedback_phase_profile` measures real phases.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

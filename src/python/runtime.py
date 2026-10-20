@@ -2,6 +2,7 @@
 import hashlib
 import importlib.metadata
 import json
+import os
 from pathlib import Path
 import sys
 import sysconfig
@@ -18,26 +19,39 @@ def require(condition, message):
 
 
 def fingerprint_tree(root, *, site=False):
+    # Keep the original component-wise Path ordering and byte framing. Scandir
+    # reuses directory-entry metadata and prunes excluded cache/site subtrees;
+    # every included file is still opened and hashed on every identity check.
+    files = []
+
+    def visit(directory, parents=()):
+        with os.scandir(directory) as entries:
+            for entry in entries:
+                parts = parents + (entry.name,)
+                if entry.name == "__pycache__" or (not site and entry.name == "site-packages"):
+                    continue
+                ignored = Path(entry.name).suffix in {".pyc", ".pyo"}
+                if not ignored:
+                    require(not entry.is_symlink() or (not site and entry.is_file()),
+                            f"Python runtime directory/package symlink unsupported: {os.path.join(*parts)}")
+                if entry.is_dir(follow_symlinks=False):
+                    visit(entry.path, parts)
+                elif not ignored:
+                    require(entry.is_file(), "Python runtime requires regular files")
+                    if site:
+                        require(Path(entry.name).suffix not in {".pth", ".egg-link"}
+                                and entry.name not in {"sitecustomize.py", "usercustomize.py"},
+                                "Python startup hooks and editable installs unsupported")
+                    files.append((parts, entry.path))
+
+    visit(root)
     digest = hashlib.sha256()
-    for path in sorted(root.rglob("*")):
-        relative = path.relative_to(root)
-        if "__pycache__" in relative.parts or path.suffix in {".pyc", ".pyo"}:
-            continue
-        if not site and "site-packages" in relative.parts:
-            continue
-        require(not path.is_symlink() or (not site and path.is_file()),
-                f"Python runtime directory/package symlink unsupported: {relative}")
-        if path.is_dir():
-            continue
-        require(path.is_file(), "Python runtime requires regular files")
-        if site:
-            require(path.suffix not in {".pth", ".egg-link"}
-                    and path.name not in {"sitecustomize.py", "usercustomize.py"},
-                    "Python startup hooks and editable installs unsupported")
-        name = str(relative).encode()
+    for parts, filename in sorted(files):
+        name = os.path.join(*parts).encode()
         digest.update(len(name).to_bytes(8, "big"))
         digest.update(name)
-        content = path.read_bytes()
+        with open(filename, "rb") as stream:
+            content = stream.read()
         digest.update(len(content).to_bytes(8, "big"))
         digest.update(content)
     return "sha256:" + digest.hexdigest()

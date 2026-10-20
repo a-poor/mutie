@@ -331,6 +331,9 @@ then nine tests and a focused rerun killing the blank-query survivor. Original
 inputs and all 28 original report files remain unchanged. Its 28.38-second full
 run and 23.49-second rerun include runtime fingerprinting overhead. The remaining
 `doseq` survivor is documented rather than hidden or counted as a kill.
+The [feedback follow-up](benchmarks/python-feedback-profile.md) records repeated
+comparisons and a faster runtime tree traversal with unchanged content hashes
+and validation frequency. It does not expand the supported scope.
 
 Scope: one flat package with static `pyproject.toml`, explicit `tests/test_*.py`,
 boolean flips, full tests and one worker. The dedicated venv must match the pinned
