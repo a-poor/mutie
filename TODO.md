@@ -42,8 +42,8 @@ pins 1.3.11, adds independent JS/TS fixtures and selects Composer (272 passing t
 Native reports conflate body, hook and process failures. A bounded file-backed
 [observer prototype](benchmarks/bun-body-attribution.md) now passes 112 paired cases
 and Composer controls. Shared scored execution, focused reruns,
-review/policies and scored cleanup pass. TypeScript is now Validated; independent
-real JavaScript acceptance remains open. Rust workspaces remain a separate decision.
+review/policies and scored cleanup pass. TypeScript and JavaScript are independently Validated;
+JavaScript uses a documented pp-is ESM adaptation with unchanged source/tests. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -104,8 +104,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   [scored cleanup](benchmarks/bun-scored-cleanup.md).
 - [x] Complete the scoped TypeScript real-project feedback loop and milestone
   audit using Composer; promote TypeScript independently to Validated.
-- [ ] Complete an independent real JavaScript run/inspect/improve-tests/rerun loop
-  before promoting JavaScript beyond Experimental.
+- [x] Complete an independent real JavaScript loop on adapted pp-is: 22 candidates,
+  seven stronger-test kills and preserved sources/reports; promote scoped JS to
+  Validated. See [adaptation and evidence](benchmarks/bun-javascript-pp-is.md).
+- [ ] Audit unchanged JavaScript package-layout acceptance separately; pp-is's
+  generated dist/declaration/build files and implicit ESM remain unsupported.
+- [ ] Reassess the next objective after scoped Bun validation: useful survivor
+  review, unchanged real-project scope, and measured feedback cost before expansion.
 
 ## Validated first Node test-runner slice
 

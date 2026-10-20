@@ -1744,5 +1744,8 @@ owned copies and bounded captures; only complete positive body evidence can kill
 Independent JS/TS fixtures and Composer established the initial Experimental scope; see
 [shared runs](benchmarks/bun-shared-runs.md). Independent JS/TS [scored cleanup checks](benchmarks/bun-scored-cleanup.md)
 cover resource limits, timeout/SIGINT and descendant shutdown. [Independent JS/TS review/policy checks](benchmarks/bun-dismissals.md) now pass,
-completing scoped TypeScript validation with Composer. JavaScript remains
-Experimental pending its own real-project feedback loop.
+completing scoped TypeScript validation with Composer.
+[Independent JavaScript validation](benchmarks/bun-javascript-pp-is.md) follows on
+an explicitly adapted pp-is ESM root, preserving all source/test bytes. Seven
+stronger tests kill seven former survivors; three remain open. Original package
+layout support is not implied by the adapted runtime acceptance.

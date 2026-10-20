@@ -34,7 +34,7 @@ does not by itself validate a new runner.
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
-| JavaScript | Bun test runner | Experimental | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports and focused reruns; independent fixture | Independent real JavaScript project findings |
+| JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; adapted pp-is real-project findings | Unchanged package-layout acceptance; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence; remaining Composer findings |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
@@ -259,7 +259,7 @@ Broader layouts and dependencies are not implied.
 
 ## JavaScript / TypeScript — Bun test runner
 
-**Levels: TypeScript Validated; JavaScript Experimental. Both remain scoped to the pinned runner.**
+**Levels: JavaScript and TypeScript independently Validated within the pinned scope.**
 
 The [selected initial audit](benchmarks/bun-initial-scope.md) pins Bun 1.3.11,
 retains 24 JUnit/inspector cases per syntax, and establishes an unchanged 272-test
@@ -287,14 +287,18 @@ Independent JS/TS [scored cleanup regressions](benchmarks/bun-scored-cleanup.md)
 now cover output/file limits, timeout, SIGINT, descendant shutdown and score
 boundaries. Independent JS/TS [review/policy acceptance](benchmarks/bun-dismissals.md) now
 covers CRUD, staleness, raw scores, focused reruns and error precedence. Together
-with Composer, this completes scoped TypeScript validation. Independent real
-JavaScript acceptance remains the next gate. Parallel workers,
+with Composer, this completes scoped TypeScript validation. Independent
+[JavaScript acceptance](benchmarks/bun-javascript-pp-is.md) uses pp-is with all
+runtime source/tests unchanged in an explicitly adapted ESM root: 22 candidates,
+12 kills/10 survivors, then seven stronger-test kills. The original checkout is
+still rejected; packaging files were omitted and `type: module` added only in the
+temporary copy. This validates runtime findings, not unchanged-layout support. Parallel workers,
 dependencies, preloads, custom Bun configuration and multi-package layouts remain
 unsupported. Do not infer compatibility from Node or Vitest support.
 
 ## Python — pytest
 
-**Levels: TypeScript Validated; JavaScript Experimental. Both remain scoped to the pinned runner.**
+**Levels: JavaScript and TypeScript independently Validated within the pinned scope.**
 
 Desired outcome: the shared workflow for pytest projects. Choose Python/pytest
 versions, a real project and fixture; define package layouts, source/test discovery,

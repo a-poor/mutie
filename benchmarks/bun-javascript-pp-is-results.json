@@ -1,0 +1,2258 @@
+{
+  "recorded": "2026-10-20",
+  "project": "https://github.com/carlos-sweb/pp-is",
+  "commit": "1d5b3bac804e1e67da289f3d2a14bd0705a383fb",
+  "adapted": true,
+  "adaptation": {
+    "manifest_semantic_change": {
+      "type": "module"
+    },
+    "omitted_files": [
+      ".gitignore",
+      "LICENSE.txt",
+      "README.md",
+      "README_es.md",
+      "dist/pp-is.cjs",
+      "dist/pp-is.min.js",
+      "dist/pp-is.mjs",
+      "index.d.ts",
+      "scripts/build.mjs"
+    ],
+    "runtime_sources_tests_unchanged": true
+  },
+  "original_inputs_preserved": true,
+  "original_file_sha256": {
+    "README.md": "04a75fcc997e0ba1d52a578c4f9eb56e8bebcda85c246e985a228712b1108c49",
+    "README_es.md": "8c597eeb0a349956b2231d0e6ac2ca94db6a9681ffde47a7ef3bffb2d050e86b",
+    ".gitignore": "d6dfbd171508132516e67b8632585ef614a1b215472a0409e10e7cbec8828048",
+    "package.json": "b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+    "LICENSE.txt": "0e3ad81a678d1b8e24a4b149e0a82e18e510203523b55f1f3e78777698c2758b",
+    "index.d.ts": "c55e0ba2b335cbb6eb41286bda9f14d6399ba2a1b017227dee04ed38f152695e",
+    "test/regressions.test.js": "f39111a620e1e4c12ea35d4b77cde92e0a788157804bd6e4bfee15d7958226b0",
+    "test/is.test.js": "ca5c923d89847b996ada33ff2f35e29fb2cbb96c4eaadd0bc5de4bca41ab9e2f",
+    "test/callbacks.test.js": "3e0ef94078f9b5f9566a127ecc3096e53ce907218594767c26c78f7c40b3206c",
+    "dist/pp-is.min.js": "00e82d616984b8eb1ca1cfa546e40230ba1937df53d3adf1dba2c3e0bac41d09",
+    "dist/pp-is.mjs": "807864b0c6a78bfdaf9f37fb03cf9226357a140a289d0ad5fcb4e244ed589748",
+    "dist/pp-is.cjs": "ee8223b30ac50e260f8a635019f44d5cd5e154955d63f8761dd7999244d9a0e5",
+    "scripts/build.mjs": "1a16ee277484dc18b672f0687827e4614eae19518e09e35261061913368ed379",
+    "src/pp-is.js": "ec0c19655ca0a4c79959f1cee61ebaae13d0736e12897a15a61b7bb769ec9c67",
+    "src/browser.js": "9cc26d5b7207cb8796a5eaba1750833d4c1b7713f4c7a1a2ff4b4ea4d7da2059",
+    "src/main/isRegExp.js": "80e61c9ce211703e0363e085ad0676efcb4ebe3dc3103b41e66b93e51ae6afad",
+    "src/main/isFrozen.js": "97e55658eadf22f81e4e1a18ea39a29c1491f9cb188a60f11bfbd26271595030",
+    "src/main/isInteger.js": "3496177b739499565e882495933b5398c9820af56d3dd56d198c8ba5f5abc4f4",
+    "src/main/isIPv4.js": "f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+    "src/main/isAsyncFunction.js": "c02075e20de4f8fd61cb67e62ebbf4db6a5b9f22623068bf2a0042703b676fa5",
+    "src/main/isNumericString.js": "042ab23d8286cda33db4f4ea382204e45f98b11f60301a37d500a554142bce00",
+    "src/main/isNegative.js": "403893a7e3f66f9a1f958b5f2deb6b0eacef078f733d39f9f526f12cbf0ad907",
+    "src/main/isAlphanumeric.js": "3ed788817af344a70b9787ae2b2a548baba86cdde731c3d279cea3e52cd05fd6",
+    "src/main/isLowercase.js": "3c9ac0fd642ad02295efb254741ca7e9e272b2700404645e6f7de98397aba12c",
+    "src/main/isUndefined.js": "e6c86ed0535bd5f4fcd891e95d50cf3e0f836cdfc10453f72cc630437526046a",
+    "src/main/isNull.js": "e952413f0498046959af021043325206f07393f51e8fa2df9e1d3133427364a6",
+    "src/main/isUrl.js": "da3695ea94c89334d2b9b44bdd59f1fe26092e5c8fcf0be97b1f39566fd2d532",
+    "src/main/isUppercase.js": "8727e34e23126ce008dfdbb62acc4c3602d8983f05cb4da367df880292ec72fa",
+    "src/main/isEmpty.js": "091d9e29d2b6b50061486854f19081afded548a79304dcbdfc5df6dc729f7c9e",
+    "src/main/isString.js": "0c6bd6124ca737c724e0ea334aaded1671b9de232248085c056ecead7b68d0ae",
+    "src/main/isPositive.js": "3eb1781e09b5d1fc093e4ba934028524acb3bfc0b2e5639d7bfc2a6fc4c9f62b",
+    "src/main/isHexColor.js": "c687b87d7eca8420070ac6245b0aebaa468bd981a154a79cefbf5dfab3d533f4",
+    "src/main/isNaN.js": "421c368e4d684efd28f90d7762a9a257ff43172937b59b6a57f31fc9f20f9728",
+    "src/main/isCallable.js": "6d5ee0e47e208bad717ae9c1314c21357ccd1933d99a51d659c1356f22260594",
+    "src/main/isHTMLCollection.js": "ccb0a72988fe828f22f83702926b9086ecbfe4cf8cfcfe08cfe6d8129c659cbf",
+    "src/main/isNil.js": "b3024928bd418656d27460e7e136a1b5051cf358a3a00c17ef861063bfae15b3",
+    "src/main/isIterable.js": "47596718e64523309b32540da5ed0ed719eca79c3ac46e5006c11e0bbeaef2bf",
+    "src/main/isTruthy.js": "fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+    "src/main/isFunction.js": "83b99538d8f06efd6550258c2ebe290d9af9ba28cabde2448aaaae35cb7a1bf3",
+    "src/main/isFalsy.js": "53a880b95622bd4906698ae2f092eefb9a021a46a4cf1c6512c436b869c8e18c",
+    "src/main/isPromise.js": "01ea4131f4bf72239f123d232f843a94df77c8e346ae278281708d30cc09ab6c",
+    "src/main/isObject.js": "425079d3b8b3ef581350b5c730f39acc929349b7ccc22f4fdca9421949bd2690",
+    "src/main/isEmail.js": "f4c58c5289036b292d8207bf9f87f7a6502cbcb166b59887517c7f2755b3b9f5",
+    "src/main/isAlpha.js": "a4e41ec7a8356d7dbd12699e0ddf0b36b3a4e410342dccb4025512db273e0f66",
+    "src/main/isNumber.js": "8ac832d477165c1eae04ac6c558e74cb6f617438fb688c5c2157c7006b2d9cf0",
+    "src/main/isArray.js": "f73e19e363753717fba2d76e568ad2bf5087e6b4fb4a6849733c658720e5a2c3",
+    "src/main/isNodeList.js": "68782998c02ce9a4b4764a879ef2b0a1841ee23a3fcc59a8841d4665adeb1690",
+    "src/main/isJSON.js": "e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+    "src/main/isBlank.js": "0c8569af16edaa6ac9a7b861df5990b2c88596634fd9a6eac663e22d01d84ccd",
+    "src/main/isDate.js": "5910f39e1539a279e2a605cebd3d395b4998bc89bcbd64b4dd0dcb4299fca530",
+    "src/main/isPromiseLike.js": "59b5f080332b983fe17f247104972a58162c0379c3818f69bdfa497e07a43c8f",
+    "src/main/isUUID.js": "c47426a2f40c69e5a04084e41d3ae829f03a8c4aeb819ad3c274848d43b9035f",
+    "src/main/isElement.js": "2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+    "src/main/isBoolean.js": "c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+    "src/main/isBigInt.js": "ac31f7e23aee0c68db0b922213e64c4edff847ea9e7b2cfc34939c2a2dfd623a",
+    "src/main/isSymbol.js": "9ce1a6bfaaff7980696e6c6036aeed0c442ce03987599594e7f6297558097acc",
+    "src/main/isFinite.js": "7cbd0547f3f918c5f77b4bb0f0d8ade3144ae718268f6112b75b40ffcca97177",
+    "src/main/isSealed.js": "6cdbf6108b204f0736484a653bbe2a378bb2731549f67e4888daca7075d370a3",
+    "src/helper/baseEvaluate.js": "910250adff36acafa5b1482ff98614296de9200708fded343bfca740e576ed47",
+    "src/helper/baseSanitize.js": "40e85e0d3f2382741338785e94c20c5d03820dfe8fdcbd5ed9bba65cde62d1ce",
+    "src/helper/base.js": "a06f9adddc62f7922c4bdc9e9149759c16b212d237f7818a0ab47f767394a5de",
+    "src/helper/getType.js": "2c48513ccb88854b9baffa3c9425e8208440da5014f0eb45d525f08720e7fcc6",
+    "src/helper/getTypeCompare.js": "05ce815354c999c7c632db6b2b7907fbfe0a515183638cf17ecc35ac831e0451"
+  },
+  "original_report_preserved": true,
+  "original_report_sha256": {
+    "outcomes.json": "4644a445d6e01c2459b2980c8a2d7fd1ae5bbfda78ce79cc6110b047b1e23eed",
+    "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missed.txt": "0eafd09def612300c45033569ea4aab4e33d246a44d28cc31ff103adf2c7dde0",
+    "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mutants.json": "e14c4546f83c7b7064ab4a5db4f8deb4107df2b4ca990ec498ec4f120a76f25a",
+    "summary.txt": "d206b281da7590215396a5e9702ced36aef81cb43ab8d41489dc4160a1a26612",
+    ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "killed.txt": "cac4d301fc0ef2f098416777cc7dbea1a16be8bda681f7e47857b514da109e25",
+    "run.json": "af9faf85f95654eba1595a635904c70f59f0cc1b9859115b96b751eaf94ec99d",
+    "diff/000003.diff": "8cbd4ab6d0bb41bb194784fb09f35db16be8e8aa3b277962281eec757cc36ef4",
+    "diff/000015.diff": "298eb638ceac894b1c287068e0c16f7e5f62bc4b1f0e1a846ff0bf216facc815",
+    "diff/000019.diff": "539b07f8bf86bd76333a67b2494a905f0c4f2148423d9edd66f34e400639ebc8",
+    "diff/000018.diff": "f718abff521d38ef8e8f25c746a8efa18ed76d40088a649117ac413e9179bcde",
+    "diff/000022.diff": "66f67b6ed5f2dbe14b1855c4b6d7e5e16eb97e4fcefcab4f87137f1b616b7765",
+    "diff/000014.diff": "7a6d3e0c0f0806ac91f0e84a45745a52200151c7eabdb47367d74e4bc51d019a",
+    "diff/000002.diff": "6c296af9496f7532e3b6c63d0e1ee90aca31e93c8415af5600a1f27fccbaa440",
+    "diff/000009.diff": "01358c68772fed3c99d67e423e1266fe8b2149aa03eba1d0cc2bc6d7dfa71f26",
+    "diff/000005.diff": "460650eca62686461f6c252830d7ffc69b5f3ec02cac5f592604aca521a22615",
+    "diff/000013.diff": "9dc9176e55e410eb892efc528b2f491c42d2d95664d6d8d2aa32bfbb1617d0d6",
+    "diff/000012.diff": "61c652d519e2594d8fc1703597a08a364724defa1ace18dd3e125075b80ddf54",
+    "diff/000004.diff": "d462860201d4ff21670f04c3feb568113211a9acb4b6a92f6c2ce4dde5db405b",
+    "diff/000008.diff": "fbe8f859d22a74d22cc3a6b372e4ad836062c48de6d24b9394b559bed108b07a",
+    "diff/000011.diff": "0b11c9da43d2215248c55def01f7be13b8c08056eb1044c396244b17f9973a7e",
+    "diff/000007.diff": "96a11669d6b45473b39d0362a2baac40269f6becc00a36d37e76bd0b068428f8",
+    "diff/000006.diff": "9a2cb77e1515b14015aa08cb18a69e6c1838be3ec927bde1fbc4851cd93c8619",
+    "diff/000010.diff": "ee6819b90c45032a0976a7d4af51ea8be0cec0fb171640311741d9b5cad38c8b",
+    "diff/000017.diff": "c9f1df752a46166df39e13cfc245a41a3109afb35104f21f2fe32a660d334750",
+    "diff/000001.diff": "99068a695727e5183113a908d332ffc12a8b68c00d46baeb89132f4a3fe775f3",
+    "diff/000021.diff": "b94537f796a1ed282c45f2ea0ee805ef1487484edf433e4d15b6f61127724210",
+    "diff/000020.diff": "52da27c58348954d28b8e00ffedd9115f444d09f18946154b9d97029c7203db7",
+    "diff/000016.diff": "9993edfab7de9bf9bce50598803ac248b4507318937d7057467445ccd7b5870e",
+    "logs/000012.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000013.log": "20e078c2a1e384221915bae6fe101e8b0ae16d728f996d9df683b5eb0a625540",
+    "logs/000007.log": "be6f887462fb1f9533a6f5d5666ceeb5842620d7deaaad305b420348d839d6bc",
+    "logs/000021.stderr.log": "afc8f942ebf89ef852da85d6b047081c90fa18421e26cba45b5cf1d4b13851ed",
+    "logs/000016.stderr.log": "78b5caedecae03c288816987146f84885145458743717ea34021c33b11a08ba4",
+    "logs/000006.log": "e442b60c7b6d03301ef4a10be0676a9a8d7f00f0353d42d8412076e8ccaf1484",
+    "logs/000012.log": "8763d20ce0f7004c486a11c429b5995002826999105d5a494347ecf61c8bac7f",
+    "logs/000004.log": "de268c8f4e70d392a8949c663839396dbf6c4d71f0f8a77783826d64a66cb6d5",
+    "logs/000010.log": "683ea78ca502b2a0e6d29317806fc2d4548ce653a3cd38f33807bf0b4f997419",
+    "logs/000007.stderr.log": "752404343eb727e86c09f20aeea9375eabbf62b5a4a7b9269a8d5ebb79840919",
+    "logs/000011.log": "81206a4307bc3d5f6150884c02161db722116354a03ae2e356cf5c5e10978879",
+    "logs/000005.log": "9c84262fdc5ab23e51f5277ddfff5cc42e87f8332d57d728ea0081e4048e69b3",
+    "logs/000003.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000001.log": "b2925ab1a5a046829dcc622d55035ccaf4f75d59798ebca76fc716d214aeedd0",
+    "logs/000015.log": "f64a24d37f175722b8ae879c403dfd86e6808f1cc3db4b8955e682b54d5bb50c",
+    "logs/000006.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000014.log": "9464a5d582a7218bfeb077d6906b266014d524b15248257ffbcd48bad1a348ce",
+    "logs/000002.stderr.log": "e49389a9047b67834c43a44fd18ae976715abac5da52e59f6072961111f6a69d",
+    "logs/000013.stderr.log": "4fb22bcf62f24500280ed9dcb607cb56ba4c1b9fc6237f6bed8c1db6b04fe480",
+    "logs/000016.log": "e6b347081457ee4b9659bfc237cd62bc67a3d0023ab23b34b683dc487ab04035",
+    "logs/000002.log": "eb1f7beec5c3bf8e7caad550a957512652ba49bb1a6d45c56251e9feb5e29c74",
+    "logs/000017.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000020.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000003.log": "70af67a210c38fb67c6a240674ab763e2e2fb8826353ac43fce76ea0eab80122",
+    "logs/000017.log": "491fcda4ce7191e9ec3f4c7ae6f147bd25c0e85eee515381fa64882c9b3304d1",
+    "logs/baseline.stderr.log": "311a55d17e0576f4d436021550dbeb7914e5c2107e506ef457910d21dca4dcc1",
+    "logs/000008.stderr.log": "0f0cb90e85ef404692a41acfddb8dc9a5939b50163b2c141b93f9000961dba26",
+    "logs/000010.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000014.stderr.log": "0af238828b7f27309fdcd08c5875bf1165728d34345aa70a0e95bf57560e34bf",
+    "logs/000005.stderr.log": "2eb865e54172d41df30c8b94d120e45ff57ce67024a45ccb58aa45ea1e714475",
+    "logs/000001.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000019.stderr.log": "017542f62a96a8079e91915633431cab2c08488d8668361e4c1f7855732c3113",
+    "logs/000004.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000018.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000009.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000011.stderr.log": "dfe652a5c30f5f1f28454e28a4e3d2b62d9badb76e3f975475ee1b40d3a022fd",
+    "logs/000022.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000015.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000003.stderr.log": "9eaf81f9f49b762743b7cbf8fc4c747d9c20d363d810d716e5c5aaed0bdc79b8",
+    "logs/baseline.log": "5b149b69b1d3a44c91dfb747d8a193e93fdcffda07d8d1c7e7a1f05c209a1738",
+    "logs/000007.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000016.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000021.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000012.stderr.log": "35ff8f38b17a245f6b610540a3563d3840ebb75b1cf2b6271a3650e3cf32344a",
+    "logs/000020.stderr.log": "419c2cea796cc639d08edd84ec9588baac723f81890cb970287573948818565e",
+    "logs/000017.stderr.log": "97b2f886e3bedcbfa83ee72913c31cc0e6fc6aeb8d20385f898334d2a76e0b10",
+    "logs/000013.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000002.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000006.stderr.log": "634fdd8de9776642115e641c1aa3af52460f57dddf02a7ad661c7c7f66ca0fa1",
+    "logs/000001.stderr.log": "e552bdad577e362a281cd4051208b142fe269e3a6cb4283739685f447834be9d",
+    "logs/000005.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000019.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000008.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/baseline.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000019.log": "aa4d00250b72e24ec8571307f2594545d1dc1fe85655341fc55eb053644cb327",
+    "logs/000018.log": "9be041377236c17c52d9a0303e694b52930f29f943222c87bb8ef6d2b8277ed2",
+    "logs/000014.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000010.stderr.log": "fc698d0e377648db22f880db2b26684be8e1b4d1dcb903c1c8cce22067b65452",
+    "logs/000009.stderr.log": "253eec4b90b49089eeddda7e4318867db7d14f81def09edcd208f724a6d54c29",
+    "logs/000008.log": "659dba89cefe89ae4889999ff8a0c496111fd158ea3d2fb2973adad3d64e0abd",
+    "logs/000020.log": "9466720f78db4f5268f69d0b5866902154558d5625ec7264d1d0c906875ccb61",
+    "logs/000021.log": "b7504c282759f988f9cbd316c2189c23bd4f15fb338f81959fc49c9a77b25d1d",
+    "logs/000015.stderr.log": "a3901e79b56c6cc2037c9302c3b6a9647452360b5cae34a24e522ee550366ad3",
+    "logs/000009.log": "de865992a3f1fa2b5291f82a1d6dace5431d6a1bff466a7c0eb6a6a4db3ae513",
+    "logs/000022.stderr.log": "0f3bcecf7e1dd9db932836b9603d338b8399d69050fc684ec6d49779426dcb49",
+    "logs/000011.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000004.stderr.log": "2b04c969c8517b60849aa31e2395f9c2732665bda323f87fda52306debd3e315",
+    "logs/000022.log": "4aaceddb6592dfe00d5adda8b500fb653740995d65d708e47b252dafaeebeaed",
+    "logs/000018.stderr.log": "828c8480cf01d0ed0f486429c8db10fd740eb2a6e61404ff5e740eb57cb84db3"
+  },
+  "native_original_baseline": "bun test v1.3.11 (af24e281)\n\ntest/regressions.test.js:\n(pass) regression: isUrl stateful regex (g flag + shared instance) > returns the same result across repeated calls with the same input [1.12ms]\n(pass) regression: isUrl stateful regex (g flag + shared instance) > does not alternate results when interleaved with other valid urls\n(pass) regression: isEmail excluding digit '0' from the local part > accepts a local part containing 0\n(pass) regression: isEmail excluding digit '0' from the local part > still accepts local parts without 0\n(pass) regression: isNaN accepting partially-numeric strings > rejects strings that are not fully numeric\n(pass) regression: isNaN accepting partially-numeric strings > still accepts fully numeric strings and numbers\n(pass) regression: isNaN accepting partially-numeric strings > still flags an actual NaN as NaN\n(pass) regression: isFrozen/isSealed only recognizing plain objects > isFrozen detects frozen arrays and functions, not just plain objects\n(pass) regression: isFrozen/isSealed only recognizing plain objects > isSealed detects sealed arrays and functions, not just plain objects\n(pass) regression: isFrozen/isSealed only recognizing plain objects > primitives match native Object.isFrozen/isSealed semantics (always frozen/sealed)\n\ntest/is.test.js:\n(pass) primitives > isArray [0.05ms]\n(pass) primitives > isBoolean [0.14ms]\n(pass) primitives > isDate [0.07ms]\n(pass) primitives > isFunction\n(pass) primitives > isNull\n(pass) primitives > isNumber [0.13ms]\n(pass) primitives > isObject [0.03ms]\n(pass) primitives > isString\n(pass) primitives > isUndefined\n(pass) primitives > isRegExp\n(pass) primitives > isPromise [0.12ms]\n(pass) primitives > isSymbol\n(pass) primitives > isBigInt [0.05ms]\n(pass) numbers > isInteger [0.15ms]\n(pass) numbers > isFinite [0.03ms]\n(pass) numbers > isPositive [0.04ms]\n(pass) numbers > isNegative [0.03ms]\n(pass) strings > isAlpha\n(pass) strings > isAlphanumeric\n(pass) strings > isNumericString [0.01ms]\n(pass) strings > isLowercase [0.06ms]\n(pass) strings > isUppercase [0.03ms]\n(pass) strings > isBlank [0.01ms]\n(pass) format > isEmail\n(pass) format > isUrl [0.09ms]\n(pass) format > isJSON [0.50ms]\n(pass) format > isUUID [0.08ms]\n(pass) format > isIPv4 [0.22ms]\n(pass) format > isHexColor [0.08ms]\n(pass) behavior > isIterable\n(pass) behavior > isTruthy\n(pass) behavior > isFalsy\n(pass) behavior > isCallable\n(pass) behavior > isAsyncFunction\n(pass) behavior > isPromiseLike\n(pass) dom > isElement\n(pass) dom > isHTMLCollection returns false without a DOM [0.23ms]\n(pass) dom > isNodeList returns false without a DOM [0.02ms]\n(pass) composition > isNil [0.02ms]\n(pass) composition > isEmpty [0.06ms]\n\ntest/callbacks.test.js:\n(pass) done/reject hook system > calls done when the evaluation is positive\n(pass) done/reject hook system > calls reject when the evaluation is negative\n(pass) done/reject hook system > does not call reject when the evaluation is positive\n(pass) done/reject hook system > does not call done when the evaluation is negative\n(pass) done/reject hook system > done can override a positive result by returning a boolean [0.66ms]\n(pass) done/reject hook system > reject can override a negative result by returning a boolean\n(pass) done/reject hook system > a non-boolean return from done/reject does not override the result\n(pass) done/reject hook system > works without done/reject provided\n\n 58 pass\n 0 fail\n 177 expect() calls\nRan 58 tests across 3 files. [46.00ms]\n",
+  "full": {
+    "path": "/tmp/mutie-bun-pp-is-reports/run-1792510303-PhDeK6",
+    "run": {
+      "schema_version": 1,
+      "checkpoint": 53,
+      "mutie_version": "0.1.0",
+      "operator_catalog_version": 1,
+      "module_root": "/tmp/mutie-bun-pp-is-scoped",
+      "effective_config": {
+        "module_root": "/tmp/mutie-bun-pp-is-scoped",
+        "config_file": null,
+        "lang": "bun",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [],
+        "timeout": 5,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 15,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-bun-pp-is-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "started_at_unix_seconds": 1792510303,
+      "finished_at_unix_seconds": 1792510532,
+      "duration_seconds": 228.899683416,
+      "status": "completed",
+      "phase": "mutations",
+      "error": null,
+      "policy": {
+        "status": "disabled"
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 12,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 54.54545454545455,
+        "unavailable_reason": null
+      },
+      "score_policy": {
+        "status": "disabled"
+      },
+      "baseline_command": [
+        "bun",
+        "test",
+        "--max-concurrency=1",
+        "--no-install"
+      ],
+      "node_scope": null,
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:2a471a2437a71ea684db5f3a5ea8607fa618ddb5f5daddecb98c14708fa17a38",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/is.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:78fe3f9f3d842aed6bc9de731e8d03179afecf9c710645b7460634024db69821",
+        "timeout_millis": 15000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "mutation_command_prefix": [
+        "bun",
+        "test",
+        "--max-concurrency=1",
+        "--no-install"
+      ],
+      "discovery_command": [
+        "mutie",
+        "bun-list"
+      ],
+      "include": [],
+      "exclude": [],
+      "requested_workers": 1,
+      "workers": 1,
+      "baseline_timeout_seconds": 15,
+      "mutation_timeout_seconds": 5.0,
+      "planned_mutations": 22,
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.014929209,
+          "reflink_files": 54,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.013501667,
+          "reflink_files": 54,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.016501833,
+          "reflink_files": 54,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.011646125,
+          "reflink_files": 54,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 21,
+          "completed": 21,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.37907671,
+          "reflink_files": 1134,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    "inventory": {
+      "schema_version": 1,
+      "operator_catalog_version": 1,
+      "complete": true,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/helper/baseEvaluate.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:910250adff36acafa5b1482ff98614296de9200708fded343bfca740e576ed47",
+          "line": 14,
+          "column": 78,
+          "end_line": 14,
+          "end_column": 82,
+          "byte_start": 660,
+          "byte_end": 664,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/helper/baseEvaluate.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:910250adff36acafa5b1482ff98614296de9200708fded343bfca740e576ed47",
+          "line": 14,
+          "column": 146,
+          "end_line": 14,
+          "end_column": 151,
+          "byte_start": 728,
+          "byte_end": 733,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/main/isAlpha.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:a4e41ec7a8356d7dbd12699e0ddf0b36b3a4e410342dccb4025512db273e0f66",
+          "line": 8,
+          "column": 70,
+          "end_line": 8,
+          "end_column": 75,
+          "byte_start": 269,
+          "byte_end": 274,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/main/isAlphanumeric.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:3ed788817af344a70b9787ae2b2a548baba86cdde731c3d279cea3e52cd05fd6",
+          "line": 8,
+          "column": 80,
+          "end_line": 8,
+          "end_column": 85,
+          "byte_start": 287,
+          "byte_end": 292,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/main/isBlank.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:0c8569af16edaa6ac9a7b861df5990b2c88596634fd9a6eac663e22d01d84ccd",
+          "line": 9,
+          "column": 86,
+          "end_line": 9,
+          "end_column": 91,
+          "byte_start": 317,
+          "byte_end": 322,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/main/isBoolean.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 36,
+          "end_line": 8,
+          "end_column": 40,
+          "byte_start": 236,
+          "byte_end": 240,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/main/isBoolean.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 54,
+          "end_line": 8,
+          "end_column": 59,
+          "byte_start": 254,
+          "byte_end": 259,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/main/isEmpty.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:091d9e29d2b6b50061486854f19081afded548a79304dcbdfc5df6dc729f7c9e",
+          "line": 26,
+          "column": 14,
+          "end_line": 26,
+          "end_column": 18,
+          "byte_start": 794,
+          "byte_end": 798,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/main/isHTMLCollection.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:ccb0a72988fe828f22f83702926b9086ecbfe4cf8cfcfe08cfe6d8129c659cbf",
+          "line": 7,
+          "column": 74,
+          "end_line": 7,
+          "end_column": 79,
+          "byte_start": 224,
+          "byte_end": 229,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/main/isHexColor.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c687b87d7eca8420070ac6245b0aebaa468bd981a154a79cefbf5dfab3d533f4",
+          "line": 8,
+          "column": 97,
+          "end_line": 8,
+          "end_column": 102,
+          "byte_start": 288,
+          "byte_end": 293,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "src/main/isIPv4.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 9,
+          "column": 31,
+          "end_line": 9,
+          "end_column": 36,
+          "byte_start": 230,
+          "byte_end": 235,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "src/main/isIPv4.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 11,
+          "column": 31,
+          "end_line": 11,
+          "end_column": 36,
+          "byte_start": 298,
+          "byte_end": 303,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "src/main/isIPv4.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 13,
+          "column": 39,
+          "end_line": 13,
+          "end_column": 44,
+          "byte_start": 374,
+          "byte_end": 379,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "src/main/isJSON.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+          "line": 9,
+          "column": 31,
+          "end_line": 9,
+          "end_column": 36,
+          "byte_start": 229,
+          "byte_end": 234,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "src/main/isJSON.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+          "line": 10,
+          "column": 32,
+          "end_line": 10,
+          "end_column": 36,
+          "byte_start": 267,
+          "byte_end": 271,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "src/main/isJSON.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+          "line": 11,
+          "column": 19,
+          "end_line": 11,
+          "end_column": 24,
+          "byte_start": 291,
+          "byte_end": 296,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        },
+        {
+          "id": 17,
+          "file": "src/main/isLowercase.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:3c9ac0fd642ad02295efb254741ca7e9e272b2700404645e6f7de98397aba12c",
+          "line": 8,
+          "column": 111,
+          "end_line": 8,
+          "end_column": 116,
+          "byte_start": 289,
+          "byte_end": 294,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000017.diff",
+          "test_packages": []
+        },
+        {
+          "id": 18,
+          "file": "src/main/isNodeList.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:68782998c02ce9a4b4764a879ef2b0a1841ee23a3fcc59a8841d4665adeb1690",
+          "line": 7,
+          "column": 62,
+          "end_line": 7,
+          "end_column": 67,
+          "byte_start": 200,
+          "byte_end": 205,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000018.diff",
+          "test_packages": []
+        },
+        {
+          "id": 19,
+          "file": "src/main/isNumericString.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:042ab23d8286cda33db4f4ea382204e45f98b11f60301a37d500a554142bce00",
+          "line": 8,
+          "column": 75,
+          "end_line": 8,
+          "end_column": 80,
+          "byte_start": 276,
+          "byte_end": 281,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000019.diff",
+          "test_packages": []
+        },
+        {
+          "id": 20,
+          "file": "src/main/isTruthy.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+          "line": 7,
+          "column": 35,
+          "end_line": 7,
+          "end_column": 39,
+          "byte_start": 161,
+          "byte_end": 165,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000020.diff",
+          "test_packages": []
+        },
+        {
+          "id": 21,
+          "file": "src/main/isUUID.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c47426a2f40c69e5a04084e41d3ae829f03a8c4aeb819ad3c274848d43b9035f",
+          "line": 8,
+          "column": 132,
+          "end_line": 8,
+          "end_column": 137,
+          "byte_start": 307,
+          "byte_end": 312,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000021.diff",
+          "test_packages": []
+        },
+        {
+          "id": 22,
+          "file": "src/main/isUppercase.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:8727e34e23126ce008dfdbb62acc4c3602d8983f05cb4da367df880292ec72fa",
+          "line": 8,
+          "column": 111,
+          "end_line": 8,
+          "end_column": 116,
+          "byte_start": 290,
+          "byte_end": 295,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000022.diff",
+          "test_packages": []
+        }
+      ],
+      "dismissals": {
+        "matched": [],
+        "needs_review": []
+      }
+    },
+    "outcomes": {
+      "schema_version": 1,
+      "checkpoint": 53,
+      "status": "completed",
+      "baseline": {
+        "outcome": "passed",
+        "duration_seconds": 0.122730042,
+        "exit_code": 0,
+        "logs": {
+          "text": "logs/baseline.log",
+          "stdout": "logs/baseline.stdout.log",
+          "stderr": "logs/baseline.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 3766,
+              "head_bytes": 3766,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stdout": {
+              "total_bytes": 28,
+              "head_bytes": 28,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stderr": {
+              "total_bytes": 3737,
+              "head_bytes": 3737,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        }
+      },
+      "discovery": null,
+      "summary": {
+        "killed": 12,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.175616792,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 31124,
+                "head_bytes": 31124,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 31095,
+                "head_bytes": 31095,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.157710875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 29032,
+                "head_bytes": 29032,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 29003,
+                "head_bytes": 29003,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.091524959,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4427,
+                "head_bytes": 4427,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4398,
+                "head_bytes": 4398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.082204292,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.080458333,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4391,
+                "head_bytes": 4391,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4362,
+                "head_bytes": 4362,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.086148542,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.1113445,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.1214785,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3767,
+                "head_bytes": 3767,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3738,
+                "head_bytes": 3738,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.09924125,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4525,
+                "head_bytes": 4525,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4496,
+                "head_bytes": 4496,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.158407125,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3767,
+                "head_bytes": 3767,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3738,
+                "head_bytes": 3738,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.120331125,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.075033292,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4376,
+                "head_bytes": 4376,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4347,
+                "head_bytes": 4347,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.095234375,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.100883333,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4400,
+                "head_bytes": 4400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4371,
+                "head_bytes": 4371,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.085836583,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4380,
+                "head_bytes": 4380,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4351,
+                "head_bytes": 4351,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.084202083,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4375,
+                "head_bytes": 4375,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4346,
+                "head_bytes": 4346,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 17,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.090091,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000017.log",
+            "stdout": "logs/000017.stdout.log",
+            "stderr": "logs/000017.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 18,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.119252625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000018.log",
+            "stdout": "logs/000018.stdout.log",
+            "stderr": "logs/000018.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4451,
+                "head_bytes": 4451,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4422,
+                "head_bytes": 4422,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 19,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.064762917,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000019.log",
+            "stdout": "logs/000019.stdout.log",
+            "stderr": "logs/000019.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4418,
+                "head_bytes": 4418,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4389,
+                "head_bytes": 4389,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 20,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.08564075,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000020.log",
+            "stdout": "logs/000020.stdout.log",
+            "stderr": "logs/000020.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4364,
+                "head_bytes": 4364,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4335,
+                "head_bytes": 4335,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 21,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.102204583,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000021.log",
+            "stdout": "logs/000021.stdout.log",
+            "stderr": "logs/000021.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 22,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.085859625,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000022.log",
+            "stdout": "logs/000022.stdout.log",
+            "stderr": "logs/000022.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "stronger": {
+    "path": "/tmp/mutie-bun-pp-is-reruns/run-1792510571-dXqSBc",
+    "run": {
+      "schema_version": 1,
+      "checkpoint": 29,
+      "mutie_version": "0.1.0",
+      "operator_catalog_version": 1,
+      "module_root": "/tmp/mutie-bun-pp-is-stronger",
+      "effective_config": {
+        "module_root": "/tmp/mutie-bun-pp-is-stronger",
+        "config_file": null,
+        "lang": "bun",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [],
+        "timeout": 5,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 15,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-bun-pp-is-reruns",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-bun-pp-is-reports/run-1792510303-PhDeK6",
+          "selection": "missed"
+        },
+        "ui": "plain"
+      },
+      "started_at_unix_seconds": 1792510571,
+      "finished_at_unix_seconds": 1792510657,
+      "duration_seconds": 85.982034208,
+      "status": "completed",
+      "phase": "mutations",
+      "error": null,
+      "policy": {
+        "status": "disabled"
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 7,
+        "missed": 3,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 70.0,
+        "unavailable_reason": null
+      },
+      "score_policy": {
+        "status": "disabled"
+      },
+      "baseline_command": [
+        "bun",
+        "test",
+        "--max-concurrency=1",
+        "--no-install"
+      ],
+      "node_scope": null,
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:2a471a2437a71ea684db5f3a5ea8607fa618ddb5f5daddecb98c14708fa17a38",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/is.test.js",
+          "test/mutie-stronger.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:78fe3f9f3d842aed6bc9de731e8d03179afecf9c710645b7460634024db69821",
+        "timeout_millis": 15000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "mutation_command_prefix": [
+        "bun",
+        "test",
+        "--max-concurrency=1",
+        "--no-install"
+      ],
+      "discovery_command": [
+        "mutie",
+        "bun-list"
+      ],
+      "include": [],
+      "exclude": [],
+      "requested_workers": 1,
+      "workers": 1,
+      "baseline_timeout_seconds": 15,
+      "mutation_timeout_seconds": 5.0,
+      "planned_mutations": 10,
+      "rerun": {
+        "source_run": "/tmp/mutie-bun-pp-is-reports/run-1792510303-PhDeK6",
+        "source_checkpoint": 53,
+        "source_status": "completed",
+        "selection": "missed",
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 4
+          },
+          {
+            "id": 2,
+            "source_id": 6
+          },
+          {
+            "id": 3,
+            "source_id": 7
+          },
+          {
+            "id": 4,
+            "source_id": 8
+          },
+          {
+            "id": 5,
+            "source_id": 10
+          },
+          {
+            "id": 6,
+            "source_id": 11
+          },
+          {
+            "id": 7,
+            "source_id": 13
+          },
+          {
+            "id": 8,
+            "source_id": 17
+          },
+          {
+            "id": 9,
+            "source_id": 21
+          },
+          {
+            "id": 10,
+            "source_id": 22
+          }
+        ]
+      },
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.00833125,
+          "reflink_files": 55,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.010371667,
+          "reflink_files": 55,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.015466458,
+          "reflink_files": 55,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.009323208,
+          "reflink_files": 55,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 9,
+          "completed": 9,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.116801001,
+          "reflink_files": 495,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    "inventory": {
+      "schema_version": 1,
+      "operator_catalog_version": 1,
+      "complete": true,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isAlphanumeric.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:3ed788817af344a70b9787ae2b2a548baba86cdde731c3d279cea3e52cd05fd6",
+          "line": 8,
+          "column": 80,
+          "end_line": 8,
+          "end_column": 85,
+          "byte_start": 287,
+          "byte_end": 292,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isBoolean.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 36,
+          "end_line": 8,
+          "end_column": 40,
+          "byte_start": 236,
+          "byte_end": 240,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/main/isBoolean.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 54,
+          "end_line": 8,
+          "end_column": 59,
+          "byte_start": 254,
+          "byte_end": 259,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/main/isEmpty.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:091d9e29d2b6b50061486854f19081afded548a79304dcbdfc5df6dc729f7c9e",
+          "line": 26,
+          "column": 14,
+          "end_line": 26,
+          "end_column": 18,
+          "byte_start": 794,
+          "byte_end": 798,
+          "original": "true",
+          "replacement": "false",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/main/isHexColor.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c687b87d7eca8420070ac6245b0aebaa468bd981a154a79cefbf5dfab3d533f4",
+          "line": 8,
+          "column": 97,
+          "end_line": 8,
+          "end_column": 102,
+          "byte_start": 288,
+          "byte_end": 293,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/main/isIPv4.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 9,
+          "column": 31,
+          "end_line": 9,
+          "end_column": 36,
+          "byte_start": 230,
+          "byte_end": 235,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/main/isIPv4.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 13,
+          "column": 39,
+          "end_line": 13,
+          "end_column": 44,
+          "byte_start": 374,
+          "byte_end": 379,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/main/isLowercase.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:3c9ac0fd642ad02295efb254741ca7e9e272b2700404645e6f7de98397aba12c",
+          "line": 8,
+          "column": 111,
+          "end_line": 8,
+          "end_column": 116,
+          "byte_start": 289,
+          "byte_end": 294,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/main/isUUID.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c47426a2f40c69e5a04084e41d3ae829f03a8c4aeb819ad3c274848d43b9035f",
+          "line": 8,
+          "column": 132,
+          "end_line": 8,
+          "end_column": 137,
+          "byte_start": 307,
+          "byte_end": 312,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/main/isUppercase.js",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:8727e34e23126ce008dfdbb62acc4c3602d8983f05cb4da367df880292ec72fa",
+          "line": 8,
+          "column": 111,
+          "end_line": 8,
+          "end_column": 116,
+          "byte_start": 290,
+          "byte_end": 295,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        }
+      ],
+      "dismissals": {
+        "matched": [],
+        "needs_review": []
+      }
+    },
+    "outcomes": {
+      "schema_version": 1,
+      "checkpoint": 29,
+      "status": "completed",
+      "baseline": {
+        "outcome": "passed",
+        "duration_seconds": 0.054772,
+        "exit_code": 0,
+        "logs": {
+          "text": "logs/baseline.log",
+          "stdout": "logs/baseline.stdout.log",
+          "stderr": "logs/baseline.stderr.log",
+          "retention": {
+            "text": {
+              "total_bytes": 4191,
+              "head_bytes": 4191,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stdout": {
+              "total_bytes": 28,
+              "head_bytes": 28,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            },
+            "stderr": {
+              "total_bytes": 4162,
+              "head_bytes": 4162,
+              "tail_bytes": 0,
+              "omitted_bytes": 0
+            }
+          }
+        }
+      },
+      "discovery": null,
+      "summary": {
+        "killed": 7,
+        "missed": 3,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.052510542,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4821,
+                "head_bytes": 4821,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4792,
+                "head_bytes": 4792,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.049496125,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4191,
+                "head_bytes": 4191,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4162,
+                "head_bytes": 4162,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.053095167,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4191,
+                "head_bytes": 4191,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4162,
+                "head_bytes": 4162,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.054579792,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4191,
+                "head_bytes": 4191,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4162,
+                "head_bytes": 4162,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.054249834,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4817,
+                "head_bytes": 4817,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4788,
+                "head_bytes": 4788,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.054082542,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4813,
+                "head_bytes": 4813,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4784,
+                "head_bytes": 4784,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.060531375,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4868,
+                "head_bytes": 4868,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4839,
+                "head_bytes": 4839,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.056606375,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4818,
+                "head_bytes": 4818,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4789,
+                "head_bytes": 4789,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.074216,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4813,
+                "head_bytes": 4813,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4784,
+                "head_bytes": 4784,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.063989292,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4818,
+                "head_bytes": 4818,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4789,
+                "head_bytes": 4789,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "stronger_test_sha256": "23b0687b457ec2ea56e97baeb97a2f46fde2fd66de69427e4bdcd83ff891dc47"
+}
