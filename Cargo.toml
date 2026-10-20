@@ -32,3 +32,8 @@ libc = "0.2.189"
 
 [dev-dependencies]
 vt100 = "0.16.2"
+
+# Full executable fingerprints dominate Bun feedback in unoptimized builds.
+# Keep byte verification intact while making development/test hashing practical.
+[profile.dev.package.sha2]
+opt-level = 3

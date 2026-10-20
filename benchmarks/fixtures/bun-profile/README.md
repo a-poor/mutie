@@ -7,6 +7,12 @@ dependencies. Reports must be outside the project.
 Build all artifacts before measuring, then run the following sequentially without
 concurrent Cargo checks or other benchmark runs:
 
+Current development/test builds optimize `sha2`. To reproduce the historical
+fully unoptimized debug measurements, use
+`cargo --config 'profile.dev.package.sha2.opt-level=0' build --offline` and the
+same override for the debug test builds/probes below. Preserve that binary before
+switching profiles. Ordinary builds now measure the adopted optimization.
+
 ```sh
 cargo build --offline
 cargo build --offline --release
@@ -44,9 +50,10 @@ or reduced validation are introduced. The Bun recipe hashes `bun.rs` source byte
 so adding test-only timer call sites changes the recipe fingerprint; use fresh
 reports from the same source revision when comparing builds.
 
-For the optional hash-only compiler experiment, preserve the ordinary debug
+For the historical hash-only compiler experiment, preserve the fully unoptimized debug
 binary first, build with `cargo --config 'profile.dev.package.sha2.opt-level=3'
 build --offline`, and copy that binary to a temporary path. Run the comparison
 script with that path as `--debug`, plus `--focused-only --modes debug` and a new
 output directory. Restore the ordinary build with `cargo build --offline` after
-measuring. This command-line override does not edit project configuration.
+measuring. The level-3 setting is now the repository default; the command-line
+override does not edit project configuration.

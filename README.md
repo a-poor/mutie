@@ -152,8 +152,9 @@ tests and CommonJS runtime files remain rejected.
 
 For real Bun mutation runs, prefer `cargo build --release` and
 `target/release/mutie PATH --lang bun`. The [execution profile](benchmarks/bun-feedback-profile.md)
-measured a 22-candidate run at 306.65s in debug versus 19.76s in release with
-matching outcomes; executable fingerprinting dominates debug overhead.
+measured a 22-candidate run at 306.65s in fully unoptimized debug versus 19.76s
+in release with matching outcomes. Development and test builds now optimize the
+`sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
 ## Try it
 

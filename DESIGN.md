@@ -1761,3 +1761,9 @@ identical outcomes and identities while greatly reducing elapsed time. Test-only
 phase timers are compiled out of production; no cache or reduced validation is
 introduced. Real-run timings should distinguish build mode and test-command time
 from complete feedback time before motivating further execution changes.
+
+The measured sha2 optimization is now a dependency-specific development-profile
+override (`opt-level = 3`), also inherited by the test profile. Application code
+keeps its normal development settings; release settings and complete executable
+fingerprints remain unchanged. This benefits all shared SHA-256 callers without
+introducing runner-specific caching.

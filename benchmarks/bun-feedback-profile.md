@@ -4,6 +4,8 @@ Recorded 2026-10-20 on macOS arm64, Rust 1.99.1. Uses unchanged pp-is commit
 `1d5b3bac804e1e67da289f3d2a14bd0705a383fb`, pinned Bun 1.3.11+af24e281e and
 Mutie based on `44b109d` plus test-only phase observations. No production
 optimization, identity caching or default build-profile change is made.
+The later adoption of the measured optimization is recorded below; the original
+tables describe fully unoptimized debug builds.
 
 ## Build-mode comparison
 
@@ -115,3 +117,31 @@ Validation passed: the ignored phase probe in debug and release, `cargo test
 --offline`, `cargo clippy --offline --all-targets -- -D warnings`, and `cargo fmt
 --check`. The serial comparisons verified matching inventories, outcomes and
 execution identities, plus preservation of all 63 project input hashes.
+
+## Development-profile adoption
+
+Following profiling commit `1285221`, `Cargo.toml` now sets
+`[profile.dev.package.sha2] opt-level = 3`. The test profile inherits this
+dependency override. No other dependency or application optimization setting,
+release setting, fingerprint input, or validation rule changes.
+
+The same serial comparison on unchanged pp-is with pinned Bun, built before
+measurement, produced:
+
+| Workflow | Development with optimized sha2 | Release |
+| --- | ---: | ---: |
+| All 22 mutations | 21.757s | 20.017s |
+| Focused median, three runs | 2.275s | 2.139s |
+| Focused range | 2.253–2.648s | 2.127–2.162s |
+
+The development full run is about 14.1× faster than the original 306.646s
+measurement; focused median is about 10.2× faster than 23.118s. These are small
+local samples, not general performance guarantees. All inventories, per-mutation
+outcomes and execution identities match the original profiling reports. Full runs
+retain 12 kills and 10 survivors; focused runs retain the same one survivor.
+All 63 input hashes match the original measurements. No errors or timeouts occur.
+[Adoption results](bun-dev-sha2-results.json) retain commands, timing samples,
+outcomes and execution identity; raw reports remain at the recorded local paths.
+
+With the adopted profile, `cargo test --offline`, `cargo clippy --offline
+--all-targets -- -D warnings`, and `cargo fmt --check` all pass.

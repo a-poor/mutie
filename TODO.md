@@ -114,8 +114,10 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   SHA-256 executable checks dominate; preserve verification and prefer release
   builds. A temporary sha2-only optimization recovers most debug overhead; see
   [profile](benchmarks/bun-feedback-profile.md).
+- [x] Optimize `sha2` in development/test builds while preserving complete
+  fingerprints; validate matching full and focused Bun outcomes.
 - [ ] Reassess the next objective after scoped Bun validation: useful survivor
-  review or a measured development-profile improvement before broader scope.
+  review before broader scope.
 
 ## Validated first Node test-runner slice
 
