@@ -110,8 +110,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Accept unchanged pp-is packaging and static JS implicit ESM with strict
   import/test boundaries; match all 22 adapted outcomes. See
   [unchanged layout](benchmarks/bun-unchanged-layout.md).
+- [x] Profile Bun feedback cost across debug/release and actual adapter phases:
+  SHA-256 executable checks dominate; preserve verification and prefer release
+  builds. A temporary sha2-only optimization recovers most debug overhead; see
+  [profile](benchmarks/bun-feedback-profile.md).
 - [ ] Reassess the next objective after scoped Bun validation: useful survivor
-  review, unchanged real-project scope, and measured feedback cost before expansion.
+  review or a measured development-profile improvement before broader scope.
 
 ## Validated first Node test-runner slice
 

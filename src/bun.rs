@@ -1,6 +1,8 @@
-//! Baseline-only Bun diagnostic. Scored execution remains gated on acceptance.
+//! Scoped Bun execution with isolated inputs and attributed outcome evidence.
 mod config;
 mod identity;
+#[cfg(test)]
+mod profile;
 pub(crate) mod project;
 mod protocol;
 
@@ -102,6 +104,8 @@ struct Execution {
     command: CommandOutput,
     identity: identity::ExecutionIdentity,
     input_fingerprint: String,
+    #[cfg(test)]
+    timings: Vec<(&'static str, f64)>,
 }
 impl std::ops::Deref for Execution {
     type Target = CommandOutput;
@@ -221,18 +225,26 @@ async fn execute_expected(
     cancellation: &Cancellation,
     expected: Option<&ExecutionScope>,
 ) -> Result<Execution> {
+    #[cfg(test)]
+    let mut timings = profile::PhaseTimings::new();
     let project = project::Project::load(root, cancellation)?;
+    #[cfg(test)]
+    timings.finish("original_validation");
     let source = project.root.clone();
     let copying = cancellation.clone();
     let workspace = tokio::task::spawn_blocking(move || Workspace::create(&source, &[], &copying))
         .await
         .context("Bun snapshot preparation panicked")??;
     let root = workspace.path();
+    #[cfg(test)]
+    timings.finish("isolated_copy");
     let captured = project::Project::load(&root, cancellation)?;
     ensure!(
         captured.files == project.files && captured.tests == project.tests,
         "Bun input changed during snapshotting"
     );
+    #[cfg(test)]
+    timings.finish("copied_validation");
     let owned = tempfile::Builder::new()
         .prefix("mutie-bun-command-")
         .tempdir()?;
@@ -264,6 +276,8 @@ async fn execute_expected(
         ("FORCE_COLOR", "0".as_ref()),
         ("CI", "true".as_ref()),
     ];
+    #[cfg(test)]
+    timings.finish("private_environment_setup");
     // Identify from a private empty directory before executing any project code.
     let identity = process::run_with_env(program, &["--no-env-file", "--no-install", &config_arg, "-e", "console.log(JSON.stringify({version:Bun.version,revision:Bun.revision,executable:process.execPath}))"], &owned_path, Duration::from_secs(10), NonZeroUsize::new(4096), cancellation, &environment).await?;
     cancellation.check()?;
@@ -286,6 +300,8 @@ async fn execute_expected(
             .context("missing Bun executable")?,
     );
     ensure!(executable.is_absolute(), "Bun executable must be absolute");
+    #[cfg(test)]
+    timings.finish("runtime_identity_process");
     let execution_identity =
         identity::ExecutionIdentity::capture(&project, executable, timeout, capture_limit)?;
     if let Some(expected) = expected {
@@ -295,6 +311,8 @@ async fn execute_expected(
             "Bun test inventory changed during the run"
         );
     }
+    #[cfg(test)]
+    timings.finish("identity_before");
     let observer = owned_path.join("observer.mjs");
     let events = owned_path.join("observer.jsonl");
     let junit = owned_path.join("junit.xml");
@@ -303,6 +321,8 @@ async fn execute_expected(
     environment.push(("MUTIE_BUN_OBSERVER", events.as_os_str()));
     // OS file-size limits bound native JUnit and observer writes, including child
     // processes. This is a per-file bound, not a total workspace disk quota.
+    #[cfg(test)]
+    timings.finish("observer_setup");
     let raw = process::run_with_file_limit(
         utf8(executable)?,
         &[
@@ -324,6 +344,8 @@ async fn execute_expected(
         EVIDENCE_LIMIT,
     )
     .await?;
+    #[cfg(test)]
+    timings.finish("test_process");
     let evidence = (|| -> Result<Outcome> {
         ensure!(
             !raw.interrupted && !raw.timed_out && raw.capture_error.is_none(),
@@ -339,6 +361,8 @@ async fn execute_expected(
                 )?,
             "Bun executable changed during command"
         );
+        #[cfg(test)]
+        timings.finish("identity_after");
         ensure!(
             fs::read(&observer)? == include_bytes!("bun/observer.mjs"),
             "Bun observer changed during command"
@@ -361,15 +385,21 @@ async fn execute_expected(
         })
     })()
     .map_err(|e| format!("{e:#}"));
+    #[cfg(test)]
+    timings.finish("evidence_classification");
     let mut rendered = tempfile::NamedTempFile::new()?;
     crate::command::write_lossy(&mut raw.stdout.reader()?, &mut rendered)?;
     writeln!(rendered)?;
     crate::command::write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;
     let mut text = crate::capture::Capture::utf8(rendered)?;
     text.set_limit(NonZeroUsize::new(64 * 1024));
+    #[cfg(test)]
+    timings.finish("diagnostics");
     // Shared runner drains captures and stops descendants before these drops.
     drop(owned);
     drop(workspace);
+    #[cfg(test)]
+    timings.finish("cleanup");
     Ok(Execution {
         command: CommandOutput {
             raw,
@@ -379,6 +409,8 @@ async fn execute_expected(
         },
         identity: execution_identity,
         input_fingerprint: fingerprint(&serde_json::to_vec(&project.files)?),
+        #[cfg(test)]
+        timings: timings.values,
     })
 }
 

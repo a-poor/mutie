@@ -1,0 +1,1977 @@
+{
+  "recorded": "2026-10-20",
+  "base_commit": "44b109df025d1faceac248ebde65c19de9b8b3ce",
+  "rustc": "1.99.1 (58cf8f9c3 2026-10-13)",
+  "platform": "macOS arm64",
+  "project_commit": "1d5b3bac804e1e67da289f3d2a14bd0705a383fb",
+  "original_inputs_preserved": true,
+  "input_sha256": {
+    "README.md": "04a75fcc997e0ba1d52a578c4f9eb56e8bebcda85c246e985a228712b1108c49",
+    "README_es.md": "8c597eeb0a349956b2231d0e6ac2ca94db6a9681ffde47a7ef3bffb2d050e86b",
+    ".gitignore": "d6dfbd171508132516e67b8632585ef614a1b215472a0409e10e7cbec8828048",
+    "package.json": "b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+    "LICENSE.txt": "0e3ad81a678d1b8e24a4b149e0a82e18e510203523b55f1f3e78777698c2758b",
+    "index.d.ts": "c55e0ba2b335cbb6eb41286bda9f14d6399ba2a1b017227dee04ed38f152695e",
+    "test/regressions.test.js": "f39111a620e1e4c12ea35d4b77cde92e0a788157804bd6e4bfee15d7958226b0",
+    "test/is.test.js": "ca5c923d89847b996ada33ff2f35e29fb2cbb96c4eaadd0bc5de4bca41ab9e2f",
+    "test/callbacks.test.js": "3e0ef94078f9b5f9566a127ecc3096e53ce907218594767c26c78f7c40b3206c",
+    "dist/pp-is.min.js": "00e82d616984b8eb1ca1cfa546e40230ba1937df53d3adf1dba2c3e0bac41d09",
+    "dist/pp-is.mjs": "807864b0c6a78bfdaf9f37fb03cf9226357a140a289d0ad5fcb4e244ed589748",
+    "dist/pp-is.cjs": "ee8223b30ac50e260f8a635019f44d5cd5e154955d63f8761dd7999244d9a0e5",
+    "scripts/build.mjs": "1a16ee277484dc18b672f0687827e4614eae19518e09e35261061913368ed379",
+    "src/pp-is.js": "ec0c19655ca0a4c79959f1cee61ebaae13d0736e12897a15a61b7bb769ec9c67",
+    "src/browser.js": "9cc26d5b7207cb8796a5eaba1750833d4c1b7713f4c7a1a2ff4b4ea4d7da2059",
+    "src/main/isRegExp.js": "80e61c9ce211703e0363e085ad0676efcb4ebe3dc3103b41e66b93e51ae6afad",
+    "src/main/isFrozen.js": "97e55658eadf22f81e4e1a18ea39a29c1491f9cb188a60f11bfbd26271595030",
+    "src/main/isInteger.js": "3496177b739499565e882495933b5398c9820af56d3dd56d198c8ba5f5abc4f4",
+    "src/main/isIPv4.js": "f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+    "src/main/isAsyncFunction.js": "c02075e20de4f8fd61cb67e62ebbf4db6a5b9f22623068bf2a0042703b676fa5",
+    "src/main/isNumericString.js": "042ab23d8286cda33db4f4ea382204e45f98b11f60301a37d500a554142bce00",
+    "src/main/isNegative.js": "403893a7e3f66f9a1f958b5f2deb6b0eacef078f733d39f9f526f12cbf0ad907",
+    "src/main/isAlphanumeric.js": "3ed788817af344a70b9787ae2b2a548baba86cdde731c3d279cea3e52cd05fd6",
+    "src/main/isLowercase.js": "3c9ac0fd642ad02295efb254741ca7e9e272b2700404645e6f7de98397aba12c",
+    "src/main/isUndefined.js": "e6c86ed0535bd5f4fcd891e95d50cf3e0f836cdfc10453f72cc630437526046a",
+    "src/main/isNull.js": "e952413f0498046959af021043325206f07393f51e8fa2df9e1d3133427364a6",
+    "src/main/isUrl.js": "da3695ea94c89334d2b9b44bdd59f1fe26092e5c8fcf0be97b1f39566fd2d532",
+    "src/main/isUppercase.js": "8727e34e23126ce008dfdbb62acc4c3602d8983f05cb4da367df880292ec72fa",
+    "src/main/isEmpty.js": "091d9e29d2b6b50061486854f19081afded548a79304dcbdfc5df6dc729f7c9e",
+    "src/main/isString.js": "0c6bd6124ca737c724e0ea334aaded1671b9de232248085c056ecead7b68d0ae",
+    "src/main/isPositive.js": "3eb1781e09b5d1fc093e4ba934028524acb3bfc0b2e5639d7bfc2a6fc4c9f62b",
+    "src/main/isHexColor.js": "c687b87d7eca8420070ac6245b0aebaa468bd981a154a79cefbf5dfab3d533f4",
+    "src/main/isNaN.js": "421c368e4d684efd28f90d7762a9a257ff43172937b59b6a57f31fc9f20f9728",
+    "src/main/isCallable.js": "6d5ee0e47e208bad717ae9c1314c21357ccd1933d99a51d659c1356f22260594",
+    "src/main/isHTMLCollection.js": "ccb0a72988fe828f22f83702926b9086ecbfe4cf8cfcfe08cfe6d8129c659cbf",
+    "src/main/isNil.js": "b3024928bd418656d27460e7e136a1b5051cf358a3a00c17ef861063bfae15b3",
+    "src/main/isIterable.js": "47596718e64523309b32540da5ed0ed719eca79c3ac46e5006c11e0bbeaef2bf",
+    "src/main/isTruthy.js": "fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+    "src/main/isFunction.js": "83b99538d8f06efd6550258c2ebe290d9af9ba28cabde2448aaaae35cb7a1bf3",
+    "src/main/isFalsy.js": "53a880b95622bd4906698ae2f092eefb9a021a46a4cf1c6512c436b869c8e18c",
+    "src/main/isPromise.js": "01ea4131f4bf72239f123d232f843a94df77c8e346ae278281708d30cc09ab6c",
+    "src/main/isObject.js": "425079d3b8b3ef581350b5c730f39acc929349b7ccc22f4fdca9421949bd2690",
+    "src/main/isEmail.js": "f4c58c5289036b292d8207bf9f87f7a6502cbcb166b59887517c7f2755b3b9f5",
+    "src/main/isAlpha.js": "a4e41ec7a8356d7dbd12699e0ddf0b36b3a4e410342dccb4025512db273e0f66",
+    "src/main/isNumber.js": "8ac832d477165c1eae04ac6c558e74cb6f617438fb688c5c2157c7006b2d9cf0",
+    "src/main/isArray.js": "f73e19e363753717fba2d76e568ad2bf5087e6b4fb4a6849733c658720e5a2c3",
+    "src/main/isNodeList.js": "68782998c02ce9a4b4764a879ef2b0a1841ee23a3fcc59a8841d4665adeb1690",
+    "src/main/isJSON.js": "e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+    "src/main/isBlank.js": "0c8569af16edaa6ac9a7b861df5990b2c88596634fd9a6eac663e22d01d84ccd",
+    "src/main/isDate.js": "5910f39e1539a279e2a605cebd3d395b4998bc89bcbd64b4dd0dcb4299fca530",
+    "src/main/isPromiseLike.js": "59b5f080332b983fe17f247104972a58162c0379c3818f69bdfa497e07a43c8f",
+    "src/main/isUUID.js": "c47426a2f40c69e5a04084e41d3ae829f03a8c4aeb819ad3c274848d43b9035f",
+    "src/main/isElement.js": "2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+    "src/main/isBoolean.js": "c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+    "src/main/isBigInt.js": "ac31f7e23aee0c68db0b922213e64c4edff847ea9e7b2cfc34939c2a2dfd623a",
+    "src/main/isSymbol.js": "9ce1a6bfaaff7980696e6c6036aeed0c442ce03987599594e7f6297558097acc",
+    "src/main/isFinite.js": "7cbd0547f3f918c5f77b4bb0f0d8ade3144ae718268f6112b75b40ffcca97177",
+    "src/main/isSealed.js": "6cdbf6108b204f0736484a653bbe2a378bb2731549f67e4888daca7075d370a3",
+    "src/helper/baseEvaluate.js": "910250adff36acafa5b1482ff98614296de9200708fded343bfca740e576ed47",
+    "src/helper/baseSanitize.js": "40e85e0d3f2382741338785e94c20c5d03820dfe8fdcbd5ed9bba65cde62d1ce",
+    "src/helper/base.js": "a06f9adddc62f7922c4bdc9e9149759c16b212d237f7818a0ab47f767394a5de",
+    "src/helper/getType.js": "2c48513ccb88854b9baffa3c9425e8208440da5014f0eb45d525f08720e7fcc6",
+    "src/helper/getTypeCompare.js": "05ce815354c999c7c632db6b2b7907fbfe0a515183638cf17ecc35ac831e0451"
+  },
+  "equal_inventory_outcomes_identity_across_builds": true,
+  "debug_binary_restored": true,
+  "binary_sha256": {
+    "debug": "a4f810f5e1cf796437ea61e29043a4f257c5b5313d4b505cc5bb49697485b20d",
+    "release": "c04983d4da11bd807855862e9ce4395de078ce4995c09f0448f04f62c40b5c1b",
+    "debug_sha2_opt3": "89174b6bba6b3356f5552185af1f4aa864d1f0591318250ce1a69e2e0de08a89"
+  },
+  "sha2_experiment_config": "profile.dev.package.sha2.opt-level=3",
+  "execution_identity": {
+    "runtime_version": "1.3.11",
+    "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+    "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+    "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+    "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+    "configuration_fingerprints": {},
+    "test_files": [
+      "test/callbacks.test.js",
+      "test/is.test.js",
+      "test/regressions.test.js"
+    ],
+    "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+    "timeout_millis": 15000,
+    "capture_bytes": 4194304,
+    "evidence_file_bytes": 8388608
+  },
+  "cli": [
+    {
+      "experiment": "comparison",
+      "mode": "debug",
+      "workload": "full",
+      "repeat": 1,
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792512911-xoeZN0",
+      "wall_seconds": 306.64606149995234,
+      "report_seconds": 305.515654792,
+      "score": {
+        "scope": "all_discovered",
+        "killed": 12,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 54.54545454545455,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.096298833,
+      "summary": {
+        "killed": 12,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "killed",
+          "duration_seconds": 0.199197333
+        },
+        {
+          "id": 2,
+          "outcome": "killed",
+          "duration_seconds": 0.22769625
+        },
+        {
+          "id": 3,
+          "outcome": "killed",
+          "duration_seconds": 0.084858875
+        },
+        {
+          "id": 4,
+          "outcome": "missed",
+          "duration_seconds": 0.122233708
+        },
+        {
+          "id": 5,
+          "outcome": "killed",
+          "duration_seconds": 0.077276583
+        },
+        {
+          "id": 6,
+          "outcome": "missed",
+          "duration_seconds": 0.080892709
+        },
+        {
+          "id": 7,
+          "outcome": "missed",
+          "duration_seconds": 0.113347875
+        },
+        {
+          "id": 8,
+          "outcome": "missed",
+          "duration_seconds": 0.270824084
+        },
+        {
+          "id": 9,
+          "outcome": "killed",
+          "duration_seconds": 0.138516542
+        },
+        {
+          "id": 10,
+          "outcome": "missed",
+          "duration_seconds": 0.108544667
+        },
+        {
+          "id": 11,
+          "outcome": "missed",
+          "duration_seconds": 0.099636458
+        },
+        {
+          "id": 12,
+          "outcome": "killed",
+          "duration_seconds": 0.400771375
+        },
+        {
+          "id": 13,
+          "outcome": "missed",
+          "duration_seconds": 0.095365792
+        },
+        {
+          "id": 14,
+          "outcome": "killed",
+          "duration_seconds": 0.064781416
+        },
+        {
+          "id": 15,
+          "outcome": "killed",
+          "duration_seconds": 0.131139958
+        },
+        {
+          "id": 16,
+          "outcome": "killed",
+          "duration_seconds": 0.069125834
+        },
+        {
+          "id": 17,
+          "outcome": "missed",
+          "duration_seconds": 0.097268292
+        },
+        {
+          "id": 18,
+          "outcome": "killed",
+          "duration_seconds": 0.094382667
+        },
+        {
+          "id": 19,
+          "outcome": "killed",
+          "duration_seconds": 0.062676625
+        },
+        {
+          "id": 20,
+          "outcome": "killed",
+          "duration_seconds": 0.080747583
+        },
+        {
+          "id": 21,
+          "outcome": "missed",
+          "duration_seconds": 0.08667025
+        },
+        {
+          "id": 22,
+          "outcome": "missed",
+          "duration_seconds": 0.100643667
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.016348459,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.017609833,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.02394375,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.019225875,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 21,
+          "completed": 21,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.523487124,
+          "reflink_files": 1323,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "release",
+      "workload": "full",
+      "repeat": 1,
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513217-nDGP9g",
+      "wall_seconds": 19.76285912503954,
+      "report_seconds": 19.249921042,
+      "score": {
+        "scope": "all_discovered",
+        "killed": 12,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 54.54545454545455,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.072037417,
+      "summary": {
+        "killed": 12,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "killed",
+          "duration_seconds": 0.189666083
+        },
+        {
+          "id": 2,
+          "outcome": "killed",
+          "duration_seconds": 0.222673417
+        },
+        {
+          "id": 3,
+          "outcome": "killed",
+          "duration_seconds": 0.103955708
+        },
+        {
+          "id": 4,
+          "outcome": "missed",
+          "duration_seconds": 0.056647375
+        },
+        {
+          "id": 5,
+          "outcome": "killed",
+          "duration_seconds": 0.085551708
+        },
+        {
+          "id": 6,
+          "outcome": "missed",
+          "duration_seconds": 0.08215575
+        },
+        {
+          "id": 7,
+          "outcome": "missed",
+          "duration_seconds": 0.084811833
+        },
+        {
+          "id": 8,
+          "outcome": "missed",
+          "duration_seconds": 0.108725125
+        },
+        {
+          "id": 9,
+          "outcome": "killed",
+          "duration_seconds": 0.100276584
+        },
+        {
+          "id": 10,
+          "outcome": "missed",
+          "duration_seconds": 0.070139458
+        },
+        {
+          "id": 11,
+          "outcome": "missed",
+          "duration_seconds": 0.114634792
+        },
+        {
+          "id": 12,
+          "outcome": "killed",
+          "duration_seconds": 0.093629417
+        },
+        {
+          "id": 13,
+          "outcome": "missed",
+          "duration_seconds": 0.078127875
+        },
+        {
+          "id": 14,
+          "outcome": "killed",
+          "duration_seconds": 0.073282959
+        },
+        {
+          "id": 15,
+          "outcome": "killed",
+          "duration_seconds": 0.123464583
+        },
+        {
+          "id": 16,
+          "outcome": "killed",
+          "duration_seconds": 0.090364417
+        },
+        {
+          "id": 17,
+          "outcome": "missed",
+          "duration_seconds": 0.07848475
+        },
+        {
+          "id": 18,
+          "outcome": "killed",
+          "duration_seconds": 0.071566041
+        },
+        {
+          "id": 19,
+          "outcome": "killed",
+          "duration_seconds": 0.089159541
+        },
+        {
+          "id": 20,
+          "outcome": "killed",
+          "duration_seconds": 0.097978791
+        },
+        {
+          "id": 21,
+          "outcome": "missed",
+          "duration_seconds": 0.090561375
+        },
+        {
+          "id": 22,
+          "outcome": "missed",
+          "duration_seconds": 0.0680895
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0089875,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.009729208,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.016025667,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.010847333,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 21,
+          "completed": 21,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.435982207,
+          "reflink_files": 1323,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "release",
+      "workload": "focused",
+      "repeat": 1,
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513237-Juwaxl",
+      "wall_seconds": 2.1133610419929028,
+      "report_seconds": 2.072159666,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.074085583,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.078283
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.009007083,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0230025,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.021866209,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.011798,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "debug",
+      "workload": "focused",
+      "repeat": 1,
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513239-FDoEUB",
+      "wall_seconds": 24.076852458994836,
+      "report_seconds": 24.017336375,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.066829583,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.082045833
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.009954875,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.025755709,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.025858666,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.022102458,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "debug",
+      "workload": "focused",
+      "repeat": 2,
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513263-Smyeeq",
+      "wall_seconds": 23.11781950003933,
+      "report_seconds": 23.077815084,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.08008925,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.084774708
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.015250458,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.020621417,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.015865541,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.018733791,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "release",
+      "workload": "focused",
+      "repeat": 2,
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513286-gmlo66",
+      "wall_seconds": 2.2607368750032037,
+      "report_seconds": 2.222366459,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.089800292,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.084459834
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.010770375,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.01513825,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.022480083,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.014408625,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "release",
+      "workload": "focused",
+      "repeat": 3,
+      "command": [
+        "/path/to/mutie/target/release/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513288-rj2zVi",
+      "wall_seconds": 2.131548292003572,
+      "report_seconds": 2.098323792,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.05751425,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.089059292
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.010752125,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.014251833,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.020970875,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.015338041,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "comparison",
+      "mode": "debug",
+      "workload": "focused",
+      "repeat": 3,
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-profile/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-profile/reports/run-1792513290-dbUH81",
+      "wall_seconds": 23.114133875002153,
+      "report_seconds": 23.082449375,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.078908167,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.084072208
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.020266792,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.011547625,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.018776625,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.012126875,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "sha2_only_optimized",
+      "mode": "debug",
+      "workload": "focused",
+      "repeat": 1,
+      "command": [
+        "/tmp/mutie-bun-profile-debug-sha2-o3",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-sha2-experiment/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-sha2-experiment/reports/run-1792513464-4TMs4B",
+      "wall_seconds": 3.595149791915901,
+      "report_seconds": 2.583888084,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.090910292,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.101963167
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.010559666,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0116995,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.029383625,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.016856166,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "sha2_only_optimized",
+      "mode": "debug",
+      "workload": "focused",
+      "repeat": 2,
+      "command": [
+        "/tmp/mutie-bun-profile-debug-sha2-o3",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-sha2-experiment/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-sha2-experiment/reports/run-1792513467-t4tTXm",
+      "wall_seconds": 2.4246203750371933,
+      "report_seconds": 2.385021375,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.069791542,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.123917209
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.015943,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.011816333,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.013863416,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.012908459,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    },
+    {
+      "experiment": "sha2_only_optimized",
+      "mode": "debug",
+      "workload": "focused",
+      "repeat": 3,
+      "command": [
+        "/tmp/mutie-bun-profile-debug-sha2-o3",
+        "/tmp/mutie-bun-pp-is",
+        "--lang",
+        "bun",
+        "--timeout",
+        "5",
+        "--baseline-timeout",
+        "15",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-bun-overhead-sha2-experiment/reports",
+        "--include",
+        "src/main/isAlphanumeric.js"
+      ],
+      "report": "/tmp/mutie-bun-overhead-sha2-experiment/reports/run-1792513469-PQ6NEI",
+      "wall_seconds": 2.4392419999931008,
+      "report_seconds": 2.372136541,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "baseline_command_seconds": 0.066706875,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "outcome": "missed",
+          "duration_seconds": 0.087748584
+        }
+      ],
+      "workspace_metrics": {
+        "temporary_root": "/tmp",
+        "snapshot": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.024246875,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "baseline_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.014948958,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "discovery_reset": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.019622125,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_setup": {
+          "operations": 1,
+          "completed": 1,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.011058459,
+          "reflink_files": 63,
+          "copied_files": 0,
+          "copied_bytes": 0
+        },
+        "worker_reset": {
+          "operations": 0,
+          "completed": 0,
+          "failed": 0,
+          "interrupted": 0,
+          "duration_seconds": 0.0,
+          "reflink_files": 0,
+          "copied_files": 0,
+          "copied_bytes": 0
+        }
+      }
+    }
+  ],
+  "phase_profiles": {
+    "debug": [
+      {
+        "adapter_seconds": 9.19573125,
+        "calibration": {
+          "hash_seconds": 4.492491708,
+          "read_seconds": 0.016692667,
+          "recipe_seconds": 0.016950083
+        },
+        "debug_assertions": true,
+        "identity": {
+          "capture_bytes": 4194304,
+          "configuration_fingerprints": {},
+          "evidence_file_bytes": 8388608,
+          "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+          "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+          "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+          "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+          "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+          "runtime_version": "1.3.11",
+          "test_files": [
+            "test/callbacks.test.js",
+            "test/is.test.js",
+            "test/regressions.test.js"
+          ],
+          "timeout_millis": 15000
+        },
+        "phases": [
+          [
+            "original_validation",
+            0.050285959
+          ],
+          [
+            "isolated_copy",
+            0.016594958
+          ],
+          [
+            "copied_validation",
+            0.048412375
+          ],
+          [
+            "private_environment_setup",
+            0.000618542
+          ],
+          [
+            "runtime_identity_process",
+            0.029822458
+          ],
+          [
+            "identity_before",
+            4.73832775
+          ],
+          [
+            "observer_setup",
+            0.000447958
+          ],
+          [
+            "test_process",
+            0.098426792
+          ],
+          [
+            "identity_after",
+            4.194541583
+          ],
+          [
+            "evidence_classification",
+            0.005839167
+          ],
+          [
+            "diagnostics",
+            0.00127025
+          ],
+          [
+            "cleanup",
+            0.008615875
+          ]
+        ],
+        "repeat": 1,
+        "scope_seconds": 5.03041175,
+        "test_command_seconds": 0.09800425,
+        "native_summary": [
+          " 58 pass",
+          " 0 fail",
+          " 177 expect() calls",
+          "Ran 58 tests across 3 files. [86.00ms]"
+        ]
+      },
+      {
+        "adapter_seconds": 9.052694958,
+        "calibration": {
+          "hash_seconds": 4.441930833,
+          "read_seconds": 0.010627291,
+          "recipe_seconds": 0.012709084
+        },
+        "debug_assertions": true,
+        "identity": {
+          "capture_bytes": 4194304,
+          "configuration_fingerprints": {},
+          "evidence_file_bytes": 8388608,
+          "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+          "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+          "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+          "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+          "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+          "runtime_version": "1.3.11",
+          "test_files": [
+            "test/callbacks.test.js",
+            "test/is.test.js",
+            "test/regressions.test.js"
+          ],
+          "timeout_millis": 15000
+        },
+        "phases": [
+          [
+            "original_validation",
+            0.062031666
+          ],
+          [
+            "isolated_copy",
+            0.019780125
+          ],
+          [
+            "copied_validation",
+            0.061014375
+          ],
+          [
+            "private_environment_setup",
+            0.000490959
+          ],
+          [
+            "runtime_identity_process",
+            0.030660708
+          ],
+          [
+            "identity_before",
+            4.331222458
+          ],
+          [
+            "observer_setup",
+            0.000584459
+          ],
+          [
+            "test_process",
+            0.106981416
+          ],
+          [
+            "identity_after",
+            4.430966709
+          ],
+          [
+            "evidence_classification",
+            0.002638916
+          ],
+          [
+            "diagnostics",
+            0.000483209
+          ],
+          [
+            "cleanup",
+            0.004800875
+          ]
+        ],
+        "repeat": 2,
+        "scope_seconds": 5.03041175,
+        "test_command_seconds": 0.105821333,
+        "native_summary": [
+          " 58 pass",
+          " 0 fail",
+          " 177 expect() calls",
+          "Ran 58 tests across 3 files. [86.00ms]"
+        ]
+      },
+      {
+        "adapter_seconds": 9.218502541,
+        "calibration": {
+          "hash_seconds": 4.413407958,
+          "read_seconds": 0.014891959,
+          "recipe_seconds": 0.02259825
+        },
+        "debug_assertions": true,
+        "identity": {
+          "capture_bytes": 4194304,
+          "configuration_fingerprints": {},
+          "evidence_file_bytes": 8388608,
+          "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+          "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+          "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+          "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+          "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+          "runtime_version": "1.3.11",
+          "test_files": [
+            "test/callbacks.test.js",
+            "test/is.test.js",
+            "test/regressions.test.js"
+          ],
+          "timeout_millis": 15000
+        },
+        "phases": [
+          [
+            "original_validation",
+            0.044939792
+          ],
+          [
+            "isolated_copy",
+            0.01321575
+          ],
+          [
+            "copied_validation",
+            0.0414655
+          ],
+          [
+            "private_environment_setup",
+            0.000581041
+          ],
+          [
+            "runtime_identity_process",
+            0.030130959
+          ],
+          [
+            "identity_before",
+            4.422082958
+          ],
+          [
+            "observer_setup",
+            0.000342
+          ],
+          [
+            "test_process",
+            0.092419292
+          ],
+          [
+            "identity_after",
+            4.562902
+          ],
+          [
+            "evidence_classification",
+            0.004893041
+          ],
+          [
+            "diagnostics",
+            0.000445917
+          ],
+          [
+            "cleanup",
+            0.004088542
+          ]
+        ],
+        "repeat": 3,
+        "scope_seconds": 5.03041175,
+        "test_command_seconds": 0.092071125,
+        "native_summary": [
+          " 58 pass",
+          " 0 fail",
+          " 177 expect() calls",
+          "Ran 58 tests across 3 files. [72.00ms]"
+        ]
+      }
+    ],
+    "release": [
+      {
+        "adapter_seconds": 0.729449708,
+        "calibration": {
+          "hash_seconds": 0.253880417,
+          "read_seconds": 0.014816416,
+          "recipe_seconds": 0.001137875
+        },
+        "debug_assertions": false,
+        "identity": {
+          "capture_bytes": 4194304,
+          "configuration_fingerprints": {},
+          "evidence_file_bytes": 8388608,
+          "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+          "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+          "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+          "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+          "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+          "runtime_version": "1.3.11",
+          "test_files": [
+            "test/callbacks.test.js",
+            "test/is.test.js",
+            "test/regressions.test.js"
+          ],
+          "timeout_millis": 15000
+        },
+        "phases": [
+          [
+            "original_validation",
+            0.014150083
+          ],
+          [
+            "isolated_copy",
+            0.009017167
+          ],
+          [
+            "copied_validation",
+            0.021033083
+          ],
+          [
+            "private_environment_setup",
+            0.000433958
+          ],
+          [
+            "runtime_identity_process",
+            0.037143584
+          ],
+          [
+            "identity_before",
+            0.294767583
+          ],
+          [
+            "observer_setup",
+            0.000262458
+          ],
+          [
+            "test_process",
+            0.082300584
+          ],
+          [
+            "identity_after",
+            0.264305375
+          ],
+          [
+            "evidence_classification",
+            0.001023166
+          ],
+          [
+            "diagnostics",
+            0.000534042
+          ],
+          [
+            "cleanup",
+            0.004173042
+          ]
+        ],
+        "repeat": 1,
+        "scope_seconds": 0.310378375,
+        "test_command_seconds": 0.082059542,
+        "native_summary": [
+          " 58 pass",
+          " 0 fail",
+          " 177 expect() calls",
+          "Ran 58 tests across 3 files. [64.00ms]"
+        ]
+      },
+      {
+        "adapter_seconds": 0.796540666,
+        "calibration": {
+          "hash_seconds": 0.233160834,
+          "read_seconds": 0.01095575,
+          "recipe_seconds": 0.000768125
+        },
+        "debug_assertions": false,
+        "identity": {
+          "capture_bytes": 4194304,
+          "configuration_fingerprints": {},
+          "evidence_file_bytes": 8388608,
+          "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+          "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+          "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+          "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+          "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+          "runtime_version": "1.3.11",
+          "test_files": [
+            "test/callbacks.test.js",
+            "test/is.test.js",
+            "test/regressions.test.js"
+          ],
+          "timeout_millis": 15000
+        },
+        "phases": [
+          [
+            "original_validation",
+            0.00902775
+          ],
+          [
+            "isolated_copy",
+            0.016539375
+          ],
+          [
+            "copied_validation",
+            0.043007625
+          ],
+          [
+            "private_environment_setup",
+            0.000788542
+          ],
+          [
+            "runtime_identity_process",
+            0.042803708
+          ],
+          [
+            "identity_before",
+            0.283801333
+          ],
+          [
+            "observer_setup",
+            0.000329417
+          ],
+          [
+            "test_process",
+            0.106012375
+          ],
+          [
+            "identity_after",
+            0.289393917
+          ],
+          [
+            "evidence_classification",
+            0.000473541
+          ],
+          [
+            "diagnostics",
+            0.0002725
+          ],
+          [
+            "cleanup",
+            0.003832625
+          ]
+        ],
+        "repeat": 2,
+        "scope_seconds": 0.310378375,
+        "test_command_seconds": 0.105728583,
+        "native_summary": [
+          " 58 pass",
+          " 0 fail",
+          " 177 expect() calls",
+          "Ran 58 tests across 3 files. [92.00ms]"
+        ]
+      },
+      {
+        "adapter_seconds": 0.743224167,
+        "calibration": {
+          "hash_seconds": 0.271001125,
+          "read_seconds": 0.010049417,
+          "recipe_seconds": 0.000771833
+        },
+        "debug_assertions": false,
+        "identity": {
+          "capture_bytes": 4194304,
+          "configuration_fingerprints": {},
+          "evidence_file_bytes": 8388608,
+          "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+          "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+          "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+          "recipe_fingerprint": "sha256:a139a8eb6dea760cbb5bb0499a1615dc4ae143261a9956f7fb61b78b16ad76f0",
+          "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+          "runtime_version": "1.3.11",
+          "test_files": [
+            "test/callbacks.test.js",
+            "test/is.test.js",
+            "test/regressions.test.js"
+          ],
+          "timeout_millis": 15000
+        },
+        "phases": [
+          [
+            "original_validation",
+            0.023327833
+          ],
+          [
+            "isolated_copy",
+            0.018655292
+          ],
+          [
+            "copied_validation",
+            0.019400542
+          ],
+          [
+            "private_environment_setup",
+            0.000994958
+          ],
+          [
+            "runtime_identity_process",
+            0.033372417
+          ],
+          [
+            "identity_before",
+            0.276848333
+          ],
+          [
+            "observer_setup",
+            0.000333167
+          ],
+          [
+            "test_process",
+            0.084083458
+          ],
+          [
+            "identity_after",
+            0.2777685
+          ],
+          [
+            "evidence_classification",
+            0.000793458
+          ],
+          [
+            "diagnostics",
+            0.000469084
+          ],
+          [
+            "cleanup",
+            0.00698175
+          ]
+        ],
+        "repeat": 3,
+        "scope_seconds": 0.310378375,
+        "test_command_seconds": 0.083845917,
+        "native_summary": [
+          " 58 pass",
+          " 0 fail",
+          " 177 expect() calls",
+          "Ran 58 tests across 3 files. [67.00ms]"
+        ]
+      }
+    ]
+  }
+}

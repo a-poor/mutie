@@ -240,6 +240,11 @@ checkout now passes under the narrow layout extension recorded in
 `benchmarks/bun-unchanged-layout.md`, matching the adapted inventory and outcomes.
 Implicit ESM is JS-only with static imports/exports; declaration/packaging files
 remain outside executable imports and hidden tests are rejected. See `benchmarks/bun-shared-runs.md`.
+`benchmarks/bun-feedback-profile.md` records a debug/release comparison with
+matching identities/outcomes and test-only adapter phases: executable SHA-256
+checks dominate, not copying. Prefer release builds for real feedback. A temporary
+sha2 optimization experiment changed no default settings or byte-verification
+rules; `src/bun/profile.rs` remains an ignored opt-in measurement probe.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

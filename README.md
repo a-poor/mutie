@@ -150,6 +150,11 @@ import/export syntax; root/dist declarations and ancillary packaging files are
 fingerprinted but cannot be imported by audited runtime files. Hidden packaging
 tests and CommonJS runtime files remain rejected.
 
+For real Bun mutation runs, prefer `cargo build --release` and
+`target/release/mutie PATH --lang bun`. The [execution profile](benchmarks/bun-feedback-profile.md)
+measured a 22-candidate run at 306.65s in debug versus 19.76s in release with
+matching outcomes; executable fingerprinting dominates debug overhead.
+
 ## Try it
 
 Building Mutie requires Rust/Cargo. Testing a Go project also requires Go 1.24+

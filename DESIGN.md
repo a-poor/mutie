@@ -1753,3 +1753,11 @@ layout support was separate from that adaptation. The
 JS ESM without a package type plus opaque ancillary packaging and root/dist
 `.d.ts` files. Runtime imports still resolve only to audited source/test `.js`/`.ts`
 files; hidden packaging tests and CommonJS runtime files remain errors.
+
+Bun [execution profiling](benchmarks/bun-feedback-profile.md) attributes most
+adapter overhead to full executable SHA-256 verification before and after each
+command. A release build and a temporary sha2-only compiler experiment preserve
+identical outcomes and identities while greatly reducing elapsed time. Test-only
+phase timers are compiled out of production; no cache or reduced validation is
+introduced. Real-run timings should distinguish build mode and test-command time
+from complete feedback time before motivating further execution changes.
