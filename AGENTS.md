@@ -251,6 +251,16 @@ checks dominate, not copying. Prefer release builds for real feedback. Developme
 and test profiles optimize only the sha2 dependency, preserving byte-verification
 rules; `src/bun/profile.rs` remains an ignored opt-in measurement probe.
 
+Python/pytest is the next audited scope, still Planned with no CLI adapter.
+`benchmarks/python-initial-scope.md` pins CPython 3.14.7 / pytest 9.0.2 and records
+39 native probes plus five evidence-rejection controls. Adapted Inflection runs
+467 tests; a manual Unicode-digit regex survivor is killed with a 468-test
+stronger baseline. This is not an implemented operator or scored run. A fresh
+pycache prefix defeats a demonstrated stale-cache false result; `-B` alone does
+not. The prototype intentionally retains two unsafe classifications: unittest
+setup as a body failure and late atexit failure as passing. Do not reuse it for
+scores. Process-lifetime evidence and a strict scope validator are the next gates.
+
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,
 operator, or UI refinement because it is an unchecked backlog item. Judge progress

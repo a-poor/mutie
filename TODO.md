@@ -46,13 +46,19 @@ review/policies and scored cleanup pass. TypeScript and JavaScript are independe
 JavaScript now has unchanged pp-is layout acceptance following the documented adaptation. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
+Python/pytest is now the next scope audit: CPython 3.14.7 / pytest 9.0.2,
+synthetic fixtures and an adapted Inflection runtime suite. The
+[native audit](benchmarks/python-initial-scope.md) proves a stronger-test finding
+and exposes stale-bytecode, unittest phase and late-atexit boundaries. Python
+remains Planned; process-lifetime failure evidence is the next correctness gate.
+
 ## Target support tracking
 
 [SUPPORT.md](SUPPORT.md) tracks maturity, scope and evidence independently for each
 language/test runner. The planned targets below are explicit roadmap targets;
 Vitest and Node have independently validated JavaScript and TypeScript scopes;
 Bun also has independently validated JavaScript and TypeScript scopes; Python's
-initial scope remains undecided.
+initial scope proposal and remaining gates are recorded below.
 
 - [x] Define support levels and record current Go and Rust evidence and limits.
 - [x] Define and implement the first JavaScript/TypeScript + Vitest slice.
@@ -65,6 +71,23 @@ initial scope remains undecided.
 
 Each new slice starts with a fixture and a real validation project, then advances
 through the support gates recorded in the ledger. The selected Vitest objective is scoped below.
+
+## Selected Python / pytest scope audit
+
+- [x] Pin an isolated Python/pytest environment and retain reproducible native probes.
+- [x] Audit parametrization, setup/call/teardown, collection errors, incomplete runs,
+  warnings, exits and conservative attribution; retain unittest/atexit negative controls.
+- [x] Demonstrate owned application imports and a stale-bytecode control fixed by
+  a fresh cache prefix.
+- [x] Run adapted Inflection's 467-test baseline and a manual Unicode-digit
+  survivor → 468-test stronger baseline → assertion-failure loop. This is
+  direct audit evidence, not automatic discovery or a score.
+- [ ] Add process-lifetime evidence for late cleanup and strict completion/replay
+  validation before implementing scored execution.
+- [ ] Validate cancellation, bounded captures, descendants and resource limits.
+- [ ] Implement strict project/config/import scope, discovery and isolated baseline;
+  select real-project acceptance within the exact supported test recipe.
+- [ ] Connect scored runs, focused reruns and review only after those gates pass.
 
 ## Selected first Bun test-runner slice
 
@@ -120,8 +143,8 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Review Composer's four remaining survivors and queue timeout: four new
   behavioral tests and queue wait preconditions kill all five in a full-suite
   focused rerun. See [findings](benchmarks/bun-composer-survivors.md).
-- [ ] Reassess the next objective after scoped Bun validation: useful survivor
-  review before broader scope.
+- [x] Reassess after scoped Bun validation and Composer review: select the
+  Python/pytest feasibility audit before further Bun scope expansion.
 
 ## Validated first Node test-runner slice
 

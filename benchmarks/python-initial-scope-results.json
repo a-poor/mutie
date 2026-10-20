@@ -1,0 +1,1551 @@
+{
+  "recorded": "2026-10-20",
+  "mutie_base_commit": "7e1d001",
+  "platform": "macOS arm64",
+  "environment": {
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "dependencies": {
+      "pytest": "9.0.2",
+      "pluggy": "1.7.0",
+      "packaging": "26.3",
+      "iniconfig": "2.3.1",
+      "Pygments": "2.21.0"
+    }
+  },
+  "project_commit": "88eefaacf7d0caaa701af7c8ab2d0ab3f17086f1",
+  "project_preserved": true,
+  "original_project_hashes": {
+    "LICENSE": "9e9f9b4b2e7543ad1486f1328bf9ec50e5a5e2bb9caceb59652496dd61e64133",
+    "requirements.txt": "3e07bb9af84e0883d95ff568abc44fa3d501f606f7293aeb534d0c0b6e94438e",
+    "pyproject.toml": "8c514dfd4fbaa87053481802d096ec25a1a38bf4d8c131a3dc40e2a68563f537",
+    "MANIFEST.in": "853ecc90d436ab8d2101abed0a3c2d680b7d0c683bfcbf21aac6d6def755a595",
+    ".editorconfig": "8c4aa8d6df14f0355b625f1728fabea61374c549357374ae217191cd3a773496",
+    "setup.py": "45dd7e6e530434ee479609c01209e30cb7c1293f03aab1558f853d5793434b3a",
+    ".gitignore": "1fda7cc5d7a7147083547856a3129fdcc9871f8b04334fb2110d2c4ca05d2b13",
+    "tox.ini": "2e028d386f3e397e90166f17efc0fee251f283220eee191747bc84ca17ba3a99",
+    "setup.cfg": "6bcf00e929ecd365bdce62ec4af2fe854bfe67988beab103c2c0abe853da4c6f",
+    "README.rst": "cd1dc3368b42f8dc5b35db896fc6d52b8bb5925267ac122e118becf21f15a54c",
+    "test_inflection.py": "82be5a5d07c6dd244a68b6f41a61a1603172e688cb38ff9807e3f47850f02548",
+    ".travis.yml": "bbffc265ea5b7ffd777de2d7526e90d093a262f3f26788554c7731cd0393daaf",
+    "inflection/__init__.py": "b6b089383f812e6986f917a3c689722c54b8a69f04ded2ac32b627cbcfdaf35e",
+    "inflection/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/index.rst": "faefd7372d9d8d638318c5039edc16780804c56755611e9858e4f56ace561cf6",
+    "docs/Makefile": "bda46b9bf49ebbde00485891036a07c5bee063c075db0ade1b4e6055c5d0f963",
+    "docs/conf.py": "efe390c1f8f8c36ba1d4b2cdefb7b87fc7ed7804407c53e67f3d3019971c5da2"
+  },
+  "native_probes": 39,
+  "evidence_rejection_controls": 5,
+  "known_misclassifications": [
+    "unittest_setup_blindspot",
+    "atexit_blindspot"
+  ],
+  "raw_results_path": "/tmp/mutie-pytest-audit-final/results.json",
+  "raw_results_sha256": "55cdaea8722f2faaba2105d518a16e8f2c1378a39451973abf6488a8fde62ad4",
+  "probe_sha256": {
+    "benchmarks/fixtures/pytest-audit/audit.py": "0350cf467628cca7a3402b9eb169240e21284216207ea38fb307ce9a1687c08c",
+    "benchmarks/fixtures/pytest-audit/driver.py": "98c86e6e90d6717bc2066ca883783cd4700bf72b1ae8a1f3f6a8b83d84707d9d",
+    "benchmarks/fixtures/pytest-audit/inflection-stronger.py": "bec56b1221e279a0eabcae8f38d2a77817f9dd8c43fcb257d555feea7e1e0ac8"
+  },
+  "records": [
+    {
+      "name": "pass",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.4935954579850659,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/pass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/pass/project",
+        "/tmp/mutie-pytest-audit-final/pass/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/pass/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "dffdb7f52407e658eba160612b8b5ac7f0c341aafb0e112ba50d4aa3e37d6938",
+      "log_sha256": "4bcefcc9f6c645923b9993ccf73ad92e6b400ca25458ea14e095857fc2131342",
+      "sorted_inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe"
+    },
+    {
+      "name": "assertion",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.2841495409375057,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/assertion/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/assertion/project",
+        "/tmp/mutie-pytest-audit-final/assertion/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/assertion/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "676bc19cd51190c1b209fe23e0e0c4db56e52faa06ddf08d43efa81feaf56268",
+      "log_sha256": "c1ab6a829799e66ad6eebc0e3b1f08eaa9ef318dbf401b57732682b20e66e56e",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "explicit_fail",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.3807159999851137,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/explicit_fail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/explicit_fail/project",
+        "/tmp/mutie-pytest-audit-final/explicit_fail/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/explicit_fail/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "Failed": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "Failed",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "405737ab7f13b6c61f2632acf59b24b88b8eb5d53cbab6617ee11cdbed7849f6",
+      "log_sha256": "68973ac9a3d0265caaf431de54ed75bc9808cb4c6657fcac1cdeca5b0b4f70a0",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "runtime_exception",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.7557729580439627,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/runtime_exception/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/runtime_exception/project",
+        "/tmp/mutie-pytest-audit-final/runtime_exception/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/runtime_exception/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "ValueError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "ValueError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "66fe89ea64077909c9810a4270b76c67139013f48487fa8fea2a39b1ef17dd6e",
+      "log_sha256": "c64b581210e91d602847c161c382b739874c3ec1b2f752203135c105440a1d65",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "setup",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 2.3073264999547973,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/setup/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/setup/project",
+        "/tmp/mutie-pytest-audit-final/setup/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/setup/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "setup",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "8ae719fd01ab1919ad59092de215fa27ce4ab3c5c85dacc08f23250a6aec3836",
+      "log_sha256": "a4128b7b4fdd0a938bdc5abda35b1225e82815b1944e5b763c1476c8177e442e",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "teardown",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.2543142919894308,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/teardown/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/teardown/project",
+        "/tmp/mutie-pytest-audit-final/teardown/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/teardown/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "teardown",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "99e7cb2d1f41a4765fff70cef5bbf83641143401538fa27b8cb25a602f414a3f",
+      "log_sha256": "74dbec4888e6b1075c95680524d0de50e92ea146b6f2da86eb86002bc93825d5",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "mixed",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.6049717080313712,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/mixed/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/mixed/project",
+        "/tmp/mutie-pytest-audit-final/mixed/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/mixed/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 2
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "teardown",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "5987197ad76826b8cf7dd9aef38f014dcb009d108ad245e2e7f1f93556a3a682",
+      "log_sha256": "96bc66c68b4c263433b5558764738e6f071ab191a499986233542cf5be19b817",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "finalizer",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.5565989169990644,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/finalizer/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/finalizer/project",
+        "/tmp/mutie-pytest-audit-final/finalizer/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/finalizer/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1,
+        "RuntimeError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_bad",
+          "when": "teardown",
+          "outcome": "failed",
+          "exception": "RuntimeError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "5034d6595a31eabd06c520cafb44ad9b6101f14b620712dfd70b0d59ccd08ce2",
+      "log_sha256": "2b0f1509a304b7497f33ef538b459262e1801f4ce94b14850d2dc9ac016c8c89",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "collection",
+      "classification": "error",
+      "exit_code": 2,
+      "wall_seconds": 1.491262625087984,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/collection/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/collection/project",
+        "/tmp/mutie-pytest-audit-final/collection/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/collection/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 0,
+      "inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "phase_counts": {},
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "a714c31facbb78cb8e84ca1d49bbaf44e2ebb556804fcf678677549962110e8e",
+      "log_sha256": "fdaf955eb550d373856e1caf862c14d54df772b78931bc20e6c500dbf91b76b2",
+      "sorted_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "syntax",
+      "classification": "error",
+      "exit_code": 2,
+      "wall_seconds": 1.5278264579828829,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/syntax/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/syntax/project",
+        "/tmp/mutie-pytest-audit-final/syntax/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/syntax/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 0,
+      "inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "phase_counts": {},
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "c5fe3c16357161992779c5154679c55779cb508a3806d4e43713e42fbd89eef0",
+      "log_sha256": "f88a1c312cd8606d9d809b36f4c95f243abbb4cd399e8c70aec4aaa0e7b27e8d",
+      "sorted_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "import",
+      "classification": "error",
+      "exit_code": 2,
+      "wall_seconds": 1.360941041028127,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/import/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/import/project",
+        "/tmp/mutie-pytest-audit-final/import/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/import/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 0,
+      "inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "phase_counts": {},
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "f9ff716ec8c5217dbc504ff8280b6112c9cba2a0483b1e816cf11f8ea4f8cfe7",
+      "log_sha256": "38875044772c70da5b21ea73b86d7c826f6cd61c81170884fcff4db314094aa1",
+      "sorted_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "empty",
+      "classification": "error",
+      "exit_code": 5,
+      "wall_seconds": 1.2795981250237674,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/empty/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/empty/project",
+        "/tmp/mutie-pytest-audit-final/empty/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/empty/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 0,
+      "inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "phase_counts": {},
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "9c99e61df23d3642ba2a6efde8b5a48ffdb7d6d0ac223d2aed45c8860dfea256",
+      "log_sha256": "a6fc53a5cef0fe8278c459c532a5e372bbe2dd65e4c365a7d7757a210299799f",
+      "sorted_inventory_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "skip",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.1978200830053538,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/skip/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/skip/project",
+        "/tmp/mutie-pytest-audit-final/skip/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/skip/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "2e245831090d48eefd156841ffb688b240c5f628a750c82f3c787a885c8d2667",
+      "phase_counts": {
+        "setup:skipped": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "810852fda2ff8c8381f005f7746a43d031cf2ff762e310a5824bc8c3024abeda",
+      "log_sha256": "b0d8897b4ba921fd8a523763af2ce7f1d9adc1284d8396b9c33b8abdca74b30c",
+      "sorted_inventory_sha256": "2e245831090d48eefd156841ffb688b240c5f628a750c82f3c787a885c8d2667"
+    },
+    {
+      "name": "xfail",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.2811353330034763,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/xfail/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/xfail/project",
+        "/tmp/mutie-pytest-audit-final/xfail/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/xfail/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:skipped": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "2e71224e55e6d3c94f4bd155a00ff2073edb6298bc078108d3856c295b22a2c0",
+      "log_sha256": "971e435540a4a08b6747382be37e94758e6edc81e8fd6bf56d64fa4f424be50d",
+      "sorted_inventory_sha256": "97c5a98aa060303a7dfbb29b8c55b73e94b226ccc19ae4cbd1e765bc639cdc7f"
+    },
+    {
+      "name": "xpass",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.2735357920173556,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/xpass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/xpass/project",
+        "/tmp/mutie-pytest-audit-final/xpass/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/xpass/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "9882f7de9dc3f1b6081afa00ffecc09eee42857707bc5c93fafe821ed9d69e5a",
+      "log_sha256": "fa00e935bccefd1d05e4cbdfeeb05fd3d0e6fb449b759cd464e97c6bf96b4b7a",
+      "sorted_inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe"
+    },
+    {
+      "name": "strict_xpass",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.3238969999365509,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/strict_xpass/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/strict_xpass/project",
+        "/tmp/mutie-pytest-audit-final/strict_xpass/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/strict_xpass/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "null": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_ok",
+          "when": "call",
+          "outcome": "failed",
+          "exception": null,
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "23d4101a9425eae62d25ab2f06c2b14a83ec06b194bcaca954400584253e1850",
+      "log_sha256": "ce50cd36b4151edb9432423c39920037e956c1b1a064889a78045d0bc09c4a83",
+      "sorted_inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe"
+    },
+    {
+      "name": "parametrized",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.285928083001636,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/parametrized/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/parametrized/project",
+        "/tmp/mutie-pytest-audit-final/parametrized/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/parametrized/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 3,
+      "inventory_sha256": "ea56a07131dab51be55707e5e5f8534977f73fb08c5d68ae2e7c9899ec3f61ff",
+      "phase_counts": {
+        "setup:passed": 3,
+        "call:passed": 3,
+        "teardown:passed": 3
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "33f3ee03908dd5757ccaa3955b80ec9a831aa89b520a87bd4a53b7caa7192db1",
+      "log_sha256": "e0a6ea218ea5d725ce7272da8d68d45a029e489423e03af6960c7bff0f7fe414",
+      "sorted_inventory_sha256": "ea56a07131dab51be55707e5e5f8534977f73fb08c5d68ae2e7c9899ec3f61ff"
+    },
+    {
+      "name": "parametrized_failure",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.3259944999590516,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/parametrized_failure/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/parametrized_failure/project",
+        "/tmp/mutie-pytest-audit-final/parametrized_failure/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/parametrized_failure/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 3,
+      "inventory_sha256": "078d40c46e8e40854c694eb939e212c1d5d5b6c09bd394c0a2a75483fd05ada8",
+      "phase_counts": {
+        "setup:passed": 3,
+        "call:passed": 2,
+        "teardown:passed": 3,
+        "call:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_values[0]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "fb7117350f694d43f8f6cadcb1349d3244afffacddbf0a96a602c82d5ca9a9ef",
+      "log_sha256": "a70efe11ead089f1708fdbf23311c7edb0f0f3b685310c7555059ef580c56b96",
+      "sorted_inventory_sha256": "85cc46c445330e182e99c9d7223d7aa9d98ed2e8371c6892a09301c856c046a1"
+    },
+    {
+      "name": "early_exit",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.2006240410264581,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/early_exit/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/early_exit/project",
+        "/tmp/mutie-pytest-audit-final/early_exit/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/early_exit/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "e0f18d2558c94a3b1adce1f84531518eac4ebccd4345cbb91273d0425d6b6e4e",
+      "phase_counts": {
+        "setup:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "674de63f3174f3a7daa9222e5a81cb27fac3f6c8e40f1a5f105417b2a7bf3ea0",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sorted_inventory_sha256": "e0f18d2558c94a3b1adce1f84531518eac4ebccd4345cbb91273d0425d6b6e4e"
+    },
+    {
+      "name": "system_exit",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.279556000023149,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/system_exit/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/system_exit/project",
+        "/tmp/mutie-pytest-audit-final/system_exit/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/system_exit/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "e0f18d2558c94a3b1adce1f84531518eac4ebccd4345cbb91273d0425d6b6e4e",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "SystemExit": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_exit",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "SystemExit",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "53558f5cd13a240377121fcd779f67d53027457f412b38ae932d6647c956a72b",
+      "log_sha256": "3a600b9ce846a9728fa3d61a2e18d45ba830b4448427c63b6669c676facb44e7",
+      "sorted_inventory_sha256": "e0f18d2558c94a3b1adce1f84531518eac4ebccd4345cbb91273d0425d6b6e4e"
+    },
+    {
+      "name": "thread_error",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.393934875028208,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/thread_error/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/thread_error/project",
+        "/tmp/mutie-pytest-audit-final/thread_error/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/thread_error/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "1aa04e832711c4fc44e22b749643677f7287a784f3dddf0334b8ce21b8c2a245",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "2a4b484b9e65806b874bb9ed9fcae22eb5ae1dfdf6f27d664f66aedb109374a5",
+      "log_sha256": "db71026ef24e44cc9cbee4670781ff0dc18c4d73d3418ddbf856c67772fc090a",
+      "sorted_inventory_sha256": "1aa04e832711c4fc44e22b749643677f7287a784f3dddf0334b8ce21b8c2a245"
+    },
+    {
+      "name": "unraisable",
+      "classification": "error",
+      "exit_code": 0,
+      "wall_seconds": 1.3942373750032857,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/unraisable/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/unraisable/project",
+        "/tmp/mutie-pytest-audit-final/unraisable/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/unraisable/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "26c494009ae501aa8eddc3debb4b044673e606e47a41600da7a4ae37f9fcafa4",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "b04bda8790f8d908ea9dad99843f577a1b7fee2e355db5a2c8d0c6b226827b9a",
+      "log_sha256": "edef4f273cdab7b1557f5505584f8feec20b2ea9389b1a6db0c05656c0c0dcf7",
+      "sorted_inventory_sha256": "26c494009ae501aa8eddc3debb4b044673e606e47a41600da7a4ae37f9fcafa4"
+    },
+    {
+      "name": "timeout",
+      "classification": "timeout",
+      "exit_code": -9,
+      "wall_seconds": 2.0125271669821814,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/timeout/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/timeout/project",
+        "/tmp/mutie-pytest-audit-final/timeout/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/timeout/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "e2896ef49fc27b5a41322ae2b19fd92e36d76e5f98612c910aaf0a2d9c2203d4",
+      "phase_counts": {
+        "setup:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "94030b384ff03904eec85022d0ff0dd67f88f8e675da4039c03eac4fe8115037",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sorted_inventory_sha256": "e2896ef49fc27b5a41322ae2b19fd92e36d76e5f98612c910aaf0a2d9c2203d4"
+    },
+    {
+      "name": "session_teardown",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.3645457089878619,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/session_teardown/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/session_teardown/project",
+        "/tmp/mutie-pytest-audit-final/session_teardown/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/session_teardown/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_ok",
+          "when": "teardown",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "ba44b2946e886fc9810c66a52f0449d3a9452c52ec8e7679d517006b589f1757",
+      "log_sha256": "d5ede1e4087a96f75c4aa56d4729c4b05c90c9f4eae5845699366cc0f33ce355",
+      "sorted_inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe"
+    },
+    {
+      "name": "module_setup",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 1.336181165999733,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/module_setup/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/module_setup/project",
+        "/tmp/mutie-pytest-audit-final/module_setup/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/module_setup/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe",
+      "phase_counts": {
+        "setup:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_ok",
+          "when": "setup",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "4b61834fea5a98227b72ba06749f6fe52bf980b6c3ff02f09571c87b29836901",
+      "log_sha256": "d5f923c4512bafd295a1081abe7627ddfa8baea25818028aab432d51d5507b5a",
+      "sorted_inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe"
+    },
+    {
+      "name": "unittest_setup_blindspot",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.3580979169346392,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/unittest_setup_blindspot/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/unittest_setup_blindspot/project",
+        "/tmp/mutie-pytest-audit-final/unittest_setup_blindspot/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/unittest_setup_blindspot/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "b29b5214b4d831551f62ec469d87927f21dda2c3d9afc2959277984dc3eab75b",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::TestExample::test_ok",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {},
+      "evidence_sha256": "7dc38744d5d7c68f8355c877406feec72962881b61c708809a743a0fccfa3981",
+      "log_sha256": "41abbccd6bcea85674797046ad0527b07471ec1cf51f042cd67cc2a586bf4afb",
+      "sorted_inventory_sha256": "b29b5214b4d831551f62ec469d87927f21dda2c3d9afc2959277984dc3eab75b"
+    },
+    {
+      "name": "atexit_blindspot",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.2821126250782982,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/atexit_blindspot/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/atexit_blindspot/project",
+        "/tmp/mutie-pytest-audit-final/atexit_blindspot/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/atexit_blindspot/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {},
+      "evidence_sha256": "fa2c1806dd179b958d86383c041451b9818b341e24d23b45ea8ab66624385842",
+      "log_sha256": "080020f3ebe3f9893310e4d99f39e5ae278ab94a1857d62e799cd119446719bf",
+      "sorted_inventory_sha256": "6b7bdbd872b49523d9dd70bdef9698e2fe314825042c23159dee0f505ac2d9fe"
+    },
+    {
+      "name": "stale-prefix-False",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 0.39288016594946384,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/stale-prefix-False/project",
+        "/tmp/mutie-pytest-audit-final/stale-prefix-False/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/stale-prefix-False/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "709d5d9c11648ab5afbeb0ee94e8c9e48fdf466264e3248c4e1b049ba8f49995",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:failed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_subject.py::test_flag",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {
+        "subject": "/tmp/mutie-pytest-audit-final/stale-prefix-False/project/subject.py"
+      },
+      "evidence_sha256": "6349ea80b8ce3d3899f3c576863e9cc5f071a3cb6213e4c632f63347f48090c5",
+      "log_sha256": "4f33419094d67f08344c0da07b3985d9e924bb4671229de526add50484148788",
+      "sorted_inventory_sha256": "709d5d9c11648ab5afbeb0ee94e8c9e48fdf466264e3248c4e1b049ba8f49995"
+    },
+    {
+      "name": "stale-prefix-True",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.2770070410333574,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/stale-prefix-True/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/stale-prefix-True/project",
+        "/tmp/mutie-pytest-audit-final/stale-prefix-True/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/stale-prefix-True/pytest.ini",
+        "test_subject.py"
+      ],
+      "collected": 1,
+      "inventory_sha256": "709d5d9c11648ab5afbeb0ee94e8c9e48fdf466264e3248c4e1b049ba8f49995",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "subject": "/tmp/mutie-pytest-audit-final/stale-prefix-True/project/subject.py"
+      },
+      "evidence_sha256": "5456211fa91617d3ce6be1c29127d7f297187c8905e663707915b7294225fdee",
+      "log_sha256": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+      "sorted_inventory_sha256": "709d5d9c11648ab5afbeb0ee94e8c9e48fdf466264e3248c4e1b049ba8f49995"
+    },
+    {
+      "name": "fixture-baseline",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.4045418340247124,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/fixture-baseline/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/fixture-baseline/project",
+        "/tmp/mutie-pytest-audit-final/fixture-baseline/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/fixture-baseline/pytest.ini",
+        "."
+      ],
+      "collected": 1,
+      "inventory_sha256": "1037af120b0d6cf6af4e70921b232a9766ed49948cb1a0ee10b51ac0a3eaf6b1",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "subject": "/tmp/mutie-pytest-audit-final/fixture-baseline/project/subject.py"
+      },
+      "evidence_sha256": "f3df4d5c16edebc42ae3694c2803ffbc58e9f6e3abae108adfd66d4be832580e",
+      "log_sha256": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+      "sorted_inventory_sha256": "1037af120b0d6cf6af4e70921b232a9766ed49948cb1a0ee10b51ac0a3eaf6b1"
+    },
+    {
+      "name": "fixture-survivor",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.3834696249105036,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/fixture-survivor/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/fixture-survivor/project",
+        "/tmp/mutie-pytest-audit-final/fixture-survivor/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/fixture-survivor/pytest.ini",
+        "."
+      ],
+      "collected": 1,
+      "inventory_sha256": "1037af120b0d6cf6af4e70921b232a9766ed49948cb1a0ee10b51ac0a3eaf6b1",
+      "phase_counts": {
+        "setup:passed": 1,
+        "call:passed": 1,
+        "teardown:passed": 1
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "subject": "/tmp/mutie-pytest-audit-final/fixture-survivor/project/subject.py"
+      },
+      "evidence_sha256": "671069cba3fef18ec2b3136410ef5ba519c680bcedf41836879e32f2e3413b23",
+      "log_sha256": "bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3",
+      "sorted_inventory_sha256": "1037af120b0d6cf6af4e70921b232a9766ed49948cb1a0ee10b51ac0a3eaf6b1"
+    },
+    {
+      "name": "fixture-strong-baseline",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.2811695829732344,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/fixture-strong-baseline/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/fixture-strong-baseline/project",
+        "/tmp/mutie-pytest-audit-final/fixture-strong-baseline/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/fixture-strong-baseline/pytest.ini",
+        "."
+      ],
+      "collected": 2,
+      "inventory_sha256": "f62a23e0b4e4ded1d2ea1951e5b230d5300dafec3183607735a203d71becd6d8",
+      "phase_counts": {
+        "setup:passed": 2,
+        "call:passed": 2,
+        "teardown:passed": 2
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "subject": "/tmp/mutie-pytest-audit-final/fixture-strong-baseline/project/subject.py"
+      },
+      "evidence_sha256": "42b6129edcb350daecdb05f10af80dacc23e0a91476b0da669a00f92363b11f5",
+      "log_sha256": "fcd476841e8af121ff907e81a92a59579b64c007b70cb79f9d096806f703fc7e",
+      "sorted_inventory_sha256": "f62a23e0b4e4ded1d2ea1951e5b230d5300dafec3183607735a203d71becd6d8"
+    },
+    {
+      "name": "fixture-strong-kill",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.4473846249748021,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/fixture-strong-kill/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/fixture-strong-kill/project",
+        "/tmp/mutie-pytest-audit-final/fixture-strong-kill/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/fixture-strong-kill/pytest.ini",
+        "."
+      ],
+      "collected": 2,
+      "inventory_sha256": "f62a23e0b4e4ded1d2ea1951e5b230d5300dafec3183607735a203d71becd6d8",
+      "phase_counts": {
+        "setup:passed": 2,
+        "call:failed": 1,
+        "teardown:passed": 2,
+        "call:passed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_stronger.py::test_enabled",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {
+        "subject": "/tmp/mutie-pytest-audit-final/fixture-strong-kill/project/subject.py"
+      },
+      "evidence_sha256": "8adb4618e518d9d6ba3461ee5e3f8a0d0972e4de988d2166c774c80b06b9dbd1",
+      "log_sha256": "ebc4ab9e7032f7639be682ee02fc31b695a9434ed86f745fa0d0e7e3b18e5191",
+      "sorted_inventory_sha256": "f62a23e0b4e4ded1d2ea1951e5b230d5300dafec3183607735a203d71becd6d8"
+    },
+    {
+      "name": "inflection-baseline",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.5571081669768319,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/inflection-baseline/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/inflection-baseline/project",
+        "/tmp/mutie-pytest-audit-final/inflection-baseline/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/inflection-baseline/pytest.ini",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules"
+      ],
+      "collected": 467,
+      "inventory_sha256": "1b8b19e9b7059ab79024550c979570b5e7164f80d66da3c328318f90ef5a42ea",
+      "phase_counts": {
+        "setup:passed": 467,
+        "call:passed": 467,
+        "teardown:passed": 467
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "inflection": "/tmp/mutie-pytest-audit-final/inflection-baseline/project/inflection/__init__.py"
+      },
+      "evidence_sha256": "80b9202a77ab85e4e157b6ec61b28b24f7f671cff7a59a3d590282ab04f3e35e",
+      "log_sha256": "1257e231b60d68151ecb8c8e6b7ed3a0583d278d842b58087ccf5493c6fb529f",
+      "sorted_inventory_sha256": "21e619fa2d2483e49a51ca0946e236649bd971e61040225f878bd243ad9b7426"
+    },
+    {
+      "name": "inflection-boolean",
+      "classification": "error",
+      "exit_code": 1,
+      "wall_seconds": 2.1325919170631096,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/inflection-boolean/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/inflection-boolean/project",
+        "/tmp/mutie-pytest-audit-final/inflection-boolean/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/inflection-boolean/pytest.ini",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules"
+      ],
+      "collected": 467,
+      "inventory_sha256": "bd7509ea271807a3a6d654bddceb3d6684bdaf6cb37d6927434cc137b1554c5f",
+      "phase_counts": {
+        "setup:passed": 467,
+        "call:passed": 459,
+        "teardown:passed": 467,
+        "call:failed": 8
+      },
+      "failure_exceptions": {
+        "RecursionError": 6,
+        "UnexpectedException": 2
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_camelize[Product-product]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "RecursionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_camelize[SpecialGuest-special_guest]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "RecursionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_camelize[ApplicationController-application_controller]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "RecursionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_camelize[Area51Controller-area51_controller]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "RecursionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_camelize_with_lower_downcases_the_first_letter",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "RecursionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_camelize_with_underscores",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "RecursionError",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "inflection/__init__.py::inflection.camelize",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "UnexpectedException",
+          "xfail": false
+        },
+        {
+          "event": "phase",
+          "node": "inflection/__init__.py::inflection.underscore",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "UnexpectedException",
+          "xfail": false
+        }
+      ],
+      "imports": {
+        "inflection": "/tmp/mutie-pytest-audit-final/inflection-boolean/project/inflection/__init__.py"
+      },
+      "evidence_sha256": "f9d1cdbad43ce52e264f7d7b64b063d846c9b8e32e2f8ba94ae2f3c4ed7b2fff",
+      "log_sha256": "45ed9503f34471886198a9cb2823a5c01e0c99f276d8aad9b6f41865c89434ae",
+      "sorted_inventory_sha256": "21e619fa2d2483e49a51ca0946e236649bd971e61040225f878bd243ad9b7426"
+    },
+    {
+      "name": "inflection-ascii-digit-control",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.7191502909408882,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/inflection-ascii-digit-control/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/inflection-ascii-digit-control/project",
+        "/tmp/mutie-pytest-audit-final/inflection-ascii-digit-control/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/inflection-ascii-digit-control/pytest.ini",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules"
+      ],
+      "collected": 467,
+      "inventory_sha256": "83145965637c26a41b14e7b310bd37a6052ca608e2461bc2b1df36ed58d5296c",
+      "phase_counts": {
+        "setup:passed": 467,
+        "call:passed": 466,
+        "teardown:passed": 467,
+        "call:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_inflection.py::test_underscore[Area51Controller-area51_controller]",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {
+        "inflection": "/tmp/mutie-pytest-audit-final/inflection-ascii-digit-control/project/inflection/__init__.py"
+      },
+      "evidence_sha256": "aab8693f8af555b4f97df367060edfb2f67d13de4f20d135171b96761a39d71b",
+      "log_sha256": "046bee6623e92bafbb943756d1494ffeb1e9bf3ad9cf313f8d1dabe9f70dfa43",
+      "sorted_inventory_sha256": "21e619fa2d2483e49a51ca0946e236649bd971e61040225f878bd243ad9b7426"
+    },
+    {
+      "name": "inflection-unicode-digit-survivor",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.8270546670537442,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/inflection-unicode-digit-survivor/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/inflection-unicode-digit-survivor/project",
+        "/tmp/mutie-pytest-audit-final/inflection-unicode-digit-survivor/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/inflection-unicode-digit-survivor/pytest.ini",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules"
+      ],
+      "collected": 467,
+      "inventory_sha256": "a968c45d7f88c342c7981376b505dfe8fedcde2cb8e231a8b5dcef7cc001ef24",
+      "phase_counts": {
+        "setup:passed": 467,
+        "call:passed": 467,
+        "teardown:passed": 467
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "inflection": "/tmp/mutie-pytest-audit-final/inflection-unicode-digit-survivor/project/inflection/__init__.py"
+      },
+      "evidence_sha256": "ca74ec77ab1ee02587bd5700e2c910b991bed6c4657f3eb595a376e8e9faaaf1",
+      "log_sha256": "411b3e350e2659924bb24b573e90ee20891c7e5ae2dafeaaa85ca61d87c07505",
+      "sorted_inventory_sha256": "21e619fa2d2483e49a51ca0946e236649bd971e61040225f878bd243ad9b7426"
+    },
+    {
+      "name": "inflection-strong-baseline",
+      "classification": "passed",
+      "exit_code": 0,
+      "wall_seconds": 1.6489564169896767,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/inflection-strong-baseline/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/inflection-strong-baseline/project",
+        "/tmp/mutie-pytest-audit-final/inflection-strong-baseline/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/inflection-strong-baseline/pytest.ini",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules",
+        "test_stronger.py"
+      ],
+      "collected": 468,
+      "inventory_sha256": "928f4c87bb851d85576392980603c8f7979adba339413dd4ec0eb77dfe770b8e",
+      "phase_counts": {
+        "setup:passed": 468,
+        "call:passed": 468,
+        "teardown:passed": 468
+      },
+      "failure_exceptions": {},
+      "failed_nodes": [],
+      "imports": {
+        "inflection": "/tmp/mutie-pytest-audit-final/inflection-strong-baseline/project/inflection/__init__.py"
+      },
+      "evidence_sha256": "508c8e2714be66b476b1955cbe6c9353a78f1a989e909c30934bc19f9eb8f26e",
+      "log_sha256": "6fda7b4dc225c6e6c12ef0da2dd057cd2276eabfe765c7d1174fb6978b16885f",
+      "sorted_inventory_sha256": "433a437e42c66d9d44f5668af719762faf31ad37e8b44e1b6ec0cc19767e1244"
+    },
+    {
+      "name": "inflection-strong-kill",
+      "classification": "body_failure",
+      "exit_code": 1,
+      "wall_seconds": 1.6674814999569207,
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-pytest-audit-final/inflection-strong-kill/cache",
+        "/path/to/mutie/benchmarks/fixtures/pytest-audit/driver.py",
+        "/tmp/mutie-pytest-audit-final/inflection-strong-kill/project",
+        "/tmp/mutie-pytest-audit-final/inflection-strong-kill/evidence.jsonl",
+        "/tmp/mutie-pytest-audit-final/inflection-strong-kill/pytest.ini",
+        "test_inflection.py",
+        "inflection",
+        "--doctest-modules",
+        "test_stronger.py"
+      ],
+      "collected": 468,
+      "inventory_sha256": "b46f40ff7acba459fa0d45f4b8323371256fcbe82ce1f20fbc01e11e9e9dcbd4",
+      "phase_counts": {
+        "setup:passed": 468,
+        "call:passed": 467,
+        "teardown:passed": 468,
+        "call:failed": 1
+      },
+      "failure_exceptions": {
+        "AssertionError": 1
+      },
+      "failed_nodes": [
+        {
+          "event": "phase",
+          "node": "test_stronger.py::test_underscore_separates_unicode_digit_from_following_capital",
+          "when": "call",
+          "outcome": "failed",
+          "exception": "AssertionError",
+          "xfail": false
+        }
+      ],
+      "imports": {
+        "inflection": "/tmp/mutie-pytest-audit-final/inflection-strong-kill/project/inflection/__init__.py"
+      },
+      "evidence_sha256": "747b3da957262ae9af6d45aab2cbc6a075520e86fa80b358827e280774f7cd3e",
+      "log_sha256": "a05d85f8b5bbfc8b504c43239b77d4b3eba32a4c775e34f3a3063e5ebb2ec67c",
+      "sorted_inventory_sha256": "433a437e42c66d9d44f5668af719762faf31ad37e8b44e1b6ec0cc19767e1244"
+    }
+  ],
+  "real_inventory_sets_preserved": true
+}

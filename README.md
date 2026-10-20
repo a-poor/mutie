@@ -159,6 +159,10 @@ measured a 22-candidate run at 306.65s in fully unoptimized debug versus 19.76s
 in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
+Python/pytest remains planned. The [initial native audit](benchmarks/python-initial-scope.md)
+records isolated import/cache controls and a real stronger-test finding, but
+late-cleanup attribution remains a blocker; there is no Python CLI runner yet.
+
 ## Try it
 
 Building Mutie requires Rust/Cargo. Testing a Go project also requires Go 1.24+

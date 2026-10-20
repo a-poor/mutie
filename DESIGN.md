@@ -1776,3 +1776,26 @@ a full-suite timeout into a body-failure kill. This changes only project tests;
 the original timeout stays excluded from its saved score. All five selected
 candidates are killed with complete full-suite evidence and preserved source
 and report hashes.
+
+## Python / pytest feasibility boundary
+
+The [initial native audit](benchmarks/python-initial-scope.md) selects CPython
+3.14.7 / pytest 9.0.2 and retains fixtures plus an adapted Inflection runtime
+recipe. It does not add a language adapter. Start from a dependency-free flat
+package, explicit pytest tests and serial full-suite execution; pin owned
+environments and reject unsupported plugins/config/import layouts.
+
+Pytest setup/call/teardown reports are useful evidence but insufficient on their
+own: unittest setup can appear as a call failure, and atexit failures can follow
+successful pytest return with process exit zero. The prototype retains both as
+negative controls. Process-lifetime failure observation must precede scores.
+Similarly, disabling bytecode writes does not disable reads: a same-size,
+backdated source mutation loads stale bytecode unless the command owns a fresh
+cache prefix. The native controls establish this requirement without claiming
+general cache/import isolation.
+
+Inflection's 467 selected runtime tests include package doctests, while excluding
+the upstream mypy/packaging/documentation recipe. A hand-authored Unicode-digit
+regex mutation survives and is killed by a stronger test. This demonstrates
+finding usefulness, not automatic operator support, unchanged-project acceptance
+or readiness to broaden Python beyond the audited scope.

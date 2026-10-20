@@ -36,11 +36,12 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Planned | None | Define package/import/environment scope and fixture |
+| Python | pytest | Planned | Native 39-probe feasibility audit and adapted Inflection findings; no adapter | Process-lifetime evidence for late cleanup, strict scope validator and isolated baseline |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
-silently promote TypeScript, JSX or TSX support. Bun pins 1.3.11+af24e281e; Python/pytest versions remain undecided.
+silently promote TypeScript, JSX or TSX support. Bun pins 1.3.11+af24e281e;
+the Python audit pins CPython 3.14.7 / pytest 9.0.2 without claiming runner support.
 
 ## Go — go test
 
@@ -306,8 +307,15 @@ unsupported. Do not infer compatibility from Node or Vitest support.
 
 **Level: Planned.**
 
-Desired outcome: the shared workflow for pytest projects. Choose Python/pytest
-versions, a real project and fixture; define package layouts, source/test discovery,
+The [initial audit](benchmarks/python-initial-scope.md) selects CPython 3.14.7,
+pytest 9.0.2 and an adapted Inflection runtime suite. It records 39 native probes,
+stale-bytecode controls and a manual Unicode-boundary stronger-test finding.
+Two negative controls remain correctness blockers: unittest setup assertions
+appear in the call phase, and an atexit exception can follow pytest success with
+exit zero. A fresh cache prefix avoids the demonstrated stale-bytecode false
+result; `-B` alone does not. There is no Python CLI adapter or scored report.
+
+Desired outcome: the shared workflow for pytest projects. Define package layouts, source/test discovery,
 environment ownership and dependency installation. Resolve import paths and editable
 installs so tests exercise the isolated mutated copy rather than the checkout.
 
