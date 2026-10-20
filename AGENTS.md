@@ -14,7 +14,7 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
   Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
-- `src/bun.rs` implements baseline-only `bun-check` with the pinned Bun runtime,
+- `src/bun.rs` implements scored `--lang bun`, read-only `bun-list` and baseline-only `bun-check` with the pinned Bun runtime,
   owned workspaces and bounded process/evidence captures. `bun/project.rs` validates
   the dependency-free JS/TS scope and independent test inventory. `bun/config.rs`
   admits the audited plain-JSON NodeNext/ES2022 settings; ancillary examples/scripts
@@ -23,7 +23,12 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   `bun/protocol.rs` requires complete XML/JSONL and positive body checkpoints;
   `tests/bun_protocol.rs` retains native replay controls. See
   `benchmarks/bun-isolated-execution.md`. Unix per-file limits apply to Bun and its
-  descendants; this is not a total disk quota. Scored runs and saved execution identity remain pending; Bun remains Planned.
+  descendants; this is not a total disk quota. `bun/identity.rs` records diagnostic
+  runtime/config/recipe/limit identity in diagnostics and saved reports; focused
+  reruns permit stronger tests but reject runtime/config/recipe drift. `benchmarks/bun-discovery-identity.md` records 12
+  Composer flips and preserved inputs. Bun-only discovery skips erased ambient
+  declarations without broadening Node/Vitest. JS/TS scored fixture workflows pass independently; Bun
+  remains Experimental. See `benchmarks/bun-shared-runs.md`.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
   dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
@@ -141,8 +146,8 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   dismissal-based and minimum-score CI policies, configuration, and focused runs.
 - `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
-  language/test runner. Update it when support changes; planned Bun and Python
-  targets are not implemented CLI capabilities.
+  language/test runner. Update it when support changes; Experimental Bun and planned Python
+  have distinct acceptance gates.
 
 ## Development Status & Versioning
 
@@ -219,10 +224,10 @@ observer in `benchmarks/bun-body-attribution.md` passes 112 paired JS/TS cases a
 30 evidence-rejection checks; Composer baseline/finding controls match. A failure-only
 checkpoint exposes suppressed pending rejections without delaying successful
 callbacks. Inspector terminal events can be lost at exit and cannot be guessed.
-The Rust reader now supports a scoped isolated baseline diagnostic; real-project
-configuration and scored workflow gates remain open. Direct probes do not implement
-`--lang bun` or promote support. JS/TS fixtures under `tests/fixtures/bun-*` remain
-opt-in native probes.
+The Rust reader now supports scored serial runs, saved reports and focused reruns.
+Independent JS/TS fixture workflows and Composer evidence establish Experimental
+support; review/policy, scored cleanup and independent real JavaScript acceptance
+remain open. See `benchmarks/bun-shared-runs.md`.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

@@ -41,7 +41,8 @@ Bun is now the selected next runner. The [initial audit](benchmarks/bun-initial-
 pins 1.3.11, adds independent JS/TS fixtures and selects Composer (272 passing tests).
 Native reports conflate body, hook and process failures. A bounded file-backed
 [observer prototype](benchmarks/bun-body-attribution.md) now passes 112 paired cases
-and Composer controls; production integration and complete file accounting remain open. Rust workspaces remain a separate decision.
+and Composer controls. Shared scored execution and focused reruns are now Experimental;
+review/policy and independent real JavaScript acceptance remain open. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -85,8 +86,14 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Accept unchanged Composer's audited configuration/layout: 272-test baseline,
   surviving candidate and stronger-test body failure through isolated execution;
   see [Composer acceptance](benchmarks/bun-composer-execution.md).
-- [ ] Persist Bun execution identity and connect discovery/scored runs; ambiguous
-  failures must remain errors.
+- [x] Add read-only `bun-list` and JSON baseline identity: 12 Composer flips,
+  unchanged input hashes and separate Bun ambient-declaration handling; see
+  [discovery/identity](benchmarks/bun-discovery-identity.md).
+- [x] Connect Bun execution identity and discovery to shared scored runs, saved
+  reports and focused reruns; independently exercise JS/TS fixtures. See
+  [shared workflow](benchmarks/bun-shared-runs.md).
+- [x] Run all 12 Composer candidates and kill the name-configurability survivor
+  through a saved-ID stronger-test rerun; preserve original sources/reports.
 - [ ] Validate package/import/config/discovery boundaries, then connect isolated
   execution to reports, reruns, review and policies.
 - [x] Verify baseline diagnostic timeout/cancellation/capture limits and descendant cleanup.

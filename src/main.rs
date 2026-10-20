@@ -52,7 +52,14 @@ async fn main() -> Result<ExitCode> {
             .listen()
             .context("installing cancellation handlers")?;
         let result = match command {
+            cli::Command::BunList {
+                path,
+                include,
+                exclude,
+                json,
+            } => bun::list(&path, &include, &exclude, json, &cancellation),
             cli::Command::BunCheck {
+                json,
                 path,
                 timeout,
                 max_capture_bytes,
@@ -61,6 +68,7 @@ async fn main() -> Result<ExitCode> {
                     &path,
                     Duration::from_secs(timeout.get()),
                     max_capture_bytes,
+                    json,
                     &cancellation,
                 )
                 .await
@@ -253,6 +261,9 @@ async fn execute(
     let mut rust_project = (config.lang == Lang::Rust)
         .then(|| rust::Project::load(root))
         .transpose()?;
+    let bun_project = (config.lang == Lang::Bun)
+        .then(|| bun::project::Project::load(root, cancellation))
+        .transpose()?;
     let node_project = (config.lang == Lang::Node)
         .then(|| node::project::Project::load(root, cancellation))
         .transpose()?;
@@ -286,6 +297,24 @@ async fn execute(
             "Node default test selection changed during snapshotting; an excluded output/report directory must not contain tests"
         );
     }
+    if let Some(original) = &bun_project {
+        let copied = bun::project::Project::load(&snapshot.path(), cancellation)?;
+        anyhow::ensure!(
+            original.tests == copied.tests
+                && original
+                    .files
+                    .iter()
+                    .filter(|(p, _)| p.starts_with("src/")
+                        || p.starts_with("test/")
+                        || p.starts_with("tests/")
+                        || matches!(
+                            p.as_str(),
+                            "package.json" | "tsconfig.json" | "bun.lock" | "bun.lockb"
+                        ))
+                    .all(|(p, h)| copied.files.get(p) == Some(h)),
+            "Bun source, config or test inventory changed during snapshotting; report exclusions cannot hide executable inputs"
+        );
+    }
     let dismissal_store = if config.list {
         None
     } else {
@@ -301,6 +330,24 @@ async fn execute(
         coordinator.emit(RunEvent::VitestScope(&identity), cancellation)?;
         if let Some(selection) = &rerun {
             selection.validate_vitest_scope(&identity)?;
+        }
+        Some(identity)
+    } else {
+        None
+    };
+    let bun_scope = if config.lang == Lang::Bun {
+        let identity = bun::execution_scope(
+            &snapshot.path(),
+            baseline_limit,
+            config
+                .max_capture_bytes
+                .context("Bun requires bounded captures")?,
+            cancellation,
+        )
+        .await?;
+        coordinator.emit(RunEvent::BunScope(&identity), cancellation)?;
+        if let Some(selection) = &rerun {
+            selection.validate_bun_scope(&identity)?;
         }
         Some(identity)
     } else {
@@ -372,6 +419,7 @@ async fn execute(
             None,
             vitest_scope.as_ref(),
             node_scope.as_ref(),
+            bun_scope.as_ref(),
             cancellation,
             |_| async {},
         )
@@ -456,9 +504,13 @@ async fn execute(
         }
         coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
         (found.mutations, None)
-    } else if matches!(config.lang, Lang::Vitest | Lang::Node) {
+    } else if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) {
         drop(baseline_workspace);
-        let found = javascript::discover(&snapshot.path(), &scope, cancellation)?;
+        let found = if config.lang == Lang::Bun {
+            javascript::discover_bun(&snapshot.path(), &scope, cancellation)?
+        } else {
+            javascript::discover(&snapshot.path(), &scope, cancellation)?
+        };
         for exclusion in &found.exclusions {
             coordinator.line(format!("JavaScript discovery excluded {exclusion}"));
         }
@@ -551,7 +603,7 @@ async fn execute(
         .iter()
         .map(|mutation| match &graph {
             Some(graph) => graph.packages_for(&mutation.file.path),
-            None if matches!(config.lang, Lang::Vitest | Lang::Node) => Ok(vec![]),
+            None if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) => Ok(vec![]),
             None => Ok(vec![
                 if config.lang == Lang::Rust {
                     "--tests"
@@ -614,6 +666,7 @@ async fn execute(
             .map(|project| project.scope.package.clone()),
         vitest_scope: vitest_scope.map(Arc::new),
         node_scope: node_scope.map(Arc::new),
+        bun_scope: bun_scope.map(Arc::new),
         snapshot,
         test_packages: Arc::new(test_packages),
         timeout,
@@ -628,6 +681,7 @@ async fn execute(
 struct WorkerContext {
     vitest_scope: Option<Arc<vitest::ExecutionScope>>,
     node_scope: Option<Arc<node::ExecutionScope>>,
+    bun_scope: Option<Arc<bun::ExecutionScope>>,
     lang: Lang,
     rust_cache_package: Option<String>,
     snapshot: Arc<Workspace>,
@@ -737,6 +791,7 @@ impl WorkerJob {
                             cache.as_ref(),
                             context.vitest_scope.as_deref(),
                             context.node_scope.as_deref(),
+                            context.bun_scope.as_deref(),
                             &context.cancellation,
                             move |phase| {
                                 let progress = progress.clone();

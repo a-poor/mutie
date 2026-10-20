@@ -1,0 +1,204 @@
+{
+  "recorded": "2026-10-19",
+  "project_commit": "3de15b846e3f5ef46cf8aebd5d136908baa43b54",
+  "original_inputs_preserved": true,
+  "preview": {
+    "exclusions": [],
+    "input_fingerprint": "sha256:4afe258cf6f22e60234ac5bc277659cf15dd108ae866358231b7155bf365bee2",
+    "kind": "bun-discovery-preview",
+    "mutations": [
+      {
+        "byte_end": 15219,
+        "byte_start": 15215,
+        "column": 26,
+        "file": "src/composer.ts",
+        "id": 1,
+        "line": 475,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:11b8f5e6b236c2f0aaf46a7cb772df887ad4c893c8782fa22bab4b1e86ceda9e"
+      },
+      {
+        "byte_end": 15313,
+        "byte_start": 15308,
+        "column": 48,
+        "file": "src/composer.ts",
+        "id": 2,
+        "line": 477,
+        "operator": "boolean_flip",
+        "original": "false",
+        "replacement": "true",
+        "source_fingerprint": "sha256:11b8f5e6b236c2f0aaf46a7cb772df887ad4c893c8782fa22bab4b1e86ceda9e"
+      },
+      {
+        "byte_end": 15334,
+        "byte_start": 15330,
+        "column": 11,
+        "file": "src/composer.ts",
+        "id": 3,
+        "line": 479,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:11b8f5e6b236c2f0aaf46a7cb772df887ad4c893c8782fa22bab4b1e86ceda9e"
+      },
+      {
+        "byte_end": 22532,
+        "byte_start": 22528,
+        "column": 15,
+        "file": "src/factory.ts",
+        "id": 4,
+        "line": 698,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:40965586cbc29042bc002147b9140224df1bda3cbad57af13cbe3b688a4dc8fd"
+      },
+      {
+        "byte_end": 22556,
+        "byte_start": 22552,
+        "column": 19,
+        "file": "src/factory.ts",
+        "id": 5,
+        "line": 699,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:40965586cbc29042bc002147b9140224df1bda3cbad57af13cbe3b688a4dc8fd"
+      },
+      {
+        "byte_end": 22579,
+        "byte_start": 22574,
+        "column": 17,
+        "file": "src/factory.ts",
+        "id": 6,
+        "line": 700,
+        "operator": "boolean_flip",
+        "original": "false",
+        "replacement": "true",
+        "source_fingerprint": "sha256:40965586cbc29042bc002147b9140224df1bda3cbad57af13cbe3b688a4dc8fd"
+      },
+      {
+        "byte_end": 1126,
+        "byte_start": 1121,
+        "column": 17,
+        "file": "src/macros.ts",
+        "id": 7,
+        "line": 38,
+        "operator": "boolean_flip",
+        "original": "false",
+        "replacement": "true",
+        "source_fingerprint": "sha256:f499afc1950b22473b32caa6d8001372702f99d396e8f2ff4e1f2fc9d02d7ab3"
+      },
+      {
+        "byte_end": 1306,
+        "byte_start": 1302,
+        "column": 20,
+        "file": "src/macros.ts",
+        "id": 8,
+        "line": 45,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:f499afc1950b22473b32caa6d8001372702f99d396e8f2ff4e1f2fc9d02d7ab3"
+      },
+      {
+        "byte_end": 320,
+        "byte_start": 316,
+        "column": 19,
+        "file": "src/queue.ts",
+        "id": 9,
+        "line": 9,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:5db0dd3d93b5ef494f446c0a171335f9ab943987506b406f36b8a0c488d6ba73"
+      },
+      {
+        "byte_end": 674,
+        "byte_start": 669,
+        "column": 17,
+        "file": "src/queue.ts",
+        "id": 10,
+        "line": 27,
+        "operator": "boolean_flip",
+        "original": "false",
+        "replacement": "true",
+        "source_fingerprint": "sha256:5db0dd3d93b5ef494f446c0a171335f9ab943987506b406f36b8a0c488d6ba73"
+      },
+      {
+        "byte_end": 348,
+        "byte_start": 344,
+        "column": 17,
+        "file": "src/utils.ts",
+        "id": 11,
+        "line": 7,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:2fe7df1fce368e9f2b70a97ec37caad7c90a344523af3832ffa61168cfea1734"
+      },
+      {
+        "byte_end": 1237,
+        "byte_start": 1233,
+        "column": 39,
+        "file": "src/utils.ts",
+        "id": 12,
+        "line": 40,
+        "operator": "boolean_flip",
+        "original": "true",
+        "replacement": "false",
+        "source_fingerprint": "sha256:2fe7df1fce368e9f2b70a97ec37caad7c90a344523af3832ffa61168cfea1734"
+      }
+    ],
+    "runtime_checked": false,
+    "test_files": [
+      "tests/compose.test.ts",
+      "tests/composer.test.ts",
+      "tests/dedup.test.ts",
+      "tests/factory.test.ts",
+      "tests/macros.test.ts",
+      "tests/observability.test.ts",
+      "tests/queue.test.ts",
+      "tests/registered-events.test.ts",
+      "tests/scope.test.ts",
+      "tests/types.test.ts",
+      "tests/utils.test.ts"
+    ]
+  },
+  "baseline": {
+    "command_seconds": 0.8369605,
+    "identity": {
+      "capture_bytes": 4194304,
+      "configuration_fingerprints": {
+        "bun.lock": "sha256:3717b4a79b5331739c978b45346e53c3deb7d11258ad151df14ef4503293f3cc",
+        "tsconfig.json": "sha256:a5257cd0b99a47367029b1b9f45018afed9b5bea5789917bfb31a8a287f25d8e"
+      },
+      "evidence_file_bytes": 8388608,
+      "executable": "/path/to/home/.bun/bin/bun",
+      "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+      "manifest_fingerprint": "sha256:2c9c47a03a5014fd3fa77c4582d628dc618075bedaaf96752d568b5c88816700",
+      "recipe_fingerprint": "sha256:16954de096b468e21460b8f23b0afc36408fbe4a74bc9428a11dc8b7f706736a",
+      "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+      "runtime_version": "1.3.11",
+      "test_files": [
+        "tests/compose.test.ts",
+        "tests/composer.test.ts",
+        "tests/dedup.test.ts",
+        "tests/factory.test.ts",
+        "tests/macros.test.ts",
+        "tests/observability.test.ts",
+        "tests/queue.test.ts",
+        "tests/registered-events.test.ts",
+        "tests/scope.test.ts",
+        "tests/types.test.ts",
+        "tests/utils.test.ts"
+      ],
+      "timeout_millis": 15000
+    },
+    "input_fingerprint": "sha256:4afe258cf6f22e60234ac5bc277659cf15dd108ae866358231b7155bf365bee2",
+    "kind": "bun-baseline-check",
+    "outcome": "passed"
+  }
+}

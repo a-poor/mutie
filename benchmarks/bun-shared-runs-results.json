@@ -1,0 +1,369 @@
+{
+  "recorded": "2026-10-19",
+  "project": "https://github.com/gramiojs/composer",
+  "project_commit": "3de15b846e3f5ef46cf8aebd5d136908baa43b54",
+  "original_inputs_preserved": true,
+  "stronger_copy_original_inputs_preserved": true,
+  "original_report_preserved": true,
+  "original_file_sha256": {
+    ".github/workflows/publish.yml": "4f4fae3ba0cdc894f6ea9600324cc4b3c92e4c758c9029bacc2432f482870313",
+    ".gitignore": "73fdd9cfa8b4724590f7339671e39d1aa7f9445dc6ddb3c76e2b31a63d143423",
+    "CLAUDE.md": "b0e5dd892e2cebd9ceecbcb1ffebf78e66bd5cce9ee28a03ce942649a1b925c4",
+    "LICENSE": "b8e8bb22e1dc011b7c6ce0db81509cffdb1ac0c4888c14b9b6e6428f3e5a70b0",
+    "README.md": "249b781548194b5a60526d723e978d4dbd6697569bd07a349bc69f4a69e67c92",
+    "biome.json": "00fb41348d1c9c9e110c864ca7b8c5eaded9afd81758edba9ee7a3e0363b0a05",
+    "bun.lock": "3717b4a79b5331739c978b45346e53c3deb7d11258ad151df14ef4503293f3cc",
+    "deno.json": "8d7c9f4d1686c257e0c24c51a1cf9fb3a3021f785f86622697f3c421d155d767",
+    "docs/SPEC.md": "a3cbad4da185bb4bfde408df7311fe54dea545ad1d3b82e6f43a59792136265e",
+    "docs/layered-composers.md": "921ba56d1bb658a67411d302645c201d527fd6864d59d1b18d54eb9fecbb5066",
+    "examples/bot.ts": "e8fc5d9741ccb7448712a3b741c49c65855d7394277c8401647febca05c55412",
+    "package.json": "2c9c47a03a5014fd3fa77c4582d628dc618075bedaaf96752d568b5c88816700",
+    "scripts/generate-changelog.ts": "87cbdc20449a5767ff1c57e2881fe6e1021615cd1cde9c72471b35f1651e24d9",
+    "scripts/prepare-jsr.ts": "d0fc4013173523ebf28d8075515ad3a3364fa8492677afd8e487c210af4aa251",
+    "src/compose.ts": "ce9201b54b08eba417e8438a4ac710b4efe5bd83085ab463a3b7d81131aa7666",
+    "src/composer.ts": "11b8f5e6b236c2f0aaf46a7cb772df887ad4c893c8782fa22bab4b1e86ceda9e",
+    "src/factory.ts": "40965586cbc29042bc002147b9140224df1bda3cbad57af13cbe3b688a4dc8fd",
+    "src/index.ts": "97074b376ae5d15966e52443e37bd42c9df82ecdb76c36ce3a614836a452cc63",
+    "src/macros.ts": "f499afc1950b22473b32caa6d8001372702f99d396e8f2ff4e1f2fc9d02d7ab3",
+    "src/queue.ts": "5db0dd3d93b5ef494f446c0a171335f9ab943987506b406f36b8a0c488d6ba73",
+    "src/types.ts": "466421ce2a5a0477a080cc98a6b87580931f8572d2f657cb7772f5f028282247",
+    "src/utils.ts": "2fe7df1fce368e9f2b70a97ec37caad7c90a344523af3832ffa61168cfea1734",
+    "tests/compose.test.ts": "196d517612053f057a26706f05fedc725b7139beacbfe2b32e9036a42dd5a51f",
+    "tests/composer.test.ts": "e34d74c050374ecf5626fa63a953bfd03c996ff235a92f7801074775b754701d",
+    "tests/dedup.test.ts": "c3986dbe81d02078e972649b5a4a631365aad1d9cc3042d262041d0200013852",
+    "tests/factory.test.ts": "846e42b714e5955a4b51e8cb7e84ac792f00108eed7f26f65e26695944e04e7b",
+    "tests/macros.test.ts": "9053b5a3410b75cca115be3b68690b275d95905232f8bd455fe5922ee79c1ac7",
+    "tests/observability.test.ts": "22b014d9e52c44f308e68399c0a299217bc2fde036f09cea6172581e753a330f",
+    "tests/queue.test.ts": "5c9ef5c31efdb9a28a6e36ef39c3dfb7d442a357d23b58794477e9f0269e6237",
+    "tests/registered-events.test.ts": "997f4db20c1339ca1a18f403cccac7ee23f93d1e8210d74f89915aea5e5c2b8d",
+    "tests/scope.test.ts": "8b203ccfc8f3b364a6d8e8a65e598cb2f3187d38756a4abe6570c15b40b6ca96",
+    "tests/types.test.ts": "5ffe73e785407609c3d57c0df13166d7522a3b3934e0ca09181c555fcd0f62d5",
+    "tests/utils.test.ts": "f22ca767d68c5756f145dbd0f9e69851766c84f995dbf30fbc38a2066a7ad035",
+    "tsconfig.build.json": "3f8f3004a5df3b5498fb34d844dad587f087dfc95b17b2eb64ae4ac1c637aa24",
+    "tsconfig.json": "a5257cd0b99a47367029b1b9f45018afed9b5bea5789917bfb31a8a287f25d8e"
+  },
+  "original_report_sha256": {
+    "outcomes.json": "6e21411a49635f3d53d0cd576c6e2a32b99d82a84df73dbf58670c089c31c065",
+    "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missed.txt": "16ca5f1a91e8276c3faa09c43a74dd3dc28d7c44f387758f541ccf0cb84ed0ab",
+    "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timeout.txt": "6480df71a6961b90e905ee9be856bc886a4559094b0c8b3d8069b3805d9272a8",
+    "mutants.json": "0f407383d94d6154c3abc53f619b9989174e6d05e567d6555ed294d3326935b0",
+    "summary.txt": "078768e63e2b9bae135dbebd2d7527ee3c377d52f75fb65532d0cf5e2ceaee00",
+    ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "killed.txt": "4274e1aa01f188c86a09f39e48978bb799ece326477ef9fe6b4473b4952314dd",
+    "run.json": "85b6da1bfa72a97581207bf992e369382adef23a8ae7ea688604217cd6e4e112",
+    "diff/000003.diff": "96a1fdeb046530a83f96a9f5ac471175cf84196a04f43d5c64740ce5a6785d84",
+    "diff/000002.diff": "335f9e91babc4c8dd17762d94cca73f50f4f8e8f430f0433e88d0dfa2a1a51c1",
+    "diff/000009.diff": "ced2d4e3e6c000d8f11fea6e27f9e60e931983223020506644e1f18b886cabe3",
+    "diff/000005.diff": "24d39df36b44ff219b1a121e4f9d687cdfcfe2c809699d4a85b9cdf636d7d140",
+    "diff/000012.diff": "1521fa6daf98d9f743824c7317e908b97e6fb7f968ac8d4eff3aeeec67cce779",
+    "diff/000004.diff": "64c1f6418e39cc96b88688ff3ddf21fafb33e2ad0a89a8d022b3efebfa4e3fe1",
+    "diff/000008.diff": "aa47c92ec4cc7c6d1297b77d6f0b0f28f160901ee4619ff4db0c1c7a8d3ce1af",
+    "diff/000011.diff": "398c04b302b4aecc576107b65b4c42700627ede977abc3cda65e636cd0e848ea",
+    "diff/000007.diff": "3d46834af6d9f129f5367279d95f30f9e5b71e005af90965f7f11e54fce15976",
+    "diff/000006.diff": "fc81b0d23938a6401bde1e3316fb1c8c9369e6700d3f9653e3b035490e2d45ab",
+    "diff/000010.diff": "4bb5ce8ef5b95b46dffa2a9b476adc80b4856528f1350f78e1a75a640a74b869",
+    "diff/000001.diff": "088b6488df72e4ff5e12297f9ca48d0e41e702601cc575c5285712161ccb2673",
+    "logs/000012.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000007.log": "0c291ca4c234ebfb9f9edabc936926964c82fd0cdf4bd92c0996bd176236297b",
+    "logs/000006.log": "1605663e826badaeb82378b161a08eb2c8af48cf633b616dd0ccd870090ec8a7",
+    "logs/000012.log": "3702928d9834e4e176d76e49f36ee346c4b6d051a1e98f9ae21787ebb1c3e1ad",
+    "logs/000004.log": "0d2fbe6fc0b65c7fc819647c85f811b8252e2e8bf3b95f6b013de64979f9d4b3",
+    "logs/000010.log": "1fe20e917890f9c27997fa5cbdca185b814d6e55e43f7cf63c0bb417524c41cb",
+    "logs/000007.stderr.log": "0ba1df4a2d7099011d4c2c255cd5e5ec2ab8f0cbcbe57fc887d046177ca1a396",
+    "logs/000011.log": "9e68f32de015edbb56ef9e63bf9a9a9c9277007105b99c65370887cae2b9dde3",
+    "logs/000005.log": "e2170113b3a26c62f4dac4e60f7eb52878194a9ac5b5b4109e65ee72331d0740",
+    "logs/000003.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000001.log": "b1664b095e012d3c6fbe326d810dc194d799e6109ebd81c4c15cd9acb1f55c15",
+    "logs/000006.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000002.stderr.log": "21380dce8eb4224e4601aee852c40adf95731aea3a37140639a22a9618b67d18",
+    "logs/000002.log": "c9c6a3ea43efad2e7832b9a17257383d247dd1acc433ca8e3fe8976e1d5ea9e3",
+    "logs/000003.log": "d9236dbd22889ec4541c272f2b6b7c645662bcd32eb3f8eaa5c058370a6fc7ee",
+    "logs/baseline.stderr.log": "39f29beb6b04b93cff8a308e5fb823d33bf2479b83aacab97938bcd7b3e2ac72",
+    "logs/000008.stderr.log": "453332c6dd6d912edb11e287a1b3c5cca8f817688cdfd75dcf8d9e654685c5f5",
+    "logs/000010.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000005.stderr.log": "9fefcdb65c78c98a5f3666d6fb61d6c9c31506e7964d5e6bbb7ab1f94a19e47d",
+    "logs/000001.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000004.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000009.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000011.stderr.log": "8ee3743b60d0688f6b8dbeff8a9cd15b4cf89f499576be2090392f6c538434d1",
+    "logs/000003.stderr.log": "98eabf5797b9aab164af93bcbecb3a9f03ac733dc703ee8f56e600d28fdeb6d7",
+    "logs/baseline.log": "d1f306d6ac060bffec2e9d01e9283932994404a9d2f13099487ee5543577ac47",
+    "logs/000007.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000012.stderr.log": "4a2fa1b2efb7b22ec146684e6269c06af6f44624f8624440faf6ef3a275bc361",
+    "logs/000002.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000006.stderr.log": "17bc88e83792ae79dc27e9a613197254bca058a4ebfeb38330c512a033fa27d5",
+    "logs/000001.stderr.log": "6903bcff6cdf18995f036004764e02f43d790236a135748cf3ed5a55b7003a4e",
+    "logs/000005.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000008.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/baseline.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000010.stderr.log": "797e4dc2db5246463879734b5572de8881f4e1ffe9c685573a15b000386ca0f2",
+    "logs/000009.stderr.log": "56f053fa8c24b883bc6caa64b42acb23c4a896cf795e8cea81aa03501f892b7a",
+    "logs/000008.log": "39806cbc0e9291db017057b3de7cc7f3f9b7a88bad7c7cdcba05e3dc8284a621",
+    "logs/000009.log": "f28db86b8815fa86d9e3b69b0db8f98dbc81b217a2c5215b0f54d91d7765ec23",
+    "logs/000011.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000004.stderr.log": "565cd07a426837b6ce7154a63f178bc21e8a167fedbf4af8c5af8113666ffacf"
+  },
+  "full": {
+    "report_path": "/tmp/mutie-bun-scored-composer/run-1792446597-E5hSYj",
+    "duration_seconds": 106.182337583,
+    "status": "completed",
+    "score": {
+      "scope": "all_discovered",
+      "killed": 6,
+      "missed": 5,
+      "timeout": 1,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 54.54545454545455,
+      "unavailable_reason": null
+    },
+    "bun_scope": {
+      "runtime_version": "1.3.11",
+      "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+      "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+      "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+      "manifest_fingerprint": "sha256:2c9c47a03a5014fd3fa77c4582d628dc618075bedaaf96752d568b5c88816700",
+      "configuration_fingerprints": {
+        "bun.lock": "sha256:3717b4a79b5331739c978b45346e53c3deb7d11258ad151df14ef4503293f3cc",
+        "tsconfig.json": "sha256:a5257cd0b99a47367029b1b9f45018afed9b5bea5789917bfb31a8a287f25d8e"
+      },
+      "test_files": [
+        "tests/compose.test.ts",
+        "tests/composer.test.ts",
+        "tests/dedup.test.ts",
+        "tests/factory.test.ts",
+        "tests/macros.test.ts",
+        "tests/observability.test.ts",
+        "tests/queue.test.ts",
+        "tests/registered-events.test.ts",
+        "tests/scope.test.ts",
+        "tests/types.test.ts",
+        "tests/utils.test.ts"
+      ],
+      "recipe_fingerprint": "sha256:78fe3f9f3d842aed6bc9de731e8d03179afecf9c710645b7460634024db69821",
+      "timeout_millis": 15000,
+      "capture_bytes": 4194304,
+      "evidence_file_bytes": 8388608
+    },
+    "baseline": {
+      "outcome": "passed",
+      "duration_seconds": 0.746016125,
+      "exit_code": 0,
+      "logs": {
+        "text": "logs/baseline.log",
+        "stdout": "logs/baseline.stdout.log",
+        "stderr": "logs/baseline.stderr.log",
+        "retention": {
+          "text": {
+            "total_bytes": 24120,
+            "head_bytes": 24120,
+            "tail_bytes": 0,
+            "omitted_bytes": 0
+          },
+          "stdout": {
+            "total_bytes": 28,
+            "head_bytes": 28,
+            "tail_bytes": 0,
+            "omitted_bytes": 0
+          },
+          "stderr": {
+            "total_bytes": 24091,
+            "head_bytes": 24091,
+            "tail_bytes": 0,
+            "omitted_bytes": 0
+          }
+        }
+      }
+    },
+    "summary": {
+      "killed": 6,
+      "missed": 5,
+      "timeout": 1,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "mutations": [
+      {
+        "id": 1,
+        "file": "src/composer.ts",
+        "line": 475,
+        "outcome": "killed",
+        "duration_seconds": 1.551273042
+      },
+      {
+        "id": 2,
+        "file": "src/composer.ts",
+        "line": 477,
+        "outcome": "killed",
+        "duration_seconds": 1.399801291
+      },
+      {
+        "id": 3,
+        "file": "src/composer.ts",
+        "line": 479,
+        "outcome": "killed",
+        "duration_seconds": 1.99969025
+      },
+      {
+        "id": 4,
+        "file": "src/factory.ts",
+        "line": 698,
+        "outcome": "missed",
+        "duration_seconds": 0.58426625
+      },
+      {
+        "id": 5,
+        "file": "src/factory.ts",
+        "line": 699,
+        "outcome": "missed",
+        "duration_seconds": 1.491231375
+      },
+      {
+        "id": 6,
+        "file": "src/factory.ts",
+        "line": 700,
+        "outcome": "missed",
+        "duration_seconds": 2.267231125
+      },
+      {
+        "id": 7,
+        "file": "src/macros.ts",
+        "line": 38,
+        "outcome": "killed",
+        "duration_seconds": 0.567194125
+      },
+      {
+        "id": 8,
+        "file": "src/macros.ts",
+        "line": 45,
+        "outcome": "missed",
+        "duration_seconds": 0.497778125
+      },
+      {
+        "id": 9,
+        "file": "src/queue.ts",
+        "line": 9,
+        "outcome": "timeout",
+        "duration_seconds": 8.006177792
+      },
+      {
+        "id": 10,
+        "file": "src/queue.ts",
+        "line": 27,
+        "outcome": "killed",
+        "duration_seconds": 0.512080709
+      },
+      {
+        "id": 11,
+        "file": "src/utils.ts",
+        "line": 7,
+        "outcome": "missed",
+        "duration_seconds": 0.491933
+      },
+      {
+        "id": 12,
+        "file": "src/utils.ts",
+        "line": 40,
+        "outcome": "killed",
+        "duration_seconds": 0.570521084
+      }
+    ]
+  },
+  "stronger_test_source_id": 11,
+  "stronger": {
+    "report_path": "/tmp/mutie-bun-scored-composer-rerun/run-1792446764-VhMM43",
+    "duration_seconds": 15.907886084,
+    "status": "completed",
+    "score": {
+      "scope": "rerun",
+      "killed": 1,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0,
+      "unfinished": 0,
+      "dismissed_in_score": 0,
+      "percentage": 100.0,
+      "unavailable_reason": null
+    },
+    "bun_scope": {
+      "runtime_version": "1.3.11",
+      "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+      "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+      "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+      "manifest_fingerprint": "sha256:2c9c47a03a5014fd3fa77c4582d628dc618075bedaaf96752d568b5c88816700",
+      "configuration_fingerprints": {
+        "bun.lock": "sha256:3717b4a79b5331739c978b45346e53c3deb7d11258ad151df14ef4503293f3cc",
+        "tsconfig.json": "sha256:a5257cd0b99a47367029b1b9f45018afed9b5bea5789917bfb31a8a287f25d8e"
+      },
+      "test_files": [
+        "tests/compose.test.ts",
+        "tests/composer.test.ts",
+        "tests/dedup.test.ts",
+        "tests/factory.test.ts",
+        "tests/macros.test.ts",
+        "tests/mutie-stronger.test.ts",
+        "tests/observability.test.ts",
+        "tests/queue.test.ts",
+        "tests/registered-events.test.ts",
+        "tests/scope.test.ts",
+        "tests/types.test.ts",
+        "tests/utils.test.ts"
+      ],
+      "recipe_fingerprint": "sha256:78fe3f9f3d842aed6bc9de731e8d03179afecf9c710645b7460634024db69821",
+      "timeout_millis": 15000,
+      "capture_bytes": 4194304,
+      "evidence_file_bytes": 8388608
+    },
+    "baseline": {
+      "outcome": "passed",
+      "duration_seconds": 0.476659375,
+      "exit_code": 0,
+      "logs": {
+        "text": "logs/baseline.log",
+        "stdout": "logs/baseline.stdout.log",
+        "stderr": "logs/baseline.stderr.log",
+        "retention": {
+          "text": {
+            "total_bytes": 24231,
+            "head_bytes": 24231,
+            "tail_bytes": 0,
+            "omitted_bytes": 0
+          },
+          "stdout": {
+            "total_bytes": 28,
+            "head_bytes": 28,
+            "tail_bytes": 0,
+            "omitted_bytes": 0
+          },
+          "stderr": {
+            "total_bytes": 24202,
+            "head_bytes": 24202,
+            "tail_bytes": 0,
+            "omitted_bytes": 0
+          }
+        }
+      }
+    },
+    "summary": {
+      "killed": 1,
+      "missed": 0,
+      "timeout": 0,
+      "build_failed": 0,
+      "errors": 0
+    },
+    "mutations": [
+      {
+        "id": 1,
+        "file": "src/utils.ts",
+        "line": 7,
+        "outcome": "killed",
+        "duration_seconds": 0.491787375
+      }
+    ]
+  }
+}

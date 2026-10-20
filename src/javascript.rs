@@ -63,6 +63,21 @@ pub fn parse(parser: &mut Parser, source: &str) -> Result<tree_sitter::Tree> {
 }
 
 pub fn discover(root: &Path, scope: &Scope, cancellation: &Cancellation) -> Result<Discovery> {
+    discover_with_ambient(root, scope, cancellation, false)
+}
+
+/// Bun's native TS transpiler erases ambient declarations. Keep this acceptance
+/// separate from the independently validated Node and Vitest discovery scopes.
+pub fn discover_bun(root: &Path, scope: &Scope, cancellation: &Cancellation) -> Result<Discovery> {
+    discover_with_ambient(root, scope, cancellation, true)
+}
+
+fn discover_with_ambient(
+    root: &Path,
+    scope: &Scope,
+    cancellation: &Cancellation,
+    allow_ambient: bool,
+) -> Result<Discovery> {
     let mut files = Vec::new();
     let mut exclusions = BTreeSet::new();
     collect(
@@ -109,6 +124,9 @@ pub fn discover(root: &Path, scope: &Scope, cancellation: &Cancellation) -> Resu
         while let Some(node) = pending.pop() {
             cancellation.check()?;
             let kind = node.kind();
+            if allow_ambient && kind == "ambient_declaration" {
+                continue;
+            }
             ensure!(
                 !matches!(
                     kind,
@@ -469,5 +487,31 @@ mod nul_tests {
         for source in ["const x=\0true;", "const x=`${\0true}`;", "const x=tr\0ue;"] {
             assert!(parse(&mut parser, source).is_err(), "{source:?}");
         }
+    }
+}
+
+#[cfg(test)]
+mod bun_scope_tests {
+    use super::*;
+    #[test]
+    fn ambient_declarations_are_erased_only_in_bun_discovery() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("src"))?;
+        fs::write(
+            root.path().join("src/flags.ts"),
+            "declare const Brand: unique symbol; declare const Flag: true; export const enabled = false;",
+        )?;
+        let scope = Scope::new(&[], &[])?;
+        let cancellation = Cancellation::default();
+        assert!(discover(root.path(), &scope, &cancellation).is_err());
+        let found = discover_bun(root.path(), &scope, &cancellation)?;
+        assert_eq!(found.mutations.len(), 1);
+        assert_eq!(found.mutations[0].original(), "false");
+        fs::write(
+            root.path().join("src/flags.ts"),
+            "enum State { Yes = 1 } const flag=true;",
+        )?;
+        assert!(discover_bun(root.path(), &scope, &cancellation).is_err());
+        Ok(())
     }
 }

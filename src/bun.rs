@@ -1,6 +1,7 @@
 //! Baseline-only Bun diagnostic. Scored execution remains gated on acceptance.
 mod config;
-mod project;
+mod identity;
+pub(crate) mod project;
 mod protocol;
 
 use crate::{
@@ -11,6 +12,7 @@ use crate::{
     workspace::Workspace,
 };
 use anyhow::{Context, Result, ensure};
+pub(crate) use identity::ExecutionIdentity as ExecutionScope;
 use std::{
     fs,
     io::{Read, Write},
@@ -43,10 +45,76 @@ fn read_evidence(path: &Path) -> Result<String> {
     Ok(text)
 }
 
+pub fn list(
+    root: &Path,
+    include: &[String],
+    exclude: &[String],
+    json: bool,
+    cancellation: &Cancellation,
+) -> Result<()> {
+    let project = project::Project::load(root, cancellation)?;
+    let found = crate::javascript::discover_bun(
+        &project.root,
+        &crate::mutation::Scope::new(include, exclude)?,
+        cancellation,
+    )?;
+    // Validation and discovery read the same original inputs; fail if they changed.
+    ensure!(
+        project.files == project::Project::load(&project.root, cancellation)?.files,
+        "Bun inputs changed during discovery"
+    );
+    if json {
+        let mutations: Vec<_> = found
+            .mutations
+            .iter()
+            .enumerate()
+            .map(|(i, m)| {
+                serde_json::json!({
+                    "id":i+1, "operator":"boolean_flip", "file":m.file.path,
+                    "source_fingerprint":m.file.fingerprint, "line":m.line, "column":m.column,
+                    "byte_start":m.range.start, "byte_end":m.range.end,
+                    "original":m.original(), "replacement":m.replacement,
+                })
+            })
+            .collect();
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&serde_json::json!({
+                "kind":"bun-discovery-preview", "runtime_checked":false,
+                "input_fingerprint":fingerprint(&serde_json::to_vec(&project.files)?),
+                "test_files":project.tests, "mutations":mutations, "exclusions":found.exclusions,
+            }))?
+        );
+    } else {
+        println!("Bun discovery preview only; no runtime or tests executed.");
+        for exclusion in found.exclusions {
+            println!("Excluded {exclusion}");
+        }
+        for (i, mutation) in found.mutations.iter().enumerate() {
+            println!("{}: boolean_flip {}", i + 1, mutation.description());
+        }
+        println!("{} mutations", found.mutations.len());
+    }
+    Ok(())
+}
+
+struct Execution {
+    command: CommandOutput,
+    identity: identity::ExecutionIdentity,
+    input_fingerprint: String,
+}
+impl std::ops::Deref for Execution {
+    type Target = CommandOutput;
+    fn deref(&self) -> &Self::Target {
+        &self.command
+    }
+}
+
 pub async fn check(
     root: &Path,
     timeout: Duration,
     capture_limit: NonZeroUsize,
+    json: bool,
     cancellation: &Cancellation,
 ) -> Result<()> {
     let output = execute(root, "bun", timeout, capture_limit, cancellation).await?;
@@ -61,11 +129,78 @@ pub async fn check(
         "Bun baseline did not pass ({outcome:?}):\n{}",
         output.text.text()?
     );
-    println!(
-        "Bun baseline passed ({:.2}s command time); no mutations or saved report.",
-        output.raw.elapsed.as_secs_f64()
-    );
+    if json {
+        println!(
+            "{}",
+            serde_json::to_string_pretty(&serde_json::json!({
+                "kind":"bun-baseline-check", "outcome":"passed", "identity":output.identity,
+            "input_fingerprint":output.input_fingerprint,
+                "command_seconds":output.raw.elapsed.as_secs_f64(),
+            }))?
+        );
+    } else {
+        println!(
+            "Bun baseline passed ({:.2}s command time); no mutations or saved report.",
+            output.raw.elapsed.as_secs_f64()
+        );
+    }
     Ok(())
+}
+
+pub async fn execution_scope(
+    root: &Path,
+    timeout: Duration,
+    capture_limit: NonZeroUsize,
+    cancellation: &Cancellation,
+) -> Result<ExecutionScope> {
+    let project = project::Project::load(root, cancellation)?;
+    let owned = tempfile::tempdir()?;
+    let config = owned.path().join("bunfig.toml");
+    fs::write(&config, "[test]\n")?;
+    let output = process::run_with_env("bun", &["--no-env-file", "--no-install", &format!("--config={}",utf8(&config)?), "-e", "console.log(JSON.stringify({version:Bun.version,revision:Bun.revision,executable:process.execPath}))"], owned.path(), Duration::from_secs(10), NonZeroUsize::new(4096), cancellation, &[("HOME",owned.path().as_os_str()),("XDG_CONFIG_HOME",owned.path().as_os_str()),("BUN_OPTIONS","".as_ref()),("NODE_OPTIONS","".as_ref()),("NODE_PATH","".as_ref()),("BUN_INSPECT_CONNECT_TO","".as_ref())]).await?;
+    cancellation.check()?;
+    ensure!(
+        output.status.success() && !output.timed_out && output.capture_error.is_none(),
+        "could not identify Bun"
+    );
+    let value: serde_json::Value = serde_json::from_str(&output.stdout.text()?)?;
+    ensure!(
+        value["version"] == "1.3.11"
+            && value["revision"] == "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "Bun requires pinned 1.3.11+af24e281e"
+    );
+    let executable = Path::new(
+        value["executable"]
+            .as_str()
+            .context("missing Bun executable")?,
+    );
+    let scope = ExecutionScope::capture(&project, executable, timeout, capture_limit)?;
+    scope.validate_record()?;
+    Ok(scope)
+}
+
+pub async fn test(
+    root: &Path,
+    timeout: Duration,
+    log_limit: Option<NonZeroUsize>,
+    capture_limit: Option<NonZeroUsize>,
+    expected: &ExecutionScope,
+    cancellation: &Cancellation,
+) -> Result<CommandOutput> {
+    expected.validate_record()?;
+    let mut result = execute_expected(
+        root,
+        utf8(&expected.executable)?,
+        timeout,
+        capture_limit.context("Bun requires a raw capture limit")?,
+        cancellation,
+        Some(expected),
+    )
+    .await?;
+    result.command.raw.stdout.set_limit(log_limit);
+    result.command.raw.stderr.set_limit(log_limit);
+    result.command.text.set_limit(log_limit);
+    Ok(result.command)
 }
 
 async fn execute(
@@ -74,7 +209,18 @@ async fn execute(
     timeout: Duration,
     capture_limit: NonZeroUsize,
     cancellation: &Cancellation,
-) -> Result<CommandOutput> {
+) -> Result<Execution> {
+    execute_expected(root, program, timeout, capture_limit, cancellation, None).await
+}
+
+async fn execute_expected(
+    root: &Path,
+    program: &str,
+    timeout: Duration,
+    capture_limit: NonZeroUsize,
+    cancellation: &Cancellation,
+    expected: Option<&ExecutionScope>,
+) -> Result<Execution> {
     let project = project::Project::load(root, cancellation)?;
     let source = project.root.clone();
     let copying = cancellation.clone();
@@ -140,7 +286,15 @@ async fn execute(
             .context("missing Bun executable")?,
     );
     ensure!(executable.is_absolute(), "Bun executable must be absolute");
-    let runtime_hash = fingerprint(&fs::read(executable)?);
+    let execution_identity =
+        identity::ExecutionIdentity::capture(&project, executable, timeout, capture_limit)?;
+    if let Some(expected) = expected {
+        expected.validate_rerun(&execution_identity)?;
+        ensure!(
+            expected.test_files == execution_identity.test_files,
+            "Bun test inventory changed during the run"
+        );
+    }
     let observer = owned_path.join("observer.mjs");
     let events = owned_path.join("observer.jsonl");
     let junit = owned_path.join("junit.xml");
@@ -176,7 +330,13 @@ async fn execute(
             "Bun command did not complete normally"
         );
         ensure!(
-            runtime_hash == fingerprint(&fs::read(executable)?),
+            execution_identity
+                == identity::ExecutionIdentity::capture(
+                    &project,
+                    executable,
+                    timeout,
+                    capture_limit
+                )?,
             "Bun executable changed during command"
         );
         ensure!(
@@ -210,11 +370,15 @@ async fn execute(
     // Shared runner drains captures and stops descendants before these drops.
     drop(owned);
     drop(workspace);
-    Ok(CommandOutput {
-        raw,
-        text,
-        evidence: OutcomeEvidence::Validated(evidence),
-        tool: "Bun",
+    Ok(Execution {
+        command: CommandOutput {
+            raw,
+            text,
+            evidence: OutcomeEvidence::Validated(evidence),
+            tool: "Bun",
+        },
+        identity: execution_identity,
+        input_fingerprint: fingerprint(&serde_json::to_vec(&project.files)?),
     })
 }
 

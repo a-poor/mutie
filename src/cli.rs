@@ -144,8 +144,22 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Preview scoped Bun boolean mutations without executing Bun or tests
+    BunList {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        #[arg(long)]
+        include: Vec<String>,
+        #[arg(long)]
+        exclude: Vec<String>,
+        #[arg(long)]
+        json: bool,
+    },
     /// Check an isolated scoped Bun baseline (no mutations or saved reports)
     BunCheck {
+        /// Emit validated baseline identity as JSON
+        #[arg(long)]
+        json: bool,
         #[arg(default_value = ".", value_name = "PATH")]
         path: PathBuf,
         #[arg(long, default_value = "60")]
@@ -282,6 +296,7 @@ pub enum Lang {
     Rust,
     Vitest,
     Node,
+    Bun,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Deserialize, Serialize, ValueEnum)]

@@ -31,6 +31,7 @@ pub struct SavedRun {
     pub rust_scope: Option<crate::rust::ExecutionScope>,
     pub vitest_scope: Option<crate::vitest::ExecutionScope>,
     pub node_scope: Option<crate::node::ExecutionScope>,
+    pub bun_scope: Option<crate::bun::ExecutionScope>,
     pub score: Option<MutationScore>,
     pub score_policy: Option<ScorePolicy>,
     effective_config: Option<ScoreConfig>,
@@ -39,6 +40,11 @@ pub struct SavedRun {
 impl SavedRun {
     pub fn validate_rerun_scope(&self) -> Result<()> {
         match self.language() {
+            crate::cli::Lang::Bun => self
+                .bun_scope
+                .as_ref()
+                .context("saved Bun run lacks execution identity")?
+                .validate_record(),
             crate::cli::Lang::Node => self
                 .node_scope
                 .as_ref()
@@ -212,6 +218,23 @@ impl LoadedReport {
         if let Some(scope) = &run.node_scope {
             scope.validate_record()?;
         }
+        ensure!(
+            run.bun_scope.is_none() || run.language() == crate::cli::Lang::Bun,
+            "saved run has conflicting Bun scope"
+        );
+        if run.language() == crate::cli::Lang::Bun {
+            ensure!(
+                run.rust_scope.is_none() && run.node_scope.is_none() && run.vitest_scope.is_none(),
+                "saved Bun run has conflicting runner scope"
+            );
+            ensure!(
+                run.status != RunStatus::Completed || run.bun_scope.is_some(),
+                "completed Bun run lacks runner identity"
+            );
+        }
+        if let Some(scope) = &run.bun_scope {
+            scope.validate_record()?;
+        }
         let mut inventory: SavedInventory = read_json(&directory, "mutants.json")?;
         let outcomes: SavedOutcomes = read_json(&directory, "outcomes.json")?;
         for (name, version) in [
@@ -254,14 +277,24 @@ impl LoadedReport {
         }
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
-            if run.language() == crate::cli::Lang::Vitest {
+            if matches!(
+                run.language(),
+                crate::cli::Lang::Vitest | crate::cli::Lang::Bun
+            ) {
                 ensure!(
                     mutation.operator == Operator::BooleanFlip
                         && matches!(
                             mutation.file.extension().and_then(|s| s.to_str()),
                             Some("js" | "ts")
                         ),
-                    "saved Vitest mutation is outside the supported scope"
+                    "saved JavaScript/TypeScript mutation is outside the supported scope"
+                );
+            }
+            if run.language() == crate::cli::Lang::Bun {
+                ensure!(
+                    mutation.file.starts_with("src")
+                        && !mutation.file.to_string_lossy().ends_with(".d.ts"),
+                    "saved Bun mutation is outside the supported source scope"
                 );
             }
             if run.language() == crate::cli::Lang::Node {

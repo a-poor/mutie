@@ -267,6 +267,7 @@ impl Browser {
                 crate::cli::Lang::Rust => " --lang rust",
                 crate::cli::Lang::Vitest => " --lang vitest",
                 crate::cli::Lang::Node => " --lang node",
+                crate::cli::Lang::Bun => " --lang bun",
                 _ => "",
             },
             quote_path(&self.report.directory)?,

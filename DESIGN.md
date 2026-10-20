@@ -1687,7 +1687,7 @@ full-scan scores remain unchanged. Test layouts beyond the audited test director
 dependencies and loaders remain separate scope decisions.
 
 
-## Selected Bun runner: attribution before scoring
+## Experimental Bun runner: attributed scoring
 
 The [initial audit](benchmarks/bun-initial-scope.md) selects pinned Bun
 1.3.11+af24e281e, separate dependency-free JS/TS fixtures and GramIO Composer as
@@ -1702,7 +1702,7 @@ early exit, only/skip/todo, imports and pending promises. Composer passes 272 te
 a manual name-configurability flip passes until a stronger test is added (273-test
 baseline). Direct probes establish feasibility and a useful finding, not scored
 support. Observer semantics, package/config validation, command cleanup and the
-shared report/rerun/policy workflow remain acceptance gates. Bun remains Planned.
+shared report/rerun/policy workflow were the initial acceptance gates.
 
 
 The [attribution follow-up](benchmarks/bun-body-attribution.md) validates a bounded
@@ -1725,5 +1725,22 @@ and test inventory are compared before executing the snapshot. The scope accepts
 fingerprints ancillary examples/release scripts without making them importable.
 It rejects aliases/inheritance, custom Bun config, installed dependencies and
 nonlocal imports other than node: builtins and bun:test. It does not execute package scripts.
-Unchanged Composer baseline/finding controls pass; saved execution identity and the shared scored
-report/rerun/review workflow remain gates. Bun support remains Planned.
+Unchanged Composer baseline/finding controls pass; the scored workflow follow-up is described below.
+
+Bun now exposes read-only `bun-list` through shared boolean discovery with a
+Bun-only erased ambient-declaration allowance. The default Node/Vitest path keeps
+its existing rejection. `bun-check --json` emits a validated diagnostic identity
+covering runtime, package/config, test inventory, recipe and limits, plus a separate
+input fingerprint. The diagnostic records are separate from saved mutation reports. Composer's full preview has 12 runtime candidates; see
+[discovery evidence](benchmarks/bun-discovery-identity.md).
+
+Explicit `--lang bun` now connects discovery and execution to shared reports and
+focused reruns. Saved identity validates the pinned executable bytes, manifest,
+config and exact observer/runner recipe. Test additions, executable relocation and
+budget changes remain compatible; the test inventory must match every execution
+within a run. Original and snapshot inputs are compared before discovery so report
+exclusions cannot hide executable files. Baselines and each mutation use fresh
+owned copies and bounded captures; only complete positive body evidence can kill.
+Independent JS/TS fixtures and Composer establish Experimental support; see
+[shared runs](benchmarks/bun-shared-runs.md). Review/policy and broader scored
+cleanup acceptance remain explicit gates before promotion.

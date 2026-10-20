@@ -17,7 +17,7 @@ not necessarily available in the current CLI.
 
 See [target support](SUPPORT.md) for Go/Rust support and validated scoped
 JavaScript/TypeScript support through Vitest. The Node runner has a validated
-JavaScript scope and a separately validated native TypeScript scope. Bun and pytest remain planned.
+JavaScript scope and a separately validated native TypeScript scope. Bun has an Experimental JS/TS scope; pytest remains planned.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
@@ -132,7 +132,16 @@ custom Bun configuration, installed dependencies, symlinks and dynamic imports
 remain unsupported. Examples/release scripts may be present but cannot be imported
 by audited source/tests. The unchanged 272-test Composer baseline and stronger-test
 finding now pass through this executor; see [acceptance](benchmarks/bun-composer-execution.md).
-Bun remains Planned: `--lang bun`, mutation runs and saved reruns are not available.
+`mutie bun-list PATH [--include GLOB] [--exclude GLOB] [--json]` previews runtime
+boolean flips without launching Bun. `bun-check --json` emits baseline execution
+identity; see [discovery and identity](benchmarks/bun-discovery-identity.md).
+`mutie PATH --lang bun` now runs serial, full-suite boolean mutations with saved
+reports and focused reruns (`--rerun RUN_DIR --id ID` or `--rerun-missed RUN_DIR`).
+Both JavaScript and TypeScript are Experimental. Raw captures have a mandatory
+4 MiB default budget; Unix per-file limits bound evidence, not total disk usage.
+Reruns allow stronger tests but reject runtime bytes, package/config or observer
+recipe changes. See [scored workflow evidence](benchmarks/bun-shared-runs.md).
+Independent real JavaScript acceptance and review/policy validation remain open.
 
 ## Try it
 

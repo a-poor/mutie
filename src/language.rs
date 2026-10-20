@@ -28,7 +28,7 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
     };
     let manifest = match lang {
         Lang::Go => "go.mod",
-        Lang::Vitest | Lang::Node => "package.json",
+        Lang::Vitest | Lang::Node | Lang::Bun => "package.json",
         _ => "Cargo.toml",
     };
     ensure!(
@@ -41,6 +41,7 @@ pub fn resolve(root: &Path, requested: Lang) -> Result<Lang> {
 
 pub fn test_command(lang: Lang) -> Vec<&'static str> {
     match lang {
+        Lang::Bun => vec!["bun", "test", "--max-concurrency=1", "--no-install"],
         Lang::Node => vec!["node", "--test", "--test-concurrency=1", "test/*.test.js"],
         Lang::Vitest => vec![
             "node",
@@ -63,6 +64,7 @@ pub fn test_command(lang: Lang) -> Vec<&'static str> {
 pub fn discovery_command(lang: Lang, scope: TestScope) -> Vec<&'static str> {
     match lang {
         Lang::Vitest => vec!["mutie", "vitest-list"],
+        Lang::Bun => vec!["mutie", "bun-list"],
         Lang::Node => vec!["mutie", "--lang", "node", "--list"],
         Lang::Rust => std::iter::once("cargo")
             .chain(rust::METADATA_ARGS.iter().copied())
@@ -84,6 +86,7 @@ pub async fn test<F, Fut>(
     cache: Option<&rust::BuildCache>,
     vitest_scope: Option<&crate::vitest::ExecutionScope>,
     node_scope: Option<&crate::node::ExecutionScope>,
+    bun_scope: Option<&crate::bun::ExecutionScope>,
     cancellation: &Cancellation,
     progress: F,
 ) -> Result<CommandOutput>
@@ -92,6 +95,17 @@ where
     Fut: Future<Output = ()> + Send,
 {
     match lang {
+        Lang::Bun => {
+            crate::bun::test(
+                root,
+                limit,
+                log_limit,
+                capture_limit,
+                bun_scope.ok_or_else(|| anyhow::anyhow!("missing Bun execution identity"))?,
+                cancellation,
+            )
+            .await
+        }
         Lang::Node => {
             crate::node::test(
                 root,

@@ -162,7 +162,7 @@ impl RunConfig {
                 })
             })
             .transpose()?;
-        let config = Self {
+        let mut config = Self {
             module_root: root,
             config_file,
             lang,
@@ -211,8 +211,19 @@ impl RunConfig {
             rerun,
             ui: cli.ui.or(file.ui).unwrap_or_default(),
         };
-        if matches!(config.lang, Lang::Vitest | Lang::Node) {
-            let runner = if config.lang == Lang::Node {
+        if config.lang == Lang::Bun {
+            ensure!(
+                !cli.clear_max_capture_bytes,
+                "Bun requires bounded raw captures"
+            );
+            config.max_capture_bytes = config
+                .max_capture_bytes
+                .or(NonZeroUsize::new(4 * 1024 * 1024));
+        }
+        if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) {
+            let runner = if config.lang == Lang::Bun {
+                "Bun"
+            } else if config.lang == Lang::Node {
                 "Node"
             } else {
                 "Vitest"

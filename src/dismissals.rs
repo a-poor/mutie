@@ -536,6 +536,9 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
         println!("No dismissals to check.");
         return Ok(());
     }
+    if config.lang == Lang::Bun {
+        crate::bun::project::Project::load(&config.module_root, cancellation)?;
+    }
     if config.lang == Lang::Node {
         crate::node::project::Project::load(&config.module_root, cancellation)?;
     }
@@ -594,12 +597,16 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
             println!("Rust discovery excluded {exclusion}");
         }
         found.mutations
-    } else if matches!(config.lang, Lang::Vitest | Lang::Node) {
+    } else if matches!(config.lang, Lang::Vitest | Lang::Node | Lang::Bun) {
         drop(discovery_workspace);
         let source = snapshot.path();
         let discovery_cancellation = cancellation.clone();
         let language = config.lang;
         let found = tokio::task::spawn_blocking(move || {
+            if language == Lang::Bun {
+                crate::bun::project::Project::load(&source, &discovery_cancellation)?;
+                return crate::javascript::discover_bun(&source, &scope, &discovery_cancellation);
+            }
             if language == Lang::Node {
                 crate::node::project::Project::load(&source, &discovery_cancellation)?;
             } else {

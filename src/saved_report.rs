@@ -52,6 +52,7 @@ struct RunReport {
     #[serde(skip_serializing_if = "Option::is_none")]
     vitest_scope: Option<crate::vitest::ExecutionScope>,
     node_scope: Option<crate::node::ExecutionScope>,
+    bun_scope: Option<crate::bun::ExecutionScope>,
     mutation_command_prefix: Vec<&'static str>,
     discovery_command: Vec<&'static str>,
     include: Vec<String>,
@@ -175,6 +176,10 @@ pub struct SavedReport {
 }
 
 impl SavedReport {
+    pub fn bun_scope(&mut self, scope: &crate::bun::ExecutionScope) -> Result<()> {
+        self.run.bun_scope = Some(scope.clone());
+        self.flush()
+    }
     pub fn node_scope(&mut self, scope: &crate::node::ExecutionScope) -> Result<()> {
         self.run.baseline_command = scope.test_command();
         self.run.mutation_command_prefix = scope.test_command();
@@ -248,6 +253,7 @@ impl SavedReport {
                 rust_scope: None,
                 vitest_scope: None,
                 node_scope: None,
+                bun_scope: None,
                 mutation_command_prefix: language::test_command(config.lang)
                     .into_iter()
                     .filter(|arg| {
@@ -364,7 +370,7 @@ impl SavedReport {
                 && test_packages.iter().all(|p| {
                     if matches!(
                         self.run.effective_config.lang,
-                        crate::cli::Lang::Vitest | crate::cli::Lang::Node
+                        crate::cli::Lang::Vitest | crate::cli::Lang::Node | crate::cli::Lang::Bun
                     ) {
                         p.is_empty()
                     } else {
@@ -661,7 +667,9 @@ impl SavedReport {
         text.push_str(&format!("{}\n", self.run.policy));
         text.push_str(&self.run.score.details());
         text.push_str(&format!("{}\n", self.run.score_policy));
-        if self.run.effective_config.lang == crate::cli::Lang::Node {
+        if self.run.effective_config.lang == crate::cli::Lang::Bun {
+            text.push_str("Runner: Bun 1.3.11 test runner (JavaScript/TypeScript)\nFull suite; serial; fresh owned command copies; bounded evidence\n");
+        } else if self.run.effective_config.lang == crate::cli::Lang::Node {
             let typescript = self
                 .run
                 .node_scope
