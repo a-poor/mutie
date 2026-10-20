@@ -28,8 +28,10 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   reruns permit stronger tests but reject runtime/config/recipe drift. `benchmarks/bun-discovery-identity.md` records 12
   Composer flips and preserved inputs. Bun-only discovery skips erased ambient
   declarations without broadening Node/Vitest. JS/TS scored fixture and review workflows pass independently. TypeScript is
-  Validated via Composer; JavaScript is independently Validated via an adapted
-  pp-is ESM copy with unchanged source/tests; original package layout is unsupported. See `benchmarks/bun-shared-runs.md` and `benchmarks/bun-dismissals.md`.
+  Validated via Composer; JavaScript is independently Validated via pp-is.
+  `benchmarks/bun-unchanged-layout.md` records unchanged checkout acceptance:
+  missing package type requires static JS ESM, root/dist declarations and ancillary
+  packaging stay fingerprinted/non-importable, and hidden tests remain rejected. See `benchmarks/bun-shared-runs.md` and `benchmarks/bun-dismissals.md`.
 - `src/node.rs` implements the pinned Node 24.22.0 runner for one
   dependency-free ESM package: JavaScript and native TypeScript are independently Validated.
   `node/project.rs` validates the original root and copies; `node/protocol.rs` requires file/global completion and hook
@@ -227,14 +229,17 @@ checkpoint exposes suppressed pending rejections without delaying successful
 callbacks. Inspector terminal events can be lost at exit and cannot be guessed.
 The Rust reader now supports scored serial runs, saved reports and focused reruns.
 Independent JS/TS fixture workflows and Composer evidence establish scoped
-TypeScript validation. JavaScript now has independent adapted pp-is acceptance. `benchmarks/bun-scored-cleanup.md` records independent JS/TS scored
+TypeScript validation. JavaScript has independent pp-is acceptance. `benchmarks/bun-scored-cleanup.md` records independent JS/TS scored
 resource limits, timeout/SIGINT, descendant shutdown and score boundaries.
 `benchmarks/bun-dismissals.md` records independent JS/TS CRUD, staleness, raw-score
 preservation and error precedence. `benchmarks/bun-javascript-pp-is.md` records
 22 JavaScript candidates (12 kills, ten survivors) and seven stronger-test kills,
-with preserved inputs/reports. Acceptance adds explicit ESM and omits packaging
-files in a temporary copy only; source/tests are unchanged. The original pp-is
-checkout remains unsupported. JS is Validated within the supported adapted scope. See `benchmarks/bun-shared-runs.md`.
+with preserved inputs/reports. Initial acceptance added explicit ESM and omitted
+packaging files in a temporary copy only; source/tests were unchanged. The original pp-is
+checkout now passes under the narrow layout extension recorded in
+`benchmarks/bun-unchanged-layout.md`, matching the adapted inventory and outcomes.
+Implicit ESM is JS-only with static imports/exports; declaration/packaging files
+remain outside executable imports and hidden tests are rejected. See `benchmarks/bun-shared-runs.md`.
 
 Prioritize milestone progress, demonstrated correctness/reliability blockers,
 and explicit user requests. Do not automatically propose another small Go feature,

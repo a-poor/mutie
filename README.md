@@ -144,7 +144,11 @@ recipe changes. See [scored workflow evidence](benchmarks/bun-shared-runs.md).
 Independent JS/TS [review and policy checks](benchmarks/bun-dismissals.md) pass;
 [JavaScript project acceptance](benchmarks/bun-javascript-pp-is.md) records seven
 stronger-test kills on an explicitly adapted pp-is copy. Its source/tests are
-unchanged, but the original package layout remains unsupported.
+unchanged. [Unchanged-layout acceptance](benchmarks/bun-unchanged-layout.md) now
+supports that original checkout too: absent `type` requires static JavaScript
+import/export syntax; root/dist declarations and ancillary packaging files are
+fingerprinted but cannot be imported by audited runtime files. Hidden packaging
+tests and CommonJS runtime files remain rejected.
 
 ## Try it
 

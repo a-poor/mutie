@@ -34,7 +34,7 @@ does not by itself validate a new runner.
 | JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
-| JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; adapted pp-is real-project findings | Unchanged package-layout acceptance; remaining pp-is findings |
+| JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence; remaining Composer findings |
 | Python | pytest | Planned | None | Define package/import/environment scope and fixture |
 
@@ -290,9 +290,11 @@ covers CRUD, staleness, raw scores, focused reruns and error precedence. Togethe
 with Composer, this completes scoped TypeScript validation. Independent
 [JavaScript acceptance](benchmarks/bun-javascript-pp-is.md) uses pp-is with all
 runtime source/tests unchanged in an explicitly adapted ESM root: 22 candidates,
-12 kills/10 survivors, then seven stronger-test kills. The original checkout is
-still rejected; packaging files were omitted and `type: module` added only in the
-temporary copy. This validates runtime findings, not unchanged-layout support. Parallel workers,
+12 kills/10 survivors, then seven stronger-test kills. That first run used a temporary adaptation. [Unchanged-layout acceptance](benchmarks/bun-unchanged-layout.md)
+now accepts the original checkout with matching inventory/outcomes. An absent
+`type` requires static JS import/export syntax; ancillary packaging and root/dist
+declarations stay fingerprinted and non-importable. Explicit CommonJS, implicit
+runtime TypeScript and hidden packaging tests remain rejected. Parallel workers,
 dependencies, preloads, custom Bun configuration and multi-package layouts remain
 unsupported. Do not infer compatibility from Node or Vitest support.
 

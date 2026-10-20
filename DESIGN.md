@@ -1748,4 +1748,8 @@ completing scoped TypeScript validation with Composer.
 [Independent JavaScript validation](benchmarks/bun-javascript-pp-is.md) follows on
 an explicitly adapted pp-is ESM root, preserving all source/test bytes. Seven
 stronger tests kill seven former survivors; three remain open. Original package
-layout support is not implied by the adapted runtime acceptance.
+layout support was separate from that adaptation. The
+[unchanged-layout follow-up](benchmarks/bun-unchanged-layout.md) now admits static
+JS ESM without a package type plus opaque ancillary packaging and root/dist
+`.d.ts` files. Runtime imports still resolve only to audited source/test `.js`/`.ts`
+files; hidden packaging tests and CommonJS runtime files remain errors.

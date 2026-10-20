@@ -21,9 +21,9 @@ impl Project {
         let manifest: serde_json::Value =
             serde_json::from_str(&fs::read_to_string(root.join("package.json"))?)?;
         ensure!(
-            manifest["type"] == "module"
+            (manifest.get("type").is_none() || manifest["type"] == "module")
                 && manifest["name"].as_str().is_some_and(|n| !n.is_empty()),
-            "Bun requires a named ESM package"
+            "Bun requires a named package with module or absent type"
         );
         ensure!(
             manifest["scripts"]["test"] == "bun test",
@@ -67,7 +67,13 @@ impl Project {
             "Bun requires .test.js/.test.ts files under test/ or tests/"
         );
         for file in &code {
-            validate_imports(&root, file, &code, cancellation)?;
+            validate_imports(
+                &root,
+                file,
+                &code,
+                manifest.get("type").is_none(),
+                cancellation,
+            )?;
         }
         Ok(Self { root, files, tests })
     }
@@ -133,35 +139,49 @@ fn collect(
             relative.display()
         );
         let ext = path.extension().and_then(|s| s.to_str());
+        let executable = relative.starts_with("src")
+            || relative.starts_with("test")
+            || relative.starts_with("tests");
+        let declaration = name.ends_with(".d.ts");
+        let ancillary = relative.starts_with("examples")
+            || relative.starts_with("scripts")
+            || relative.starts_with("dist");
         ensure!(
-            !matches!(ext, Some("jsx" | "tsx" | "mjs" | "cjs" | "mts" | "cts")),
+            !matches!(ext, Some("jsx" | "tsx" | "mts" | "cts")),
             "unsupported Bun source extension"
         );
-        if matches!(ext, Some("js" | "ts")) {
-            let executable = relative.starts_with("src")
-                || relative.starts_with("test")
-                || relative.starts_with("tests");
+        if matches!(ext, Some("js" | "ts" | "mjs" | "cjs")) {
+            // Bun's native test search must never discover tests in packaging
+            // directories. Keep all these bytes fingerprinted but non-importable.
+            let test_name = name.contains(".test.")
+                || name.contains(".spec.")
+                || name.contains("_test.")
+                || name.contains("_spec.");
             ensure!(
-                executable || relative.starts_with("examples") || relative.starts_with("scripts"),
-                "Bun source must be audited src/test code or non-executable examples/scripts"
-            );
-            ensure!(
-                executable || !is_test(relative),
-                "Bun tests outside test/ or tests/ are unsupported"
-            );
-            ensure!(
-                !name.ends_with(".d.ts")
-                    && !name.contains(".spec.")
-                    && !name.contains("_test.")
-                    && !name.contains("_spec."),
+                !test_name || (executable && !declaration && is_test(relative)),
                 "unsupported Bun declaration/test naming"
             );
-            ensure!(
-                !is_test(relative) || !relative.starts_with("src"),
-                "in-source Bun tests unsupported"
-            );
-            if executable {
+            if declaration {
+                ensure!(
+                    !executable
+                        && (relative.components().count() == 1 || relative.starts_with("dist")),
+                    "Bun declarations are only accepted as root/dist packaging files"
+                );
+            } else if executable {
+                ensure!(
+                    matches!(ext, Some("js" | "ts")),
+                    "unsupported Bun source extension"
+                );
+                ensure!(
+                    !is_test(relative) || !relative.starts_with("src"),
+                    "in-source Bun tests unsupported"
+                );
                 code.insert(relative.to_owned());
+            } else {
+                ensure!(
+                    ancillary,
+                    "Bun source must be audited src/test code or ancillary examples/scripts/dist"
+                );
             }
         }
         files.insert(
@@ -179,6 +199,7 @@ fn validate_imports(
     root: &Path,
     file: &Path,
     files: &BTreeSet<PathBuf>,
+    implicit_esm: bool,
     cancellation: &Cancellation,
 ) -> Result<()> {
     let source = fs::read_to_string(root.join(file))?;
@@ -192,9 +213,30 @@ fn validate_imports(
     parser.set_language(&language.into())?;
     let tree = crate::javascript::parse(&mut parser, &source)
         .with_context(|| format!("cannot parse Bun file {}", file.display()))?;
+    if implicit_esm {
+        ensure!(!typescript, "Bun implicit ESM scope is JavaScript-only");
+        let mut cursor = tree.root_node().walk();
+        ensure!(
+            tree.root_node()
+                .named_children(&mut cursor)
+                .any(|node| matches!(node.kind(), "import_statement" | "export_statement")),
+            "Bun implicit ESM requires static import/export syntax in {}",
+            file.display()
+        );
+    }
     let mut pending = vec![tree.root_node()];
     while let Some(node) = pending.pop() {
         cancellation.check()?;
+        if implicit_esm && node.kind() == "identifier" {
+            ensure!(
+                !matches!(
+                    &source[node.byte_range()],
+                    "require" | "module" | "exports" | "__dirname" | "__filename"
+                ),
+                "CommonJS identifiers are unsupported in Bun implicit ESM: {}",
+                file.display()
+            );
+        }
         let import = node.child_by_field_name("source");
         if node.kind() == "call_expression"
             && let Some(function) = node.child_by_field_name("function")
@@ -245,4 +287,135 @@ fn validate_imports(
         pending.extend(node.named_children(&mut cursor));
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn fixture() -> tempfile::TempDir {
+        let root = tempfile::tempdir().unwrap();
+        for directory in ["src", "test", "dist", "scripts"] {
+            fs::create_dir(root.path().join(directory)).unwrap();
+        }
+        fs::write(
+            root.path().join("package.json"),
+            r#"{"name":"implicit-esm","scripts":{"test":"bun test"}}"#,
+        )
+        .unwrap();
+        fs::write(
+            root.path().join("src/index.js"),
+            "export const enabled = true;",
+        )
+        .unwrap();
+        fs::write(root.path().join("test/index.test.js"), "import {test} from 'bun:test'; import {enabled} from '../src/index.js'; test('enabled',()=>{});").unwrap();
+        root
+    }
+
+    #[test]
+    fn implicit_esm_packaging_is_fingerprinted_but_not_executable() -> Result<()> {
+        let root = fixture();
+        for file in [
+            "index.d.ts",
+            "dist/index.d.ts",
+            "dist/index.js",
+            "dist/index.mjs",
+            "dist/index.cjs",
+            "scripts/build.mjs",
+        ] {
+            // Deliberately invalid/external content: these are opaque packaging
+            // bytes. Importing them would have to fail before execution.
+            fs::write(
+                root.path().join(file),
+                "not executable; require('external');",
+            )?;
+        }
+        let load = || Project::load(root.path(), &Cancellation::default());
+        let initial = load()?;
+        assert_eq!(initial.tests, ["test/index.test.js"]);
+        assert_eq!(initial.files.len(), 9);
+        fs::write(root.path().join("dist/index.cjs"), "changed packaging")?;
+        assert_ne!(initial.files, load()?.files);
+        for target in [
+            "../index.d.ts",
+            "../dist/index.js",
+            "../dist/index.mjs",
+            "../dist/index.cjs",
+            "../scripts/build.mjs",
+        ] {
+            fs::write(
+                root.path().join("src/index.js"),
+                format!("import '{target}'; export const enabled = true;"),
+            )?;
+            assert!(load().is_err(), "{target}");
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn packaging_cannot_hide_tests_or_runtime_extensions() -> Result<()> {
+        let root = fixture();
+        for file in [
+            "dist/hidden.test.js",
+            "dist/hidden.test.mjs",
+            "dist/hidden.spec.cjs",
+            "dist/hidden_test.ts",
+            "scripts/build.test.mjs",
+            "index.test.d.ts",
+            "dist/hidden.test.d.ts",
+            "src/index.d.ts",
+            "src/extra.mjs",
+            "test/extra.cjs",
+            "dist/nested/package.json",
+        ] {
+            let path = root.path().join(file);
+            fs::create_dir_all(path.parent().unwrap())?;
+            fs::write(&path, "{}")?;
+            assert!(
+                Project::load(root.path(), &Cancellation::default()).is_err(),
+                "{file}"
+            );
+            fs::remove_file(path)?;
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn absent_type_requires_static_javascript_esm() -> Result<()> {
+        let root = fixture();
+        for source in [
+            "const enabled = true;",
+            "module.exports = true;",
+            "export const enabled = require('fs');",
+            "export const enabled = module.exports;",
+            "export const enabled = __dirname;",
+        ] {
+            fs::write(root.path().join("src/index.js"), source)?;
+            assert!(
+                Project::load(root.path(), &Cancellation::default()).is_err(),
+                "{source}"
+            );
+        }
+        fs::write(
+            root.path().join("src/index.js"),
+            "export const enabled = true;",
+        )?;
+        for kind in ["commonjs", "unknown", ""] {
+            fs::write(
+                root.path().join("package.json"),
+                format!(r#"{{"name":"test","type":"{kind}","scripts":{{"test":"bun test"}}}}"#),
+            )?;
+            assert!(Project::load(root.path(), &Cancellation::default()).is_err());
+        }
+        fs::write(
+            root.path().join("package.json"),
+            r#"{"name":"test","scripts":{"test":"bun test"}}"#,
+        )?;
+        fs::write(
+            root.path().join("src/extra.ts"),
+            "export const enabled: boolean = true;",
+        )?;
+        assert!(Project::load(root.path(), &Cancellation::default()).is_err());
+        Ok(())
+    }
 }

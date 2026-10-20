@@ -27,3 +27,6 @@ See `benchmarks/bun-javascript-pp-is.md` and its results JSON for complete input
 adaptation and report preservation evidence. Tests target documented string
 predicates and malformed IPv4 octets; they intentionally leave the ambiguous
 `isEmpty` fallback and redundant primitive-boolean checks unresolved.
+
+Follow-up: `benchmarks/bun-unchanged-layout.md` records support for the original
+checkout with matching outcomes; the adaptation above remains historical evidence.

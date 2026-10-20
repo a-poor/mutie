@@ -43,7 +43,7 @@ Native reports conflate body, hook and process failures. A bounded file-backed
 [observer prototype](benchmarks/bun-body-attribution.md) now passes 112 paired cases
 and Composer controls. Shared scored execution, focused reruns,
 review/policies and scored cleanup pass. TypeScript and JavaScript are independently Validated;
-JavaScript uses a documented pp-is ESM adaptation with unchanged source/tests. Rust workspaces remain a separate decision.
+JavaScript now has unchanged pp-is layout acceptance following the documented adaptation. Rust workspaces remain a separate decision.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 ## Target support tracking
@@ -107,8 +107,9 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 - [x] Complete an independent real JavaScript loop on adapted pp-is: 22 candidates,
   seven stronger-test kills and preserved sources/reports; promote scoped JS to
   Validated. See [adaptation and evidence](benchmarks/bun-javascript-pp-is.md).
-- [ ] Audit unchanged JavaScript package-layout acceptance separately; pp-is's
-  generated dist/declaration/build files and implicit ESM remain unsupported.
+- [x] Accept unchanged pp-is packaging and static JS implicit ESM with strict
+  import/test boundaries; match all 22 adapted outcomes. See
+  [unchanged layout](benchmarks/bun-unchanged-layout.md).
 - [ ] Reassess the next objective after scoped Bun validation: useful survivor
   review, unchanged real-project scope, and measured feedback cost before expansion.
 

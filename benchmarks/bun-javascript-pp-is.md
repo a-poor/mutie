@@ -80,3 +80,6 @@ scope, based on this documented adaptation. TypeScript retains its independent
 Composer acceptance. Neither promotion broadens accepted checkout layouts.
 `git diff --check`, `cargo fmt --check` and results JSON parsing pass; no Rust
 behavior changed, so the existing fixture/review/cleanup suite was not rerun.
+
+Follow-up: `benchmarks/bun-unchanged-layout.md` records support for the original
+checkout with matching outcomes; the adaptation above remains historical evidence.
