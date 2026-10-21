@@ -261,10 +261,14 @@ impl RunConfig {
                     .operators
                     .iter()
                     .all(|op| *op == Operator::BooleanFlip
-                        || (config.lang == Lang::Python && *op == Operator::ComparisonBoundary)),
+                        || (config.lang == Lang::Python
+                            && matches!(
+                                *op,
+                                Operator::ComparisonBoundary | Operator::ArithmeticReplace
+                            ))),
                 "{runner} supports only boolean_flip{}",
                 if config.lang == Lang::Python {
-                    " and comparison_boundary"
+                    ", comparison_boundary, and arithmetic_replace"
                 } else {
                     ""
                 }

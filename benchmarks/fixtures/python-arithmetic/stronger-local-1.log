@@ -1,0 +1,17 @@
+F....................................................................... [ 35%]
+........................................................................ [ 71%]
+.........................................................                [100%]
+=================================== FAILURES ===================================
+________________________ test_exact_full_kelly_fraction ________________________
+
+    def test_exact_full_kelly_fraction():
+        # Net odds 2, weighted win 1.5, loss probability .25: fraction 1.25 / 2.
+>       assert full_kelly_fraction(0.75, 3.0, takeout=0.0) == 0.625
+E       assert 2.5 == 0.625
+E        +  where 2.5 = full_kelly_fraction(0.75, 3.0, takeout=0.0)
+
+tests/test_arithmetic_contracts.py:7: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_arithmetic_contracts.py::test_exact_full_kelly_fraction - a...
+1 failed, 200 passed in 0.54s
+

@@ -1,0 +1,23 @@
+{
+  "static_scope": {
+    "command": "/tmp/mutie-pytest-audit-env/bin/python -I -S -B tests/support/python_scope.py",
+    "passed": 43
+  },
+  "arithmetic_workflows": {
+    "command": "MUTIE_PYTHON=/tmp/mutie-pytest-audit-env/bin/python cargo test --test python_workflow arithmetic_ -- --ignored --test-threads=1",
+    "passed": 2,
+    "seconds": 113.7
+  },
+  "comparison_workflows": {
+    "passed": 2,
+    "seconds": 78.91
+  },
+  "default_suite": {
+    "passed": 279,
+    "ignored": 96,
+    "failed": 0
+  },
+  "clippy": "all targets; warnings denied; passed",
+  "format": "cargo fmt --check passed",
+  "preservation": "verify.py passed"
+}

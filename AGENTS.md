@@ -370,7 +370,8 @@ routing has a no-retry precondition; no classifier or timeout was relaxed. Prese
 original failed reports and keep native reflective slots diagnostics outside scored
 Python support. Slots survivors are not declared equivalent or dismissed.
 
-Python supports boolean flips and single-comparison `comparison_boundary` mutations.
+Python supports boolean flips, single-comparison `comparison_boundary`, and
+binary `+ ↔ -` / `* ↔ /` `arithmetic_replace` mutations.
 See `benchmarks/python-comparison-boundaries.md`: preserve native operator-token
 replacement and operand evaluation; chains, annotation subtrees and tests remain
 excluded. Custom rich-comparison exceptions are errors. Require exact saved
@@ -438,3 +439,12 @@ survivors (including six prior metrics findings) and two original endpoint error
 through explicit expected-success assertions. Preserve original failed reports,
 classification rules and numerical survivors without blanket equivalence claims.
 Combined inventory accounting is not a full original or stronger-suite score.
+
+`benchmarks/python-arithmetic.md` validates Python binary `+ ↔ -` and `* ↔ /`
+under `arithmetic_replace`. Preserve native grouping/evaluation and exact token
+pairs; annotations, unary/augmented operators, floor division, modulo and powers
+remain excluded. This is not numeric type inference: unsupported operands and
+zero division stay errors. Unchanged betting-math-kit's 30-site Kelly selection
+has 21 kills, eight survivors and one string-operand error; a separate 201-test
+copy kills all eight survivors. Preserve prior inputs/reports and recipe drift
+checks; selected evidence is not a full 194-arithmetic-site score.

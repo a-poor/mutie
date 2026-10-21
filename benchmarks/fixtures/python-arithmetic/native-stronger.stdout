@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.0.2, pluggy-1.7.0
+rootdir: /tmp/mutie-python-arithmetic-acceptance/stronger-project
+configfile: pyproject.toml
+collected 201 items
+
+tests/test_arithmetic_contracts.py ...                                   [  1%]
+tests/test_devig.py .................................................... [ 27%]
+..                                                                       [ 28%]
+tests/test_kelly.py ...................................                  [ 45%]
+tests/test_metrics.py ................................                   [ 61%]
+tests/test_odds.py ..................................................... [ 88%]
+.                                                                        [ 88%]
+tests/test_simulation.py .......................                         [100%]
+
+============================= 201 passed in 0.54s ==============================

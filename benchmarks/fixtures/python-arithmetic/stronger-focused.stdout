@@ -1,0 +1,27 @@
+Saving report to /tmp/mutie-python-arithmetic-acceptance/reports/run-1792618546-fVe1ek
+Snapshotting /tmp/mutie-python-arithmetic-acceptance/stronger-project
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 3.01s
+Selected 8 mutations from /tmp/mutie-python-arithmetic-acceptance/reports/run-1792618232-iPca41 (all saved mutations; source IDs: 9, 13, 18, 19, 20, 23, 24, 25)
+Found 8 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/8] killed: src/betting_math_kit/kelly.py:144:29: "/" -> "*" (3.13s)
+[2/8] killed: src/betting_math_kit/kelly.py:187:42: "-" -> "+" (3.08s)
+[3/8] killed: src/betting_math_kit/kelly.py:253:23: "-" -> "+" (2.99s)
+[4/8] killed: src/betting_math_kit/kelly.py:253:29: "/" -> "*" (2.97s)
+[5/8] killed: src/betting_math_kit/kelly.py:260:21: "*" -> "/" (2.98s)
+[6/8] killed: src/betting_math_kit/kelly.py:282:23: "-" -> "+" (3.16s)
+[7/8] killed: src/betting_math_kit/kelly.py:282:29: "/" -> "*" (2.94s)
+[8/8] killed: src/betting_math_kit/kelly.py:292:17: "-" -> "+" (2.92s)
+
+8 mutations: 8 killed, 0 missed, 0 timed out, 0 failed to compile
+Run completed in 70.50s
+Workspaces: snapshot 0.008s | setup 0.009s | reset 0.055s (cumulative)
+Copies: 231 reflinked | 0 copied (0 bytes) | 11 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-acceptance/reports/run-1792618546-fVe1ek/summary.txt
+Mutation score: 100.00%
+Scope: rerun selection only
+Killed / (killed + missed): 8 / 8
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

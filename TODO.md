@@ -840,13 +840,12 @@ work; their order is not a priority queue and they do not block the Rust milesto
 
 - [ ] Evaluate [proposed operator expansion](DESIGN.md#proposed-operator-expansion)
   against useful real-project gaps: comparison inversion/negation removal across
-  languages, Python/Rust arithmetic, bounded numeric/string literal changes,
+  languages, Rust/further Python arithmetic, bounded numeric/string literal changes,
   return-value replacement, and scoped statement/block removal.
-- [ ] Consider Python arithmetic as a next objective after the current findings
-  review, using unchanged betting-math-kit if it demonstrates a useful finding.
-  Validate semantics and discovery/rerun identity, then kill the finding with
-  stronger tests in a separate copy while preserving original inputs/reports and
-  classification rules. This is a proposal, not a selected or started goal.
+- [x] Add scoped Python binary arithmetic with semantic controls, fixture
+  discovery/report/rerun validation and unchanged betting-math-kit findings.
+  Preserve original inputs/reports and classification rules; see
+  [arithmetic acceptance](benchmarks/python-arithmetic.md).
 
 - [ ] Prioritize the planned JavaScript/TypeScript and Python runner slices using
   concrete projects and the largest remaining obstacles to routine use; see

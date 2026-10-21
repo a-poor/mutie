@@ -1260,9 +1260,9 @@ automatic sequence of work:
 
 - Extend comparison inversion and negation removal to additional languages to
   expose reversed validation/filtering decisions, beyond equality-at-a-cutoff gaps.
-- Add arithmetic replacement to Python and Rust for formulas, counters and indexing.
-  Python arithmetic is a candidate next objective after the current findings review;
-  unchanged betting-math-kit could provide a useful validation target.
+- Extend arithmetic replacement to Rust for formulas, counters and indexing.
+  Python now has a [validated scoped binary slice](benchmarks/python-arithmetic.md);
+  broader Python operators need separate semantic and real-project evidence.
 - Consider a small numeric-literal replacement set (`0`, `1`, `-1`, or adjacent
   values) for defaults, limits and retry counts. Bound candidate growth and avoid
   duplicate or unchanged replacements.
@@ -2011,3 +2011,13 @@ accounts for all 87 sites (19 kills, 59 survivors, nine errors). A separate
 expected-success assertions. Original inputs, reports and classification rules
 remain intact. Domain-limited redundancy observations and unresolved numerical
 boundaries are retained individually; combined accounting is not a full score.
+
+## Python binary arithmetic
+
+The [scoped arithmetic acceptance](benchmarks/python-arithmetic.md) adds binary
+`+ ↔ -` and `* ↔ /` through native token replacement and the existing
+`arithmetic_replace` operator. Equal-precedence replacements retain AST grouping
+and operand order. No numeric type inference, desugaring, operand duplication,
+coercion or exception conversion is introduced. Saved pairs and source spans are
+validated; validator changes join existing recipe identity. Fixture/error controls
+and unchanged betting-math-kit stronger-test findings establish the narrow scope.

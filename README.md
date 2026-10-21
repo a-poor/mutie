@@ -466,7 +466,8 @@ Support differs by language and applies within each runner's validated scope:
 
 | Mutation | Go | Rust | Python | JS/TS (Vitest, Node, Bun) |
 | --- | --- | --- | --- | --- |
-| Arithmetic: `+ ↔ -`, `* ↔ /`, `% → *` | Yes | No | No | No |
+| Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | No | Yes | No |
+| Modulo replacement: `% → *` | Yes | No | No | No |
 | Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | No | No | No |
 | Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | No |
 | Logical swap: `&& ↔ \|\|` | Yes | Yes | No | No |
@@ -478,6 +479,11 @@ Support differs by language and applies within each runner's validated scope:
 | Replace numeric or string literals | No | No | No | No |
 | Remove arbitrary statements or code blocks | No | No | No | No |
 
+Python binary arithmetic supports `+ ↔ -` and `* ↔ /`, preserving native
+grouping and operand evaluation. Unary signs, augmented-assignment operators, floor
+division, modulo, powers and annotations are excluded. Operand types are not
+inferred: unsupported operations and division by zero remain errors. See
+[semantic controls and unchanged-project validation](benchmarks/python-arithmetic.md).
 Python comparison boundaries exclude chained comparisons such as `0 < x < 10`.
 Call removal deletes eligible standalone call statements; it excludes calls used
 as values, `go`/`defer` calls, initializers and loop updates. Boolean literal
@@ -487,8 +493,8 @@ See [proposed operator expansion](DESIGN.md#proposed-operator-expansion) for ide
 that are not yet implemented.
 
 All ten Go operators run by default; Rust runs `boolean_flip`,
-`comparison_boundary`, and `logical_swap`. Python runs `boolean_flip` and
-`comparison_boundary`.
+`comparison_boundary`, and `logical_swap`. Python runs `boolean_flip`,
+`comparison_boundary`, and `arithmetic_replace`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 

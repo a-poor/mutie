@@ -146,6 +146,10 @@ impl Project {
                             | ("<=", "<")
                             | (">", ">=")
                             | (">=", ">")
+                            | ("+", "-")
+                            | ("-", "+")
+                            | ("*", "/")
+                            | ("/", "*")
                     ),
                 "invalid Python mutation span"
             );
@@ -175,6 +179,8 @@ impl Project {
                     file: source.clone(),
                     operator: if matches!(site.original.as_str(), "True" | "False") {
                         Operator::BooleanFlip
+                    } else if matches!(site.original.as_str(), "+" | "-" | "*" | "/") {
+                        Operator::ArithmeticReplace
                     } else {
                         Operator::ComparisonBoundary
                     },
@@ -195,6 +201,38 @@ impl Project {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn arithmetic_spans_require_exact_pairs_and_operator_identity() -> Result<()> {
+        for (original, replacement) in [("+", "-"), ("-", "+"), ("*", "/"), ("/", "*")] {
+            let root = tempfile::tempdir()?;
+            fs::create_dir(root.path().join("sample"))?;
+            let source = format!("label = 'π'; result = a {original} b\n");
+            fs::write(root.path().join("sample/__init__.py"), &source)?;
+            let start = source.find(original).unwrap();
+            let document = serde_json::from_value(json!({
+                "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source.as_bytes()))},
+                "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"], "conftests":[],
+                "mutations":[{"file":"sample/__init__.py","start":start,"end":start+1,
+                    "line":1,"column":start+1,"end_line":1,"end_column":start+2,
+                    "original":original,"replacement":replacement}],
+            }))?;
+            let mut project = Project {
+                root: root.path().to_owned(),
+                document,
+            };
+            let mutations = project.discover(&Scope::new(&[], &[])?)?;
+            assert_eq!(mutations[0].operator, Operator::ArithmeticReplace);
+            project.document.mutations[0].replacement = "%".into();
+            assert!(project.discover(&Scope::new(&[], &[])?).is_err());
+            mutations[0].apply(root.path())?;
+            assert_eq!(
+                fs::read_to_string(root.path().join("sample/__init__.py"))?,
+                format!("label = 'π'; result = a {replacement} b\n")
+            );
+        }
+        Ok(())
+    }
 
     #[test]
     fn comparison_spans_and_replacements_are_validated() -> Result<()> {

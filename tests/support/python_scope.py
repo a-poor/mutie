@@ -155,6 +155,84 @@ class ScopeTests(unittest.TestCase):
             namespace['compare'](failing_left, right)
         self.assertEqual(trace, ['left'])
 
+    def test_arithmetic_tokens_exclusions_and_grouping(self):
+        import ast
+        source = ('label = "π + \u2028 -"\n'
+                  'def expression(a,b,c): return (a + b) * (-c) / (a - b)\n'
+                  'def multiline(a,b): return (a # + ignored\n - b)\n'
+                  'def excluded(a,b):\n a += b\n return -a, +b, a // b, a % b, a ** b\n'
+                  'annotation: list[1 + 2]\n'
+                  'def bound[T: (1 * 2)](x:T) -> list[1 / 2]: return x\n'
+                  'def unpack(*args, **kwargs): return args\n'
+                  'formatted = f"{1 + 2}"\n')
+        for newline in ('\n', '\r\n'):
+            text = source.replace('\n', newline)
+            self.write('sample/__init__.py', text)
+            sites = scope.inspect(self.root)['mutations']
+            self.assertEqual([m['original'] for m in sites], ['+', '*', '/', '-', '-', '+'])
+            for site in sites:
+                raw = text.encode()
+                self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+                changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+                expected = ast.parse(text)
+                mapping = {ast.Add: ast.Sub, ast.Sub: ast.Add, ast.Mult: ast.Div, ast.Div: ast.Mult}
+                # Only the native operator class changes; all grouping and operands remain.
+                matched = []
+                for node in ast.walk(expected):
+                    if isinstance(node, ast.BinOp):
+                        lines = raw.splitlines(keepends=True)
+                        low = sum(map(len, lines[:node.left.end_lineno-1])) + node.left.end_col_offset
+                        high = sum(map(len, lines[:node.right.lineno-1])) + node.right.col_offset
+                        if low <= site['start'] < high:
+                            node.op = mapping[type(node.op)]()
+                            matched.append(node)
+                self.assertEqual(len(matched), 1)
+                self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+        self.write('tests/test_sample.py', 'def test_math(): assert 1 + 2 == 3\n')
+        self.assertEqual(scope.inspect(self.root)['mutations'], sites)
+
+    def test_arithmetic_native_order_dispatch_and_errors(self):
+        import math
+        for original, replacement, expected in [('+','-',4), ('-','+',12), ('*','/',2), ('/','*',32)]:
+            source = f'def calculate(left,right): return left() {original} right()\n'
+            self.write('sample/__init__.py', source)
+            site, = scope.inspect(self.root)['mutations']
+            self.assertEqual(site['replacement'], replacement)
+            changed = source[:site['start']] + replacement + source[site['end']:]
+            namespace = {}
+            exec(changed, namespace)
+            trace = []
+            def left():
+                trace.append('left')
+                return 8
+            def right():
+                trace.append('right')
+                return 4
+            self.assertEqual(namespace['calculate'](left, right), expected)
+            self.assertEqual(trace, ['left','right'])
+            trace.clear()
+            def failing():
+                trace.append('left')
+                raise ValueError('operand')
+            with self.assertRaisesRegex(ValueError, 'operand'):
+                namespace['calculate'](failing, right)
+            self.assertEqual(trace, ['left'])
+            if original == '*':
+                with self.assertRaises(ZeroDivisionError):
+                    namespace['calculate'](lambda: 1, lambda: 0)
+                self.assertEqual(math.copysign(1.0, namespace['calculate'](lambda: -0.0, lambda: 2)), -1.0)
+                self.assertIsInstance(namespace['calculate'](lambda: 8, lambda: 4), float)
+                self.assertTrue(math.isnan(namespace['calculate'](lambda: float('nan'), lambda: 2)))
+            if original == '+':
+                class Left:
+                    def __sub__(self, other): return NotImplemented
+                class Right:
+                    def __rsub__(self, other): raise RuntimeError('reflected dispatch')
+                with self.assertRaisesRegex(RuntimeError, 'reflected dispatch'):
+                    namespace['calculate'](Left, Right)
+                with self.assertRaises(TypeError):
+                    namespace['calculate'](lambda: 'a', lambda: 'b')
+
     def test_conftest_helpers_are_audited_and_imports_are_bounded(self):
         self.write('tests/__init__.py', '"""Local tests."""\n')
         self.write('tests/conftest.py', 'import pytest\ndef helper(value=True): return value\n'

@@ -140,7 +140,7 @@ def validate_fixture_request(tree):
                         "Python dynamic fixture lookup requires a literal ordinary fixture name")
 
 
-def comparison_sites(tree, text, data, annotation_nodes, relative):
+def operator_sites(tree, text, data, annotation_nodes, relative):
     """Replace only the native token; never desugar or duplicate operands."""
     # AST rows use physical newlines, not Unicode string line separators.
     lines = [line.decode("utf-8") for line in data.splitlines(keepends=True)]
@@ -149,25 +149,33 @@ def comparison_sites(tree, text, data, annotation_nodes, relative):
         offsets.append(offsets[-1] + len(line.encode("utf-8")))
     tokens = []
     for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
-        if token.type == tokenize.OP and token.string in {"<", "<=", ">", ">="}:
+        if token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "+", "-", "*", "/"}:
             row, column = token.start
             start = offsets[row - 1] + len(lines[row - 1][:column].encode("utf-8"))
             tokens.append((start, token.string, row))
-    replacements = {"<": "<=", "<=": "<", ">": ">=", ">=": ">"}
-    operators = {ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">="}
+    replacements = {"<": "<=", "<=": "<", ">": ">=", ">=": ">",
+                    "+": "-", "-": "+", "*": "/", "/": "*"}
+    operators = {ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
+                 ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/"}
     for node in ast.walk(tree):
-        if (node in annotation_nodes or not isinstance(node, ast.Compare)
-                or len(node.ops) != 1 or type(node.ops[0]) not in operators):
+        if node in annotation_nodes:
             continue
-        left, right = node.left, node.comparators[0]
+        if isinstance(node, ast.Compare) and len(node.ops) == 1:
+            left, right, op = node.left, node.comparators[0], node.ops[0]
+        elif isinstance(node, ast.BinOp):
+            left, right, op = node.left, node.right, node.op
+        else:
+            continue
+        if type(op) not in operators:
+            continue
         lower = offsets[left.end_lineno - 1] + left.end_col_offset
         upper = offsets[right.lineno - 1] + right.col_offset
         between = [(start, op, row) for start, op, row in tokens if lower <= start < upper]
-        require(len(between) == 1 and between[0][1] == operators[type(node.ops[0])],
-                "Python comparison token mismatch")
+        require(len(between) == 1 and between[0][1] == operators[type(op)],
+                "Python operator token mismatch")
         start, original, row = between[0]
         end = start + len(original)
-        require(data[start:end].decode() == original, "Python comparison span mismatch")
+        require(data[start:end].decode() == original, "Python operator span mismatch")
         column = start - offsets[row - 1] + 1
         yield dict(file=relative, start=start, end=end, line=row, column=column,
                    end_line=row, end_column=column + len(original), original=original,
@@ -645,7 +653,7 @@ def inspect(root):
                                       end_column=node.end_col_offset + 1, original=original,
                                       replacement="False" if node.value else "True"))
         if not is_test:
-            mutations.extend(comparison_sites(tree, text, data, annotation_nodes, relative))
+            mutations.extend(operator_sites(tree, text, data, annotation_nodes, relative))
     require(tests, "Python requires test_*.py files at the root or under tests/")
     return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), conftests=sorted(conftests), sources=sorted(sources),
                 mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))

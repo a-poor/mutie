@@ -1,0 +1,9 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.27s
+     Running tests/python_workflow.rs (target/debug/deps/python_workflow-f0868b7c6dacc99d)
+
+running 2 tests
+test comparison_boundaries_preserve_native_semantics_and_rerun ... ok
+test comparison_custom_dispatch_failure_is_not_a_kill ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 24 filtered out; finished in 78.91s
+

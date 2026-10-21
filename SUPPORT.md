@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips and single-comparison boundaries, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini and betting-math-kit evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, single-comparison boundaries and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini and betting-math-kit evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -434,3 +434,12 @@ accounts for all 87 sites (19 kills, 59 survivors, nine errors). A separate
 expected-success assertions. Original inputs, reports and classification rules
 remain intact. Domain-limited redundancy observations and unresolved numerical
 boundaries are retained individually; combined accounting is not a full score.
+
+`benchmarks/python-arithmetic.md` validates Python binary `+ ↔ -` and `* ↔ /`
+under `arithmetic_replace`. Preserve native grouping/evaluation and exact token
+pairs; annotations, unary/augmented operators, floor division, modulo and powers
+remain excluded. This is not numeric type inference: unsupported operands and
+zero division stay errors. Unchanged betting-math-kit's 30-site Kelly selection
+has 21 kills, eight survivors and one string-operand error; a separate 201-test
+copy kills all eight survivors. Preserve prior inputs/reports and recipe drift
+checks; selected evidence is not a full 194-arithmetic-site score.

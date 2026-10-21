@@ -317,6 +317,10 @@ impl LoadedReport {
                             | (Operator::ComparisonBoundary, "<=", "<")
                             | (Operator::ComparisonBoundary, ">", ">=")
                             | (Operator::ComparisonBoundary, ">=", ">")
+                            | (Operator::ArithmeticReplace, "+", "-")
+                            | (Operator::ArithmeticReplace, "-", "+")
+                            | (Operator::ArithmeticReplace, "*", "/")
+                            | (Operator::ArithmeticReplace, "/", "*")
                     ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
                         && !mutation.file.starts_with("tests")
                         && run

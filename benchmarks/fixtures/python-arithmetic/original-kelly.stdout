@@ -1,0 +1,49 @@
+Saving report to /tmp/mutie-python-arithmetic-acceptance/reports/run-1792618232-iPca41
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 3.75s
+Found 30 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/30] killed: src/betting_math_kit/kelly.py:138:26: "+" -> "-" (3.21s)
+[2/30] killed: src/betting_math_kit/kelly.py:138:42: "-" -> "+" (3.38s)
+[3/30] killed: src/betting_math_kit/kelly.py:138:49: "*" -> "/" (3.62s)
+[4/30] killed: src/betting_math_kit/kelly.py:138:56: "-" -> "+" (3.05s)
+[5/30] killed: src/betting_math_kit/kelly.py:139:24: "-" -> "+" (3.15s)
+[6/30] killed: src/betting_math_kit/kelly.py:143:13: "-" -> "+" (4.74s)
+[7/30] killed: src/betting_math_kit/kelly.py:144:17: "*" -> "/" (3.29s)
+[8/30] killed: src/betting_math_kit/kelly.py:144:24: "-" -> "+" (3.18s)
+[9/30] missed: src/betting_math_kit/kelly.py:144:29: "/" -> "*" (4.36s)
+[10/30] killed: src/betting_math_kit/kelly.py:173:22: "*" -> "/" (3.31s)
+[11/30] killed: src/betting_math_kit/kelly.py:173:37: "/" -> "*" (7.51s)
+[12/30] killed: src/betting_math_kit/kelly.py:187:26: "+" -> "-" (3.04s)
+[13/30] missed: src/betting_math_kit/kelly.py:187:42: "-" -> "+" (5.01s)
+[14/30] killed: src/betting_math_kit/kelly.py:187:49: "*" -> "/" (4.10s)
+[15/30] killed: src/betting_math_kit/kelly.py:187:56: "-" -> "+" (2.72s)
+[16/30] killed: src/betting_math_kit/kelly.py:188:17: "*" -> "/" (3.07s)
+[17/30] killed: src/betting_math_kit/kelly.py:188:34: "-" -> "+" (2.93s)
+[18/30] missed: src/betting_math_kit/kelly.py:253:23: "-" -> "+" (3.02s)
+[19/30] missed: src/betting_math_kit/kelly.py:253:29: "/" -> "*" (2.87s)
+[20/30] missed: src/betting_math_kit/kelly.py:260:21: "*" -> "/" (2.93s)
+[21/30] killed: src/betting_math_kit/kelly.py:261:22: "*" -> "/" (3.36s)
+[22/30] killed: src/betting_math_kit/kelly.py:271:24: "*" -> "/" (3.28s)
+[23/30] missed: src/betting_math_kit/kelly.py:282:23: "-" -> "+" (3.09s)
+[24/30] missed: src/betting_math_kit/kelly.py:282:29: "/" -> "*" (3.15s)
+[25/30] missed: src/betting_math_kit/kelly.py:292:17: "-" -> "+" (3.25s)
+[26/30] killed: src/betting_math_kit/kelly.py:292:23: "/" -> "*" (3.38s)
+[27/30] killed: src/betting_math_kit/kelly.py:362:29: "*" -> "/" (3.40s)
+[28/30] killed: src/betting_math_kit/kelly.py:365:30: "/" -> "*" (3.84s)
+[29/30] killed: src/betting_math_kit/kelly.py:368:54: "*" -> "/" (3.33s)
+[30/30] error: src/betting_math_kit/kelly.py:379:38: "+" -> "-" (3.69s)
+
+30 mutations: 21 killed, 8 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 249.21s
+Workspaces: snapshot 0.007s | setup 0.017s | reset 1.000s (cumulative)
+Copies: 660 reflinked | 0 copied (0 bytes) | 33 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-acceptance/reports/run-1792618232-iPca41/summary.txt
+Mutation score: unavailable
+Scope: filtered selection only
+Killed / (killed + missed): 21 / 29
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 0
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully
