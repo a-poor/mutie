@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips and single-comparison boundaries, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer and Route Mini evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips and single-comparison boundaries, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini and betting-math-kit evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -416,3 +416,14 @@ Keep runner evidence independent even where parsers/operators can be shared.
 If a regression invalidates a support claim, narrow the documented scope or lower
 the level until the evidence is restored. Planned integrations do not require a
 plugin abstraction or imply support merely because their command can be launched.
+
+### Additional unchanged Python numerical-library evidence
+
+[betting-math-kit](benchmarks/python-betting-math.md) passes all 198 original tests.
+Ten selected metrics comparisons account for six survivors and four runtime
+errors across failed reports; a separate 205-test stronger suite kills all six
+survivors. This is selected evidence, not a full project score. Audited numeric
+minimum versions for inert optional tools, bounded Ruff/Mypy settings and direct
+independent `random.Random(...)` construction are admitted. Global RNG mutation,
+constructor escape, plugins, dependencies and arbitrary tool settings remain
+excluded. Manifest and validator bytes retain execution identity.

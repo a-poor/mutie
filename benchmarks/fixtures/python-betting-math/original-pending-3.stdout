@@ -1,0 +1,27 @@
+Saving report to /tmp/mutie-betting-math-final/reports/run-1792616263-N8G8jt
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 6.85s
+Selected 7 mutations from /tmp/mutie-betting-math-final/reports/run-1792616218-mm0JhY (all saved mutations; source IDs: 4, 5, 6, 7, 8, 9, 10)
+Found 7 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/7] missed: src/betting_math_kit/metrics.py:194:16: ">=" -> ">" (2.58s)
+[2/7] missed: src/betting_math_kit/metrics.py:282:21: "<" -> "<=" (2.37s)
+[3/7] missed: src/betting_math_kit/metrics.py:282:43: ">" -> ">=" (6.27s)
+[4/7] missed: src/betting_math_kit/metrics.py:286:21: "<" -> "<=" (4.59s)
+[5/7] missed: src/betting_math_kit/metrics.py:286:43: ">" -> ">=" (3.36s)
+[6/7] missed: src/betting_math_kit/metrics.py:371:15: "<" -> "<=" (3.45s)
+[7/7] error: src/betting_math_kit/metrics.py:403:16: ">=" -> ">" (3.96s)
+
+7 mutations: 0 killed, 6 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 73.18s
+Workspaces: snapshot 0.004s | setup 0.035s | reset 0.120s (cumulative)
+Copies: 200 reflinked | 0 copied (0 bytes) | 10 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-betting-math-final/reports/run-1792616263-N8G8jt/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 0 / 6
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 0
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

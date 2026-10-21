@@ -977,3 +977,27 @@ fn comparison_custom_dispatch_failure_is_not_a_kill() {
         source
     );
 }
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; independent random generators retain runtime-error classification"]
+fn independent_random_generator_and_invalid_seed_error() {
+    let root = fixture();
+    fs::write(root.path().join("sample/__init__.py"),
+        "import random\ndef draw():\n    seed = 1 if True else object()\n    return random.Random(seed).random()\n").unwrap();
+    fs::write(root.path().join("tests/test_sample.py"),
+        "from sample import draw\ndef test_draw():\n    assert draw() == draw() == 0.13436424411240122\n").unwrap();
+    let source = fs::read(root.path().join("sample/__init__.py")).unwrap();
+    let baseline = run("python-check", root.path(), &[]);
+    assert!(baseline.status.success(), "{baseline:?}");
+    let reports = tempfile::tempdir().unwrap();
+    let output = scored_with_timeout(root.path(), reports.path(), &[], "15");
+    assert!(!output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["status"], "failed");
+    assert_eq!(outcomes["summary"]["errors"], 1);
+    assert_eq!(outcomes["summary"]["killed"], 0);
+    assert_eq!(
+        fs::read(root.path().join("sample/__init__.py")).unwrap(),
+        source
+    );
+}

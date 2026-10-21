@@ -179,6 +179,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   70-test stronger baseline and focused rerun. See
   [complete boundary review](benchmarks/python-route-mini-all-boundaries.md).
 
+- [x] Validate a new unchanged Python project larger than Route Mini:
+  betting-math-kit passes 198 tests, with minimal inert metadata and independent
+  Random construction support. A separate 205-test copy kills six selected
+  metric-boundary survivors; four original runtime errors remain preserved.
+  See [acceptance and scope](benchmarks/python-betting-math.md).
+
 ## Selected first Bun test-runner slice
 
 - [x] Pin Bun 1.3.11+af24e281e and add independent dependency-free JS/TS fixtures.

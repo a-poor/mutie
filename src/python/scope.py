@@ -224,7 +224,10 @@ def inspect(root):
                       "dev": {"mypy", "pytest", "pytest-cov", "ruff"}}
     audited_extras = (isinstance(extras, dict) and set(extras) <= optional_tools.keys()
                       and all(isinstance(items, list) and items
-                              and all(isinstance(item, str) and item in optional_tools[group]
+                              and all(isinstance(item, str) and re.fullmatch(r"[a-z-]+(?:>=[0-9]+(?:\.[0-9]+){0,2})?", item)
+                                      and item.split(">=")[0] in optional_tools[group]
+                                      and (not item.startswith("pytest>=") or
+                                           tuple(map(int, item.split(">=")[1].split("."))) <= (9, 0, 2))
                                       for item in items) for group, items in extras.items()))
     require(audited_extras or (isinstance(extras, dict) and set(extras) <= {"test"}
             and all(isinstance(items, list) and items and all(
@@ -241,15 +244,15 @@ def inspect(root):
             and all(isinstance(item, str) and re.fullmatch(r"(?:cryptography|urllib3)>=[0-9]+(?:\.[0-9]+)*", item)
                     for item in uv.get("override-dependencies", [])), "unsupported Python resolver metadata")
     mypy = tool.get("mypy", {})
-    require(set(mypy) <= {"python_version", "strict", "files"}
-            and mypy.get("python_version", "3.11") == "3.11"
-            and type(mypy.get("strict", False)) is bool
+    require(set(mypy) <= {"python_version", "strict", "files", "warn_return_any", "warn_unused_configs", "disallow_untyped_defs"}
+            and mypy.get("python_version", "3.11") in ("3.10", "3.11")
+            and all(type(mypy.get(key, False)) is bool for key in ("strict", "warn_return_any", "warn_unused_configs", "disallow_untyped_defs"))
             and mypy.get("files", ["src", "tests", "examples"]) == ["src", "tests", "examples"],
             "unsupported Python type-checker metadata")
     ruff = tool.get("ruff", {})
     lint = ruff.get("lint", {})
     require(set(ruff) <= {"line-length", "lint", "target-version"}
-            and ruff.get("target-version", "py311") == "py311" and type(ruff.get("line-length", 88)) is int
+            and ruff.get("target-version", "py311") in ("py310", "py311") and type(ruff.get("line-length", 88)) is int
             and set(lint) <= {"select", "fixable", "unfixable", "mccabe"}
             and all(isinstance(lint.get(key, []), list) and all(isinstance(x, str) for x in lint.get(key, []))
                     for key in ("select", "fixable", "unfixable"))
@@ -460,7 +463,7 @@ def inspect(root):
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     top = alias.name.split(".")[0]
-                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest", "unittest", "random", "json"} if is_test else set()),
+                    require(top in STDLIB | {package, "logging", "copy", "random"} | ({"pytest", "unittest", "random", "json"} if is_test else set()),
                             f"unsupported Python import {alias.name} in {relative}")
                     if top == "json":
                         require(alias.name == "json", "Python json submodules unsupported")
@@ -604,8 +607,12 @@ def inspect(root):
                     require(node.attr in {"dumps", "loads"} and isinstance(node.ctx, ast.Load),
                             "Python only admits in-memory JSON in tests")
                 if isinstance(node.value, ast.Name) and node.value.id in random_aliases:
-                    require(node.attr == "sample" and isinstance(node.ctx, ast.Load),
-                            "Python only admits random.sample in tests")
+                    require(node.attr in ({"Random", "sample"} if is_test else {"Random"})
+                            and isinstance(node.ctx, ast.Load),
+                            "Python only admits random.Random and test-only random.sample")
+                    if node.attr == "Random":
+                        require(isinstance(parents.get(node), ast.Call) and parents[node].func is node,
+                                "Python random.Random is only supported as a direct constructor")
                 if isinstance(node.value, ast.Name) and node.value.id in logging_aliases:
                     require(node.attr in LOGGING_MEMBERS, "unsupported Python logging API")
                 if isinstance(node.value, ast.Name) and node.value.id in copy_aliases:

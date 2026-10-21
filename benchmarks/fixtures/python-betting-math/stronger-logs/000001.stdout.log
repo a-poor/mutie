@@ -1,0 +1,88 @@
+........................................................................ [ 35%]
+.......................F................................................ [ 70%]
+.............................................................            [100%]
+=================================== FAILURES ===================================
+______________ test_certain_prediction_is_in_last_calibration_bin ______________
+
+    def test_certain_prediction_is_in_last_calibration_bin():
+        try:
+>           buckets = calibration_buckets([1.0], [1], n_bins=2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metric_boundaries.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [1.0], outcomes = [1], n_bins = 2
+
+    def calibration_buckets(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> list[dict]:
+        """Bin predictions into equal-width buckets and report calibration.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower bound of the bin (inclusive).
+            - ``bin_upper``: Upper bound of the bin (exclusive, except last).
+            - ``count``: Number of predictions in the bin.
+            - ``avg_predicted``: Mean predicted probability in the bin.
+            - ``avg_actual``: Observed win rate in the bin.
+            - ``gap``: ``avg_predicted - avg_actual`` (positive = overconfident).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+            >>> len(buckets)
+            2
+            >>> buckets[0]["avg_predicted"]
+            0.1
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        bin_width = 1.0 / n_bins
+    
+        # Accumulate per-bin sums
+        bin_pred_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+        bin_counts: list[int] = [0] * n_bins
+    
+        for p, y in zip(probs, outcomes, strict=False):
+            idx = int(p / bin_width)
+            # Clamp p == 1.0 into the last bin
+            if idx > n_bins:
+                idx = n_bins - 1
+>           bin_pred_sums[idx] += p
+            ^^^^^^^^^^^^^^^^^^
+E           IndexError: list index out of range
+
+src/betting_math_kit/metrics.py:196: IndexError
+
+During handling of the above exception, another exception occurred:
+
+    def test_certain_prediction_is_in_last_calibration_bin():
+        try:
+            buckets = calibration_buckets([1.0], [1], n_bins=2)
+        except IndexError as error:
+>           pytest.fail(f'probability one must fit the final calibration bin: {error}')
+E           Failed: probability one must fit the final calibration bin: list index out of range
+
+tests/test_metric_boundaries.py:46: Failed
+=========================== short test summary info ============================
+FAILED tests/test_metric_boundaries.py::test_certain_prediction_is_in_last_calibration_bin
+1 failed, 204 passed in 0.45s

@@ -1,0 +1,71 @@
+........................................................................ [ 35%]
+.................F...................................................... [ 70%]
+.............................................................            [100%]
+=================================== FAILURES ===================================
+_____________ test_clv_accepts_probability_endpoints[0.0-0.5-0.5] ______________
+
+opening = 0.0, closing = 0.5, expected = 0.5
+
+    @pytest.mark.parametrize(('opening', 'closing', 'expected'), [
+        (0.0, 0.5, 0.5), (1.0, 0.5, -0.5),
+        (0.5, 0.0, -0.5), (0.5, 1.0, 0.5),
+    ])
+    def test_clv_accepts_probability_endpoints(opening, closing, expected):
+        try:
+>           actual = clv(opening, closing)
+                     ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metric_boundaries.py:13: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+opening_prob = 0.0, closing_prob = 0.5
+
+    def clv(opening_prob: float, closing_prob: float) -> float:
+        """Closing Line Value from implied probabilities.
+    
+        Measures how much the line moved in your favor between open and
+        close. Positive means you beat the closing line.
+    
+        Args:
+            opening_prob: Implied probability at time of bet, in [0, 1].
+            closing_prob: Implied probability at market close, in [0, 1].
+    
+        Returns:
+            CLV as ``closing_prob - opening_prob``. Positive = good.
+    
+        Raises:
+            InvalidProbabilityError: If either probability is outside [0, 1].
+    
+        Examples:
+            >>> round(clv(0.50, 0.55), 2)
+            0.05
+            >>> round(clv(0.55, 0.50), 2)
+            -0.05
+        """
+        if opening_prob <= 0.0 or opening_prob > 1.0:
+>           raise InvalidProbabilityError(
+                f"opening_prob must be between 0 and 1, got {opening_prob}"
+            )
+E           betting_math_kit.exceptions.InvalidProbabilityError: opening_prob must be between 0 and 1, got 0.0
+
+src/betting_math_kit/metrics.py:283: InvalidProbabilityError
+
+During handling of the above exception, another exception occurred:
+
+opening = 0.0, closing = 0.5, expected = 0.5
+
+    @pytest.mark.parametrize(('opening', 'closing', 'expected'), [
+        (0.0, 0.5, 0.5), (1.0, 0.5, -0.5),
+        (0.5, 0.0, -0.5), (0.5, 1.0, 0.5),
+    ])
+    def test_clv_accepts_probability_endpoints(opening, closing, expected):
+        try:
+            actual = clv(opening, closing)
+        except InvalidProbabilityError as error:
+>           pytest.fail(f'valid endpoint probability was rejected: {error}')
+E           Failed: valid endpoint probability was rejected: opening_prob must be between 0 and 1, got 0.0
+
+tests/test_metric_boundaries.py:15: Failed
+=========================== short test summary info ============================
+FAILED tests/test_metric_boundaries.py::test_clv_accepts_probability_endpoints[0.0-0.5-0.5]
+1 failed, 204 passed in 0.93s

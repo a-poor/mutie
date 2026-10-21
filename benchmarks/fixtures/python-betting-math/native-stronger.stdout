@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.0.2, pluggy-1.7.0
+rootdir: /tmp/mutie-betting-math-final/stronger-project
+configfile: pyproject.toml
+collected 205 items
+
+tests/test_devig.py .................................................... [ 25%]
+..                                                                       [ 26%]
+tests/test_kelly.py ...................................                  [ 43%]
+tests/test_metric_boundaries.py .......                                  [ 46%]
+tests/test_metrics.py ................................                   [ 62%]
+tests/test_odds.py ..................................................... [ 88%]
+.                                                                        [ 88%]
+tests/test_simulation.py .......................                         [100%]
+
+============================= 205 passed in 0.44s ==============================

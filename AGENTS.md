@@ -423,3 +423,11 @@ A separate 70-test copy kills the new network-retry ceiling survivor by checking
 the exact retry decision and primary call count. Preserve the original constructor
 error, prior capacity finding and report-local source-identity mapping; combined
 accounting is not a full score. This revisits Route Mini, not a new third project.
+
+`benchmarks/python-betting-math.md` validates a new unchanged 198-test project.
+Only audited optional-tool minimum versions, bounded Ruff/Mypy fields and direct
+`random.Random(...)` construction extend scope. Preserve rejection of module RNG
+mutation/escape and constructor/class escape. Six selected metrics survivors are
+killed by a separate 205-test suite; four original runtime errors remain errors.
+Selected ten-candidate accounting is not a full 87-site project score. Keep
+original inputs/reports and the exact source-identity mapping across reruns.

@@ -1,0 +1,82 @@
+........................................................................ [ 35%]
+......................F................................................. [ 70%]
+.............................................................            [100%]
+=================================== FAILURES ===================================
+______________________ test_edge_analysis_accepts_one_bin ______________________
+
+    def test_edge_analysis_accepts_one_bin():
+        try:
+>           buckets = edge_bucket_analysis([0.25, 0.75], [0, 1], [0.0, 0.5], n_bins=1)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metric_boundaries.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.25, 0.75], outcomes = [0, 1], edges = [0.0, 0.5], n_bins = 1
+
+    def edge_bucket_analysis(
+        probs: list[float],
+        outcomes: list[int],
+        edges: list[float],
+        n_bins: int = 5,
+    ) -> list[dict]:
+        """Group predictions by predicted edge and report performance.
+    
+        Useful for answering "do my higher-edge bets actually win more?"
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            edges: Predicted edge for each bet (e.g. model_prob - fair_prob).
+                Same length as *probs*.
+            n_bins: Number of equal-width edge bins. Defaults to 5.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower edge bound (inclusive).
+            - ``bin_upper``: Upper edge bound (exclusive, except last).
+            - ``count``: Number of bets in the bin.
+            - ``avg_edge``: Mean predicted edge in the bin.
+            - ``win_rate``: Observed win rate in the bin.
+            - ``expected_win_rate``: Mean predicted probability in the bin.
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If list lengths differ, lists are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> results = edge_bucket_analysis(
+            ...     [0.55, 0.60, 0.70],
+            ...     [1, 0, 1],
+            ...     [0.05, 0.10, 0.20],
+            ...     n_bins=2,
+            ... )
+            >>> len(results) >= 1
+            True
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_matched_lengths(probs, edges, "probs", "edges")
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins <= 1:
+>           raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+E           ValueError: n_bins must be >= 1, got 1
+
+src/betting_math_kit/metrics.py:372: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_edge_analysis_accepts_one_bin():
+        try:
+            buckets = edge_bucket_analysis([0.25, 0.75], [0, 1], [0.0, 0.5], n_bins=1)
+        except ValueError as error:
+>           pytest.fail(f'one edge bin must be valid: {error}')
+E           Failed: one edge bin must be valid: n_bins must be >= 1, got 1
+
+tests/test_metric_boundaries.py:34: Failed
+=========================== short test summary info ============================
+FAILED tests/test_metric_boundaries.py::test_edge_analysis_accepts_one_bin - ...
+1 failed, 204 passed in 0.47s

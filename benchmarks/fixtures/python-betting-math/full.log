@@ -1,0 +1,494 @@
+   Compiling mutie v0.1.0 (/path/to/mutie)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.00s
+     Running unittests src/main.rs (target/debug/deps/mutie-f2e7291bcbe62ebc)
+
+running 223 tests
+test browser::tests::legacy_reports_remain_browsable_with_unrecorded_review_and_empty_dismissed_filter ... ok
+test browser::tests::commands_quote_paths_and_export_without_executing ... ok
+test browser::tests::input_editing_event_kinds_and_detail_navigation ... ok
+test browser::tests::dismissal_filter_intersects_preserves_hidden_marks_and_shows_saved_review ... ok
+test browser::tests::missing_artifacts_are_inline_and_rendering_uses_cached_content ... ok
+test browser::tests::filters_intersect_and_hidden_marks_keep_saved_ids ... ok
+test browser::tests::restoration_attempts_all_steps_after_an_output_error ... ok
+test browser::tests::operator_view_distinguishes_empty_and_unpublished_inventories ... ok
+test browser::tests::rust_reports_export_explicit_language_and_legacy_reports_remain_inspectable ... ok
+test browser::tests::frames_show_selection_diff_styles_and_unicode_cursor_across_sizes ... ok
+test bun::config::tests::rejects_resolution_transforms_inheritance_duplicates_and_invalid_types ... ok
+test browser::tests::report_frame_snapshots ... ok
+test browser::tests::dismissal_frames_show_review_without_replacing_outcome_styles ... ok
+test bun::profile::real_feedback_phase_profile ... ignored, requires pinned Bun and MUTIE_BUN_PROFILE_PROJECT; three actual baseline phase profiles
+test browser::tests::operator_view_keeps_saved_totals_across_filters_marks_and_resizes ... ok
+test bun::identity::tests::identity_tracks_runtime_recipe_config_inventory_and_limits ... ok
+test bun::tests::real_composer_baseline_and_stronger_finding ... ignored, requires pinned Bun and unchanged MUTIE_BUN_COMPOSER; real baseline/finding controls
+test bun::tests::real_isolated_outcomes_and_input_preservation ... ignored, requires pinned Bun 1.3.11 on PATH; runs isolated JS/TS outcome matrix
+test bun::tests::real_limits_and_descendant_cleanup ... ignored, requires pinned Bun; checks output/file bounds, timeout, cancellation and descendant shutdown
+test browser::tests::vitest_exports_explicit_runner_and_requires_saved_identity ... ok
+test browser::tests::truncated_logs_are_visible_even_when_artifacts_are_missing ... ok
+test bun::project::tests::absent_type_requires_static_javascript_esm ... ok
+test capture::tests::readers_and_counts_ignore_writes_after_capture_completion ... ok
+test bun::tests::accepts_scoped_config_but_keeps_ancillary_files_out_of_imports_and_discovery ... ok
+test bun::project::tests::packaging_cannot_hide_tests_or_runtime_extensions ... ok
+test bun::project::tests::implicit_esm_packaging_is_fingerprinted_but_not_executable ... ok
+test browser::tests::score_view_keeps_saved_scope_across_filters_and_resizes ... ok
+test capture::tests::retention_rejects_overflow_and_inconsistent_counts ... ok
+test cli::tests::report_command_is_separate_from_run_arguments ... ok
+test command::tests::process_failures_take_precedence_over_completion ... ok
+test bun::tests::rejects_unsupported_packages_and_discovery_before_execution ... ok
+test config::tests::defaults_work_without_a_file_and_do_not_inherit_parent_config ... ok
+test command::tests::completion_evidence_is_required_even_after_successful_exit ... ok
+test config::tests::detects_rust_and_rejects_ambiguous_or_language_specific_options ... ok
+test config::tests::capture_limit_is_independent_and_merges_explicit_overrides ... ok
+test config::tests::findings_policy_defaults_and_explicit_overrides ... ok
+test config::tests::explicit_cli_values_replace_repository_values_including_defaults ... ok
+test config::tests::log_limit_defaults_to_unlimited_and_merges_explicit_overrides ... ok
+test config::tests::operator_selection_merges_normalizes_and_clears_for_fresh_runs_and_reruns ... ok
+test config::tests::output_validation_has_no_side_effects_and_normalizes_paths ... ok
+test config::tests::rerun_ids_require_a_source_and_filters_resolve_to_normalized_settings ... ok
+test capture::tests::readable_cuts_never_split_utf8_and_still_respect_byte_budget ... ok
+test config::tests::resolves_symlinks_before_parent_components_and_rejects_dangling_links ... ok
+test config::tests::ui_preference_merges_explicit_overrides_and_rejects_unknown_modes ... ok
+test config::tests::test_scope_merges_config_and_explicit_full_override ... ok
+test coordinator::tests::progress_is_scoped_to_the_current_job_and_does_not_reset_elapsed_time ... ok
+test go::selection::tests::rejects_incomplete_or_ambiguous_graphs_before_selecting_tests ... ok
+test go::selection::tests::selects_transitive_dependents_and_internal_external_test_imports ... ok
+test dismissals::tests::matching_uses_source_identity_even_when_current_ids_change_and_rejects_ambiguity ... ok
+test coordinator::tests::recent_display_is_bounded_without_losing_summary_counts ... ok
+test config::tests::rust_build_cache_is_opt_in_configurable_and_rejected_for_go ... ok
+test go::tests::progress_uses_observed_events_and_tracks_interleaved_packages ... ok
+test go::tests::incremental_stderr_decoding_matches_lossy_utf8_across_chunks_and_eof ... ok
+test config::tests::minimum_score_config_overrides_and_validation ... ok
+test javascript::nul_tests::literal_nuls_preserve_boolean_offsets_and_do_not_hide_code ... ok
+test javascript::bun_scope_tests::ambient_declarations_are_erased_only_in_bun_discovery ... ok
+test go::tests::discovery_decodes_complete_machine_output_and_text_preserves_stream_boundaries ... ok
+test javascript::tests::fixture_has_six_stable_edits_and_exact_byte_ranges ... ok
+test javascript::tests::rejects_source_links ... ok
+test javascript::tests::excludes_tests_generated_types_and_filtered_paths ... ok
+test javascript::tests::separate_grammars_exclude_types_and_text_but_keep_runtime_values ... ok
+test config::tests::rejects_bad_files_values_and_conflicting_overrides ... ok
+test go::tests::distinguishes_test_build_setup_and_tool_failures ... ok
+test mutation::tests::branch_diff_preserves_multiline_condition_comments_crlf_and_unicode ... ok
+test mutation::tests::diff_bounds_context_and_handles_whole_line_or_file_removal ... ok
+test mutation::tests::diff_preserves_unicode_crlf_and_missing_final_newline ... ok
+test javascript::tests::rejects_spaced_and_computed_module_expressions_and_cancellation ... ok
+test mutation::tests::discovers_syntax_not_comments_or_strings_and_applies_utf8_byte_ranges ... ok
+test mutation::tests::fingerprints_identify_full_source_and_discovery_order_is_deterministic ... ok
+test mutation::tests::loop_skip_diff_changes_only_the_multiline_condition ... ok
+test mutation::tests::multiline_call_diff_preserves_crlf_unicode_comments_and_final_line ... ok
+test javascript::tests::rejects_unsupported_syntax_layouts_and_parse_errors ... ok
+test mutation::tests::scope_excludes_tests_generated_files_and_unselected_paths ... ok
+test node::discovery::tests::checks_native_inventory_and_implementation_before_execution ... ok
+test node::discovery::tests::rejects_visible_symlinks_and_honors_cancellation ... ok
+test capture::tests::head_tail_counts_and_atomic_artifacts_cover_tiny_exact_and_unlimited_limits ... ok
+test node::discovery::tests::audits_full_default_selection_and_never_drops_out_of_scope_tests ... ok
+test mutation::tests::branches_select_whole_if_conditions_and_keep_nested_operators ... ok
+test mutation::tests::call_removal_only_selects_standalone_statements_and_preserves_other_mutations ... ok
+test node::project::tests::accepts_only_audited_local_javascript_imports_and_layout ... ok
+test node::tests::default_discovery_timeout_cancellation_capture_and_owned_files ... ignored, requires audited Node 24.22.0 on PATH; real process cleanup
+test node::tests::preserves_legacy_javascript_identity_and_separates_native_typescript ... ok
+test node::tests::timeout_cancellation_capture_and_owned_files ... ignored, requires audited Node 24.22.0 on PATH; real process cleanup
+test node::tests::typescript_timeout_cancellation_capture_and_owned_files ... ignored, requires audited Node 24.22.0 on PATH; real process cleanup
+test mutation::tests::loop_skip_selects_only_explicit_nonliteral_conditions ... ok
+test operator_summary::tests::distinguishes_empty_selection_from_unpublished_inventory ... ok
+test operator_summary::tests::distinguishes_missing_invalid_and_zero_durations ... ok
+test operator_summary::tests::groups_outcomes_and_unfinished_work_in_catalog_order ... ok
+test node::protocol::tests::rejects_incomplete_conflicting_and_hidden_failure_evidence ... ok
+test node::typescript::tests::audits_configuration_without_interpreting_it ... ok
+test process::tests::cancellation_before_start_does_not_spawn_a_process ... ok
+test node::project::tests::audits_native_typescript_sources_tests_and_mixed_imports ... ok
+test node::protocol::body_tests::requires_exact_file_and_test_body_evidence_for_each_failure ... ok
+test node::project::tests::rejects_custom_scripts_and_runtime_dependencies ... ok
+test process::tests::nested_unmutated_test_binary ... ignored, requires MUTIE_REPRO_TEST_BINARY; runs nested real CLI tests
+test coordinator::tests::events_keep_reports_and_coalesced_state_consistent_through_interruption ... ok
+test process::tests::limited_capture_does_not_wait_for_descendants_after_parent_exit ... ok
+test process::tests::progress_decoder_handles_split_unicode_crlf_and_oversized_lines ... ok
+test process::tests::observes_output_before_exit_without_changing_captured_bytes ... ok
+test process::tests::regular_file_limit_applies_to_children_without_changing_parent ... ok
+test go::tests::retained_logs_never_determine_classification_even_for_oversized_events ... ok
+test python::identity::tests::identity_rejects_drift_but_allows_stronger_tests_and_new_budgets ... ok
+test python::profile::real_feedback_phase_profile ... ignored, requires MUTIE_PYTHON and MUTIE_PYTHON_PROFILE_PROJECT; three actual baselines
+test python::project::tests::comparison_spans_and_replacements_are_validated ... ok
+test python::project::tests::shared_mutations_preserve_unicode_spans_and_reject_stale_inputs ... ok
+test python::protocol::tests::fixture_evidence_requires_complete_ordered_lifetimes_and_audited_configs ... ok
+test python::protocol::tests::only_completed_assertion_bodies_can_be_kills ... ok
+test python::protocol::tests::requires_complete_success_and_strict_records ... ok
+test python::protocol::tests::root_tests_require_normal_paths_and_complete_matching_phases ... ok
+test python::protocol::tests::unittest_requires_exact_complete_dispatch_evidence ... ok
+test python::tests::native_body_and_lifetime_attribution ... ignored, requires MUTIE_PYTHON; real production observer attribution controls
+test python::tests::native_capture_and_file_limits ... ignored, requires MUTIE_PYTHON; real output and per-file limits
+test python::tests::native_conftest_lifecycle_attribution ... ignored, requires MUTIE_PYTHON; conftest setup, yield and finalizer attribution
+test python::tests::native_conftest_shared_lifetimes ... ignored, requires MUTIE_PYTHON; shared parametrized fixtures and unittest autouse
+test python::tests::native_descendant_shutdown ... ignored, requires MUTIE_PYTHON; real process-group cleanup on exit, timeout and cancellation
+test python::tests::native_unittest_lifecycle_attribution ... ignored, requires MUTIE_PYTHON; unittest body and lifecycle attribution
+test python::tests::shared_mutation_execution_contract ... ignored, requires MUTIE_PYTHON; shared discovery, mutation writes and classified execution
+test report_lock::tests::releasing_owner_unlocks_even_while_an_inherited_descriptor_exists ... ok
+test report_reader::tests::bounds_and_sanitizes_artifacts_and_rejects_escaping_paths ... ok
+test process::tests::capture_budget_is_shared_and_exact_boundary_succeeds_even_on_fast_exit ... ok
+test report_reader::tests::joins_shuffled_records_without_the_original_checkout ... ok
+test report_reader::tests::operator_totals_join_old_shuffled_records_and_allow_missing_timings ... ok
+test report_reader::tests::permits_failed_baseline_reports_but_reruns_require_an_inventory ... ok
+test report_reader::tests::saved_dismissals_are_validated_and_sorted_without_a_checkout ... ok
+test report_reader::tests::saved_reviews_keep_legacy_go_meaning_and_validate_rust_language ... ok
+test report_reader::tests::saved_score_rejects_percentage_for_an_interrupted_run ... ok
+test report_reader::tests::saved_score_requires_percentage_for_scored_outcomes ... ok
+test report_reader::tests::saved_score_tolerance_includes_endpoint_but_not_next_float ... ok
+test process::tests::reports_remaining_group_after_successful_direct_child_exit ... ok
+test report_reader::tests::validates_log_retention_and_accepts_legacy_records_without_it ... ok
+test report_retention::tests::cancellation_preserves_selected_reports_and_missing_roots_stay_missing ... ok
+test report_retention::tests::deletion_preserves_unexpected_files_added_after_validation ... ok
+test report_retention::tests::measures_large_logs_without_reading_them_and_rejects_later_metadata_changes ... ok
+test report_reader::tests::rejects_inconsistent_saved_dismissal_snapshots ... ok
+test report_retention::tests::never_traverses_symlinks_at_any_report_level ... ok
+test report_retention::tests::preview_is_read_only_and_apply_removes_only_selected_reports ... ok
+test report_retention::tests::protected_runs_do_not_consume_keep_slots ... ok
+test report_reader::tests::score_and_threshold_are_validated_against_outcomes_review_and_selection ... ok
+test report_retention::tests::revalidation_preserves_changed_replaced_and_locked_runs ... ok
+test report_retention::tests::protects_invalid_unfinished_and_unexpected_contents ... ok
+test process::tests::blocked_progress_observer_cannot_block_cancellation_or_deadline ... ok
+test rerun::tests::explicit_ids_can_select_every_outcome_and_unfinished_work_from_finalized_runs ... ok
+test report_retention::tests::rules_intersect_age_is_strict_and_ties_are_deterministic ... ok
+test rerun::tests::saved_language_must_match_the_current_project ... ok
+test process::tests::cancellation_retains_output_and_kills_descendants ... ok
+test rerun::tests::unknown_ids_are_rejected_even_if_other_filters_would_select_nothing ... ok
+test rust::adapter_probe::paired_cargo_adapter ... ignored, requires MUTIE_REPRO_ROOT with isolated control/candidate projects and logs
+test rust::adapter_probe::profile_cargo_adapter ... ignored, requires MUTIE_REPRO_ROOT; profiles repeated full Cargo suites in isolated copies
+test rust::adapter_probe::unmutated_cargo_adapter ... ignored, requires MUTIE_REPRO_ROOT with project-0/project-1 and logs directories
+test report_retention::tests::writer_lock_protects_even_a_finalized_report_until_drop ... ok
+test rerun::tests::rejects_stale_missing_altered_and_ambiguous_targets ... ok
+test rerun::tests::selects_only_missed_with_new_ids_and_accepts_finalized_partial_runs ... ok
+test rust::discovery::tests::comparison_boundaries_edit_only_ordering_tokens_in_function_bodies ... ok
+test rust::discovery::tests::comparison_boundaries_respect_excluded_source_and_const_contexts ... ok
+test rust::discovery::tests::fixture_discovers_only_the_three_production_literals ... ok
+test rust::discovery::tests::rejects_ambiguous_modules_and_skips_file_level_conditions ... ok
+test rust::discovery::tests::logical_swaps_preserve_grouping_trivia_and_let_chain_bindings ... ok
+test rust::discovery::tests::multiple_roots_visit_shared_modules_once_and_keep_stable_ids ... ok
+test rust::discovery::tests::respects_attributes_patterns_constants_and_nested_module_resolution ... ok
+test rust::discovery::tests::shared_root_and_module_resolve_both_child_module_contexts ... ok
+test rust::project::tests::legacy_binary_reports_normalize_and_preserve_rerun_requirements ... ok
+test rust::project::tests::metadata_must_match_selected_target_identity_and_crate_type ... ok
+test rust::project::tests::rejects_ambiguous_or_malformed_saved_target_inventories ... ok
+test rust::project::tests::reruns_require_matching_execution_identity_but_allow_discovery_changes ... ok
+test rust::project::tests::library_targets_follow_names_paths_editions_and_auto_discovery ... ok
+test rust::project::tests::target_identity_changes_require_a_fresh_scan ... ok
+test rust::tests::blocked_phase_updates_respect_cancellation_and_deadlines ... ok
+test rust::project::tests::validates_workspace_membership_and_cargo_configuration ... ok
+test rust::project::tests::rejects_unsupported_library_settings_and_paths ... ok
+test rust::project::tests::rejects_unsupported_layouts_before_building ... ok
+test rust::tests::metadata_capture_failure_survives_log_truncation_and_valid_json_prefix ... ok
+test rerun::tests::rejects_incomplete_inconsistent_and_unsupported_reports ... ok
+test saved_report::tests::rejects_output_paths_that_would_hide_the_module_or_overwrite_a_file ... ok
+test rust::tests::cargo_evidence_distinguishes_build_test_and_tool_failures_before_retention ... ok
+test score::tests::exclusions_and_dismissals_never_turn_into_kills ... ok
+test score::tests::minimum_score_rejects_invalid_percentages ... ok
+test saved_report::tests::refuses_to_run_without_a_published_inventory ... ok
+test score::tests::threshold_boundaries_compare_exact_ratios_not_display_rounding ... ok
+test score::tests::unavailable_scores_do_not_silently_pass ... ok
+test status::tests::complete_frame_shows_workers_results_and_summary_with_semantic_styles ... ok
+test status::tests::elapsed_and_activity_change_without_completion_and_shorter_frames_clear_old_rows ... ok
+test status::tests::late_tall_wide_frames_scroll_history_and_restore_line_wrapping ... ok
+test status::tests::mode_selection_accounts_for_ttys_ci_dumb_terminals_and_listing ... ok
+test status::tests::narrow_summary_keeps_every_outcome_visible_and_workers_expand_with_height ... ok
+test status::tests::relative_frames_match_backend_output_for_full_and_incremental_draws ... ok
+test status::tests::restoration_attempts_wrapping_and_cursor_even_if_reset_fails ... ok
+test saved_report::tests::derived_files_repair_edits_and_links_and_retry_failed_publication ... ok
+test process::tests::timeout_kills_descendants_before_they_can_write ... ok
+test status::tests::tiny_resized_and_offset_frames_clip_unicode_and_hide_excess_workers ... ok
+test status::tests::worker_rows_stay_fixed_through_idle_reuse_and_new_results ... ok
+test vitest::execution::reliability_tests::real_timeout_cancellation_capture_and_isolation ... ignored, requires prepared Vitest fixture and Node 24.22.0; real cleanup and output probes
+test vitest::execution::tests::real_feedback_phase_profile ... ignored, requires MUTIE_VITEST_PROFILE_PROJECT; prints three baseline phase profiles
+test vitest::execution::tests::real_fixture_outcomes_and_failure_evidence ... ignored, requires prepared Vitest fixture and Node 24.22.0; real isolated runner matrix
+test vitest::execution::tests::real_lifecycle_failure_evidence ... ignored, requires prepared Vitest fixture; lifecycle failure regressions
+test vitest::execution::tests::real_scoped_fixtures_and_nested_lifecycle ... ignored, requires prepared Vitest fixture; scoped fixtures and nested lifecycle
+test vitest::lifecycle::tests::unknown_runner_bytes_are_rejected ... ok
+test vitest::config::tests::accepts_only_static_coverage_reporter_shape ... ok
+test score::tests::saved_score_percentages_round_trip_for_fractional_ratios ... ok
+test saved_report::tests::unchanged_lists_keep_their_files_while_authoritative_checkpoints_advance ... ok
+test vitest::project::tests::dependency_links_must_resolve_inside_the_tree ... ok
+test vitest::project::tests::javascript_only_guard_rejects_symlinks_and_honors_cancellation ... ok
+test vitest::project::tests::coverage_only_configs_are_fingerprinted_and_ambiguity_is_rejected ... ok
+test vitest::project::tests::rejects_enclosing_workspace ... ok
+test vitest::project::tests::nodenext_type_checking_requires_javascript_only_and_tracks_config ... ok
+test vitest::protocol::tests::only_complete_consistent_nonempty_evidence_can_pass ... ok
+test vitest::project::tests::validates_metadata_and_fingerprints_without_running_project_code ... ok
+test vitest::protocol::tests::reader_rejects_missing_corrupt_oversized_and_ambiguous_evidence ... ok
+test vitest::protocol::tests::test_transform_hook_and_mixed_failures_have_distinct_policies ... ok
+test vitest::scope_tests::reruns_require_the_complete_saved_execution_identity ... ok
+test vitest::project::tests::rejects_stale_manifest_and_nonregistry_lock_resolutions ... ok
+test workspace::tests::internal_symlinks_stay_in_copy_and_external_links_are_rejected ... ok
+test workspace::tests::failed_and_cancelled_copies_keep_partial_counts_and_clean_up ... ok
+test workspace::tests::report_directories_are_omitted_from_snapshots ... ok
+test workspace::tests::measured_copies_distinguish_reflinks_empty_fallbacks_and_exclusions ... ok
+test workspace::tests::reset_measurements_cover_deletion_recopy_and_removal_errors ... ok
+test workspace_metrics::tests::aggregates_by_phase_with_separate_failure_counts_and_cumulative_times ... ok
+test workspace::tests::reset_restores_files_and_removes_test_artifacts_without_touching_input ... ok
+test vitest::scope_tests::node_identity_rechecks_replacements_and_rejects_failures ... ok
+test process::tests::noisy_capture_stops_descendants_even_with_a_blocked_observer ... ok
+test vitest::project::tests::rejects_manifest_config_and_installation_mismatches ... ok
+test saved_report::tests::publishes_inventory_before_execution_and_checkpoints_results_by_id ... ok
+test tests::findings_exit_waits_for_report_persistence_and_nonmissed_outcomes_pass ... ok
+test process::tests::concurrent_captures_reach_eof_after_their_own_process_groups_exit ... ok
+
+test result: ok. 199 passed; 0 failed; 24 ignored; 0 measured; 0 filtered out; finished in 2.91s
+
+     Running tests/affected_packages.rs (target/debug/deps/affected_packages-9b34fe40f998ce48)
+
+running 2 tests
+test real_go_selection_covers_test_imports_and_is_recomputed_for_reruns ... ignored, requires Go 1.24+ on PATH; runs real multi-package builds
+test affected_execution_and_failed_graphs_preserve_the_run_contract ... ok
+
+test result: ok. 1 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 2.20s
+
+     Running tests/bun_preview.rs (target/debug/deps/bun_preview-fb1649127a1d7554)
+
+running 1 test
+test previews_js_ts_and_filters_without_a_runtime_or_writes ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/bun_protocol.rs (target/debug/deps/bun_protocol-490d497bd430dae3)
+
+running 5 tests
+test replays_composer_baselines_and_stronger_finding ... ignored, requires full Composer audit evidence via MUTIE_BUN_COMPOSER_EVIDENCE
+test requires_independent_complete_file_inventory ... ok
+test rejects_xml_entities_namespaces_hidden_results_and_oversized_or_truncated_evidence ... ok
+test replays_all_112_native_js_and_ts_cases ... ok
+test rejects_damaged_and_insufficient_evidence_in_both_syntaxes ... ok
+
+test result: ok. 4 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/bun_workflow.rs (target/debug/deps/bun_workflow-d810fe123d81acec)
+
+running 7 tests
+test mutation_cleanup_errors_are_not_kills ... ignored, requires pinned Bun; mutation-triggered cleanup must invalidate the score
+test review::review_preserves_scores_sources_and_saved_history ... ignored, requires pinned Bun; independent JS/TS dismissal CRUD, policies and error precedence
+test scored_js_ts_reports_reruns_and_preservation ... ignored, requires pinned Bun 1.3.11 on PATH; real JS/TS scored runs and focused stronger-test reruns
+test scored_resource_limits_invalidate_scores ... ignored, requires pinned Bun; scored capture/file limits must remain errors
+test scored_shutdown_stops_descendants_and_preserves_sources ... ignored, requires pinned Bun; scored timeout/cancellation and descendant cleanup
+test unsupported_bun_options_fail_before_launching_runtime ... ok
+test excluded_report_directories_cannot_hide_bun_tests ... ok
+
+test result: ok. 2 passed; 0 failed; 5 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/cancellation.rs (target/debug/deps/cancellation-32afcd0ab403e923)
+
+running 7 tests
+test go_startup_errors_do_not_leave_temporary_directories ... ok
+test go_temporary_directories_respect_parent_placement_for_listing ... ok
+test interrupt_parallel_run_retains_inventory_results_and_active_diagnostics ... ok
+test completing_one_worker_preserves_another_workers_test_temporary_files ... ok
+test interruption_during_baseline_and_discovery_preserves_command_output ... ok
+test timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics ... ok
+test tool_error_drains_parallel_workers_and_preserves_the_failure_reason ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.54s
+
+     Running tests/capture_limits.rs (target/debug/deps/capture_limits-0bc09d1734c93e49)
+
+running 3 tests
+test baseline_discovery_and_listing_fail_explicitly_without_using_partial_output ... ok
+test configured_capture_limits_can_be_overridden_or_cleared_independently_of_log_limits ... ok
+test overflow_is_an_error_with_bounded_logs_and_unevaluated_findings_policies ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.18s
+
+     Running tests/configuration.rs (target/debug/deps/configuration-c0c878a4cffe5b38)
+
+running 7 tests
+test listing_uses_config_and_excludes_reports_without_creating_any ... ok
+test invalid_config_fails_before_running_go_or_creating_reports ... ok
+test early_failures_save_workspace_metrics_without_claiming_unstarted_work ... ok
+test ui_modes_preserve_plain_output_and_listing_without_a_terminal ... ok
+test merged_settings_drive_execution_and_are_saved_in_reports ... ok
+test operator_selection_controls_listing_execution_and_empty_runs ... ok
+test workspace_metrics_cover_serial_parallel_and_empty_runs_without_changing_outcomes ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.76s
+
+     Running tests/dismissals.rs (target/debug/deps/dismissals-71dddc4c888a7a91)
+
+running 15 tests
+test failed_edits_leave_metadata_untouched_and_release_the_lock ... ok
+test crud_persists_reasons_notes_and_independent_ids_without_go ... ok
+test baseline_failures_and_timeouts_leave_enabled_policy_unevaluated ... ok
+test malformed_dismissal_metadata_fails_runs_before_go_and_never_invents_a_review ... ok
+test check_uses_pristine_discovery_and_portable_identity_and_flags_source_changes ... ok
+test check_requires_exact_coordinates_operators_and_text_and_flags_duplicates ... ok
+test configured_minimum_score_can_be_overridden_or_cleared_and_listing_does_not_gate ... ok
+test module_option_selects_destination_and_rejects_symlinked_metadata ... ok
+test malformed_or_incompatible_metadata_is_never_overwritten ... ok
+test dismissals_preserve_saved_reports_execution_outcomes_and_rerun_selection ... ok
+test configured_policy_can_be_disabled_and_does_not_gate_listing_or_empty_runs ... ok
+test multiline_calls_keep_identity_and_dismissals_across_operator_selection_and_reruns ... ok
+test findings_policy_uses_current_dismissals_for_full_and_focused_runs ... ok
+test reports_capture_review_issues_without_applying_them_or_failing_execution ... ok
+test score_gate_preserves_raw_outcomes_and_labels_filtered_and_rerun_scopes ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.67s
+
+     Running tests/go_workflow.rs (target/debug/deps/go_workflow-9c21dcca0e1ebeba)
+
+running 6 tests
+test branch_forcing_preserves_references_and_reports_stronger_test_results ... ignored, requires Go 1.24+ on PATH; builds branch mutants and reruns stronger tests
+test call_removal_reports_real_outcomes_and_a_stronger_test_kills_a_survivor ... ignored, requires Go 1.24+ on PATH; builds call-removal mutants and a focused rerun
+test capture_limit_stops_noisy_go_tests_without_counting_a_kill ... ignored, requires Go 1.24+ on PATH; terminates a noisy real Go test
+test go_workflow ... ignored, requires Go 1.24+ on PATH; runs real builds and a deliberate timeout
+test loop_skip_preserves_initializers_and_references_and_supports_reruns ... ignored, requires Go 1.24+ on PATH; builds loop-skipping mutants and reruns stronger tests
+test saves_partial_results_when_a_later_command_fails ... ok
+
+test result: ok. 1 passed; 0 failed; 5 ignored; 0 measured; 0 filtered out; finished in 1.17s
+
+     Running tests/log_limits.rs (target/debug/deps/log_limits-60b4e5bcddce72d1)
+
+running 4 tests
+test configured_limits_can_be_overridden_and_baseline_failures_keep_diagnostics ... ok
+test interrupted_noisy_commands_save_limited_logs_and_remove_temporary_captures ... ok
+test capped_logs_preserve_outcomes_discovery_reruns_and_cleanup ... ok
+test unready_child_fails_at_the_original_deadline_and_is_reaped ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.05s
+
+     Running tests/node_workflow.rs (target/debug/deps/node_workflow-56957937a9b7638d)
+
+running 9 tests
+test body_failure_does_not_mask_file_or_late_failures ... ignored, requires audited Node 24.22.0 on PATH
+test default_discovery_includes_nested_helpers_and_preserves_reruns ... ignored, requires audited Node 24.22.0 on PATH
+test javascript_entry_points_can_test_native_typescript_and_missing_type_imports_fail ... ignored, requires audited Node 24.22.0 on PATH
+test mutation_triggered_lifecycle_errors_do_not_raise_scores ... ignored, requires audited Node 24.22.0 on PATH
+test reports_reruns_review_policies_and_preservation ... ignored, requires audited Node 24.22.0 on PATH
+test typescript_body_failure_does_not_mask_file_or_late_failures ... ignored, requires audited Node 24.22.0 on PATH
+test typescript_lifecycle_errors_do_not_raise_scores ... ignored, requires audited Node 24.22.0 on PATH
+test typescript_reports_reruns_review_policies_and_preservation ... ignored, requires audited Node 24.22.0 on PATH
+test rejects_unsupported_scope_before_invoking_node ... ok
+
+test result: ok. 1 passed; 0 failed; 8 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/python_workflow.rs (target/debug/deps/python_workflow-f0868b7c6dacc99d)
+
+running 24 tests
+test baseline_rejects_assertion_runtime_skip_and_timeout ... ignored, requires MUTIE_PYTHON with pinned CPython/pytest
+test comparison_boundaries_preserve_native_semantics_and_rerun ... ignored, requires MUTIE_PYTHON; comparison tokens, saved operator identity and stronger reruns
+test comparison_custom_dispatch_failure_is_not_a_kill ... ignored, requires MUTIE_PYTHON; changed rich-comparison dispatch must remain a runtime error
+test conftest_cleanup_failure_is_saved_as_error ... ignored, requires MUTIE_PYTHON; conftest cleanup dominates body failures
+test conftest_helpers_preserve_lifecycle_attribution ... ignored, requires MUTIE_PYTHON; imported conftest helpers retain lifecycle attribution
+test conftest_scope_and_parent_boundaries ... ignored, requires MUTIE_PYTHON; no ancestor conftest imports and no report exclusions hiding fixtures
+test conftest_scored_reports_and_stronger_test_reruns ... ignored, requires MUTIE_PYTHON; conftest scoring, review and immutable fixture identity
+test discovery_and_isolated_baseline_preserve_inputs ... ignored, requires MUTIE_PYTHON with pinned CPython/pytest
+test failed_pristine_collection_is_saved ... ignored, requires MUTIE_PYTHON; pristine collection failures retain bounded diagnostics
+test flat_package_named_src_preserves_native_execution ... ignored, requires MUTIE_PYTHON; preserve flat packages named src with subpackages
+test independent_random_generator_and_invalid_seed_error ... ignored, requires MUTIE_PYTHON; independent random generators retain runtime-error classification
+test mutation_cannot_change_parametrized_inventory ... ignored, requires MUTIE_PYTHON; candidate collection must match pristine test IDs
+test root_scored_reports_and_stronger_test_reruns ... ignored, requires MUTIE_PYTHON; root tests, inert packaging and ancillary files
+test runtime_fingerprint_regressions ... ignored, requires MUTIE_PYTHON; runtime fingerprint format, drift and rejection controls
+test scope_failure_precedes_project_imports ... ignored, requires MUTIE_PYTHON with pinned CPython/pytest
+test scored_cancellation_cleans_owned_workspaces ... ignored, requires MUTIE_PYTHON; interrupt an observed running mutant and clean owned workspaces
+test scored_reports_and_stronger_test_reruns ... ignored, requires MUTIE_PYTHON; real scored reports, stronger tests and identity-checked reruns
+test scored_resource_limits_preserve_score_boundaries ... ignored, requires MUTIE_PYTHON; scored resource failures must not count as kills
+test src_scored_reports_and_stronger_test_reruns ... ignored, requires MUTIE_PYTHON; native src layout scoring, review and reruns
+test stale_bytecode_does_not_mask_changed_source ... ignored, requires MUTIE_PYTHON with pinned CPython/pytest
+test static_scope_regressions ... ignored, requires MUTIE_PYTHON with pinned CPython/pytest
+test unittest_body_and_cleanup_failure_cannot_be_scored_as_kill ... ignored, requires MUTIE_PYTHON; mixed unittest failures remain saved errors
+test unittest_scored_reports_and_stronger_test_reruns ... ignored, requires MUTIE_PYTHON; unittest scoring, review and focused reruns
+test unsupported_scored_options_fail_before_runtime_launch ... ok
+
+test result: ok. 1 passed; 0 failed; 23 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/report_browser.rs (target/debug/deps/report_browser-01d75e78c88b0bb0)
+
+running 6 tests
+test invalid_reports_and_nonterminals_fail_before_terminal_setup ... ok
+test current_row_command_uses_the_module_override ... ok
+test failed_run_without_inventory_is_inspectable_and_quits_cleanly ... ok
+test saved_dismissals_filter_and_export_without_a_checkout_or_go ... ok
+test ctrl_c_and_sigterm_restore_the_terminal ... ok
+test browser_filters_inspects_and_exports_preserving_the_shell_and_report ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+
+     Running tests/report_retention.rs (target/debug/deps/report_retention-358f805b1649e8e8)
+
+running 2 tests
+test commands_work_without_go_checkout_or_config_and_require_explicit_rules ... ok
+test live_run_is_preserved_then_finalized_report_can_be_previewed_and_deleted ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+
+     Running tests/rerun.rs (target/debug/deps/rerun-d4312ea09ee8bcd3)
+
+running 7 tests
+test operator_id_and_missed_filters_intersect_and_empty_selections_are_explicit ... ok
+test invalid_report_fails_before_go_or_report_creation_and_empty_selection_is_explicit ... ok
+test focused_reruns_reject_invalid_selectors_and_preserve_validation_and_failure_metadata ... ok
+test baseline_failure_and_unmatched_targets_never_start_mutation_workers ... ok
+test list_previews_moved_reports_without_tests_or_new_artifacts ... ok
+test improved_tests_rerun_only_missed_with_fresh_results_and_provenance ... ok
+test focused_ids_preview_and_execute_once_with_source_mappings_and_filters ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.40s
+
+     Running tests/rust_workflow.rs (target/debug/deps/rust_workflow-78eeb8b5524c3735)
+
+running 22 tests
+test boundaries::rust_comparison_boundaries_find_missing_equality_and_rerun_with_stronger_tests ... ignored, runs real Cargo boundary mutations and a stronger-test rerun; opt-in to avoid recursive self-testing
+test cache::worker_cache_rebuilds_backdated_sources_and_tests_with_isolated_dependencies ... ignored, runs real Cargo cache/restoration/parallel/rerun checks; opt-in to avoid recursive self-testing
+test compilation::compilation_and_tests_share_one_deadline ... ignored, runs real Cargo with a controlled build delay and hanging test; opt-in to avoid recursive self-testing
+test compilation::compilation_cancellation_preserves_baseline_and_parallel_partial_results ... ignored, runs real Cargo/rustc and interrupts compilation; opt-in to avoid recursive self-testing
+test compilation::compilation_timeouts_stop_before_tests_and_preserve_diagnostics ... ignored, runs real Cargo/rustc compilation timeouts; opt-in to avoid recursive self-testing
+test compilation::failures::cargo_faults_preserve_partial_results_and_stop_parallel_workers ... ignored, injects Cargo tool/protocol faults around real builds/tests; opt-in to avoid recursive self-testing
+test compilation::failures::cargo_faults_stop_discovery_and_baseline_without_mutations ... ignored, injects Cargo discovery/baseline failures and overflow; opt-in to avoid recursive self-testing
+test compilation::failures::cargo_listing_overflow_does_not_publish_partial_inventory ... ignored, runs real Cargo metadata with overflowing listing output; opt-in with other Cargo workflows
+test compilation::failures::cargo_startup_failure_preserves_inputs_and_saves_the_error ... ignored, checks Rust Cargo startup failures; opt-in with other Cargo workflows
+test compilation::worker_cache_cleanup_timeout_and_cancellation_preserve_completed_results ... ignored, runs real Cargo worker-cache cleanup deadlines and cancellation; opt-in to avoid recursive self-testing
+test dismissals::rust_dismissal_checks_isolate_metadata_side_effects_and_clean_up_failures ... ignored, runs Cargo metadata and cancellation/capture checks; opt-in with Rust workflows
+test dismissals::rust_dismissals_preserve_outcomes_scores_reports_and_focused_reruns ... ignored, runs real Cargo dismissal/review/policy workflows; opt-in to avoid recursive self-testing
+test library::library_acceptance_build_failures_are_not_kills ... ignored, runs real Cargo library compile and baseline failure acceptance
+test library::library_acceptance_cancellation_preserves_partial_reports_and_inputs ... ignored, interrupts real library baseline and mutation tests and verifies descendant cleanup
+test library::library_acceptance_review_preserves_raw_scores_and_saved_reports ... ignored, runs library dismissal, policy, rediscovery and focused rerun acceptance
+test library::library_layouts_run_fresh_and_cached_and_rerun_stronger_tests ... ignored, runs real Cargo library mutations and stronger-test reruns
+test library::library_metadata_matches_explicit_and_automatic_targets ... ignored, checks real Cargo metadata for library target configurations
+test logical::rust_logical_swaps_preserve_grouping_and_find_missing_mixed_inputs ... ignored, runs real Cargo logical swaps and a stronger-test rerun; opt-in to avoid recursive self-testing
+test reruns::rust_reruns_validate_scope_source_partial_runs_and_moved_checkouts ... ignored, runs real Cargo reruns and scope checks; opt-in to avoid recursive self-testing
+test rust_failures_timeout_and_cancellation_preserve_reports_and_cleanup ... ignored, runs real Cargo failures, a mutation timeout and cancellation; opt-in to avoid recursive self-testing
+test rust_fixture_runs_lists_filters_and_saves_results_without_touching_inputs ... ignored, runs real Cargo baseline/mutations and stronger-test probes; opt-in to avoid recursive self-testing
+test rust_mutation_cancellation_preserves_partial_results_and_cleans_processes ... ignored, runs real Cargo mutations and interrupts active tests; opt-in to avoid recursive self-testing
+
+test result: ok. 0 passed; 0 failed; 22 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/terminal.rs (target/debug/deps/terminal-14e41bd9487078b3)
+
+running 12 tests
+test ctrl_c_drains_active_workers_saves_partial_results_and_restores_terminal ... ok
+test live_view_redraws_while_baseline_waits_and_restores_after_resize_and_success ... ok
+test live_worker_phases_and_idle_rows_arrive_before_completion ... ok
+test queued_frames_cannot_erase_history_after_resize ... ok
+test resizing_preserves_scrollback_and_prompt_near_the_bottom ... ok
+test findings_failure_restores_terminal_and_preserves_completed_report ... ok
+test failed_terminal_setup_restores_input_and_auto_falls_back_to_plain ... ok
+test startup_preserves_a_partial_prompt_line ... ok
+test width_shrink_preserves_preceding_output_and_prompt ... ok
+test score_failure_restores_terminal_and_preserves_completed_report ... ok
+test empty_and_failed_runs_restore_terminal_and_ci_uses_plain_output ... ok
+test short_and_oversized_views_preserve_history_on_completion_and_cancellation ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.08s
+
+     Running tests/vitest_preview.rs (target/debug/deps/vitest_preview-9c7d13cf232e5fd2)
+
+running 4 tests
+test rejects_configuration_without_executing_it_and_rejects_runtime_mismatch ... ok
+test identity_fixture_rejects_other_commands_without_consuming_response ... ok
+test lists_filters_and_preserves_source_without_executing_vitest ... ok
+test scored_baseline_rechecks_pinned_node_without_repeating_launcher ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+
+     Running tests/vitest_workflow.rs (target/debug/deps/vitest_workflow-a9d0d4c96d792fb9)
+
+running 6 tests
+test coverage_only_config_runs_and_invalidates_reruns ... ignored, requires prepared MUTIE_VITEST_FIXTURE; coverage-only config identity
+test lifecycle_mutation_failures_do_not_improve_scores ... ignored, requires prepared MUTIE_VITEST_FIXTURE; mutation-triggered lifecycle errors
+test review::vitest_review_preserves_outcomes_scores_and_error_precedence ... ignored, requires prepared MUTIE_VITEST_FIXTURE; real review and CI policy workflows
+test scoped_fixture_mutation_failures_preserve_scores ... ignored, requires prepared MUTIE_VITEST_FIXTURE; scoped fixture mutation outcomes
+test scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure ... ignored, requires MUTIE_VITEST_FIXTURE with pinned installed dependencies and Node 24.22.0
+test unsupported_vitest_options_fail_before_execution ... ok
+
+test result: ok. 1 passed; 0 failed; 5 ignored; 0 measured; 0 filtered out; finished in 0.04s
+

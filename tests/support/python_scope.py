@@ -25,6 +25,43 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def test_independent_random_generator_without_global_rng_access(self):
+        self.write('sample/__init__.py', 'import random as rng\ndef draw(seed):\n    return rng.Random(seed).random()\n')
+        scope.inspect(self.root)
+        for source in ('import random\nrandom.seed(1)',
+                       'import random\nrandom.random()',
+                       'import random\nrandom.SystemRandom()',
+                       'import random\nrandom.Random = None',
+                       'import random\nconstructor = random.Random',
+                       'import random\nrandom.Random.seed = None',
+                       'import random\nalias = random',
+                       'from random import Random',
+                       'import random\nvalue = random.__dict__'):
+            with self.subTest(source=source):
+                self.write('sample/__init__.py', source)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
+    def test_versioned_development_extras_and_inert_numeric_tool_settings(self):
+        config = ('[project]\nname="sample"\n'
+                  '[project.optional-dependencies]\ndev=["pytest>=7.0", "mypy>=1.0", "ruff>=0.4"]\n'
+                  '[tool.ruff]\ntarget-version="py310"\nline-length=88\n'
+                  '[tool.mypy]\npython_version="3.10"\nwarn_return_any=true\n'
+                  'warn_unused_configs=true\ndisallow_untyped_defs=true\n')
+        self.write('pyproject.toml', config)
+        result = scope.inspect(self.root)
+        self.assertIn('pyproject.toml', result['files'])
+        for old, new in [('pytest>=7.0', 'pytest>=99.0'),
+                         ('mypy>=1.0', 'unreviewed>=1.0'),
+                         ('ruff>=0.4', 'ruff @ https://example.invalid/tool'),
+                         ('warn_return_any=true', 'warn_return_any="true"'),
+                         ('python_version="3.10"', 'plugins=["evil"]'),
+                         ('target-version="py310"', 'target-version="unknown"')]:
+            with self.subTest(new=new):
+                self.write('pyproject.toml', config.replace(old, new))
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
     def test_comparison_tokens_preserve_unicode_comments_and_native_evaluation(self):
         source = ('label = "π < >"\n'
                   'def less(left, right): return (left()) < (right())\n'
@@ -301,7 +338,7 @@ class ScopeTests(unittest.TestCase):
             self.write("tests/test_sample.py", source)
             with self.assertRaises(ValueError): scope.inspect(self.root)
         self.write("tests/test_sample.py", "def test_sample(): pass")
-        for source in ["import random", "value=Exception.__init__", "Exception.__init__(object())",
+        for source in ["import random\nrandom.sample(range(3), 1)", "value=Exception.__init__", "Exception.__init__(object())",
                        "class Other: \n def __init__(self): Exception.__init__(self)"]:
             self.write("sample/__init__.py", source)
             with self.assertRaises(ValueError): scope.inspect(self.root)

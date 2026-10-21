@@ -160,6 +160,11 @@ in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
 Python/pytest is Validated within its pinned serial scope on macOS arm64.
+[Unchanged betting-math-kit validation](benchmarks/python-betting-math.md) covers
+198 original tests and six metric-boundary survivors killed by a separate
+205-test stronger suite. Narrow inert tool metadata and direct independent
+`random.Random(...)` construction are supported; global random-state APIs remain
+excluded (apart from existing test-only `random.sample`).
 The [Scrubify acceptance](benchmarks/python-scrubify-findings.md) records a real
 blank-query survivor killed by stronger tests, timings and preserved inputs/reports.
 The [feedback profile](benchmarks/python-feedback-profile.md) measures repeated

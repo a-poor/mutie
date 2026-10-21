@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.0.2, pluggy-1.7.0
+rootdir: /tmp/mutie-python-betting-math-original
+configfile: pyproject.toml
+collected 198 items
+
+tests/test_devig.py .................................................... [ 26%]
+..                                                                       [ 27%]
+tests/test_kelly.py ...................................                  [ 44%]
+tests/test_metrics.py ................................                   [ 61%]
+tests/test_odds.py ..................................................... [ 87%]
+.                                                                        [ 88%]
+tests/test_simulation.py .......................                         [100%]
+
+============================= 198 passed in 0.42s ==============================

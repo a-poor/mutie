@@ -1961,3 +1961,18 @@ operand evaluation and rich-comparison dispatch are preserved; custom-dispatch
 exceptions remain errors. The changed recipe requires fresh runs, without changing
 the report schema or rewriting historical reports. Unchanged Route Mini exact-token-
 capacity acceptance complements fixture evaluation-order and NaN controls.
+
+## Python independent random generators and larger unchanged validation
+
+The [betting-math-kit acceptance](benchmarks/python-betting-math.md) extends only
+inert optional-tool minimum versions, selected Ruff/Mypy fields, and direct
+`random.Random(...)` construction. The constructor may not escape as a value,
+be rebound or mutate class methods; module global RNG APIs remain excluded.
+Existing test-only `random.sample` remains supported. Generator seed errors stay
+runtime errors. Every validator change joins recipe identity as before.
+
+The unchanged 198-test suite supplies a new larger project. Ten selected metrics
+boundaries yield six survivors and four errors across preserved failed reports.
+Seven new cases in a separate 205-test copy kill the six survivors; full original
+inputs and all test IDs remain intact. No combined/full score is inferred from
+selected accounting, and observer/classification semantics remain unchanged.
