@@ -1,0 +1,36 @@
+[
+  {
+    "round": 1,
+    "seconds": 83.792,
+    "exit_code": 0,
+    "sampled_pids": [
+      82043,
+      82050,
+      82052,
+      82053,
+      84495,
+      84496,
+      84498,
+      84499,
+      84500,
+      84501,
+      85244
+    ]
+  },
+  {
+    "round": 2,
+    "seconds": 68.983,
+    "exit_code": 0,
+    "sampled_pids": [
+      89635
+    ]
+  },
+  {
+    "round": 3,
+    "seconds": 65.975,
+    "exit_code": 0,
+    "sampled_pids": [
+      93342
+    ]
+  }
+]

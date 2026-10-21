@@ -1,0 +1,76 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.31s
+     Running tests/cancellation.rs (target/debug/deps/cancellation-32afcd0ab403e923)
+
+running 7 tests
+test timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics ... FAILED
+test completing_one_worker_preserves_another_workers_test_temporary_files ... FAILED
+test interrupt_parallel_run_retains_inventory_results_and_active_diagnostics ... FAILED
+test interruption_during_baseline_and_discovery_preserves_command_output ... FAILED
+test tool_error_drains_parallel_workers_and_preserves_the_failure_reason ... FAILED
+test go_startup_errors_do_not_leave_temporary_directories ... ok
+test go_temporary_directories_respect_parent_placement_for_listing ... ok
+
+failures:
+
+---- timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics stdout ----
+
+thread 'timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics' (18025514) panicked at tests/cancellation.rs:355:13:
+CLI did not finish; stdout: 
+stderr: 
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- completing_one_worker_preserves_another_workers_test_temporary_files stdout ----
+
+thread 'completing_one_worker_preserves_another_workers_test_temporary_files' (18025509) panicked at tests/cancellation.rs:213:13:
+Go did not reach b; CLI PID: 97963; state markers: ["stderr", "stdout"]
+stdout: 
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[98572]: sample cannot examine process 97963 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+---- interrupt_parallel_run_retains_inventory_results_and_active_diagnostics stdout ----
+
+thread 'interrupt_parallel_run_retains_inventory_results_and_active_diagnostics' (18025512) panicked at tests/cancellation.rs:213:13:
+Go did not reach b; CLI PID: 97961; state markers: ["stderr", "stdout"]
+stdout: 
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[98571]: sample cannot examine process 97961 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+---- interruption_during_baseline_and_discovery_preserves_command_output stdout ----
+
+thread 'interruption_during_baseline_and_discovery_preserves_command_output' (18025513) panicked at tests/cancellation.rs:213:13:
+Go did not reach baseline; CLI PID: 97959; state markers: ["stderr", "stdout"]
+stdout: 
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[98573]: sample cannot examine process 97959 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+---- tool_error_drains_parallel_workers_and_preserves_the_failure_reason stdout ----
+
+thread 'tool_error_drains_parallel_workers_and_preserves_the_failure_reason' (18025515) panicked at tests/cancellation.rs:213:13:
+Go did not reach b; CLI PID: 97964; state markers: ["stderr", "stdout"]
+stdout: 
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[98574]: sample cannot examine process 97964 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+
+failures:
+    completing_one_worker_preserves_another_workers_test_temporary_files
+    interrupt_parallel_run_retains_inventory_results_and_active_diagnostics
+    interruption_during_baseline_and_discovery_preserves_command_output
+    timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics
+    tool_error_drains_parallel_workers_and_preserves_the_failure_reason
+
+test result: FAILED. 2 passed; 5 failed; 0 ignored; 0 measured; 0 filtered out; finished in 43.48s
+
+error: test failed, to rerun pass `--test cancellation`

@@ -1,0 +1,97 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.56s
+     Running tests/log_limits.rs (target/debug/deps/log_limits-60b4e5bcddce72d1)
+
+running 1 test
+
+thread 'unready_child_fails_at_the_original_deadline_and_is_reaped' (18010597) panicked at tests/log_limits.rs:180:13:
+command never became ready; CLI PID: 93952; fixture PID: None
+stdout: 
+stderr: 
+post-deadline CLI sample (exit status: 0; at most 64 KiB):
+Analysis of sampling sleep (pid 93952) every 1 millisecond
+Process:         sleep [93952]
+Path:            /bin/sleep
+Load Address: [redacted]
+Identifier:      sleep
+Version:         329
+Code Type:       ARM64E
+Platform:        macOS
+Parent Process:  log_limits-60b4e5bcddce72d1 [93951]
+Target Type:     live task
+
+Date/Time:       2026-10-21 12:20:24.774 -0700
+Launch Time:     2026-10-21 12:20:14.686 -0700
+OS Version: [redacted]
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint: [redacted]
+Physical footprint (peak): [redacted]
+Idle exit:                  untracked
+----
+
+Call graph:
+    793 Thread_18010598   DispatchQueue_1: com.apple.main-thread  (serial)
+      793 start  (in dyld) + 6992  [[address]]
+        793 ???  (in sleep)  load address [address] + 0x740  [[address]]
+          793 nanosleep  (in libsystem_c.dylib) + 220  [[address]]
+            793 __semwait_signal  (in libsystem_kernel.dylib) + 8  [[address]]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        __semwait_signal  (in libsystem_kernel.dylib)        793
+
+Binary Images:
+       [address] -        [address] +sleep (329) <binary-id> /bin/sleep
+       [address] -        [address]  libobjc.A.dylib (951.7) <binary-id> /usr/lib/libobjc.A.dylib
+       [address] -        [address]  libdyld.dylib (1378) <binary-id> /usr/lib/system/libdyld.dylib
+       [address] -        [address]  dyld (1.0.0 - 1378) <binary-id> /usr/lib/dyld
+       [address] -        [address]  libsystem_blocks.dylib (96) <binary-id> /usr/lib/system/libsystem_blocks.dylib
+       [address] -        [address]  libxpc.dylib (3102.120.13) <binary-id> /usr/lib/system/libxpc.dylib
+       [address] -        [address]  libsystem_trace.dylib (1861.120.4) <binary-id> /usr/lib/system/libsystem_trace.dylib
+       [address] -        [address]  libcorecrypto.dylib (1922.121.1) <binary-id> /usr/lib/system/libcorecrypto.dylib
+       [address] -        [address]  libsystem_malloc.dylib (812.100.31) <binary-id> /usr/lib/system/libsystem_malloc.dylib
+       [address] -        [address]  libdispatch.dylib (1542.100.32) <binary-id> /usr/lib/system/libdispatch.dylib
+       [address] -        [address]  libsystem_featureflags.dylib (103) <binary-id> /usr/lib/system/libsystem_featureflags.dylib
+       [address] -        [address]  libsystem_c.dylib (1752.120.2) <binary-id> /usr/lib/system/libsystem_c.dylib
+       [address] -        [address]  libc++.1.dylib (2100.43) <binary-id> /usr/lib/libc++.1.dylib
+       [address] -        [address]  libc++abi.dylib (2100.43) <binary-id> /usr/lib/libc++abi.dylib
+       [address] -        [address]  libsystem_kernel.dylib (12377.121.6) <binary-id> /usr/lib/system/libsystem_kernel.dylib
+       [address] -        [address]  libsystem_pthread.dylib (539.100.4) <binary-id> /usr/lib/system/libsystem_pthread.dylib
+       [address] -        [address]  libsystem_platform.dylib (375.120.2) <binary-id> /usr/lib/system/libsystem_platform.dylib
+       [address] -        [address]  libsystem_info.dylib (600) <binary-id> /usr/lib/system/libsystem_info.dylib
+       [address] -        [address]  libsystem_darwin.dylib (1752.120.2) <binary-id> /usr/lib/system/libsystem_darwin.dylib
+       [address] -        [address]  libsystem_notify.dylib (348.120.4) <binary-id> /usr/lib/system/libsystem_notify.dylib
+       [address] -        [address]  libsystem_networkextension.dylib (2226.121.1) <binary-id> /usr/lib/system/libsystem_networkextension.dylib
+       [address] -        [address]  libsystem_asl.dylib (406) <binary-id> /usr/lib/system/libsystem_asl.dylib
+       [address] -        [address]  libsystem_symptoms.dylib (2169.120.7) <binary-id> /usr/lib/system/libsystem_symptoms.dylib
+       [address] -        [address]  libsystem_containermanager.dylib (725.120.2) <binary-id> /usr/lib/system/libsystem_containermanager.dylib
+       [address] -        [address]  libsystem_configuration.dylib (1405.120.5) <binary-id> /usr/lib/system/libsystem_configuration.dylib
+       [address] -        [address]  libsystem_sandbox.dylib (2680.120.12) <binary-id> /usr/lib/system/libsystem_sandbox.dylib
+       [address] -        [address]  libquarantine.dylib (196.120.2) <binary-id> /usr/lib/system/libquarantine.dylib
+       [address] -        [address]  libsystem_coreservices.dylib (191.4.5) <binary-id> /usr/lib/system/libsystem_coreservices.dylib
+       [address] -        [address]  libsystem_m.dylib (3312.100.1) <binary-id> /usr/lib/system/libsystem_m.dylib
+       [address] -        [address]  libmacho.dylib (1378) <binary-id> /usr/lib/system/libmacho.dylib
+       [address] -        [address]  libcommonCrypto.dylib (600035) <binary-id> /usr/lib/system/libcommonCrypto.dylib
+       [address] -        [address]  libunwind.dylib (2100.2) <binary-id> /usr/lib/system/libunwind.dylib
+       [address] -        [address]  libcopyfile.dylib (240) <binary-id> /usr/lib/system/libcopyfile.dylib
+       [address] -        [address]  libcompiler_rt.dylib (103.3) <binary-id> /usr/lib/system/libcompiler_rt.dylib
+       [address] -        [address]  libsystem_collections.dylib (1752.120.2) <binary-id> /usr/lib/system/libsystem_collections.dylib
+       [address] -        [address]  libsystem_secinit.dylib (168.100.7) <binary-id> /usr/lib/system/libsystem_secinit.dylib
+       [address] -        [address]  libremovefile.dylib (85.100.6) <binary-id> /usr/lib/system/libremovefile.dylib
+       [address] -        [address]  libkeymgr.dylib (31) <binary-id> /usr/lib/system/libkeymgr.dylib
+       [address] -        [address]  libsystem_dnssd.dylib (2881.120.11) <binary-id> /usr/lib/system/libsystem_dnssd.dylib
+       [address] -        [address]  libcache.dylib (95) <binary-id> /usr/lib/system/libcache.dylib
+       [address] -        [address]  libSystem.B.dylib (1356) <binary-id> /usr/lib/libSystem.B.dylib
+       [address] -        [address]  libRosetta.dylib (367.9) <binary-id> /usr/lib/libRosetta.dylib
+       [address] -        [address]  libsystem_darwindirectory.dylib (122) <binary-id> /usr/lib/system/libsystem_darwindirectory.dylib
+       [address] -        [address]  libsystem_eligibility.dylib (319.121.1) <binary-id> /usr/lib/system/libsystem_eligibility.dylib
+       [address] -        [address]  libsystem_sanitizers.dylib (26.1) <binary-id> /usr/lib/system/libsystem_sanitizers.dylib
+       [address] -        [address]  libsystem_trial.dylib (474.2.18.2) <binary-id> /usr/lib/system/libsystem_trial.dylib
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test unready_child_fails_at_the_original_deadline_and_is_reaped ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 12.12s
+

@@ -1,0 +1,24 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.42s
+     Running tests/cancellation.rs (target/debug/deps/cancellation-32afcd0ab403e923)
+
+running 7 tests
+test go_startup_errors_do_not_leave_temporary_directories ... ok
+test go_temporary_directories_respect_parent_placement_for_listing ... ok
+test interrupt_parallel_run_retains_inventory_results_and_active_diagnostics ... ok
+test completing_one_worker_preserves_another_workers_test_temporary_files ... ok
+test interruption_during_baseline_and_discovery_preserves_command_output ... ok
+test timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics ... ok
+test tool_error_drains_parallel_workers_and_preserves_the_failure_reason ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.01s
+
+     Running tests/log_limits.rs (target/debug/deps/log_limits-60b4e5bcddce72d1)
+
+running 4 tests
+test configured_limits_can_be_overridden_and_baseline_failures_keep_diagnostics ... ok
+test interrupted_noisy_commands_save_limited_logs_and_remove_temporary_captures ... ok
+test unready_child_fails_at_the_original_deadline_and_is_reaped ... ok
+test capped_logs_preserve_outcomes_discovery_reruns_and_cleanup ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 20.49s
+

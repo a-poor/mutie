@@ -1,0 +1,29 @@
+[
+  {
+    "round": 1,
+    "seconds": 69.042,
+    "exit_code": 0,
+    "targets": 20,
+    "passed": 278,
+    "failed": 0,
+    "ignored": 93
+  },
+  {
+    "round": 2,
+    "seconds": 68.987,
+    "exit_code": 0,
+    "targets": 20,
+    "passed": 278,
+    "failed": 0,
+    "ignored": 93
+  },
+  {
+    "round": 3,
+    "seconds": 71.316,
+    "exit_code": 0,
+    "targets": 20,
+    "passed": 278,
+    "failed": 0,
+    "ignored": 93
+  }
+]

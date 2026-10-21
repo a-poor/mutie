@@ -154,16 +154,24 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   operand-order/NaN/custom-dispatch controls, saved identity validation and an
   unchanged Route Mini capacity finding killed by a stronger-test focused rerun.
   See [acceptance](benchmarks/python-comparison-boundaries.md).
+- [x] Validate comparison boundaries on unchanged Cycler: 28-test baseline,
+  one justified equivalent survivor, preserved inputs/reports, and no invented
+  stronger-test kill. See [review](benchmarks/python-cycler-boundaries.md).
 
 - [x] Diagnose and fix the native Node fixture startup failures reproduced during
   final Python-boundary validation. A macOS pre-main loader stall is avoided with
   system-interpreter fixture data; ten-second readiness and identity assertions
   remain intact. Twenty preview repetitions pass, and the full default suite
   passes 277 tests. See [evidence and limits](benchmarks/vitest-fixture-startup.md).
-- [ ] Investigate broader intermittent CLI startup delays if reproduced: the first
-  full run above hit noisy-log readiness with empty CLI output and no fixture PID;
-  an unchanged focused recheck and full rerun passed. Preserve that failure without
-  attributing it to the diagnosed mock-loader stall without further evidence.
+- [ ] **Deferred by user (2026-10-21):** resolve the intermittent CLI startup delay: actual CLI children now have
+  captured pre-main `_dyld_start` stalls, with failures inside and outside the
+  sandbox. Readiness checks retain their deadlines and now capture bounded
+  post-failure diagnostics; a negative control checks failure and reaping.
+  Three full suites pass 278 tests, but focused repetitions still reproduce
+  failures. A temporary Developer Tools comparison passed in both enabled and
+  user-confirmed disabled states, so it remains inconclusive. A host-level
+  remedy remains unverified; see
+  [diagnosis and controls](benchmarks/cli-startup-readiness.md).
 
 ## Selected first Bun test-runner slice
 

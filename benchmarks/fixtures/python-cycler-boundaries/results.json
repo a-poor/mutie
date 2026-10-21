@@ -1,0 +1,497 @@
+{
+  "commit": "d1737eb0a42bd451e8770cef245ebe60ebb36bfc",
+  "input_sha256": {
+    ".circleci/config.yml": "51e4a5731d16230d2f5e518849df77193586b3a8590f91abc288237b797a23c6",
+    ".circleci/fetch_doc_logs.py": "e89232dcc71c4dc7283f26507459697f7c5a88c0fb07a7090c1f2cd987fb9beb",
+    ".coveragerc": "608389eded8b57bd07cc1d525086505233b5d2c837421216c30b68be7f238d80",
+    ".flake8": "bb2bfdcfaf7b65729c16c342cd09ee71b2698b635b144353978cb5554e0f6466",
+    ".github/workflows/circleci.yml": "103a36aade5b1e6fe6870f00ffb3d56d5cc1450cd58f2198d8cbbb2519c0f309",
+    ".github/workflows/release.yml": "ba2ad648666f95dcd072a111104a346ba6b5a385945a0be54135007ced5167fe",
+    ".github/workflows/reviewdog.yml": "cca95ec25f7691f4ff860aaf5166137e18c09af142ccf23d6713c17a8ed8c92b",
+    ".github/workflows/tests.yml": "1694903483fc68f7518b6b621fe8d01c25c9b73354659a3ea5ca488d29da7baf",
+    ".gitignore": "95ea0e4e85dc20fe2a5bc00cefbbc779e6c2f6dbb10f465507b87e1e22ac20bf",
+    "LICENSE": "f1218143d766da3fea66f13396b7f15df46a83303f29bf96ba6e98eb4d42f408",
+    "README.rst": "7664a0f6e0adb250944bcbabb55b5d2c533bc8bc857963958e510dda007f8ea7",
+    "SECURITY.md": "3227e4e5a0e744bc0981d0d4be858fd1ab09ef425de7761c9ce770754ffeb3b5",
+    "appveyor.yml": "bb9e585eb6641a9963184028eb944a35963cb8fc0d8831ce523827b3db8581e1",
+    "cycler/__init__.py": "0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+    "cycler/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "doc/Makefile": "79c3bcb74e620cdbd8892a9a5e8b59c6f99b8705c186f24a9813f17ae4abd9f7",
+    "doc/_templates/autosummary/class.rst": "bb15d8c25260dbc4253d635f13b0e06ce2ae2bc44e1bf7121df8a4a8f3273a82",
+    "doc/make.bat": "143b1e6f0a6c15a191439ce556cb284db74117dac946664dd427ef4519bdc31b",
+    "doc/source/conf.py": "6a420793760117c0adae32634059cffe13057eb6b989b01807e75434defe252e",
+    "doc/source/index.rst": "c12f120985279cdb5711cc7ca71cfcf75d955b823c9a8736fcb1156a25ce7d6c",
+    "pyproject.toml": "ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+    "test_cycler.py": "5b9b50d7b359ce3c5670ba2501b2a05ef158bf9c85985582f6023dcd796a3341"
+  },
+  "mutie_sha256": "fc0b865cfc64a3a0a80845d233be3b46bba68c1eea9ddf8eb13ec44697ccb6bd",
+  "records": [
+    {
+      "label": "discovery",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-list",
+        "/tmp/mutie-python-cycler-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--json"
+      ],
+      "seconds": 2.8083667079918087,
+      "exit_code": 0,
+      "scope": {
+        "conftests": [],
+        "files": {
+          ".circleci/config.yml": "sha256:51e4a5731d16230d2f5e518849df77193586b3a8590f91abc288237b797a23c6",
+          ".circleci/fetch_doc_logs.py": "sha256:e89232dcc71c4dc7283f26507459697f7c5a88c0fb07a7090c1f2cd987fb9beb",
+          ".coveragerc": "sha256:608389eded8b57bd07cc1d525086505233b5d2c837421216c30b68be7f238d80",
+          ".flake8": "sha256:bb2bfdcfaf7b65729c16c342cd09ee71b2698b635b144353978cb5554e0f6466",
+          ".github/workflows/circleci.yml": "sha256:103a36aade5b1e6fe6870f00ffb3d56d5cc1450cd58f2198d8cbbb2519c0f309",
+          ".github/workflows/release.yml": "sha256:ba2ad648666f95dcd072a111104a346ba6b5a385945a0be54135007ced5167fe",
+          ".github/workflows/reviewdog.yml": "sha256:cca95ec25f7691f4ff860aaf5166137e18c09af142ccf23d6713c17a8ed8c92b",
+          ".github/workflows/tests.yml": "sha256:1694903483fc68f7518b6b621fe8d01c25c9b73354659a3ea5ca488d29da7baf",
+          ".gitignore": "sha256:95ea0e4e85dc20fe2a5bc00cefbbc779e6c2f6dbb10f465507b87e1e22ac20bf",
+          "LICENSE": "sha256:f1218143d766da3fea66f13396b7f15df46a83303f29bf96ba6e98eb4d42f408",
+          "README.rst": "sha256:7664a0f6e0adb250944bcbabb55b5d2c533bc8bc857963958e510dda007f8ea7",
+          "SECURITY.md": "sha256:3227e4e5a0e744bc0981d0d4be858fd1ab09ef425de7761c9ce770754ffeb3b5",
+          "appveyor.yml": "sha256:bb9e585eb6641a9963184028eb944a35963cb8fc0d8831ce523827b3db8581e1",
+          "cycler/__init__.py": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+          "cycler/py.typed": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "doc/Makefile": "sha256:79c3bcb74e620cdbd8892a9a5e8b59c6f99b8705c186f24a9813f17ae4abd9f7",
+          "doc/_templates/autosummary/class.rst": "sha256:bb15d8c25260dbc4253d635f13b0e06ce2ae2bc44e1bf7121df8a4a8f3273a82",
+          "doc/make.bat": "sha256:143b1e6f0a6c15a191439ce556cb284db74117dac946664dd427ef4519bdc31b",
+          "doc/source/conf.py": "sha256:6a420793760117c0adae32634059cffe13057eb6b989b01807e75434defe252e",
+          "doc/source/index.rst": "sha256:c12f120985279cdb5711cc7ca71cfcf75d955b823c9a8736fcb1156a25ce7d6c",
+          "pyproject.toml": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+          "test_cycler.py": "sha256:5b9b50d7b359ce3c5670ba2501b2a05ef158bf9c85985582f6023dcd796a3341"
+        },
+        "mutations": [
+          {
+            "column": 20,
+            "end": 11301,
+            "end_column": 25,
+            "end_line": 390,
+            "file": "cycler/__init__.py",
+            "line": 390,
+            "original": "False",
+            "replacement": "True",
+            "start": 11296
+          },
+          {
+            "column": 20,
+            "end": 11362,
+            "end_column": 25,
+            "end_line": 392,
+            "file": "cycler/__init__.py",
+            "line": 392,
+            "original": "False",
+            "replacement": "True",
+            "start": 11357
+          },
+          {
+            "column": 20,
+            "end": 11422,
+            "end_column": 25,
+            "end_line": 394,
+            "file": "cycler/__init__.py",
+            "line": 394,
+            "original": "False",
+            "replacement": "True",
+            "start": 11417
+          },
+          {
+            "column": 20,
+            "end": 15823,
+            "end_column": 21,
+            "end_line": 542,
+            "file": "cycler/__init__.py",
+            "line": 542,
+            "original": ">",
+            "replacement": ">=",
+            "start": 15822
+          }
+        ],
+        "package": "cycler",
+        "source_root": "",
+        "sources": [
+          "cycler/__init__.py"
+        ],
+        "tests": [
+          "test_cycler.py"
+        ]
+      }
+    },
+    {
+      "label": "comparison-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-cycler-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--operator",
+        "comparison_boundary",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-cycler-boundaries/reports"
+      ],
+      "seconds": 17.97031749994494,
+      "exit_code": 0,
+      "report": "/tmp/mutie-cycler-boundaries/reports/run-1792613995-dJfJFp",
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "d09a8caff8de5c810ffbea40140144d833152d5f38dbca915feb023b0a4022e0",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "3b6236498783dbc337b97e90e1b3701defcb579c0e6df30c62d42ab9eb8558f5",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "ac6209146d8c4f6ef684a61968b17e0bbf8e490367d5bb912b4a3129efcf1b1d",
+        "logs/baseline.log": "95e5abd2cfb5b6921ad6e473acef143738dc6fd6dc60b0789075024ef473386c",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "987a5d93edc43b312d9783073b939f360ccbbc254a29d88f02b79e6d8f5e2e88",
+        "logs/discovery.log": "70b22d2ba9f312e5afaa87d5ffc8ee4f745e0ab5030d0720e79fb8d401879ff9",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "c2fe0d8640d522b5837f6498cdb2963cfca49fcfd6c0e34c9f9ccfc702d627eb",
+        "missed.txt": "2ab66d4597a65edd176098eba4da509c6c7862acd12b2c8b6248f27797b34431",
+        "mutants.json": "edaa71fc6029467f57f901ef2a46912991f7cf7f202e4e5edeb0dd6377a47345",
+        "outcomes.json": "5e1caf944d09eee32d0e34317af39bcdb6adacb09900a1caa486ea4fc58f8965",
+        "run.json": "4b0ffc60c9bf3a150cb1db84d21906090f0421068c64c3256af24f2f44314c06",
+        "summary.txt": "0de2110434968aabbcebf4849eb15a44d5b9c1bc56258237cf1a39673cf23275",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 12,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-python-cycler-original",
+        "effective_config": {
+          "module_root": "/tmp/mutie-python-cycler-original",
+          "config_file": null,
+          "lang": "python",
+          "python": "/tmp/mutie-pytest-audit-env/bin/python",
+          "rust_build_cache": "fresh",
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [
+            "comparison_boundary"
+          ],
+          "timeout": 20,
+          "max_log_bytes": null,
+          "max_capture_bytes": 4194304,
+          "baseline_timeout": 30,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-cycler-boundaries/reports",
+          "verbose": false,
+          "list": false,
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792613995,
+        "finished_at_unix_seconds": 1792614013,
+        "duration_seconds": 17.939859875,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "filtered",
+          "killed": 0,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 0.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "python",
+          "<owned-observer>",
+          "tests"
+        ],
+        "node_scope": null,
+        "bun_scope": null,
+        "python_scope": {
+          "runtime": {
+            "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+            "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+            "prefix": "/tmp/mutie-pytest-audit-env",
+            "versions": {
+              "iniconfig": "2.3.1",
+              "packaging": "26.3",
+              "pip": "26.2.1",
+              "pluggy": "1.7.0",
+              "pygments": "2.21.0",
+              "pytest": "9.0.2"
+            },
+            "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+            "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+            "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+            "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+            "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+          },
+          "package": "cycler",
+          "manifest_fingerprint": "sha256:ab443e18b4ff05def31e5bcc8feb42f13ee3aa59d6270eaf0c819ff029b8a31f",
+          "recipe_fingerprint": "sha256:2662d61157f046654d45d9405dab0ab4ce581198965908c58afc731b04270159",
+          "test_files": [
+            "test_cycler.py"
+          ],
+          "test_nodes": [
+            "test_cycler.py::test_creation[from string]",
+            "test_cycler.py::test_creation[from list]",
+            "test_cycler.py::test_creation[from cycler]",
+            "test_cycler.py::test_add",
+            "test_cycler.py::test_add_len_mismatch",
+            "test_cycler.py::test_prod",
+            "test_cycler.py::test_inplace_add",
+            "test_cycler.py::test_inplace_add_len_mismatch",
+            "test_cycler.py::test_inplace_mul",
+            "test_cycler.py::test_constructor",
+            "test_cycler.py::test_failures",
+            "test_cycler.py::test_simplify",
+            "test_cycler.py::test_multiply",
+            "test_cycler.py::test_mul_fails",
+            "test_cycler.py::test_getitem",
+            "test_cycler.py::test_fail_getime",
+            "test_cycler.py::test_repr",
+            "test_cycler.py::test_call",
+            "test_cycler.py::test_copying",
+            "test_cycler.py::test_keychange",
+            "test_cycler.py::test_eq",
+            "test_cycler.py::test_cycler_exceptions",
+            "test_cycler.py::test_strange_init",
+            "test_cycler.py::test_concat",
+            "test_cycler.py::test_concat_fail",
+            "test_cycler.py::test_by_key_add",
+            "test_cycler.py::test_by_key_mul",
+            "test_cycler.py::test_contains"
+          ],
+          "timeout_millis": 30000,
+          "capture_bytes": 4194304,
+          "evidence_file_bytes": 4194304
+        },
+        "mutation_command_prefix": [
+          "python",
+          "<owned-observer>",
+          "tests"
+        ],
+        "discovery_command": [
+          "mutie",
+          "python-list"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 30,
+        "mutation_timeout_seconds": 20.0,
+        "planned_mutations": 1,
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.004863708,
+            "reflink_files": 22,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.005393917,
+            "reflink_files": 22,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.006612708,
+            "reflink_files": 22,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.005142375,
+            "reflink_files": 22,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 0,
+            "completed": 0,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0,
+            "reflink_files": 0,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "outcomes": {
+        "schema_version": 1,
+        "checkpoint": 12,
+        "status": "completed",
+        "baseline": {
+          "outcome": "passed",
+          "duration_seconds": 2.917620291,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/baseline.log",
+            "stdout": "logs/baseline.stdout.log",
+            "stderr": "logs/baseline.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        "discovery": {
+          "outcome": "passed",
+          "duration_seconds": 1.6794310829999999,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/discovery.log",
+            "stdout": "logs/discovery.stdout.log",
+            "stderr": "logs/discovery.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 938,
+                "head_bytes": 938,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 937,
+                "head_bytes": 937,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        "summary": {
+          "killed": 0,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "missed",
+            "error": null,
+            "duration_seconds": 2.749070334,
+            "exit_code": 0,
+            "logs": {
+              "text": "logs/000001.log",
+              "stdout": "logs/000001.stdout.log",
+              "stderr": "logs/000001.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 100,
+                  "head_bytes": 100,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 99,
+                  "head_bytes": 99,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          }
+        ]
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "cycler/__init__.py",
+            "operator": "comparison_boundary",
+            "source_fingerprint": "sha256:0f41c826bb8e2715736cdae4b909034f2a857ed4b2a5f87c877e80e3aa04e1fb",
+            "line": 542,
+            "column": 20,
+            "end_line": 542,
+            "end_column": 21,
+            "byte_start": 15822,
+            "byte_end": 15823,
+            "original": ">",
+            "replacement": ">=",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      }
+    }
+  ],
+  "original_inputs_preserved": true,
+  "prior_reports_preserved": true
+}

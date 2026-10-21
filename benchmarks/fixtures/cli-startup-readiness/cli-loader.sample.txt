@@ -1,0 +1,32 @@
+Analysis of sampling mutie (pid 4303) every 1 millisecond
+Process:         mutie [4303]
+Path:            /path/to/home/*/mutie
+Load Address: [redacted]
+Identifier:      mutie
+Version:         ???
+Code Type:       ARM64
+Parent Process:  cancellation-32afcd0ab403e923 [4299]
+Target Type:     live task
+
+Date/Time:       2026-10-21 12:26:39.765 -0700
+Launch Time:     2026-10-21 12:26:32.005 -0700
+OS Version: [redacted]
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint: [redacted]
+Physical footprint (peak): [redacted]
+Idle exit:                  untracked
+----
+
+Call graph:
+    886 Thread_18044565: Main Thread   DispatchQueue_<multiple>
+      886 _dyld_start  (in dyld) + 0  [[address]]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        886
+
+Binary images description not available
+

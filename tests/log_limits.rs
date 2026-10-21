@@ -3,6 +3,9 @@
 #[path = "support/shell_fixture.rs"]
 mod shell_fixture;
 
+#[path = "support/startup_diagnostics.rs"]
+mod startup_diagnostics;
+
 use serde_json::Value;
 use std::{
     fs,
@@ -176,8 +179,9 @@ impl Running {
             );
             assert!(
                 start.elapsed() < Duration::from_secs(10),
-                "command never became ready; {}",
-                self.diagnostics()
+                "command never became ready; {}\n{}",
+                self.diagnostics(),
+                startup_diagnostics::sample(&self.child)
             );
             std::thread::sleep(Duration::from_millis(5));
         }
@@ -220,6 +224,40 @@ impl Drop for Running {
             }
         }
     }
+}
+
+#[test]
+fn unready_child_fails_at_the_original_deadline_and_is_reaped() {
+    let fixture = Fixture::new();
+    // An owned process that never emits a readiness marker is a deterministic
+    // negative control, not a reproduction of the intermittent startup stall.
+    let mut command = Command::new("/bin/sleep");
+    command.arg("30");
+    let mut running = Running::start(&fixture, command);
+    let pid = running.child.id();
+    let start = Instant::now();
+    let failure = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        running.wait_ready(&fixture);
+    }))
+    .expect_err("a child without readiness evidence must fail");
+    let elapsed = start.elapsed();
+    let message = failure.downcast_ref::<String>().unwrap();
+    assert!(message.contains("command never became ready"), "{message}");
+    assert!(message.contains(&format!("CLI PID: {pid}")), "{message}");
+    assert!(message.contains("fixture PID: None"), "{message}");
+    assert!(elapsed >= Duration::from_secs(10), "{elapsed:?}");
+    assert!(elapsed < Duration::from_secs(15), "{elapsed:?}");
+    drop(running);
+    // SAFETY: this PID belonged to the child above; waitpid checks that its
+    // cleanup guard already reaped it rather than leaving a zombie behind.
+    assert_eq!(
+        unsafe { libc::waitpid(pid as i32, std::ptr::null_mut(), libc::WNOHANG) },
+        -1
+    );
+    assert_eq!(
+        std::io::Error::last_os_error().raw_os_error(),
+        Some(libc::ECHILD)
+    );
 }
 
 #[test]

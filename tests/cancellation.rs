@@ -13,6 +13,9 @@ use std::{
 #[path = "support/shell_fixture.rs"]
 mod shell_fixture;
 
+#[path = "support/startup_diagnostics.rs"]
+mod startup_diagnostics;
+
 use serde_json::Value;
 
 struct Fixture {
@@ -200,20 +203,21 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
                 fs::read_to_string(self.state.join("stderr")).unwrap_or_default()
             )
         };
-        wait_until_with(
-            || {
-                if self.state.join(format!("{name}.ready")).exists() {
-                    return true;
-                }
-                assert!(
-                    running.child.try_wait().unwrap().is_none(),
-                    "CLI exited before readiness; {}",
-                    diagnostic()
-                );
-                false
-            },
-            diagnostic,
-        );
+        let deadline = Instant::now() + Duration::from_secs(15);
+        while !self.state.join(format!("{name}.ready")).exists() {
+            assert!(
+                running.child.try_wait().unwrap().is_none(),
+                "CLI exited before readiness; {}",
+                diagnostic()
+            );
+            assert!(
+                Instant::now() < deadline,
+                "{}\n{}",
+                diagnostic(),
+                startup_diagnostics::sample(&running.child)
+            );
+            thread::sleep(Duration::from_millis(10));
+        }
     }
 
     fn report(&self) -> PathBuf {

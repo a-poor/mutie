@@ -1,0 +1,85 @@
+    Blocking waiting for file lock on build directory
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running tests/cancellation.rs (target/debug/deps/cancellation-32afcd0ab403e923)
+
+running 7 tests
+test go_startup_errors_do_not_leave_temporary_directories ... ok
+test timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics ... FAILED
+test tool_error_drains_parallel_workers_and_preserves_the_failure_reason ... FAILED
+test interrupt_parallel_run_retains_inventory_results_and_active_diagnostics ... FAILED
+test completing_one_worker_preserves_another_workers_test_temporary_files ... FAILED
+test go_temporary_directories_respect_parent_placement_for_listing ... ok
+test interruption_during_baseline_and_discovery_preserves_command_output ... ok
+
+failures:
+
+---- timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics stdout ----
+
+thread 'timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics' (18044560) panicked at tests/cancellation.rs:355:13:
+CLI did not finish; stdout: Saving report to /tmp/.tmpI227N0/module/.mutie/run-1792610805-4wz2HV
+Snapshotting /tmp/.tmpI227N0/module
+Running baseline: go test ./... (test caching disabled)
+Baseline passed in 0.24s
+Found 3 mutations
+
+stderr: 
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tool_error_drains_parallel_workers_and_preserves_the_failure_reason stdout ----
+
+thread 'tool_error_drains_parallel_workers_and_preserves_the_failure_reason' (18044561) panicked at tests/cancellation.rs:213:13:
+Go did not reach b; CLI PID: 4303; state markers: ["4491.gotmpdir", "4491.started", "4491.tmpdir", "4598.gotmpdir", "4598.started", "4598.tmpdir", "stderr", "stdout"]
+stdout: Saving report to /tmp/.tmpZV0lp5/module/.mutie/run-1792610805-YEp1ki
+Snapshotting /tmp/.tmpZV0lp5/module
+Running baseline: go test ./... (test caching disabled)
+Baseline passed in 0.19s
+Found 4 mutations
+
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[4645]: sample cannot examine process 4303 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+---- interrupt_parallel_run_retains_inventory_results_and_active_diagnostics stdout ----
+
+thread 'interrupt_parallel_run_retains_inventory_results_and_active_diagnostics' (18044558) panicked at tests/cancellation.rs:213:13:
+Go did not reach b; CLI PID: 4304; state markers: ["4494.gotmpdir", "4494.started", "4494.tmpdir", "4596.gotmpdir", "4596.started", "4596.tmpdir", "stderr", "stdout"]
+stdout: Saving report to /tmp/.tmptlIRxp/module/.mutie/run-1792610805-IdEapa
+Snapshotting /tmp/.tmptlIRxp/module
+Running baseline: go test ./... (test caching disabled)
+Baseline passed in 0.17s
+Found 4 mutations
+
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[4643]: sample cannot examine process 4304 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+---- completing_one_worker_preserves_another_workers_test_temporary_files stdout ----
+
+thread 'completing_one_worker_preserves_another_workers_test_temporary_files' (18044555) panicked at tests/cancellation.rs:213:13:
+Go did not reach b; CLI PID: 4305; state markers: ["4483.gotmpdir", "4483.started", "4483.tmpdir", "4595.gotmpdir", "4595.started", "4595.tmpdir", "stderr", "stdout"]
+stdout: Saving report to /tmp/.tmpR3Ecre/module/.mutie/run-1792610805-OL7Aap
+Snapshotting /tmp/.tmpR3Ecre/module
+Running baseline: go test ./... (test caching disabled)
+Baseline passed in 0.28s
+Found 3 mutations
+
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB plus 4 KiB stderr):
+
+sampler stderr: sample[4644]: sample cannot examine process 4305 (mutie) for unknown reasons, even though it appears to exist; try running with `sudo`.
+
+
+
+failures:
+    completing_one_worker_preserves_another_workers_test_temporary_files
+    interrupt_parallel_run_retains_inventory_results_and_active_diagnostics
+    timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics
+    tool_error_drains_parallel_workers_and_preserves_the_failure_reason
+
+test result: FAILED. 3 passed; 4 failed; 0 ignored; 0 measured; 0 filtered out; finished in 16.63s
+
+error: test failed, to rerun pass `--test cancellation`

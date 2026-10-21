@@ -1,0 +1,52 @@
+[
+  {
+    "round": 1,
+    "seconds": 13.091,
+    "exit_code": 0
+  },
+  {
+    "round": 2,
+    "seconds": 11.828,
+    "exit_code": 0
+  },
+  {
+    "round": 3,
+    "seconds": 12.514,
+    "exit_code": 0
+  },
+  {
+    "round": 4,
+    "seconds": 12.209,
+    "exit_code": 0
+  },
+  {
+    "round": 5,
+    "seconds": 11.915,
+    "exit_code": 0
+  },
+  {
+    "round": 6,
+    "seconds": 12.223,
+    "exit_code": 0
+  },
+  {
+    "round": 7,
+    "seconds": 15.51,
+    "exit_code": 0
+  },
+  {
+    "round": 8,
+    "seconds": 32.004,
+    "exit_code": 0
+  },
+  {
+    "round": 9,
+    "seconds": 17.262,
+    "exit_code": 0
+  },
+  {
+    "round": 10,
+    "seconds": 26.67,
+    "exit_code": 0
+  }
+]

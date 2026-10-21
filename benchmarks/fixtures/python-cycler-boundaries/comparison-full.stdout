@@ -1,0 +1,19 @@
+Saving report to /tmp/mutie-cycler-boundaries/reports/run-1792613995-dJfJFp
+Snapshotting /tmp/mutie-python-cycler-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.92s
+Found 1 mutations
+Running 1 worker(s), 20.00s timeout per mutation
+[1/1] missed: cycler/__init__.py:542:20: ">" -> ">=" (2.75s)
+
+1 mutations: 0 killed, 1 missed, 0 timed out, 0 failed to compile
+Run completed in 17.89s
+Workspaces: snapshot 0.005s | setup 0.011s | reset 0.007s (cumulative)
+Copies: 88 reflinked | 0 copied (0 bytes) | 4 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-cycler-boundaries/reports/run-1792613995-dJfJFp/summary.txt
+Mutation score: 0.00%
+Scope: filtered selection only
+Killed / (killed + missed): 0 / 1
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

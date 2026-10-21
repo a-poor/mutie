@@ -1,0 +1,92 @@
+[
+  {
+    "round": 1,
+    "seconds": 16.857,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 2,
+    "seconds": 25.263,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 3,
+    "seconds": 14.683,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 4,
+    "seconds": 21.339,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 5,
+    "seconds": 17.017,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 6,
+    "seconds": 27.283,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 7,
+    "seconds": 15.586,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 8,
+    "seconds": 20.547,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 9,
+    "seconds": 23.063,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  },
+  {
+    "round": 10,
+    "seconds": 17.056,
+    "exit_code": 0,
+    "targets": 2,
+    "passed": 11,
+    "failed": 0,
+    "ignored": 0
+  }
+]

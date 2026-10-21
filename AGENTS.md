@@ -395,6 +395,13 @@ Vitest preview tests use macOS's `/usr/bin/tclsh` with private identity-only scr
 data to avoid observed fresh Mach-O helper startup stalls; other Unix platforms
 retain the native Rust helper. The ten-second readiness limit and exact identity
 assertions remain unchanged. See `benchmarks/vitest-fixture-startup.md`.
+Cancellation/log-limit readiness failures now attempt bounded macOS stack
+sampling of their owned, unreaped CLI after the original deadline fails. Sampling
+denial does not suppress the failure; a deterministic negative control verifies
+the deadline and child reaping. `benchmarks/cli-startup-readiness.md` records actual
+CLI pre-main stalls and the still-unresolved host-level remedy. Passing reruns do
+not establish that this intermittent issue is fixed. The user deferred the
+investigation on 2026-10-21; keep it open and preserve deadlines/diagnostics.
 
 ## Coding Style & Naming Conventions
 

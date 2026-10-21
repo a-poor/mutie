@@ -1,0 +1,17 @@
+   Compiling mutie v0.1.0 (/path/to/mutie)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.58s
+     Running tests/log_limits.rs (target/debug/deps/log_limits-60b4e5bcddce72d1)
+
+running 1 test
+
+thread 'unready_child_fails_at_the_original_deadline_and_is_reaped' (18008948) panicked at tests/log_limits.rs:180:13:
+command never became ready; CLI PID: 93542; fixture PID: None
+stdout: 
+stderr: 
+post-deadline CLI sample (exit status: 255; at most 64 KiB):
+
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test unready_child_fails_at_the_original_deadline_and_is_reaped ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 10.08s
+

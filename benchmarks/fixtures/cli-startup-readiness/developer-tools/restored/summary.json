@@ -1,0 +1,131 @@
+{
+  "phase": "restored",
+  "full": [
+    {
+      "round": 1,
+      "seconds": 69.042,
+      "exit_code": 0,
+      "targets": 20,
+      "passed": 278,
+      "failed": 0,
+      "ignored": 93
+    },
+    {
+      "round": 2,
+      "seconds": 68.987,
+      "exit_code": 0,
+      "targets": 20,
+      "passed": 278,
+      "failed": 0,
+      "ignored": 93
+    },
+    {
+      "round": 3,
+      "seconds": 71.316,
+      "exit_code": 0,
+      "targets": 20,
+      "passed": 278,
+      "failed": 0,
+      "ignored": 93
+    }
+  ],
+  "focused": [
+    {
+      "round": 1,
+      "seconds": 18.334,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 2,
+      "seconds": 21.03,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 3,
+      "seconds": 20.839,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 4,
+      "seconds": 15.487,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 5,
+      "seconds": 26.046,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 6,
+      "seconds": 14.687,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 7,
+      "seconds": 18.54,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 8,
+      "seconds": 17.272,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 9,
+      "seconds": 27.382,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "round": 10,
+      "seconds": 24.972,
+      "exit_code": 0,
+      "targets": 2,
+      "passed": 11,
+      "failed": 0,
+      "ignored": 0
+    }
+  ],
+  "unchanged_inputs": true,
+  "after": {
+    "target/debug/mutie": "fc0b865cfc64a3a0a80845d233be3b46bba68c1eea9ddf8eb13ec44697ccb6bd",
+    "tests/cancellation.rs": "f137d5f7c0fe3b87c9ee2304ad9bfafde5e0872738a75b818875d089990ff1ae",
+    "tests/log_limits.rs": "bd24c0f6e3c4a665f4681927b4d5c8803731ae5b42fa0445eedcba4b159995fa",
+    "tests/support/startup_diagnostics.rs": "8a9b1f80118392a1090c9383c7c3060410d5833e9dfba858fe6d04f7ce81bb59"
+  }
+}

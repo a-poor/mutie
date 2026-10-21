@@ -1,0 +1,75 @@
+full-1-cli-82043.sample.txt
+
+
+full-1-cli-82050.sample.txt
+
+
+full-1-cli-82052.sample.txt
+
+
+full-1-cli-82053.sample.txt
+
+
+full-1-cli-84495.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        607
+        kevent  (in libsystem_kernel.dylib)        54
+        __fcntl  (in libsystem_kernel.dylib)        28
+        __open  (in libsystem_kernel.dylib)        9
+        __rename  (in libsystem_kernel.dylib)        8
+
+full-1-cli-84496.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        90
+        kevent  (in libsystem_kernel.dylib)        10
+        __open  (in libsystem_kernel.dylib)        8
+
+full-1-cli-84498.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        1746
+        kevent  (in libsystem_kernel.dylib)        194
+        __fcntl  (in libsystem_kernel.dylib)        87
+        __rename  (in libsystem_kernel.dylib)        38
+        write  (in libsystem_kernel.dylib)        38
+        __open  (in libsystem_kernel.dylib)        20
+        close  (in libsystem_kernel.dylib)        10
+
+full-1-cli-84499.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        918
+        kevent  (in libsystem_kernel.dylib)        102
+        __rename  (in libsystem_kernel.dylib)        34
+        __open  (in libsystem_kernel.dylib)        26
+        __fcntl  (in libsystem_kernel.dylib)        25
+        write  (in libsystem_kernel.dylib)        15
+
+full-1-cli-84500.sample.txt
+
+
+full-1-cli-84501.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        126
+        kevent  (in libsystem_kernel.dylib)        14
+        clonefileat  (in libsystem_kernel.dylib)        12
+
+full-1-cli-85244.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        1719
+        kevent  (in libsystem_kernel.dylib)        191
+        __fcntl  (in libsystem_kernel.dylib)        70
+        __rename  (in libsystem_kernel.dylib)        37
+        __open  (in libsystem_kernel.dylib)        29
+        __unlinkat  (in libsystem_kernel.dylib)        24
+        close  (in libsystem_kernel.dylib)        17
+        write  (in libsystem_kernel.dylib)        9
+
+full-2-cli-89635.sample.txt
+
+
+full-3-cli-93342.sample.txt
+__psynch_cvwait  (in libsystem_kernel.dylib)        6967
+        kevent  (in libsystem_kernel.dylib)        753
+        __fcntl  (in libsystem_kernel.dylib)        233
+        __open  (in libsystem_kernel.dylib)        89
+        __rename  (in libsystem_kernel.dylib)        64
+        close  (in libsystem_kernel.dylib)        32
+        write  (in libsystem_kernel.dylib)        31
+        clonefileat  (in libsystem_kernel.dylib)        19
+        mkdir  (in libsystem_kernel.dylib)        19
+        __unlinkat  (in libsystem_kernel.dylib)        17
+        __unlink  (in libsystem_kernel.dylib)        9
+        __getattrlist  (in libsystem_kernel.dylib)        7
