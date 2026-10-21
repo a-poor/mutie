@@ -32,6 +32,10 @@ pub(crate) struct ExecutionScope {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     source_root: String,
     manifest_fingerprint: String,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    conftest_fingerprints: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    support_fingerprints: BTreeMap<String, String>,
     recipe_fingerprint: String,
     test_files: Vec<String>,
     test_nodes: Vec<String>,
@@ -143,7 +147,32 @@ impl ExecutionScope {
                 .as_str()
                 .context("missing Python manifest identity")?
                 .into(),
+            support_fingerprints: ["pytest.ini", "tests/__init__.py"]
+                .into_iter()
+                .filter_map(|path| project["files"].get(path).map(|hash| (path, hash)))
+                .map(|(path, hash)| {
+                    Ok((
+                        path.to_owned(),
+                        hash.as_str()
+                            .context("invalid Python support file identity")?
+                            .to_owned(),
+                    ))
+                })
+                .collect::<Result<_>>()?,
             recipe_fingerprint: recipe(),
+            conftest_fingerprints: project
+                .get("conftests")
+                .and_then(Value::as_array)
+                .context("missing Python conftest inventory")?
+                .iter()
+                .map(|path| {
+                    let path = path.as_str().context("invalid Python conftest path")?;
+                    let hash = project["files"][path]
+                        .as_str()
+                        .context("missing Python conftest identity")?;
+                    Ok((path.to_owned(), hash.to_owned()))
+                })
+                .collect::<Result<_>>()?,
             test_files: serde_json::from_value(project["tests"].clone())?,
             test_nodes: Vec::new(),
             timeout_millis: timeout.as_millis(),
@@ -201,6 +230,24 @@ impl ExecutionScope {
             "invalid saved Python fingerprints"
         );
         ensure!(
+            self.support_fingerprints
+                .iter()
+                .all(
+                    |(path, hash)| matches!(path.as_str(), "pytest.ini" | "tests/__init__.py")
+                        && valid(hash)
+                ),
+            "invalid saved Python support identity"
+        );
+        ensure!(
+            self.conftest_fingerprints
+                .iter()
+                .all(
+                    |(path, hash)| matches!(path.as_str(), "conftest.py" | "tests/conftest.py")
+                        && valid(hash)
+                ),
+            "invalid saved Python conftest identity"
+        );
+        ensure!(
             matches!(self.source_root.as_str(), "" | "src")
                 && !self.package.is_empty()
                 && Path::new(&self.package).components().count() == 1
@@ -235,6 +282,8 @@ impl ExecutionScope {
                 && self.package == current.package
                 && self.source_root == current.source_root
                 && self.manifest_fingerprint == current.manifest_fingerprint
+                && self.conftest_fingerprints == current.conftest_fingerprints
+                && self.support_fingerprints == current.support_fingerprints
                 && self.recipe_fingerprint == current.recipe_fingerprint,
             "Python execution identity changed; start a fresh run"
         );
@@ -258,7 +307,21 @@ mod tests {
             "stdlib":hash, "packages":hash,
         });
         let project = json!({"package":"sample","files":{"pyproject.toml":hash},
-            "tests":["tests/test_sample.py"]});
+            "tests":["tests/test_sample.py"], "conftests":[]});
+        let mut missing_inventory = project.clone();
+        missing_inventory
+            .as_object_mut()
+            .unwrap()
+            .remove("conftests");
+        assert!(
+            ExecutionScope::capture(
+                runtime.clone(),
+                &missing_inventory,
+                Duration::from_secs(5),
+                NonZeroUsize::new(4096).unwrap(),
+            )
+            .is_err()
+        );
         let original = ExecutionScope::capture(
             runtime,
             &project,
@@ -270,6 +333,39 @@ mod tests {
         stronger.timeout_millis = 9000;
         stronger.capture_bytes = 8192;
         original.validate_rerun(&stronger)?;
+        let mut fixtures = original.clone();
+        fixtures
+            .conftest_fingerprints
+            .insert("tests/conftest.py".into(), hash.clone());
+        fixtures.validate_record()?;
+        assert!(original.validate_rerun(&fixtures).is_err());
+        let mut changed_fixtures = fixtures.clone();
+        changed_fixtures
+            .conftest_fingerprints
+            .insert("tests/conftest.py".into(), fingerprint(b"changed fixture"));
+        assert!(fixtures.validate_rerun(&changed_fixtures).is_err());
+        changed_fixtures
+            .conftest_fingerprints
+            .insert("../conftest.py".into(), hash.clone());
+        assert!(changed_fixtures.validate_record().is_err());
+        for path in ["pytest.ini", "tests/__init__.py"] {
+            let mut support = original.clone();
+            support
+                .support_fingerprints
+                .insert(path.into(), hash.clone());
+            support.validate_record()?;
+            assert!(original.validate_rerun(&support).is_err());
+            let mut changed = support.clone();
+            changed
+                .support_fingerprints
+                .insert(path.into(), fingerprint(b"changed"));
+            assert!(support.validate_rerun(&changed).is_err());
+            assert!(support.validate_rerun(&original).is_err());
+            changed
+                .support_fingerprints
+                .insert("other.py".into(), hash.clone());
+            assert!(changed.validate_record().is_err());
+        }
         for field in ["manifest_fingerprint", "recipe_fingerprint"] {
             let mut value = serde_json::to_value(&stronger)?;
             value[field] = json!(fingerprint(b"changed"));

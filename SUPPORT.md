@@ -371,9 +371,17 @@ retained but never executed. Narrow static Hatch package metadata, Ruff settings
 and audited development/resolver dependencies are inert and fingerprinted; no
 build, tool, dependency installer or resolver runs.
 
+Scoped root and `tests/conftest.py` fixture declarations are Validated within
+the audited subset, including unchanged Binary Tree Library acceptance.
+Function/class/module/session scopes, autouse fixtures, literal parametrization,
+yield cleanup and registered finalizers have native lifecycle controls. Fixture
+configuration changes require a fresh run. Root `pytest.ini` admits only full-scope
+testpaths; a test-package initializer must be empty. See the
+[fixture audit](benchmarks/python-conftest-fixtures.md).
+
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.
-Application dependencies, conftest/user plugins, thread-starting and
+Application dependencies, general conftest hooks/user plugins, thread-starting and
 async suites, editable installs, namespace/multiple packages, parallel workers
 and affected selection remain unsupported. Unix file limits are not aggregate
 disk quotas. Broader project and platform claims require separate evidence.

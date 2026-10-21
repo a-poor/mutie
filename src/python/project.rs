@@ -37,6 +37,7 @@ struct Document {
     source_root: String,
     files: BTreeMap<String, String>,
     tests: Vec<String>,
+    conftests: Vec<String>,
     sources: Vec<String>,
     mutations: Vec<Site>,
 }
@@ -53,11 +54,18 @@ impl Project {
                 && self.document.source_root == copied.document.source_root
                 && self.document.sources == copied.document.sources
                 && self.document.tests == copied.document.tests
+                && self.document.conftests == copied.document.conftests
+                && ["pytest.ini", "tests/__init__.py"].iter().all(|path| self
+                    .document
+                    .files
+                    .get(*path)
+                    == copied.document.files.get(*path))
                 && self
                     .document
                     .sources
                     .iter()
                     .chain(self.document.tests.iter())
+                    .chain(self.document.conftests.iter())
                     .map(String::as_str)
                     .chain(["pyproject.toml"])
                     .all(|path| self.document.files.get(path) == copied.document.files.get(path)),
@@ -192,7 +200,7 @@ mod tests {
         let start = source.find("True").unwrap();
         let document = serde_json::from_value(json!({
             "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source))},
-            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"],
+            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"], "conftests":[],
             "mutations":[{"file":"sample/__init__.py","start":start,"end":start+4,
                 "line":1,"column":start+1,"end_line":1,"end_column":start+5,
                 "original":"True","replacement":"False"}],
@@ -211,6 +219,36 @@ mod tests {
         copied.document.source_root.clear();
         copied.document.tests.push("tests/test_hidden.py".into());
         assert!(project.validate_snapshot(&copied).is_err());
+        copied.document.tests = project.document.tests.clone();
+        copied.document.conftests.push("tests/conftest.py".into());
+        assert!(project.validate_snapshot(&copied).is_err());
+        let mut fixture_project = Project {
+            root: root.path().to_owned(),
+            document: serde_json::from_value(copied.value()?)?,
+        };
+        fixture_project
+            .document
+            .files
+            .insert("tests/conftest.py".into(), "original".into());
+        copied
+            .document
+            .files
+            .insert("tests/conftest.py".into(), "changed".into());
+        assert!(fixture_project.validate_snapshot(&copied).is_err());
+        copied
+            .document
+            .files
+            .insert("tests/conftest.py".into(), "original".into());
+        fixture_project.validate_snapshot(&copied)?;
+        copied.document.conftests.clear();
+        assert!(fixture_project.validate_snapshot(&copied).is_err());
+        copied.document = serde_json::from_value(project.value()?)?;
+        for path in ["pytest.ini", "tests/__init__.py"] {
+            copied.document.files.insert(path.into(), "support".into());
+            assert!(project.validate_snapshot(&copied).is_err());
+            assert!(copied.validate_snapshot(&project).is_err());
+            copied.document.files.remove(path);
+        }
         let all = Scope::new(&[], &[])?;
         let found = project.discover(&all)?;
         assert_eq!(found.len(), 1);

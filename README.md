@@ -183,9 +183,17 @@ Explicit `--lang python --python /path/to/venv/bin/python` also supports
 synchronous `unittest.TestCase` classes through pytest, with separate setup,
 body, teardown and cleanup evidence. Custom dispatch, subtests, skips, expected
 failures, mock/runner APIs and asynchronous cases remain excluded.
+Scoped root and `tests/conftest.py` fixture declarations are Validated within
+the audited subset, including unchanged Binary Tree Library acceptance.
+Function/class/module/session scopes, autouse fixtures, literal parametrization,
+yield cleanup and registered finalizers have native lifecycle controls. Fixture
+configuration changes require a fresh run. Root `pytest.ini` admits only full-scope
+testpaths; a test-package initializer must be empty. See the
+[fixture audit](benchmarks/python-conftest-fixtures.md).
+
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
 Only boolean flips and full tests with one worker are supported. Application
-dependencies, conftest/user plugins, async/thread-starting suites and
+dependencies, general conftest hooks/user plugins, async/thread-starting suites and
 multi-package layouts remain excluded. Completed assertion bodies can be kills;
 runtime exceptions and ambiguous/lifecycle failures remain errors. See
 [support limits](SUPPORT.md#python--pytest) before using an existing project.

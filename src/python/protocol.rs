@@ -25,6 +25,7 @@ enum Event {
     Collection {
         nodes: Vec<String>,
         unittest: Vec<String>,
+        conftests: Vec<String>,
     },
     Phase {
         node: String,
@@ -39,6 +40,10 @@ enum Event {
     },
     Finish {
         status: i32,
+    },
+    Fixture {
+        token: usize,
+        stage: String,
     },
     Returned {
         status: i32,
@@ -107,7 +112,7 @@ fn baseline(
     root: &str,
     collect_only: bool,
 ) -> Result<Vec<String>> {
-    let (nodes, outcome) = classify(bytes, pid, nonce, root, collect_only, 0)?;
+    let (nodes, outcome) = classify(bytes, pid, nonce, root, collect_only, 0, &[])?;
     ensure!(outcome == Outcome::Missed, "Python baseline failed");
     Ok(nodes)
 }
@@ -119,6 +124,7 @@ pub(super) fn classify(
     root: &str,
     collect_only: bool,
     code: i32,
+    expected_conftests: &[String],
 ) -> Result<(Vec<String>, Outcome)> {
     ensure!(
         matches!(code, 0 | 1) && (!collect_only || code == 0),
@@ -149,9 +155,18 @@ pub(super) fn classify(
         if python.starts_with("3.14.7 ") && pytest == "9.0.2" && observed == root),
         "Python runtime/root evidence mismatch"
     );
-    let Event::Collection { nodes, unittest } = &records[2].event else {
+    let Event::Collection {
+        nodes,
+        unittest,
+        conftests,
+    } = &records[2].event
+    else {
         anyhow::bail!("missing Python collection");
     };
+    ensure!(
+        conftests == expected_conftests,
+        "Python loaded conftest inventory differs from audited scope"
+    );
     let unique: BTreeSet<_> = nodes.iter().collect();
     let unit_nodes: BTreeSet<_> = unittest.iter().collect();
     ensure!(
@@ -191,8 +206,24 @@ pub(super) fn classify(
         );
     }
     let mut phases = BTreeMap::<&str, usize>::new();
+    let mut fixtures = Vec::<usize>::new();
     let mut failed = false;
     for record in &records[3..tail] {
+        if let Event::Fixture { token, stage } = &record.event {
+            ensure!(!collect_only, "Python collection executed a fixture");
+            if stage == "started" {
+                ensure!(*token == fixtures.len(), "Python fixture identity mismatch");
+                fixtures.push(1);
+            } else {
+                let state = fixtures.get_mut(*token).context("unknown Python fixture")?;
+                ensure!(
+                    ["started", "ready", "finished"].get(*state) == Some(&stage.as_str()),
+                    "Python fixture lifecycle mismatch"
+                );
+                *state += 1;
+            }
+            continue;
+        }
         let Event::Phase {
             node,
             when,
@@ -234,6 +265,10 @@ pub(super) fn classify(
         *index += 1;
     }
     ensure!(
+        fixtures.iter().all(|state| *state == 3),
+        "Python fixture finalization incomplete"
+    );
+    ensure!(
         collect_only || (phases.len() == nodes.len() && phases.values().all(|n| *n == 3)),
         "Python run omitted test phases"
     );
@@ -269,7 +304,7 @@ mod tests {
             json!({"event":"checkpoint","stage":"returned","hooks_intact":true,"alive_threads":[]}),
             json!({"event":"checkpoint","stage":"atexit","hooks_intact":true,"alive_threads":[]}),
         ].into_iter().enumerate().flat_map(|(seq, mut value)| {
-            if value["event"] == "collection" { value["unittest"] = json!([]); }
+            if value["event"] == "collection" { value["unittest"] = json!([]); value["conftests"] = json!([]); }
             if value["event"] == "phase" { value["unittest"] = json!(null); }
             value["seq"] = json!(seq);
             value["pid"] = json!(17);
@@ -300,9 +335,17 @@ mod tests {
         records[6]["status"] = json!(1);
         records[7]["status"] = json!(1);
         assert_eq!(
-            classify(encode(&records).as_bytes(), 17, "token", "/repo", false, 1)
-                .unwrap()
-                .1,
+            classify(
+                encode(&records).as_bytes(),
+                17,
+                "token",
+                "/repo",
+                false,
+                1,
+                &[]
+            )
+            .unwrap()
+            .1,
             Outcome::Killed
         );
         for index in 0..6 {
@@ -314,27 +357,177 @@ mod tests {
             // Removing the sole successful cleanup leaves a valid zero-cleanup run.
             if index != 4 {
                 assert!(
-                    classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err()
+                    classify(
+                        encode(&changed).as_bytes(),
+                        17,
+                        "token",
+                        "/repo",
+                        false,
+                        1,
+                        &[]
+                    )
+                    .is_err()
                 );
             }
             if index != 1 {
                 let mut changed = records.clone();
                 changed[4]["unittest"]["steps"][index]["outcome"] = json!("failed");
                 assert!(
-                    classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err()
+                    classify(
+                        encode(&changed).as_bytes(),
+                        17,
+                        "token",
+                        "/repo",
+                        false,
+                        1,
+                        &[]
+                    )
+                    .is_err()
                 );
             }
         }
         for key in ["intact", "body_matches"] {
             let mut changed = records.clone();
             changed[4]["unittest"][key] = json!(false);
-            assert!(classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err());
+            assert!(
+                classify(
+                    encode(&changed).as_bytes(),
+                    17,
+                    "token",
+                    "/repo",
+                    false,
+                    1,
+                    &[]
+                )
+                .is_err()
+            );
         }
         for index in [2, 4] {
             let mut changed = records.clone();
             changed[index].as_object_mut().unwrap().remove("unittest");
-            assert!(classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err());
+            assert!(
+                classify(
+                    encode(&changed).as_bytes(),
+                    17,
+                    "token",
+                    "/repo",
+                    false,
+                    1,
+                    &[]
+                )
+                .is_err()
+            );
         }
+    }
+
+    #[test]
+    fn fixture_evidence_requires_complete_ordered_lifetimes_and_audited_configs() {
+        let mut records: Vec<serde_json::Value> = String::from_utf8(evidence())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        records[2]["conftests"] = json!(["tests/conftest.py"]);
+        records.insert(3, json!({"event":"fixture","token":0,"stage":"started"}));
+        records.insert(4, json!({"event":"fixture","token":0,"stage":"ready"}));
+        records.insert(7, json!({"event":"fixture","token":0,"stage":"finished"}));
+        let encode = |records: &[serde_json::Value]| {
+            records
+                .iter()
+                .enumerate()
+                .map(|(seq, v)| {
+                    let mut v = v.clone();
+                    v["seq"] = json!(seq);
+                    v["pid"] = json!(17);
+                    v["nonce"] = json!("token");
+                    format!("{v}\n")
+                })
+                .collect::<String>()
+        };
+        let configs = vec!["tests/conftest.py".into()];
+        assert!(
+            classify(
+                encode(&records).as_bytes(),
+                17,
+                "token",
+                "/repo",
+                false,
+                0,
+                &configs
+            )
+            .is_ok()
+        );
+        assert!(
+            classify(
+                encode(&records).as_bytes(),
+                17,
+                "token",
+                "/repo",
+                false,
+                0,
+                &[]
+            )
+            .is_err()
+        );
+        for index in [3, 4, 7] {
+            let mut changed = records.clone();
+            changed.remove(index);
+            assert!(
+                classify(
+                    encode(&changed).as_bytes(),
+                    17,
+                    "token",
+                    "/repo",
+                    false,
+                    0,
+                    &configs
+                )
+                .is_err()
+            );
+            let mut changed = records.clone();
+            changed[index]["token"] = json!(1);
+            assert!(
+                classify(
+                    encode(&changed).as_bytes(),
+                    17,
+                    "token",
+                    "/repo",
+                    false,
+                    0,
+                    &configs
+                )
+                .is_err()
+            );
+        }
+        for stage in ["ready", "failed", "finished"] {
+            let mut changed = records.clone();
+            changed[3]["stage"] = json!(stage);
+            assert!(
+                classify(
+                    encode(&changed).as_bytes(),
+                    17,
+                    "token",
+                    "/repo",
+                    false,
+                    0,
+                    &configs
+                )
+                .is_err()
+            );
+        }
+        records[2].as_object_mut().unwrap().remove("conftests");
+        assert!(
+            classify(
+                encode(&records).as_bytes(),
+                17,
+                "token",
+                "/repo",
+                false,
+                0,
+                &configs
+            )
+            .is_err()
+        );
     }
 
     #[test]
@@ -424,12 +617,12 @@ mod tests {
         };
         let killed = encode(&records);
         assert_eq!(
-            classify(killed.as_bytes(), 17, "token", "/repo", false, 1)
+            classify(killed.as_bytes(), 17, "token", "/repo", false, 1, &[])
                 .unwrap()
                 .1,
             Outcome::Killed
         );
-        assert!(classify(killed.as_bytes(), 17, "token", "/repo", false, 0).is_err());
+        assert!(classify(killed.as_bytes(), 17, "token", "/repo", false, 0, &[]).is_err());
         for (record, key, value) in [
             (4, "assertion", json!(false)),
             (4, "exception", json!(null)),
@@ -444,12 +637,34 @@ mod tests {
         ] {
             let mut changed = records.clone();
             changed[record][key] = value;
-            assert!(classify(encode(&changed).as_bytes(), 17, "token", "/repo", false, 1).is_err());
+            assert!(
+                classify(
+                    encode(&changed).as_bytes(),
+                    17,
+                    "token",
+                    "/repo",
+                    false,
+                    1,
+                    &[]
+                )
+                .is_err()
+            );
         }
         records.remove(5);
         for (seq, record) in records.iter_mut().enumerate() {
             record["seq"] = json!(seq);
         }
-        assert!(classify(encode(&records).as_bytes(), 17, "token", "/repo", false, 1).is_err());
+        assert!(
+            classify(
+                encode(&records).as_bytes(),
+                17,
+                "token",
+                "/repo",
+                false,
+                1,
+                &[]
+            )
+            .is_err()
+        );
     }
 }

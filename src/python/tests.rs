@@ -226,8 +226,158 @@ async fn native_unittest_lifecycle_attribution() -> Result<()> {
     Ok(())
 }
 
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; conftest setup, yield and finalizer attribution"]
+async fn native_conftest_lifecycle_attribution() -> Result<()> {
+    for scope in ["function", "class", "module", "session"] {
+        for (name, body, test, expected) in [
+            (
+                "pass",
+                "yield 1",
+                "def test_body(value): assert value == 1",
+                Some(Outcome::Missed),
+            ),
+            (
+                "body",
+                "yield 1",
+                "def test_body(value): assert value == 2",
+                Some(Outcome::Killed),
+            ),
+            (
+                "setup",
+                "assert False\nyield 1",
+                "def test_body(value): pass",
+                None,
+            ),
+            (
+                "teardown",
+                "yield 1\nassert False",
+                "def test_body(value): pass",
+                None,
+            ),
+            (
+                "mixed",
+                "yield 1\nassert False",
+                "def test_body(value): assert False",
+                None,
+            ),
+            (
+                "finalizer",
+                "def fail(): assert False\nrequest.addfinalizer(fail)\nreturn 1",
+                "def test_body(value): assert False",
+                None,
+            ),
+            (
+                "multiple",
+                "def fail(): assert False\nrequest.addfinalizer(fail)\nrequest.addfinalizer(fail)\nyield 1\nassert False",
+                "def test_body(value): assert False",
+                None,
+            ),
+            (
+                "setup_cleanup",
+                "def fail(): assert False\nrequest.addfinalizer(fail)\nassert False\nyield 1",
+                "def test_body(value): pass",
+                None,
+            ),
+            (
+                "empty_yield",
+                "if False: yield 1",
+                "def test_body(value): pass",
+                None,
+            ),
+            (
+                "double_yield",
+                "yield 1\nyield 2",
+                "def test_body(value): assert False",
+                None,
+            ),
+            (
+                "dynamic",
+                "assert False\nyield 1",
+                "def test_body(request): request.getfixturevalue('value')",
+                None,
+            ),
+            (
+                "caught_dynamic",
+                "assert False\nyield 1",
+                "def test_body(request):\n try: request.getfixturevalue('value')\n except AssertionError: pass\n assert False",
+                None,
+            ),
+        ] {
+            let conftest = format!(
+                "import pytest\n@pytest.fixture(scope='{scope}')\ndef value(request):\n {}\n",
+                body.replace('\n', "\n ")
+            );
+            let (raw, result, _) = probe_with_conftest(
+                test,
+                Some(&conftest),
+                Duration::from_secs(15),
+                4194304,
+                &Cancellation::default(),
+            )
+            .await?;
+            match expected {
+                Some(expected) => assert_eq!(
+                    result.with_context(|| format!(
+                        "{scope}/{name}: {}",
+                        raw.stdout.text().unwrap_or_default()
+                    ))?,
+                    expected
+                ),
+                None => assert!(result.is_err(), "{scope}/{name}: {result:?}"),
+            }
+        }
+    }
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; shared parametrized fixtures and unittest autouse"]
+async fn native_conftest_shared_lifetimes() -> Result<()> {
+    for scope in ["function", "class", "module", "session"] {
+        let conftest = format!(
+            "import pytest\n@pytest.fixture(scope='{scope}', params=[1, 2])\ndef value(request):\n yield request.param\n@pytest.fixture\ndef dependency(value, request):\n request.addfinalizer(lambda: None)\n yield value\n@pytest.fixture(autouse=True)\ndef automatic(dependency):\n yield\n"
+        );
+        let (raw, result, _) = probe_with_conftest(
+            "class TestShared:\n def test_first(self, dependency): assert dependency in (1, 2)\n def test_second(self, dependency): assert dependency in (1, 2)\ndef test_third(dependency): assert dependency in (1, 2)\n",
+            Some(&conftest), Duration::from_secs(15), 4194304, &Cancellation::default(),
+        ).await?;
+        assert_eq!(
+            result
+                .with_context(|| format!("{scope}: {}", raw.stdout.text().unwrap_or_default()))?,
+            Outcome::Missed
+        );
+    }
+    for (body, expected) in [
+        ("yield", Some(Outcome::Missed)),
+        ("assert False\nyield", None),
+        ("yield\nassert False", None),
+    ] {
+        let conftest = format!(
+            "import pytest\n@pytest.fixture(autouse=True)\ndef automatic():\n {}\n",
+            body.replace('\n', "\n ")
+        );
+        let (_, result, _) = probe_with_conftest("import unittest\nclass TestCase(unittest.TestCase):\n def test_body(self): self.assertTrue(True)\n", Some(&conftest), Duration::from_secs(15), 4194304, &Cancellation::default()).await?;
+        match expected {
+            Some(outcome) => assert_eq!(result?, outcome),
+            None => assert!(result.is_err()),
+        }
+    }
+    Ok(())
+}
+
 async fn probe(
     source: &str,
+    timeout: Duration,
+    budget: usize,
+    cancellation: &Cancellation,
+) -> Result<(process::CommandOutput, Result<Outcome>, tempfile::TempDir)> {
+    probe_with_conftest(source, None, timeout, budget, cancellation).await
+}
+
+async fn probe_with_conftest(
+    source: &str,
+    conftest: Option<&str>,
     timeout: Duration,
     budget: usize,
     cancellation: &Cancellation,
@@ -239,6 +389,9 @@ async fn probe(
     fs::create_dir_all(root.join("sample"))?;
     fs::write(root.join("sample/__init__.py"), "")?;
     fs::write(root.join("tests/test_probe.py"), source)?;
+    if let Some(conftest) = conftest {
+        fs::write(root.join("tests/conftest.py"), conftest)?;
+    }
     let driver = owned.join("driver.py");
     fs::write(&driver, DRIVER)?;
     let config = owned.join("pytest.ini");
@@ -283,6 +436,11 @@ async fn probe(
         "probe-token",
         root.to_str().unwrap(),
         false,
+        &if conftest.is_some() {
+            vec!["tests/conftest.py".into()]
+        } else {
+            vec![]
+        },
     )
     .map(|(_, outcome)| outcome);
     Ok((raw, outcome, directory))

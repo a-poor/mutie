@@ -156,6 +156,31 @@ def initialize_case(self, *args, **kwargs):
 case_type.__init__ = initialize_case
 expected_case = {name: getattr(case_type, name) for name in protected}
 
+# Fixture setup can occur inside a call via getfixturevalue, and its exception
+# can even be caught by the body. Observe independently of pytest phase reports.
+from _pytest.fixtures import FixtureDef
+
+fixture_finish = FixtureDef.finish
+fixtures = {}
+fixture_sequence = 0
+
+
+def finish_fixture(self, request):
+    token = fixtures.get(self)
+    try:
+        return fixture_finish(self, request)
+    except BaseException:
+        emit("fixture_error", stage="finalizer", name=self.argname)
+        raise
+    finally:
+        if token is not None:
+            if fixtures.pop(self, None) != token:
+                emit("fixture_error", stage="identity", name=self.argname)
+            emit("fixture", token=token, stage="finished")
+
+
+FixtureDef.finish = finish_fixture
+
 
 def case_intact(cls, instance=None):
     def function(value):
@@ -170,6 +195,21 @@ def case_intact(cls, instance=None):
 
 
 class Observer:
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_fixture_setup(self, fixturedef, request):
+        global fixture_sequence
+        token = fixture_sequence
+        fixture_sequence += 1
+        if fixturedef in fixtures:
+            emit("fixture_error", stage="duplicate", name=fixturedef.argname)
+        fixtures[fixturedef] = token
+        emit("fixture", token=token, stage="started")
+        result = yield
+        if result.excinfo is not None:
+            emit("fixture_error", stage="setup", name=fixturedef.argname)
+        else:
+            emit("fixture", token=token, stage="ready")
+
     def pytest_collection_finish(self, session):
         for item in session.items:
             cls = getattr(item, "cls", None)
@@ -177,7 +217,15 @@ class Observer:
                 if not case_intact(cls):
                     emit("unsupported", kind="unittest_dispatch_override", node=item.nodeid)
                 unit_nodes.add(item.nodeid)
-        emit("collection", nodes=[item.nodeid for item in session.items], unittest=sorted(unit_nodes))
+        loaded = []
+        for plugin in session.config.pluginmanager._conftest_plugins:
+            path = Path(plugin.__file__).resolve()
+            if not path.is_relative_to(root):
+                emit("fixture_error", stage="external_conftest")
+            else:
+                loaded.append(path.relative_to(root).as_posix())
+        emit("collection", nodes=[item.nodeid for item in session.items], unittest=sorted(unit_nodes),
+             conftests=sorted(loaded))
 
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_runtest_call(self, item):
@@ -226,13 +274,15 @@ class Observer:
         emit("internal_error")
 
     def pytest_sessionfinish(self, session, exitstatus):
+        if fixtures or FixtureDef.finish is not finish_fixture:
+            emit("fixture_error", stage="incomplete")
         emit("finish", status=int(exitstatus))
 
 
 emit("start", python=sys.version, pytest=pytest.__version__, root=str(root))
 status = pytest.main(
     ["-q", "-c", config, "--rootdir", str(root), "--import-mode=importlib",
-     "--noconftest", "-p", "no:cacheprovider", *selection],
+     "--confcutdir", str(root), "-p", "no:cacheprovider", *selection],
     plugins=[Observer()],
 )
 imports = {}

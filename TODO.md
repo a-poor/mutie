@@ -126,6 +126,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   scored review/reruns and unchanged Pluralizer validation. See
   [acceptance](benchmarks/python-unittest-pluralizer.md).
 
+- [x] Complete scoped conftest fixture acceptance: static admission, lifecycle
+  attribution, shared/parametrized/autouse controls, scored reruns and unchanged
+  Binary Tree Library validation. All six survivors are killed by stronger tests
+  in a separate copy; original inputs/reports are preserved. See the
+  [fixture audit](benchmarks/python-conftest-fixtures.md).
+
 
 ## Selected first Bun test-runner slice
 

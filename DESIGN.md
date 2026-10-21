@@ -1906,3 +1906,30 @@ Pluralizer's static Hatch/Ruff/development/resolver metadata is fingerprinted bu
 never executed or installed. Its original script-entry guard is retained because
 pytest imports the test module under a non-main name. This does not enable general
 unittest runners, plugins or dependencies.
+
+
+## Scoped conftest fixture observation
+
+The validated [fixture audit](benchmarks/python-conftest-fixtures.md) admits
+root and direct `tests/conftest.py` modules containing audited imports, literal
+data and synchronous pytest fixture declarations. General plugins, hooks and
+nested conftests remain excluded. Pytest uses an explicit root `confcutdir`; the
+observed loaded-conftest inventory must match static discovery. Snapshot checks
+include each conftest, and execution identity hashes its bytes. Stronger ordinary
+test files remain permitted in reruns; fixture configuration changes need a new run.
+
+The driver observes pinned FixtureDef setup and finalization before importing
+project code. Setup errors are independently recorded even when a body catches an
+exception from `request.getfixturevalue`. Finalization errors dominate body errors.
+Every instantiated fixture requires ordered started/ready/finished evidence, and
+all fixture instances must be finalized at session finish. Repeated cached fixture
+use and redundant finalization callbacks do not fabricate new lifetimes. Native
+controls cover all four admitted scopes, dependency sharing, parametrization,
+autouse/unittest interaction, yield teardown and multiple registered finalizers.
+The unchanged Binary Tree Library validates seven original tests and all 11
+mutations (five kills, six survivors). Separate-copy boundary tests kill all six
+survivors. The validated scope remains limited to the audited fixture subset.
+Plain root pytest.ini testpaths and an empty tests/__init__.py are also bound to
+snapshot and execution identity; other settings or executable initializers are
+rejected. Test-only random.sample and direct Exception subclass initialization
+are bounded compatibility additions; Sphinx metadata remains inert.

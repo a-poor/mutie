@@ -250,19 +250,19 @@ fn saved(
 #[test]
 #[ignore = "requires MUTIE_PYTHON; real scored reports, stronger tests and identity-checked reruns"]
 fn scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(false, false, false);
+    scored_review_contract(false, false, false, false);
 }
 
 #[test]
 #[ignore = "requires MUTIE_PYTHON; native src layout scoring, review and reruns"]
 fn src_scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(true, false, false);
+    scored_review_contract(true, false, false, false);
 }
 
 #[test]
 #[ignore = "requires MUTIE_PYTHON; root tests, inert packaging and ancillary files"]
 fn root_scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(false, true, false);
+    scored_review_contract(false, true, false, false);
 }
 
 #[test]
@@ -303,11 +303,21 @@ fn flat_package_named_src_preserves_native_execution() {
 #[test]
 #[ignore = "requires MUTIE_PYTHON; unittest scoring, review and focused reruns"]
 fn unittest_scored_reports_and_stronger_test_reruns() {
-    scored_review_contract(false, false, true);
+    scored_review_contract(false, false, true, false);
 }
 
-fn scored_review_contract(src_layout: bool, root_tests: bool, unittest: bool) {
+#[test]
+#[ignore = "requires MUTIE_PYTHON; conftest scoring, review and immutable fixture identity"]
+fn conftest_scored_reports_and_stronger_test_reruns() {
+    scored_review_contract(false, false, false, true);
+}
+
+fn scored_review_contract(src_layout: bool, root_tests: bool, unittest: bool, conftest: bool) {
     let root = fixture();
+    if conftest {
+        fs::write(root.path().join("conftest.py"), "import pytest\nfrom sample import enabled, optional\n@pytest.fixture\ndef enabled_value():\n yield enabled()\n@pytest.fixture(scope='session')\ndef optional_callable():\n return optional\n").unwrap();
+        fs::write(root.path().join("tests/test_sample.py"), "def test_enabled(enabled_value): assert enabled_value is True\ndef test_optional_exists(optional_callable): assert callable(optional_callable)\n").unwrap();
+    }
     if unittest {
         fs::write(root.path().join("tests/test_sample.py"), "import unittest\nfrom sample import enabled, optional\nclass TestSample(unittest.TestCase):\n def setUp(self): self.addCleanup(self.assertTrue, True)\n def test_enabled(self): self.assertTrue(enabled())\n def test_optional_exists(self): self.assertTrue(callable(optional))\n").unwrap();
     }
@@ -490,6 +500,26 @@ addopts = "-q"
         original_report
     );
     assert_eq!(fs::read(directory.join("run.json")).unwrap(), original_run);
+    if conftest {
+        let path = root.path().join("conftest.py");
+        let before = fs::read_to_string(&path).unwrap();
+        fs::write(
+            &path,
+            before.clone() + "\n# changed fixture configuration\n",
+        )
+        .unwrap();
+        let rejected = scored_with_timeout(
+            root.path(),
+            reports.path(),
+            &["--rerun-missed", directory.to_str().unwrap()],
+            "15",
+        );
+        assert!(!rejected.status.success());
+        assert!(
+            String::from_utf8_lossy(&rejected.stderr).contains("Python execution identity changed")
+        );
+        fs::write(&path, before).unwrap();
+    }
     let manifest = root.path().join("pyproject.toml");
     fs::write(
         &manifest,
@@ -546,6 +576,73 @@ fn unittest_body_and_cleanup_failure_cannot_be_scored_as_kill() {
     assert_eq!(
         fs::read(root.path().join("sample/__init__.py")).unwrap(),
         original
+    );
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; conftest cleanup dominates body failures"]
+fn conftest_cleanup_failure_is_saved_as_error() {
+    let root = fixture();
+    let reports = tempfile::tempdir().unwrap();
+    fs::write(root.path().join("tests/conftest.py"),
+        "import pytest\nfrom sample import enabled\n@pytest.fixture(autouse=True)\ndef cleanup():\n yield\n assert enabled()\n").unwrap();
+    let source = fs::read(root.path().join("sample/__init__.py")).unwrap();
+    let output = scored_with_timeout(root.path(), reports.path(), &[], "15");
+    assert!(!output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["status"], "failed");
+    assert_eq!(outcomes["summary"]["errors"], 1);
+    assert_eq!(outcomes["summary"]["killed"], 0);
+    assert_eq!(
+        fs::read(root.path().join("sample/__init__.py")).unwrap(),
+        source
+    );
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; no ancestor conftest imports and no report exclusions hiding fixtures"]
+fn conftest_scope_and_parent_boundaries() {
+    let container = tempfile::tempdir().unwrap();
+    fs::write(
+        container.path().join("conftest.py"),
+        "raise RuntimeError('outside project')\n",
+    )
+    .unwrap();
+    let source = fixture();
+    let root = container.path().join("project");
+    fs::create_dir(&root).unwrap();
+    for name in [
+        "pyproject.toml",
+        "sample/__init__.py",
+        "tests/test_sample.py",
+    ] {
+        fs::create_dir_all(root.join(name).parent().unwrap()).unwrap();
+        fs::copy(source.path().join(name), root.join(name)).unwrap();
+    }
+    fs::write(
+        root.join("conftest.py"),
+        "import pytest\n@pytest.fixture(autouse=True)\ndef audit(): yield\n",
+    )
+    .unwrap();
+    let passed = run("python-check", &root, &["--timeout", "15"]);
+    assert!(passed.status.success(), "{passed:?}");
+    // Keep the root test while a report-directory exclusion removes only conftest.
+    fs::rename(
+        root.join("tests/test_sample.py"),
+        root.join("test_sample.py"),
+    )
+    .unwrap();
+    fs::write(
+        root.join("pyproject.toml"),
+        "[project]\nname='sample'\nversion='0.1.0'\n",
+    )
+    .unwrap();
+    fs::rename(root.join("conftest.py"), root.join("tests/conftest.py")).unwrap();
+    let excluded = scored_with_timeout(&root, &root.join("tests"), &[], "15");
+    assert!(!excluded.status.success(), "{excluded:?}");
+    assert!(
+        String::from_utf8_lossy(&excluded.stderr).contains("snapshot"),
+        "{excluded:?}"
     );
 }
 

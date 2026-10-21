@@ -1,0 +1,2711 @@
+{
+  "repository": "https://github.com/burpeesDaily/sphinx-sample-code",
+  "commit": "68d688fb4fe9c867c77a9d54f4fdb46a58dea34e",
+  "input_sha256": {
+    ".flake8": "6e70a1b4ced48c922bdef80ad69e808df79589f776622b49a19ea7beef1bb4fd",
+    ".github/workflows/linting.yml": "ec36f4651dc045a18ddd80a336ed1cbe0567a51fbbbeca5d01ff7acaffd67128",
+    ".github/workflows/testing.yml": "dec7e4591f0c715bb8c2328b8a156f8a6a822a662337efce4a07fa01c676ad08",
+    ".gitignore": "623b4492747a17b9d5b4881b62cfbcd6c1ce80f35ac4bec546b4ee48faf7abb4",
+    ".mypy.ini": "cfb08d4e2574f2c939183fb60b77c334b50eb1e8b1a1f5d6bde147d5a080250c",
+    ".pydocstyle": "10095abae4fd298522ab9665aed55d6b71859d3f07b642fa80cbd8866197694c",
+    ".readthedocs.yaml": "58e00448f3c564d3fbe045772edfe1ad5f6f94f6d5dda330046801587721f2c2",
+    "LICENSE": "23f82be2ab88fda96efc1d11000338278f5901fd83bba36fdb25db348039723e",
+    "README.rst": "06f5c03b6cf4e31dbdaf82da51abed745e98c055336168eafb971034f802b7e8",
+    "docs/Makefile": "e33bf74d59130029ba24168a813112dd923d7044d780ce942db6645d93f56acf",
+    "docs/make.bat": "2f82394fbb835088f01b231127ecbd1684fad6cc48c82b9a62e2722edf1cfa70",
+    "docs/requirements.txt": "ea1ef6bd3f3506be79dd2ce2626e0b7b7e0a6fa17c9c196d560221a7dc092c62",
+    "docs/source/avl_tree.rst": "e08f54741427ad521c878e9591f73a7debf06016c0e3d290b38519e52c5ba209",
+    "docs/source/binary_search_tree.rst": "60badcc7dc24d0526deaf97490b2cb98ab82622861a49ba21168c337a10b5b1c",
+    "docs/source/conf.py": "de6fd521ebee66ca133e60dea111a90c6ee10de510c90c3d21940bee09a3c0a4",
+    "docs/source/index.rst": "91b67fe8acb7b972d82b43d1f8ce7f7b4e9f53eff41f6a42af66e5bcec1524dc",
+    "docs/source/readme.rst": "ffcbdf9ebf3eeca021b86a2e5a7b40ddaed3651a0125588002e9e9d3d971889a",
+    "docs/source/traversal.rst": "0f60be81f1c5a4570c5ce0677081416d801533904880b402d3f9897ac61b79cd",
+    "docs/source/trees.rst": "8433b0400805e4c84c8337bedcdc59b94afd81ef1602795f6f13589651ac775c",
+    "pyproject.toml": "21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+    "pytest.ini": "e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+    "requirements.txt": "b6ed97d5c653565ea7e0e6d4de9532f180b5fab9041d805cf2d7d3ae6f0cccc2",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/conftest.py": "b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801",
+    "tests/test_avl_tree.py": "269aa81687a1b0d0eb6d3f139a5ce5decc6295034b686a795721b867c7b7e9fa",
+    "tests/test_binary_search_tree.py": "1c11cad8c4ad37dc7451b6469f7a1410022c9e445e0b0ffee152b01ddad13699",
+    "tests/test_traversal.py": "be610417e2e28207bab2bc5c2ee44539b2ecbd681c1d9f104f3d014c9ede4979",
+    "trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trees/binary_trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trees/binary_trees/avl_tree.py": "2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+    "trees/binary_trees/binary_search_tree.py": "ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+    "trees/binary_trees/traversal.py": "5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+    "trees/tree_exceptions.py": "70a23fbe4c547b10c61dec95949cc6314ac71c9c59e5053870be19938250d8e1"
+  },
+  "stronger_input_sha256": {
+    ".flake8": "6e70a1b4ced48c922bdef80ad69e808df79589f776622b49a19ea7beef1bb4fd",
+    ".github/workflows/linting.yml": "ec36f4651dc045a18ddd80a336ed1cbe0567a51fbbbeca5d01ff7acaffd67128",
+    ".github/workflows/testing.yml": "dec7e4591f0c715bb8c2328b8a156f8a6a822a662337efce4a07fa01c676ad08",
+    ".gitignore": "623b4492747a17b9d5b4881b62cfbcd6c1ce80f35ac4bec546b4ee48faf7abb4",
+    ".mypy.ini": "cfb08d4e2574f2c939183fb60b77c334b50eb1e8b1a1f5d6bde147d5a080250c",
+    ".pydocstyle": "10095abae4fd298522ab9665aed55d6b71859d3f07b642fa80cbd8866197694c",
+    ".readthedocs.yaml": "58e00448f3c564d3fbe045772edfe1ad5f6f94f6d5dda330046801587721f2c2",
+    "LICENSE": "23f82be2ab88fda96efc1d11000338278f5901fd83bba36fdb25db348039723e",
+    "README.rst": "06f5c03b6cf4e31dbdaf82da51abed745e98c055336168eafb971034f802b7e8",
+    "docs/Makefile": "e33bf74d59130029ba24168a813112dd923d7044d780ce942db6645d93f56acf",
+    "docs/make.bat": "2f82394fbb835088f01b231127ecbd1684fad6cc48c82b9a62e2722edf1cfa70",
+    "docs/requirements.txt": "ea1ef6bd3f3506be79dd2ce2626e0b7b7e0a6fa17c9c196d560221a7dc092c62",
+    "docs/source/avl_tree.rst": "e08f54741427ad521c878e9591f73a7debf06016c0e3d290b38519e52c5ba209",
+    "docs/source/binary_search_tree.rst": "60badcc7dc24d0526deaf97490b2cb98ab82622861a49ba21168c337a10b5b1c",
+    "docs/source/conf.py": "de6fd521ebee66ca133e60dea111a90c6ee10de510c90c3d21940bee09a3c0a4",
+    "docs/source/index.rst": "91b67fe8acb7b972d82b43d1f8ce7f7b4e9f53eff41f6a42af66e5bcec1524dc",
+    "docs/source/readme.rst": "ffcbdf9ebf3eeca021b86a2e5a7b40ddaed3651a0125588002e9e9d3d971889a",
+    "docs/source/traversal.rst": "0f60be81f1c5a4570c5ce0677081416d801533904880b402d3f9897ac61b79cd",
+    "docs/source/trees.rst": "8433b0400805e4c84c8337bedcdc59b94afd81ef1602795f6f13589651ac775c",
+    "pyproject.toml": "21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+    "pytest.ini": "e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+    "requirements.txt": "b6ed97d5c653565ea7e0e6d4de9532f180b5fab9041d805cf2d7d3ae6f0cccc2",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/conftest.py": "b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801",
+    "tests/test_avl_tree.py": "269aa81687a1b0d0eb6d3f139a5ce5decc6295034b686a795721b867c7b7e9fa",
+    "tests/test_binary_search_tree.py": "1c11cad8c4ad37dc7451b6469f7a1410022c9e445e0b0ffee152b01ddad13699",
+    "tests/test_empty_traversals.py": "1bdaf1dbae15641966d402002ea07b2bb366e3fcbc5ca6f586ba06a4152d76fc",
+    "tests/test_traversal.py": "be610417e2e28207bab2bc5c2ee44539b2ecbd681c1d9f104f3d014c9ede4979",
+    "trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trees/binary_trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "trees/binary_trees/avl_tree.py": "2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+    "trees/binary_trees/binary_search_tree.py": "ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+    "trees/binary_trees/traversal.py": "5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+    "trees/tree_exceptions.py": "70a23fbe4c547b10c61dec95949cc6314ac71c9c59e5053870be19938250d8e1"
+  },
+  "records": [
+    {
+      "label": "discovery",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-list",
+        "/tmp/mutie-python-sample-trees-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--json"
+      ],
+      "seconds": 1.4176351669011638,
+      "exit_code": 0,
+      "scope": {
+        "conftests": [
+          "tests/conftest.py"
+        ],
+        "files": {
+          ".flake8": "sha256:6e70a1b4ced48c922bdef80ad69e808df79589f776622b49a19ea7beef1bb4fd",
+          ".github/workflows/linting.yml": "sha256:ec36f4651dc045a18ddd80a336ed1cbe0567a51fbbbeca5d01ff7acaffd67128",
+          ".github/workflows/testing.yml": "sha256:dec7e4591f0c715bb8c2328b8a156f8a6a822a662337efce4a07fa01c676ad08",
+          ".gitignore": "sha256:623b4492747a17b9d5b4881b62cfbcd6c1ce80f35ac4bec546b4ee48faf7abb4",
+          ".mypy.ini": "sha256:cfb08d4e2574f2c939183fb60b77c334b50eb1e8b1a1f5d6bde147d5a080250c",
+          ".pydocstyle": "sha256:10095abae4fd298522ab9665aed55d6b71859d3f07b642fa80cbd8866197694c",
+          ".readthedocs.yaml": "sha256:58e00448f3c564d3fbe045772edfe1ad5f6f94f6d5dda330046801587721f2c2",
+          "LICENSE": "sha256:23f82be2ab88fda96efc1d11000338278f5901fd83bba36fdb25db348039723e",
+          "README.rst": "sha256:06f5c03b6cf4e31dbdaf82da51abed745e98c055336168eafb971034f802b7e8",
+          "docs/Makefile": "sha256:e33bf74d59130029ba24168a813112dd923d7044d780ce942db6645d93f56acf",
+          "docs/make.bat": "sha256:2f82394fbb835088f01b231127ecbd1684fad6cc48c82b9a62e2722edf1cfa70",
+          "docs/requirements.txt": "sha256:ea1ef6bd3f3506be79dd2ce2626e0b7b7e0a6fa17c9c196d560221a7dc092c62",
+          "docs/source/avl_tree.rst": "sha256:e08f54741427ad521c878e9591f73a7debf06016c0e3d290b38519e52c5ba209",
+          "docs/source/binary_search_tree.rst": "sha256:60badcc7dc24d0526deaf97490b2cb98ab82622861a49ba21168c337a10b5b1c",
+          "docs/source/conf.py": "sha256:de6fd521ebee66ca133e60dea111a90c6ee10de510c90c3d21940bee09a3c0a4",
+          "docs/source/index.rst": "sha256:91b67fe8acb7b972d82b43d1f8ce7f7b4e9f53eff41f6a42af66e5bcec1524dc",
+          "docs/source/readme.rst": "sha256:ffcbdf9ebf3eeca021b86a2e5a7b40ddaed3651a0125588002e9e9d3d971889a",
+          "docs/source/traversal.rst": "sha256:0f60be81f1c5a4570c5ce0677081416d801533904880b402d3f9897ac61b79cd",
+          "docs/source/trees.rst": "sha256:8433b0400805e4c84c8337bedcdc59b94afd81ef1602795f6f13589651ac775c",
+          "pyproject.toml": "sha256:21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+          "pytest.ini": "sha256:e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+          "requirements.txt": "sha256:b6ed97d5c653565ea7e0e6d4de9532f180b5fab9041d805cf2d7d3ae6f0cccc2",
+          "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "tests/conftest.py": "sha256:b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801",
+          "tests/test_avl_tree.py": "sha256:269aa81687a1b0d0eb6d3f139a5ce5decc6295034b686a795721b867c7b7e9fa",
+          "tests/test_binary_search_tree.py": "sha256:1c11cad8c4ad37dc7451b6469f7a1410022c9e445e0b0ffee152b01ddad13699",
+          "tests/test_traversal.py": "sha256:be610417e2e28207bab2bc5c2ee44539b2ecbd681c1d9f104f3d014c9ede4979",
+          "trees/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trees/binary_trees/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trees/binary_trees/avl_tree.py": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "trees/binary_trees/binary_search_tree.py": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "trees/binary_trees/traversal.py": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "trees/tree_exceptions.py": "sha256:70a23fbe4c547b10c61dec95949cc6314ac71c9c59e5053870be19938250d8e1"
+        },
+        "mutations": [
+          {
+            "column": 20,
+            "end": 1833,
+            "end_column": 25,
+            "end_line": 71,
+            "file": "trees/binary_trees/avl_tree.py",
+            "line": 71,
+            "original": "False",
+            "replacement": "True",
+            "start": 1828
+          },
+          {
+            "column": 16,
+            "end": 1853,
+            "end_column": 20,
+            "end_line": 72,
+            "file": "trees/binary_trees/avl_tree.py",
+            "line": 72,
+            "original": "True",
+            "replacement": "False",
+            "start": 1849
+          },
+          {
+            "column": 20,
+            "end": 1882,
+            "end_column": 25,
+            "end_line": 71,
+            "file": "trees/binary_trees/binary_search_tree.py",
+            "line": 71,
+            "original": "False",
+            "replacement": "True",
+            "start": 1877
+          },
+          {
+            "column": 16,
+            "end": 1902,
+            "end_column": 20,
+            "end_line": 72,
+            "file": "trees/binary_trees/binary_search_tree.py",
+            "line": 72,
+            "original": "True",
+            "replacement": "False",
+            "start": 1898
+          },
+          {
+            "column": 65,
+            "end": 708,
+            "end_column": 69,
+            "end_line": 21,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 21,
+            "original": "True",
+            "replacement": "False",
+            "start": 704
+          },
+          {
+            "column": 66,
+            "end": 2131,
+            "end_column": 70,
+            "end_line": 65,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 65,
+            "original": "True",
+            "replacement": "False",
+            "start": 2127
+          },
+          {
+            "column": 67,
+            "end": 3561,
+            "end_column": 71,
+            "end_line": 109,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 109,
+            "original": "True",
+            "replacement": "False",
+            "start": 3557
+          },
+          {
+            "column": 73,
+            "end": 5003,
+            "end_column": 77,
+            "end_line": 153,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 153,
+            "original": "True",
+            "replacement": "False",
+            "start": 4999
+          },
+          {
+            "column": 11,
+            "end": 8356,
+            "end_column": 15,
+            "end_line": 263,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 263,
+            "original": "True",
+            "replacement": "False",
+            "start": 8352
+          },
+          {
+            "column": 11,
+            "end": 10013,
+            "end_column": 15,
+            "end_line": 315,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 315,
+            "original": "True",
+            "replacement": "False",
+            "start": 10009
+          },
+          {
+            "column": 11,
+            "end": 12270,
+            "end_column": 15,
+            "end_line": 390,
+            "file": "trees/binary_trees/traversal.py",
+            "line": 390,
+            "original": "True",
+            "replacement": "False",
+            "start": 12266
+          }
+        ],
+        "package": "trees",
+        "source_root": "",
+        "sources": [
+          "trees/__init__.py",
+          "trees/binary_trees/__init__.py",
+          "trees/binary_trees/avl_tree.py",
+          "trees/binary_trees/binary_search_tree.py",
+          "trees/binary_trees/traversal.py",
+          "trees/tree_exceptions.py"
+        ],
+        "tests": [
+          "tests/test_avl_tree.py",
+          "tests/test_binary_search_tree.py",
+          "tests/test_traversal.py"
+        ]
+      }
+    },
+    {
+      "label": "native-baseline",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-conftest-trees-acceptance/native-cache",
+        "-c",
+        "import sys; sys.path.insert(0, sys.argv[1]); import pytest; raise SystemExit(pytest.main([\"-q\", \"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-python-sample-trees-original"
+      ],
+      "seconds": 1.057628541951999,
+      "exit_code": 0
+    },
+    {
+      "label": "isolated-baseline",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-check",
+        "/tmp/mutie-python-sample-trees-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "30",
+        "--json"
+      ],
+      "seconds": 5.65951562509872,
+      "exit_code": 0,
+      "tests": [
+        "tests/test_avl_tree.py::test_simple_case",
+        "tests/test_avl_tree.py::test_deletion",
+        "tests/test_binary_search_tree.py::test_simple_case",
+        "tests/test_binary_search_tree.py::test_deletion",
+        "tests/test_traversal.py::test_binary_search_tree_traversal",
+        "tests/test_traversal.py::test_avl_tree_traversal",
+        "tests/test_traversal.py::test_binary_search_tree_traversal_random"
+      ],
+      "identity": {
+        "capture_bytes": 4194304,
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801"
+        },
+        "evidence_file_bytes": 4194304,
+        "manifest_fingerprint": "sha256:21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+        "package": "trees",
+        "recipe_fingerprint": "sha256:4c0eae633f0a386e463c635cde8a738d839ff14a9dd43fe8b496dac0b6e45dd0",
+        "runtime": {
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          }
+        },
+        "support_fingerprints": {
+          "pytest.ini": "sha256:e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+          "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "test_files": [
+          "tests/test_avl_tree.py",
+          "tests/test_binary_search_tree.py",
+          "tests/test_traversal.py"
+        ],
+        "test_nodes": [
+          "tests/test_avl_tree.py::test_simple_case",
+          "tests/test_avl_tree.py::test_deletion",
+          "tests/test_binary_search_tree.py::test_simple_case",
+          "tests/test_binary_search_tree.py::test_deletion",
+          "tests/test_traversal.py::test_binary_search_tree_traversal",
+          "tests/test_traversal.py::test_avl_tree_traversal",
+          "tests/test_traversal.py::test_binary_search_tree_traversal_random"
+        ],
+        "timeout_millis": 30000
+      }
+    },
+    {
+      "label": "original-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-sample-trees-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-conftest-trees-acceptance/reports"
+      ],
+      "seconds": 77.07810454198625,
+      "exit_code": 0,
+      "report": "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544145-C31xXU",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "trees",
+        "manifest_fingerprint": "sha256:21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801"
+        },
+        "support_fingerprints": {
+          "pytest.ini": "sha256:e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+          "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "recipe_fingerprint": "sha256:4c0eae633f0a386e463c635cde8a738d839ff14a9dd43fe8b496dac0b6e45dd0",
+        "test_files": [
+          "tests/test_avl_tree.py",
+          "tests/test_binary_search_tree.py",
+          "tests/test_traversal.py"
+        ],
+        "test_nodes": [
+          "tests/test_avl_tree.py::test_simple_case",
+          "tests/test_avl_tree.py::test_deletion",
+          "tests/test_binary_search_tree.py::test_simple_case",
+          "tests/test_binary_search_tree.py::test_deletion",
+          "tests/test_traversal.py::test_binary_search_tree_traversal",
+          "tests/test_traversal.py::test_avl_tree_traversal",
+          "tests/test_traversal.py::test_binary_search_tree_traversal_random"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 5,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 45.45454545454545,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 5,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 71,
+            "column": 20,
+            "end_line": 71,
+            "end_column": 25,
+            "byte_start": 1828,
+            "byte_end": 1833,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 72,
+            "column": 16,
+            "end_line": 72,
+            "end_column": 20,
+            "byte_start": 1849,
+            "byte_end": 1853,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "trees/binary_trees/binary_search_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+            "line": 71,
+            "column": 20,
+            "end_line": 71,
+            "end_column": 25,
+            "byte_start": 1877,
+            "byte_end": 1882,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "trees/binary_trees/binary_search_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+            "line": 72,
+            "column": 16,
+            "end_line": 72,
+            "end_column": 20,
+            "byte_start": 1898,
+            "byte_end": 1902,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 21,
+            "column": 65,
+            "end_line": 21,
+            "end_column": 69,
+            "byte_start": 704,
+            "byte_end": 708,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          },
+          {
+            "id": 6,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 65,
+            "column": 66,
+            "end_line": 65,
+            "end_column": 70,
+            "byte_start": 2127,
+            "byte_end": 2131,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000006.diff",
+            "test_packages": []
+          },
+          {
+            "id": 7,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 109,
+            "column": 67,
+            "end_line": 109,
+            "end_column": 71,
+            "byte_start": 3557,
+            "byte_end": 3561,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000007.diff",
+            "test_packages": []
+          },
+          {
+            "id": 8,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 153,
+            "column": 73,
+            "end_line": 153,
+            "end_column": 77,
+            "byte_start": 4999,
+            "byte_end": 5003,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000008.diff",
+            "test_packages": []
+          },
+          {
+            "id": 9,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 263,
+            "column": 11,
+            "end_line": 263,
+            "end_column": 15,
+            "byte_start": 8352,
+            "byte_end": 8356,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000009.diff",
+            "test_packages": []
+          },
+          {
+            "id": 10,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 315,
+            "column": 11,
+            "end_line": 315,
+            "end_column": 15,
+            "byte_start": 10009,
+            "byte_end": 10013,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000010.diff",
+            "test_packages": []
+          },
+          {
+            "id": 11,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 390,
+            "column": 11,
+            "end_line": 390,
+            "end_column": 15,
+            "byte_start": 12266,
+            "byte_end": 12270,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000011.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.032420291,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.152560791,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.505303541,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1252,
+                "head_bytes": 1252,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1251,
+                "head_bytes": 1251,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.5696738740000002,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 919,
+                "head_bytes": 919,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 918,
+                "head_bytes": 918,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.6168135,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.474442666,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.556326125,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.059588375,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.541089958,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5398,
+                "head_bytes": 5398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5397,
+                "head_bytes": 5397,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.34688175,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5418,
+                "head_bytes": 5418,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5417,
+                "head_bytes": 5417,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.544327875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5361,
+                "head_bytes": 5361,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5360,
+                "head_bytes": 5360,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "f76222d12db4054f79053b23bf356a927c37d0582250778de37c13017d528162",
+        "diff/000002.diff": "59837a41128612c1273902a28bee8a093fa54e16b2dfa4750901ec958d7f842d",
+        "diff/000003.diff": "5166952b34e19415b9211a2dd6a6e11b42dab9e5059bb9f27e3d448e750de1df",
+        "diff/000004.diff": "17bec007fc6ed1887d88d70dd37f3154abd5bb6ca081edc4647234c8ca074b6c",
+        "diff/000005.diff": "a2984b1c660681e63d34ef073e8633fda0a66d9517a8ea287f065f48618b072c",
+        "diff/000006.diff": "aa5edf4eeb1697ae3e652a96e951aa29a6330a4e467214fbe100593f5abcdf89",
+        "diff/000007.diff": "6c40664242df8c3b98742b132dda8e363cbc0868030e3c9709cf8aaf422793b0",
+        "diff/000008.diff": "1149c9f284306fbace0693c1f2b2b368ac1300c170d5326ac6fea6a1e92b72a0",
+        "diff/000009.diff": "76dfca2e7411cd708d46b9c6be71d1e5648a5e86dd18e86aa0c236e729f800f7",
+        "diff/000010.diff": "428f48e06aa53f30ab0f1b83dac13c9bdff4bca639bdbfdb9e98b0dbcb52974d",
+        "diff/000011.diff": "71559832801eb591ab92b5915965d6845bae9b8b0f44b5d0e55fbf65b46e5f33",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "bd5740c3a8762dbce1a1cd9eb0edc98db2be9cbbfcaf6e7d8e2aa471e8e1fb61",
+        "logs/000001.log": "7a9fbe740093f63487d9e7d4b4558caa1e4dd943a83491c978e6c026c8bc2b72",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "eba750768810cdb50c7c923ac3d0cd6946d422ac71b754504f0645d1744edd6f",
+        "logs/000002.log": "1cf42a92589cbef6bc451233f2c2fa3599b0629a3edb6fab9988e396b779ffa8",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "775b7aa27d0c17f48b3feff20c836f14b6ed8ebcb90ec7e0b76d2a13c579268a",
+        "logs/000003.log": "541bd61cc0870c1de46d012af7762c53b04b8972a3b7a87dbb93a23b961ff492",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "a350f6e94682512937557703ba19b02936ea3f962d71ad5d7ba915b8ceb0afb4",
+        "logs/000004.log": "2ca2c5ff2c9e07c34ac994a89896923bdfd1b6c178334756c7050120bd40a9fa",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "0fe7da1a388256a9c0f8bc15cd79d29c02a2f0731793fb4b8ded1516115e3071",
+        "logs/000005.log": "1cf42a92589cbef6bc451233f2c2fa3599b0629a3edb6fab9988e396b779ffa8",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "775b7aa27d0c17f48b3feff20c836f14b6ed8ebcb90ec7e0b76d2a13c579268a",
+        "logs/000006.log": "b7a8088a460ab4c303370f9e536df6dab147deb84796a6211f5e526926b0ef80",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.stdout.log": "229e4533d1597c28d56b8b7c42e076151a9d019effe66ced40bfb2ba3347ae36",
+        "logs/000007.log": "7a9fbe740093f63487d9e7d4b4558caa1e4dd943a83491c978e6c026c8bc2b72",
+        "logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000007.stdout.log": "eba750768810cdb50c7c923ac3d0cd6946d422ac71b754504f0645d1744edd6f",
+        "logs/000008.log": "7a9fbe740093f63487d9e7d4b4558caa1e4dd943a83491c978e6c026c8bc2b72",
+        "logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.stdout.log": "eba750768810cdb50c7c923ac3d0cd6946d422ac71b754504f0645d1744edd6f",
+        "logs/000009.log": "5b7c110b62187575634e444aca9dac245239d9134ea6423f57be0d715b764522",
+        "logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.stdout.log": "fb301c7f6b98938df05ed57ac2330c041eefbb4ac34a01b72e9103b67c5d1e2a",
+        "logs/000010.log": "a8dcbdabb8cd918a49fded42357546c1eca669326b096a9a6cfe0fd217241f02",
+        "logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000010.stdout.log": "1627359b2bb6f388cef6ac340c7ed9e8d2b66673ba69f888b97f85fa4c5bec70",
+        "logs/000011.log": "0e8a1b9cc29a164a219a8dc3eb1cb842b293c6e3236fc22d65eebe4d0087e5cc",
+        "logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000011.stdout.log": "dd4357c9e14607acc079a6d1053ed0ef417fe4cd2798dc0f39cfdb95040802e4",
+        "logs/baseline.log": "f8843cc229f35dc4fca23de4b5b556d6337027627c4e20d3ee8eb701fbc05984",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "c16e476727b44651fa5f7dfdcafb51f1ac3060244911f7766ff0b1b89f467249",
+        "logs/discovery.log": "4ee04174dca5a465b9b77a3eb220cdef3ab18f7c26ccbce1f6ada38d111c8f5c",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "4fee707716f3b6a87c8ad7472b51ba705dd2ec4a3898491f4afd51e301a3eba4",
+        "missed.txt": "d734ef2b11db6f83bcfd2eeefa0eb698f8439bd5b5b7ac6eeb1f6644986dc683",
+        "mutants.json": "025330b1abc590b20c8aa8a633cdb248e36e236134f2acc7acc3e5c830c1f86d",
+        "outcomes.json": "d5cf94945d5dd864162fc2c78926701ef603adc3b319733dc10fee1d63b40d1e",
+        "run.json": "160374ec1ea2e420dfdfcd6350e067bf2ca38179ce9aa4ccbe4a86ef2af4cced",
+        "summary.txt": "658eabed241a335a159201d58a5faf188c541251d9db110fc9c7e10ac5a991bb",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "original-survivor-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-sample-trees-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-conftest-trees-acceptance/reports",
+        "--rerun-missed",
+        "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544145-C31xXU"
+      ],
+      "seconds": 47.00365754205268,
+      "exit_code": 0,
+      "report": "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544222-7XL13a",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "trees",
+        "manifest_fingerprint": "sha256:21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801"
+        },
+        "support_fingerprints": {
+          "pytest.ini": "sha256:e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+          "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "recipe_fingerprint": "sha256:4c0eae633f0a386e463c635cde8a738d839ff14a9dd43fe8b496dac0b6e45dd0",
+        "test_files": [
+          "tests/test_avl_tree.py",
+          "tests/test_binary_search_tree.py",
+          "tests/test_traversal.py"
+        ],
+        "test_nodes": [
+          "tests/test_avl_tree.py::test_simple_case",
+          "tests/test_avl_tree.py::test_deletion",
+          "tests/test_binary_search_tree.py::test_simple_case",
+          "tests/test_binary_search_tree.py::test_deletion",
+          "tests/test_traversal.py::test_binary_search_tree_traversal",
+          "tests/test_traversal.py::test_avl_tree_traversal",
+          "tests/test_traversal.py::test_binary_search_tree_traversal_random"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 0,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 0,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 71,
+            "column": 20,
+            "end_line": 71,
+            "end_column": 25,
+            "byte_start": 1828,
+            "byte_end": 1833,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 72,
+            "column": 16,
+            "end_line": 72,
+            "end_column": 20,
+            "byte_start": 1849,
+            "byte_end": 1853,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 21,
+            "column": 65,
+            "end_line": 21,
+            "end_column": 69,
+            "byte_start": 704,
+            "byte_end": 708,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 65,
+            "column": 66,
+            "end_line": 65,
+            "end_column": 70,
+            "byte_start": 2127,
+            "byte_end": 2131,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 109,
+            "column": 67,
+            "end_line": 109,
+            "end_column": 71,
+            "byte_start": 3557,
+            "byte_end": 3561,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          },
+          {
+            "id": 6,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 153,
+            "column": 73,
+            "end_line": 153,
+            "end_column": 77,
+            "byte_start": 4999,
+            "byte_end": 5003,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000006.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.9029856240000003,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.5034385,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.5583013340000003,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.508404459,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.400167625,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.5646225830000002,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "f76222d12db4054f79053b23bf356a927c37d0582250778de37c13017d528162",
+        "diff/000002.diff": "59837a41128612c1273902a28bee8a093fa54e16b2dfa4750901ec958d7f842d",
+        "diff/000003.diff": "a2984b1c660681e63d34ef073e8633fda0a66d9517a8ea287f065f48618b072c",
+        "diff/000004.diff": "aa5edf4eeb1697ae3e652a96e951aa29a6330a4e467214fbe100593f5abcdf89",
+        "diff/000005.diff": "6c40664242df8c3b98742b132dda8e363cbc0868030e3c9709cf8aaf422793b0",
+        "diff/000006.diff": "1149c9f284306fbace0693c1f2b2b368ac1300c170d5326ac6fea6a1e92b72a0",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "373cc38efc8bd365deaea6e07f1aeff7145194bf3c1d2eba9b0163044525f60b",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "3419659f2e06d42fd949af02f3d7622299d38598341928ba33745227fda33cb6",
+        "logs/000002.log": "7a9fbe740093f63487d9e7d4b4558caa1e4dd943a83491c978e6c026c8bc2b72",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "eba750768810cdb50c7c923ac3d0cd6946d422ac71b754504f0645d1744edd6f",
+        "logs/000003.log": "1cf42a92589cbef6bc451233f2c2fa3599b0629a3edb6fab9988e396b779ffa8",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "775b7aa27d0c17f48b3feff20c836f14b6ed8ebcb90ec7e0b76d2a13c579268a",
+        "logs/000004.log": "d634cf41594fb1f4ca532e1ddbf8a3c0617d34d169823bd130b10e079ee96014",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "caf56757b18b52a7c892a24609a6f4ec6e8900c554da434531b573fc2a87250b",
+        "logs/000005.log": "d634cf41594fb1f4ca532e1ddbf8a3c0617d34d169823bd130b10e079ee96014",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "caf56757b18b52a7c892a24609a6f4ec6e8900c554da434531b573fc2a87250b",
+        "logs/000006.log": "1cf42a92589cbef6bc451233f2c2fa3599b0629a3edb6fab9988e396b779ffa8",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.stdout.log": "775b7aa27d0c17f48b3feff20c836f14b6ed8ebcb90ec7e0b76d2a13c579268a",
+        "logs/baseline.log": "373cc38efc8bd365deaea6e07f1aeff7145194bf3c1d2eba9b0163044525f60b",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "3419659f2e06d42fd949af02f3d7622299d38598341928ba33745227fda33cb6",
+        "logs/discovery.log": "aaf986718598a456c4f562508e498fe62271b416772b81afd76a4f3a854a0774",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "d0687a244edf7c9b2cff4f5f9e236907b3cb7c1fc7320c1af4d992a9aadd7173",
+        "missed.txt": "4a6029c2b5232797eda51e9d225c585570f26d54fd63c71fd46ec82584068470",
+        "mutants.json": "19ad7326c46470bc88f4a42353f72e275d66494887943ff35119dac13f05439f",
+        "outcomes.json": "4ab26b2d3d165c12d4209c352b6a598c262f9ea83ec51cc89d2e80fcc6b02007",
+        "run.json": "d06f0297e6b14602b32f698102c610891e3574bc41f5934099f755a1355d61f4",
+        "summary.txt": "7b7ddc5338cb5a82431061a1c0fc3f39b17c1e3567e0aa4135ff0c1dd79b29b5",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-native-baseline",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-X",
+        "pycache_prefix=/tmp/mutie-conftest-trees-acceptance/stronger-cache",
+        "-c",
+        "import sys; sys.path.insert(0, sys.argv[1]); import pytest; raise SystemExit(pytest.main([\"-q\", \"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-conftest-trees-acceptance/stronger-project"
+      ],
+      "seconds": 1.3271358750062063,
+      "exit_code": 0
+    },
+    {
+      "label": "stronger-survivor-rerun",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-conftest-trees-acceptance/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-conftest-trees-acceptance/reports",
+        "--rerun-missed",
+        "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544145-C31xXU"
+      ],
+      "seconds": 44.98429033404682,
+      "exit_code": 0,
+      "report": "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544271-EgpUQH",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "trees",
+        "manifest_fingerprint": "sha256:21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801"
+        },
+        "support_fingerprints": {
+          "pytest.ini": "sha256:e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+          "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "recipe_fingerprint": "sha256:4c0eae633f0a386e463c635cde8a738d839ff14a9dd43fe8b496dac0b6e45dd0",
+        "test_files": [
+          "tests/test_avl_tree.py",
+          "tests/test_binary_search_tree.py",
+          "tests/test_empty_traversals.py",
+          "tests/test_traversal.py"
+        ],
+        "test_nodes": [
+          "tests/test_avl_tree.py::test_simple_case",
+          "tests/test_avl_tree.py::test_deletion",
+          "tests/test_binary_search_tree.py::test_simple_case",
+          "tests/test_binary_search_tree.py::test_deletion",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[inorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[inorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[preorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[preorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[postorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[postorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[reverse_inorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[reverse_inorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_avl_empty_before_and_after_insert",
+          "tests/test_traversal.py::test_binary_search_tree_traversal",
+          "tests/test_traversal.py::test_avl_tree_traversal",
+          "tests/test_traversal.py::test_binary_search_tree_traversal_random"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 6,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 6,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 71,
+            "column": 20,
+            "end_line": 71,
+            "end_column": 25,
+            "byte_start": 1828,
+            "byte_end": 1833,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 72,
+            "column": 16,
+            "end_line": 72,
+            "end_column": 20,
+            "byte_start": 1849,
+            "byte_end": 1853,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 21,
+            "column": 65,
+            "end_line": 21,
+            "end_column": 69,
+            "byte_start": 704,
+            "byte_end": 708,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 65,
+            "column": 66,
+            "end_line": 65,
+            "end_column": 70,
+            "byte_start": 2127,
+            "byte_end": 2131,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 109,
+            "column": 67,
+            "end_line": 109,
+            "end_column": 71,
+            "byte_start": 3557,
+            "byte_end": 3561,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          },
+          {
+            "id": 6,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 153,
+            "column": 73,
+            "end_line": 153,
+            "end_column": 77,
+            "byte_start": 4999,
+            "byte_end": 5003,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000006.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.334264084,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1015,
+                "head_bytes": 1015,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1014,
+                "head_bytes": 1014,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.400324167,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 840,
+                "head_bytes": 840,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 839,
+                "head_bytes": 839,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.5311655,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4507,
+                "head_bytes": 4507,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4506,
+                "head_bytes": 4506,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.38070975,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4515,
+                "head_bytes": 4515,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4514,
+                "head_bytes": 4514,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.449471082,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4523,
+                "head_bytes": 4523,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4522,
+                "head_bytes": 4522,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.695627542,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4604,
+                "head_bytes": 4604,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4603,
+                "head_bytes": 4603,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "f76222d12db4054f79053b23bf356a927c37d0582250778de37c13017d528162",
+        "diff/000002.diff": "59837a41128612c1273902a28bee8a093fa54e16b2dfa4750901ec958d7f842d",
+        "diff/000003.diff": "a2984b1c660681e63d34ef073e8633fda0a66d9517a8ea287f065f48618b072c",
+        "diff/000004.diff": "aa5edf4eeb1697ae3e652a96e951aa29a6330a4e467214fbe100593f5abcdf89",
+        "diff/000005.diff": "6c40664242df8c3b98742b132dda8e363cbc0868030e3c9709cf8aaf422793b0",
+        "diff/000006.diff": "1149c9f284306fbace0693c1f2b2b368ac1300c170d5326ac6fea6a1e92b72a0",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "4a6029c2b5232797eda51e9d225c585570f26d54fd63c71fd46ec82584068470",
+        "logs/000001.log": "dddb2dce7d1ca059f77fb4eb4104c6cca0e99f1d4b420a40bb04f07bccd4ea30",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "c167c5d3dd0ba8614d8a38594322649a34fdac00b886e6b853888988c9bfd4ea",
+        "logs/000002.log": "6ca1243591f5e6269ec75f21a881ea51c0194d7977f73012095a277f43e20892",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "8397bb40c44866086b30559814e1b2e5d41c9f063b3df5ff419c92a0fdc06502",
+        "logs/000003.log": "ccc392ee692ffc576066a5a1751ce1491cd6ddf9d89fb42b01ad741606dd7098",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "ffaa37752ee56bc17fd7a03a275cd7587dd57b97d83b4069197cfae0d563ea61",
+        "logs/000004.log": "dbd8654edee099fe7f6b25df3579021363ede099289aa1715c23b37ee4a91e59",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "4ece0c38f09a47608aa52fc7d8f22ddf783584656678c2aff7188d5b3bdca710",
+        "logs/000005.log": "49660599045c6a14e0d6f71b6a43f045d05321afdd3b2a160c5c2f0bddc8a954",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "d29e327ee162067713a7493f8019351bdc95b2f41784058be7d8f4ec489262d3",
+        "logs/000006.log": "19188653e9daec7053dffd74b4ca1adde30fde86a9a511a2e319ac6d775ed63e",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.stdout.log": "896312ff25f4e6489605f56790cdee8f130a275ce4dd885e9dca36d9d300995d",
+        "logs/baseline.log": "06086756be00b7a4fb988d42ed1420f96d533cd8a9a82eb9b439c0190eaafe09",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "3cba0581d1f0f4530c829f261d51cca62ac4b957992b569e2dfc49ca6eb90162",
+        "logs/discovery.log": "09e9dcf8cfdb70ac9c4c2cfcef5b2dd260269d863ab0b58950fb88de0667db58",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "17726b3083138c9b02b8cbaed5d3a575426ee5713002b1c0485351b85b50a717",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "19ad7326c46470bc88f4a42353f72e275d66494887943ff35119dac13f05439f",
+        "outcomes.json": "e92b69ad0a127badd295887e61758e786e7353447d843b12dfdb9b011f7bbf76",
+        "run.json": "7122c68905b6deaaa2971efeb52243ee0496ad73f922f8cf36104a6c006f694e",
+        "summary.txt": "11980664e4165e65e808c3cb96f0a3ef2a6993d671f1c25c7daaadae0ea27cc8",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "stronger-full",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-conftest-trees-acceptance/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-conftest-trees-acceptance/reports"
+      ],
+      "seconds": 76.44461725000292,
+      "exit_code": 0,
+      "report": "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544316-8UD24m",
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "trees",
+        "manifest_fingerprint": "sha256:21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801"
+        },
+        "support_fingerprints": {
+          "pytest.ini": "sha256:e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+          "tests/__init__.py": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "recipe_fingerprint": "sha256:4c0eae633f0a386e463c635cde8a738d839ff14a9dd43fe8b496dac0b6e45dd0",
+        "test_files": [
+          "tests/test_avl_tree.py",
+          "tests/test_binary_search_tree.py",
+          "tests/test_empty_traversals.py",
+          "tests/test_traversal.py"
+        ],
+        "test_nodes": [
+          "tests/test_avl_tree.py::test_simple_case",
+          "tests/test_avl_tree.py::test_deletion",
+          "tests/test_binary_search_tree.py::test_simple_case",
+          "tests/test_binary_search_tree.py::test_deletion",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[inorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[inorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[preorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[preorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[postorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[postorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[reverse_inorder_traverse-BinarySearchTree]",
+          "tests/test_empty_traversals.py::test_default_traversal_of_empty_tree[reverse_inorder_traverse-AVLTree]",
+          "tests/test_empty_traversals.py::test_avl_empty_before_and_after_insert",
+          "tests/test_traversal.py::test_binary_search_tree_traversal",
+          "tests/test_traversal.py::test_avl_tree_traversal",
+          "tests/test_traversal.py::test_binary_search_tree_traversal_random"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "score": {
+        "scope": "all_discovered",
+        "killed": 11,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "status": "completed",
+      "summary": {
+        "killed": 11,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 71,
+            "column": 20,
+            "end_line": 71,
+            "end_column": 25,
+            "byte_start": 1828,
+            "byte_end": 1833,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 72,
+            "column": 16,
+            "end_line": 72,
+            "end_column": 20,
+            "byte_start": 1849,
+            "byte_end": 1853,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "trees/binary_trees/binary_search_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+            "line": 71,
+            "column": 20,
+            "end_line": 71,
+            "end_column": 25,
+            "byte_start": 1877,
+            "byte_end": 1882,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "trees/binary_trees/binary_search_tree.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+            "line": 72,
+            "column": 16,
+            "end_line": 72,
+            "end_column": 20,
+            "byte_start": 1898,
+            "byte_end": 1902,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 21,
+            "column": 65,
+            "end_line": 21,
+            "end_column": 69,
+            "byte_start": 704,
+            "byte_end": 708,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          },
+          {
+            "id": 6,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 65,
+            "column": 66,
+            "end_line": 65,
+            "end_column": 70,
+            "byte_start": 2127,
+            "byte_end": 2131,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000006.diff",
+            "test_packages": []
+          },
+          {
+            "id": 7,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 109,
+            "column": 67,
+            "end_line": 109,
+            "end_column": 71,
+            "byte_start": 3557,
+            "byte_end": 3561,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000007.diff",
+            "test_packages": []
+          },
+          {
+            "id": 8,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 153,
+            "column": 73,
+            "end_line": 153,
+            "end_column": 77,
+            "byte_start": 4999,
+            "byte_end": 5003,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000008.diff",
+            "test_packages": []
+          },
+          {
+            "id": 9,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 263,
+            "column": 11,
+            "end_line": 263,
+            "end_column": 15,
+            "byte_start": 8352,
+            "byte_end": 8356,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000009.diff",
+            "test_packages": []
+          },
+          {
+            "id": 10,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 315,
+            "column": 11,
+            "end_line": 315,
+            "end_column": 15,
+            "byte_start": 10009,
+            "byte_end": 10013,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000010.diff",
+            "test_packages": []
+          },
+          {
+            "id": 11,
+            "file": "trees/binary_trees/traversal.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+            "line": 390,
+            "column": 11,
+            "end_line": 390,
+            "end_column": 15,
+            "byte_start": 12266,
+            "byte_end": 12270,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000011.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.8575409990000002,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1015,
+                "head_bytes": 1015,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1014,
+                "head_bytes": 1014,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.516327541,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 840,
+                "head_bytes": 840,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 839,
+                "head_bytes": 839,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.528290249,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1253,
+                "head_bytes": 1253,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1252,
+                "head_bytes": 1252,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.526757917,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 920,
+                "head_bytes": 920,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 919,
+                "head_bytes": 919,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.461529417,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4507,
+                "head_bytes": 4507,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4506,
+                "head_bytes": 4506,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.425615459,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4515,
+                "head_bytes": 4515,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4514,
+                "head_bytes": 4514,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.472851126,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4523,
+                "head_bytes": 4523,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4522,
+                "head_bytes": 4522,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.4226122500000002,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4604,
+                "head_bytes": 4604,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4603,
+                "head_bytes": 4603,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.517489333,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5399,
+                "head_bytes": 5399,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5398,
+                "head_bytes": 5398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.46467275,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5419,
+                "head_bytes": 5419,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5418,
+                "head_bytes": 5418,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.653624876,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5362,
+                "head_bytes": 5362,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5361,
+                "head_bytes": 5361,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "f76222d12db4054f79053b23bf356a927c37d0582250778de37c13017d528162",
+        "diff/000002.diff": "59837a41128612c1273902a28bee8a093fa54e16b2dfa4750901ec958d7f842d",
+        "diff/000003.diff": "5166952b34e19415b9211a2dd6a6e11b42dab9e5059bb9f27e3d448e750de1df",
+        "diff/000004.diff": "17bec007fc6ed1887d88d70dd37f3154abd5bb6ca081edc4647234c8ca074b6c",
+        "diff/000005.diff": "a2984b1c660681e63d34ef073e8633fda0a66d9517a8ea287f065f48618b072c",
+        "diff/000006.diff": "aa5edf4eeb1697ae3e652a96e951aa29a6330a4e467214fbe100593f5abcdf89",
+        "diff/000007.diff": "6c40664242df8c3b98742b132dda8e363cbc0868030e3c9709cf8aaf422793b0",
+        "diff/000008.diff": "1149c9f284306fbace0693c1f2b2b368ac1300c170d5326ac6fea6a1e92b72a0",
+        "diff/000009.diff": "76dfca2e7411cd708d46b9c6be71d1e5648a5e86dd18e86aa0c236e729f800f7",
+        "diff/000010.diff": "428f48e06aa53f30ab0f1b83dac13c9bdff4bca639bdbfdb9e98b0dbcb52974d",
+        "diff/000011.diff": "71559832801eb591ab92b5915965d6845bae9b8b0f44b5d0e55fbf65b46e5f33",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "21aafe9c29234bedc2b2a86fe1ee5eedf08f06aaeae8b56d55a5a31ce15d4648",
+        "logs/000001.log": "7dafbb8d824062c47dce74f59dd8224fd599f58dc44155c948b1711cb5dad287",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "f0b39dacbbc67223343e0d9264a3cf68414929a9ea695aea9a37446900f1b6b1",
+        "logs/000002.log": "17ae607c6a7cb8fbebce3cd749aad4f452e44e4c6171a5f731b54812075ad43c",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "8702f48557344e366bdf454c57c96a737e8ec3ac824f3b57dad36e943e4fa5b9",
+        "logs/000003.log": "0d8ec9e3b359c13e440c7803dc57fe61e287f7b745b0fc0d22abe55c00d66ccd",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "f8d2f4ea03435eea408507c4cc67ad12d4e582979bae71bb969df2869c3d95dd",
+        "logs/000004.log": "a1863fbdf9b91bd36fd048d86af56898ae8c438ce237f5dc1f97a5cba04daab6",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "2ad953655aa927f896e2ccc3d4d3557672ed364b76ef65b157a7fa504671a0cc",
+        "logs/000005.log": "86a419323d7745b9da587bd8b347210e2f7f8302d8a8ee054292befaf074f32e",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "1641b14f0f0cef931dd3bb85a84d04626cf054ff4057d5a52a8c7d758ac2130f",
+        "logs/000006.log": "c5ecda2cc49ca42bbcb69b0ae8ad49509a2b4eb306c47dab8bd60b7d4a1562cc",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.stdout.log": "58713fe33d5c289ae14caaf305d2894ce6f2913660b6f42e355cc2aa86d74793",
+        "logs/000007.log": "9b90d1ec03d77980b0753754ff052d2ec75a3dcaa0c3fec646154bb00e3787d1",
+        "logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000007.stdout.log": "88eaa6631ab493aef36dead4655a577ef875c1e41370167d908cd17a991e4ed1",
+        "logs/000008.log": "acf1e9635571e2d008f4ee20ba7804062325a414b6dfc422f93b42730f664b0b",
+        "logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.stdout.log": "da49d2aeb6649ca7dea70231f4357db4e564ffdc4174f0452b3c5f9e878adbf3",
+        "logs/000009.log": "4ea13da3863744fa4683fb96ebc6d0a158056d03e82d3b6d38bb9171c52eb8ea",
+        "logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.stdout.log": "cecbfcc40696895625f15c3a0f367db3e5fb35fe2e6e01370de3f221184e84ff",
+        "logs/000010.log": "e2ce91d7a9cdc617b4dd0ab8ec9ac3405e15c3c92af30697864f761bc997c25e",
+        "logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000010.stdout.log": "f42473193895350cf00ba0fc9ab4f8c76033da19a9f9189bfc74d52e141c7e6c",
+        "logs/000011.log": "99522564cc68265c0280cefbe99b2d29b3eacd8ada9126ccfed3533ea6b8be8a",
+        "logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000011.stdout.log": "09244f5d2c5f207113361fac6ff60d6b60dba205dda092bebed5383193dbe754",
+        "logs/baseline.log": "06086756be00b7a4fb988d42ed1420f96d533cd8a9a82eb9b439c0190eaafe09",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "3cba0581d1f0f4530c829f261d51cca62ac4b957992b569e2dfc49ca6eb90162",
+        "logs/discovery.log": "9ddaf94cb87fd7a6c26a49d017c189aaf1a97da2f88bd8ba9e5e166fffa74352",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "055759890e131b8b5c29833aa8db7ea4aa0c4db1b9cc6fe51e667dabd11db7bf",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "025330b1abc590b20c8aa8a633cdb248e36e236134f2acc7acc3e5c830c1f86d",
+        "outcomes.json": "92147d0ed4b936d32c5f1318a00b19391b85a8d9f17f81259ae35cff45021ded",
+        "run.json": "cd2479a4cdaa7e8f739f2916729c6e85dc4efcd8544f1fc3456d463a30450c31",
+        "summary.txt": "ab8e9925e7546c125a8ec2b89bbb52e7323999c764f85d6c3da7201823e69823",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "original_inputs_preserved": true,
+  "original_reports_preserved": true
+}

@@ -335,6 +335,17 @@ APIs or module cleanup registration. Narrow Hatch/Ruff/development metadata stay
 inert. Original Pluralizer inputs/reports and the redundant membership-value
 survivor must remain distinct from stronger-test evidence.
 
+The scoped conftest fixture extension is Validated; see
+`benchmarks/python-conftest-fixtures.md`. Root and direct tests/conftest.py fixture
+modules are statically audited and included in snapshot/execution identity.
+Preserve independent fixture setup/finalization errors and the complete lifetime
+ledger: caught dynamic setup failures must not become body kills. Unchanged
+Binary Tree Library acceptance accounts for 11 candidates (five kills, six
+survivors); separate-copy stronger tests kill all six. Preserve original scores
+and inputs. Plain pytest.ini testpaths and empty tests/__init__.py also join
+snapshot/execution identity. General hooks, plugins and dependencies remain
+excluded; do not trim upstream suites to force acceptance.
+
 ## Build, Test, and Development Commands
 
 Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go build cache.

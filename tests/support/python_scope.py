@@ -105,7 +105,7 @@ class ScopeTests(unittest.TestCase):
                     scope.inspect(self.root)
 
     def test_configuration_cannot_hide_tests(self):
-        for name in ("conftest.py", "pytest.ini", "setup.cfg", "setup.py"):
+        for name in ("pytest.ini", "setup.cfg", "setup.py"):
             with self.subTest(name=name):
                 self.write(name, "")
                 with self.assertRaises(ValueError):
@@ -115,6 +115,88 @@ class ScopeTests(unittest.TestCase):
                    '[tool.pytest.ini_options]\naddopts="--ignore=tests"\n')
         with self.assertRaises(ValueError):
             scope.inspect(self.root)
+
+    def test_plain_pytest_ini_and_empty_test_package(self):
+        self.write("pytest.ini", "[pytest]\ntestpaths = tests\n")
+        self.write("tests/__init__.py", "# No executable initialization.\n")
+        result = scope.inspect(self.root)
+        self.assertEqual(result["tests"], ["tests/test_sample.py"])
+        self.assertIn("pytest.ini", result["files"])
+        self.assertIn("tests/__init__.py", result["files"])
+        for contents in ["flag=True", "import pytest", "def helper(): pass"]:
+            self.write("tests/__init__.py", contents)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write("tests/__init__.py", "")
+        for contents in ["[pytest]\naddopts=--ignore=tests", "[pytest]\ntestpaths=tests/subset",
+                         "[pytest]\npythonpath=other", "[pytest]\n[other]", "[DEFAULT]\ntestpaths=tests\n[pytest]"]:
+            self.write("pytest.ini", contents)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write("pytest.ini", "[pytest]\ntestpaths=tests")
+        self.write("pyproject.toml", '[project]\nname="sample"\n[tool.pytest.ini_options]\ntestpaths=["tests"]\n')
+        with self.assertRaises(ValueError): scope.inspect(self.root)
+
+    def test_sample_library_stdlib_calls_are_bounded(self):
+        self.write("sample/__init__.py", 'class Problem(Exception):\n def __init__(self, key):\n  Exception.__init__(self, f"Missing {key}")\n')
+        self.write("tests/test_sample.py", "import random\ndef test_sample(): assert len(random.sample(range(10), 3)) == 3\n")
+        scope.inspect(self.root)
+        for source in ["import random\nvalue=random.seed(1)", "import random\nvalue=random",
+                       "from random import sample", "import random\nrandom.sample = None"]:
+            self.write("tests/test_sample.py", source)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write("tests/test_sample.py", "def test_sample(): pass")
+        for source in ["import random", "value=Exception.__init__", "Exception.__init__(object())",
+                       "class Other: \n def __init__(self): Exception.__init__(self)"]:
+            self.write("sample/__init__.py", source)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+
+    def test_conftest_is_fingerprinted_but_not_a_test_or_mutation_source(self):
+        fixture = "import pytest\nDATA=[True, False]\n@pytest.fixture(params=DATA)\ndef value(request):\n yield request.param\n"
+        for name in ["conftest.py", "tests/conftest.py"]:
+            self.write(name, fixture)
+        result = scope.inspect(self.root)
+        self.assertEqual(result["conftests"], ["conftest.py", "tests/conftest.py"])
+        self.assertEqual(result["tests"], ["tests/test_sample.py"])
+        self.assertEqual(len(result["mutations"]), 1)
+        self.assertIn("conftest.py", result["files"])
+        self.write("conftest.py", fixture + "\n# fixture change\n")
+        self.assertNotEqual(result["files"], scope.inspect(self.root)["files"])
+
+    def test_conftest_rejects_hooks_plugins_and_dynamic_configuration(self):
+        for source in [
+            "pytest_plugins = ['sample']", "collect_ignore = ['tests']",
+            "from sample import enabled as pytest_collection_modifyitems",
+            "def pytest_runtest_call(item): pass", "def test_hidden(): pass",
+            "class TestHidden: pass", "def helper(): pass", "raise RuntimeError('imported')",
+            "import pytest\n@pytest.fixture(scope=lambda **kw: 'session')\ndef value(): return 1",
+            "import pytest\n@pytest.fixture(ids=lambda x: str(x))\ndef value(): return 1",
+            "import pytest\n@pytest.fixture(params=range(3))\ndef value(): return 1",
+            "import pytest\n@pytest.fixture\ndef value(request): return request.config",
+            "import pytest\n@pytest.fixture\ndef value(monkeypatch): return 1",
+            "import pytest\n@pytest.fixture\nasync def value(): return 1",
+        ]:
+            with self.subTest(source=source):
+                self.write("conftest.py", source)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+        (self.root / "conftest.py").unlink()
+        for path in ["sample/conftest.py", "tests/nested/conftest.py", "elsewhere/conftest.py"]:
+            self.write(path, "")
+            with self.assertRaises(ValueError):
+                scope.inspect(self.root)
+            (self.root / path).unlink()
+
+    def test_fixture_request_cannot_reconfigure_or_alias_pytest(self):
+        for expression in ["request.config", "request._fixture_defs", "request",
+                           "request.getfixturevalue('pytestconfig')",
+                           "request.getfixturevalue('request')",
+                           "request.getfixturevalue(name)", "request.getfixturevalue"]:
+            for path in ["conftest.py", "tests/test_sample.py"]:
+                with self.subTest(expression=expression, path=path):
+                    self.write(path, "import pytest\n@pytest.fixture\ndef value(request):\n return " + expression)
+                    with self.assertRaises(ValueError):
+                        scope.inspect(self.root)
+                    (self.root / path).unlink()
+            self.write("tests/test_sample.py", "def test_value(): pass")
 
     def test_string_buffers_logging_and_super_initialization(self):
         self.write("sample/__init__.py", "import logging as log\nfrom io import StringIO\n"

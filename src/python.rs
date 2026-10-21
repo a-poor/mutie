@@ -30,6 +30,7 @@ fn read_evidence(
     nonce: &str,
     root: &str,
     collect_only: bool,
+    conftests: &[String],
 ) -> Result<(Vec<String>, crate::report::Outcome)> {
     ensure!(
         !output.interrupted && !output.timed_out && output.capture_error.is_none(),
@@ -62,6 +63,7 @@ fn read_evidence(
             .status
             .code()
             .context("Python terminated without an exit code")?,
+        conftests,
     )
 }
 
@@ -421,8 +423,14 @@ async fn execute_mode(
         #[cfg(test)]
         timings.finish("pytest_process");
         let validated = async {
-            let (nodes, outcome) =
-                read_evidence(&output, &evidence, nonce, copied_text, collect_only)?;
+            let (nodes, outcome) = read_evidence(
+                &output,
+                &evidence,
+                nonce,
+                copied_text,
+                collect_only,
+                &serde_json::from_value::<Vec<String>>(original["conftests"].clone())?,
+            )?;
             if let Some(expected) = expected {
                 expected.validate_inventory(&nodes)?;
             }

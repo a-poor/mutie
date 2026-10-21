@@ -1,5 +1,6 @@
 """Static scoped-project reader. Never imports or executes project code."""
 import ast
+import configparser
 import hashlib
 import json
 import io
@@ -42,6 +43,89 @@ def require(condition, message):
 def module_exists(root, parts):
     path = root.joinpath(*parts)
     return path.with_suffix(".py").is_file() or (path / "__init__.py").is_file()
+
+
+def validate_conftest(tree):
+    """Fixture declarations and literal data only; no general plugin module."""
+    literal_data = {}
+    fixture_names = {"fixture"} if any(isinstance(n, ast.ImportFrom) and n.module == "pytest"
+        and any(a.name == "fixture" and a.asname is None for a in n.names) for n in tree.body) else set()
+    for statement in tree.body:
+        if isinstance(statement, (ast.Import, ast.ImportFrom)):
+            require(all(not (a.asname or a.name).startswith(("pytest_", "collect_", "__"))
+                        for a in statement.names), "Python conftest cannot import hook/plugin aliases")
+            continue  # The common import audit still applies below.
+        if isinstance(statement, ast.Expr) and isinstance(statement.value, ast.Constant) and isinstance(statement.value.value, str):
+            continue
+        if isinstance(statement, (ast.Assign, ast.AnnAssign)):
+            targets = statement.targets if isinstance(statement, ast.Assign) else [statement.target]
+            require(all(isinstance(t, ast.Name) and not t.id.startswith(("pytest", "collect_", "test", "Test", "__"))
+                        for t in targets), "Python conftest data cannot configure collection/plugins")
+            try:
+                value = ast.literal_eval(statement.value)
+                literal_data.update((target.id, value) for target in targets)
+            except (ValueError, TypeError):
+                raise ValueError("Python conftest requires literal module data")
+            continue
+        require(isinstance(statement, ast.FunctionDef) and len(statement.decorator_list) == 1
+                and not statement.name.startswith(("pytest", "test", "Test", "__")),
+                "Python conftest only admits synchronous fixture declarations")
+        decorator = statement.decorator_list[0]
+        function = decorator.func if isinstance(decorator, ast.Call) else decorator
+        require((isinstance(function, ast.Name) and function.id in fixture_names) or
+                (isinstance(function, ast.Attribute) and function.attr == "fixture" and
+                 isinstance(function.value, ast.Name) and function.value.id == "pytest"),
+                "Python conftest only admits pytest.fixture decorators")
+        if isinstance(decorator, ast.Call):
+            require(not decorator.args and all(k.arg in {"scope", "autouse", "params", "ids", "name"}
+                                              for k in decorator.keywords), "unsupported Python fixture options")
+            for keyword in decorator.keywords:
+                if keyword.arg in {"params", "ids"}:
+                    try:
+                        value = (literal_data[keyword.value.id] if isinstance(keyword.value, ast.Name)
+                                 else ast.literal_eval(keyword.value))
+                    except (KeyError, ValueError, TypeError):
+                        raise ValueError("Python fixture params/ids require literal data")
+                    require(value is None or isinstance(value, (list, tuple)),
+                            "Python fixture params/ids require a literal sequence")
+                    if keyword.arg == "ids" and value is not None:
+                        require(all(item is None or isinstance(item, str) for item in value),
+                                "Python fixture ids require strings or None")
+                if keyword.arg == "scope":
+                    require(isinstance(keyword.value, ast.Constant) and keyword.value.value in
+                            {"function", "class", "module", "session"}, "unsupported Python fixture scope")
+                if keyword.arg == "autouse":
+                    require(isinstance(keyword.value, ast.Constant) and type(keyword.value.value) is bool,
+                            "Python fixture autouse must be literal")
+                if keyword.arg == "name":
+                    require(isinstance(keyword.value, ast.Constant) and isinstance(keyword.value.value, str)
+                            and keyword.value.value.isidentifier() and not keyword.value.value.startswith(("pytest", "__")),
+                            "unsupported Python fixture name")
+        require(not statement.args.defaults and not statement.args.kw_defaults
+                and statement.args.vararg is None and statement.args.kwarg is None,
+                "Python conftest fixture parameters must name dependencies")
+        require(all(a.arg not in {"monkeypatch", "pytestconfig", "pytester", "testdir", "doctest_namespace"}
+                    for a in statement.args.args + statement.args.posonlyargs),
+                "Python conftest fixture cannot alter pytest configuration")
+
+
+def validate_fixture_request(tree):
+    parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Name) and node.id == "request":
+            require(isinstance(node.ctx, ast.Load) and isinstance(parents.get(node), ast.Attribute)
+                    and parents[node].value is node, "Python fixture request aliasing unsupported")
+        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name) and node.value.id == "request":
+            require(node.attr in {"param", "addfinalizer", "getfixturevalue"} and isinstance(node.ctx, ast.Load),
+                    "unsupported Python fixture request API")
+            if node.attr == "getfixturevalue":
+                call = parents.get(node)
+                require(isinstance(call, ast.Call) and call.func is node and len(call.args) == 1
+                        and not call.keywords and isinstance(call.args[0], ast.Constant)
+                        and isinstance(call.args[0].value, str) and call.args[0].value.isidentifier()
+                        and not call.args[0].value.startswith("_")
+                        and call.args[0].value not in {"request", "monkeypatch", "pytestconfig", "pytester", "testdir", "doctest_namespace"},
+                        "Python dynamic fixture lookup requires a literal ordinary fixture name")
 
 
 def inspect(root):
@@ -121,6 +205,15 @@ def inspect(root):
     pytest_config = tool.get("pytest", {})
     require(set(pytest_config) <= {"ini_options"}, "unsupported pytest configuration")
     options = pytest_config.get("ini_options", {})
+    if "pytest.ini" in files:
+        require(not pytest_config, "Python cannot combine pytest.ini and pyproject pytest settings")
+        ini = configparser.ConfigParser(interpolation=None, strict=True)
+        ini.read_string((root / "pytest.ini").read_text(encoding="utf-8"))
+        require(not ini.defaults() and ini.sections() == ["pytest"]
+                and set(ini["pytest"]) <= {"testpaths"},
+                "Python pytest.ini only admits testpaths")
+        options = {"testpaths": ini["pytest"].get("testpaths", "tests").split()}
+
     require(set(options) <= {"testpaths", "pythonpath", "addopts"}
             and options.get("testpaths", ["tests"]) in (["tests"], ["."])
             and options.get("addopts", "") in ("", "-q"),
@@ -187,11 +280,17 @@ def inspect(root):
         "pytest", "_pytest", "tests", "pluggy", "packaging", "iniconfig", "pygments", "pip"},
             "Python package shadows an admitted dependency")
     tests = []
+    conftests = []
     mutations = []
     sources = []
     for relative in files:
         path = Path(relative)
-        require(path.name not in {"conftest.py", "pytest.ini", ".pytest.ini",
+        is_conftest = path.name == "conftest.py"
+        require(not is_conftest or relative in {"conftest.py", "tests/conftest.py"},
+                "Python conftest must be at the root or directly under tests/")
+        require(path.name != "pytest.ini" or relative == "pytest.ini",
+                "Python pytest.ini must be at the project root")
+        require(path.name not in {".pytest.ini",
                                  "tox.ini", "setup.cfg", "setup.py", "sitecustomize.py",
                                  "usercustomize.py", "python._pth", "pyvenv.cfg"},
                 f"unsupported Python configuration: {relative}")
@@ -205,7 +304,7 @@ def inspect(root):
         parts = path.parts
         package_parts = (source_root, package) if source_root else (package,)
         in_package = parts[:len(package_parts)] == package_parts
-        if not in_package and (relative == "doc/source/conf.py"
+        if not in_package and (relative in {"doc/source/conf.py", "docs/source/conf.py"}
                                or (len(parts) == 2 and parts[0] == ".circleci")):
             # Documentation configuration and CI scripts are retained, never
             # imported or executed. They cannot conceal tests or pytest hooks.
@@ -222,15 +321,19 @@ def inspect(root):
                     in {"pytest", "unittest"}) for node in ast.walk(doc_tree)),
                     "Python ancillary configuration cannot contain tests/hooks")
             continue
-        is_test = parts[0] == "tests" or (len(parts) == 1 and path.name.startswith("test_"))
-        require(not (is_test and len(parts) == 1 and options.get("testpaths") == ["tests"]),
+        is_test = is_conftest or parts[0] == "tests" or (len(parts) == 1 and path.name.startswith("test_"))
+        require(not (is_test and not is_conftest and len(parts) == 1 and options.get("testpaths") == ["tests"]),
                 "Python root test is excluded by configured testpaths")
         require(in_package or is_test,
                 f"Python executable file outside package/tests: {relative}")
         module_parts = parts[1:] if source_root and not is_test else parts
         require("__pycache__" not in parts and all(not p.startswith(".") for p in parts),
                 f"hidden Python executable file: {relative}")
-        require(not is_test or path.name.startswith("test_"),
+        if relative == "tests/__init__.py":
+            require(not ast.parse((root / path).read_text(encoding="utf-8")).body,
+                    "Python test package initializer must be empty")
+            continue
+        require(not is_test or is_conftest or path.name.startswith("test_"),
                 f"Python test files must use test_*.py: {relative}")
         if not is_test:
             require(not path.name.startswith("test_") and not path.name.endswith("_test.py"),
@@ -241,6 +344,8 @@ def inspect(root):
             require(not path.with_suffix("").joinpath("__init__.py").as_posix() in files,
                     "Python ambiguous module/package paths unsupported")
             sources.append(relative)
+        elif is_conftest:
+            conftests.append(relative)
         else:
             tests.append(relative)
         data = (root / path).read_bytes()
@@ -248,6 +353,10 @@ def inspect(root):
         require(encoding == "utf-8", "Python source requires UTF-8 encoding")
         text = data.decode("utf-8")
         tree = ast.parse(text, filename=relative)
+        if is_conftest:
+            validate_conftest(tree)
+        if is_test:
+            validate_fixture_request(tree)
         # A conventional script entry point is inert under pytest's import mode.
         # Admit only this exact shape, never arbitrary unittest runner calls.
         main_calls = set()
@@ -287,13 +396,17 @@ def inspect(root):
         aliases = set()
         logging_aliases = set()
         copy_aliases = set()
+        random_aliases = set()
         pytest_marks = {"mark"}
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     top = alias.name.split(".")[0]
-                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest", "unittest"} if is_test else set()),
+                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest", "unittest", "random"} if is_test else set()),
                             f"unsupported Python import {alias.name} in {relative}")
+                    if top == "random":
+                        require(alias.name == "random", "Python random submodules unsupported")
+                        random_aliases.add(alias.asname or "random")
                     if top == "logging":
                         require(alias.name == "logging", "Python logging submodules unsupported")
                         logging_aliases.add(alias.asname or "logging")
@@ -365,6 +478,9 @@ def inspect(root):
                                           ast.AsyncWith, ast.TypeAlias)),
                     f"Python async/type-alias execution unsupported: {relative}")
             if isinstance(node, ast.Name):
+                if node.id in random_aliases:
+                    require(isinstance(parents.get(node), ast.Attribute) and parents[node].value is node,
+                            "Python random aliasing unsupported")
                 if unit_module and node.id == "TestCase":
                     require(node in case_bases, "Python TestCase is only supported as a direct base")
                 if unit_module and node.id == "unittest":
@@ -387,9 +503,26 @@ def inspect(root):
                 super_init = (not unit_module and node.attr == "__init__" and isinstance(node.value, ast.Call)
                               and isinstance(node.value.func, ast.Name)
                               and node.value.func.id == "super")
-                require(super_init or node.attr == "__getitem__"
+                # Direct Exception initialization is conventional in small custom
+                # exceptions. It does not expose arbitrary dunder dispatch.
+                call = parents.get(node)
+                method = call
+                while method is not None and not isinstance(method, (ast.FunctionDef, ast.ClassDef)):
+                    method = parents.get(method)
+                cls = parents.get(method) if method is not None else None
+                exception_init = (not unit_module and node.attr == "__init__"
+                    and isinstance(node.value, ast.Name) and node.value.id == "Exception"
+                    and isinstance(call, ast.Call) and call.func is node and call.args
+                    and isinstance(call.args[0], ast.Name) and call.args[0].id == "self"
+                    and isinstance(method, ast.FunctionDef) and method.name == "__init__"
+                    and isinstance(cls, ast.ClassDef) and len(cls.bases) == 1
+                    and isinstance(cls.bases[0], ast.Name) and cls.bases[0].id == "Exception")
+                require(super_init or exception_init or node.attr == "__getitem__"
                         or not (node.attr.startswith("__") and node.attr.endswith("__")),
                         f"Python reflective attribute unsupported: {node.attr}")
+                if isinstance(node.value, ast.Name) and node.value.id in random_aliases:
+                    require(node.attr == "sample" and isinstance(node.ctx, ast.Load),
+                            "Python only admits random.sample in tests")
                 if isinstance(node.value, ast.Name) and node.value.id in logging_aliases:
                     require(node.attr in LOGGING_MEMBERS, "unsupported Python logging API")
                 if isinstance(node.value, ast.Name) and node.value.id in copy_aliases:
@@ -422,7 +555,7 @@ def inspect(root):
                                       end_column=node.end_col_offset + 1, original=original,
                                       replacement="False" if node.value else "True"))
     require(tests, "Python requires test_*.py files at the root or under tests/")
-    return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), sources=sorted(sources),
+    return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), conftests=sorted(conftests), sources=sorted(sources),
                 mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))
 
 
