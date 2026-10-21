@@ -1,0 +1,47 @@
+Saving report to /tmp/mutie-betting-math-full/reports/run-1792617000-XCLfi8
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.70s
+Selected 28 mutations from /tmp/mutie-betting-math-full/reports/run-1792616622-XvJBMI (all saved mutations; source IDs: 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87)
+Found 28 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/28] missed: src/betting_math_kit/odds.py:133:28: ">" -> ">=" (2.55s)
+[2/28] missed: src/betting_math_kit/odds.py:263:14: "<=" -> "<" (2.39s)
+[3/28] missed: src/betting_math_kit/odds.py:318:14: "<=" -> "<" (2.64s)
+[4/28] missed: src/betting_math_kit/odds.py:318:44: "<" -> "<=" (2.76s)
+[5/28] killed: src/betting_math_kit/odds.py:319:67: "False" -> "True" (2.84s)
+[6/28] killed: src/betting_math_kit/odds.py:322:65: "True" -> "False" (2.59s)
+[7/28] killed: src/betting_math_kit/simulation.py:37:19: "True" -> "False" (3.19s)
+[8/28] killed: src/betting_math_kit/simulation.py:76:13: "<=" -> "<" (4.27s)
+[9/28] killed: src/betting_math_kit/simulation.py:78:21: "<=" -> "<" (3.14s)
+[10/28] killed: src/betting_math_kit/simulation.py:80:17: "<=" -> "<" (3.51s)
+[11/28] killed: src/betting_math_kit/simulation.py:82:42: "<=" -> "<" (2.52s)
+[12/28] missed: src/betting_math_kit/simulation.py:171:15: "<" -> "<=" (2.75s)
+[13/28] missed: src/betting_math_kit/simulation.py:173:17: "<" -> "<=" (2.74s)
+[14/28] killed: src/betting_math_kit/simulation.py:193:18: "False" -> "True" (3.46s)
+[15/28] missed: src/betting_math_kit/simulation.py:197:29: "<" -> "<=" (2.98s)
+[16/28] missed: src/betting_math_kit/simulation.py:202:19: "<=" -> "<" (2.78s)
+[17/28] killed: src/betting_math_kit/simulation.py:204:26: "True" -> "False" (2.87s)
+[18/28] missed: src/betting_math_kit/simulation.py:207:19: ">" -> ">=" (3.73s)
+[19/28] missed: src/betting_math_kit/simulation.py:217:51: ">" -> ">=" (2.92s)
+[20/28] missed: src/betting_math_kit/simulation.py:219:19: ">" -> ">=" (2.84s)
+[21/28] missed: src/betting_math_kit/simulation.py:219:36: ">" -> ">=" (2.74s)
+[22/28] missed: src/betting_math_kit/simulation.py:339:13: "<=" -> "<" (2.63s)
+[23/28] missed: src/betting_math_kit/simulation.py:341:21: "<=" -> "<" (2.51s)
+[24/28] missed: src/betting_math_kit/types.py:25:19: "True" -> "False" (2.77s)
+[25/28] missed: src/betting_math_kit/types.py:44:29: ">" -> ">=" (2.62s)
+[26/28] missed: src/betting_math_kit/types.py:48:19: "True" -> "False" (2.57s)
+[27/28] missed: src/betting_math_kit/types.py:66:29: ">" -> ">=" (2.53s)
+[28/28] missed: src/betting_math_kit/types.py:70:19: "True" -> "False" (2.61s)
+
+28 mutations: 9 killed, 19 missed, 0 timed out, 0 failed to compile
+Run completed in 195.37s
+Workspaces: snapshot 0.005s | setup 0.009s | reset 0.186s (cumulative)
+Copies: 620 reflinked | 0 copied (0 bytes) | 31 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-betting-math-full/reports/run-1792617000-XCLfi8/summary.txt
+Mutation score: 32.14%
+Scope: rerun selection only
+Killed / (killed + missed): 9 / 28
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

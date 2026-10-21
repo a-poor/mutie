@@ -1976,3 +1976,10 @@ boundaries yield six survivors and four errors across preserved failed reports.
 Seven new cases in a separate 205-test copy kill the six survivors; full original
 inputs and all test IDs remain intact. No combined/full score is inferred from
 selected accounting, and observer/classification semantics remain unchanged.
+
+The [complete betting-math-kit review](benchmarks/python-betting-math-full.md)
+accounts for all 87 sites (19 kills, 59 survivors, nine errors). A separate
+222-test copy kills 24 survivors and two endpoint-error candidates using explicit
+expected-success assertions. Original inputs, reports and classification rules
+remain intact. Domain-limited redundancy observations and unresolved numerical
+boundaries are retained individually; combined accounting is not a full score.

@@ -1,0 +1,23 @@
+--- a/tests/test_kelly.py
++++ b/tests/test_kelly.py
+@@ -35,10 +35,18 @@
+         assert fk_with < fk_no
+ 
+     def test_prob_zero(self):
+-        assert full_kelly_fraction(0.0, 5.0) == 0.0
++        try:
++            actual = full_kelly_fraction(0.0, 5.0)
++        except InvalidProbabilityError as error:
++            pytest.fail(f'valid endpoint was rejected: {error}')
++        assert actual == 0.0
+ 
+     def test_prob_one(self):
+-        assert full_kelly_fraction(1.0, 5.0) == 0.0
++        try:
++            actual = full_kelly_fraction(1.0, 5.0)
++        except InvalidProbabilityError as error:
++            pytest.fail(f'valid endpoint was rejected: {error}')
++        assert actual == 0.0
+ 
+     def test_never_negative(self):
+         assert full_kelly_fraction(0.01, 2.0) == 0.0

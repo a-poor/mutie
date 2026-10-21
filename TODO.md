@@ -185,6 +185,13 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   metric-boundary survivors; four original runtime errors remain preserved.
   See [acceptance and scope](benchmarks/python-betting-math.md).
 
+- [x] Account for all 87 unchanged betting-math-kit candidates: 19 kills,
+  59 survivors and nine errors across preserved reports. Review every survivor
+  and error; a separate complete 222-test copy kills 24 survivors and turns two
+  endpoint errors into assertion kills without classifier changes. Retain open
+  numerical cases and distinguish combined accounting from a full score. See
+  [complete review](benchmarks/python-betting-math-full.md).
+
 ## Selected first Bun test-runner slice
 
 - [x] Pin Bun 1.3.11+af24e281e and add independent dependency-free JS/TS fixtures.

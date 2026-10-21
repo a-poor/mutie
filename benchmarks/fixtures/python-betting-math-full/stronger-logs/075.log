@@ -1,0 +1,19 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+..................................................F..................... [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+___________________ test_exact_ruin_threshold_counts_as_ruin ___________________
+
+    def test_exact_ruin_threshold_counts_as_ruin():
+        result = simulate_bankroll(0.5, 2.0, 0.5, bankroll=100.0,
+                                    n_bets=1, n_trials=1, seed=1, ruin_threshold=150.0)
+>       assert result.ruin_rate == 1.0
+E       assert 0.0 == 1.0
+E        +  where 0.0 = SimulationResult(n_trials=1, n_bets=1, ruin_rate=0.0, median_final=150.0, mean_final=150.0, p5_final=150.0, p95_final=150.0, max_drawdown_median=0.0, growth_rate=0.4054651081081644).ruin_rate
+
+tests/test_public_contracts.py:107: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_public_contracts.py::test_exact_ruin_threshold_counts_as_ruin
+1 failed, 221 passed in 0.64s
+

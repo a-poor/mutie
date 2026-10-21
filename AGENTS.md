@@ -431,3 +431,10 @@ mutation/escape and constructor/class escape. Six selected metrics survivors are
 killed by a separate 205-test suite; four original runtime errors remain errors.
 Selected ten-candidate accounting is not a full 87-site project score. Keep
 original inputs/reports and the exact source-identity mapping across reruns.
+
+`benchmarks/python-betting-math-full.md` accounts for all 87 candidates by source
+identity: 19 kills, 59 survivors, nine errors. A separate 222-test copy kills 24
+survivors (including six prior metrics findings) and two original endpoint errors
+through explicit expected-success assertions. Preserve original failed reports,
+classification rules and numerical survivors without blanket equivalence claims.
+Combined inventory accounting is not a full original or stronger-suite score.

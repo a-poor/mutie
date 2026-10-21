@@ -1,0 +1,1 @@
+Error: running src/betting_math_kit/kelly.py:95:27: ">" -> ">=": Python run contains an unsupported phase failure

@@ -1,0 +1,22 @@
+Saving report to /tmp/mutie-betting-math-full/reports/run-1792616753-RNUdPF
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 3.96s
+Selected 61 mutations from /tmp/mutie-betting-math-full/reports/run-1792616622-XvJBMI (all saved mutations; source IDs: 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 42, 43, 45, 52, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87)
+Found 61 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/61] error: src/betting_math_kit/kelly.py:95:27: ">" -> ">=" (2.57s)
+
+1 mutations: 0 killed, 0 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 18.90s
+Workspaces: snapshot 0.004s | setup 0.013s | reset 0.006s (cumulative)
+Copies: 80 reflinked | 0 copied (0 bytes) | 4 ops, 0 failed, 0 interrupted
+Unfinished: 60 pending, 0 interrupted
+Report saved: /tmp/mutie-betting-math-full/reports/run-1792616753-RNUdPF/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 0 / 0
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 60
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

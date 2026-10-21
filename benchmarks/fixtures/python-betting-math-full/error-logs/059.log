@@ -1,0 +1,44 @@
+........................................................................ [ 36%]
+................................................................F....... [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+____________________ TestImpliedProb.test_zero_prob_raises _____________________
+
+self = <tests.test_odds.TestImpliedProb object at [address]>
+
+    def test_zero_prob_raises(self):
+        with pytest.raises(InvalidProbabilityError):
+>           implied_prob_to_decimal(0.0)
+
+tests/test_odds.py:81: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+prob = 0.0
+
+    def implied_prob_to_decimal(prob: float) -> float:
+        """Convert implied probability to decimal odds.
+    
+        Args:
+            prob: Implied probability (must be in (0, 1]).
+    
+        Returns:
+            Decimal odds (always > 1.0).
+    
+        Raises:
+            InvalidProbabilityError: If *prob* <= 0 or *prob* > 1.
+    
+        Examples:
+            >>> implied_prob_to_decimal(0.5)
+            2.0
+        """
+        if prob < 0.0 or prob > 1.0:
+            raise InvalidProbabilityError(f"Probability must be in (0, 1], got {prob}")
+>       return 1.0 / prob
+               ^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/odds.py:135: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/test_odds.py::TestImpliedProb::test_zero_prob_raises - ZeroDivis...
+1 failed, 197 passed in 0.43s
+

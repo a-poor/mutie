@@ -1,0 +1,107 @@
+..............................F...F..................................... [ 36%]
+........................................................................ [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+________________ TestDevigMulti.test_two_outcomes_matches_devig ________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_two_outcomes_matches_devig(self):
+        r2 = devig(-110, -110)
+>       rm = devig_multi([-110, -110])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+odds_list = [-110, -110]
+method = <DevigMethod.MULTIPLICATIVE: 'multiplicative'>
+
+    def devig_multi(
+        odds_list: list[int],
+        method: DevigMethod | str = DevigMethod.MULTIPLICATIVE,
+    ) -> MultiOutcomeDevigResult:
+        """Remove vig from an n-outcome market (outrights, props ladders, etc.).
+    
+        Supports **multiplicative**, **power**, and **Shin** methods.
+        Additive is not supported for n-outcome markets (does not generalize
+        well).
+    
+        Args:
+            odds_list: American odds for each outcome. Must have >= 2 entries.
+                       None of the values may be 0.
+            method: A :class:`DevigMethod` enum value, or one of the strings
+                    ``"multiplicative"``, ``"power"``, ``"shin"``.
+    
+        Returns:
+            :class:`MultiOutcomeDevigResult` with fair probabilities in the
+            same order as *odds_list*.
+    
+        Raises:
+            InvalidOddsError: If any odds value is 0.
+            ValueError: If fewer than 2 outcomes are provided.
+            UnknownMethodError: If *method* is ``ADDITIVE`` or unrecognized.
+    
+        Examples:
+            >>> r = devig_multi([200, 300, 150])
+            >>> sum(r.fair_probs)  # doctest: +ELLIPSIS
+            1.0...
+        """
+        if len(odds_list) <= 2:
+>           raise ValueError("Need at least 2 outcomes for de-vigging")
+E           ValueError: Need at least 2 outcomes for de-vigging
+
+src/betting_math_kit/devig.py:435: ValueError
+_____________________ TestDevigMulti.test_additive_raises ______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_additive_raises(self):
+        with pytest.raises(UnknownMethodError):
+>           devig_multi([-110, 110], method=DevigMethod.ADDITIVE)
+
+tests/test_devig.py:231: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+odds_list = [-110, 110], method = <DevigMethod.ADDITIVE: 'additive'>
+
+    def devig_multi(
+        odds_list: list[int],
+        method: DevigMethod | str = DevigMethod.MULTIPLICATIVE,
+    ) -> MultiOutcomeDevigResult:
+        """Remove vig from an n-outcome market (outrights, props ladders, etc.).
+    
+        Supports **multiplicative**, **power**, and **Shin** methods.
+        Additive is not supported for n-outcome markets (does not generalize
+        well).
+    
+        Args:
+            odds_list: American odds for each outcome. Must have >= 2 entries.
+                       None of the values may be 0.
+            method: A :class:`DevigMethod` enum value, or one of the strings
+                    ``"multiplicative"``, ``"power"``, ``"shin"``.
+    
+        Returns:
+            :class:`MultiOutcomeDevigResult` with fair probabilities in the
+            same order as *odds_list*.
+    
+        Raises:
+            InvalidOddsError: If any odds value is 0.
+            ValueError: If fewer than 2 outcomes are provided.
+            UnknownMethodError: If *method* is ``ADDITIVE`` or unrecognized.
+    
+        Examples:
+            >>> r = devig_multi([200, 300, 150])
+            >>> sum(r.fair_probs)  # doctest: +ELLIPSIS
+            1.0...
+        """
+        if len(odds_list) <= 2:
+>           raise ValueError("Need at least 2 outcomes for de-vigging")
+E           ValueError: Need at least 2 outcomes for de-vigging
+
+src/betting_math_kit/devig.py:435: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig
+FAILED tests/test_devig.py::TestDevigMulti::test_additive_raises - ValueError...
+2 failed, 196 passed in 0.41s
+

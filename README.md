@@ -165,6 +165,10 @@ Python/pytest is Validated within its pinned serial scope on macOS arm64.
 205-test stronger suite. Narrow inert tool metadata and direct independent
 `random.Random(...)` construction are supported; global random-state APIs remain
 excluded (apart from existing test-only `random.sample`).
+The [complete 87-candidate review](benchmarks/python-betting-math-full.md)
+accounts for 19 kills, 59 survivors and nine errors; a separate 222-test copy
+kills 24 survivors and two endpoint-error candidates. Original reports and
+classification rules remain intact; combined accounting is not a full score.
 The [Scrubify acceptance](benchmarks/python-scrubify-findings.md) records a real
 blank-query survivor killed by stronger tests, timings and preserved inputs/reports.
 The [feedback profile](benchmarks/python-feedback-profile.md) measures repeated

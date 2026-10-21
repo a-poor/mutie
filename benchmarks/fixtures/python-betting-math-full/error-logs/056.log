@@ -1,0 +1,59 @@
+........................................................................ [ 36%]
+..........................................................F...F......... [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+____________________ TestDecimalToAmerican.test_invalid_low ____________________
+
+self = <tests.test_odds.TestDecimalToAmerican object at [address]>
+
+    def test_invalid_low(self):
+        with pytest.raises(InvalidOddsError):
+>           decimal_to_american(1.0)
+
+tests/test_odds.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 1.0
+
+    def decimal_to_american(decimal_odds: float) -> int:
+        """Convert decimal odds to American odds.
+    
+        Args:
+            decimal_odds: Decimal odds (must be > 1.0).
+    
+        Returns:
+            American odds (positive for underdogs, negative for favorites).
+    
+        Raises:
+            InvalidOddsError: If *decimal_odds* <= 1.0.
+    
+        Examples:
+            >>> decimal_to_american(2.5)
+            150
+            >>> decimal_to_american(1.5)
+            -200
+        """
+        _validate_decimal_odds(decimal_odds)
+        if decimal_odds >= 2.0:
+            return int((decimal_odds - 1) * 100)
+        else:
+>           return int(-100 / (decimal_odds - 1))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           ZeroDivisionError: division by zero
+
+src/betting_math_kit/odds.py:94: ZeroDivisionError
+__________________ TestImpliedProb.test_invalid_decimal_odds ___________________
+
+self = <tests.test_odds.TestImpliedProb object at [address]>
+
+    def test_invalid_decimal_odds(self):
+>       with pytest.raises(InvalidOddsError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'betting_math_kit.exceptions.InvalidOddsError'>
+
+tests/test_odds.py:71: Failed
+=========================== short test summary info ============================
+FAILED tests/test_odds.py::TestDecimalToAmerican::test_invalid_low - ZeroDivi...
+FAILED tests/test_odds.py::TestImpliedProb::test_invalid_decimal_odds - Faile...
+2 failed, 196 passed in 0.38s
+

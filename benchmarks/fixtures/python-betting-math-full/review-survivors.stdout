@@ -1,0 +1,43 @@
+Saving report to /tmp/mutie-betting-math-full/reports/run-1792617204-4S11eQ
+Snapshotting /tmp/mutie-betting-math-full/review-project
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.42s
+Selected 24 mutations from /tmp/mutie-betting-math-full/reports/run-1792616622-XvJBMI (all saved mutations; source IDs: 20, 25, 26, 27, 28, 29, 31, 32, 34, 37, 39, 46, 47, 48, 49, 50, 51, 60, 62, 63, 75, 83, 85, 87)
+Found 24 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/24] killed: src/betting_math_kit/kelly.py:140:10: "<=" -> "<" (1.93s)
+[2/24] killed: src/betting_math_kit/kelly.py:255:26: "False" -> "True" (2.23s)
+[3/24] killed: src/betting_math_kit/kelly.py:256:20: "False" -> "True" (1.90s)
+[4/24] killed: src/betting_math_kit/kelly.py:263:20: "False" -> "True" (2.25s)
+[5/24] killed: src/betting_math_kit/kelly.py:264:44: ">" -> ">=" (1.83s)
+[6/24] killed: src/betting_math_kit/kelly.py:266:16: ">" -> ">=" (1.86s)
+[7/24] killed: src/betting_math_kit/kelly.py:270:14: "False" -> "True" (2.71s)
+[8/24] killed: src/betting_math_kit/kelly.py:272:12: ">" -> ">=" (3.84s)
+[9/24] killed: src/betting_math_kit/kelly.py:276:12: "<" -> "<=" (3.24s)
+[10/24] killed: src/betting_math_kit/kelly.py:364:23: ">" -> ">=" (3.51s)
+[11/24] killed: src/betting_math_kit/kelly.py:378:28: "True" -> "False" (3.79s)
+[12/24] killed: src/betting_math_kit/metrics.py:194:16: ">=" -> ">" (3.43s)
+[13/24] killed: src/betting_math_kit/metrics.py:282:21: "<" -> "<=" (3.62s)
+[14/24] killed: src/betting_math_kit/metrics.py:282:43: ">" -> ">=" (3.48s)
+[15/24] killed: src/betting_math_kit/metrics.py:286:21: "<" -> "<=" (3.90s)
+[16/24] killed: src/betting_math_kit/metrics.py:286:43: ">" -> ">=" (3.37s)
+[17/24] killed: src/betting_math_kit/metrics.py:371:15: "<" -> "<=" (3.38s)
+[18/24] killed: src/betting_math_kit/odds.py:133:28: ">" -> ">=" (3.58s)
+[19/24] killed: src/betting_math_kit/odds.py:318:14: "<=" -> "<" (3.39s)
+[20/24] killed: src/betting_math_kit/odds.py:318:44: "<" -> "<=" (3.75s)
+[21/24] killed: src/betting_math_kit/simulation.py:202:19: "<=" -> "<" (3.55s)
+[22/24] killed: src/betting_math_kit/types.py:25:19: "True" -> "False" (3.47s)
+[23/24] killed: src/betting_math_kit/types.py:48:19: "True" -> "False" (3.58s)
+[24/24] killed: src/betting_math_kit/types.py:70:19: "True" -> "False" (3.75s)
+
+24 mutations: 24 killed, 0 missed, 0 timed out, 0 failed to compile
+Run completed in 184.31s
+Workspaces: snapshot 0.005s | setup 0.009s | reset 0.192s (cumulative)
+Copies: 594 reflinked | 0 copied (0 bytes) | 27 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-betting-math-full/reports/run-1792617204-4S11eQ/summary.txt
+Mutation score: 100.00%
+Scope: rerun selection only
+Killed / (killed + missed): 24 / 24
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

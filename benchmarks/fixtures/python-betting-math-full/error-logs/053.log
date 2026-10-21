@@ -1,0 +1,112 @@
+........................................................................ [ 36%]
+.............................................F.......................... [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+______________________ TestEdgeBucketAnalysis.test_basic _______________________
+
+self = <tests.test_metrics.TestEdgeBucketAnalysis object at [address]>
+
+    def test_basic(self):
+>       results = edge_bucket_analysis(
+            [0.55, 0.60, 0.70],
+            [1, 0, 1],
+            [0.05, 0.10, 0.20],
+            n_bins=2,
+        )
+
+tests/test_metrics.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.55, 0.6, 0.7], outcomes = [1, 0, 1], edges = [0.05, 0.1, 0.2]
+n_bins = 2
+
+    def edge_bucket_analysis(
+        probs: list[float],
+        outcomes: list[int],
+        edges: list[float],
+        n_bins: int = 5,
+    ) -> list[dict]:
+        """Group predictions by predicted edge and report performance.
+    
+        Useful for answering "do my higher-edge bets actually win more?"
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            edges: Predicted edge for each bet (e.g. model_prob - fair_prob).
+                Same length as *probs*.
+            n_bins: Number of equal-width edge bins. Defaults to 5.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower edge bound (inclusive).
+            - ``bin_upper``: Upper edge bound (exclusive, except last).
+            - ``count``: Number of bets in the bin.
+            - ``avg_edge``: Mean predicted edge in the bin.
+            - ``win_rate``: Observed win rate in the bin.
+            - ``expected_win_rate``: Mean predicted probability in the bin.
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If list lengths differ, lists are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> results = edge_bucket_analysis(
+            ...     [0.55, 0.60, 0.70],
+            ...     [1, 0, 1],
+            ...     [0.05, 0.10, 0.20],
+            ...     n_bins=2,
+            ... )
+            >>> len(results) >= 1
+            True
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_matched_lengths(probs, edges, "probs", "edges")
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        # Determine edge range
+        min_edge = min(edges)
+        max_edge = max(edges)
+    
+        # Handle degenerate case: all edges identical
+        if max_edge == min_edge:
+            total_wins = sum(outcomes)
+            n = len(probs)
+            return [
+                {
+                    "bin_lower": min_edge,
+                    "bin_upper": max_edge,
+                    "count": n,
+                    "avg_edge": min_edge,
+                    "win_rate": total_wins / n,
+                    "expected_win_rate": sum(probs) / n,
+                }
+            ]
+    
+        bin_width = (max_edge - min_edge) / n_bins
+    
+        # Accumulators
+        bin_edge_sums: list[float] = [0.0] * n_bins
+        bin_prob_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+        bin_counts: list[int] = [0] * n_bins
+    
+        for p, y, e in zip(probs, outcomes, edges, strict=False):
+            idx = int((e - min_edge) / bin_width)
+            if idx > n_bins:
+                idx = n_bins - 1
+>           bin_edge_sums[idx] += e
+            ^^^^^^^^^^^^^^^^^^
+E           IndexError: list index out of range
+
+src/betting_math_kit/metrics.py:405: IndexError
+=========================== short test summary info ============================
+FAILED tests/test_metrics.py::TestEdgeBucketAnalysis::test_basic - IndexError...
+1 failed, 197 passed in 0.54s
+

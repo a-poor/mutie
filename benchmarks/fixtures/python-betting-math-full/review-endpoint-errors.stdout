@@ -1,0 +1,21 @@
+Saving report to /tmp/mutie-betting-math-full/reports/run-1792617389-MxBgWo
+Snapshotting /tmp/mutie-betting-math-full/review-project
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 3.76s
+Selected 2 mutations from /tmp/mutie-betting-math-full/reports/run-1792616622-XvJBMI (all saved mutations; source IDs: 16, 17)
+Found 2 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/2] killed: src/betting_math_kit/kelly.py:95:13: "<" -> "<=" (3.49s)
+[2/2] killed: src/betting_math_kit/kelly.py:95:27: ">" -> ">=" (3.35s)
+
+2 mutations: 2 killed, 0 missed, 0 timed out, 0 failed to compile
+Run completed in 31.38s
+Workspaces: snapshot 0.006s | setup 0.018s | reset 0.018s (cumulative)
+Copies: 110 reflinked | 0 copied (0 bytes) | 5 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-betting-math-full/reports/run-1792617389-MxBgWo/summary.txt
+Mutation score: 100.00%
+Scope: rerun selection only
+Killed / (killed + missed): 2 / 2
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

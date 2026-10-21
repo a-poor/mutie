@@ -1,0 +1,20 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+........................................F............................... [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+________________ test_equal_pool_limit_does_not_claim_reduction ________________
+
+    def test_equal_pool_limit_does_not_claim_reduction():
+        result = compute_kelly_bet(1, 0.75, 2.0, 1024.0, takeout=0.0,
+                                   pool_size=512.0, impact_limit=0.5, max_fraction=1.0)
+        assert result.bet_size == 128.0
+>       assert result.pool_limited is False
+E       AssertionError: assert True is False
+E        +  where True = KellyBet(selection_id=1, full_kelly=0.5, fractional_kelly=0.125, bet_size=128.0, edge=0.25, expected_roi=0.5, pool_limited=True, capped=False, reason='Kelly 50.0% x 25% = 12.50%, pool-limited, edge 25.0%, ROI +50.0%').pool_limited
+
+tests/test_public_contracts.py:30: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_public_contracts.py::test_equal_pool_limit_does_not_claim_reduction
+1 failed, 221 passed in 0.37s
+

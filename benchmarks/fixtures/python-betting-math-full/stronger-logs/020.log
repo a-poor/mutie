@@ -1,0 +1,73 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+.................................................F...................... [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+_______________________ test_full_takeout_leaves_no_edge _______________________
+
+    def test_full_takeout_leaves_no_edge():
+        try:
+>           actual = full_kelly_fraction(0.75, 2.0, takeout=1.0)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_public_contracts.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+prob = 0.75, odds_decimal = 2.0, takeout = 1.0
+
+    def full_kelly_fraction(
+        prob: float,
+        odds_decimal: float,
+        takeout: float = DEFAULT_TAKEOUT,
+    ) -> float:
+        """Compute full Kelly fraction of bankroll to wager.
+    
+        This is the **pure math** layer — no caps, no floors, no policy.
+    
+        Args:
+            prob: Estimated win probability in (0, 1).
+            odds_decimal: Decimal odds (e.g. 4.0 for 3-to-1). Must be > 1.
+            takeout: Pari-mutuel takeout rate (default 16 %).
+    
+        Returns:
+            Kelly fraction in [0, 1]. Returns 0 if no edge after friction.
+    
+        Raises:
+            InvalidProbabilityError: If *prob* is outside [0, 1].
+            InvalidOddsError: If *odds_decimal* <= 1.
+    
+        Examples:
+            >>> full_kelly_fraction(0.30, 5.0)  # doctest: +ELLIPSIS
+            0.08...
+        """
+        _validate_kelly_inputs(prob, odds_decimal)
+    
+        if prob == 0.0 or prob == 1.0:
+            return 0.0
+    
+        effective_odds = 1.0 + (odds_decimal - 1.0) * (1.0 - takeout)
+        b = effective_odds - 1.0
+        if b < 0:
+            return 0.0
+    
+        q = 1.0 - prob
+>       f_star = (b * prob - q) / b
+                 ^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/kelly.py:144: ZeroDivisionError
+
+During handling of the above exception, another exception occurred:
+
+    def test_full_takeout_leaves_no_edge():
+        try:
+            actual = full_kelly_fraction(0.75, 2.0, takeout=1.0)
+        except ZeroDivisionError as error:
+>           pytest.fail(f'full takeout must return no edge, not divide by zero: {error}')
+E           Failed: full takeout must return no edge, not divide by zero: division by zero
+
+tests/test_public_contracts.py:100: Failed
+=========================== short test summary info ============================
+FAILED tests/test_public_contracts.py::test_full_takeout_leaves_no_edge - Fai...
+1 failed, 221 passed in 0.36s
+

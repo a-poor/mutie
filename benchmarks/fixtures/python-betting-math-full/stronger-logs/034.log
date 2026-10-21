@@ -1,0 +1,19 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+...........................................F............................ [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+______________________ test_exact_minimum_bet_is_accepted ______________________
+
+    def test_exact_minimum_bet_is_accepted():
+        result = compute_kelly_bet(1, 0.75, 2.0, 1024.0, takeout=0.0,
+                                   max_fraction=1.0, min_bet=128.0)
+>       assert result.bet_size == 128.0
+E       AssertionError: assert 0.0 == 128.0
+E        +  where 0.0 = KellyBet(selection_id=1, full_kelly=0.5, fractional_kelly=0.125, bet_size=0.0, edge=0.25, expected_roi=0.5, pool_limited=False, capped=False, reason='bet $128.00 below minimum $128.00').bet_size
+
+tests/test_public_contracts.py:49: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_public_contracts.py::test_exact_minimum_bet_is_accepted - A...
+1 failed, 221 passed in 0.59s
+

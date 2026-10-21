@@ -11,6 +11,10 @@ This is numerical-library validation, not validation of betting advice or model
 accuracy. The exercised contracts are public probability intervals, calibration
 binning and input validation.
 
+The subsequent [complete candidate review](python-betting-math-full.md) accounts
+for all 87 sites and adds separate-copy public-contract reruns. The selected
+results below remain the original acceptance record.
+
 ## Compatibility extension
 
 The existing native `src/` package and plain pytest classes already fit. The

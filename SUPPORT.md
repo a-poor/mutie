@@ -427,3 +427,10 @@ minimum versions for inert optional tools, bounded Ruff/Mypy settings and direct
 independent `random.Random(...)` construction are admitted. Global RNG mutation,
 constructor escape, plugins, dependencies and arbitrary tool settings remain
 excluded. Manifest and validator bytes retain execution identity.
+
+The [complete betting-math-kit review](benchmarks/python-betting-math-full.md)
+accounts for all 87 sites (19 kills, 59 survivors, nine errors). A separate
+222-test copy kills 24 survivors and two endpoint-error candidates using explicit
+expected-success assertions. Original inputs, reports and classification rules
+remain intact. Domain-limited redundancy observations and unresolved numerical
+boundaries are retained individually; combined accounting is not a full score.

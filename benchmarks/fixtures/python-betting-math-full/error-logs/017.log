@@ -1,0 +1,33 @@
+..........................................................F............. [ 36%]
+........................................................................ [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+_____________________ TestFullKellyFraction.test_prob_one ______________________
+
+self = <tests.test_kelly.TestFullKellyFraction object at [address]>
+
+    def test_prob_one(self):
+>       assert full_kelly_fraction(1.0, 5.0) == 0.0
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_kelly.py:41: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/kelly.py:133: in full_kelly_fraction
+    _validate_kelly_inputs(prob, odds_decimal)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+prob = 1.0, odds_decimal = 5.0, bankroll = None
+
+    def _validate_kelly_inputs(
+        prob: float, odds_decimal: float, bankroll: float | None = None
+    ) -> None:
+        """Validate common Kelly inputs."""
+        if prob < 0.0 or prob >= 1.0:
+>           raise InvalidProbabilityError(f"Probability must be in [0, 1], got {prob}")
+E           betting_math_kit.exceptions.InvalidProbabilityError: Probability must be in [0, 1], got 1.0
+
+src/betting_math_kit/kelly.py:96: InvalidProbabilityError
+=========================== short test summary info ============================
+FAILED tests/test_kelly.py::TestFullKellyFraction::test_prob_one - betting_ma...
+1 failed, 197 passed in 0.40s
+

@@ -1,0 +1,18 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+....................................................F................... [ 97%]
+......                                                                   [100%]
+=================================== FAILURES ===================================
+________________________ test_devig_result_is_immutable ________________________
+
+    def test_devig_result_is_immutable():
+        result = DevigResult(0.5, 0.5, DevigMethod.MULTIPLICATIVE, 0.0)
+>       with pytest.raises(FrozenInstanceError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE <class 'dataclasses.FrozenInstanceError'>
+
+tests/test_public_contracts.py:119: Failed
+=========================== short test summary info ============================
+FAILED tests/test_public_contracts.py::test_devig_result_is_immutable - Faile...
+1 failed, 221 passed in 0.57s
+

@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.0.2, pluggy-1.7.0
+rootdir: /tmp/mutie-betting-math-full/review-project
+configfile: pyproject.toml
+collected 222 items
+
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_devig.py . [  0%]
+.....................................................                    [ 24%]
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_kelly.py . [ 24%]
+..................................                                       [ 40%]
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_metric_boundaries.py . [ 40%]
+......                                                                   [ 43%]
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_metrics.py . [ 43%]
+...............................                                          [ 57%]
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_odds.py . [ 58%]
+.....................................................                    [ 81%]
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_public_contracts.py . [ 82%]
+................                                                         [ 89%]
+../../../../../tmp/mutie-betting-math-full/review-project/tests/test_simulation.py . [ 90%]
+......................                                                   [100%]
+
+============================= 222 passed in 0.45s ==============================
