@@ -1950,3 +1950,14 @@ matched by original source identity for complete accounting, never summed into a
 full score. Four extra test cases expose three incorrect-success audit
 flags in a separate test-only copy; originals and earlier reports are preserved.
 The remaining structural survivors and error/timeout cases stay open.
+
+## Python comparison boundaries
+
+[Scoped comparison discovery](benchmarks/python-comparison-boundaries.md) matches
+single-comparison AST operand gaps to native operator tokens and changes only
+`<`/`<=`/`>`/`>=`. UTF-8 byte coordinates are revalidated by Rust; saved operator
+labels must match exact token pairs. Chains and annotations are excluded. Native
+operand evaluation and rich-comparison dispatch are preserved; custom-dispatch
+exceptions remain errors. The changed recipe requires fresh runs, without changing
+the report schema or rewriting historical reports. Unchanged Route Mini exact-token-
+capacity acceptance complements fixture evaluation-order and NaN controls.

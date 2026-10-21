@@ -162,7 +162,7 @@ pub enum Command {
         #[arg(long)]
         json: bool,
     },
-    /// Preview scoped Python boolean mutations without importing project code
+    /// Preview scoped Python mutations without importing project code
     PythonList {
         #[arg(default_value = ".", value_name = "PATH")]
         path: PathBuf,

@@ -150,6 +150,16 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   tests use a prepared native identity mock and exact mismatch errors. See
   [reproduction and validation](benchmarks/process-readiness.md).
 
+- [x] Add scoped Python comparison boundaries with native token replacement,
+  operand-order/NaN/custom-dispatch controls, saved identity validation and an
+  unchanged Route Mini capacity finding killed by a stronger-test focused rerun.
+  See [acceptance](benchmarks/python-comparison-boundaries.md).
+
+- [ ] Investigate the native Node fixture startup failures reproduced during
+  final Python-boundary validation: all three Vitest preview helpers exceed the
+  unchanged ten-second readiness limit before product assertions. Preserve the
+  earlier passing run and the [failed recheck evidence](benchmarks/python-comparison-boundaries.md).
+
 ## Selected first Bun test-runner slice
 
 - [x] Pin Bun 1.3.11+af24e281e and add independent dependency-free JS/TS fixtures.

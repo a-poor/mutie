@@ -140,6 +140,40 @@ def validate_fixture_request(tree):
                         "Python dynamic fixture lookup requires a literal ordinary fixture name")
 
 
+def comparison_sites(tree, text, data, annotation_nodes, relative):
+    """Replace only the native token; never desugar or duplicate operands."""
+    # AST rows use physical newlines, not Unicode string line separators.
+    lines = [line.decode("utf-8") for line in data.splitlines(keepends=True)]
+    offsets = [0]
+    for line in lines:
+        offsets.append(offsets[-1] + len(line.encode("utf-8")))
+    tokens = []
+    for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
+        if token.type == tokenize.OP and token.string in {"<", "<=", ">", ">="}:
+            row, column = token.start
+            start = offsets[row - 1] + len(lines[row - 1][:column].encode("utf-8"))
+            tokens.append((start, token.string, row))
+    replacements = {"<": "<=", "<=": "<", ">": ">=", ">=": ">"}
+    operators = {ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">="}
+    for node in ast.walk(tree):
+        if (node in annotation_nodes or not isinstance(node, ast.Compare)
+                or len(node.ops) != 1 or type(node.ops[0]) not in operators):
+            continue
+        left, right = node.left, node.comparators[0]
+        lower = offsets[left.end_lineno - 1] + left.end_col_offset
+        upper = offsets[right.lineno - 1] + right.col_offset
+        between = [(start, op, row) for start, op, row in tokens if lower <= start < upper]
+        require(len(between) == 1 and between[0][1] == operators[type(node.ops[0])],
+                "Python comparison token mismatch")
+        start, original, row = between[0]
+        end = start + len(original)
+        require(data[start:end].decode() == original, "Python comparison span mismatch")
+        column = start - offsets[row - 1] + 1
+        yield dict(file=relative, start=start, end=end, line=row, column=column,
+                   end_line=row, end_column=column + len(original), original=original,
+                   replacement=replacements[original])
+
+
 def inspect(root):
     root = root.resolve(strict=True)
     files = {}
@@ -514,6 +548,8 @@ def inspect(root):
                           else node.returns if isinstance(node, ast.FunctionDef) else None)
             if annotation is not None:
                 annotation_nodes.update(ast.walk(annotation))
+            if isinstance(node, ast.type_param):
+                annotation_nodes.update(ast.walk(node))
         for node in ast.walk(tree):
             require(not isinstance(node, (ast.AsyncFunctionDef, ast.Await, ast.AsyncFor,
                                           ast.AsyncWith, ast.TypeAlias)),
@@ -601,6 +637,8 @@ def inspect(root):
                                       column=node.col_offset + 1, end_line=node.end_lineno,
                                       end_column=node.end_col_offset + 1, original=original,
                                       replacement="False" if node.value else "True"))
+        if not is_test:
+            mutations.extend(comparison_sites(tree, text, data, annotation_nodes, relative))
     require(tests, "Python requires test_*.py files at the root or under tests/")
     return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), conftests=sorted(conftests), sources=sorted(sources),
                 mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))

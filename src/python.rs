@@ -159,9 +159,14 @@ pub async fn list(
         );
     } else {
         for (index, mutation) in found.iter().enumerate() {
-            println!("{}: boolean_flip {}", index + 1, mutation.description());
+            println!(
+                "{}: {} {}",
+                index + 1,
+                mutation.operator,
+                mutation.description()
+            );
         }
-        println!("{} Python boolean mutations", found.len());
+        println!("{} Python mutations", found.len());
     }
     Ok(())
 }

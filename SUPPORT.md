@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, reports/reruns/review; unchanged Scrubify, Cycler and unittest/Pluralizer evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips and single-comparison boundaries, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer and Route Mini evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -336,7 +336,7 @@ comparisons and a faster runtime tree traversal with unchanged content hashes
 and validation frequency. It does not expand the supported scope.
 
 Scope: one flat or `src/` package with audited `pyproject.toml`, root or `tests/` `test_*.py`,
-boolean flips, full tests and one worker. The dedicated venv must match the pinned
+boolean flips and single-comparison boundaries, full tests and one worker. The dedicated venv must match the pinned
 dependency set. The validator admits a small standard-library/API set, rejects
 configuration that could change collection, and verifies original/snapshot
 inputs. Initial Scrubify acceptance adapted its layout/metadata; the
@@ -387,6 +387,11 @@ retry/fallback and immutable-record expectations in a separate copy: 17 kills
 and 12 remaining slots survivors across two focused runs, with 85 passing baseline
 tests and no new errors/timeouts. Native slots
 inspection remains outside the scored scope; it does not broaden reflective APIs.
+
+[Comparison-boundary validation](benchmarks/python-comparison-boundaries.md) covers
+native token replacement, operand evaluation, conservative custom-dispatch errors
+and an unchanged Route Mini capacity survivor killed by a separate stronger test.
+Chained comparisons and annotation subtrees remain excluded.
 
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.

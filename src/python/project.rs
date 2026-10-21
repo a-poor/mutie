@@ -140,7 +140,12 @@ impl Project {
                 source.source.get(range.clone()) == Some(site.original.as_str())
                     && matches!(
                         (site.original.as_str(), site.replacement.as_str()),
-                        ("True", "False") | ("False", "True")
+                        ("True", "False")
+                            | ("False", "True")
+                            | ("<", "<=")
+                            | ("<=", "<")
+                            | (">", ">=")
+                            | (">=", ">")
                     ),
                 "invalid Python mutation span"
             );
@@ -168,13 +173,13 @@ impl Project {
             if scope.matches(&source.path) {
                 found.push(Mutation {
                     file: source.clone(),
-                    operator: Operator::BooleanFlip,
-                    range,
-                    replacement: Cow::Borrowed(if site.original == "True" {
-                        "False"
+                    operator: if matches!(site.original.as_str(), "True" | "False") {
+                        Operator::BooleanFlip
                     } else {
-                        "True"
-                    }),
+                        Operator::ComparisonBoundary
+                    },
+                    range,
+                    replacement: Cow::Owned(site.replacement.clone()),
                     line,
                     column,
                     end_line: site.end_line,
@@ -190,6 +195,41 @@ impl Project {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn comparison_spans_and_replacements_are_validated() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("sample"))?;
+        let source = "label = 'π'; value = left <= right\n";
+        fs::write(root.path().join("sample/__init__.py"), source)?;
+        let start = source.find("<=").unwrap();
+        let document = serde_json::from_value(json!({
+            "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source))},
+            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"], "conftests":[],
+            "mutations":[{"file":"sample/__init__.py","start":start,"end":start+2,
+                "line":1,"column":start+1,"end_line":1,"end_column":start+3,
+                "original":"<=","replacement":"<"}],
+        }))?;
+        let mut project = Project {
+            root: root.path().to_owned(),
+            document,
+        };
+        let scope = Scope::new(&[], &[])?;
+        let mutations = project.discover(&scope)?;
+        assert_eq!(mutations[0].operator, Operator::ComparisonBoundary);
+        assert_eq!(mutations[0].replacement, "<");
+        project.document.mutations[0].replacement = ">".into();
+        assert!(project.discover(&scope).is_err());
+        project.document.mutations[0].replacement = "<".into();
+        project.document.mutations[0].column += 1;
+        assert!(project.discover(&scope).is_err());
+        mutations[0].apply(root.path())?;
+        assert_eq!(
+            fs::read_to_string(root.path().join("sample/__init__.py"))?,
+            "label = 'π'; value = left < right\n"
+        );
+        Ok(())
+    }
 
     #[test]
     fn shared_mutations_preserve_unicode_spans_and_reject_stale_inputs() -> Result<()> {

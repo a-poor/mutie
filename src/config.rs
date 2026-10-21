@@ -260,8 +260,14 @@ impl RunConfig {
                 config
                     .operators
                     .iter()
-                    .all(|op| *op == Operator::BooleanFlip),
-                "{runner} supports only boolean_flip"
+                    .all(|op| *op == Operator::BooleanFlip
+                        || (config.lang == Lang::Python && *op == Operator::ComparisonBoundary)),
+                "{runner} supports only boolean_flip{}",
+                if config.lang == Lang::Python {
+                    " and comparison_boundary"
+                } else {
+                    ""
+                }
             );
         }
         if config.lang == Lang::Rust {

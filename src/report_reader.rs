@@ -305,13 +305,20 @@ impl LoadedReport {
         for mutation in inventory.mutations {
             if run.language() == crate::cli::Lang::Python {
                 ensure!(
-                    mutation.operator == Operator::BooleanFlip
-                        && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
+                    matches!(
+                        (
+                            mutation.operator,
+                            mutation.original.as_str(),
+                            mutation.replacement.as_str()
+                        ),
+                        (Operator::BooleanFlip, "True", "False")
+                            | (Operator::BooleanFlip, "False", "True")
+                            | (Operator::ComparisonBoundary, "<", "<=")
+                            | (Operator::ComparisonBoundary, "<=", "<")
+                            | (Operator::ComparisonBoundary, ">", ">=")
+                            | (Operator::ComparisonBoundary, ">=", ">")
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
                         && !mutation.file.starts_with("tests")
-                        && matches!(
-                            (mutation.original.as_str(), mutation.replacement.as_str()),
-                            ("True", "False") | ("False", "True")
-                        )
                         && run
                             .python_scope
                             .as_ref()

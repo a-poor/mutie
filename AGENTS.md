@@ -370,6 +370,14 @@ routing has a no-retry precondition; no classifier or timeout was relaxed. Prese
 original failed reports and keep native reflective slots diagnostics outside scored
 Python support. Slots survivors are not declared equivalent or dismissed.
 
+Python supports boolean flips and single-comparison `comparison_boundary` mutations.
+See `benchmarks/python-comparison-boundaries.md`: preserve native operator-token
+replacement and operand evaluation; chains, annotation subtrees and tests remain
+excluded. Custom rich-comparison exceptions are errors. Require exact saved
+operator/token pairs and fresh execution identity across recipe changes. The
+Route Mini exact-capacity finding uses an unchanged original and separate stronger
+copy; preserve historical scores and inputs.
+
 ## Build, Test, and Development Commands
 
 Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go build cache.

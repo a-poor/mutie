@@ -1,0 +1,1307 @@
+{
+  "commit": "35a3db157731ba0073d66f432b69b997ce2e9f01",
+  "original_inputs": {
+    ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+    ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+    ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+    "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+    "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+    "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+    "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+    "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+    "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+    "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+    "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+    "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+    "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+    "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+    "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+    "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+    "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+    "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+    "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+    "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+    "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+    "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+    "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+    "tests/test_router.py": "1c85ad92b63d32e1785faf210d4ab4e3ad016399d0fdd7783847fe79383fc334",
+    "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+  },
+  "records": [
+    {
+      "label": "discovery",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-list",
+        "/tmp/mutie-python-route-mini-original",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--json"
+      ],
+      "seconds": 38.394656499964185,
+      "exit_code": 0,
+      "scope": {
+        "conftests": [
+          "tests/conftest.py"
+        ],
+        "files": {
+          ".github/workflows/ci.yml": "sha256:7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+          ".github/workflows/exact-head-acceptance.yml": "sha256:9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+          ".gitignore": "sha256:e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+          "LICENSE": "sha256:326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+          "README.md": "sha256:d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+          "docs/FALLBACK.md": "sha256:b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+          "docs/POLICIES.md": "sha256:68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+          "docs/USAGE.md": "sha256:d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+          "docs/exact-head-acceptance.md": "sha256:f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+          "examples/opus_down_demo.py": "sha256:55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+          "pyproject.toml": "sha256:7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+          "src/route_mini/__init__.py": "sha256:7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+          "src/route_mini/decision.py": "sha256:e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+          "src/route_mini/fallback.py": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+          "src/route_mini/policy.py": "sha256:8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+          "src/route_mini/providers.py": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+          "src/route_mini/router.py": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "src/route_mini/telemetry.py": "sha256:8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+          "src/route_mini/types.py": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+          "tests/__init__.py": "sha256:c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+          "tests/conftest.py": "sha256:e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+          "tests/test_fallback.py": "sha256:47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+          "tests/test_policy.py": "sha256:439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+          "tests/test_router.py": "sha256:1c85ad92b63d32e1785faf210d4ab4e3ad016399d0fdd7783847fe79383fc334",
+          "tests/test_telemetry_decision_provider.py": "sha256:32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+        },
+        "mutations": [
+          {
+            "column": 19,
+            "end": 188,
+            "end_column": 23,
+            "end_line": 10,
+            "file": "src/route_mini/decision.py",
+            "line": 10,
+            "original": "True",
+            "replacement": "False",
+            "start": 184
+          },
+          {
+            "column": 31,
+            "end": 200,
+            "end_column": 35,
+            "end_line": 10,
+            "file": "src/route_mini/decision.py",
+            "line": 10,
+            "original": "True",
+            "replacement": "False",
+            "start": 196
+          },
+          {
+            "column": 21,
+            "end": 402,
+            "end_column": 26,
+            "end_line": 18,
+            "file": "src/route_mini/decision.py",
+            "line": 18,
+            "original": "False",
+            "replacement": "True",
+            "start": 397
+          },
+          {
+            "column": 19,
+            "end": 347,
+            "end_column": 23,
+            "end_line": 18,
+            "file": "src/route_mini/fallback.py",
+            "line": 18,
+            "original": "True",
+            "replacement": "False",
+            "start": 343
+          },
+          {
+            "column": 31,
+            "end": 359,
+            "end_column": 35,
+            "end_line": 18,
+            "file": "src/route_mini/fallback.py",
+            "line": 18,
+            "original": "True",
+            "replacement": "False",
+            "start": 355
+          },
+          {
+            "column": 21,
+            "end": 489,
+            "end_column": 26,
+            "end_line": 22,
+            "file": "src/route_mini/fallback.py",
+            "line": 22,
+            "original": "False",
+            "replacement": "True",
+            "start": 484
+          },
+          {
+            "column": 19,
+            "end": 649,
+            "end_column": 23,
+            "end_line": 29,
+            "file": "src/route_mini/fallback.py",
+            "line": 29,
+            "original": "True",
+            "replacement": "False",
+            "start": 645
+          },
+          {
+            "column": 31,
+            "end": 661,
+            "end_column": 35,
+            "end_line": 29,
+            "file": "src/route_mini/fallback.py",
+            "line": 29,
+            "original": "True",
+            "replacement": "False",
+            "start": 657
+          },
+          {
+            "column": 24,
+            "end": 941,
+            "end_column": 25,
+            "end_line": 41,
+            "file": "src/route_mini/fallback.py",
+            "line": 41,
+            "original": "<",
+            "replacement": "<=",
+            "start": 940
+          },
+          {
+            "column": 36,
+            "end": 1960,
+            "end_column": 37,
+            "end_line": 65,
+            "file": "src/route_mini/fallback.py",
+            "line": 65,
+            "original": "<",
+            "replacement": "<=",
+            "start": 1959
+          },
+          {
+            "column": 38,
+            "end": 2018,
+            "end_column": 40,
+            "end_line": 66,
+            "file": "src/route_mini/fallback.py",
+            "line": 66,
+            "original": ">=",
+            "replacement": ">",
+            "start": 2016
+          },
+          {
+            "column": 36,
+            "end": 2244,
+            "end_column": 37,
+            "end_line": 72,
+            "file": "src/route_mini/fallback.py",
+            "line": 72,
+            "original": "<",
+            "replacement": "<=",
+            "start": 2243
+          },
+          {
+            "column": 30,
+            "end": 2296,
+            "end_column": 34,
+            "end_line": 73,
+            "file": "src/route_mini/fallback.py",
+            "line": 73,
+            "original": "True",
+            "replacement": "False",
+            "start": 2292
+          },
+          {
+            "column": 59,
+            "end": 2471,
+            "end_column": 64,
+            "end_line": 77,
+            "file": "src/route_mini/fallback.py",
+            "line": 77,
+            "original": "False",
+            "replacement": "True",
+            "start": 2466
+          },
+          {
+            "column": 79,
+            "end": 2490,
+            "end_column": 83,
+            "end_line": 77,
+            "file": "src/route_mini/fallback.py",
+            "line": 77,
+            "original": "True",
+            "replacement": "False",
+            "start": 2486
+          },
+          {
+            "column": 59,
+            "end": 2629,
+            "end_column": 64,
+            "end_line": 79,
+            "file": "src/route_mini/fallback.py",
+            "line": 79,
+            "original": "False",
+            "replacement": "True",
+            "start": 2624
+          },
+          {
+            "column": 79,
+            "end": 2649,
+            "end_column": 84,
+            "end_line": 79,
+            "file": "src/route_mini/fallback.py",
+            "line": 79,
+            "original": "False",
+            "replacement": "True",
+            "start": 2644
+          },
+          {
+            "column": 55,
+            "end": 2724,
+            "end_column": 60,
+            "end_line": 80,
+            "file": "src/route_mini/fallback.py",
+            "line": 80,
+            "original": "False",
+            "replacement": "True",
+            "start": 2719
+          },
+          {
+            "column": 75,
+            "end": 2743,
+            "end_column": 79,
+            "end_line": 80,
+            "file": "src/route_mini/fallback.py",
+            "line": 80,
+            "original": "True",
+            "replacement": "False",
+            "start": 2739
+          },
+          {
+            "column": 55,
+            "end": 2426,
+            "end_column": 57,
+            "end_line": 79,
+            "file": "src/route_mini/policy.py",
+            "line": 79,
+            "original": "<=",
+            "replacement": "<",
+            "start": 2424
+          },
+          {
+            "column": 79,
+            "end": 2795,
+            "end_column": 81,
+            "end_line": 91,
+            "file": "src/route_mini/policy.py",
+            "line": 91,
+            "original": "<=",
+            "replacement": "<",
+            "start": 2793
+          },
+          {
+            "column": 19,
+            "end": 304,
+            "end_column": 23,
+            "end_line": 12,
+            "file": "src/route_mini/providers.py",
+            "line": 12,
+            "original": "True",
+            "replacement": "False",
+            "start": 300
+          },
+          {
+            "column": 31,
+            "end": 316,
+            "end_column": 35,
+            "end_line": 12,
+            "file": "src/route_mini/providers.py",
+            "line": 12,
+            "original": "True",
+            "replacement": "False",
+            "start": 312
+          },
+          {
+            "column": 19,
+            "end": 998,
+            "end_column": 23,
+            "end_line": 39,
+            "file": "src/route_mini/providers.py",
+            "line": 39,
+            "original": "True",
+            "replacement": "False",
+            "start": 994
+          },
+          {
+            "column": 31,
+            "end": 1010,
+            "end_column": 35,
+            "end_line": 39,
+            "file": "src/route_mini/providers.py",
+            "line": 39,
+            "original": "True",
+            "replacement": "False",
+            "start": 1006
+          },
+          {
+            "column": 19,
+            "end": 1887,
+            "end_column": 23,
+            "end_line": 54,
+            "file": "src/route_mini/router.py",
+            "line": 54,
+            "original": "True",
+            "replacement": "False",
+            "start": 1883
+          },
+          {
+            "column": 33,
+            "end": 2971,
+            "end_column": 38,
+            "end_line": 76,
+            "file": "src/route_mini/router.py",
+            "line": 76,
+            "original": "False",
+            "replacement": "True",
+            "start": 2966
+          },
+          {
+            "column": 29,
+            "end": 3543,
+            "end_column": 33,
+            "end_line": 88,
+            "file": "src/route_mini/router.py",
+            "line": 88,
+            "original": "True",
+            "replacement": "False",
+            "start": 3539
+          },
+          {
+            "column": 21,
+            "end": 4167,
+            "end_column": 26,
+            "end_line": 104,
+            "file": "src/route_mini/router.py",
+            "line": 104,
+            "original": "False",
+            "replacement": "True",
+            "start": 4162
+          },
+          {
+            "column": 75,
+            "end": 4650,
+            "end_column": 77,
+            "end_line": 115,
+            "file": "src/route_mini/router.py",
+            "line": 115,
+            "original": ">=",
+            "replacement": ">",
+            "start": 4648
+          },
+          {
+            "column": 21,
+            "end": 5120,
+            "end_column": 26,
+            "end_line": 129,
+            "file": "src/route_mini/router.py",
+            "line": 129,
+            "original": "False",
+            "replacement": "True",
+            "start": 5115
+          },
+          {
+            "column": 19,
+            "end": 238,
+            "end_column": 23,
+            "end_line": 11,
+            "file": "src/route_mini/telemetry.py",
+            "line": 11,
+            "original": "True",
+            "replacement": "False",
+            "start": 234
+          },
+          {
+            "column": 31,
+            "end": 250,
+            "end_column": 35,
+            "end_line": 11,
+            "file": "src/route_mini/telemetry.py",
+            "line": 11,
+            "original": "True",
+            "replacement": "False",
+            "start": 246
+          },
+          {
+            "column": 19,
+            "end": 195,
+            "end_column": 23,
+            "end_line": 9,
+            "file": "src/route_mini/types.py",
+            "line": 9,
+            "original": "True",
+            "replacement": "False",
+            "start": 191
+          },
+          {
+            "column": 31,
+            "end": 207,
+            "end_column": 35,
+            "end_line": 9,
+            "file": "src/route_mini/types.py",
+            "line": 9,
+            "original": "True",
+            "replacement": "False",
+            "start": 203
+          },
+          {
+            "column": 19,
+            "end": 263,
+            "end_column": 23,
+            "end_line": 14,
+            "file": "src/route_mini/types.py",
+            "line": 14,
+            "original": "True",
+            "replacement": "False",
+            "start": 259
+          },
+          {
+            "column": 31,
+            "end": 275,
+            "end_column": 35,
+            "end_line": 14,
+            "file": "src/route_mini/types.py",
+            "line": 14,
+            "original": "True",
+            "replacement": "False",
+            "start": 271
+          },
+          {
+            "column": 19,
+            "end": 445,
+            "end_column": 23,
+            "end_line": 24,
+            "file": "src/route_mini/types.py",
+            "line": 24,
+            "original": "True",
+            "replacement": "False",
+            "start": 441
+          },
+          {
+            "column": 31,
+            "end": 457,
+            "end_column": 35,
+            "end_line": 24,
+            "file": "src/route_mini/types.py",
+            "line": 24,
+            "original": "True",
+            "replacement": "False",
+            "start": 453
+          },
+          {
+            "column": 19,
+            "end": 615,
+            "end_column": 23,
+            "end_line": 34,
+            "file": "src/route_mini/types.py",
+            "line": 34,
+            "original": "True",
+            "replacement": "False",
+            "start": 611
+          },
+          {
+            "column": 31,
+            "end": 627,
+            "end_column": 35,
+            "end_line": 34,
+            "file": "src/route_mini/types.py",
+            "line": 34,
+            "original": "True",
+            "replacement": "False",
+            "start": 623
+          },
+          {
+            "column": 19,
+            "end": 975,
+            "end_column": 23,
+            "end_line": 47,
+            "file": "src/route_mini/types.py",
+            "line": 47,
+            "original": "True",
+            "replacement": "False",
+            "start": 971
+          },
+          {
+            "column": 31,
+            "end": 987,
+            "end_column": 35,
+            "end_line": 47,
+            "file": "src/route_mini/types.py",
+            "line": 47,
+            "original": "True",
+            "replacement": "False",
+            "start": 983
+          },
+          {
+            "column": 19,
+            "end": 1622,
+            "end_column": 23,
+            "end_line": 71,
+            "file": "src/route_mini/types.py",
+            "line": 71,
+            "original": "True",
+            "replacement": "False",
+            "start": 1618
+          },
+          {
+            "column": 31,
+            "end": 1634,
+            "end_column": 35,
+            "end_line": 71,
+            "file": "src/route_mini/types.py",
+            "line": 71,
+            "original": "True",
+            "replacement": "False",
+            "start": 1630
+          }
+        ],
+        "package": "route_mini",
+        "source_root": "src",
+        "sources": [
+          "src/route_mini/__init__.py",
+          "src/route_mini/decision.py",
+          "src/route_mini/fallback.py",
+          "src/route_mini/policy.py",
+          "src/route_mini/providers.py",
+          "src/route_mini/router.py",
+          "src/route_mini/telemetry.py",
+          "src/route_mini/types.py"
+        ],
+        "tests": [
+          "tests/test_fallback.py",
+          "tests/test_policy.py",
+          "tests/test_router.py",
+          "tests/test_telemetry_decision_provider.py"
+        ]
+      }
+    },
+    {
+      "label": "native-original",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys; from pathlib import Path; sys.path.insert(0, str(Path(sys.argv[1])/\"src\")); import pytest; raise SystemExit(pytest.main([\"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-python-route-mini-original"
+      ],
+      "seconds": 0.978566583013162,
+      "exit_code": 0
+    },
+    {
+      "label": "original-router-boundary",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-python-route-mini-original",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-route-mini-boundaries-final/reports",
+        "--operator",
+        "comparison_boundary",
+        "--include",
+        "src/route_mini/router.py"
+      ],
+      "seconds": 62.33499024994671,
+      "exit_code": 0,
+      "report": "/tmp/mutie-route-mini-boundaries-final/reports/run-1792607428-oJ26B8",
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "53868918a1e126ff438e3dadc4d1f75b69afa452e11dcdc839a31be77f14bd81",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "4faa022bfeb7dff1f07b9787073b31e2af52fad243e01fbf57c4924f31e82e37",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "77a8739be2bb6569fd5cb7a197a548879bd5bbda8e3249a5e684fbfc35843755",
+        "logs/baseline.log": "4faa022bfeb7dff1f07b9787073b31e2af52fad243e01fbf57c4924f31e82e37",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "77a8739be2bb6569fd5cb7a197a548879bd5bbda8e3249a5e684fbfc35843755",
+        "logs/discovery.log": "4ba93eacf59745295541dff7209bcda4c405d8b1fabc079365401af01e0ec06d",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "b874fce9e6a7a2b694243716df706ec16908d1404f69872eb7a4f768b1ad8a9c",
+        "missed.txt": "09914d528435b9e4fd074d3896a4c3dab34bc26071f922500515d97eb77e8d6f",
+        "mutants.json": "4536bd4d2d78b12d1cd40986de6fceb706aa789a68858dddff45a32a0906d019",
+        "outcomes.json": "a8950b35bcddbbed2c51c3bbd0908ebcb122cf79dd13b971e485fa1cc22504eb",
+        "run.json": "80b181a82c34b7ce5be41ad68adfe5233d755888ffbad4d61e0f3bdb79f7f055",
+        "summary.txt": "29ee759b167963a4dc3ec582f59ff0b6da653fa7fd36b3efaaee9db07523f0c5",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "completed",
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "route_mini",
+        "source_root": "src",
+        "manifest_fingerprint": "sha256:7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe"
+        },
+        "support_fingerprints": {
+          "tests/__init__.py": "sha256:c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd"
+        },
+        "recipe_fingerprint": "sha256:2662d61157f046654d45d9405dab0ab4ce581198965908c58afc731b04270159",
+        "test_files": [
+          "tests/test_fallback.py",
+          "tests/test_policy.py",
+          "tests/test_router.py",
+          "tests/test_telemetry_decision_provider.py"
+        ],
+        "test_nodes": [
+          "tests/test_fallback.py::test_classify_errors[error0-auth]",
+          "tests/test_fallback.py::test_classify_errors[error1-auth]",
+          "tests/test_fallback.py::test_classify_errors[error2-rate_limit]",
+          "tests/test_fallback.py::test_classify_errors[error3-provider_down]",
+          "tests/test_fallback.py::test_classify_errors[error4-provider_down]",
+          "tests/test_fallback.py::test_classify_errors[error5-bad_request]",
+          "tests/test_fallback.py::test_classify_errors[error6-network]",
+          "tests/test_fallback.py::test_classify_errors[error7-unknown]",
+          "tests/test_fallback.py::test_rate_limit_retries_before_fallthrough",
+          "tests/test_fallback.py::test_rate_limit_falls_through_after_retry_limit",
+          "tests/test_fallback.py::test_provider_down_falls_through_without_retry",
+          "tests/test_fallback.py::test_auth_error_blocks_fallback",
+          "tests/test_fallback.py::test_bad_request_blocks_fallback",
+          "tests/test_fallback.py::test_network_can_retry_and_fall_through",
+          "tests/test_fallback.py::test_unknown_falls_through",
+          "tests/test_fallback.py::test_order_promotes_primary",
+          "tests/test_fallback.py::test_order_leaves_missing_primary_unchanged",
+          "tests/test_fallback.py::test_negative_retries_rejected",
+          "tests/test_fallback.py::test_provider_error_string_for_network",
+          "tests/test_policy.py::test_cheapest_policy_orders_by_estimated_cost",
+          "tests/test_policy.py::test_fastest_policy_orders_by_latency",
+          "tests/test_policy.py::test_prefer_list_policy_orders_by_provider",
+          "tests/test_policy.py::test_prefer_list_policy_orders_by_model_key",
+          "tests/test_policy.py::test_prefer_list_keeps_unknowns_after_known",
+          "tests/test_policy.py::test_budget_cap_blocks_expensive_provider",
+          "tests/test_policy.py::test_budget_cap_allows_equal_cost",
+          "tests/test_policy.py::test_budget_cap_can_return_empty",
+          "tests/test_policy.py::test_latency_cap_excludes_slow",
+          "tests/test_policy.py::test_latency_cap_allows_equal_latency",
+          "tests/test_policy.py::test_composite_policy_filters_then_orders",
+          "tests/test_policy.py::test_composite_policy_chain_is_left_to_right",
+          "tests/test_policy.py::test_max_token_filter_is_left_to_router",
+          "tests/test_router.py::test_happy_path_single_provider",
+          "tests/test_router.py::test_primary_down_502_fallback_to_secondary",
+          "tests/test_router.py::test_429_retry_with_backoff_then_success",
+          "tests/test_router.py::test_budget_cap_blocks_expensive_provider_in_router",
+          "tests/test_router.py::test_latency_cap_excludes_slow_provider",
+          "tests/test_router.py::test_prefer_list_ordering",
+          "tests/test_router.py::test_fallback_exhaustion_error",
+          "tests/test_router.py::test_auth_error_stops_without_secondary",
+          "tests/test_router.py::test_router_filters_models_by_max_tokens",
+          "tests/test_router.py::test_response_includes_request_id_metadata",
+          "tests/test_router.py::test_request_ids_increment",
+          "tests/test_router.py::test_fastest_policy_selects_fastest_provider",
+          "tests/test_router.py::test_cheapest_policy_selects_cheapest_provider",
+          "tests/test_router.py::test_network_error_can_retry_same_provider",
+          "tests/test_router.py::test_network_error_falls_to_secondary_after_retry_limit",
+          "tests/test_router.py::test_telemetry_records_success",
+          "tests/test_router.py::test_telemetry_records_failure",
+          "tests/test_telemetry_decision_provider.py::test_cost_total",
+          "tests/test_telemetry_decision_provider.py::test_model_key",
+          "tests/test_telemetry_decision_provider.py::test_provider_type_has_name",
+          "tests/test_telemetry_decision_provider.py::test_decision_type_keeps_route_reason",
+          "tests/test_telemetry_decision_provider.py::test_request_estimated_input_tokens_uses_explicit_value",
+          "tests/test_telemetry_decision_provider.py::test_request_estimated_input_tokens_uses_words",
+          "tests/test_telemetry_decision_provider.py::test_request_estimated_input_tokens_never_zero",
+          "tests/test_telemetry_decision_provider.py::test_response_with_metadata_merges",
+          "tests/test_telemetry_decision_provider.py::test_model_capabilities_estimate_cost",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_returns_success_from_short_step",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_returns_response_step",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_unknown_model_raises_provider_error",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_exhaustion_raises_provider_error",
+          "tests/test_telemetry_decision_provider.py::test_decision_serialization_round_trip",
+          "tests/test_telemetry_decision_provider.py::test_decision_serialization_keeps_error_none",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_rollups_deterministic",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_rollup_handles_failures",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_empty_rollups",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_ring_buffer_drops_oldest"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "outcomes": {
+        "schema_version": 1,
+        "checkpoint": 12,
+        "status": "completed",
+        "baseline": {
+          "outcome": "passed",
+          "duration_seconds": 3.63956225,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/baseline.log",
+            "stdout": "logs/baseline.stdout.log",
+            "stderr": "logs/baseline.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        "discovery": {
+          "outcome": "passed",
+          "duration_seconds": 1.8061410420000001,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/discovery.log",
+            "stdout": "logs/discovery.stdout.log",
+            "stderr": "logs/discovery.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4638,
+                "head_bytes": 4638,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4637,
+                "head_bytes": 4637,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        "summary": {
+          "killed": 0,
+          "missed": 1,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "missed",
+            "error": null,
+            "duration_seconds": 3.5327204180000003,
+            "exit_code": 0,
+            "logs": {
+              "text": "logs/000001.log",
+              "stdout": "logs/000001.stdout.log",
+              "stderr": "logs/000001.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 100,
+                  "head_bytes": 100,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 99,
+                  "head_bytes": 99,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          }
+        ]
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "src/route_mini/router.py",
+            "operator": "comparison_boundary",
+            "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+            "line": 115,
+            "column": 75,
+            "end_line": 115,
+            "end_column": 77,
+            "byte_start": 4648,
+            "byte_end": 4650,
+            "original": ">=",
+            "replacement": ">",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      }
+    },
+    {
+      "label": "native-stronger",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys; from pathlib import Path; sys.path.insert(0, str(Path(sys.argv[1])/\"src\")); import pytest; raise SystemExit(pytest.main([\"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-route-mini-boundaries-final/stronger-project"
+      ],
+      "seconds": 0.6059875829378143,
+      "exit_code": 0
+    },
+    {
+      "label": "stronger-focused",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-route-mini-boundaries-final/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-route-mini-boundaries-final/reports",
+        "--rerun",
+        "/tmp/mutie-route-mini-boundaries-final/reports/run-1792607428-oJ26B8",
+        "--id",
+        "1"
+      ],
+      "seconds": 22.625872917007655,
+      "exit_code": 0,
+      "report": "/tmp/mutie-route-mini-boundaries-final/reports/run-1792607453-LEVEu5",
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "53868918a1e126ff438e3dadc4d1f75b69afa452e11dcdc839a31be77f14bd81",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "09914d528435b9e4fd074d3896a4c3dab34bc26071f922500515d97eb77e8d6f",
+        "logs/000001.log": "d8c8ee07b6601bc3d6cec1fd52d3f65b6d232a4a98438a5a6d6ef770e5298c9a",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "a563b8bf8b4219334189238231febd4209ccd45600a32a50651423c8ab93527f",
+        "logs/baseline.log": "88c63dd58d5ecb006ce43f3cf59914b6c3d25e446fa0b252cc7df3420e08d391",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "d6ec295f3c1d957ae5dae6c576000e55e2b33f3fe75d8893ec35db1f175d204f",
+        "logs/discovery.log": "c16778a01fd35ead7ad8d1e9e7f12b4a34a747b98a86bc09b2e2cd411e778533",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "aaa5458450afae528cb2c1a82898ad5f4720c4294c57155fdd4f895aceb673cc",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "4536bd4d2d78b12d1cd40986de6fceb706aa789a68858dddff45a32a0906d019",
+        "outcomes.json": "28996390232e5070dd82c53f0e94f988cca248c5063b013c02caa1b2738468d5",
+        "run.json": "51d2d04a26e5f4a35ada0b9bff70816c9f3f3578d7cb5c0babf78e059b191b7c",
+        "summary.txt": "673d5e11cf1904aedfcfba4f967db0949c52aabb05e71d7580dc352e38f4b766",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "scope": {
+        "runtime": {
+          "executable": "/tmp/mutie-pytest-audit-env/bin/python",
+          "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+          "prefix": "/tmp/mutie-pytest-audit-env",
+          "versions": {
+            "iniconfig": "2.3.1",
+            "packaging": "26.3",
+            "pip": "26.2.1",
+            "pluggy": "1.7.0",
+            "pygments": "2.21.0",
+            "pytest": "9.0.2"
+          },
+          "environment": "sha256:2f3ef65774c86a72ebb1ee398970b7266c8534db546317fb5dc4a127f83c6430",
+          "executable_fingerprint": "sha256:87d4df53fd91304be5bac391fb204643c36b7df2023c04a0953bcbc7d4fdf634",
+          "library_fingerprint": "sha256:b112695af23f5e46d84a7c4ef6057603b70b94aacc32e9d548808c2875759d47",
+          "stdlib": "sha256:3fdb59d7a6e1d42409c2456ff906bdb8d30233b76417d976f6317b6368f9a851",
+          "packages": "sha256:c5630b31e6fcbea6bfd5c301f0cf6eff99e82a6c0f132b5fa8892d04be4a6fa0"
+        },
+        "package": "route_mini",
+        "source_root": "src",
+        "manifest_fingerprint": "sha256:7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+        "conftest_fingerprints": {
+          "tests/conftest.py": "sha256:e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe"
+        },
+        "support_fingerprints": {
+          "tests/__init__.py": "sha256:c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd"
+        },
+        "recipe_fingerprint": "sha256:2662d61157f046654d45d9405dab0ab4ce581198965908c58afc731b04270159",
+        "test_files": [
+          "tests/test_exact_capacity.py",
+          "tests/test_fallback.py",
+          "tests/test_policy.py",
+          "tests/test_router.py",
+          "tests/test_telemetry_decision_provider.py"
+        ],
+        "test_nodes": [
+          "tests/test_exact_capacity.py::test_model_exactly_meets_requested_capacity",
+          "tests/test_fallback.py::test_classify_errors[error0-auth]",
+          "tests/test_fallback.py::test_classify_errors[error1-auth]",
+          "tests/test_fallback.py::test_classify_errors[error2-rate_limit]",
+          "tests/test_fallback.py::test_classify_errors[error3-provider_down]",
+          "tests/test_fallback.py::test_classify_errors[error4-provider_down]",
+          "tests/test_fallback.py::test_classify_errors[error5-bad_request]",
+          "tests/test_fallback.py::test_classify_errors[error6-network]",
+          "tests/test_fallback.py::test_classify_errors[error7-unknown]",
+          "tests/test_fallback.py::test_rate_limit_retries_before_fallthrough",
+          "tests/test_fallback.py::test_rate_limit_falls_through_after_retry_limit",
+          "tests/test_fallback.py::test_provider_down_falls_through_without_retry",
+          "tests/test_fallback.py::test_auth_error_blocks_fallback",
+          "tests/test_fallback.py::test_bad_request_blocks_fallback",
+          "tests/test_fallback.py::test_network_can_retry_and_fall_through",
+          "tests/test_fallback.py::test_unknown_falls_through",
+          "tests/test_fallback.py::test_order_promotes_primary",
+          "tests/test_fallback.py::test_order_leaves_missing_primary_unchanged",
+          "tests/test_fallback.py::test_negative_retries_rejected",
+          "tests/test_fallback.py::test_provider_error_string_for_network",
+          "tests/test_policy.py::test_cheapest_policy_orders_by_estimated_cost",
+          "tests/test_policy.py::test_fastest_policy_orders_by_latency",
+          "tests/test_policy.py::test_prefer_list_policy_orders_by_provider",
+          "tests/test_policy.py::test_prefer_list_policy_orders_by_model_key",
+          "tests/test_policy.py::test_prefer_list_keeps_unknowns_after_known",
+          "tests/test_policy.py::test_budget_cap_blocks_expensive_provider",
+          "tests/test_policy.py::test_budget_cap_allows_equal_cost",
+          "tests/test_policy.py::test_budget_cap_can_return_empty",
+          "tests/test_policy.py::test_latency_cap_excludes_slow",
+          "tests/test_policy.py::test_latency_cap_allows_equal_latency",
+          "tests/test_policy.py::test_composite_policy_filters_then_orders",
+          "tests/test_policy.py::test_composite_policy_chain_is_left_to_right",
+          "tests/test_policy.py::test_max_token_filter_is_left_to_router",
+          "tests/test_router.py::test_happy_path_single_provider",
+          "tests/test_router.py::test_primary_down_502_fallback_to_secondary",
+          "tests/test_router.py::test_429_retry_with_backoff_then_success",
+          "tests/test_router.py::test_budget_cap_blocks_expensive_provider_in_router",
+          "tests/test_router.py::test_latency_cap_excludes_slow_provider",
+          "tests/test_router.py::test_prefer_list_ordering",
+          "tests/test_router.py::test_fallback_exhaustion_error",
+          "tests/test_router.py::test_auth_error_stops_without_secondary",
+          "tests/test_router.py::test_router_filters_models_by_max_tokens",
+          "tests/test_router.py::test_response_includes_request_id_metadata",
+          "tests/test_router.py::test_request_ids_increment",
+          "tests/test_router.py::test_fastest_policy_selects_fastest_provider",
+          "tests/test_router.py::test_cheapest_policy_selects_cheapest_provider",
+          "tests/test_router.py::test_network_error_can_retry_same_provider",
+          "tests/test_router.py::test_network_error_falls_to_secondary_after_retry_limit",
+          "tests/test_router.py::test_telemetry_records_success",
+          "tests/test_router.py::test_telemetry_records_failure",
+          "tests/test_telemetry_decision_provider.py::test_cost_total",
+          "tests/test_telemetry_decision_provider.py::test_model_key",
+          "tests/test_telemetry_decision_provider.py::test_provider_type_has_name",
+          "tests/test_telemetry_decision_provider.py::test_decision_type_keeps_route_reason",
+          "tests/test_telemetry_decision_provider.py::test_request_estimated_input_tokens_uses_explicit_value",
+          "tests/test_telemetry_decision_provider.py::test_request_estimated_input_tokens_uses_words",
+          "tests/test_telemetry_decision_provider.py::test_request_estimated_input_tokens_never_zero",
+          "tests/test_telemetry_decision_provider.py::test_response_with_metadata_merges",
+          "tests/test_telemetry_decision_provider.py::test_model_capabilities_estimate_cost",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_returns_success_from_short_step",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_returns_response_step",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_unknown_model_raises_provider_error",
+          "tests/test_telemetry_decision_provider.py::test_scripted_provider_exhaustion_raises_provider_error",
+          "tests/test_telemetry_decision_provider.py::test_decision_serialization_round_trip",
+          "tests/test_telemetry_decision_provider.py::test_decision_serialization_keeps_error_none",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_rollups_deterministic",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_rollup_handles_failures",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_empty_rollups",
+          "tests/test_telemetry_decision_provider.py::test_telemetry_ring_buffer_drops_oldest"
+        ],
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 4194304
+      },
+      "outcomes": {
+        "schema_version": 1,
+        "checkpoint": 12,
+        "status": "completed",
+        "baseline": {
+          "outcome": "passed",
+          "duration_seconds": 3.951467208,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/baseline.log",
+            "stdout": "logs/baseline.stdout.log",
+            "stderr": "logs/baseline.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 100,
+                "head_bytes": 100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        "discovery": {
+          "outcome": "passed",
+          "duration_seconds": 1.809627417,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/discovery.log",
+            "stdout": "logs/discovery.stdout.log",
+            "stderr": "logs/discovery.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4712,
+                "head_bytes": 4712,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4711,
+                "head_bytes": 4711,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        "summary": {
+          "killed": 1,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "mutations": [
+          {
+            "id": 1,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "killed",
+            "error": null,
+            "duration_seconds": 3.505100792,
+            "exit_code": 1,
+            "logs": {
+              "text": "logs/000001.log",
+              "stdout": "logs/000001.stdout.log",
+              "stderr": "logs/000001.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 2654,
+                  "head_bytes": 2654,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 2653,
+                  "head_bytes": 2653,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          }
+        ]
+      },
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "src/route_mini/router.py",
+            "operator": "comparison_boundary",
+            "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+            "line": 115,
+            "column": 75,
+            "end_line": 115,
+            "end_column": 77,
+            "byte_start": 4648,
+            "byte_end": 4650,
+            "original": ">=",
+            "replacement": ">",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      }
+    }
+  ],
+  "mutie_sha256": "fc0b865cfc64a3a0a80845d233be3b46bba68c1eea9ddf8eb13ec44697ccb6bd",
+  "preserved": true,
+  "stronger_input_sha256": {
+    ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+    ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+    ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+    "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+    "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+    "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+    "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+    "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+    "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+    "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+    "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+    "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+    "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+    "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+    "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+    "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+    "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+    "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+    "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+    "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+    "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+    "tests/test_exact_capacity.py": "377f600db47cef4a152f8990d135f9ddfb1e3b5aeed9ae6217f54def44abe7e2",
+    "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+    "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+    "tests/test_router.py": "1c85ad92b63d32e1785faf210d4ab4e3ad016399d0fdd7783847fe79383fc334",
+    "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+  },
+  "preliminary_reports_preserved": {
+    "/tmp/mutie-route-mini-boundaries/reports/run-1792606595-gv9Jin": {
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diff/000001.diff": "53868918a1e126ff438e3dadc4d1f75b69afa452e11dcdc839a31be77f14bd81",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/000001.log": "76ba5139047a919d53d6ed985e4bf2ea2badbf20a0fdc64dab5d7d5c6a39e83f",
+      "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/000001.stdout.log": "1fc01697e54c8d4f02157fa31e90b64702c55b0942b5315f475e98322e5e9170",
+      "logs/baseline.log": "639421d29b59ded041b5a1b797ad078bedca924e760be343f6ef139a58601085",
+      "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/baseline.stdout.log": "b86b1e8d6c8cf8e833213ecfa9772fcc5a7feea9ba29359e76493a201c639ee8",
+      "logs/discovery.log": "8811b8b3c4dccc22fbda9f7cea18ca0ea732a429b7c41f0a4a72ab211f0332a1",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/discovery.stdout.log": "4c4239442e3fe15a8d167d91689a53437906a5868f4ad5eab50ad0be9d956b73",
+      "missed.txt": "09914d528435b9e4fd074d3896a4c3dab34bc26071f922500515d97eb77e8d6f",
+      "mutants.json": "4536bd4d2d78b12d1cd40986de6fceb706aa789a68858dddff45a32a0906d019",
+      "outcomes.json": "92086f7faf8f66c2158ae9659a0f9e02481875fafbd00dabb32d4ab67cfd58d9",
+      "run.json": "07b9e0cbbfe497abcf781355b80fd349c6493669a6b656dad8efc6076e780205",
+      "summary.txt": "688004f3710a9baae9bb712c37ef954c69d3dbd730966d88e6078987adba65fb",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/tmp/mutie-route-mini-boundaries/reports/run-1792606624-ba7dNe": {
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diff/000001.diff": "53868918a1e126ff438e3dadc4d1f75b69afa452e11dcdc839a31be77f14bd81",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "09914d528435b9e4fd074d3896a4c3dab34bc26071f922500515d97eb77e8d6f",
+      "logs/000001.log": "23b472bd8ae17233670783ccb2368d0cd625f439af0154e49a76b276468b58bd",
+      "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/000001.stdout.log": "f7fac3338870a48a8824bffcba1bfd62f880610673a9d64af0e85d3f0ae6ad46",
+      "logs/baseline.log": "85c9698d527e8a13f05913a638d962e9c21b3f0e6d3c75a0d15ac9db665a6ef6",
+      "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/baseline.stdout.log": "ccca2431bae6c6efd19cdf88033bfbe543741da8c7c0fe72e2d36f3da09b625b",
+      "logs/discovery.log": "93910f48074b1ba8c8962a2ce16b269ec8b77602302c1f6748c787bb15f32193",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/discovery.stdout.log": "95d425f132c957be36cc3035603b923c8224c959bf5dafd346e5bb8aa28f7a95",
+      "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "4536bd4d2d78b12d1cd40986de6fceb706aa789a68858dddff45a32a0906d019",
+      "outcomes.json": "ab74267370e0f827a8963a4d16ae6ff3ead8bc255ae7d8994109438b92316740",
+      "run.json": "73f9161bfaed74defc8ace7bb2dad3ca71650c572bd00da33309f42187b81888",
+      "summary.txt": "42a93df73153087a41b058dc2391df59cbdb1f87a37e3b4ae8a435dccbd523e0",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "final_recipe_differs_from_preliminary": true
+}

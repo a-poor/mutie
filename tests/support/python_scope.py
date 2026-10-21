@@ -25,6 +25,99 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def test_comparison_tokens_preserve_unicode_comments_and_native_evaluation(self):
+        source = ('label = "π < >"\n'
+                  'def less(left, right): return (left()) < (right())\n'
+                  'def le(left, right): return left() <= right()\n'
+                  'def greater(left, right): return left() > right()\n'
+                  'def ge(left, right): return left() >= right()\n'
+                  'def multiline(a,b):\n return (a # < ignored\n         <= b)\n'
+                  'def chained(a,b,c): return a < b <= c\n'
+                  'def other(a,b): return a == b or a is b or a in b\n'
+                  'annotation: list[1 < 2]\n')
+        self.write('sample/__init__.py', source)
+        sites = scope.inspect(self.root)['mutations']
+        self.assertEqual([m['original'] for m in sites], ['<', '<=', '>', '>=', '<='])
+        for site in sites:
+            raw = source.encode()
+            self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+            changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+            namespace = {}
+            exec(changed, namespace)
+            trace = []
+            def left():
+                trace.append('left')
+                return 4
+            def right():
+                trace.append('right')
+                return 4
+            if site['line'] < 6:
+                name = ['less', 'le', 'greater', 'ge'][site['line'] - 2]
+                self.assertEqual(namespace[name](left, right), site['replacement'] in ('<=', '>='))
+                self.assertEqual(trace, ['left', 'right'])
+        self.write('tests/test_sample.py', 'def test_boundary(): assert 1 < 2\n')
+        self.assertEqual(scope.inspect(self.root)['mutations'], sites)
+
+    def test_comparison_utf8_nested_and_string_tokens(self):
+        source = ('label = "π"; result = (1) < (2)\n'
+                  'nested = (1 < 2) >= (3 > 4)\n'
+                  'formatted = f"value {1 <= 2}"\n'
+                  'unequal = 1 != 2\n')
+        self.write('sample/__init__.py', source)
+        sites = scope.inspect(self.root)['mutations']
+        self.assertEqual([m['original'] for m in sites], ['<', '<', '>=', '>', '<='])
+        for site in sites:
+            raw = source.encode()
+            self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+            changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+            compile(changed, 'changed', 'exec')
+
+    def test_comparison_physical_newlines_and_unicode_separators(self):
+        for newline in ('\n', '\r\n'):
+            source = 'label = "π\u2028x"; value = 1 < 2' + newline + 'other = 3 >= 4' + newline
+            self.write('sample/__init__.py', source)
+            sites = scope.inspect(self.root)['mutations']
+            self.assertEqual([m['line'] for m in sites], [1, 2])
+            for site in sites:
+                self.assertEqual(source.encode()[site['start']:site['end']].decode(), site['original'])
+
+    def test_comparisons_in_type_parameter_bounds_and_defaults_are_excluded(self):
+        self.write('sample/__init__.py',
+                   'def bounded[T: (1 < 2)](value: T) -> T: return value\n'
+                   'def defaulted[T = (1 <= 2)](value: T) -> T: return value\n')
+        self.assertEqual(scope.inspect(self.root)['mutations'], [])
+
+    def test_comparison_native_custom_dispatch_and_exception_order(self):
+        source = 'def compare(left, right): return left() < right()\n'
+        self.write('sample/__init__.py', source)
+        site = scope.inspect(self.root)['mutations'][0]
+        changed = source[:site['start']] + site['replacement'] + source[site['end']:]
+        namespace = {}
+        exec(changed, namespace)
+        trace = []
+        class Operand:
+            def __lt__(self, other):
+                raise AssertionError('wrong dispatch')
+            def __le__(self, other):
+                trace.append('le')
+                raise RuntimeError('custom comparison')
+        def left():
+            trace.append('left')
+            return Operand()
+        def right():
+            trace.append('right')
+            return Operand()
+        with self.assertRaisesRegex(RuntimeError, 'custom comparison'):
+            namespace['compare'](left, right)
+        self.assertEqual(trace, ['left', 'right', 'le'])
+        trace.clear()
+        def failing_left():
+            trace.append('left')
+            raise ValueError('operand')
+        with self.assertRaisesRegex(ValueError, 'operand'):
+            namespace['compare'](failing_left, right)
+        self.assertEqual(trace, ['left'])
+
     def test_conftest_helpers_are_audited_and_imports_are_bounded(self):
         self.write('tests/__init__.py', '"""Local tests."""\n')
         self.write('tests/conftest.py', 'import pytest\ndef helper(value=True): return value\n'

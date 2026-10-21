@@ -196,7 +196,9 @@ metadata. All 38 mutations are accounted for across four runs; three selected
 survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
 
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
-Only boolean flips and full tests with one worker are supported. Application
+Boolean flips and single-comparison boundaries (`<` ↔ `<=`, `>` ↔ `>=`)
+are supported, with full tests and one worker. Chained comparisons and annotations
+are excluded. See [comparison semantics and validation](benchmarks/python-comparison-boundaries.md). Application
 dependencies, general conftest hooks/user plugins, async/thread-starting suites and
 multi-package layouts remain excluded. Completed assertion bodies can be kills;
 runtime exceptions and ambiguous/lifecycle failures remain errors. See
@@ -452,7 +454,8 @@ conflicts with `--list`.
 ## Mutation operators
 
 All ten Go operators run by default; Rust runs `boolean_flip`,
-`comparison_boundary`, and `logical_swap`.
+`comparison_boundary`, and `logical_swap`. Python runs `boolean_flip` and
+`comparison_boundary`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 

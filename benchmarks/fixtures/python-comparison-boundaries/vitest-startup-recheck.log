@@ -1,0 +1,49 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.66s
+     Running tests/vitest_preview.rs (target/debug/deps/vitest_preview-9c7d13cf232e5fd2)
+
+running 3 tests
+test scored_baseline_rechecks_pinned_node_without_repeating_launcher ... FAILED
+test lists_filters_and_preserves_source_without_executing_vitest ... FAILED
+test rejects_configuration_without_executing_it_and_rejects_runtime_mismatch ... FAILED
+
+failures:
+
+---- scored_baseline_rechecks_pinned_node_without_repeating_launcher stdout ----
+
+thread 'scored_baseline_rechecks_pinned_node_without_repeating_launcher' (17893339) panicked at tests/vitest_preview.rs:75:13:
+native Node fixture did not initialize within ten seconds
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- lists_filters_and_preserves_source_without_executing_vitest stdout ----
+
+thread 'lists_filters_and_preserves_source_without_executing_vitest' (17893337) panicked at tests/vitest_preview.rs:75:13:
+native Node fixture did not initialize within ten seconds
+
+---- rejects_configuration_without_executing_it_and_rejects_runtime_mismatch stdout ----
+
+thread 'rejects_configuration_without_executing_it_and_rejects_runtime_mismatch' (17893338) panicked at tests/vitest_preview.rs:75:13:
+native Node fixture did not initialize within ten seconds
+
+
+failures:
+    lists_filters_and_preserves_source_without_executing_vitest
+    rejects_configuration_without_executing_it_and_rejects_runtime_mismatch
+    scored_baseline_rechecks_pinned_node_without_repeating_launcher
+
+test result: FAILED. 0 passed; 3 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.88s
+
+error: test failed, to rerun pass `--test vitest_preview`
+     Running tests/vitest_workflow.rs (target/debug/deps/vitest_workflow-a9d0d4c96d792fb9)
+
+running 6 tests
+test coverage_only_config_runs_and_invalidates_reruns ... ignored, requires prepared MUTIE_VITEST_FIXTURE; coverage-only config identity
+test lifecycle_mutation_failures_do_not_improve_scores ... ignored, requires prepared MUTIE_VITEST_FIXTURE; mutation-triggered lifecycle errors
+test review::vitest_review_preserves_outcomes_scores_and_error_precedence ... ignored, requires prepared MUTIE_VITEST_FIXTURE; real review and CI policy workflows
+test scoped_fixture_mutation_failures_preserve_scores ... ignored, requires prepared MUTIE_VITEST_FIXTURE; scoped fixture mutation outcomes
+test scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure ... ignored, requires MUTIE_VITEST_FIXTURE with pinned installed dependencies and Node 24.22.0
+test unsupported_vitest_options_fail_before_execution ... ok
+
+test result: ok. 1 passed; 0 failed; 5 ignored; 0 measured; 0 filtered out; finished in 6.27s
+
+error: 1 target failed:
+    `--test vitest_preview`
