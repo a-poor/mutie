@@ -144,3 +144,7 @@ rerun, rust_workflow, terminal, vitest_preview and vitest_workflow. The unit bin
 also passed 198 tests (24 opt-in ignored). Combined with the earlier passing
 integration results, the outstanding default failures are confined to the
 recorded cancellation/readiness checks. This is still not a clean full-suite run.
+
+A later [readiness investigation](process-readiness.md) reproduces the fixture
+loader delay outside Mutie and the separate noisy-log cancellation/timeout race.
+Its fixture-only changes and new validation do not rewrite the failed runs above.

@@ -1,0 +1,32 @@
+Analysis of sampling sh (pid 1083) every 1 millisecond
+Process:         sh [1083]
+Path:            /bin/sh
+Load Address: [redacted]
+Identifier:      sh
+Version:         ???
+Code Type:       ARM64
+Parent Process:  Python [1081]
+Target Type:     live task
+
+Date/Time:       2026-10-21 08:10:46.762 -0700
+Launch Time:     2026-10-21 08:10:43.687 -0700
+OS Version: [redacted]
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint: [redacted]
+Physical footprint (peak): [redacted]
+Idle exit:                  untracked
+----
+
+Call graph:
+    791 Thread_17495285: Main Thread   DispatchQueue_<multiple>
+      791 _dyld_start  (in dyld) + 0  [[address]]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        791
+
+Binary images description not available
+

@@ -137,10 +137,14 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   stronger-test kills and preserved original failed reports. See
   [acceptance and remaining findings](benchmarks/python-route-mini.md).
 
-- [ ] Investigate intermittent subprocess startup/readiness failures in the Go
-  cancellation and noisy-log integration checks observed during Route Mini
-  validation; do not treat the broad suite as clean until resolved. See
-  [verification limits](benchmarks/python-route-mini.md#regression-checks).
+- [x] Isolate Go fixture startup/readiness failures: reproduce fresh-executable
+  loader stalls outside Mutie and use the existing system shell for fixture
+  execution. Separate the noisy-log cancellation checkpoint from its one-second
+  timeout scenario; preserve readiness, cleanup and outcome assertions. Stabilize
+  the fake-Node response test through explicit shell execution and unchanged
+  production output validation, retaining real spawn-error checks; preview CLI
+  tests use a prepared native identity mock and exact mismatch errors. See
+  [reproduction and validation](benchmarks/process-readiness.md).
 
 ## Selected first Bun test-runner slice
 

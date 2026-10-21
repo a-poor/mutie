@@ -1,0 +1,32 @@
+Analysis of sampling sh (pid 224) every 1 millisecond
+Process:         sh [224]
+Path:            /bin/sh
+Load Address: [redacted]
+Identifier:      sh
+Version:         ???
+Code Type:       ARM64
+Parent Process:  mutie [223]
+Target Type:     live task
+
+Date/Time:       2026-10-21 08:08:39.544 -0700
+Launch Time:     2026-10-21 08:08:34.290 -0700
+OS Version: [redacted]
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint: [redacted]
+Physical footprint (peak): [redacted]
+Idle exit:                  untracked
+----
+
+Call graph:
+    789 Thread_17488331: Main Thread   DispatchQueue_<multiple>
+      789 _dyld_start  (in dyld) + 0  [[address]]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        789
+
+Binary images description not available
+

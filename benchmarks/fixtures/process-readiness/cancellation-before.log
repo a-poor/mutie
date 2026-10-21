@@ -1,0 +1,40 @@
+
+running 7 tests
+test completing_one_worker_preserves_another_workers_test_temporary_files ... ok
+test go_startup_errors_do_not_leave_temporary_directories ... ok
+test go_temporary_directories_respect_parent_placement_for_listing ... ok
+test interrupt_parallel_run_retains_inventory_results_and_active_diagnostics ... FAILED
+test interruption_during_baseline_and_discovery_preserves_command_output ... FAILED
+test timeouts_remove_go_build_and_test_temporary_files_and_retain_diagnostics ... ok
+test tool_error_drains_parallel_workers_and_preserves_the_failure_reason ... ok
+
+failures:
+
+---- interrupt_parallel_run_retains_inventory_results_and_active_diagnostics stdout ----
+
+thread 'interrupt_parallel_run_retains_inventory_results_and_active_diagnostics' (17489176) panicked at tests/cancellation.rs:382:9:
+Go did not reach b; state markers: ["stderr", "stdout"]
+stdout: Saving report to /tmp/.tmpWhetmu/module/.mutie/run-1792595328-EKKWbU
+Snapshotting /tmp/.tmpWhetmu/module
+Running baseline: go test ./... (test caching disabled)
+
+stderr: 
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- interruption_during_baseline_and_discovery_preserves_command_output stdout ----
+
+thread 'interruption_during_baseline_and_discovery_preserves_command_output' (17490159) panicked at tests/cancellation.rs:382:9:
+Go did not reach discovery; state markers: ["stderr", "stdout"]
+stdout: Saving report to /tmp/.tmpDdNTt4/module/.mutie/run-1792595371-LXArAE
+Snapshotting /tmp/.tmpDdNTt4/module
+Running baseline: go test ./... (test caching disabled)
+
+stderr: 
+
+
+failures:
+    interrupt_parallel_run_retains_inventory_results_and_active_diagnostics
+    interruption_during_baseline_and_discovery_preserves_command_output
+
+test result: FAILED. 5 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 123.89s
+

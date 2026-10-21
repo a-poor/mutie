@@ -132,3 +132,12 @@ code and identified an unrelated command holding the failed capture's pipe after
 its process group disappeared. Spawning is now serialized in addition to the
 existing group retry. See that follow-up for descriptor evidence and validation;
 the earlier failed mutex-only experiment does not rule out this second cause.
+
+## Go fixture loader follow-up
+
+[The readiness investigation](process-readiness.md) later reproduced loader-entry
+stalls in the Go shell fixtures and in a direct script launch outside Mutie. The
+affected fixtures now execute the existing system shell with ordinary copied
+input files. It also separates noisy-log interruption from an unrelated
+one-second mutation timeout. Production process handling and readiness/cleanup
+assertions remain intact; see the follow-up for controls and suite results.

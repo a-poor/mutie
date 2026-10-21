@@ -1,0 +1,247 @@
+{
+  "before_serial": [
+    {
+      "round": 0,
+      "code": 0,
+      "seconds": 9.547389958053827
+    },
+    {
+      "round": 1,
+      "code": 0,
+      "seconds": 9.693849375005811
+    },
+    {
+      "round": 2,
+      "code": 0,
+      "seconds": 9.672691625077277
+    },
+    {
+      "round": 3,
+      "code": 0,
+      "seconds": 9.884756124927662
+    },
+    {
+      "round": 4,
+      "code": 0,
+      "seconds": 10.193704457953572
+    },
+    {
+      "round": 5,
+      "code": 0,
+      "seconds": 9.229260624968447
+    },
+    {
+      "round": 6,
+      "code": 0,
+      "seconds": 10.293425292009488
+    },
+    {
+      "round": 7,
+      "code": 0,
+      "seconds": 9.15351075003855
+    },
+    {
+      "round": 8,
+      "code": 0,
+      "seconds": 9.471622916986234
+    },
+    {
+      "round": 9,
+      "code": 0,
+      "seconds": 9.479250250034966
+    }
+  ],
+  "before_parallel": [
+    {
+      "round": 0,
+      "code": 0,
+      "seconds": 5.786076791002415
+    },
+    {
+      "round": 1,
+      "code": 0,
+      "seconds": 4.155759833054617
+    },
+    {
+      "round": 2,
+      "code": 0,
+      "seconds": 3.7935739590320736
+    },
+    {
+      "round": 3,
+      "code": 0,
+      "seconds": 3.7768660420551896
+    },
+    {
+      "round": 4,
+      "code": 0,
+      "seconds": 4.721048666979186
+    },
+    {
+      "round": 5,
+      "code": 0,
+      "seconds": 4.317302917013876
+    },
+    {
+      "round": 6,
+      "code": 0,
+      "seconds": 4.7269072498893365
+    },
+    {
+      "round": 7,
+      "code": 0,
+      "seconds": 4.9316617080476135
+    },
+    {
+      "round": 8,
+      "code": 0,
+      "seconds": 6.037107957992703
+    },
+    {
+      "round": 9,
+      "code": 0,
+      "seconds": 4.442504917038605
+    }
+  ],
+  "before_python_concurrent": [
+    {
+      "round": 0,
+      "code": 0,
+      "seconds": 14.376482957974076
+    },
+    {
+      "round": 1,
+      "code": 0,
+      "seconds": 15.29292062507011
+    },
+    {
+      "round": 2,
+      "code": 0,
+      "seconds": 16.33906833291985
+    },
+    {
+      "round": 3,
+      "code": 0,
+      "seconds": 9.919981749961153
+    },
+    {
+      "round": 4,
+      "code": 0,
+      "seconds": 8.86431795801036
+    },
+    {
+      "round": 5,
+      "code": 0,
+      "seconds": 9.525293249986134
+    },
+    {
+      "round": 6,
+      "code": 101,
+      "seconds": 123.98568779195193
+    }
+  ],
+  "after_serial": [
+    {
+      "round": 0,
+      "code": 0,
+      "seconds": 24.09577429201454
+    },
+    {
+      "round": 1,
+      "code": 0,
+      "seconds": 6.609107707976364
+    },
+    {
+      "round": 2,
+      "code": 0,
+      "seconds": 6.3558637499809265
+    },
+    {
+      "round": 3,
+      "code": 0,
+      "seconds": 6.437202540924773
+    },
+    {
+      "round": 4,
+      "code": 0,
+      "seconds": 6.646024124929681
+    },
+    {
+      "round": 5,
+      "code": 0,
+      "seconds": 6.274401208036579
+    },
+    {
+      "round": 6,
+      "code": 0,
+      "seconds": 6.590794334071688
+    },
+    {
+      "round": 7,
+      "code": 0,
+      "seconds": 6.7378936250461265
+    },
+    {
+      "round": 8,
+      "code": 0,
+      "seconds": 6.485494624939747
+    },
+    {
+      "round": 9,
+      "code": 0,
+      "seconds": 6.401334333000705
+    }
+  ],
+  "after_parallel": [
+    {
+      "round": 0,
+      "code": 0,
+      "seconds": 3.3444722919957712
+    },
+    {
+      "round": 1,
+      "code": 0,
+      "seconds": 5.132859250064939
+    },
+    {
+      "round": 2,
+      "code": 0,
+      "seconds": 3.317568707978353
+    },
+    {
+      "round": 3,
+      "code": 0,
+      "seconds": 3.370902666938491
+    },
+    {
+      "round": 4,
+      "code": 0,
+      "seconds": 3.4681735419435427
+    },
+    {
+      "round": 5,
+      "code": 0,
+      "seconds": 3.502895375015214
+    },
+    {
+      "round": 6,
+      "code": 0,
+      "seconds": 3.734494667034596
+    },
+    {
+      "round": 7,
+      "code": 0,
+      "seconds": 3.0169432089896873
+    },
+    {
+      "round": 8,
+      "code": 0,
+      "seconds": 3.266033708001487
+    },
+    {
+      "round": 9,
+      "code": 0,
+      "seconds": 3.357852749992162
+    }
+  ]
+}

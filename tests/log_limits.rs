@@ -1,11 +1,15 @@
 #![cfg(unix)]
 
+#[path = "support/shell_fixture.rs"]
+mod shell_fixture;
+
 use serde_json::Value;
 use std::{
     fs,
-    os::unix::fs::PermissionsExt,
+    os::unix::process::CommandExt,
     path::PathBuf,
-    process::{Command, Output},
+    process::{Child, Command, Output, Stdio},
+    time::{Duration, Instant},
 };
 
 struct Fixture {
@@ -26,7 +30,11 @@ impl Fixture {
         fs::write(root.join("go.mod"), "module example.com/logs\n").unwrap();
         fs::write(root.join("a.go"), "package p\nvar a = true\n").unwrap();
         let go = bin.join("go");
-        fs::write(&go, r#"#!/bin/sh
+        shell_fixture::install(
+            &root,
+            &go,
+            r#"#!/bin/sh
+printf '%s\n' "$$" > "$READY.pid"
 if [ "$1" = list ]; then
     printf '{"Dir":"%s","GoFiles":["a.go"],"Ignored":"' "$PWD"
     awk 'BEGIN {for(i=0;i<2000;i++) printf "discovery-padding"}'
@@ -48,15 +56,20 @@ if grep -q 'a = false' a.go || [ "$MODE" = baseline_error ]; then
         setup) printf '{"Action":"output","Output":"FAIL p [setup failed]\\n"}\n{"Action":"fail","Package":"p"}\n'; code=1 ;;
         tool|baseline_error) printf 'go tool failed in omitted middle\n' >&2; code=1 ;;
         timeout) sleep 30 ;;
-        cancel) touch "$READY"; sleep 30 ;;
+        cancel)
+            # Simulate work before the cancellation checkpoint. This must not
+            # race the one-second timeout used by the separate timeout case.
+            sleep 2
+            touch "$READY"
+            sleep 30 ;;
     esac
 fi
 noise
 printf '{"Action":"output","Output":"TAIL\\n"}\n'
 printf 'STDERR-TAIL\n' >&2
 exit "$code"
-"#).unwrap();
-        fs::set_permissions(go, fs::Permissions::from_mode(0o755)).unwrap();
+"#,
+        );
         Self {
             temp,
             root,
@@ -72,7 +85,12 @@ exit "$code"
         let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
         command
             .arg(&self.root)
-            .args(["--ui", "plain", "--timeout", "1"])
+            .args([
+                "--ui",
+                "plain",
+                "--timeout",
+                if mode == "cancel" { "60" } else { "1" },
+            ])
             .args(args)
             .env("PATH", std::env::join_paths(paths).unwrap())
             .env("MODE", mode)
@@ -110,31 +128,110 @@ exit "$code"
     }
 }
 
-#[test]
-fn interrupted_noisy_commands_save_limited_logs_and_remove_temporary_captures() {
-    use std::{
-        process::Stdio,
-        time::{Duration, Instant},
-    };
-    for signal in [libc::SIGINT, libc::SIGTERM] {
-        let fixture = Fixture::new();
-        let mut command = fixture.command("cancel", &["--max-log-bytes", "128"]);
+// File-backed CLI output remains readable during a startup failure and cannot
+// block the CLI while the parent waits for the fixture's checkpoint.
+struct Running {
+    child: Child,
+    stdout: PathBuf,
+    stderr: PathBuf,
+    pid: PathBuf,
+}
+
+impl Running {
+    fn start(fixture: &Fixture, mut command: Command) -> Self {
+        let stdout = fixture.temp.path().join("stdout");
+        let stderr = fixture.temp.path().join("stderr");
         let child = command
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped())
+            .stdin(Stdio::null())
+            .stdout(fs::File::create(&stdout).unwrap())
+            .stderr(fs::File::create(&stderr).unwrap())
+            .process_group(0)
             .spawn()
             .unwrap();
+        Self {
+            child,
+            stdout,
+            stderr,
+            pid: fixture.temp.path().join("ready.pid"),
+        }
+    }
+
+    fn diagnostics(&self) -> String {
+        format!(
+            "CLI PID: {}; fixture PID: {:?}\nstdout: {}\nstderr: {}",
+            self.child.id(),
+            fs::read_to_string(&self.pid).ok(),
+            fs::read_to_string(&self.stdout).unwrap_or_default(),
+            fs::read_to_string(&self.stderr).unwrap_or_default()
+        )
+    }
+
+    fn wait_ready(&mut self, fixture: &Fixture) {
         let start = Instant::now();
         while !fixture.temp.path().join("ready").exists() {
             assert!(
+                self.child.try_wait().unwrap().is_none(),
+                "command exited before becoming ready; {}",
+                self.diagnostics()
+            );
+            assert!(
                 start.elapsed() < Duration::from_secs(10),
-                "command never became ready"
+                "command never became ready; {}",
+                self.diagnostics()
             );
             std::thread::sleep(Duration::from_millis(5));
         }
+    }
+
+    fn finish(&mut self) -> Output {
+        let start = Instant::now();
+        loop {
+            if let Some(status) = self.child.try_wait().unwrap() {
+                return Output {
+                    status,
+                    stdout: fs::read(&self.stdout).unwrap(),
+                    stderr: fs::read(&self.stderr).unwrap(),
+                };
+            }
+            assert!(
+                start.elapsed() < Duration::from_secs(15),
+                "command did not finish after interruption; {}",
+                self.diagnostics()
+            );
+            std::thread::sleep(Duration::from_millis(5));
+        }
+    }
+}
+
+impl Drop for Running {
+    fn drop(&mut self) {
+        if self.child.try_wait().ok().flatten().is_none() {
+            // Failed readiness assertions must not leave the CLI or its owned
+            // command group running after the temporary fixture is removed.
+            let _ = self.child.kill();
+            let _ = self.child.wait();
+            if let Ok(pid) = fs::read_to_string(&self.pid)
+                && let Ok(pid) = pid.trim().parse::<i32>()
+            {
+                // SAFETY: the fixture records its own process-group leader.
+                unsafe {
+                    libc::kill(-pid, libc::SIGKILL);
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn interrupted_noisy_commands_save_limited_logs_and_remove_temporary_captures() {
+    for signal in [libc::SIGINT, libc::SIGTERM] {
+        let fixture = Fixture::new();
+        let command = fixture.command("cancel", &["--max-log-bytes", "128"]);
+        let mut running = Running::start(&fixture, command);
+        running.wait_ready(&fixture);
         // SAFETY: this is our live child's PID and a standard termination signal.
-        assert_eq!(unsafe { libc::kill(child.id() as i32, signal) }, 0);
-        let out = child.wait_with_output().unwrap();
+        assert_eq!(unsafe { libc::kill(running.child.id() as i32, signal) }, 0);
+        let out = running.finish();
         assert_eq!(out.status.code(), Some(1));
         let (path, metadata, outcomes) = fixture.report(&out);
         assert_eq!(metadata["status"], "interrupted");

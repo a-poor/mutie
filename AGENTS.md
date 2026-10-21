@@ -140,6 +140,16 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
   `tests/snapshots/` holds its wide and compact renderer snapshots.
 - `tests/report_retention.rs` exercises previews, explicit deletion, and active-run
   protection across processes without requiring Go for retention commands.
+- `tests/support/shell_fixture.rs` installs test-only Go commands through the
+  existing system shell and ordinary copied `test`/`list` input files. This avoids
+  reproduced fresh-executable loader stalls without changing production spawning
+  or cancellation assertions; see `benchmarks/process-readiness.md`. Remove the
+  fixture's `go` symlink before replacing it for a startup-error control; never
+  write through it to the system shell.
+- `tests/support/mock_node.rs` is an identity-only native mock compiled by the
+  Vitest preview fixtures. Preparation has a ten-second bound; response files
+  vary separately from its immutable executable. Preserve exact probe arguments,
+  pinned identity errors and the one-launcher-call assertion.
 - `tests/log_limits.rs` checks log retention, outcome preservation, complete
   discovery, reruns, noisy failures, signal cleanup, and source preservation.
 - `tests/capture_limits.rs` checks raw output budgets, overflow errors, baseline

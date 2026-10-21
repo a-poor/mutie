@@ -1,0 +1,26 @@
+[
+  {
+    "kind": "direct",
+    "seconds": 4.461126000038348,
+    "timed_out": true,
+    "stdout_bytes": 0
+  },
+  {
+    "kind": "explicit",
+    "seconds": 0.008693666895851493,
+    "code": 0,
+    "stdout_bytes": 5
+  },
+  {
+    "kind": "direct",
+    "seconds": 1.1829810830531642,
+    "code": 0,
+    "stdout_bytes": 5
+  },
+  {
+    "kind": "explicit",
+    "seconds": 0.023330916999839246,
+    "code": 0,
+    "stdout_bytes": 5
+  }
+]

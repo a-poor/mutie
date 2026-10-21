@@ -64,6 +64,13 @@ async fn identify_node(
         &[("NODE_OPTIONS", "".as_ref()), ("NODE_PATH", "".as_ref())],
     )
     .await?;
+    validate_node_identity(&output, cancellation)
+}
+
+fn validate_node_identity(
+    output: &process::CommandOutput,
+    cancellation: &Cancellation,
+) -> Result<NodeTool> {
     cancellation.check()?;
     ensure!(
         !output.interrupted
@@ -323,6 +330,26 @@ mod scope_tests {
             fs::write(&executable, format!("#!/bin/sh\n{body}\n")).unwrap();
             fs::set_permissions(&executable, fs::Permissions::from_mode(0o755)).unwrap();
         };
+        // The mock ignores Node's eval arguments. Invoke its script explicitly
+        // to avoid fresh-executable loader stalls, then use the production
+        // validator on real exit/capture evidence with the same ten-second bound.
+        async fn probe_script(
+            program: &str,
+            root: &Path,
+            cancellation: &Cancellation,
+        ) -> Result<NodeTool> {
+            let output = process::run_with_env(
+                "/bin/sh",
+                &[program],
+                root,
+                Duration::from_secs(10),
+                NonZeroUsize::new(4096),
+                cancellation,
+                &[("NODE_OPTIONS", "".as_ref()), ("NODE_PATH", "".as_ref())],
+            )
+            .await?;
+            validate_node_identity(&output, cancellation)
+        }
         let cancellation = Cancellation::default();
         let program = executable.to_str().unwrap();
         let valid = format!(
@@ -331,29 +358,46 @@ mod scope_tests {
         );
         write(&valid);
         assert_eq!(
-            identify_node(program, temp.path(), &cancellation)
+            probe_script(program, temp.path(), &cancellation)
                 .await
                 .unwrap()
                 .executable,
             executable
         );
-        for body in [
-            "echo '{\"version\":\"v24.23.0\",\"executable\":\"/node\"}'",
-            "echo '{\"version\":\"v24.22.0\",\"executable\":\"relative/node\"}'",
-            "echo '{\"version\":\"v24.22.0\"}'",
-            "echo invalid-json",
-            "exit 1",
-            "kill -TERM $$",
+        for (body, expected) in [
+            (
+                "echo '{\"version\":\"v24.23.0\",\"executable\":\"/node\"}'",
+                "Vitest currently requires Node 24.22.0",
+            ),
+            (
+                "echo '{\"version\":\"v24.22.0\",\"executable\":\"relative/node\"}'",
+                "Node executable identity must be absolute",
+            ),
+            (
+                "echo '{\"version\":\"v24.22.0\"}'",
+                "Node executable identity missing",
+            ),
+            ("echo invalid-json", "invalid Node identity output"),
+            ("exit 1", "could not identify Node for Vitest"),
+            ("kill -TERM $$", "could not identify Node for Vitest"),
         ] {
             write(body);
-            assert!(
-                identify_node(program, temp.path(), &cancellation)
-                    .await
-                    .is_err(),
-                "{body}"
-            );
+            let error = probe_script(program, temp.path(), &cancellation)
+                .await
+                .err()
+                .expect("invalid identity must fail");
+            assert!(error.to_string().contains(expected), "{body}: {error:#}");
         }
         write(&valid);
+        assert_eq!(
+            probe_script(program, temp.path(), &cancellation)
+                .await
+                .unwrap()
+                .executable,
+            executable
+        );
+        // Keep real spawn failure coverage: an explicit interpreter would read
+        // a non-executable script, so these cases use the production launcher.
         fs::set_permissions(&executable, fs::Permissions::from_mode(0o644)).unwrap();
         assert!(
             identify_node(program, temp.path(), &cancellation)

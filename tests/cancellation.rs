@@ -10,6 +10,9 @@ use std::{
     time::{Duration, Instant},
 };
 
+#[path = "support/shell_fixture.rs"]
+mod shell_fixture;
+
 use serde_json::Value;
 
 struct Fixture {
@@ -52,7 +55,8 @@ impl Fixture {
             .unwrap();
         }
         let go = bin.join("go");
-        fs::write(
+        shell_fixture::install(
+            &root,
             &go,
             r#"#!/bin/sh
 set -eu
@@ -112,9 +116,7 @@ if grep -q false z.go; then touch "$MUTIE_TEST_STATE/unexpected"; fi
 if [ "$MUTIE_TEST_MODE" = baseline ]; then hang baseline; fi
 printf '{"Action":"output","Output":"PASS\n"}\n'
 "#,
-        )
-        .unwrap();
-        fs::set_permissions(&go, fs::Permissions::from_mode(0o755)).unwrap();
+        );
         Self {
             _temp: temp,
             root,
@@ -182,23 +184,35 @@ printf '{"Action":"output","Output":"PASS\n"}\n'
         }
     }
 
-    fn ready(&self, name: &str) {
+    fn ready(&self, name: &str, running: &mut Running) {
+        let pid = running.child.id();
+        let diagnostic = || {
+            let mut markers: Vec<_> = fs::read_dir(&self.state)
+                .into_iter()
+                .flatten()
+                .flatten()
+                .map(|entry| entry.file_name())
+                .collect();
+            markers.sort();
+            format!(
+                "Go did not reach {name}; CLI PID: {pid}; state markers: {markers:?}\nstdout: {}\nstderr: {}",
+                fs::read_to_string(self.state.join("stdout")).unwrap_or_default(),
+                fs::read_to_string(self.state.join("stderr")).unwrap_or_default()
+            )
+        };
         wait_until_with(
-            || self.state.join(format!("{name}.ready")).exists(),
             || {
-                let mut markers: Vec<_> = fs::read_dir(&self.state)
-                    .into_iter()
-                    .flatten()
-                    .flatten()
-                    .map(|entry| entry.file_name())
-                    .collect();
-                markers.sort();
-                format!(
-                    "Go did not reach {name}; state markers: {markers:?}\nstdout: {}\nstderr: {}",
-                    fs::read_to_string(self.state.join("stdout")).unwrap_or_default(),
-                    fs::read_to_string(self.state.join("stderr")).unwrap_or_default()
-                )
+                if self.state.join(format!("{name}.ready")).exists() {
+                    return true;
+                }
+                assert!(
+                    running.child.try_wait().unwrap().is_none(),
+                    "CLI exited before readiness; {}",
+                    diagnostic()
+                );
+                false
             },
+            diagnostic,
         );
     }
 
@@ -406,8 +420,8 @@ fn read(directory: &Path, name: &str) -> Value {
 fn interrupt_parallel_run_retains_inventory_results_and_active_diagnostics() {
     let fixture = Fixture::new();
     let mut child = fixture.start("mutations");
-    fixture.ready("b");
-    fixture.ready("c");
+    fixture.ready("b", &mut child);
+    fixture.ready("c", &mut child);
     let directory = fixture.report();
     let inventory_bytes = fs::read(directory.join("mutants.json")).unwrap();
     let inventory = read(&directory, "mutants.json");
@@ -502,7 +516,7 @@ fn interruption_during_baseline_and_discovery_preserves_command_output() {
                 "100",
             ],
         );
-        fixture.ready(phase);
+        fixture.ready(phase, &mut child);
         child.signal(signal);
         let output = child.finish();
         assert_eq!(output.status.code(), Some(1));
@@ -551,8 +565,8 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
     ] {
         let fixture = Fixture::new();
         let mut child = fixture.start(mode);
-        fixture.ready("b");
-        fixture.ready("c");
+        fixture.ready("b", &mut child);
+        fixture.ready("c", &mut child);
         fs::write(fixture.state.join("fail"), "").unwrap();
         let output = child.finish();
         assert_eq!(output.status.code(), Some(1));
@@ -656,7 +670,10 @@ fn go_startup_errors_do_not_leave_temporary_directories() {
         let fixture = Fixture::new();
         // An executable whose interpreter is missing fails during spawn, after
         // Mutie has created both private temporary directories.
+        // Replace the symlink itself, never write through it to the system shell.
+        fs::remove_file(fixture.bin.join("go")).unwrap();
         fs::write(fixture.bin.join("go"), "#!/nonexistent/mutie-test-shell\n").unwrap();
+        fs::set_permissions(fixture.bin.join("go"), fs::Permissions::from_mode(0o755)).unwrap();
         let mut command = fixture.command("startup_error");
         command
             .arg(&fixture.root)
@@ -693,8 +710,8 @@ fn completing_one_worker_preserves_another_workers_test_temporary_files() {
         "isolation",
         &["--jobs", "2", "--timeout", "60", "--exclude", "z.go"],
     );
-    fixture.ready("b");
-    fixture.ready("c");
+    fixture.ready("b", &mut child);
+    fixture.ready("c", &mut child);
     let b = fixture.test_temporary("b");
     let c = fixture.test_temporary("c");
     assert_ne!(b, c);

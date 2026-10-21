@@ -1,14 +1,87 @@
 //! Preview is read-only and does not require a real JavaScript runtime in default tests.
 #![cfg(unix)]
-use std::{fs, os::unix::fs::PermissionsExt, path::Path, process::Command};
+use std::{
+    fs,
+    os::unix::fs::symlink,
+    path::{Path, PathBuf},
+    process::Command,
+    time::{Duration, Instant},
+};
+
+struct Fixture {
+    _temp: tempfile::TempDir,
+    root: PathBuf,
+    tools: PathBuf,
+    mock: PathBuf,
+}
+impl Fixture {
+    fn path(&self) -> &Path {
+        &self.root
+    }
+    fn node(&self, program: &Path, version: &str, executable: &Path, calls: Option<&Path>) {
+        if !program.exists() {
+            symlink(&self.mock, program).unwrap();
+        }
+        let identity = serde_json::json!({"version":version, "executable":executable});
+        fs::write(
+            program.with_extension("response"),
+            format!(
+                "{}\n{identity}",
+                calls.map(|p| p.to_str().unwrap()).unwrap_or("")
+            ),
+        )
+        .unwrap();
+    }
+}
 
 fn write(root: &Path, name: &str, data: &[u8]) {
     let path = root.join(name);
     fs::create_dir_all(path.parent().unwrap()).unwrap();
     fs::write(path, data).unwrap();
 }
-fn fixture() -> tempfile::TempDir {
-    let dir = tempfile::tempdir().unwrap();
+fn fixture() -> Fixture {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path().join("project");
+    let tools = temp.path().join("tools");
+    fs::create_dir(&root).unwrap();
+    fs::create_dir(&tools).unwrap();
+    let mock = temp.path().join("mock-node");
+    let compile = Command::new("rustc")
+        .args([
+            "--edition=2024",
+            "--crate-name",
+            "mock_node",
+            "-D",
+            "warnings",
+        ])
+        .arg(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/support/mock_node.rs"))
+        .arg("-o")
+        .arg(&mock)
+        .output()
+        .unwrap();
+    assert!(compile.status.success(), "{compile:?}");
+    // Preparing the fixture includes confirming its executable can enter main;
+    // no identity response is consumed and no launcher counter is touched.
+    let mut ready = Command::new(&mock).arg("--fixture-ready").spawn().unwrap();
+    let deadline = Instant::now() + Duration::from_secs(10);
+    loop {
+        if let Some(status) = ready.try_wait().unwrap() {
+            assert!(status.success(), "native Node fixture failed to initialize");
+            break;
+        }
+        if Instant::now() >= deadline {
+            let _ = ready.kill();
+            let _ = ready.wait();
+            panic!("native Node fixture did not initialize within ten seconds");
+        }
+        std::thread::sleep(Duration::from_millis(5));
+    }
+    let dir = Fixture {
+        _temp: temp,
+        root,
+        tools,
+        mock,
+    };
     let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/vitest");
     for name in [
         "package.json",
@@ -43,20 +116,20 @@ fn fixture() -> tempfile::TempDir {
         "node_modules/vite/package.json",
         br#"{"name":"vite","version":"8.3.4"}"#,
     );
-    write(dir.path(),"tools/node",b"#!/bin/sh\n[ \"$1\" = --eval ] || exit 99\nprintf '%s\\n' '{\"version\":\"v24.22.0\",\"executable\":\"/fake/node\"}'\n");
-    fs::set_permissions(
-        dir.path().join("tools/node"),
-        fs::Permissions::from_mode(0o755),
-    )
-    .unwrap();
+    dir.node(
+        &dir.tools.join("node"),
+        "v24.22.0",
+        Path::new("/fake/node"),
+        None,
+    );
     dir
 }
-fn preview(root: &Path, args: &[&str]) -> std::process::Output {
+fn preview(fixture: &Fixture, args: &[&str]) -> std::process::Output {
     Command::new(env!("CARGO_BIN_EXE_mutie"))
         .arg("vitest-list")
-        .arg(root)
+        .arg(fixture.path())
         .args(args)
-        .env("PATH", root.join("tools"))
+        .env("PATH", &fixture.tools)
         .output()
         .unwrap()
 }
@@ -64,7 +137,7 @@ fn preview(root: &Path, args: &[&str]) -> std::process::Output {
 fn lists_filters_and_preserves_source_without_executing_vitest() {
     let dir = fixture();
     let original = fs::read(dir.path().join("src/flags.ts")).unwrap();
-    let result = preview(dir.path(), &[]);
+    let result = preview(&dir, &[]);
     assert!(
         result.status.success(),
         "{}",
@@ -75,9 +148,9 @@ fn lists_filters_and_preserves_source_without_executing_vitest() {
     assert!(stdout.contains("6 mutations"));
     assert_eq!(
         stdout,
-        String::from_utf8(preview(dir.path(), &[]).stdout).unwrap()
+        String::from_utf8(preview(&dir, &[]).stdout).unwrap()
     );
-    let filtered = preview(dir.path(), &["--include", "src/*.ts"]);
+    let filtered = preview(&dir, &["--include", "src/*.ts"]);
     assert!(filtered.status.success());
     assert!(String::from_utf8_lossy(&filtered.stdout).contains("3 mutations"));
     assert_eq!(fs::read(dir.path().join("src/flags.ts")).unwrap(), original);
@@ -91,7 +164,7 @@ fn rejects_configuration_without_executing_it_and_rejects_runtime_mismatch() {
         "vite.config.ts",
         b"throw new Error('must not execute');",
     );
-    let result = preview(dir.path(), &[]);
+    let result = preview(&dir, &[]);
     assert!(!result.status.success());
     assert!(
         String::from_utf8_lossy(&result.stderr)
@@ -99,42 +172,32 @@ fn rejects_configuration_without_executing_it_and_rejects_runtime_mismatch() {
     );
     assert!(result.stdout.is_empty());
     fs::remove_file(dir.path().join("vite.config.ts")).unwrap();
-    write(
-        dir.path(),
-        "tools/node",
-        b"#!/bin/sh\nprintf '%s\\n' '{\"version\":\"v20.5.1\",\"executable\":\"/fake/node\"}'\n",
+    dir.node(
+        &dir.tools.join("node"),
+        "v20.5.1",
+        Path::new("/fake/node"),
+        None,
     );
-    let result = preview(dir.path(), &[]);
+    let result = preview(&dir, &[]);
     assert!(!result.status.success());
     assert!(String::from_utf8_lossy(&result.stderr).contains("requires Node 24.22.0"));
 }
 
 #[test]
 fn scored_baseline_rechecks_pinned_node_without_repeating_launcher() {
-    for replacement in [
-        Some("echo '{\"version\":\"v24.22.0\",\"executable\":\"/different/node\"}'"),
-        Some("echo '{\"version\":\"v20.0.0\",\"executable\":\"/different/node\"}'"),
-        None,
-    ] {
+    for replacement in [Some("v24.22.0"), Some("v20.0.0"), None] {
         let project = fixture();
         let tools = tempfile::tempdir().unwrap();
         let pinned = tools.path().join("pinned node");
         let calls = tools.path().join("launcher-calls");
-        let identity = serde_json::json!({"version":"v24.22.0", "executable": pinned});
-        write(
-            tools.path(),
-            "node",
-            format!(
-                "#!/bin/sh\necho called >> '{}'\nprintf '%s\\n' '{}'\n",
-                calls.display(),
-                identity
-            )
-            .as_bytes(),
+        project.node(
+            &tools.path().join("node"),
+            "v24.22.0",
+            &pinned,
+            Some(&calls),
         );
-        fs::set_permissions(tools.path().join("node"), fs::Permissions::from_mode(0o755)).unwrap();
-        if let Some(body) = replacement {
-            fs::write(&pinned, format!("#!/bin/sh\n{body}\n")).unwrap();
-            fs::set_permissions(&pinned, fs::Permissions::from_mode(0o755)).unwrap();
+        if let Some(version) = replacement {
+            project.node(&pinned, version, Path::new("/different/node"), None);
         }
         let reports = tempfile::tempdir().unwrap();
         let result = Command::new(env!("CARGO_BIN_EXE_mutie"))
@@ -146,12 +209,12 @@ fn scored_baseline_rechecks_pinned_node_without_repeating_launcher() {
             .unwrap();
         assert!(!result.status.success());
         let stderr = String::from_utf8_lossy(&result.stderr);
-        assert!(
-            stderr.contains("identity changed during the run")
-                || stderr.contains("requires Node 24.22.0")
-                || stderr.contains("could not start"),
-            "{stderr}"
-        );
+        let expected = match replacement {
+            Some("v24.22.0") => "identity changed during the run",
+            Some(_) => "requires Node 24.22.0",
+            None => "could not start",
+        };
+        assert!(stderr.contains(expected), "{stderr}");
         assert_eq!(fs::read_to_string(calls).unwrap(), "called\n");
     }
 }
