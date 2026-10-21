@@ -30,6 +30,9 @@ LOGGING_MEMBERS = {"getLogger", "StreamHandler", "Formatter", "DEBUG", "INFO",
                    "WARNING", "ERROR", "CRITICAL"}
 FROM_MEMBERS = {
     "io": {"StringIO"},
+    "abc": {"ABC", "abstractmethod"},
+    "types": {"MappingProxyType"},
+    "time": {"time", "sleep"},
     "fnmatch": {"fnmatch", "fnmatchcase"},
     "urllib.parse": {"parse_qsl", "urlencode", "urlsplit", "urlunsplit"},
 }
@@ -67,6 +70,15 @@ def validate_conftest(tree):
             except (ValueError, TypeError):
                 raise ValueError("Python conftest requires literal module data")
             continue
+        if isinstance(statement, ast.FunctionDef) and not statement.decorator_list:
+            require(not statement.name.startswith(("pytest", "test", "Test", "__")),
+                    "Python conftest helper cannot configure collection/plugins")
+            for default in statement.args.defaults + [d for d in statement.args.kw_defaults if d is not None]:
+                try:
+                    ast.literal_eval(default)
+                except (ValueError, TypeError):
+                    raise ValueError("Python conftest helper defaults must be literal")
+            continue  # Common body/import audit applies to ordinary helpers too.
         require(isinstance(statement, ast.FunctionDef) and len(statement.decorator_list) == 1
                 and not statement.name.startswith(("pytest", "test", "Test", "__")),
                 "Python conftest only admits synchronous fixture declarations")
@@ -174,7 +186,8 @@ def inspect(root):
     extras = project.get("optional-dependencies", {})
     # These optional tools are inert metadata, never installed or auto-loaded.
     optional_tools = {"docs": {"ipython", "matplotlib", "numpydoc", "sphinx"},
-                      "tests": {"pytest", "pytest-cov", "pytest-xdist"}}
+                      "tests": {"pytest", "pytest-cov", "pytest-xdist"},
+                      "dev": {"mypy", "pytest", "pytest-cov", "ruff"}}
     audited_extras = (isinstance(extras, dict) and set(extras) <= optional_tools.keys()
                       and all(isinstance(items, list) and items
                               and all(isinstance(item, str) and item in optional_tools[group]
@@ -188,14 +201,21 @@ def inspect(root):
     require(project.get("dynamic", []) in ([], ["version"]) and not project.get("entry-points"),
             "Python dynamic metadata and entry-point plugins unsupported")
     tool = config.get("tool", {})
-    require(set(tool) <= {"pytest", "setuptools", "hatch", "ruff", "uv"}, "unsupported Python tool configuration")
+    require(set(tool) <= {"pytest", "setuptools", "hatch", "ruff", "uv", "mypy"}, "unsupported Python tool configuration")
     uv = tool.get("uv", {})
     require(set(uv) <= {"override-dependencies"} and isinstance(uv.get("override-dependencies", []), list)
             and all(isinstance(item, str) and re.fullmatch(r"(?:cryptography|urllib3)>=[0-9]+(?:\.[0-9]+)*", item)
                     for item in uv.get("override-dependencies", [])), "unsupported Python resolver metadata")
+    mypy = tool.get("mypy", {})
+    require(set(mypy) <= {"python_version", "strict", "files"}
+            and mypy.get("python_version", "3.11") == "3.11"
+            and type(mypy.get("strict", False)) is bool
+            and mypy.get("files", ["src", "tests", "examples"]) == ["src", "tests", "examples"],
+            "unsupported Python type-checker metadata")
     ruff = tool.get("ruff", {})
     lint = ruff.get("lint", {})
-    require(set(ruff) <= {"line-length", "lint"} and type(ruff.get("line-length", 88)) is int
+    require(set(ruff) <= {"line-length", "lint", "target-version"}
+            and ruff.get("target-version", "py311") == "py311" and type(ruff.get("line-length", 88)) is int
             and set(lint) <= {"select", "fixable", "unfixable", "mccabe"}
             and all(isinstance(lint.get(key, []), list) and all(isinstance(x, str) for x in lint.get(key, []))
                     for key in ("select", "fixable", "unfixable"))
@@ -245,7 +265,8 @@ def inspect(root):
     package = (nested or flat)[0]
     hatch = tool.get("hatch")
     if hatch is not None:
-        require(hatch == {"build": {"targets": {
+        require(hatch == {"build": {"targets": {"wheel": {"packages": [(source_root + "/" if source_root else "") + package]}}}}
+                or hatch == {"build": {"targets": {
             "wheel": {"packages": [package]},
             "sdist": {"include": [package, "tests"], "exclude": ["*.json", "pkg/_compat.py"]}}}},
             "Python only accepts audited static Hatch package metadata")
@@ -305,7 +326,7 @@ def inspect(root):
         package_parts = (source_root, package) if source_root else (package,)
         in_package = parts[:len(package_parts)] == package_parts
         if not in_package and (relative in {"doc/source/conf.py", "docs/source/conf.py"}
-                               or (len(parts) == 2 and parts[0] == ".circleci")):
+                               or (len(parts) == 2 and parts[0] in {".circleci", "examples"})):
             # Documentation configuration and CI scripts are retained, never
             # imported or executed. They cannot conceal tests or pytest hooks.
             require(not path.name.startswith("test_") and not path.name.endswith("_test.py"),
@@ -330,8 +351,10 @@ def inspect(root):
         require("__pycache__" not in parts and all(not p.startswith(".") for p in parts),
                 f"hidden Python executable file: {relative}")
         if relative == "tests/__init__.py":
-            require(not ast.parse((root / path).read_text(encoding="utf-8")).body,
-                    "Python test package initializer must be empty")
+            require(all(isinstance(n, ast.Expr) and isinstance(n.value, ast.Constant)
+                        and isinstance(n.value.value, str)
+                        for n in ast.parse((root / path).read_text(encoding="utf-8")).body),
+                    "Python test package initializer must be empty or docstrings only")
             continue
         require(not is_test or is_conftest or path.name.startswith("test_"),
                 f"Python test files must use test_*.py: {relative}")
@@ -397,13 +420,17 @@ def inspect(root):
         logging_aliases = set()
         copy_aliases = set()
         random_aliases = set()
+        json_aliases = set()
         pytest_marks = {"mark"}
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     top = alias.name.split(".")[0]
-                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest", "unittest", "random"} if is_test else set()),
+                    require(top in STDLIB | {package, "logging", "copy"} | ({"pytest", "unittest", "random", "json"} if is_test else set()),
                             f"unsupported Python import {alias.name} in {relative}")
+                    if top == "json":
+                        require(alias.name == "json", "Python json submodules unsupported")
+                        json_aliases.add(alias.asname or "json")
                     if top == "random":
                         require(alias.name == "random", "Python random submodules unsupported")
                         random_aliases.add(alias.asname or "random")
@@ -422,7 +449,17 @@ def inspect(root):
                                 "Python only admits unaliased unittest")
                     aliases.add(alias.asname or top)
             elif isinstance(node, ast.ImportFrom):
-                if node.level:
+                if (node.level == 1 and node.module == "conftest" and is_test
+                        and not is_conftest and len(parts) == 2 and parts[0] == "tests"):
+                    require("tests/__init__.py" in files and "tests/conftest.py" in files,
+                            "Python conftest helper imports require a regular tests package")
+                    fixture_tree = ast.parse((root / "tests/conftest.py").read_bytes())
+                    helpers = {n.name for n in fixture_tree.body if isinstance(n, ast.FunctionDef)
+                               and not n.decorator_list and not n.name.startswith(("pytest", "test", "Test", "__"))}
+                    require(all(a.name in helpers and a.asname is None for a in node.names),
+                            "Python only imports ordinary conftest helpers without aliases")
+                    top = "tests"
+                elif node.level:
                     require(not is_test and node.level < len(module_parts),
                             "Python relative import escapes package")
                     target = list(module_parts[:-node.level])
@@ -462,6 +499,10 @@ def inspect(root):
             for child in ast.iter_child_nodes(node):
                 parameter_values(child)
         for node in ast.walk(tree):
+            # A class field named input does not reference the interactive builtin.
+            if (isinstance(node, ast.AnnAssign) and isinstance(parents.get(node), ast.ClassDef)
+                    and isinstance(node.target, ast.Name) and node.target.id == "input"):
+                input_parameters.add(node.target)
             # `input` is a common parametrized-test argument, not necessarily
             # the interactive builtin. Admit its local value but never a call.
             if isinstance(node, ast.FunctionDef) and any(
@@ -478,6 +519,9 @@ def inspect(root):
                                           ast.AsyncWith, ast.TypeAlias)),
                     f"Python async/type-alias execution unsupported: {relative}")
             if isinstance(node, ast.Name):
+                if node.id in json_aliases:
+                    require(isinstance(parents.get(node), ast.Attribute) and parents[node].value is node,
+                            "Python json aliasing unsupported")
                 if node.id in random_aliases:
                     require(isinstance(parents.get(node), ast.Attribute) and parents[node].value is node,
                             "Python random aliasing unsupported")
@@ -520,6 +564,9 @@ def inspect(root):
                 require(super_init or exception_init or node.attr == "__getitem__"
                         or not (node.attr.startswith("__") and node.attr.endswith("__")),
                         f"Python reflective attribute unsupported: {node.attr}")
+                if isinstance(node.value, ast.Name) and node.value.id in json_aliases:
+                    require(node.attr in {"dumps", "loads"} and isinstance(node.ctx, ast.Load),
+                            "Python only admits in-memory JSON in tests")
                 if isinstance(node.value, ast.Name) and node.value.id in random_aliases:
                     require(node.attr == "sample" and isinstance(node.ctx, ast.Load),
                             "Python only admits random.sample in tests")

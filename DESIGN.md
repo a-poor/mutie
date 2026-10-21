@@ -1933,3 +1933,20 @@ Plain root pytest.ini testpaths and an empty tests/__init__.py are also bound to
 snapshot and execution identity; other settings or executable initializers are
 rejected. Test-only random.sample and direct Exception subclass initialization
 are bounded compatibility additions; Sphinx metadata remains inert.
+
+
+## Larger Python fixture-project acceptance
+
+[Route Mini](benchmarks/python-route-mini.md) exercises 68 unchanged tests and
+38 boolean sites. Scoped compatibility permits synchronous ordinary conftest
+helpers with literal defaults, direct unaliased helper imports from regular
+tests packages, docstring-only test initializers, and inert example/static tool
+metadata. Specific ABC, mapping proxy, time and in-memory test JSON APIs are
+audited; broad modules, plugins, dynamic defaults and hook declarations remain
+excluded. Existing conftest/initializer hashes cover helper execution identity.
+
+Three failures require remaining-candidate runs. Report-local mutation IDs are
+matched by original source identity for complete accounting, never summed into a
+full score. Four extra test cases expose three incorrect-success audit
+flags in a separate test-only copy; originals and earlier reports are preserved.
+The remaining structural survivors and error/timeout cases stay open.

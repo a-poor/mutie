@@ -376,8 +376,12 @@ the audited subset, including unchanged Binary Tree Library acceptance.
 Function/class/module/session scopes, autouse fixtures, literal parametrization,
 yield cleanup and registered finalizers have native lifecycle controls. Fixture
 configuration changes require a fresh run. Root `pytest.ini` admits only full-scope
-testpaths; a test-package initializer must be empty. See the
+testpaths; a test-package initializer must contain only comments/docstrings. See the
 [fixture audit](benchmarks/python-conftest-fixtures.md).
+[Unchanged Route Mini validation](benchmarks/python-route-mini.md) adds 68-test
+fixture-based acceptance, audited conftest helpers/imports and inert example/tool
+metadata. All 38 mutations are accounted for across four runs; three selected
+survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
 
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.

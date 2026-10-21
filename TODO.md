@@ -132,6 +132,15 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   in a separate copy; original inputs/reports are preserved. See the
   [fixture audit](benchmarks/python-conftest-fixtures.md).
 
+- [x] Validate a larger unchanged fixture-based Python project: Route Mini,
+  68 tests and 38 candidates, scoped helper/metadata compatibility, three
+  stronger-test kills and preserved original failed reports. See
+  [acceptance and remaining findings](benchmarks/python-route-mini.md).
+
+- [ ] Investigate intermittent subprocess startup/readiness failures in the Go
+  cancellation and noisy-log integration checks observed during Route Mini
+  validation; do not treat the broad suite as clean until resolved. See
+  [verification limits](benchmarks/python-route-mini.md#regression-checks).
 
 ## Selected first Bun test-runner slice
 

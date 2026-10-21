@@ -25,6 +25,70 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def test_conftest_helpers_are_audited_and_imports_are_bounded(self):
+        self.write('tests/__init__.py', '"""Local tests."""\n')
+        self.write('tests/conftest.py', 'import pytest\ndef helper(value=True): return value\n'
+                   '@pytest.fixture\ndef shared(): return helper()\n')
+        self.write('tests/test_sample.py', 'from .conftest import helper\n'
+                   'def test_helper(shared): assert helper(shared)\n')
+        result = scope.inspect(self.root)
+        self.assertEqual(result['conftests'], ['tests/conftest.py'])
+        self.assertEqual(len(result['mutations']), 1)
+        for header in ['from .conftest import shared', 'from .conftest import helper as renamed',
+                       'from tests.conftest import helper', 'from ..conftest import helper',
+                       'from .conftest import *', 'from .missing import helper']:
+            self.write('tests/test_sample.py', header + '\ndef test_helper(): pass\n')
+            with self.subTest(header=header), self.assertRaises(ValueError):
+                scope.inspect(self.root)
+        self.write('tests/test_sample.py', 'from .conftest import helper\ndef test_helper(): pass\n')
+        (self.root / 'tests/__init__.py').unlink()
+        with self.assertRaises(ValueError):
+            scope.inspect(self.root)
+        self.write('tests/__init__.py', '')
+        for body in ['def helper(): return open("outside")', 'async def helper(): pass',
+                     'def helper(value=calculate()): pass', 'def pytest_configure(): pass',
+                     'def test_hidden(): pass', 'class Helper: pass']:
+            self.write('tests/conftest.py', body)
+            with self.subTest(body=body), self.assertRaises(ValueError):
+                scope.inspect(self.root)
+
+    def test_route_stdlib_access_is_narrow(self):
+        self.write('sample/__init__.py', 'from abc import ABC, abstractmethod\n'
+                   'from time import sleep, time\nfrom types import MappingProxyType\n'
+                   'class Cost:\n input: float = 0.0\n'
+                   'def enabled(): return MappingProxyType({"value": True})\n')
+        self.write('tests/test_sample.py', 'import json\ndef test_json():\n'
+                   ' assert json.loads(json.dumps({"value": True}))["value"]\n')
+        scope.inspect(self.root)
+        for text in ['from types import FunctionType', 'from abc import get_cache_token',
+                     'import time', 'from time import clock_settime', 'value=input',
+                     'class Cost:\n input: float = input()']:
+            self.write('sample/__init__.py', text)
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                scope.inspect(self.root)
+        self.write('sample/__init__.py', 'value=True')
+        for text in ['import json.tool', 'import json\njson.load(None)',
+                     'import json\nvalue=json', 'import json\njson.dumps=None']:
+            self.write('tests/test_sample.py', text)
+            with self.subTest(text=text), self.assertRaises(ValueError):
+                scope.inspect(self.root)
+
+    def test_static_route_metadata_does_not_admit_plugins(self):
+        manifest = ('[project]\nname="sample"\n[project.optional-dependencies]\n'
+                    'dev=["mypy","pytest","pytest-cov","ruff"]\n'
+                    '[tool.hatch.build.targets.wheel]\npackages=["sample"]\n'
+                    '[tool.ruff]\ntarget-version="py311"\n'
+                    '[tool.mypy]\npython_version="3.11"\nstrict=true\nfiles=["src","tests","examples"]\n')
+        self.write('pyproject.toml', manifest)
+        scope.inspect(self.root)
+        for old, new in [('"mypy","pytest"', '"plugin","pytest"'),
+                         ('packages=["sample"]', 'packages=["outside"]'),
+                         ('strict=true', 'plugins=["hook.py"]'),
+                         ('target-version="py311"', 'extend="external.toml"')]:
+            self.write('pyproject.toml', manifest.replace(old, new))
+            with self.subTest(new=new), self.assertRaises(ValueError):
+                scope.inspect(self.root)
+
     def test_unicode_offsets_and_annotation_exclusion(self):
         self.write("sample/__init__.py", 'from typing import Literal\n'
                    'label = "π"; active: Literal[True] = False\n')
@@ -166,7 +230,7 @@ class ScopeTests(unittest.TestCase):
             "pytest_plugins = ['sample']", "collect_ignore = ['tests']",
             "from sample import enabled as pytest_collection_modifyitems",
             "def pytest_runtest_call(item): pass", "def test_hidden(): pass",
-            "class TestHidden: pass", "def helper(): pass", "raise RuntimeError('imported')",
+            "class TestHidden: pass", "def helper(value=make_value()): pass", "raise RuntimeError('imported')",
             "import pytest\n@pytest.fixture(scope=lambda **kw: 'session')\ndef value(): return 1",
             "import pytest\n@pytest.fixture(ids=lambda x: str(x))\ndef value(): return 1",
             "import pytest\n@pytest.fixture(params=range(3))\ndef value(): return 1",
@@ -392,7 +456,7 @@ class ScopeTests(unittest.TestCase):
                 scope.inspect(self.root)
 
     def test_ancillary_files_are_fingerprinted_and_cannot_hide_tests(self):
-        for path in ['doc/source/conf.py', '.circleci/build_docs.py']:
+        for path in ['doc/source/conf.py', '.circleci/build_docs.py', 'examples/demo.py']:
             self.write(path, 'import os\nraise RuntimeError("not executed")\n')
             result = scope.inspect(self.root)
             self.assertIn(path, result['files'])
@@ -405,7 +469,7 @@ class ScopeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     scope.inspect(self.root)
             (self.root / path).unlink()
-        for path in ['.circleci/test_hidden.py', '.circleci/hidden_test.py', 'doc/source/test_hidden.py']:
+        for path in ['.circleci/test_hidden.py', '.circleci/hidden_test.py', 'doc/source/test_hidden.py', 'examples/test_hidden.py']:
             self.write(path, '')
             with self.assertRaises(ValueError):
                 scope.inspect(self.root)

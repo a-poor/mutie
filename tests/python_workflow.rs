@@ -825,3 +825,37 @@ fn scored_cancellation_cleans_owned_workspaces() {
         "owned temporary files leaked"
     );
 }
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; imported conftest helpers retain lifecycle attribution"]
+fn conftest_helpers_preserve_lifecycle_attribution() {
+    for cleanup in [false, true] {
+        let root = fixture();
+        let reports = tempfile::tempdir().unwrap();
+        fs::write(
+            root.path().join("tests/__init__.py"),
+            "\"\"\"Local helper imports.\"\"\"\n",
+        )
+        .unwrap();
+        let tail = if cleanup { "\n check()" } else { "" };
+        fs::write(root.path().join("tests/conftest.py"), format!(
+            "import pytest\nfrom sample import enabled\ndef check(): assert enabled() is True\n@pytest.fixture(autouse=True)\ndef shared():\n yield{tail}\n"
+        )).unwrap();
+        fs::write(
+            root.path().join("tests/test_sample.py"),
+            "from .conftest import check\ndef test_enabled(): check()\n",
+        )
+        .unwrap();
+        let source = fs::read(root.path().join("sample/__init__.py")).unwrap();
+        let output = scored_with_timeout(root.path(), reports.path(), &[], "15");
+        let (_, run, outcomes) = saved(&output);
+        assert_eq!(output.status.success(), !cleanup, "{output:?}");
+        assert_eq!(run["status"], if cleanup { "failed" } else { "completed" });
+        assert_eq!(outcomes["summary"]["errors"], usize::from(cleanup));
+        assert_eq!(outcomes["summary"]["killed"], usize::from(!cleanup));
+        assert_eq!(
+            fs::read(root.path().join("sample/__init__.py")).unwrap(),
+            source
+        );
+    }
+}

@@ -346,6 +346,14 @@ and inputs. Plain pytest.ini testpaths and empty tests/__init__.py also join
 snapshot/execution identity. General hooks, plugins and dependencies remain
 excluded; do not trim upstream suites to force acceptance.
 
+Unchanged Route Mini acceptance (`benchmarks/python-route-mini.md`) covers 68
+tests, four shared fixtures and 38 candidates across four runs. Ordinary audited
+conftest helpers and direct unaliased helper imports are supported; initializer
+docstrings and inert examples/tool metadata do not broaden executable test scope.
+Preserve source-identity matching across report-local IDs and failed report scores.
+Three audit-status survivors are killed by separate-copy tests; 25 survivors,
+three errors and one timeout remain open, with no equivalence claims.
+
 ## Build, Test, and Development Commands
 
 Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go build cache.
