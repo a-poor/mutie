@@ -1,0 +1,423 @@
+[
+  {
+    "project": "/tmp/mutie-python-addict-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-affine-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-ambient-reference-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-anytree-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-asttoolkit-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-base58-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-bencode-original",
+    "error": "Python pytest.ini only admits testpaths"
+  },
+  {
+    "project": "/tmp/mutie-python-bidict-original",
+    "error": "Python symlink unsupported: docs/changelog.rst"
+  },
+  {
+    "project": "/tmp/mutie-python-bits-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-bitsets-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-boltons-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-boolean-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-box-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-braceexpand-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-cachetools-original",
+    "error": "unsupported Python tool configuration"
+  },
+  {
+    "project": "/tmp/mutie-python-canatax-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-cartesian-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-caseconversion-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-caseconverter-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-casefy-original",
+    "error": "Python only accepts audited static Hatch package metadata"
+  },
+  {
+    "project": "/tmp/mutie-python-cerberus-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-clown-sort-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-colors-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-cycler-original",
+    "tests": 1,
+    "boundaries": 1
+  },
+  {
+    "project": "/tmp/mutie-python-dacite-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-darija-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-deczoo-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-deepmerge-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-dictdiffer-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-docstring-markdown-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-docstring-parser-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-dotty-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-dotwiz-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-dpath-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-fast-version-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-flatten-dict-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-fqdn-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-fstache-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-funcparserlib-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-funcy-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-glom-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-gossip-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-graphemeu-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-gufo-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-hashids-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-hpack-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-human-readable-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-humanize-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-humps-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-hyperframe-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-immutabledict-original",
+    "error": "unsupported Python tool configuration"
+  },
+  {
+    "project": "/tmp/mutie-python-incant-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-indexed-original",
+    "error": "Python symlink unsupported: .claude/skills/brainstorming"
+  },
+  {
+    "project": "/tmp/mutie-python-isodate-original",
+    "error": "Python dynamic metadata and entry-point plugins unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-jaracotext-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-l10n-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-landscapes-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-latex2mathml-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-mergedeep-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-more-itertools-original",
+    "error": "Python dynamic metadata and entry-point plugins unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-multipart-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-multiset-original",
+    "error": "unsupported Python tool configuration"
+  },
+  {
+    "project": "/tmp/mutie-python-ntgen-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-numerizer-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-objson-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-ordered-set-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-parmancer-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-parsekit-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-parsy-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-pathspec-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-pipevine-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-pluralizer-original",
+    "tests": 1,
+    "boundaries": 0
+  },
+  {
+    "project": "/tmp/mutie-python-priority-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-pureyaml-original",
+    "error": "Python symlink unsupported: pureyaml/ply"
+  },
+  {
+    "project": "/tmp/mutie-python-pydash-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-pydoku-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-ranges-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-reparsec-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-repro-zipfile-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-required-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-resolvelib-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-result-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-rfc3339-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-rfc3986-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-roman-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-rounder-original",
+    "error": "Python only accepts audited declarative test/documentation extras"
+  },
+  {
+    "project": "/tmp/mutie-python-route-mini-original",
+    "tests": 4,
+    "boundaries": 7
+  },
+  {
+    "project": "/tmp/mutie-python-sample-trees-original",
+    "tests": 3,
+    "boundaries": 30
+  },
+  {
+    "project": "/tmp/mutie-python-schema-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-scrubify-original",
+    "tests": 1,
+    "boundaries": 0
+  },
+  {
+    "project": "/tmp/mutie-python-semver-original",
+    "error": "Python symlink unsupported: tests/coerce.py"
+  },
+  {
+    "project": "/tmp/mutie-python-single-source-original",
+    "error": "Python requires a named [project]"
+  },
+  {
+    "project": "/tmp/mutie-python-sqids-original",
+    "error": "unsupported Python tool configuration"
+  },
+  {
+    "project": "/tmp/mutie-python-starpy-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-strenum-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-tempconv-original",
+    "error": "Python requires pyproject.toml"
+  },
+  {
+    "project": "/tmp/mutie-python-tokenizesentences-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-tomli-w-original",
+    "error": "unsupported Python tool configuration"
+  },
+  {
+    "project": "/tmp/mutie-python-toolz-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-toonverter-original",
+    "error": "Python application dependencies unsupported"
+  },
+  {
+    "project": "/tmp/mutie-python-ulid-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-validators-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-webcolors-original",
+    "error": "Python only accepts audited inert development dependencies"
+  },
+  {
+    "project": "/tmp/mutie-python-yastrider-original",
+    "error": "Python only accepts a literal package version"
+  }
+]

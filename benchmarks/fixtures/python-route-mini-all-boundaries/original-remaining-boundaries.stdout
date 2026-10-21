@@ -1,0 +1,25 @@
+Saving report to /tmp/mutie-route-mini-all-boundaries/reports/run-1792614397-YfK1yn
+Snapshotting /tmp/mutie-python-route-mini-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.07s
+Selected 6 mutations from /tmp/mutie-route-mini-all-boundaries/reports/run-1792614361-cLdZte (all saved mutations; source IDs: 2, 3, 4, 5, 6, 7)
+Found 6 mutations
+Running 1 worker(s), 20.00s timeout per mutation
+[1/6] killed: src/route_mini/fallback.py:65:36: "<" -> "<=" (2.21s)
+[2/6] killed: src/route_mini/fallback.py:66:38: ">=" -> ">" (2.33s)
+[3/6] missed: src/route_mini/fallback.py:72:36: "<" -> "<=" (2.22s)
+[4/6] killed: src/route_mini/policy.py:79:55: "<=" -> "<" (2.17s)
+[5/6] killed: src/route_mini/policy.py:91:79: "<=" -> "<" (2.16s)
+[6/6] missed: src/route_mini/router.py:115:75: ">=" -> ">" (2.03s)
+
+6 mutations: 4 killed, 2 missed, 0 timed out, 0 failed to compile
+Run completed in 41.17s
+Workspaces: snapshot 0.010s | setup 0.011s | reset 0.048s (cumulative)
+Copies: 225 reflinked | 0 copied (0 bytes) | 9 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-route-mini-all-boundaries/reports/run-1792614397-YfK1yn/summary.txt
+Mutation score: 66.67%
+Scope: rerun selection only
+Killed / (killed + missed): 4 / 6
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

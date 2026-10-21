@@ -1,0 +1,35 @@
+................................FF....................................   [100%]
+=================================== FAILURES ===================================
+_________________ test_network_stops_retrying_at_exact_budget __________________
+
+    def test_network_stops_retrying_at_exact_budget():
+        decision = FallbackChain(max_retries=1).decide(ProviderError(network=True), attempt=1)
+        assert decision.kind == ErrorKind.NETWORK
+>       assert decision.retry_same is False
+E       AssertionError: assert True is False
+E        +  where True = FallbackDecision(kind=<ErrorKind.NETWORK: 'network'>, retry_same=True, fall_through=True, backoff_ms=25).retry_same
+
+tests/test_retry_boundary.py:11: AssertionError
+______________ test_zero_network_retry_budget_calls_primary_once _______________
+
+route_request = Request(prompt='route this', max_tokens=10, input_tokens=2, metadata={})
+cheap = ModelCapabilities(model=Model(provider='cheap', name='mini'), max_tokens=100, cost_per_input_token=0.001, cost_per_output_token=0.001, latency_p50_ms=120)
+fast = ModelCapabilities(model=Model(provider='fast', name='mini'), max_tokens=100, cost_per_input_token=0.003, cost_per_output_token=0.003, latency_p50_ms=20)
+
+    def test_zero_network_retry_budget_calls_primary_once(route_request, cheap, fast):
+        first = ScriptedProvider('cheap', (cheap,), [ProviderError(network=True)])
+        second = ScriptedProvider('fast', (fast,), [scripted_success('secondary')])
+        decision, response = Router(
+            (first, second), CheapestPolicy(), fallback=FallbackChain(max_retries=0)
+        ).route(route_request)
+        assert response.text == 'secondary'
+>       assert len(first.calls) == 1
+E       AssertionError: assert 2 == 1
+E        +  where 2 = len([(Model(provider='cheap', name='mini'), Request(prompt='route this', max_tokens=10, input_tokens=2, metadata={})), (Model(provider='cheap', name='mini'), Request(prompt='route this', max_tokens=10, input_tokens=2, metadata={}))])
+E        +    where [(Model(provider='cheap', name='mini'), Request(prompt='route this', max_tokens=10, input_tokens=2, metadata={})), (Model(provider='cheap', name='mini'), Request(prompt='route this', max_tokens=10, input_tokens=2, metadata={}))] = <route_mini.providers.ScriptedProvider object at [address]>.calls
+
+tests/test_retry_boundary.py:23: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_retry_boundary.py::test_network_stops_retrying_at_exact_budget
+FAILED tests/test_retry_boundary.py::test_zero_network_retry_budget_calls_primary_once
+2 failed, 68 passed in 0.12s

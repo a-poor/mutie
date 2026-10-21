@@ -173,6 +173,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   remedy remains unverified; see
   [diagnosis and controls](benchmarks/cli-startup-readiness.md).
 
+- [x] Complete the seven comparison boundaries on unchanged Route Mini's
+  68-test suite: preserve the original error, account for six pending candidates,
+  and kill the newly identified extra-network-retry survivor with a separate
+  70-test stronger baseline and focused rerun. See
+  [complete boundary review](benchmarks/python-route-mini-all-boundaries.md).
+
 ## Selected first Bun test-runner slice
 
 - [x] Pin Bun 1.3.11+af24e281e and add independent dependency-free JS/TS fixtures.

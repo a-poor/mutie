@@ -416,3 +416,10 @@ Place unit tests beside implementation in `#[cfg(test)]` modules; use `#[tokio::
 History uses short descriptive subjects such as “First pass” and “Adds saved reports”; no Conventional Commits prefix is established. Keep commits focused. PRs should explain the problem, behavior changes, and validation commands/results; link relevant issues and include terminal examples or screenshots for presentation changes.
 
 Do not commit generated `target/` or `.mutie/` directories.
+
+`benchmarks/python-route-mini-all-boundaries.md` records all seven comparison
+candidates across two original reports (four kills, two survivors, one error).
+A separate 70-test copy kills the new network-retry ceiling survivor by checking
+the exact retry decision and primary call count. Preserve the original constructor
+error, prior capacity finding and report-local source-identity mapping; combined
+accounting is not a full score. This revisits Route Mini, not a new third project.

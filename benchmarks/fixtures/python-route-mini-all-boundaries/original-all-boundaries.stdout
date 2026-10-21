@@ -1,0 +1,21 @@
+Saving report to /tmp/mutie-route-mini-all-boundaries/reports/run-1792614361-cLdZte
+Snapshotting /tmp/mutie-python-route-mini-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.47s
+Found 7 mutations
+Running 1 worker(s), 20.00s timeout per mutation
+[1/7] error: src/route_mini/fallback.py:41:24: "<" -> "<=" (2.26s)
+
+1 mutations: 0 killed, 0 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 15.10s
+Workspaces: snapshot 0.006s | setup 0.014s | reset 0.007s (cumulative)
+Copies: 100 reflinked | 0 copied (0 bytes) | 4 ops, 0 failed, 0 interrupted
+Unfinished: 6 pending, 0 interrupted
+Report saved: /tmp/mutie-route-mini-all-boundaries/reports/run-1792614361-cLdZte/summary.txt
+Mutation score: unavailable
+Scope: filtered selection only
+Killed / (killed + missed): 0 / 0
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 6
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

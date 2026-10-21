@@ -1,0 +1,20 @@
+Saving report to /tmp/mutie-route-mini-all-boundaries/reports/run-1792614453-x6WKkw
+Snapshotting /tmp/mutie-route-mini-all-boundaries/stronger-project
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.63s
+Selected 1 mutations from /tmp/mutie-route-mini-all-boundaries/reports/run-1792614361-cLdZte (all saved mutations; source IDs: 4)
+Found 1 mutations
+Running 1 worker(s), 20.00s timeout per mutation
+[1/1] killed: src/route_mini/fallback.py:72:36: "<" -> "<=" (2.62s)
+
+1 mutations: 1 killed, 0 missed, 0 timed out, 0 failed to compile
+Run completed in 16.88s
+Workspaces: snapshot 0.006s | setup 0.011s | reset 0.008s (cumulative)
+Copies: 104 reflinked | 0 copied (0 bytes) | 4 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-route-mini-all-boundaries/reports/run-1792614453-x6WKkw/summary.txt
+Mutation score: 100.00%
+Scope: rerun selection only
+Killed / (killed + missed): 1 / 1
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)
