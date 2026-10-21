@@ -391,6 +391,11 @@ Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go 
 - `cargo fmt --check` — check formatting; use `cargo fmt` to apply it.
 - `cargo clippy --all-targets -- -D warnings` — lint all targets.
 
+Vitest preview tests use macOS's `/usr/bin/tclsh` with private identity-only script
+data to avoid observed fresh Mach-O helper startup stalls; other Unix platforms
+retain the native Rust helper. The ten-second readiness limit and exact identity
+assertions remain unchanged. See `benchmarks/vitest-fixture-startup.md`.
+
 ## Coding Style & Naming Conventions
 
 Follow Rustfmt defaults, including four-space indentation. Use `snake_case` for functions/modules, `PascalCase` for types, and `UPPER_SNAKE_CASE` for constants. Format Go fixtures with `gofmt`. Keep language-specific behavior separate from execution and reporting, and add context to fallible operations using the existing `anyhow` conventions.

@@ -155,10 +155,15 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   unchanged Route Mini capacity finding killed by a stronger-test focused rerun.
   See [acceptance](benchmarks/python-comparison-boundaries.md).
 
-- [ ] Investigate the native Node fixture startup failures reproduced during
-  final Python-boundary validation: all three Vitest preview helpers exceed the
-  unchanged ten-second readiness limit before product assertions. Preserve the
-  earlier passing run and the [failed recheck evidence](benchmarks/python-comparison-boundaries.md).
+- [x] Diagnose and fix the native Node fixture startup failures reproduced during
+  final Python-boundary validation. A macOS pre-main loader stall is avoided with
+  system-interpreter fixture data; ten-second readiness and identity assertions
+  remain intact. Twenty preview repetitions pass, and the full default suite
+  passes 277 tests. See [evidence and limits](benchmarks/vitest-fixture-startup.md).
+- [ ] Investigate broader intermittent CLI startup delays if reproduced: the first
+  full run above hit noisy-log readiness with empty CLI output and no fixture PID;
+  an unchanged focused recheck and full rerun passed. Preserve that failure without
+  attributing it to the diagnosed mock-loader stall without further evidence.
 
 ## Selected first Bun test-runner slice
 

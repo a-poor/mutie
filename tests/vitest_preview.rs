@@ -13,8 +13,14 @@ struct Fixture {
     root: PathBuf,
     tools: PathBuf,
     mock: PathBuf,
+    tcl_library: Option<PathBuf>,
 }
 impl Fixture {
+    fn configure(&self, command: &mut Command) {
+        if let Some(library) = &self.tcl_library {
+            command.env("TCL_LIBRARY", library).env_remove("TCLLIBPATH");
+        }
+    }
     fn path(&self) -> &Path {
         &self.root
     }
@@ -45,43 +51,70 @@ fn fixture() -> Fixture {
     let tools = temp.path().join("tools");
     fs::create_dir(&root).unwrap();
     fs::create_dir(&tools).unwrap();
-    let mock = temp.path().join("mock-node");
-    let compile = Command::new("rustc")
-        .args([
-            "--edition=2024",
-            "--crate-name",
-            "mock_node",
-            "-D",
-            "warnings",
-        ])
-        .arg(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/support/mock_node.rs"))
-        .arg("-o")
-        .arg(&mock)
-        .output()
+    // On macOS, fresh Mach-O images can stall before main in the loader.
+    // Use the installed interpreter with private, non-executable script data.
+    // Other Unix platforms retain the native stand-in and its argument checks.
+    #[cfg(target_os = "macos")]
+    let (mock, tcl_library) = {
+        let library = temp.path().join("mock-tcl");
+        fs::create_dir(&library).unwrap();
+        fs::write(
+            library.join("init.tcl"),
+            include_bytes!("support/mock_node.tcl"),
+        )
         .unwrap();
-    assert!(compile.status.success(), "{compile:?}");
-    // Preparing the fixture includes confirming its executable can enter main;
-    // no identity response is consumed and no launcher counter is touched.
-    let mut ready = Command::new(&mock).arg("--fixture-ready").spawn().unwrap();
-    let deadline = Instant::now() + Duration::from_secs(10);
-    loop {
-        if let Some(status) = ready.try_wait().unwrap() {
-            assert!(status.success(), "native Node fixture failed to initialize");
-            break;
-        }
-        if Instant::now() >= deadline {
-            let _ = ready.kill();
-            let _ = ready.wait();
-            panic!("native Node fixture did not initialize within ten seconds");
-        }
-        std::thread::sleep(Duration::from_millis(5));
-    }
+        let program = PathBuf::from("/usr/bin/tclsh");
+        assert!(
+            program.is_file(),
+            "macOS fixture requires its system Tcl interpreter"
+        );
+        (program, Some(library))
+    };
+    #[cfg(not(target_os = "macos"))]
+    let (mock, tcl_library) = {
+        let mock = temp.path().join("mock-node");
+        let compile = Command::new("rustc")
+            .args([
+                "--edition=2024",
+                "--crate-name",
+                "mock_node",
+                "-D",
+                "warnings",
+            ])
+            .arg(Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/support/mock_node.rs"))
+            .arg("-o")
+            .arg(&mock)
+            .output()
+            .unwrap();
+        assert!(compile.status.success(), "{compile:?}");
+        (mock, None)
+    };
     let dir = Fixture {
         _temp: temp,
         root,
         tools,
         mock,
+        tcl_library,
     };
+    // Preparing the fixture includes confirming it responds to readiness;
+    // no identity response is consumed and no launcher counter is touched.
+    let mut command = Command::new(&dir.mock);
+    command.arg("--fixture-ready");
+    dir.configure(&mut command);
+    let mut ready = command.spawn().unwrap();
+    let deadline = Instant::now() + Duration::from_secs(10);
+    loop {
+        if let Some(status) = ready.try_wait().unwrap() {
+            assert!(status.success(), "Node fixture failed to initialize");
+            break;
+        }
+        if Instant::now() >= deadline {
+            let _ = ready.kill();
+            let _ = ready.wait();
+            panic!("Node fixture did not initialize within ten seconds");
+        }
+        std::thread::sleep(Duration::from_millis(5));
+    }
     let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/vitest");
     for name in [
         "package.json",
@@ -125,13 +158,56 @@ fn fixture() -> Fixture {
     dir
 }
 fn preview(fixture: &Fixture, args: &[&str]) -> std::process::Output {
-    Command::new(env!("CARGO_BIN_EXE_mutie"))
+    let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
+    fixture.configure(&mut command);
+    command
         .arg("vitest-list")
         .arg(fixture.path())
         .args(args)
         .env("PATH", &fixture.tools)
         .output()
         .unwrap()
+}
+
+#[test]
+fn identity_fixture_rejects_other_commands_without_consuming_response() {
+    let project = fixture();
+    let program = project.tools.join("identity node");
+    let calls = project.tools.join("identity calls");
+    project.node(&program, "v24.22.0", &program, Some(&calls));
+    let invoke = |args: &[&str]| {
+        let mut command = Command::new(&program);
+        project.configure(&mut command);
+        command.args(args).output().unwrap()
+    };
+    let ready = invoke(&["--fixture-ready"]);
+    assert!(ready.status.success(), "{ready:?}");
+    assert!(ready.stdout.is_empty());
+    assert!(!calls.exists());
+    let expression =
+        "console.log(JSON.stringify({version:process.version,executable:process.execPath}))";
+    for args in [
+        vec!["--eval", "throw new Error('unexpected execution')"],
+        vec!["run", "vitest"],
+        vec!["--eval", expression, "extra"],
+    ] {
+        let result = invoke(&args);
+        assert!(!result.status.success(), "{result:?}");
+        assert!(result.stdout.is_empty(), "{result:?}");
+        assert!(!calls.exists());
+    }
+    let identity = invoke(&["--eval", expression]);
+    assert!(identity.status.success(), "{identity:?}");
+    assert_eq!(
+        serde_json::from_slice::<serde_json::Value>(&identity.stdout).unwrap(),
+        serde_json::json!({"version":"v24.22.0", "executable":program})
+    );
+    assert_eq!(fs::read_to_string(&calls).unwrap(), "called\n");
+    fs::remove_file(program.with_extension("response")).unwrap();
+    let missing = invoke(&["--eval", expression]);
+    assert!(!missing.status.success(), "{missing:?}");
+    assert!(missing.stdout.is_empty());
+    assert_eq!(fs::read_to_string(calls).unwrap(), "called\n");
 }
 #[test]
 fn lists_filters_and_preserves_source_without_executing_vitest() {
@@ -200,7 +276,9 @@ fn scored_baseline_rechecks_pinned_node_without_repeating_launcher() {
             project.node(&pinned, version, Path::new("/different/node"), None);
         }
         let reports = tempfile::tempdir().unwrap();
-        let result = Command::new(env!("CARGO_BIN_EXE_mutie"))
+        let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
+        project.configure(&mut command);
+        let result = command
             .arg(project.path())
             .args(["--lang", "vitest", "--ui", "plain", "--output-dir"])
             .arg(reports.path())

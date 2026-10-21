@@ -1,0 +1,14 @@
+[
+  {
+    "label": "fresh",
+    "pid": 66632,
+    "seconds": 11.627607292030007,
+    "result": "timeout"
+  },
+  {
+    "label": "same-binary",
+    "pid": 66641,
+    "seconds": 7.53634495800361,
+    "result": 0
+  }
+]

@@ -1,0 +1,10 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.61s
+     Running tests/log_limits.rs (target/debug/deps/log_limits-60b4e5bcddce72d1)
+
+running 3 tests
+test configured_limits_can_be_overridden_and_baseline_failures_keep_diagnostics ... ok
+test interrupted_noisy_commands_save_limited_logs_and_remove_temporary_captures ... ok
+test capped_logs_preserve_outcomes_discovery_reruns_and_cleanup ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.40s
+

@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "linker",
+    "round": 0,
+    "result": "timeout",
+    "seconds": 10.007196040940471
+  },
+  {
+    "mode": "signed",
+    "round": 0,
+    "result": "timeout",
+    "seconds": 10.010404667002149
+  },
+  {
+    "mode": "linker",
+    "round": 1,
+    "result": "timeout",
+    "seconds": 10.009183833026327
+  },
+  {
+    "mode": "signed",
+    "round": 1,
+    "result": "timeout",
+    "seconds": 10.009249542024918
+  }
+]

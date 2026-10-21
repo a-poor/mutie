@@ -1,0 +1,32 @@
+Analysis of sampling node (pid 66632) every 1 millisecond
+Process:         node [66632]
+Path:            /tmp/*/node
+Load Address: [redacted]
+Identifier:      node
+Version:         ???
+Code Type:       ARM64
+Parent Process:  Python [66612]
+Target Type:     live task
+
+Date/Time:       2026-10-21 11:43:35.024 -0700
+Launch Time:     2026-10-21 11:43:24.943 -0700
+OS Version: [redacted]
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint: [redacted]
+Physical footprint (peak): [redacted]
+Idle exit:                  untracked
+----
+
+Call graph:
+    881 Thread_17903572: Main Thread   DispatchQueue_<multiple>
+      881 _dyld_start  (in dyld) + 0  [[address]]
+
+Total number in stack (recursive counted multiple, when >=5):
+
+Sort by top of stack, same collapsed (when >= 5):
+        _dyld_start  (in dyld)        881
+
+Binary images description not available
+

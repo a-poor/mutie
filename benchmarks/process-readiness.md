@@ -6,6 +6,11 @@ Follow-up on 2026-10-21 to the failures recorded during
 Node identity validation for test use. Production launch/validation semantics,
 timeouts and process-group behavior remain unchanged.
 
+Later native Vitest helper startup failures and their fixture-only follow-up are
+recorded in [Vitest fixture startup](vitest-fixture-startup.md). The passing runs
+below are historical evidence, not a claim that the fresh native helper never
+stalls.
+
 ## Final acceptance
 
 The final ordinary `cargo test --offline` run exits successfully across all
