@@ -1252,6 +1252,34 @@ classification. Add one language at a time using the same lifecycle and fixture
 expectations. Decide multi-module and test-framework support separately from simply
 recognizing a language.
 
+#### Proposed operator expansion
+
+The [current support matrix](README.md#mutation-operators) distinguishes implemented
+operators by language. The following are proposals, not support commitments or an
+automatic sequence of work:
+
+- Extend comparison inversion and negation removal to additional languages to
+  expose reversed validation/filtering decisions, beyond equality-at-a-cutoff gaps.
+- Add arithmetic replacement to Python and Rust for formulas, counters and indexing.
+  Python arithmetic is a candidate next objective after the current findings review;
+  unchanged betting-math-kit could provide a useful validation target.
+- Consider a small numeric-literal replacement set (`0`, `1`, `-1`, or adjacent
+  values) for defaults, limits and retry counts. Bound candidate growth and avoid
+  duplicate or unchanged replacements.
+- Consider return-value replacement with type-appropriate zero, empty string,
+  empty collection or null values, and targeted string-literal replacement.
+- Extend call removal or add carefully scoped statement/block removal to test
+  persistence, notification and cleanup behavior. Measure build-failure noise and
+  preserve lifecycle-error classification before broadening eligibility.
+
+Select each extension using observed test gaps and runtime cost. Acceptance needs
+language-specific semantic controls (operand evaluation, grouping, short-circuiting,
+overloaded operations and error behavior as applicable), exact discovery/rerun
+identity, and a useful unchanged-project finding killed by stronger tests in a
+separate copy. Preserve original inputs, reports and scores; build/runtime/lifecycle
+errors must not be relabeled as test kills. A larger operator catalog alone is not
+milestone progress.
+
 ### 4. CI and additional report consumers
 
 The first CI policy is implemented: `fail_on_missed` defaults to false, merges from

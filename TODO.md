@@ -838,6 +838,16 @@ work; their order is not a priority queue and they do not block the Rust milesto
 
 ## Longer-term options
 
+- [ ] Evaluate [proposed operator expansion](DESIGN.md#proposed-operator-expansion)
+  against useful real-project gaps: comparison inversion/negation removal across
+  languages, Python/Rust arithmetic, bounded numeric/string literal changes,
+  return-value replacement, and scoped statement/block removal.
+- [ ] Consider Python arithmetic as a next objective after the current findings
+  review, using unchanged betting-math-kit if it demonstrates a useful finding.
+  Validate semantics and discovery/rerun identity, then kill the finding with
+  stronger tests in a separate copy while preserving original inputs/reports and
+  classification rules. This is a proposal, not a selected or started goal.
+
 - [ ] Prioritize the planned JavaScript/TypeScript and Python runner slices using
   concrete projects and the largest remaining obstacles to routine use; see
   [target support tracking](#target-support-tracking).

@@ -462,6 +462,30 @@ conflicts with `--list`.
 
 ## Mutation operators
 
+Support differs by language and applies within each runner's validated scope:
+
+| Mutation | Go | Rust | Python | JS/TS (Vitest, Node, Bun) |
+| --- | --- | --- | --- | --- |
+| Arithmetic: `+ ↔ -`, `* ↔ /`, `% → *` | Yes | No | No | No |
+| Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | No | No | No |
+| Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | No |
+| Logical swap: `&& ↔ \|\|` | Yes | Yes | No | No |
+| Boolean literals: `true ↔ false` (Python: `True ↔ False`) | Yes | Yes | Yes | Yes |
+| Remove negation: `!x → x` | Yes | No | No | No |
+| Force an `if` condition true or false (two operators) | Yes | No | No | No |
+| Remove a standalone function call | Yes | No | No | No |
+| Skip a conditional loop | Yes | No | No | No |
+| Replace numeric or string literals | No | No | No | No |
+| Remove arbitrary statements or code blocks | No | No | No | No |
+
+Python comparison boundaries exclude chained comparisons such as `0 < x < 10`.
+Call removal deletes eligible standalone call statements; it excludes calls used
+as values, `go`/`defer` calls, initializers and loop updates. Boolean literal
+flipping does not force arbitrary conditions. Branch forcing and loop skipping
+have additional eligibility and evaluation rules described below.
+See [proposed operator expansion](DESIGN.md#proposed-operator-expansion) for ideas
+that are not yet implemented.
+
 All ten Go operators run by default; Rust runs `boolean_flip`,
 `comparison_boundary`, and `logical_swap`. Python runs `boolean_flip` and
 `comparison_boundary`.
