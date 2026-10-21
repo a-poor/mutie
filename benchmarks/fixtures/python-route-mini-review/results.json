@@ -1,0 +1,1844 @@
+{
+  "previous": "/tmp/mutie-route-mini-acceptance/results.json",
+  "records": [
+    {
+      "label": "native-baseline",
+      "command": [
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "-I",
+        "-B",
+        "-c",
+        "import sys; from pathlib import Path; sys.path.insert(0, str(Path(sys.argv[1])/\"src\")); import pytest; raise SystemExit(pytest.main([\"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+        "/tmp/mutie-route-mini-review-final/stronger-project"
+      ],
+      "seconds": 0.5255620829993859,
+      "exit_code": 0
+    },
+    {
+      "label": "isolated-baseline",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "python-check",
+        "/tmp/mutie-route-mini-review-final/stronger-project",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "30",
+        "--json"
+      ],
+      "seconds": 8.810145333991386,
+      "exit_code": 0,
+      "test_count": 85
+    },
+    {
+      "label": "retry-fallback",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-route-mini-review-final/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-route-mini-review-final/reports",
+        "--rerun",
+        "/tmp/mutie-route-mini-acceptance/reports/run-1792546785-eVSqKy",
+        "--id",
+        "9,10,11,14,20"
+      ],
+      "seconds": 46.4323335000081,
+      "exit_code": 0,
+      "report": "/tmp/mutie-route-mini-review-final/reports/run-1792603428-nlGVQt",
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "ef9c79bb87503b71e466d3b04f061c5c84bff55e9bdd38bf56d954375964063b",
+        "diff/000002.diff": "fb1706fd194af384aeb51d01530220638c7e72d47ac58e5fa437146d06c70865",
+        "diff/000003.diff": "500c7e041e78c3f9883748526d9bb1c39895630aa76ce28bcee7f7565f13a16e",
+        "diff/000004.diff": "23c2ec2b4b771910b88853ee8d69265b6a63f26a18225f4325c948ac9c4882f1",
+        "diff/000005.diff": "9e6c214940235c11c3bfc34e97326bcad8cdc4a26ae7f22d3691405d0802c507",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "dc1f3ff2e21f766181fb51feb9e93ad04438836bb0aba13ac9c34db3bf033abf",
+        "logs/000001.log": "99dc0c88b674a83466ab4755b2845b76d2b98e2fbd59319fd7a99d55b6c22d33",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "0a5ea605e9adeaa79e1424a9028a9a01f8d8b2b052043ecbc9eb9d460310b8e3",
+        "logs/000002.log": "3ad5f343f421aec0f2bb84c169e33f38c7b121114a95b3710e8e6df3f3e3f32a",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "db7627b5b710dbf86b79b74d50de306e0f8b9d0b58017bb98d86f3eb34eb87a9",
+        "logs/000003.log": "286d4dcf95438c9a2c7bffc965e1dcb25f0d5add9a8465a23777630a13e7320d",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "5d0962dcee6a846e7bd2b50f321793fbfd5d05de7b1a75bfed391882062ff763",
+        "logs/000004.log": "47b47d8108a6fa271b99d54145d4c88981f034c4e8640124cdc86850e77d2047",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "1f36c9be6f27339c4b6c6b5cfae8dd824f9f30b5be2f7b429828a95a6e8448d5",
+        "logs/000005.log": "57151286adf1aa6a8e6f382c3ed3de7ff960f3a4b7d5e0c27accd86c025c226c",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "afd400ffa3942159e7502d4d8b74c8602e3fae6e6e98faab2c4e58b176e7fc0b",
+        "logs/baseline.log": "0bae31e2f5eded2856967285f4fa6a6d32a084fd7c4328bb900588b4a0b3543b",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "3222d97be9d277f7ffd8c1ab86c7c8713fce16915d26e30d48d4d4073dd2aa87",
+        "logs/discovery.log": "13bbcb86b00ef565b9da41ceec6e11e170250c905bbb839f0b00dcbe1936f425",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "7c59aafd1a6f48b86566f154c5c6aba6404ba6c719ad0284f59cea8d111ec093",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "eb69f94bdd4263402a79d5cf573468680d899c12c7e3be1368fd165b4e0f6d8c",
+        "outcomes.json": "d045e7a0bfb73fdd3ae7449004d161487e4c030755d78c06d675af757eb08407",
+        "run.json": "04a7e87b49e465fd505839476cffee61933ab1364064c869144349ace2d51815",
+        "summary.txt": "87ca0b98a53f15f8b9f59d7c3d093ef7b1d426e5b7cbf88362141261408639a2",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 5,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 5,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.825080083,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 7450,
+                "head_bytes": 7450,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 7449,
+                "head_bytes": 7449,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.985459499,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 26373,
+                "head_bytes": 26373,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 26372,
+                "head_bytes": 26372,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.735315751,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 8947,
+                "head_bytes": 8947,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 8946,
+                "head_bytes": 8946,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.775642042,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1024,
+                "head_bytes": 1024,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1023,
+                "head_bytes": 1023,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.54474175,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 72234,
+                "head_bytes": 72234,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 72233,
+                "head_bytes": 72233,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 73,
+            "column": 30,
+            "end_line": 73,
+            "end_column": 34,
+            "byte_start": 2292,
+            "byte_end": 2296,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 77,
+            "column": 59,
+            "end_line": 77,
+            "end_column": 64,
+            "byte_start": 2466,
+            "byte_end": 2471,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 77,
+            "column": 79,
+            "end_line": 77,
+            "end_column": 83,
+            "byte_start": 2486,
+            "byte_end": 2490,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 80,
+            "column": 55,
+            "end_line": 80,
+            "end_column": 60,
+            "byte_start": 2719,
+            "byte_end": 2724,
+            "original": "False",
+            "replacement": "True",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "src/route_mini/router.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+            "line": 54,
+            "column": 19,
+            "end_line": 54,
+            "end_column": 23,
+            "byte_start": 1883,
+            "byte_end": 1887,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "original_ids": {
+        "1": 9,
+        "2": 10,
+        "3": 11,
+        "4": 14,
+        "5": 20
+      }
+    },
+    {
+      "label": "dataclass",
+      "command": [
+        "/path/to/mutie/target/debug/mutie",
+        "/tmp/mutie-route-mini-review-final/stronger-project",
+        "--lang",
+        "python",
+        "--python",
+        "/tmp/mutie-pytest-audit-env/bin/python",
+        "--timeout",
+        "20",
+        "--baseline-timeout",
+        "30",
+        "--ui",
+        "plain",
+        "--output-dir",
+        "/tmp/mutie-route-mini-review-final/reports",
+        "--rerun",
+        "/tmp/mutie-route-mini-acceptance/reports/run-1792546785-eVSqKy",
+        "--id",
+        "1,2,4,5,7,8,16,17,18,19,25,26,27,28,29,30,31,32,33,34,35,36,37,38"
+      ],
+      "seconds": 220.57478116697166,
+      "exit_code": 0,
+      "report": "/tmp/mutie-route-mini-review-final/reports/run-1792603474-AVnULD",
+      "report_sha256": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "f9edab18316c7db7c1623880c927ee93268b31fec2643d4a36e83c6e94d1e136",
+        "diff/000002.diff": "4ce4c423ced94bc70041a69b2c2a58c87d29d1102bd47280105a0105d19693d8",
+        "diff/000003.diff": "684205ba4a1dbcc576fb0f0520e0bc4cef4824d760ce0aeaa118c645786ff054",
+        "diff/000004.diff": "06a72cbaba92fdbe0ef87dc17266a0d5f88f7fcd6a3ed7469f51a203b476d0f8",
+        "diff/000005.diff": "667ac586369be9192699b33d914c0b0513ec840cdf14bae21e9a21d1edc96d83",
+        "diff/000006.diff": "fb4c9ddc7de5eaa77b37212ca89f7c9a88bd9ec9cdb8ea555e6763150c84ea97",
+        "diff/000007.diff": "91c1121ac9c764f13f37fbd642c5030be2fbae6906e8294d240c36b3fcff9aa8",
+        "diff/000008.diff": "8be781effec60feb9d6c56aff01bed2b8c2623c48a999601b322215361c28371",
+        "diff/000009.diff": "c4c8efd9f4ced1d87f2e76b198305e176b6be3454823848f136fd7c0045fe070",
+        "diff/000010.diff": "c180363c363cb4b327a568feb7ef3fa066fe7478ea33f589af1532caf5ecea3c",
+        "diff/000011.diff": "871d1901475c48d36b9d1bfb710f09b5cf992a45304498450faebe3d4898dc9e",
+        "diff/000012.diff": "546c2881013d3342e05851a9a274fd12538ad02394c94ed577b7cfa8b6ea324b",
+        "diff/000013.diff": "28fcdaab81c5e90943b1afdcb78a9b768bf6a02ea21e3defc3449dcab119751e",
+        "diff/000014.diff": "8f1ac7d12c12c54a30ab887c8bb5810e014a3861e95188dce2dd6b4a4181e49f",
+        "diff/000015.diff": "d212551c25d28eb47dd7879285a3768997cb632fc0803dd55e9f3916a9a8dc0a",
+        "diff/000016.diff": "cf5e43e91f1774fcfc3c770c772b7c4639d5221b5e254ee3efe8471fc9ec6411",
+        "diff/000017.diff": "5fab24bf64f9fb76eb726bb5d778bdfffdd2f7810f379621745999b7f9973dd2",
+        "diff/000018.diff": "c6c1be3d03ce8597fa373ed42dd6887255498e6c90f76568cad3ce446c1b3faa",
+        "diff/000019.diff": "7908ee5ff7f479ee0192cb71c77dccc94a4f00ecc96a2cd8fce29e704ed0092e",
+        "diff/000020.diff": "5aa2c9c54e4dc91beb66034f4436004bbc6b03eb0f105c3ea19a7ba454208bea",
+        "diff/000021.diff": "51a885823f2ddf0fd4853ee5e6246391c2c3094877782ba9e30daedff110ff34",
+        "diff/000022.diff": "255107b13ccc56c3d115235a34901fa25ed87dd8d6cec64e46fdc41f5fba2685",
+        "diff/000023.diff": "49498f8e57e52df624200955501deecadc035687ed7d5b9adc5195119e3a7b0d",
+        "diff/000024.diff": "325eaae5279e2a6ffaa03291650c54447378429897b1edd280c20cc263bebe39",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "8c86c07cb7e80fde8bb9aae5398fe938863f87d4baf36254718a4903e11ce6eb",
+        "logs/000001.log": "4b80f8c4316fc0d6b1a453954f02722290f76d4e619b4d8e40f47c09c1c938cb",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "c26c346e59b18831289ae176ad5cd913ecd381ee9e0cdeb11cd48f7d56682e52",
+        "logs/000002.log": "b3632a732ce6ed75dc7a76887c29435ea777d76ceef9f5e130df41ffd722ceb7",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.stdout.log": "89d5bfc94e0aeb001c517f0b8d1025fce7d1026a294c4876217e87b4017ecec1",
+        "logs/000003.log": "966ce905c29bdd9356806831b8fb143e5cb4341c9694e456d3dc6249a22e2186",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000003.stdout.log": "3ce03a768f4203f7091a10d940fe9ec33d82e2a49f68be7e52a2764d280d157e",
+        "logs/000004.log": "e6271fb7132910c929cda62416a14eeac7a5225331ab9176313ed51ce8afb9d5",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "32c2ced21746266c3aac1b372347d81f43ccb2e95a1096b0429a947d3629a7ab",
+        "logs/000005.log": "678d827c43c25f7b2e70bdd1f33990a7d435d2ebcb3d5e68c000fc1f4f0e4160",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "eab36d3f5b031cd5a06609913d79dc153cfb7282cd85f8f920d811380b338365",
+        "logs/000006.log": "5e240e82511f63768ba855e262e63a30ba8539844a6ac21eb74aa1c9f709bf21",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.stdout.log": "ece6bad60596cc623ca281ab8c85193aa8f17161e0950d9270d8080828c3316a",
+        "logs/000007.log": "147db67cd10494e8fdf065bd5194f06e15b36f1764a46c3b8fa0b6901f73f236",
+        "logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000007.stdout.log": "027975f25531848a563f1976bf14153ea3c10659b9bcf158c3f4a749fa55ed9b",
+        "logs/000008.log": "e6271fb7132910c929cda62416a14eeac7a5225331ab9176313ed51ce8afb9d5",
+        "logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.stdout.log": "32c2ced21746266c3aac1b372347d81f43ccb2e95a1096b0429a947d3629a7ab",
+        "logs/000009.log": "f40c9b8bed114b42718556297c66b0c06110e1588cfb8f2adf9f9d15439fb234",
+        "logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.stdout.log": "4ef19ad0e4d7864c28228994b86fc2f2c01e05296753a715ca7de3beee0c6129",
+        "logs/000010.log": "90c1ea9dcb8eeb07ac07b549a6439e5246460714f6ed33bab486a2736ea76e11",
+        "logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000010.stdout.log": "60a44db1dfff1910be08c2428a6f0e6ffc46d79e55ffb8579dc1ca8490158d75",
+        "logs/000011.log": "692ef1782a898e088dd7a3d274e95a918963b4f450489741b8f20f0858a61442",
+        "logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000011.stdout.log": "d9dac0378a4e178ca9e9547cafdf27d659a2b6b3969fbf5ca2eee1b89f4ef335",
+        "logs/000012.log": "e6271fb7132910c929cda62416a14eeac7a5225331ab9176313ed51ce8afb9d5",
+        "logs/000012.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000012.stdout.log": "32c2ced21746266c3aac1b372347d81f43ccb2e95a1096b0429a947d3629a7ab",
+        "logs/000013.log": "6cd0ceab3cabe73dbc8a14257ffe9efffeab67b51e47027893735db8983f0133",
+        "logs/000013.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000013.stdout.log": "068da83d3d26d9e4d474cd8f62089f23b1e50554cf5b9790758c5957bd1e222c",
+        "logs/000014.log": "977230a8aa68bbf3bf505a0f18f1c700a98489ad8d87b6d0fbf7a035d090f1ea",
+        "logs/000014.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000014.stdout.log": "caa60d25cf9aee30f881a23420c37c5e545486e1d0d03de50d769faa47701bbe",
+        "logs/000015.log": "8ee80f5df55e56cf3bc11f8f854a712f8be0d0fe9441d514921b5e7caaea4104",
+        "logs/000015.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000015.stdout.log": "c8b9f63ac3ad50cc7bafc8835b6e95331cbcd0c87bcf536f669331b163ed23ea",
+        "logs/000016.log": "c3161c173125db7fff6ac62cb6b6e1fb2e08ab2749e71856509112a6aab1dc1d",
+        "logs/000016.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000016.stdout.log": "2eea3a0abc1b396a629497c0c015a2567fe3d1d7b1a3f5c10b0ab034b74cb966",
+        "logs/000017.log": "3489e9a1da989c3432683bc8f32df353e882830ad9d9fda900b52bf63f287545",
+        "logs/000017.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000017.stdout.log": "d5449d5116cc28bee026156249d1fd0e2a017818551655a9772c0bb1637dcff9",
+        "logs/000018.log": "e6271fb7132910c929cda62416a14eeac7a5225331ab9176313ed51ce8afb9d5",
+        "logs/000018.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000018.stdout.log": "32c2ced21746266c3aac1b372347d81f43ccb2e95a1096b0429a947d3629a7ab",
+        "logs/000019.log": "27fe60572f3f45645f926382d593fb98558753179b279046eace68410693b469",
+        "logs/000019.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000019.stdout.log": "30ea5a87690a0930514d20175eb627da0a66611d6a814290c2deefaabcdeeb63",
+        "logs/000020.log": "b3632a732ce6ed75dc7a76887c29435ea777d76ceef9f5e130df41ffd722ceb7",
+        "logs/000020.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000020.stdout.log": "89d5bfc94e0aeb001c517f0b8d1025fce7d1026a294c4876217e87b4017ecec1",
+        "logs/000021.log": "e2bc25144f5fb3fd706ed6425a8b8bcd4fac7f9de76aaa1e7813e9ba62549dcc",
+        "logs/000021.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000021.stdout.log": "b3bf8b1384771751090666ae90354e4d406c83d50fde197ac8069ecb69746ffb",
+        "logs/000022.log": "1cf5fd7530524dc7a4e6587eab10986222e73ff9b52eb5fd43fed39047b8cf0c",
+        "logs/000022.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000022.stdout.log": "4a3027ecdae30cf13b4c08f04e5f78b4729462e5ecaba5bb0eb916e1666cd00a",
+        "logs/000023.log": "af3e50bae9b18e823e84cf157ba3d1758bcf11bef53dc4552a5111d04a0245fb",
+        "logs/000023.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000023.stdout.log": "eb9708568e047c3310807b110f079a48ed1474d1dfe420933b775b01eb14a6c3",
+        "logs/000024.log": "6fd5eb91a5bc701f230e63e28d89a6d97ebca686a2882ce33ea6f76c9c778853",
+        "logs/000024.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000024.stdout.log": "684759091565afc6c7ac6dcc0c02ea13fe4058c93f2e420ba20f64b9d496d4f1",
+        "logs/baseline.log": "977230a8aa68bbf3bf505a0f18f1c700a98489ad8d87b6d0fbf7a035d090f1ea",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "caa60d25cf9aee30f881a23420c37c5e545486e1d0d03de50d769faa47701bbe",
+        "logs/discovery.log": "a8553b3a3e4fa37be60ac54ac184a75f6be1d049299793fb74a0509b3012d2af",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "b959ca5a3d64a9d893d456ce28dd6c187984f81247cfa8f5010a9e42348af56d",
+        "missed.txt": "56f1af03c46c51f794fae8f087b5c4e7a595d4a5bb46a20df1576aa11ac97bdb",
+        "mutants.json": "a5036c63594016e4d84236dd2a29005ddc20d2d32a803204db0ecfa940608a67",
+        "outcomes.json": "381eef891a8b4723420deb07590df46a19d3bf41a1aeac74726178c4335220d8",
+        "run.json": "e4f78e91d5900f562420444731a99835d0d73593c665b3e15964d441e17d3f78",
+        "summary.txt": "d86e55a933d77e91723b8f0c96117daf6fee38d47b1cb2b3cec3d5314a7f5cd0",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 12,
+        "missed": 12,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 50.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 12,
+        "missed": 12,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.231214458,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 838,
+                "head_bytes": 838,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 837,
+                "head_bytes": 837,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.748720459,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.075535083,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 802,
+                "head_bytes": 802,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 801,
+                "head_bytes": 801,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.811321125,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.380312291,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 841,
+                "head_bytes": 841,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 840,
+                "head_bytes": 840,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.802964167,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.9546349579999998,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 842,
+                "head_bytes": 842,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 841,
+                "head_bytes": 841,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.680352667,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.134683333,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 805,
+                "head_bytes": 805,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 804,
+                "head_bytes": 804,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.282495584,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.341091376,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 831,
+                "head_bytes": 831,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 830,
+                "head_bytes": 830,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.949996959,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 4.053345375,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 803,
+                "head_bytes": 803,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 802,
+                "head_bytes": 802,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.952573916,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.468914666,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 792,
+                "head_bytes": 792,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 791,
+                "head_bytes": 791,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 4.042517959,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 17,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.999461459,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000017.log",
+            "stdout": "logs/000017.stdout.log",
+            "stderr": "logs/000017.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 802,
+                "head_bytes": 802,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 801,
+                "head_bytes": 801,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 18,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.579414084,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000018.log",
+            "stdout": "logs/000018.stdout.log",
+            "stderr": "logs/000018.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 19,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.906162834,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000019.log",
+            "stdout": "logs/000019.stdout.log",
+            "stderr": "logs/000019.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 810,
+                "head_bytes": 810,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 809,
+                "head_bytes": 809,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 20,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.809375958,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000020.log",
+            "stdout": "logs/000020.stdout.log",
+            "stderr": "logs/000020.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 21,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.16299,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000021.log",
+            "stdout": "logs/000021.stdout.log",
+            "stderr": "logs/000021.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 839,
+                "head_bytes": 839,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 838,
+                "head_bytes": 838,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 22,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 4.312235459,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000022.log",
+            "stdout": "logs/000022.stdout.log",
+            "stderr": "logs/000022.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 23,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.982376001,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000023.log",
+            "stdout": "logs/000023.stdout.log",
+            "stderr": "logs/000023.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 836,
+                "head_bytes": 836,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 835,
+                "head_bytes": 835,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 24,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 4.281112,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000024.log",
+            "stdout": "logs/000024.stdout.log",
+            "stderr": "logs/000024.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 180,
+                "head_bytes": 180,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 179,
+                "head_bytes": 179,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "inventory": {
+        "schema_version": 1,
+        "operator_catalog_version": 1,
+        "complete": true,
+        "mutations": [
+          {
+            "id": 1,
+            "file": "src/route_mini/decision.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+            "line": 10,
+            "column": 19,
+            "end_line": 10,
+            "end_column": 23,
+            "byte_start": 184,
+            "byte_end": 188,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "src/route_mini/decision.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+            "line": 10,
+            "column": 31,
+            "end_line": 10,
+            "end_column": 35,
+            "byte_start": 196,
+            "byte_end": 200,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 18,
+            "column": 19,
+            "end_line": 18,
+            "end_column": 23,
+            "byte_start": 343,
+            "byte_end": 347,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 18,
+            "column": 31,
+            "end_line": 18,
+            "end_column": 35,
+            "byte_start": 355,
+            "byte_end": 359,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 29,
+            "column": 19,
+            "end_line": 29,
+            "end_column": 23,
+            "byte_start": 645,
+            "byte_end": 649,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          },
+          {
+            "id": 6,
+            "file": "src/route_mini/fallback.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+            "line": 29,
+            "column": 31,
+            "end_line": 29,
+            "end_column": 35,
+            "byte_start": 657,
+            "byte_end": 661,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000006.diff",
+            "test_packages": []
+          },
+          {
+            "id": 7,
+            "file": "src/route_mini/providers.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+            "line": 12,
+            "column": 19,
+            "end_line": 12,
+            "end_column": 23,
+            "byte_start": 300,
+            "byte_end": 304,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000007.diff",
+            "test_packages": []
+          },
+          {
+            "id": 8,
+            "file": "src/route_mini/providers.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+            "line": 12,
+            "column": 31,
+            "end_line": 12,
+            "end_column": 35,
+            "byte_start": 312,
+            "byte_end": 316,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000008.diff",
+            "test_packages": []
+          },
+          {
+            "id": 9,
+            "file": "src/route_mini/providers.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+            "line": 39,
+            "column": 19,
+            "end_line": 39,
+            "end_column": 23,
+            "byte_start": 994,
+            "byte_end": 998,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000009.diff",
+            "test_packages": []
+          },
+          {
+            "id": 10,
+            "file": "src/route_mini/providers.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+            "line": 39,
+            "column": 31,
+            "end_line": 39,
+            "end_column": 35,
+            "byte_start": 1006,
+            "byte_end": 1010,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000010.diff",
+            "test_packages": []
+          },
+          {
+            "id": 11,
+            "file": "src/route_mini/telemetry.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+            "line": 11,
+            "column": 19,
+            "end_line": 11,
+            "end_column": 23,
+            "byte_start": 234,
+            "byte_end": 238,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000011.diff",
+            "test_packages": []
+          },
+          {
+            "id": 12,
+            "file": "src/route_mini/telemetry.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+            "line": 11,
+            "column": 31,
+            "end_line": 11,
+            "end_column": 35,
+            "byte_start": 246,
+            "byte_end": 250,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000012.diff",
+            "test_packages": []
+          },
+          {
+            "id": 13,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 9,
+            "column": 19,
+            "end_line": 9,
+            "end_column": 23,
+            "byte_start": 191,
+            "byte_end": 195,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000013.diff",
+            "test_packages": []
+          },
+          {
+            "id": 14,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 9,
+            "column": 31,
+            "end_line": 9,
+            "end_column": 35,
+            "byte_start": 203,
+            "byte_end": 207,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000014.diff",
+            "test_packages": []
+          },
+          {
+            "id": 15,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 14,
+            "column": 19,
+            "end_line": 14,
+            "end_column": 23,
+            "byte_start": 259,
+            "byte_end": 263,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000015.diff",
+            "test_packages": []
+          },
+          {
+            "id": 16,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 14,
+            "column": 31,
+            "end_line": 14,
+            "end_column": 35,
+            "byte_start": 271,
+            "byte_end": 275,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000016.diff",
+            "test_packages": []
+          },
+          {
+            "id": 17,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 24,
+            "column": 19,
+            "end_line": 24,
+            "end_column": 23,
+            "byte_start": 441,
+            "byte_end": 445,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000017.diff",
+            "test_packages": []
+          },
+          {
+            "id": 18,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 24,
+            "column": 31,
+            "end_line": 24,
+            "end_column": 35,
+            "byte_start": 453,
+            "byte_end": 457,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000018.diff",
+            "test_packages": []
+          },
+          {
+            "id": 19,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 34,
+            "column": 19,
+            "end_line": 34,
+            "end_column": 23,
+            "byte_start": 611,
+            "byte_end": 615,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000019.diff",
+            "test_packages": []
+          },
+          {
+            "id": 20,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 34,
+            "column": 31,
+            "end_line": 34,
+            "end_column": 35,
+            "byte_start": 623,
+            "byte_end": 627,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000020.diff",
+            "test_packages": []
+          },
+          {
+            "id": 21,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 47,
+            "column": 19,
+            "end_line": 47,
+            "end_column": 23,
+            "byte_start": 971,
+            "byte_end": 975,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000021.diff",
+            "test_packages": []
+          },
+          {
+            "id": 22,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 47,
+            "column": 31,
+            "end_line": 47,
+            "end_column": 35,
+            "byte_start": 983,
+            "byte_end": 987,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000022.diff",
+            "test_packages": []
+          },
+          {
+            "id": 23,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 71,
+            "column": 19,
+            "end_line": 71,
+            "end_column": 23,
+            "byte_start": 1618,
+            "byte_end": 1622,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000023.diff",
+            "test_packages": []
+          },
+          {
+            "id": 24,
+            "file": "src/route_mini/types.py",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+            "line": 71,
+            "column": 31,
+            "end_line": 71,
+            "end_column": 35,
+            "byte_start": 1630,
+            "byte_end": 1634,
+            "original": "True",
+            "replacement": "False",
+            "diff": "diff/000024.diff",
+            "test_packages": []
+          }
+        ],
+        "dismissals": {
+          "matched": [],
+          "needs_review": []
+        }
+      },
+      "original_ids": {
+        "1": 1,
+        "2": 2,
+        "3": 4,
+        "4": 5,
+        "5": 7,
+        "6": 8,
+        "7": 16,
+        "8": 17,
+        "9": 18,
+        "10": 19,
+        "11": 25,
+        "12": 26,
+        "13": 27,
+        "14": 28,
+        "15": 29,
+        "16": 30,
+        "17": 31,
+        "18": 32,
+        "19": 33,
+        "20": 34,
+        "21": 35,
+        "22": 36,
+        "23": 37,
+        "24": 38
+      }
+    }
+  ],
+  "stronger_input_sha256": {
+    ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+    ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+    ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+    "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+    "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+    "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+    "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+    "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+    "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+    "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+    "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+    "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+    "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+    "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+    "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+    "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+    "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+    "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+    "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+    "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+    "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+    "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+    "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+    "tests/test_review_contracts.py": "6495d69ad795eff3cde75f55dfaf083ad540e7971d0fa9cf92eef7ead6f9af45",
+    "tests/test_router.py": "7ac04fa52f5b7e4f78b4e29f52b774eff69d5bb25bfb278908a67fd8681fb214",
+    "tests/test_stronger_boundaries.py": "3aac17e707d6f824b5d895baa6f59a56801863f8b76cb8b35b796f325e889bd3",
+    "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+  },
+  "original_input_sha256": {
+    ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+    ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+    ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+    "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+    "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+    "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+    "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+    "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+    "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+    "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+    "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+    "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+    "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+    "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+    "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+    "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+    "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+    "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+    "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+    "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+    "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+    "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+    "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+    "tests/test_router.py": "1c85ad92b63d32e1785faf210d4ab4e3ad016399d0fdd7783847fe79383fc334",
+    "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+  },
+  "original_inputs_and_reports_preserved": true
+}

@@ -1,0 +1,227 @@
+{
+  "native_only": true,
+  "original_preserved": true,
+  "results": [
+    {
+      "original_id": 2,
+      "baseline": {
+        "name": "AuditDecision",
+        "slots": [
+          "request_id",
+          "selected",
+          "candidates",
+          "reason",
+          "fallback_from",
+          "attempts",
+          "success",
+          "error",
+          "latency_ms",
+          "cost",
+          "created_at"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "AuditDecision",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 5,
+      "baseline": {
+        "name": "ProviderError",
+        "slots": [
+          "status_code",
+          "message",
+          "network"
+        ],
+        "instance_dict": true
+      },
+      "mutation": {
+        "name": "ProviderError",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 8,
+      "baseline": {
+        "name": "FallbackDecision",
+        "slots": [
+          "kind",
+          "retry_same",
+          "fall_through",
+          "backoff_ms"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "FallbackDecision",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 17,
+      "baseline": {
+        "name": "ModelCapabilities",
+        "slots": [
+          "model",
+          "max_tokens",
+          "cost_per_input_token",
+          "cost_per_output_token",
+          "latency_p50_ms"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "ModelCapabilities",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 19,
+      "baseline": {
+        "name": "ScriptedSuccess",
+        "slots": [
+          "text",
+          "output_tokens",
+          "latency_ms"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "ScriptedSuccess",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 26,
+      "baseline": {
+        "name": "ProviderRollup",
+        "slots": [
+          "provider",
+          "total",
+          "successes",
+          "success_rate",
+          "p50_latency_ms",
+          "p95_latency_ms",
+          "cost_to_date"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "ProviderRollup",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 28,
+      "baseline": {
+        "name": "Provider",
+        "slots": [
+          "name"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "Provider",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 30,
+      "baseline": {
+        "name": "Cost",
+        "slots": [
+          "input",
+          "output"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "Cost",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 32,
+      "baseline": {
+        "name": "Model",
+        "slots": [
+          "provider",
+          "name"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "Model",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 34,
+      "baseline": {
+        "name": "Request",
+        "slots": [
+          "prompt",
+          "max_tokens",
+          "input_tokens",
+          "metadata"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "Request",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 36,
+      "baseline": {
+        "name": "Response",
+        "slots": [
+          "text",
+          "model",
+          "input_tokens",
+          "output_tokens",
+          "latency_ms",
+          "cost",
+          "metadata"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "Response",
+        "slots": null,
+        "instance_dict": true
+      }
+    },
+    {
+      "original_id": 38,
+      "baseline": {
+        "name": "Decision",
+        "slots": [
+          "request_id",
+          "selected",
+          "candidates",
+          "reason"
+        ],
+        "instance_dict": false
+      },
+      "mutation": {
+        "name": "Decision",
+        "slots": null,
+        "instance_dict": true
+      }
+    }
+  ]
+}

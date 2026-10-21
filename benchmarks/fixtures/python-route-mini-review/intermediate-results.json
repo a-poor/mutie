@@ -1,0 +1,480 @@
+[
+  {
+    "directory": "/tmp/mutie-route-mini-review",
+    "records": [
+      {
+        "label": "native-baseline",
+        "command": [
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "-I",
+          "-B",
+          "-c",
+          "import sys; from pathlib import Path; sys.path.insert(0, str(Path(sys.argv[1])/\"src\")); import pytest; raise SystemExit(pytest.main([\"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+          "/tmp/mutie-route-mini-review/stronger-project"
+        ],
+        "seconds": 0.6825439169770107,
+        "exit_code": 0
+      },
+      {
+        "label": "isolated-baseline",
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "python-check",
+          "/tmp/mutie-route-mini-review/stronger-project",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "30",
+          "--json"
+        ],
+        "seconds": 2.116573042003438,
+        "exit_code": 1
+      }
+    ],
+    "stronger_input_sha256": {
+      ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+      ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+      ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+      "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+      "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+      "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+      "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+      "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+      "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+      "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+      "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+      "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+      "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+      "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+      "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+      "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+      "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+      "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+      "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+      "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+      "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+      "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+      "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+      "tests/test_review_contracts.py": "6495d69ad795eff3cde75f55dfaf083ad540e7971d0fa9cf92eef7ead6f9af45",
+      "tests/test_router.py": "1d4ca3c1ad9325d899e82fe69efc19311f4c4091925d13a042acfc8357d457d7",
+      "tests/test_stronger_boundaries.py": "3aac17e707d6f824b5d895baa6f59a56801863f8b76cb8b35b796f325e889bd3",
+      "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+    }
+  },
+  {
+    "directory": "/tmp/mutie-route-mini-review-accepted",
+    "records": [
+      {
+        "label": "native-baseline",
+        "command": [
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "-I",
+          "-B",
+          "-c",
+          "import sys; from pathlib import Path; sys.path.insert(0, str(Path(sys.argv[1])/\"src\")); import pytest; raise SystemExit(pytest.main([\"-p\", \"no:cacheprovider\", sys.argv[1]]))",
+          "/tmp/mutie-route-mini-review-accepted/stronger-project"
+        ],
+        "seconds": 0.7669818750582635,
+        "exit_code": 0
+      },
+      {
+        "label": "isolated-baseline",
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "python-check",
+          "/tmp/mutie-route-mini-review-accepted/stronger-project",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "30",
+          "--json"
+        ],
+        "seconds": 8.616445583058521,
+        "exit_code": 0
+      },
+      {
+        "label": "retry-fallback",
+        "command": [
+          "/path/to/mutie/target/debug/mutie",
+          "/tmp/mutie-route-mini-review-accepted/stronger-project",
+          "--lang",
+          "python",
+          "--python",
+          "/tmp/mutie-pytest-audit-env/bin/python",
+          "--timeout",
+          "20",
+          "--baseline-timeout",
+          "30",
+          "--ui",
+          "plain",
+          "--output-dir",
+          "/tmp/mutie-route-mini-review-accepted/reports",
+          "--rerun",
+          "/tmp/mutie-route-mini-acceptance/reports/run-1792546785-eVSqKy",
+          "--id",
+          "9,10,11,14,20"
+        ],
+        "seconds": 43.37946591596119,
+        "exit_code": 1,
+        "report": "/tmp/mutie-route-mini-review-accepted/reports/run-1792603353-Etfl8w",
+        "report_sha256": {
+          ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "diff/000001.diff": "ef9c79bb87503b71e466d3b04f061c5c84bff55e9bdd38bf56d954375964063b",
+          "diff/000002.diff": "fb1706fd194af384aeb51d01530220638c7e72d47ac58e5fa437146d06c70865",
+          "diff/000003.diff": "500c7e041e78c3f9883748526d9bb1c39895630aa76ce28bcee7f7565f13a16e",
+          "diff/000004.diff": "23c2ec2b4b771910b88853ee8d69265b6a63f26a18225f4325c948ac9c4882f1",
+          "diff/000005.diff": "9e6c214940235c11c3bfc34e97326bcad8cdc4a26ae7f22d3691405d0802c507",
+          "errors.txt": "6d996aeea9f884619ef8e46c4182b4b616a5a4ea73b107b4810bee840d91a703",
+          "killed.txt": "6d55509f1b900c1e8470e584e1318a4c3925b038a4bb745c5d90aeaf9ab1e6d7",
+          "logs/000001.log": "b768c219b970821ab74b40ee5b53e3f68dea2820e963664ee4a062696ef30993",
+          "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000001.stdout.log": "8cc103d7a346ed8486f832eac4a5c2d947c47e4fabbf3fe8c337efa2788afb7d",
+          "logs/000002.log": "7d108b534e077f073419a859ddc85383f2891c04ad13a4365fa2a8ede022e52f",
+          "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000002.stdout.log": "8dddd74fb7d27560f4a902e210bb5f2c9c0a5d2c874bca0893343c39f3498665",
+          "logs/000003.log": "f52e0ac11dcad8aa50ce0cdb4248be662aa05b55a6ca09fb0bd237f67850b601",
+          "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000003.stdout.log": "2d3e2959a7cb13f4aa03fa8c99111a94aed18afbd95e037fe84838272135eb34",
+          "logs/000004.log": "792df09361518f2dce49cc39e3bb6bd0f61b5ce21a83b2e162a53196dbd145d0",
+          "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000004.stdout.log": "0ec3ab31afe504c08cf0a92e08361ada1c99365b48bdb368ed03de96b1811391",
+          "logs/000005.log": "a2408fad28916bdfd02b4d4d29b05dc6d4b79dc64431b2811ab77f3d4bf0b65d",
+          "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/000005.stdout.log": "6f0c0ac7ccd87b673e314a7e0a3c484ed808f71358e7c7aca86219c4779b34e4",
+          "logs/baseline.log": "9b398088578fc9550034274086acc25c198f6c85fffac72aa0e4d03db21fad6e",
+          "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/baseline.stdout.log": "bd19df0b5a46a9f1e92fb82d1c3e71777a07f54269f7630f64be1a21d9dc5012",
+          "logs/discovery.log": "64045a5eec5790e7006acd185b83b971b315686d77e62e3472d95c1e3af23a4a",
+          "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "logs/discovery.stdout.log": "a8d6d94c666c5652932e48fb7c87c9fb8b33076e01fce91f1d2991ff82d0f9f0",
+          "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "mutants.json": "eb69f94bdd4263402a79d5cf573468680d899c12c7e3be1368fd165b4e0f6d8c",
+          "outcomes.json": "552b0bf37771f5784aead4f57a0a3f9fa7a1f188e137449d8fac3a5e0689a8fe",
+          "run.json": "6ac3e26d4a6128b12dc53c4e91b574ff7594becaf8e58d6cb9fbf25b2b7a3f33",
+          "summary.txt": "5f5a35b195cca2c7f5a45d0566f9886e6c14222fe0eb8fe810b9edd7db01f0a3",
+          "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "status": "failed",
+        "score": {
+          "scope": "rerun",
+          "killed": 4,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 1,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": null,
+          "unavailable_reason": "incomplete_run"
+        },
+        "summary": {
+          "killed": 4,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 1
+        },
+        "outcomes": [
+          {
+            "id": 1,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "killed",
+            "error": null,
+            "duration_seconds": 2.8837194999999998,
+            "exit_code": 1,
+            "logs": {
+              "text": "logs/000001.log",
+              "stdout": "logs/000001.stdout.log",
+              "stderr": "logs/000001.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 7450,
+                  "head_bytes": 7450,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 7449,
+                  "head_bytes": 7449,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          },
+          {
+            "id": 2,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "killed",
+            "error": null,
+            "duration_seconds": 2.9316021660000002,
+            "exit_code": 1,
+            "logs": {
+              "text": "logs/000002.log",
+              "stdout": "logs/000002.stdout.log",
+              "stderr": "logs/000002.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 26373,
+                  "head_bytes": 26373,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 26372,
+                  "head_bytes": 26372,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          },
+          {
+            "id": 3,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "killed",
+            "error": null,
+            "duration_seconds": 2.919197583,
+            "exit_code": 1,
+            "logs": {
+              "text": "logs/000003.log",
+              "stdout": "logs/000003.stdout.log",
+              "stderr": "logs/000003.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 8947,
+                  "head_bytes": 8947,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 8946,
+                  "head_bytes": 8946,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          },
+          {
+            "id": 4,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "killed",
+            "error": null,
+            "duration_seconds": 2.739138792,
+            "exit_code": 1,
+            "logs": {
+              "text": "logs/000004.log",
+              "stdout": "logs/000004.stdout.log",
+              "stderr": "logs/000004.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 1024,
+                  "head_bytes": 1024,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 1023,
+                  "head_bytes": 1023,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          },
+          {
+            "id": 5,
+            "state": "completed",
+            "worker": 1,
+            "outcome": "error",
+            "error": "running src/route_mini/router.py:54:19: \"True\" -> \"False\": Python run contains an unsupported phase failure",
+            "duration_seconds": 2.979025125,
+            "exit_code": 1,
+            "logs": {
+              "text": "logs/000005.log",
+              "stdout": "logs/000005.stdout.log",
+              "stderr": "logs/000005.stderr.log",
+              "retention": {
+                "text": {
+                  "total_bytes": 71248,
+                  "head_bytes": 71248,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stdout": {
+                  "total_bytes": 71247,
+                  "head_bytes": 71247,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                },
+                "stderr": {
+                  "total_bytes": 0,
+                  "head_bytes": 0,
+                  "tail_bytes": 0,
+                  "omitted_bytes": 0
+                }
+              }
+            }
+          }
+        ],
+        "inventory": {
+          "schema_version": 1,
+          "operator_catalog_version": 1,
+          "complete": true,
+          "mutations": [
+            {
+              "id": 1,
+              "file": "src/route_mini/fallback.py",
+              "operator": "boolean_flip",
+              "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+              "line": 73,
+              "column": 30,
+              "end_line": 73,
+              "end_column": 34,
+              "byte_start": 2292,
+              "byte_end": 2296,
+              "original": "True",
+              "replacement": "False",
+              "diff": "diff/000001.diff",
+              "test_packages": []
+            },
+            {
+              "id": 2,
+              "file": "src/route_mini/fallback.py",
+              "operator": "boolean_flip",
+              "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+              "line": 77,
+              "column": 59,
+              "end_line": 77,
+              "end_column": 64,
+              "byte_start": 2466,
+              "byte_end": 2471,
+              "original": "False",
+              "replacement": "True",
+              "diff": "diff/000002.diff",
+              "test_packages": []
+            },
+            {
+              "id": 3,
+              "file": "src/route_mini/fallback.py",
+              "operator": "boolean_flip",
+              "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+              "line": 77,
+              "column": 79,
+              "end_line": 77,
+              "end_column": 83,
+              "byte_start": 2486,
+              "byte_end": 2490,
+              "original": "True",
+              "replacement": "False",
+              "diff": "diff/000003.diff",
+              "test_packages": []
+            },
+            {
+              "id": 4,
+              "file": "src/route_mini/fallback.py",
+              "operator": "boolean_flip",
+              "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+              "line": 80,
+              "column": 55,
+              "end_line": 80,
+              "end_column": 60,
+              "byte_start": 2719,
+              "byte_end": 2724,
+              "original": "False",
+              "replacement": "True",
+              "diff": "diff/000004.diff",
+              "test_packages": []
+            },
+            {
+              "id": 5,
+              "file": "src/route_mini/router.py",
+              "operator": "boolean_flip",
+              "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+              "line": 54,
+              "column": 19,
+              "end_line": 54,
+              "end_column": 23,
+              "byte_start": 1883,
+              "byte_end": 1887,
+              "original": "True",
+              "replacement": "False",
+              "diff": "diff/000005.diff",
+              "test_packages": []
+            }
+          ],
+          "dismissals": {
+            "matched": [],
+            "needs_review": []
+          }
+        },
+        "original_ids": {
+          "1": 9,
+          "2": 10,
+          "3": 11,
+          "4": 14,
+          "5": 20
+        }
+      }
+    ],
+    "stronger_input_sha256": {
+      ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+      ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+      ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+      "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+      "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+      "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+      "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+      "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+      "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+      "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+      "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+      "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+      "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+      "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+      "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+      "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+      "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+      "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+      "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+      "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+      "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+      "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+      "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+      "tests/test_review_contracts.py": "6495d69ad795eff3cde75f55dfaf083ad540e7971d0fa9cf92eef7ead6f9af45",
+      "tests/test_router.py": "b8f3b0a23537632fbf0bd642ba80db5fb3eea898c1682a0b939cf3b8052de940",
+      "tests/test_stronger_boundaries.py": "3aac17e707d6f824b5d895baa6f59a56801863f8b76cb8b35b796f325e889bd3",
+      "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+    }
+  }
+]

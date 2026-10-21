@@ -148,3 +148,7 @@ recorded cancellation/readiness checks. This is still not a clean full-suite run
 A later [readiness investigation](process-readiness.md) reproduces the fixture
 loader delay outside Mutie and the separate noisy-log cancellation/timeout race.
 Its fixture-only changes and new validation do not rewrite the failed runs above.
+
+The subsequent [remaining-finding review](python-route-mini-review.md) investigates
+all 29 open findings in another separate copy. It preserves the historical
+results above and distinguishes stronger-test reruns from original scores.

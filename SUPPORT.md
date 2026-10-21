@@ -381,7 +381,12 @@ testpaths; a test-package initializer must contain only comments/docstrings. See
 [Unchanged Route Mini validation](benchmarks/python-route-mini.md) adds 68-test
 fixture-based acceptance, audited conftest helpers/imports and inert example/tool
 metadata. All 38 mutations are accounted for across four runs; three selected
-survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
+survivors are killed by stronger tests. Original mixed errors/timeouts remain unscored.
+The subsequent [finding review](benchmarks/python-route-mini-review.md) adds explicit
+retry/fallback and immutable-record expectations in a separate copy: 17 kills
+and 12 remaining slots survivors across two focused runs, with 85 passing baseline
+tests and no new errors/timeouts. Native slots
+inspection remains outside the scored scope; it does not broaden reflective APIs.
 
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.

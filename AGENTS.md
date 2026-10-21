@@ -364,6 +364,12 @@ Preserve source-identity matching across report-local IDs and failed report scor
 Three audit-status survivors are killed by separate-copy tests; 25 survivors,
 three errors and one timeout remain open, with no equivalence claims.
 
+`benchmarks/python-route-mini-review.md` records the subsequent separate-copy
+review. Expected-success exhaustion is an explicit test assertion and provider-down
+routing has a no-retry precondition; no classifier or timeout was relaxed. Preserve
+original failed reports and keep native reflective slots diagnostics outside scored
+Python support. Slots survivors are not declared equivalent or dismissed.
+
 ## Build, Test, and Development Commands
 
 Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go build cache.

@@ -137,6 +137,10 @@ through the support gates recorded in the ledger. The selected Vitest objective 
   stronger-test kills and preserved original failed reports. See
   [acceptance and remaining findings](benchmarks/python-route-mini.md).
 
+- [x] Review Route Mini retry/fallback and dataclass findings in a separate copy;
+  preserve original inputs/reports and distinguish scoped scored reruns from
+  native-only slots diagnostics. See the [finding review](benchmarks/python-route-mini-review.md).
+
 - [x] Isolate Go fixture startup/readiness failures: reproduce fresh-executable
   loader stalls outside Mutie and use the existing system shell for fixture
   execution. Separate the noisy-log cancellation checkpoint from its one-second
