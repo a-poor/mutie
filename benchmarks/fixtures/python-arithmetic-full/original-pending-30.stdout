@@ -1,0 +1,23 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792621263-pwR1RM
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 1.59s
+Selected 26 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164)
+Found 26 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/26] killed: src/betting_math_kit/simulation.py:97:23: "*" -> "/" (1.61s)
+[2/26] error: src/betting_math_kit/simulation.py:97:28: "-" -> "+" (1.61s)
+
+2 mutations: 1 killed, 0 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 14.42s
+Workspaces: snapshot 0.004s | setup 0.007s | reset 0.010s (cumulative)
+Copies: 100 reflinked | 0 copied (0 bytes) | 5 ops, 0 failed, 0 interrupted
+Unfinished: 24 pending, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792621263-pwR1RM/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 1 / 1
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 24
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

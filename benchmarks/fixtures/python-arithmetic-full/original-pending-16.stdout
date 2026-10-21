@@ -1,0 +1,24 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792620854-NPDMG6
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 1.71s
+Selected 98 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164)
+Found 98 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/98] missed: src/betting_math_kit/devig.py:401:20: "/" -> "*" (1.71s)
+[2/98] missed: src/betting_math_kit/devig.py:455:17: "-" -> "+" (1.70s)
+[3/98] error: src/betting_math_kit/devig.py:458:24: "/" -> "*" (1.73s)
+
+3 mutations: 0 killed, 2 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 19.78s
+Workspaces: snapshot 0.004s | setup 0.008s | reset 0.016s (cumulative)
+Copies: 120 reflinked | 0 copied (0 bytes) | 6 ops, 0 failed, 0 interrupted
+Unfinished: 95 pending, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792620854-NPDMG6/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 0 / 2
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 95
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

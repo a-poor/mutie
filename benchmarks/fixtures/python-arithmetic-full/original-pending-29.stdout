@@ -1,0 +1,37 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792621190-8w0eOL
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 1.66s
+Selected 42 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164)
+Found 42 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/42] killed: src/betting_math_kit/odds.py:163:23: "-" -> "+" (1.62s)
+[2/42] killed: src/betting_math_kit/odds.py:219:28: "-" -> "+" (1.63s)
+[3/42] killed: src/betting_math_kit/odds.py:221:27: "-" -> "+" (1.67s)
+[4/42] killed: src/betting_math_kit/odds.py:259:22: "-" -> "+" (1.64s)
+[5/42] killed: src/betting_math_kit/odds.py:260:13: "-" -> "+" (1.64s)
+[6/42] killed: src/betting_math_kit/odds.py:261:16: "*" -> "/" (1.60s)
+[7/42] killed: src/betting_math_kit/odds.py:261:29: "-" -> "+" (1.66s)
+[8/42] missed: src/betting_math_kit/odds.py:261:34: "/" -> "*" (1.60s)
+[9/42] missed: src/betting_math_kit/odds.py:265:22: "*" -> "/" (1.59s)
+[10/42] missed: src/betting_math_kit/odds.py:313:22: "-" -> "+" (1.64s)
+[11/42] killed: src/betting_math_kit/odds.py:315:13: "-" -> "+" (1.70s)
+[12/42] missed: src/betting_math_kit/odds.py:316:16: "*" -> "/" (1.61s)
+[13/42] missed: src/betting_math_kit/odds.py:316:29: "-" -> "+" (1.58s)
+[14/42] missed: src/betting_math_kit/odds.py:316:34: "/" -> "*" (1.58s)
+[15/42] missed: src/betting_math_kit/odds.py:321:23: "*" -> "/" (1.57s)
+[16/42] error: src/betting_math_kit/simulation.py:97:14: "/" -> "*" (1.63s)
+
+16 mutations: 8 killed, 7 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 70.94s
+Workspaces: snapshot 0.004s | setup 0.007s | reset 0.084s (cumulative)
+Copies: 380 reflinked | 0 copied (0 bytes) | 19 ops, 0 failed, 0 interrupted
+Unfinished: 26 pending, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792621190-8w0eOL/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 8 / 15
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 26
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

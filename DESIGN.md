@@ -2021,3 +2021,9 @@ and operand order. No numeric type inference, desugaring, operand duplication,
 coercion or exception conversion is introduced. Saved pairs and source spans are
 validated; validator changes join existing recipe identity. Fixture/error controls
 and unchanged betting-math-kit stronger-test findings establish the narrow scope.
+
+The [complete arithmetic review](benchmarks/python-arithmetic-full.md) accounts
+for all 194 sites on unchanged betting-math-kit: 61 kills, 97 survivors and
+36 native errors. A separate 219-test copy kills 54 more survivors; with eight
+prior kills, 35 remain open. Numerical questions are recorded per candidate. Preserve original report scores and the
+source-identity mapping; combined accounting is not a full-run score.

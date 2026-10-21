@@ -1,0 +1,30 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792620875-93jiNJ
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 1.81s
+Selected 95 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164)
+Found 95 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/95] killed: src/betting_math_kit/devig.py:496:22: "+" -> "-" (1.74s)
+[2/95] killed: src/betting_math_kit/devig.py:496:34: "-" -> "+" (1.71s)
+[3/95] killed: src/betting_math_kit/metrics.py:93:21: "-" -> "+" (1.72s)
+[4/95] killed: src/betting_math_kit/metrics.py:94:18: "/" -> "*" (1.78s)
+[5/95] missed: src/betting_math_kit/metrics.py:130:41: "-" -> "+" (1.69s)
+[6/95] killed: src/betting_math_kit/metrics.py:134:36: "-" -> "+" (1.71s)
+[7/95] killed: src/betting_math_kit/metrics.py:135:18: "/" -> "*" (1.72s)
+[8/95] killed: src/betting_math_kit/metrics.py:184:21: "/" -> "*" (1.67s)
+[9/95] error: src/betting_math_kit/metrics.py:187:40: "*" -> "/" (1.64s)
+
+9 mutations: 7 killed, 1 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 44.61s
+Workspaces: snapshot 0.004s | setup 0.007s | reset 0.046s (cumulative)
+Copies: 240 reflinked | 0 copied (0 bytes) | 12 ops, 0 failed, 0 interrupted
+Unfinished: 86 pending, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792620875-93jiNJ/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 7 / 8
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 86
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

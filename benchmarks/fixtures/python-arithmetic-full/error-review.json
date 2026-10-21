@@ -1,0 +1,1003 @@
+[
+  {
+    "id": 1,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 58,
+    "exceptions": [
+      "ValueError",
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - Zero...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - ZeroDivisi...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - Ze...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - Value...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - Va...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - Valu...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - Ze...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - ZeroD...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - ZeroD...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - ZeroDivi...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - ZeroDivi..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI",
+    "local_id": 1,
+    "log": "error-logs/001.log"
+  },
+  {
+    "id": 2,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 59,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - Valu...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - ValueError...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - Va...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - Value...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - Va...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - Valu...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - Va...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - ValueErr...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - ValueErr..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620374-Wf9mJj",
+    "local_id": 1,
+    "log": "error-logs/002.log"
+  },
+  {
+    "id": 3,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 59,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - Valu...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - ValueError...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - Va...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - Value...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - Va...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - Valu...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - Va...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - ValueErr...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - ValueErr..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620388-zhyvvT",
+    "local_id": 1,
+    "log": "error-logs/003.log"
+  },
+  {
+    "id": 5,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 68,
+    "exceptions": [
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ZeroDiv...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ZeroDivisio...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ZeroDivisionEr...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ZeroDivi...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ZeroDivis...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620404-ssKqvi",
+    "local_id": 2,
+    "log": "error-logs/005.log"
+  },
+  {
+    "id": 8,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 79,
+    "exceptions": [
+      "ValueError",
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ZeroDiv...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ZeroDivisio...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ZeroDivis...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620423-YWbwxQ",
+    "local_id": 3,
+    "log": "error-logs/008.log"
+  },
+  {
+    "id": 9,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 80,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ValueEr...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ValueErro...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620446-Tr2PgY",
+    "local_id": 1,
+    "log": "error-logs/009.log"
+  },
+  {
+    "id": 10,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 80,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ValueEr...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ValueErro...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620460-Oy8meS",
+    "local_id": 1,
+    "log": "error-logs/010.log"
+  },
+  {
+    "id": 16,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 89,
+    "exceptions": [
+      "ValueError",
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_symmetric_line - ZeroDivi...",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_sums_to_one - ValueError:...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620475-jbUPSt",
+    "local_id": 6,
+    "log": "error-logs/016.log"
+  },
+  {
+    "id": 22,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 107,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - TypeError: f...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - TypeError: floa...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - TypeError: flo...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - TypeError: ...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620514-Q0q9B1",
+    "local_id": 6,
+    "log": "error-logs/022.log"
+  },
+  {
+    "id": 33,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 143,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - ValueError: Fai...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620554-FWtT8h",
+    "local_id": 11,
+    "log": "error-logs/033.log"
+  },
+  {
+    "id": 34,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 145,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - ValueError: ...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - ValueError: Fai...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - ValueError:...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620621-NGTIK9",
+    "local_id": 1,
+    "log": "error-logs/034.log"
+  },
+  {
+    "id": 35,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 145,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - ValueError: ...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - ValueError: Fai...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - ValueError:...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620637-D7R6ZY",
+    "local_id": 1,
+    "log": "error-logs/035.log"
+  },
+  {
+    "id": 47,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 327,
+    "exceptions": [
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMulti::test_power_method - ZeroDivisionE..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620655-w8OkAd",
+    "local_id": 12,
+    "log": "error-logs/047.log"
+  },
+  {
+    "id": 49,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 338,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMulti::test_power_method - ValueError: F..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620725-1bHN3q",
+    "local_id": 2,
+    "log": "error-logs/049.log"
+  },
+  {
+    "id": 53,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 369,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - TypeError: flo..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620746-iApInR",
+    "local_id": 4,
+    "log": "error-logs/053.log"
+  },
+  {
+    "id": 66,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 400,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - ValueError: Fa..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620779-wOrUe7",
+    "local_id": 13,
+    "log": "error-logs/066.log"
+  },
+  {
+    "id": 69,
+    "file": "src/betting_math_kit/devig.py",
+    "line": 458,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMulti::test_three_outcomes - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_six_outcomes - ValueError: F...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_ordering_preserved - ValueEr...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_vig_positive - ValueError: F..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620854-NPDMG6",
+    "local_id": 3,
+    "log": "error-logs/069.log"
+  },
+  {
+    "id": 101,
+    "file": "src/betting_math_kit/kelly.py",
+    "line": 379,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_kelly.py::TestSizeRaceBets::test_race_exposure_cap - TypeEr..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-acceptance/reports/run-1792618232-iPca41",
+    "local_id": 30,
+    "log": "error-logs/101.log"
+  },
+  {
+    "id": 108,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 187,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_two_bins - TypeErr...",
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_keys_present - Typ...",
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_perfect_calibration",
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_perfect_calibration",
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_overconfident"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620875-93jiNJ",
+    "local_id": 9,
+    "log": "error-logs/108.log"
+  },
+  {
+    "id": 109,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 188,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_two_bins - TypeErr...",
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_keys_present - Typ...",
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_perfect_calibration",
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_perfect_calibration",
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_overconfident"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620921-zcZP3I",
+    "local_id": 1,
+    "log": "error-logs/109.log"
+  },
+  {
+    "id": 110,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 189,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_two_bins - TypeErr...",
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_keys_present - Typ...",
+      "FAILED tests/test_metrics.py::TestCalibrationBuckets::test_perfect_calibration",
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_perfect_calibration",
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_overconfident"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620933-9EYILx",
+    "local_id": 1,
+    "log": "error-logs/110.log"
+  },
+  {
+    "id": 120,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 251,
+    "exceptions": [
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_perfect_calibration"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620945-EFeO4W",
+    "local_id": 10,
+    "log": "error-logs/120.log"
+  },
+  {
+    "id": 128,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 396,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestEdgeBucketAnalysis::test_basic - TypeError:..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792620993-rIVj8e",
+    "local_id": 8,
+    "log": "error-logs/128.log"
+  },
+  {
+    "id": 129,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 397,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestEdgeBucketAnalysis::test_basic - TypeError:..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621035-hiLxn4",
+    "local_id": 1,
+    "log": "error-logs/129.log"
+  },
+  {
+    "id": 130,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 398,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestEdgeBucketAnalysis::test_basic - TypeError:..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621047-DSZKJv",
+    "local_id": 1,
+    "log": "error-logs/130.log"
+  },
+  {
+    "id": 131,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 399,
+    "exceptions": [
+      "TypeError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestEdgeBucketAnalysis::test_basic - TypeError:..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621059-SvZXdx",
+    "local_id": 1,
+    "log": "error-logs/131.log"
+  },
+  {
+    "id": 134,
+    "file": "src/betting_math_kit/metrics.py",
+    "line": 404,
+    "exceptions": [
+      "IndexError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_metrics.py::TestEdgeBucketAnalysis::test_basic - IndexError..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621072-bEKtLT",
+    "local_id": 3,
+    "log": "error-logs/134.log"
+  },
+  {
+    "id": 143,
+    "file": "src/betting_math_kit/odds.py",
+    "line": 67,
+    "exceptions": [
+      "InvalidOddsError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - betti...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - be...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - betting_math_k...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_sums_to_one - betting_mat...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - betting_math_ki...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - betting_math_k...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - betting_...",
+      "FAILED tests/test_devig.py::TestGetVig::test_no_vig - betting_math_kit.except...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_three_outcomes - betting_mat...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_six_outcomes - betting_math_...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_power_method - betting_math_...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - betting_math_k...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_ordering_preserved - betting...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_vig_positive - betting_math_...",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestAmericanToDecimal::test_even_money - assert 0....",
+      "FAILED tests/test_odds.py::TestAmericanToDecimal::test_underdog - assert -0.5...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[100] - be...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[150] - be...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[300] - be...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[1000] - b...",
+      "FAILED tests/test_odds.py::TestCalculateEdge::test_no_edge - betting_math_kit...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - bett...",
+      "FAILED tests/test_odds.py::TestKellyFraction::test_no_edge - assert 0.25 == 0.0"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621092-CXBKAM",
+    "local_id": 9,
+    "log": "error-logs/143.log"
+  },
+  {
+    "id": 145,
+    "file": "src/betting_math_kit/odds.py",
+    "line": 69,
+    "exceptions": [
+      "InvalidOddsError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - bett...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - betting...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - betting_ma...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - be...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - betti...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - be...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - betting_mat...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - betting_math_k...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_symmetric_line - betting_...",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_sums_to_one - betting_mat...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - betting_math...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - betting_math_ki...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - betting_math_k...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - betting_...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - betting_m...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - betting_mat...",
+      "FAILED tests/test_devig.py::TestGetVig::test_standard_juice - betting_math_ki...",
+      "FAILED tests/test_devig.py::TestGetVig::test_reduced_juice - betting_math_kit...",
+      "FAILED tests/test_devig.py::TestGetVig::test_high_vig - betting_math_kit.exce...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_six_outcomes - betting_math_...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_power_method - betting_math_...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - betting_math_k...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_ordering_preserved - betting...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_vig_positive - betting_math_...",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_vig_monotone_with_juice - be...",
+      "FAILED tests/test_metrics.py::TestCLVFromOdds::test_line_moves_toward_you - b...",
+      "FAILED tests/test_metrics.py::TestCLVFromOdds::test_line_moves_away - betting...",
+      "FAILED tests/test_metrics.py::TestCLVFromOdds::test_no_movement - betting_mat...",
+      "FAILED tests/test_odds.py::TestAmericanToDecimal::test_favorite - assert 0.5 ...",
+      "FAILED tests/test_odds.py::TestAmericanToDecimal::test_heavy_favorite - asser...",
+      "FAILED tests/test_odds.py::TestAmericanToDecimal::test_standard_juice - asser...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[-500] - b...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[-200] - b...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[-110] - b...",
+      "FAILED tests/test_odds.py::TestCalculateEdge::test_positive_edge - betting_ma...",
+      "FAILED tests/test_odds.py::TestCalculateEdge::test_negative_edge - betting_ma...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - bett...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - be...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line",
+      "FAILED tests/test_odds.py::TestKellyFraction::test_small_edge - assert 0.25 <...",
+      "FAILED tests/test_odds.py::TestKellyFraction::test_negative_edge - assert 0.2...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - betti...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - betti...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - betting_...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - betting_..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621136-io5Lfx",
+    "local_id": 2,
+    "log": "error-logs/145.log"
+  },
+  {
+    "id": 152,
+    "file": "src/betting_math_kit/odds.py",
+    "line": 135,
+    "exceptions": [
+      "InvalidOddsError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_odds.py::TestImpliedProb::test_round_trip - betting_math_ki...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.1] - bettin...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.25] - betti...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.5] - bettin...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.75] - betti...",
+      "FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.9] - bettin..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621153-mKgzRw",
+    "local_id": 7,
+    "log": "error-logs/152.log"
+  },
+  {
+    "id": 168,
+    "file": "src/betting_math_kit/simulation.py",
+    "line": 97,
+    "exceptions": [
+      "IndexError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_returns_simulation_result",
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_deterministic_with_seed",
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_positive_edge_grows_bankroll",
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_ruin_rate_bounded",
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_percentiles_ordered",
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_frozen_dataclass",
+      "FAILED tests/test_simulation.py::TestRiskOfRuin::test_returns_float - IndexEr...",
+      "FAILED tests/test_simulation.py::TestRiskOfRuin::test_high_fraction_higher_ruin",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_returns_dict",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_all_values_are_simulation_results",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_default_fractions",
+      "FAILED tests/test_simulation.py::TestRuinThreshold::test_higher_threshold_raises_ruin_rate",
+      "FAILED tests/test_simulation.py::TestRuinThreshold::test_threshold_above_starting_bankroll_ruins_all",
+      "FAILED tests/test_simulation.py::TestRuinThreshold::test_threshold_zero_matches_no_threshold"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621190-8w0eOL",
+    "local_id": 16,
+    "log": "error-logs/168.log"
+  },
+  {
+    "id": 170,
+    "file": "src/betting_math_kit/simulation.py",
+    "line": 97,
+    "exceptions": [
+      "IndexError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_frozen_dataclass",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_default_fractions"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621263-pwR1RM",
+    "local_id": 2,
+    "log": "error-logs/170.log"
+  },
+  {
+    "id": 175,
+    "file": "src/betting_math_kit/simulation.py",
+    "line": 101,
+    "exceptions": [
+      "ZeroDivisionError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_positive_edge_grows_bankroll",
+      "FAILED tests/test_simulation.py::TestSimulateBankroll::test_percentiles_ordered",
+      "FAILED tests/test_simulation.py::TestRiskOfRuin::test_high_fraction_higher_ruin",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_returns_dict",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_all_values_are_simulation_results",
+      "FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_default_fractions",
+      "FAILED tests/test_simulation.py::TestRuinThreshold::test_higher_threshold_raises_ruin_rate",
+      "FAILED tests/test_simulation.py::TestRuinThreshold::test_threshold_above_starting_bankroll_ruins_all",
+      "FAILED tests/test_simulation.py::TestRuinThreshold::test_threshold_zero_matches_no_threshold"
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621279-lMtxoB",
+    "local_id": 5,
+    "log": "error-logs/175.log"
+  },
+  {
+    "id": 192,
+    "file": "src/betting_math_kit/types.py",
+    "line": 43,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - Valu...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ValueEr...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - ValueError...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - Va...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - Value...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - Va...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_symmetric_line - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_sums_to_one - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - ValueError: ...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - ValueError: Fai...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ValueErro...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - Valu...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - Va...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - ValueErr...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - ValueErr..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621307-xVVSEg",
+    "local_id": 17,
+    "log": "error-logs/192.log"
+  },
+  {
+    "id": 193,
+    "file": "src/betting_math_kit/types.py",
+    "line": 44,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - Valu...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ValueEr...",
+      "FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - ValueError...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - Va...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - Value...",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob",
+      "FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - Va...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even",
+      "FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_symmetric_line - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigAdditive::test_sums_to_one - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - ValueError: ...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - ValueError: Fai...",
+      "FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ValueErr...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ValueErro...",
+      "FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]",
+      "FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]",
+      "FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - Valu...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - Va...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ...",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result",
+      "FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - Value...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - ValueErr...",
+      "FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - ValueErr..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621383-13nQ6u",
+    "local_id": 1,
+    "log": "error-logs/193.log"
+  },
+  {
+    "id": 194,
+    "file": "src/betting_math_kit/types.py",
+    "line": 66,
+    "exceptions": [
+      "ValueError"
+    ],
+    "failed_tests": [
+      "FAILED tests/test_devig.py::TestDevigMulti::test_three_outcomes - ValueError:...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_six_outcomes - ValueError: F...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_power_method - ValueError: F...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - ValueError: Fa...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_ordering_preserved - ValueEr...",
+      "FAILED tests/test_devig.py::TestDevigMulti::test_vig_positive - ValueError: F..."
+    ],
+    "report": "/tmp/mutie-python-arithmetic-full/reports/run-1792621395-UsgHFG",
+    "local_id": 1,
+    "log": "error-logs/194.log"
+  }
+]

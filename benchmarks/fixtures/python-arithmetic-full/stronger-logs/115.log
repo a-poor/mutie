@@ -1,0 +1,24 @@
+........................................................................ [ 32%]
+..........................................................F............. [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+_________________ test_calibration_bin_edges_means_and_weights _________________
+
+    def test_calibration_bin_edges_means_and_weights():
+        probs = [0.125, 0.375, 0.625, 0.875]
+        outcomes = [0, 1, 1, 1]
+>       assert calibration_buckets(probs, outcomes, n_bins=2) == [
+            dict(bin_lower=0.0, bin_upper=0.5, count=2, avg_predicted=0.25, avg_actual=0.5, gap=-0.25),
+            dict(bin_lower=0.5, bin_upper=1.0, count=2, avg_predicted=0.75, avg_actual=1.0, gap=-0.25),
+        ]
+E       AssertionError: assert [{'avg_actual...r': 1.0, ...}] == [{'avg_actual...r': 1.0, ...}]
+E         
+E         At index 1 diff: {'bin_lower': 2.0, 'bin_upper': 1.0, 'count': 2, 'avg_predicted': 0.75, 'avg_actual': 1.0, 'gap': -0.25} != {'bin_lower': 0.5, 'bin_upper': 1.0, 'count': 2, 'avg_predicted': 0.75, 'avg_actual': 1.0, 'gap': -0.25}
+E         Use -v to get more diff
+
+tests/test_numeric_contracts.py:44: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_calibration_bin_edges_means_and_weights
+1 failed, 218 passed in 0.31s
+

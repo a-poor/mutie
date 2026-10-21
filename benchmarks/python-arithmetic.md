@@ -137,3 +137,10 @@ counts and findings remain historical evidence under their original recipe.
 - All-target Clippy with warnings denied and Rust formatting checks pass.
 
 No subprocess readiness bound, assertion, observer or classifier is weakened.
+
+## Follow-up accounting
+
+The [complete arithmetic review](python-arithmetic-full.md) subsequently accounts
+for all 194 sites, retaining this initial 30-site acceptance and its stronger
+copy unchanged. Its additional findings and open questions are separate evidence;
+they do not replace the original failed-report score.

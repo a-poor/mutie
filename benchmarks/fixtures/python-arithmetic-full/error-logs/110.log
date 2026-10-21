@@ -1,0 +1,350 @@
+........................................................................ [ 36%]
+..............................FFF.FF.................................... [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+_____________________ TestCalibrationBuckets.test_two_bins _____________________
+
+self = <tests.test_metrics.TestCalibrationBuckets object at [address]>
+
+    def test_two_bins(self):
+>       buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metrics.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.1, 0.9], outcomes = [0, 1], n_bins = 2
+
+    def calibration_buckets(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> list[dict]:
+        """Bin predictions into equal-width buckets and report calibration.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower bound of the bin (inclusive).
+            - ``bin_upper``: Upper bound of the bin (exclusive, except last).
+            - ``count``: Number of predictions in the bin.
+            - ``avg_predicted``: Mean predicted probability in the bin.
+            - ``avg_actual``: Observed win rate in the bin.
+            - ``gap``: ``avg_predicted - avg_actual`` (positive = overconfident).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+            >>> len(buckets)
+            2
+            >>> buckets[0]["avg_predicted"]
+            0.1
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        bin_width = 1.0 / n_bins
+    
+        # Accumulate per-bin sums
+        bin_pred_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+>       bin_counts: list[int] = [0] / n_bins
+                                ^^^^^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'list' and 'int'
+
+src/betting_math_kit/metrics.py:189: TypeError
+___________________ TestCalibrationBuckets.test_keys_present ___________________
+
+self = <tests.test_metrics.TestCalibrationBuckets object at [address]>
+
+    def test_keys_present(self):
+>       buckets = calibration_buckets([0.5], [1], n_bins=1)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metrics.py:89: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.5], outcomes = [1], n_bins = 1
+
+    def calibration_buckets(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> list[dict]:
+        """Bin predictions into equal-width buckets and report calibration.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower bound of the bin (inclusive).
+            - ``bin_upper``: Upper bound of the bin (exclusive, except last).
+            - ``count``: Number of predictions in the bin.
+            - ``avg_predicted``: Mean predicted probability in the bin.
+            - ``avg_actual``: Observed win rate in the bin.
+            - ``gap``: ``avg_predicted - avg_actual`` (positive = overconfident).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+            >>> len(buckets)
+            2
+            >>> buckets[0]["avg_predicted"]
+            0.1
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        bin_width = 1.0 / n_bins
+    
+        # Accumulate per-bin sums
+        bin_pred_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+>       bin_counts: list[int] = [0] / n_bins
+                                ^^^^^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'list' and 'int'
+
+src/betting_math_kit/metrics.py:189: TypeError
+_______________ TestCalibrationBuckets.test_perfect_calibration ________________
+
+self = <tests.test_metrics.TestCalibrationBuckets object at [address]>
+
+    def test_perfect_calibration(self):
+        # 10 predictions at 0.5, half win
+        probs = [0.5] * 10
+        outcomes = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+>       buckets = calibration_buckets(probs, outcomes, n_bins=1)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metrics.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...], outcomes = [1, 0, 1, 0, 1, 0, ...]
+n_bins = 1
+
+    def calibration_buckets(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> list[dict]:
+        """Bin predictions into equal-width buckets and report calibration.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower bound of the bin (inclusive).
+            - ``bin_upper``: Upper bound of the bin (exclusive, except last).
+            - ``count``: Number of predictions in the bin.
+            - ``avg_predicted``: Mean predicted probability in the bin.
+            - ``avg_actual``: Observed win rate in the bin.
+            - ``gap``: ``avg_predicted - avg_actual`` (positive = overconfident).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+            >>> len(buckets)
+            2
+            >>> buckets[0]["avg_predicted"]
+            0.1
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        bin_width = 1.0 / n_bins
+    
+        # Accumulate per-bin sums
+        bin_pred_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+>       bin_counts: list[int] = [0] / n_bins
+                                ^^^^^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'list' and 'int'
+
+src/betting_math_kit/metrics.py:189: TypeError
+____________ TestExpectedCalibrationError.test_perfect_calibration _____________
+
+self = <tests.test_metrics.TestExpectedCalibrationError object at [address]>
+
+    def test_perfect_calibration(self):
+        probs = [0.5] * 10
+        outcomes = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+>       ece = expected_calibration_error(probs, outcomes, n_bins=1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metrics.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/metrics.py:246: in expected_calibration_error
+    buckets = calibration_buckets(probs, outcomes, n_bins)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...], outcomes = [1, 0, 1, 0, 1, 0, ...]
+n_bins = 1
+
+    def calibration_buckets(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> list[dict]:
+        """Bin predictions into equal-width buckets and report calibration.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower bound of the bin (inclusive).
+            - ``bin_upper``: Upper bound of the bin (exclusive, except last).
+            - ``count``: Number of predictions in the bin.
+            - ``avg_predicted``: Mean predicted probability in the bin.
+            - ``avg_actual``: Observed win rate in the bin.
+            - ``gap``: ``avg_predicted - avg_actual`` (positive = overconfident).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+            >>> len(buckets)
+            2
+            >>> buckets[0]["avg_predicted"]
+            0.1
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        bin_width = 1.0 / n_bins
+    
+        # Accumulate per-bin sums
+        bin_pred_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+>       bin_counts: list[int] = [0] / n_bins
+                                ^^^^^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'list' and 'int'
+
+src/betting_math_kit/metrics.py:189: TypeError
+_______________ TestExpectedCalibrationError.test_overconfident ________________
+
+self = <tests.test_metrics.TestExpectedCalibrationError object at [address]>
+
+    def test_overconfident(self):
+        probs = [0.9] * 10
+        outcomes = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+>       ece = expected_calibration_error(probs, outcomes, n_bins=1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metrics.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/metrics.py:246: in expected_calibration_error
+    buckets = calibration_buckets(probs, outcomes, n_bins)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.9, 0.9, 0.9, 0.9, 0.9, 0.9, ...], outcomes = [1, 0, 1, 0, 1, 0, ...]
+n_bins = 1
+
+    def calibration_buckets(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> list[dict]:
+        """Bin predictions into equal-width buckets and report calibration.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            List of dicts (one per non-empty bin) with keys:
+    
+            - ``bin_lower``: Lower bound of the bin (inclusive).
+            - ``bin_upper``: Upper bound of the bin (exclusive, except last).
+            - ``count``: Number of predictions in the bin.
+            - ``avg_predicted``: Mean predicted probability in the bin.
+            - ``avg_actual``: Observed win rate in the bin.
+            - ``gap``: ``avg_predicted - avg_actual`` (positive = overconfident).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> buckets = calibration_buckets([0.1, 0.9], [0, 1], n_bins=2)
+            >>> len(buckets)
+            2
+            >>> buckets[0]["avg_predicted"]
+            0.1
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+        if n_bins < 1:
+            raise ValueError(f"n_bins must be >= 1, got {n_bins}")
+    
+        bin_width = 1.0 / n_bins
+    
+        # Accumulate per-bin sums
+        bin_pred_sums: list[float] = [0.0] * n_bins
+        bin_outcome_sums: list[float] = [0.0] * n_bins
+>       bin_counts: list[int] = [0] / n_bins
+                                ^^^^^^^^^^^^
+E       TypeError: unsupported operand type(s) for /: 'list' and 'int'
+
+src/betting_math_kit/metrics.py:189: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_metrics.py::TestCalibrationBuckets::test_two_bins - TypeErr...
+FAILED tests/test_metrics.py::TestCalibrationBuckets::test_keys_present - Typ...
+FAILED tests/test_metrics.py::TestCalibrationBuckets::test_perfect_calibration
+FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_perfect_calibration
+FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_overconfident
+5 failed, 193 passed in 0.34s
+

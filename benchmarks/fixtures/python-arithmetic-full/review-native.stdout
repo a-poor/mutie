@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.14.7, pytest-9.0.2, pluggy-1.7.0
+rootdir: /tmp/mutie-python-arithmetic-full/review-project
+configfile: pyproject.toml
+collected 219 items
+
+../../../../../tmp/mutie-python-arithmetic-full/review-project/tests/test_devig.py . [  0%]
+.....................................................                    [ 24%]
+../../../../../tmp/mutie-python-arithmetic-full/review-project/tests/test_kelly.py . [ 25%]
+..................................                                       [ 40%]
+../../../../../tmp/mutie-python-arithmetic-full/review-project/tests/test_metrics.py . [ 41%]
+...............................                                          [ 55%]
+../../../../../tmp/mutie-python-arithmetic-full/review-project/tests/test_numeric_contracts.py . [ 55%]
+....................                                                     [ 64%]
+../../../../../tmp/mutie-python-arithmetic-full/review-project/tests/test_odds.py . [ 65%]
+.....................................................                    [ 89%]
+../../../../../tmp/mutie-python-arithmetic-full/review-project/tests/test_simulation.py . [ 89%]
+......................                                                   [100%]
+
+============================= 219 passed in 0.34s ==============================

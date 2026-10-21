@@ -1,0 +1,75 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792621422-kfY3cD
+Snapshotting /tmp/mutie-python-arithmetic-full/review-project
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 1.64s
+Selected 56 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 4, 11, 13, 17, 18, 36, 37, 38, 39, 40, 41, 42, 43, 46, 56, 68, 74, 85, 86, 87, 89, 95, 96, 97, 102, 103, 105, 106, 107, 108, 109, 110, 111, 112, 130, 131, 132, 134, 135, 136, 137, 141, 143, 144, 146, 149, 150, 152, 153, 154, 155, 156, 157, 158, 160, 161)
+Found 56 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/56] missed: src/betting_math_kit/devig.py:68:20: "+" -> "-" (1.70s)
+[2/56] killed: src/betting_math_kit/devig.py:84:23: "+" -> "-" (1.67s)
+[3/56] killed: src/betting_math_kit/devig.py:85:28: "/" -> "*" (1.66s)
+[4/56] killed: src/betting_math_kit/devig.py:90:22: "/" -> "*" (1.66s)
+[5/56] killed: src/betting_math_kit/devig.py:90:41: "/" -> "*" (1.68s)
+[6/56] killed: src/betting_math_kit/devig.py:188:21: "+" -> "-" (1.67s)
+[7/56] killed: src/betting_math_kit/devig.py:188:33: "-" -> "+" (1.80s)
+[8/56] killed: src/betting_math_kit/devig.py:213:21: "+" -> "-" (1.65s)
+[9/56] killed: src/betting_math_kit/devig.py:213:33: "-" -> "+" (1.68s)
+[10/56] killed: src/betting_math_kit/devig.py:234:21: "+" -> "-" (1.69s)
+[11/56] killed: src/betting_math_kit/devig.py:234:33: "-" -> "+" (1.68s)
+[12/56] killed: src/betting_math_kit/devig.py:257:21: "+" -> "-" (1.74s)
+[13/56] killed: src/betting_math_kit/devig.py:257:33: "-" -> "+" (1.76s)
+[14/56] missed: src/betting_math_kit/devig.py:327:20: "+" -> "-" (1.72s)
+[15/56] killed: src/betting_math_kit/devig.py:369:40: "*" -> "/" (1.70s)
+[16/56] killed: src/betting_math_kit/devig.py:455:17: "-" -> "+" (1.67s)
+[17/56] killed: src/betting_math_kit/metrics.py:130:41: "-" -> "+" (1.67s)
+[18/56] killed: src/betting_math_kit/metrics.py:208:38: "*" -> "/" (1.67s)
+[19/56] killed: src/betting_math_kit/metrics.py:209:39: "+" -> "-" (1.67s)
+[20/56] killed: src/betting_math_kit/metrics.py:209:44: "*" -> "/" (1.83s)
+[21/56] killed: src/betting_math_kit/metrics.py:250:29: "/" -> "*" (1.74s)
+[22/56] killed: src/betting_math_kit/metrics.py:389:49: "/" -> "*" (1.84s)
+[23/56] killed: src/betting_math_kit/metrics.py:393:27: "-" -> "+" (2.12s)
+[24/56] killed: src/betting_math_kit/metrics.py:393:39: "/" -> "*" (1.68s)
+[25/56] killed: src/betting_math_kit/metrics.py:402:22: "-" -> "+" (1.63s)
+[26/56] killed: src/betting_math_kit/metrics.py:402:34: "/" -> "*" (1.66s)
+[27/56] killed: src/betting_math_kit/metrics.py:417:45: "+" -> "-" (1.67s)
+[28/56] killed: src/betting_math_kit/metrics.py:417:49: "*" -> "/" (1.70s)
+[29/56] killed: src/betting_math_kit/metrics.py:418:45: "+" -> "-" (1.68s)
+[30/56] killed: src/betting_math_kit/metrics.py:418:50: "+" -> "-" (1.67s)
+[31/56] killed: src/betting_math_kit/metrics.py:418:55: "*" -> "/" (1.69s)
+[32/56] killed: src/betting_math_kit/metrics.py:420:46: "/" -> "*" (1.66s)
+[33/56] killed: src/betting_math_kit/metrics.py:421:49: "/" -> "*" (1.66s)
+[34/56] killed: src/betting_math_kit/metrics.py:422:55: "/" -> "*" (1.73s)
+[35/56] killed: src/betting_math_kit/odds.py:261:34: "/" -> "*" (1.70s)
+[36/56] killed: src/betting_math_kit/odds.py:265:22: "*" -> "/" (1.71s)
+[37/56] killed: src/betting_math_kit/odds.py:313:22: "-" -> "+" (1.87s)
+[38/56] killed: src/betting_math_kit/odds.py:316:16: "*" -> "/" (1.75s)
+[39/56] killed: src/betting_math_kit/odds.py:316:29: "-" -> "+" (1.79s)
+[40/56] killed: src/betting_math_kit/odds.py:316:34: "/" -> "*" (1.79s)
+[41/56] killed: src/betting_math_kit/odds.py:321:23: "*" -> "/" (2.19s)
+[42/56] killed: src/betting_math_kit/simulation.py:99:17: "+" -> "-" (1.77s)
+[43/56] killed: src/betting_math_kit/simulation.py:100:16: "-" -> "+" (1.78s)
+[44/56] killed: src/betting_math_kit/simulation.py:101:28: "+" -> "-" (1.75s)
+[45/56] killed: src/betting_math_kit/simulation.py:101:56: "-" -> "+" (1.80s)
+[46/56] killed: src/betting_math_kit/simulation.py:113:34: "/" -> "*" (1.83s)
+[47/56] killed: src/betting_math_kit/simulation.py:176:24: "/" -> "*" (1.82s)
+[48/56] killed: src/betting_math_kit/simulation.py:181:29: "-" -> "+" (1.96s)
+[49/56] killed: src/betting_math_kit/simulation.py:196:30: "*" -> "/" (1.83s)
+[50/56] killed: src/betting_math_kit/simulation.py:198:29: "*" -> "/" (1.72s)
+[51/56] killed: src/betting_math_kit/simulation.py:217:30: "-" -> "+" (1.82s)
+[52/56] killed: src/betting_math_kit/simulation.py:217:36: "/" -> "*" (1.79s)
+[53/56] killed: src/betting_math_kit/simulation.py:220:48: "/" -> "*" (2.21s)
+[54/56] killed: src/betting_math_kit/simulation.py:220:60: "/" -> "*" (1.78s)
+[55/56] killed: src/betting_math_kit/simulation.py:233:32: "/" -> "*" (1.76s)
+[56/56] killed: src/betting_math_kit/simulation.py:348:30: "+" -> "-" (1.91s)
+
+56 mutations: 54 killed, 2 missed, 0 timed out, 0 failed to compile
+Run completed in 249.06s
+Workspaces: snapshot 0.004s | setup 0.008s | reset 0.310s (cumulative)
+Copies: 1239 reflinked | 0 copied (0 bytes) | 59 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792621422-kfY3cD/summary.txt
+Mutation score: 96.43%
+Scope: rerun selection only
+Killed / (killed + missed): 54 / 56
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)

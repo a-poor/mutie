@@ -1,0 +1,1038 @@
+F.FFFFF..FF.....F.............F........FFFFFFFFFFFFFF................... [ 36%]
+........................................................................ [ 72%]
+.............FFF.F.F.......FFFF.......................                   [100%]
+=================================== FAILURES ===================================
+__________________ TestResultTypes.test_returns_devig_result ___________________
+
+self = <tests.test_devig.TestResultTypes object at [address]>
+
+    def test_returns_devig_result(self):
+>       r = devig(-110, -110)
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:24: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________________ TestResultTypes.test_result_has_vig ______________________
+
+self = <tests.test_devig.TestResultTypes object at [address]>
+
+    def test_result_has_vig(self):
+>       r = devig(-110, -110)
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_________________ TestDevigMultiplicative.test_symmetric_line __________________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_symmetric_line(self):
+>       r = devig_multiplicative(-110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:43: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:190: in devig_multiplicative
+    return DevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+___________________ TestDevigMultiplicative.test_sums_to_one ___________________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_multiplicative(-150, 130)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:190: in devig_multiplicative
+    return DevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5798319327731092, fair_away=0.44990548204158803, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03478260869565242)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.029737, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+______________ TestDevigMultiplicative.test_favorite_higher_prob _______________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_favorite_higher_prob(self):
+>       r = devig_multiplicative(-200, 170)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:190: in devig_multiplicative
+    return DevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.6428571428571429, fair_away=0.38408779149519884, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03703703703703698)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.026945, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_________________ TestDevigMultiplicative.test_heavy_favorite __________________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_heavy_favorite(self):
+>       r = devig_multiplicative(-500, 400)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:190: in devig_multiplicative
+    return DevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.8064516129032258, fair_away=0.2066666666666667, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03333333333333344)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.013118, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestDevigPower.test_close_to_multiplicative_for_even _____________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_close_to_multiplicative_for_even(self):
+>       m = devig_multiplicative(-110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:76: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:190: in devig_multiplicative
+    return DevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+__________ TestDevigPower.test_diverges_from_multiplicative_on_skewed __________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_diverges_from_multiplicative_on_skewed(self):
+        """Power and multiplicative diverge on heavily skewed lines."""
+>       m = devig_multiplicative(-500, 400)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:190: in devig_multiplicative
+    return DevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.8064516129032258, fair_away=0.2066666666666667, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03333333333333344)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.013118, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_______________ TestDevigDispatch.test_default_is_multiplicative _______________
+
+self = <tests.test_devig.TestDevigDispatch object at [address]>
+
+    def test_default_is_multiplicative(self):
+>       r1 = devig(-110, -110)
+             ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+________________ TestDevigMulti.test_two_outcomes_matches_devig ________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_two_outcomes_matches_devig(self):
+>       r2 = devig(-110, -110)
+             ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:208: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____________ TestInvariants.test_symmetric_all_methods_equal[-110] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -110
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____________ TestInvariants.test_symmetric_all_methods_equal[-105] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -105
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5246876859012493, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.024390243902439046)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.024688, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____________ TestInvariants.test_symmetric_all_methods_equal[-115] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -115
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5722011898323419, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.06976744186046524)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.072201, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____________ TestInvariants.test_symmetric_all_methods_equal[-120] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -120
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5950413223140495, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.09090909090909083)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.095041, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_all_methods_sum_to_one[-150-130] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5798319327731092, fair_away=0.44990548204158803, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03478260869565242)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.029737, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_all_methods_sum_to_one[-200-170] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.6428571428571429, fair_away=0.38408779149519884, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03703703703703698)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.026945, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_all_methods_sum_to_one[-300-250] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.7241379310344829, fair_away=0.2959183673469387, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03571428571428559)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.020056, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_all_methods_sum_to_one[-500-400] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.8064516129032258, fair_away=0.2066666666666667, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03333333333333344)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.013118, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_probabilities_bounded[-150-130] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5798319327731092, fair_away=0.44990548204158803, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03478260869565242)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.029737, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_probabilities_bounded[-200-170] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.6428571428571429, fair_away=0.38408779149519884, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03703703703703698)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.026945, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestInvariants.test_probabilities_bounded[-300-250] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.7241379310344829, fair_away=0.2959183673469387, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03571428571428559)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.020056, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+________ TestInvariants.test_favorite_always_has_higher_prob[-150-130] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5798319327731092, fair_away=0.44990548204158803, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03478260869565242)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.029737, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+________ TestInvariants.test_favorite_always_has_higher_prob[-200-170] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.6428571428571429, fair_away=0.38408779149519884, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03703703703703698)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.026945, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+________ TestInvariants.test_favorite_always_has_higher_prob[-500-400] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.8064516129032258, fair_away=0.2066666666666667, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03333333333333344)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.013118, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_______________ TestCalculateEdgeCalibrated.test_symmetric_line ________________
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_symmetric_line(self):
+>       r = calculate_edge_calibrated(0.60, -110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+__________________ TestCalculateEdgeCalibrated.test_away_pick __________________
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_away_pick(self):
+>       r = calculate_edge_calibrated(0.45, -150, 130, pick=Side.AWAY)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5798319327731092, fair_away=0.44990548204158803, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.03478260869565242)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.029737, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_________________ TestCalculateEdgeCalibrated.test_string_pick _________________
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_string_pick(self):
+>       r = calculate_edge_calibrated(0.60, -110, -110, pick="home")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+_____________ TestCalculateEdgeCalibrated.test_returns_edge_result _____________
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_returns_edge_result(self):
+>       r = calculate_edge_calibrated(0.60, -110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:163: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____ TestCalculateEdgeCalibrated.test_true_edge_gt_raw_edge_on_vigged_line _____
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_true_edge_gt_raw_edge_on_vigged_line(self):
+        """True edge should be larger than raw edge when there is vig."""
+>       r = calculate_edge_calibrated(0.60, -110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+__________________ TestKellyCalibrated.test_strong_edge_bets ___________________
+
+self = <tests.test_odds.TestKellyCalibrated object at [address]>
+
+    def test_strong_edge_bets(self):
+>       stake, edge, fair, should_bet = kelly_calibrated(0.60, -110, -110)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:216: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:306: in kelly_calibrated
+    edge_result = calculate_edge_calibrated(
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+__________________ TestKellyCalibrated.test_weak_edge_passes ___________________
+
+self = <tests.test_odds.TestKellyCalibrated object at [address]>
+
+    def test_weak_edge_passes(self):
+>       stake, edge, fair, should_bet = kelly_calibrated(0.52, -110, -110)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:222: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:306: in kelly_calibrated
+    edge_result = calculate_edge_calibrated(
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____________________ TestKellyCalibrated.test_max_stake_cap ____________________
+
+self = <tests.test_odds.TestKellyCalibrated object at [address]>
+
+    def test_max_stake_cap(self):
+>       stake, _, _, should_bet = kelly_calibrated(0.90, -110, -110, max_stake=0.02)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:306: in kelly_calibrated
+    edge_result = calculate_edge_calibrated(
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+____________________ TestKellyCalibrated.test_string_inputs ____________________
+
+self = <tests.test_odds.TestKellyCalibrated object at [address]>
+
+    def test_string_inputs(self):
+>       stake, _, _, bet = kelly_calibrated(
+            0.60, -110, -110, pick="home", method="multiplicative"
+        )
+
+tests/test_odds.py:232: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:306: in kelly_calibrated
+    edge_result = calculate_edge_calibrated(
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:304: in devig
+    return DevigResult(fair_home=fh, fair_away=fa, method=method, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=0.5, fair_away=0.5487528344671202, method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.048753, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestResultTypes::test_returns_devig_result - Valu...
+FAILED tests/test_devig.py::TestResultTypes::test_result_has_vig - ValueError...
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_symmetric_line - Va...
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - Value...
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - Va...
+FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even
+FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed
+FAILED tests/test_devig.py::TestDevigDispatch::test_default_is_multiplicative
+FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_symmetric_line
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - Valu...
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_pick - Va...
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_returns_edge_result
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_true_edge_gt_raw_edge_on_vigged_line
+FAILED tests/test_odds.py::TestKellyCalibrated::test_strong_edge_bets - Value...
+FAILED tests/test_odds.py::TestKellyCalibrated::test_weak_edge_passes - Value...
+FAILED tests/test_odds.py::TestKellyCalibrated::test_max_stake_cap - ValueErr...
+FAILED tests/test_odds.py::TestKellyCalibrated::test_string_inputs - ValueErr...
+33 failed, 165 passed in 0.60s
+

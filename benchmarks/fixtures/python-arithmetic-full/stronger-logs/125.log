@@ -1,0 +1,21 @@
+........................................................................ [ 32%]
+............................................................F........... [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+______________ test_identical_edges_still_return_rates_not_totals ______________
+
+    def test_identical_edges_still_return_rates_not_totals():
+>       assert edge_bucket_analysis([0.25, 0.5, 0.75, 1.0], [0, 1, 1, 1], [0.25]*4) == [
+            dict(bin_lower=0.25, bin_upper=0.25, count=4, avg_edge=0.25, win_rate=0.75, expected_win_rate=0.625),
+        ]
+E       AssertionError: assert [{'avg_edge':...unt': 4, ...}] == [{'avg_edge':...unt': 4, ...}]
+E         
+E         At index 0 diff: {'bin_lower': 0.25, 'bin_upper': 0.25, 'count': 4, 'avg_edge': 0.25, 'win_rate': 0.75, 'expected_win_rate': 10.0} != {'bin_lower': 0.25, 'bin_upper': 0.25, 'count': 4, 'avg_edge': 0.25, 'win_rate': 0.75, 'expected_win_rate': 0.625}
+E         Use -v to get more diff
+
+tests/test_numeric_contracts.py:60: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_identical_edges_still_return_rates_not_totals
+1 failed, 218 passed in 0.35s
+

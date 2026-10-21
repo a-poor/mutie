@@ -483,7 +483,8 @@ Python binary arithmetic supports `+ ↔ -` and `* ↔ /`, preserving native
 grouping and operand evaluation. Unary signs, augmented-assignment operators, floor
 division, modulo, powers and annotations are excluded. Operand types are not
 inferred: unsupported operations and division by zero remain errors. See
-[semantic controls and unchanged-project validation](benchmarks/python-arithmetic.md).
+[semantic controls and unchanged-project validation](benchmarks/python-arithmetic.md)
+and the [complete 194-candidate review](benchmarks/python-arithmetic-full.md).
 Python comparison boundaries exclude chained comparisons such as `0 < x < 10`.
 Call removal deletes eligible standalone call statements; it excludes calls used
 as values, `go`/`defer` calls, initializers and loop updates. Boolean literal

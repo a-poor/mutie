@@ -1,0 +1,163 @@
+........................................................................ [ 36%]
+...............................................................F........ [ 72%]
+..FFFFF...............................................                   [100%]
+=================================== FAILURES ===================================
+_______________________ TestImpliedProb.test_round_trip ________________________
+
+self = <tests.test_odds.TestImpliedProb object at [address]>
+
+    def test_round_trip(self):
+        prob = 0.6
+        decimal = implied_prob_to_decimal(prob)
+>       assert decimal_to_implied_prob(decimal) == pytest.approx(prob)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.6
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.6
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+___________________ TestRoundTrips.test_prob_round_trip[0.1] ___________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, prob = 0.1
+
+    @pytest.mark.parametrize("prob", [0.1, 0.25, 0.5, 0.75, 0.9])
+    def test_prob_round_trip(self, prob):
+        decimal = implied_prob_to_decimal(prob)
+>       back = decimal_to_implied_prob(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.1
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.1
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+__________________ TestRoundTrips.test_prob_round_trip[0.25] ___________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, prob = 0.25
+
+    @pytest.mark.parametrize("prob", [0.1, 0.25, 0.5, 0.75, 0.9])
+    def test_prob_round_trip(self, prob):
+        decimal = implied_prob_to_decimal(prob)
+>       back = decimal_to_implied_prob(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.25
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.25
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+___________________ TestRoundTrips.test_prob_round_trip[0.5] ___________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, prob = 0.5
+
+    @pytest.mark.parametrize("prob", [0.1, 0.25, 0.5, 0.75, 0.9])
+    def test_prob_round_trip(self, prob):
+        decimal = implied_prob_to_decimal(prob)
+>       back = decimal_to_implied_prob(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.5
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.5
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+__________________ TestRoundTrips.test_prob_round_trip[0.75] ___________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, prob = 0.75
+
+    @pytest.mark.parametrize("prob", [0.1, 0.25, 0.5, 0.75, 0.9])
+    def test_prob_round_trip(self, prob):
+        decimal = implied_prob_to_decimal(prob)
+>       back = decimal_to_implied_prob(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.75
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.75
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+___________________ TestRoundTrips.test_prob_round_trip[0.9] ___________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, prob = 0.9
+
+    @pytest.mark.parametrize("prob", [0.1, 0.25, 0.5, 0.75, 0.9])
+    def test_prob_round_trip(self, prob):
+        decimal = implied_prob_to_decimal(prob)
+>       back = decimal_to_implied_prob(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.9
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.9
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+=========================== short test summary info ============================
+FAILED tests/test_odds.py::TestImpliedProb::test_round_trip - betting_math_ki...
+FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.1] - bettin...
+FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.25] - betti...
+FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.5] - bettin...
+FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.75] - betti...
+FAILED tests/test_odds.py::TestRoundTrips::test_prob_round_trip[0.9] - bettin...
+6 failed, 192 passed in 0.31s
+

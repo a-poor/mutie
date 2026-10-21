@@ -1,0 +1,1044 @@
+.F.....FFFF......FF....................FFFFFFFFFFFFFF................... [ 36%]
+........................................................................ [ 72%]
+................F.....................................                   [100%]
+=================================== FAILURES ===================================
+____________________ TestResultTypes.test_result_has_method ____________________
+
+self = <tests.test_devig.TestResultTypes object at [address]>
+
+    def test_result_has_method(self):
+>       r = devig(-110, -110, DevigMethod.POWER)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5238095238095238, away_impl = 0.5238095238095238, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+______________________ TestDevigPower.test_symmetric_line ______________________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_symmetric_line(self):
+>       r = devig_power(-110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:214: in devig_power
+    fh, fa = _power(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5238095238095238, away_impl = 0.5238095238095238, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_______________________ TestDevigPower.test_sums_to_one ________________________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_power(-300, 250)
+            ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:214: in devig_power
+    fh, fa = _power(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.75, away_impl = 0.2857142857142857, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestDevigPower.test_close_to_multiplicative_for_even _____________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_close_to_multiplicative_for_even(self):
+        m = devig_multiplicative(-110, -110)
+>       p = devig_power(-110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:77: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:214: in devig_power
+    fh, fa = _power(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5238095238095238, away_impl = 0.5238095238095238, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+__________ TestDevigPower.test_diverges_from_multiplicative_on_skewed __________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_diverges_from_multiplicative_on_skewed(self):
+        """Power and multiplicative diverge on heavily skewed lines."""
+        m = devig_multiplicative(-500, 400)
+>       p = devig_power(-500, 400)
+            ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:214: in devig_power
+    fh, fa = _power(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.8333333333333334, away_impl = 0.2, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+____________________ TestDevigDispatch.test_power_dispatch _____________________
+
+self = <tests.test_devig.TestDevigDispatch object at [address]>
+
+    def test_power_dispatch(self):
+>       r1 = devig(-150, 130, method=DevigMethod.POWER)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6000000000000001, away_impl = 0.4347826086956522, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________________ TestDevigDispatch.test_string_method _____________________
+
+self = <tests.test_devig.TestDevigDispatch object at [address]>
+
+    def test_string_method(self):
+>       r = devig(-110, -110, method="power")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5238095238095238, away_impl = 0.5238095238095238, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+____________ TestInvariants.test_symmetric_all_methods_equal[-110] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -110
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5238095238095238, away_impl = 0.5238095238095238, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+____________ TestInvariants.test_symmetric_all_methods_equal[-105] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -105
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5121951219512195, away_impl = 0.5121951219512195, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+____________ TestInvariants.test_symmetric_all_methods_equal[-115] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -115
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5348837209302326, away_impl = 0.5348837209302326, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+____________ TestInvariants.test_symmetric_all_methods_equal[-120] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -120
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5454545454545454, away_impl = 0.5454545454545454, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_all_methods_sum_to_one[-150-130] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6000000000000001, away_impl = 0.4347826086956522, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_all_methods_sum_to_one[-200-170] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6666666666666666, away_impl = 0.37037037037037035, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_all_methods_sum_to_one[-300-250] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.75, away_impl = 0.2857142857142857, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_all_methods_sum_to_one[-500-400] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.8333333333333334, away_impl = 0.2, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_probabilities_bounded[-150-130] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6000000000000001, away_impl = 0.4347826086956522, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_probabilities_bounded[-200-170] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6666666666666666, away_impl = 0.37037037037037035, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+_____________ TestInvariants.test_probabilities_bounded[-300-250] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.75, away_impl = 0.2857142857142857, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+________ TestInvariants.test_favorite_always_has_higher_prob[-150-130] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6000000000000001, away_impl = 0.4347826086956522, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+________ TestInvariants.test_favorite_always_has_higher_prob[-200-170] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.6666666666666666, away_impl = 0.37037037037037035, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+________ TestInvariants.test_favorite_always_has_higher_prob[-500-400] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.8333333333333334, away_impl = 0.2, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+________________ TestCalculateEdgeCalibrated.test_string_method ________________
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_string_method(self):
+>       r = calculate_edge_calibrated(0.60, -110, -110, method="power")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:159: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:158: in _dispatch
+    return _power(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+home_impl = 0.5238095238095238, away_impl = 0.5238095238095238, max_iter = 100
+
+    def _power(
+        home_impl: float, away_impl: float, max_iter: int = 100
+    ) -> tuple[float, float]:
+        k_low, k_high = 0.5, 2.0
+        k = 1.0
+        for _ in range(max_iter):
+            k = (k_low + k_high) * 2
+            total = home_impl**k + away_impl**k
+            if abs(total - 1.0) < 1e-10:
+                break
+            elif total > 1:
+                k_high = k
+            else:
+                k_low = k
+    
+        fair_home = home_impl**k
+        fair_away = away_impl**k
+        total = fair_home + fair_away
+>       return fair_home / total, fair_away / total
+               ^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/devig.py:80: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestResultTypes::test_result_has_method - ZeroDiv...
+FAILED tests/test_devig.py::TestDevigPower::test_symmetric_line - ZeroDivisio...
+FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - ZeroDivisionEr...
+FAILED tests/test_devig.py::TestDevigPower::test_close_to_multiplicative_for_even
+FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed
+FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - ZeroDivi...
+FAILED tests/test_devig.py::TestDevigDispatch::test_string_method - ZeroDivis...
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_string_method - ...
+22 failed, 176 passed in 0.55s
+

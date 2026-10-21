@@ -1,0 +1,54 @@
+........................................................................ [ 32%]
+.........................................................F.............. [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+____________ test_additive_removes_equal_margin_from_unequal_sides _____________
+
+    def test_additive_removes_equal_margin_from_unequal_sides():
+        result = devig_additive(-150, 100)
+        assert result.fair_home == pytest.approx(0.55, abs=1e-12)
+        assert result.fair_away == pytest.approx(0.45, abs=1e-12)
+        # At an extreme valid skew, the .01 floor requires final normalization.
+        try:
+>           clipped = devig_additive(-19900, 199900)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_numeric_contracts.py:33: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:236: in devig_additive
+    return DevigResult(fair_home=fh, fair_away=fa, method=DevigMethod.ADDITIVE, vig=vig)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = DevigResult(fair_home=1.0044800625, fair_away=0.009928021841648052, method=<DevigMethod.ADDITIVE: 'additive'>, vig=-0.0044999999999999485)
+
+    def __post_init__(self) -> None:
+        # Sanity: probabilities should sum to ~1
+        total = self.fair_home + self.fair_away
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.014408, expected ~1.0
+
+src/betting_math_kit/types.py:45: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_additive_removes_equal_margin_from_unequal_sides():
+        result = devig_additive(-150, 100)
+        assert result.fair_home == pytest.approx(0.55, abs=1e-12)
+        assert result.fair_away == pytest.approx(0.45, abs=1e-12)
+        # At an extreme valid skew, the .01 floor requires final normalization.
+        try:
+            clipped = devig_additive(-19900, 199900)
+        except ValueError as error:
+>           pytest.fail(f'valid odds must remain normalized after flooring: {error}')
+E           Failed: valid odds must remain normalized after flooring: Fair probabilities sum to 1.014408, expected ~1.0
+
+tests/test_numeric_contracts.py:35: Failed
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_additive_removes_equal_margin_from_unequal_sides
+1 failed, 218 passed in 0.31s
+

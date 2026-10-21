@@ -1,0 +1,398 @@
+........................................................................ [ 36%]
+........................................................................ [ 72%]
+.................................F.F.........FFF..FFFF                   [100%]
+=================================== FAILURES ===================================
+____________ TestSimulateBankroll.test_positive_edge_grows_bankroll ____________
+
+self = <tests.test_simulation.TestSimulateBankroll object at [address]>
+
+    def test_positive_edge_grows_bankroll(self):
+>       r = simulate_bankroll(0.10, 2.0, 0.25, n_bets=500, n_trials=500, seed=1)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:234: in simulate_bankroll
+    p5_final=_percentile(sorted_finals, 5),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [2.6902589957020266, 4.4837649928367185, 12.454902757879726, 12.45490275787975, 34.596952105221504, 57.66158684203585, ...]
+pct = 5
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+________________ TestSimulateBankroll.test_percentiles_ordered _________________
+
+self = <tests.test_simulation.TestSimulateBankroll object at [address]>
+
+    def test_percentiles_ordered(self):
+>       r = simulate_bankroll(0.05, 2.0, 0.25, n_bets=100, n_trials=500, seed=42)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:234: in simulate_bankroll
+    p5_final=_percentile(sorted_finals, 5),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [0.0863731631520241, 0.39987575533344505, 1.1107659870373472, 1.1107659870373476, 1.110765987037348, 1.8512766450622453, ...]
+pct = 5
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+________________ TestRiskOfRuin.test_high_fraction_higher_ruin _________________
+
+self = <tests.test_simulation.TestRiskOfRuin object at [address]>
+
+    def test_high_fraction_higher_ruin(self):
+>       low = risk_of_ruin(0.05, 2.0, 0.10, n_bets=200, n_trials=500, seed=42)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:88: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:283: in risk_of_ruin
+    result = simulate_bankroll(
+src/betting_math_kit/simulation.py:234: in simulate_bankroll
+    p5_final=_percentile(sorted_finals, 5),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [49.2059592440723, 60.14061685386621, 73.50519837694753, 73.50519837694755, 89.83968690515815, 109.80406177297108, ...]
+pct = 5
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+_________________ TestOptimalFractionSearch.test_returns_dict __________________
+
+self = <tests.test_simulation.TestOptimalFractionSearch object at [address]>
+
+    def test_returns_dict(self):
+>       results = optimal_fraction_search(
+            0.05, 2.0, fractions=[0.1, 0.25], n_bets=50, n_trials=50, seed=42
+        )
+
+tests/test_simulation.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:349: in optimal_fraction_search
+    results[frac] = simulate_bankroll(
+src/betting_math_kit/simulation.py:235: in simulate_bankroll
+    p95_final=_percentile(sorted_finals, 95),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [43.026464473184944, 43.026464473184944, 119.5179568699582, 199.1965947832635, 199.1965947832636, 199.19659478326363, ...]
+pct = 95
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+_______ TestOptimalFractionSearch.test_all_values_are_simulation_results _______
+
+self = <tests.test_simulation.TestOptimalFractionSearch object at [address]>
+
+    def test_all_values_are_simulation_results(self):
+>       results = optimal_fraction_search(
+            0.05, 2.0, fractions=[0.1, 0.25], n_bets=50, n_trials=50, seed=42
+        )
+
+tests/test_simulation.py:108: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:349: in optimal_fraction_search
+    results[frac] = simulate_bankroll(
+src/betting_math_kit/simulation.py:235: in simulate_bankroll
+    p95_final=_percentile(sorted_finals, 95),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [43.026464473184944, 43.026464473184944, 119.5179568699582, 199.1965947832635, 199.1965947832636, 199.19659478326363, ...]
+pct = 95
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+_______________ TestOptimalFractionSearch.test_default_fractions _______________
+
+self = <tests.test_simulation.TestOptimalFractionSearch object at [address]>
+
+    def test_default_fractions(self):
+>       results = optimal_fraction_search(0.05, 2.0, n_bets=10, n_trials=10, seed=42)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:349: in optimal_fraction_search
+    results[frac] = simulate_bankroll(
+src/betting_math_kit/simulation.py:235: in simulate_bankroll
+    p95_final=_percentile(sorted_finals, 95),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [434.51786041259766, 724.1964340209961, 724.1964340209961, 724.1964340209961, 724.1964340209961, 1206.9940567016602, ...]
+pct = 95
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+___________ TestRuinThreshold.test_higher_threshold_raises_ruin_rate ___________
+
+self = <tests.test_simulation.TestRuinThreshold object at [address]>
+
+    def test_higher_threshold_raises_ruin_rate(self):
+        """A non-zero ruin threshold should yield a higher ruin rate."""
+        kwargs = dict(
+            edge=0.03,
+            odds_decimal=2.0,
+            fraction=0.25,
+            n_bets=500,
+            n_trials=2000,
+            seed=7,
+        )
+>       rate_zero = risk_of_ruin(**kwargs, ruin_threshold=0.0)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:138: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:283: in risk_of_ruin
+    result = simulate_bankroll(
+src/betting_math_kit/simulation.py:235: in simulate_bankroll
+    p95_final=_percentile(sorted_finals, 95),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [1.0067064711838443e-10, 2.1577213459873252e-09, 3.596202243312208e-09, 5.993670405520354e-09, 9.989450675867261e-09, 1.6649084459778714e-08, ...]
+pct = 95
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+______ TestRuinThreshold.test_threshold_above_starting_bankroll_ruins_all ______
+
+self = <tests.test_simulation.TestRuinThreshold object at [address]>
+
+    def test_threshold_above_starting_bankroll_ruins_all(self):
+        """Threshold above starting bankroll means every trial is ruined immediately."""
+>       rate = risk_of_ruin(
+            edge=0.05,
+            odds_decimal=2.0,
+            fraction=0.25,
+            ruin_threshold=2000.0,
+            n_bets=10,
+            n_trials=100,
+            seed=1,
+        )
+
+tests/test_simulation.py:145: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:283: in risk_of_ruin
+    result = simulate_bankroll(
+src/betting_math_kit/simulation.py:234: in simulate_bankroll
+    p5_final=_percentile(sorted_finals, 5),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, ...], pct = 5
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+__________ TestRuinThreshold.test_threshold_zero_matches_no_threshold __________
+
+self = <tests.test_simulation.TestRuinThreshold object at [address]>
+
+    def test_threshold_zero_matches_no_threshold(self):
+        kwargs = dict(
+            edge=0.03,
+            odds_decimal=2.0,
+            fraction=0.25,
+            n_bets=100,
+            n_trials=500,
+            seed=3,
+        )
+>       rate_explicit = risk_of_ruin(**kwargs, ruin_threshold=0.0)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:165: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:283: in risk_of_ruin
+    result = simulate_bankroll(
+src/betting_math_kit/simulation.py:234: in simulate_bankroll
+    p5_final=_percentile(sorted_finals, 5),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [0.14395527192004026, 0.23992545320006692, 0.39987575533344477, 0.3998757553334449, 0.666459592222408, 0.6664595922224084, ...]
+pct = 5
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n - 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight / (sorted_data[hi] - sorted_data[lo])
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ZeroDivisionError: division by zero
+
+src/betting_math_kit/simulation.py:101: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/test_simulation.py::TestSimulateBankroll::test_positive_edge_grows_bankroll
+FAILED tests/test_simulation.py::TestSimulateBankroll::test_percentiles_ordered
+FAILED tests/test_simulation.py::TestRiskOfRuin::test_high_fraction_higher_ruin
+FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_returns_dict
+FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_all_values_are_simulation_results
+FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_default_fractions
+FAILED tests/test_simulation.py::TestRuinThreshold::test_higher_threshold_raises_ruin_rate
+FAILED tests/test_simulation.py::TestRuinThreshold::test_threshold_above_starting_bankroll_ruins_all
+FAILED tests/test_simulation.py::TestRuinThreshold::test_threshold_zero_matches_no_threshold
+9 failed, 189 passed in 0.34s
+

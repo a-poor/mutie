@@ -1,0 +1,25 @@
+........................................................................ [ 32%]
+..................................................F..................... [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+____________ test_original_margin_is_reported[devig_multiplicative] ____________
+
+calculate = <function devig_multiplicative at [address]>
+
+    @pytest.mark.parametrize('calculate', [devig, devig_multiplicative, devig_power, devig_additive, devig_shin])
+    def test_original_margin_is_reported(calculate):
+        # American -150 and +100 imply .6 and .5: margin .1, independent of method.
+        result = calculate(-150, 100)
+>       assert result.vig == pytest.approx(0.1, abs=1e-12)
+E       assert -0.8999999999999999 == 0.1 ± 1.0e-12
+E         
+E         comparison failed
+E         Obtained: -0.8999999999999999
+E         Expected: 0.1 ± 1.0e-12
+
+tests/test_numeric_contracts.py:17: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_original_margin_is_reported[devig_multiplicative]
+1 failed, 218 passed in 0.31s
+

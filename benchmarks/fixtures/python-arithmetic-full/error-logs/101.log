@@ -1,0 +1,96 @@
+........................................................................ [ 36%]
+.............F.......................................................... [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+___________________ TestSizeRaceBets.test_race_exposure_cap ____________________
+
+self = <tests.test_kelly.TestSizeRaceBets object at [address]>
+
+    def test_race_exposure_cap(self):
+        bets = [
+            {"selection_id": i, "prob": 0.60, "odds_decimal": 3.0} for i in range(5)
+        ]
+>       result = size_race_bets(
+            bets,
+            10000.0,
+            fraction=0.5,
+            takeout=0.0,
+            max_race_exposure=0.10,
+        )
+
+tests/test_kelly.py:235: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+bets = [{'odds_decimal': 3.0, 'prob': 0.6, 'selection_id': 0}, {'odds_decimal': 3.0, 'prob': 0.6, 'selection_id': 1}, {'odds_..._id': 2}, {'odds_decimal': 3.0, 'prob': 0.6, 'selection_id': 3}, {'odds_decimal': 3.0, 'prob': 0.6, 'selection_id': 4}]
+bankroll = 10000.0, fraction = 0.5, takeout = 0.0, max_race_exposure = 0.1
+
+    def size_race_bets(
+        bets: list[dict],
+        bankroll: float,
+        fraction: float = DEFAULT_FRACTION,
+        takeout: float = DEFAULT_TAKEOUT,
+        max_race_exposure: float = 0.15,
+    ) -> list[KellyBet]:
+        """Size all bets in a race with per-race exposure cap.
+    
+        Args:
+            bets: List of dicts with keys ``selection_id``, ``prob``,
+                  ``odds_decimal``, and optionally ``pool_size``.
+            bankroll: Current bankroll in dollars (must be > 0).
+            fraction: Kelly fraction multiplier.
+            takeout: Pari-mutuel takeout.
+            max_race_exposure: Max total fraction of bankroll per race.
+    
+        Returns:
+            List of :class:`KellyBet`, sorted by ``bet_size`` descending.
+            Only includes selections with positive bet sizes.
+    
+        Raises:
+            InvalidBankrollError: If *bankroll* <= 0.
+        """
+        if bankroll <= 0:
+            raise InvalidBankrollError(f"Bankroll must be positive, got {bankroll}")
+    
+        sized = []
+        for bet_info in bets:
+            kb = compute_kelly_bet(
+                selection_id=bet_info["selection_id"],
+                prob=bet_info["prob"],
+                odds_decimal=bet_info["odds_decimal"],
+                bankroll=bankroll,
+                fraction=fraction,
+                takeout=takeout,
+                pool_size=bet_info.get("pool_size"),
+            )
+            if kb.bet_size > 0:
+                sized.append(kb)
+    
+        total_exposure = sum(kb.bet_size for kb in sized)
+        max_exposure = bankroll * max_race_exposure
+    
+        if total_exposure > max_exposure and total_exposure > 0:
+            scale = max_exposure / total_exposure
+            scaled = []
+            for kb in sized:
+                new_bet = max(MIN_BET, round(kb.bet_size * scale))
+                scaled.append(
+                    KellyBet(
+                        selection_id=kb.selection_id,
+                        full_kelly=kb.full_kelly,
+                        fractional_kelly=kb.fractional_kelly,
+                        bet_size=float(new_bet),
+                        edge=kb.edge,
+                        expected_roi=kb.expected_roi,
+                        pool_limited=kb.pool_limited,
+                        capped=True,
+>                       reason=kb.reason - f", race-exposure scaled {scale:.0%}",
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    )
+                )
+E               TypeError: unsupported operand type(s) for -: 'str' and 'str'
+
+src/betting_math_kit/kelly.py:379: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_kelly.py::TestSizeRaceBets::test_race_exposure_cap - TypeEr...
+1 failed, 197 passed in 0.67s
+

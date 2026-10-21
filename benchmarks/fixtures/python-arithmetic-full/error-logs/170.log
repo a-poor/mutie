@@ -1,0 +1,87 @@
+........................................................................ [ 36%]
+........................................................................ [ 72%]
+....................................F.............F...                   [100%]
+=================================== FAILURES ===================================
+__________________ TestSimulateBankroll.test_frozen_dataclass __________________
+
+self = <tests.test_simulation.TestSimulateBankroll object at [address]>
+
+    def test_frozen_dataclass(self):
+>       r = simulate_bankroll(0.05, 2.0, 0.25, n_bets=10, n_trials=10, seed=42)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:235: in simulate_bankroll
+    p95_final=_percentile(sorted_finals, 95),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [156.42642974853516, 434.51786041259766, 724.1964340209961, 724.1964340209961, 1206.9940567016602, 1206.9940567016602, ...]
+pct = 95
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n + 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight * (sorted_data[hi] - sorted_data[lo])
+               ^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+src/betting_math_kit/simulation.py:101: IndexError
+_______________ TestOptimalFractionSearch.test_default_fractions _______________
+
+self = <tests.test_simulation.TestOptimalFractionSearch object at [address]>
+
+    def test_default_fractions(self):
+>       results = optimal_fraction_search(0.05, 2.0, n_bets=10, n_trials=10, seed=42)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_simulation.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/simulation.py:349: in optimal_fraction_search
+    results[frac] = simulate_bankroll(
+src/betting_math_kit/simulation.py:235: in simulate_bankroll
+    p95_final=_percentile(sorted_finals, 95),
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+sorted_data = [731.4210254961912, 893.5087873790039, 987.562343945215, 987.562343945215, 1091.5162748868163, 1091.5162748868163, ...]
+pct = 95
+
+    def _percentile(sorted_data: list[float], pct: float) -> float:
+        """Return the *pct*-th percentile from already-sorted data.
+    
+        Uses linear interpolation (same method as Python 3.8+
+        ``statistics.quantiles``).
+        """
+        n = len(sorted_data)
+        if n == 0:
+            return 0.0
+        if n == 1:
+            return sorted_data[0]
+        k = (pct / 100.0) * (n + 1)
+        lo = int(math.floor(k))
+        hi = min(lo + 1, n - 1)
+        weight = k - lo
+>       return sorted_data[lo] + weight * (sorted_data[hi] - sorted_data[lo])
+               ^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+src/betting_math_kit/simulation.py:101: IndexError
+=========================== short test summary info ============================
+FAILED tests/test_simulation.py::TestSimulateBankroll::test_frozen_dataclass
+FAILED tests/test_simulation.py::TestOptimalFractionSearch::test_default_fractions
+2 failed, 196 passed in 0.29s
+

@@ -846,6 +846,10 @@ work; their order is not a priority queue and they do not block the Rust milesto
   discovery/report/rerun validation and unchanged betting-math-kit findings.
   Preserve original inputs/reports and classification rules; see
   [arithmetic acceptance](benchmarks/python-arithmetic.md).
+- [x] Account for all 194 unchanged betting-math-kit arithmetic candidates,
+  review survivors/errors and retain separate-copy stronger-test evidence with
+  unchanged inputs, reports and classification rules; see the
+  [complete arithmetic review](benchmarks/python-arithmetic-full.md).
 
 - [ ] Prioritize the planned JavaScript/TypeScript and Python runner slices using
   concrete projects and the largest remaining obstacles to routine use; see

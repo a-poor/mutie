@@ -1,0 +1,30 @@
+........................................................................ [ 32%]
+.................................................................F...... [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+___________ test_fraction_search_uses_documented_incrementing_seeds ____________
+
+    def test_fraction_search_uses_documented_incrementing_seeds():
+        results = optimal_fraction_search(0.4, 2.0, fractions=[0.25, 0.5],
+                                           n_bets=2, n_trials=2, seed=1)
+        assert results[0.25] == simulate_bankroll(0.4, 2.0, 0.25,
+                                                 n_bets=2, n_trials=2, seed=1)
+>       assert results[0.5] == simulate_bankroll(0.4, 2.0, 0.5,
+                                               n_bets=2, n_trials=2, seed=2)
+E       AssertionError: assert SimulationRes...4651081081644) == SimulationRes...4103622589045)
+E         
+E         Omitting 3 identical items, use -vv to show
+E         Differing attributes:
+E         ['median_final',
+E          'mean_final',
+E          'p5_final',
+E          'p95_final',...
+E         
+E         ...Full output truncated (20 lines hidden), use '-vv' to show
+
+tests/test_numeric_contracts.py:102: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_fraction_search_uses_documented_incrementing_seeds
+1 failed, 218 passed in 0.37s
+

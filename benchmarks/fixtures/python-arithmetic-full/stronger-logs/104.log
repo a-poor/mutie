@@ -1,0 +1,74 @@
+........................................................................ [ 32%]
+...................................................................F.... [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+_________________ test_log_loss_clamps_a_valid_wrong_endpoint __________________
+
+    def test_log_loss_clamps_a_valid_wrong_endpoint():
+        try:
+>           actual = log_loss([1.0], [0], eps=0.25)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_numeric_contracts.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [1.0], outcomes = [0], eps = 0.25
+
+    def log_loss(
+        probs: list[float],
+        outcomes: list[int],
+        eps: float = 1e-15,
+    ) -> float:
+        """Negative log-likelihood per prediction (cross-entropy loss).
+    
+        Probabilities are clamped to [eps, 1 - eps] to avoid log(0).
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            eps: Clamp bound to prevent log(0). Defaults to ``1e-15``.
+    
+        Returns:
+            Mean negative log-likelihood (lower is better).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty.
+    
+        Examples:
+            >>> round(log_loss([0.9, 0.1], [1, 0]), 4)
+            0.1054
+        """
+        _validate_nonempty(probs, "probs")
+        _validate_matched_lengths(probs, outcomes)
+        _validate_prob_list(probs)
+        _validate_outcome_list(outcomes)
+    
+        n = len(probs)
+        total = 0.0
+        for p, y in zip(probs, outcomes, strict=False):
+            p_clamped = max(eps, min(p, 1.0 + eps))
+            if y == 1:
+                total += -math.log(p_clamped)
+            else:
+>               total += -math.log(1.0 - p_clamped)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^
+E               ValueError: expected a positive input, got 0.0
+
+src/betting_math_kit/metrics.py:134: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_log_loss_clamps_a_valid_wrong_endpoint():
+        try:
+            actual = log_loss([1.0], [0], eps=0.25)
+        except ValueError as error:
+>           pytest.fail(f'valid probability endpoint must be clamped: {error}')
+E           Failed: valid probability endpoint must be clamped: expected a positive input, got 0.0
+
+tests/test_numeric_contracts.py:121: Failed
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_log_loss_clamps_a_valid_wrong_endpoint
+1 failed, 218 passed in 0.31s
+

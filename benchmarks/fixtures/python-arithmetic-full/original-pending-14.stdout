@@ -1,0 +1,25 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792620746-iApInR
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 2.33s
+Selected 115 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164)
+Found 115 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/115] missed: src/betting_math_kit/devig.py:367:24: "/" -> "*" (2.35s)
+[2/115] missed: src/betting_math_kit/devig.py:368:21: "*" -> "/" (2.16s)
+[3/115] missed: src/betting_math_kit/devig.py:368:28: "-" -> "+" (2.47s)
+[4/115] error: src/betting_math_kit/devig.py:369:22: "+" -> "-" (2.31s)
+
+4 mutations: 0 killed, 3 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 31.49s
+Workspaces: snapshot 0.004s | setup 0.008s | reset 0.030s (cumulative)
+Copies: 140 reflinked | 0 copied (0 bytes) | 7 ops, 0 failed, 0 interrupted
+Unfinished: 111 pending, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792620746-iApInR/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 0 / 3
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 111
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

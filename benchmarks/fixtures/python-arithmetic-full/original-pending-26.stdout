@@ -1,0 +1,30 @@
+Saving report to /tmp/mutie-python-arithmetic-full/reports/run-1792621092-CXBKAM
+Snapshotting /tmp/mutie-python-betting-math-original
+Running baseline: pytest (fresh isolated copy, serial full suite)
+Baseline passed in 1.60s
+Selected 60 mutations from /tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI (all saved mutations; source IDs: 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164)
+Found 60 mutations
+Running 1 worker(s), 30.00s timeout per mutation
+[1/60] missed: src/betting_math_kit/metrics.py:417:45: "+" -> "-" (1.61s)
+[2/60] missed: src/betting_math_kit/metrics.py:417:49: "*" -> "/" (1.62s)
+[3/60] missed: src/betting_math_kit/metrics.py:418:45: "+" -> "-" (1.60s)
+[4/60] missed: src/betting_math_kit/metrics.py:418:50: "+" -> "-" (1.60s)
+[5/60] missed: src/betting_math_kit/metrics.py:418:55: "*" -> "/" (1.62s)
+[6/60] missed: src/betting_math_kit/metrics.py:420:46: "/" -> "*" (1.68s)
+[7/60] missed: src/betting_math_kit/metrics.py:421:49: "/" -> "*" (1.69s)
+[8/60] missed: src/betting_math_kit/metrics.py:422:55: "/" -> "*" (1.65s)
+[9/60] error: src/betting_math_kit/odds.py:67:20: "+" -> "-" (1.89s)
+
+9 mutations: 0 killed, 8 missed, 0 timed out, 0 failed to compile, 1 errors
+Run failed in 42.95s
+Workspaces: snapshot 0.004s | setup 0.007s | reset 0.052s (cumulative)
+Copies: 240 reflinked | 0 copied (0 bytes) | 12 ops, 0 failed, 0 interrupted
+Unfinished: 51 pending, 0 interrupted
+Report saved: /tmp/mutie-python-arithmetic-full/reports/run-1792621092-CXBKAM/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 0 / 8
+Excluded: 0 timeout, 0 build failed
+Execution errors: 1; unfinished: 51
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

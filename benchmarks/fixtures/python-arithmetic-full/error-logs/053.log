@@ -1,0 +1,38 @@
+....................................F................................... [ 36%]
+........................................................................ [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+_______________________ TestDevigMulti.test_shin_method ________________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_shin_method(self):
+>       r = devig_multi([-110, -110, 300], method=DevigMethod.SHIN)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:462: in devig_multi
+    fair = _shin_multi(implied)
+           ^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:378: in _shin_multi
+    fairs = [_shin_fair(p, z) for p in implied]
+             ^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+p_i = 0.5238095238095238, z = 0.25
+
+    def _shin_fair(p_i: float, z: float) -> float:
+        if z == 0:
+            return p_i / sum_implied
+        denom = 2.0 * (1.0 - z)
+        inner = z**2 - 4.0 * (1.0 - z) * p_i / sum_implied
+>       return float((inner**0.5 - z) / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:370: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - TypeError: flo...
+1 failed, 197 passed in 0.40s
+

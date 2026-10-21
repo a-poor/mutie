@@ -1,0 +1,21 @@
+........................................................................ [ 32%]
+..................................................................F..... [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+___________ test_three_trial_percentiles_interpolate_adjacent_values ___________
+
+    def test_three_trial_percentiles_interpolate_adjacent_values():
+        # Finals sorted as [50, 50, 150]; low interpolation must use the next item,
+        # not a wrapped negative index selecting the final item.
+        result = simulate_bankroll(0.25, 2.0, 0.5, bankroll=100.0,
+                                   n_bets=1, n_trials=3, seed=1)
+>       assert result.p5_final == 50.0
+E       assert 60.0 == 50.0
+E        +  where 60.0 = SimulationResult(n_trials=3, n_bets=1, ruin_rate=0.0, median_final=50.0, mean_final=83.33333333333333, p5_final=60.0, p95_final=50.0, max_drawdown_median=0.5, growth_rate=-0.6931471805599453).p5_final
+
+tests/test_numeric_contracts.py:111: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_three_trial_percentiles_interpolate_adjacent_values
+1 failed, 218 passed in 0.34s
+

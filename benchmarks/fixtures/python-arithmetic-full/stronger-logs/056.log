@@ -1,0 +1,20 @@
+........................................................................ [ 32%]
+.....................................................................F.. [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+______ test_unequal_multi_outcomes_keep_favorite_order[DevigMethod.SHIN] _______
+
+method = <DevigMethod.SHIN: 'shin'>
+
+    @pytest.mark.parametrize('method', [DevigMethod.POWER, DevigMethod.SHIN])
+    def test_unequal_multi_outcomes_keep_favorite_order(method):
+        result = devig_multi([150, -200, 300], method=method)
+>       assert result.fair_probs[1] > result.fair_probs[0] > result.fair_probs[2]
+E       assert 0.2548428025870658 > 0.3290006434401767
+
+tests/test_numeric_contracts.py:128: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_unequal_multi_outcomes_keep_favorite_order[DevigMethod.SHIN]
+1 failed, 218 passed in 0.31s
+

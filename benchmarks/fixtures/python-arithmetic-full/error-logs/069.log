@@ -1,0 +1,140 @@
+.............................FFF.....FF................................. [ 36%]
+........................................................................ [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+______________________ TestDevigMulti.test_three_outcomes ______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_three_outcomes(self):
+>       r = devig_multi([200, 300, 150])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:466: in devig_multi
+    return MultiOutcomeDevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MultiOutcomeDevigResult(fair_probs=(0.3277777777777778, 0.24583333333333335, 0.39333333333333337), method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=-0.016666666666666607, n_outcomes=3)
+
+    def __post_init__(self) -> None:
+        total = sum(self.fair_probs)
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 0.966944, expected ~1.0
+
+src/betting_math_kit/types.py:67: ValueError
+________________ TestDevigMulti.test_two_outcomes_matches_devig ________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_two_outcomes_matches_devig(self):
+        r2 = devig(-110, -110)
+>       rm = devig_multi([-110, -110])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:209: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:466: in devig_multi
+    return MultiOutcomeDevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MultiOutcomeDevigResult(fair_probs=(0.5487528344671202, 0.5487528344671202), method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.04761904761904767, n_outcomes=2)
+
+    def __post_init__(self) -> None:
+        total = sum(self.fair_probs)
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.097506, expected ~1.0
+
+src/betting_math_kit/types.py:67: ValueError
+_______________________ TestDevigMulti.test_six_outcomes _______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_six_outcomes(self):
+        odds = [-200, 300, 500, 800, 1000, 1500]
+>       r = devig_multi(odds)
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:466: in devig_multi
+    return MultiOutcomeDevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MultiOutcomeDevigResult(fair_probs=(0.8985690235690235, 0.3369633838383838, 0.22464225589225587, 0.1497615039281706, 0...12, 0.08424084595959595), method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.34785353535353525, n_outcomes=6)
+
+    def __post_init__(self) -> None:
+        total = sum(self.fair_probs)
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.816709, expected ~1.0
+
+src/betting_math_kit/types.py:67: ValueError
+____________________ TestDevigMulti.test_ordering_preserved ____________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_ordering_preserved(self):
+        odds = [150, -200, 300]
+>       r = devig_multi(odds)
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:466: in devig_multi
+    return MultiOutcomeDevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MultiOutcomeDevigResult(fair_probs=(0.5266666666666667, 0.8777777777777778, 0.32916666666666666), method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.31666666666666665, n_outcomes=3)
+
+    def __post_init__(self) -> None:
+        total = sum(self.fair_probs)
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.733611, expected ~1.0
+
+src/betting_math_kit/types.py:67: ValueError
+_______________________ TestDevigMulti.test_vig_positive _______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_vig_positive(self):
+>       r = devig_multi([-110, -110, 300])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:466: in devig_multi
+    return MultiOutcomeDevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MultiOutcomeDevigResult(fair_probs=(0.6797052154195012, 0.6797052154195012, 0.3244047619047619), method=<DevigMethod.MULTIPLICATIVE: 'multiplicative'>, vig=0.29761904761904767, n_outcomes=3)
+
+    def __post_init__(self) -> None:
+        total = sum(self.fair_probs)
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 1.683815, expected ~1.0
+
+src/betting_math_kit/types.py:67: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestDevigMulti::test_three_outcomes - ValueError:...
+FAILED tests/test_devig.py::TestDevigMulti::test_two_outcomes_matches_devig
+FAILED tests/test_devig.py::TestDevigMulti::test_six_outcomes - ValueError: F...
+FAILED tests/test_devig.py::TestDevigMulti::test_ordering_preserved - ValueEr...
+FAILED tests/test_devig.py::TestDevigMulti::test_vig_positive - ValueError: F...
+5 failed, 193 passed in 0.33s
+

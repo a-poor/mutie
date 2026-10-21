@@ -1,0 +1,21 @@
+........................................................................ [ 32%]
+.........................................................F.............. [ 65%]
+........................................................................ [ 98%]
+...                                                                      [100%]
+=================================== FAILURES ===================================
+____________ test_additive_removes_equal_margin_from_unequal_sides _____________
+
+    def test_additive_removes_equal_margin_from_unequal_sides():
+        result = devig_additive(-150, 100)
+>       assert result.fair_home == pytest.approx(0.55, abs=1e-12)
+E       assert 0.525 == 0.55 ± 1.0e-12
+E         
+E         comparison failed
+E         Obtained: 0.525
+E         Expected: 0.55 ± 1.0e-12
+
+tests/test_numeric_contracts.py:29: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_numeric_contracts.py::test_additive_removes_equal_margin_from_unequal_sides
+1 failed, 218 passed in 0.30s
+

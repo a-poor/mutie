@@ -443,3 +443,9 @@ zero division stay errors. Unchanged betting-math-kit's 30-site Kelly selection
 has 21 kills, eight survivors and one string-operand error; a separate 201-test
 copy kills all eight survivors. Preserve prior inputs/reports and recipe drift
 checks; selected evidence is not a full 194-arithmetic-site score.
+
+The [complete arithmetic review](benchmarks/python-arithmetic-full.md) accounts
+for all 194 sites on unchanged betting-math-kit: 61 kills, 97 survivors and
+36 native errors. A separate 219-test copy kills 54 more survivors; with eight
+prior kills, 35 remain open. Numerical questions are recorded per candidate. Preserve original report scores and the
+source-identity mapping; combined accounting is not a full-run score.

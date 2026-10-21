@@ -1,0 +1,865 @@
+.............FFF....F..................FFFFFFFFFFFFFF................... [ 36%]
+........................................................................ [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+______________________ TestDevigShin.test_symmetric_line _______________________
+
+self = <tests.test_devig.TestDevigShin object at [address]>
+
+    def test_symmetric_line(self):
+>       r = devig_shin(-110, -110)
+            ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:110: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:258: in devig_shin
+    fh, fa = _shin(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.5238095238095238, z = 0.25, total = 1.0476190476190477
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+________________________ TestDevigShin.test_sums_to_one ________________________
+
+self = <tests.test_devig.TestDevigShin object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_shin(-200, 170)
+            ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:258: in devig_shin
+    fh, fa = _shin(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6666666666666666, z = 0.25, total = 1.037037037037037
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_______________________ TestDevigShin.test_extreme_odds ________________________
+
+self = <tests.test_devig.TestDevigShin object at [address]>
+
+    def test_extreme_odds(self):
+>       r = devig_shin(-10000, 5000)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:258: in devig_shin
+    fh, fa = _shin(home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.9900990099009901, z = 0.25, total = 1.009706853038245
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+______________________ TestDevigDispatch.test_enum_method ______________________
+
+self = <tests.test_devig.TestDevigDispatch object at [address]>
+
+    def test_enum_method(self):
+>       r = devig(-110, -110, method=DevigMethod.SHIN)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.5238095238095238, z = 0.25, total = 1.0476190476190477
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+____________ TestInvariants.test_symmetric_all_methods_equal[-110] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -110
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.5238095238095238, z = 0.25, total = 1.0476190476190477
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+____________ TestInvariants.test_symmetric_all_methods_equal[-105] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -105
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.5121951219512195, z = 0.25, total = 1.024390243902439
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+____________ TestInvariants.test_symmetric_all_methods_equal[-115] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -115
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.5348837209302326, z = 0.25, total = 1.0697674418604652
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+____________ TestInvariants.test_symmetric_all_methods_equal[-120] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, odds = -120
+
+    @pytest.mark.parametrize("odds", [-110, -105, -115, -120])
+    def test_symmetric_all_methods_equal(self, odds):
+        """All methods should agree on symmetric odds."""
+        for method in DevigMethod:
+>           r = devig(odds, odds, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.5454545454545454, z = 0.25, total = 1.0909090909090908
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_all_methods_sum_to_one[-150-130] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6000000000000001, z = 0.25, total = 1.0347826086956524
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_all_methods_sum_to_one[-200-170] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6666666666666666, z = 0.25, total = 1.037037037037037
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_all_methods_sum_to_one[-300-250] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.75, z = 0.25, total = 1.0357142857142856
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_all_methods_sum_to_one[-500-400] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.8333333333333334, z = 0.25, total = 1.0333333333333334
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_probabilities_bounded[-150-130] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6000000000000001, z = 0.25, total = 1.0347826086956524
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_probabilities_bounded[-200-170] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6666666666666666, z = 0.25, total = 1.037037037037037
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+_____________ TestInvariants.test_probabilities_bounded[-300-250] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.75, z = 0.25, total = 1.0357142857142856
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+________ TestInvariants.test_favorite_always_has_higher_prob[-150-130] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6000000000000001, z = 0.25, total = 1.0347826086956524
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+________ TestInvariants.test_favorite_always_has_higher_prob[-200-170] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.6666666666666666, z = 0.25, total = 1.037037037037037
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+________ TestInvariants.test_favorite_always_has_higher_prob[-500-400] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:303: in devig
+    fh, fa = _dispatch(method, home_impl, away_impl)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:162: in _dispatch
+    return _shin(home_impl, away_impl)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:124: in _shin
+    p1 = _shin_prob(home_impl, z, total)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+impl_p = 0.8333333333333334, z = 0.25, total = 1.0333333333333334
+
+    def _shin_prob(impl_p: float, z: float, total: float) -> float:
+        """Shin probability for a single outcome.
+    
+        Shin (1991): fair_i = (sqrt(z² + 4(1−z)·q_i) − z) / (2(1−z))
+        where q_i = impl_p / total is the normalised vigged probability.
+        NOTE: the two-outcome version passes ``total`` but the binary search
+        in ``_shin`` converges independently; ``_shin_multi`` applies the
+        normalisation explicitly. The formula here simplifies because ``_shin``
+        binary-searches z until p1 + p2 = 1, which absorbs the normalisation.
+        """
+        if z == 0:
+            return impl_p / total
+        denom = 2.0 * (1.0 - z)
+        # (1.0 - z) factors cancel; equivalent to sqrt(z² + 4·impl_p) - z
+        numerator = (z**2 - 4.0 * impl_p) ** 0.5 - z
+>       return float(numerator / denom)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: float() argument must be a string or a real number, not 'complex'
+
+src/betting_math_kit/devig.py:108: TypeError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestDevigShin::test_symmetric_line - TypeError: f...
+FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - TypeError: floa...
+FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - TypeError: flo...
+FAILED tests/test_devig.py::TestDevigDispatch::test_enum_method - TypeError: ...
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-110]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-105]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-115]
+FAILED tests/test_devig.py::TestInvariants::test_symmetric_all_methods_equal[-120]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]
+18 failed, 180 passed in 0.59s
+

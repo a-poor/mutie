@@ -1,0 +1,61 @@
+........................................................................ [ 36%]
+..................................F..................................... [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+____________ TestExpectedCalibrationError.test_perfect_calibration _____________
+
+self = <tests.test_metrics.TestExpectedCalibrationError object at [address]>
+
+    def test_perfect_calibration(self):
+        probs = [0.5] * 10
+        outcomes = [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+>       ece = expected_calibration_error(probs, outcomes, n_bins=1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_metrics.py:111: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+probs = [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, ...], outcomes = [1, 0, 1, 0, 1, 0, ...]
+n_bins = 1
+
+    def expected_calibration_error(
+        probs: list[float],
+        outcomes: list[int],
+        n_bins: int = 10,
+    ) -> float:
+        """Expected Calibration Error (ECE).
+    
+        Weighted average of ``|accuracy - confidence|`` across equal-width
+        bins. Lower is better; 0.0 means perfectly calibrated.
+    
+        Args:
+            probs: Predicted probabilities, each in [0, 1].
+            outcomes: Binary outcomes (0 or 1), same length as *probs*.
+            n_bins: Number of equal-width bins. Defaults to 10.
+    
+        Returns:
+            ECE value (lower is better).
+    
+        Raises:
+            InvalidProbabilityError: If any probability is outside [0, 1].
+            ValueError: If lists differ in length or are empty,
+                or *n_bins* < 1.
+    
+        Examples:
+            >>> round(expected_calibration_error([0.9, 0.1], [1, 0], n_bins=2), 1)
+            0.1
+        """
+        buckets = calibration_buckets(probs, outcomes, n_bins)
+        n = len(probs)
+        ece = 0.0
+        for b in buckets:
+            weight = b["count"] / n
+>           ece += weight / abs(b["avg_actual"] - b["avg_predicted"])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           ZeroDivisionError: division by zero
+
+src/betting_math_kit/metrics.py:251: ZeroDivisionError
+=========================== short test summary info ============================
+FAILED tests/test_metrics.py::TestExpectedCalibrationError::test_perfect_calibration
+1 failed, 197 passed in 0.29s
+

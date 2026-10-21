@@ -1,0 +1,33 @@
+....................................F................................... [ 36%]
+........................................................................ [ 72%]
+......................................................                   [100%]
+=================================== FAILURES ===================================
+_______________________ TestDevigMulti.test_shin_method ________________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_shin_method(self):
+>       r = devig_multi([-110, -110, 300], method=DevigMethod.SHIN)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:466: in devig_multi
+    return MultiOutcomeDevigResult(
+<string>:7: in __init__
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = MultiOutcomeDevigResult(fair_probs=(1.0862143881389115, 1.0862143881389115, 0.7504104276539694), method=<DevigMethod.SHIN: 'shin'>, vig=0.29761904761904767, n_outcomes=3)
+
+    def __post_init__(self) -> None:
+        total = sum(self.fair_probs)
+        if abs(total - 1.0) > 1e-6:
+>           raise ValueError(f"Fair probabilities sum to {total:.6f}, expected ~1.0")
+E           ValueError: Fair probabilities sum to 2.922839, expected ~1.0
+
+src/betting_math_kit/types.py:67: ValueError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - ValueError: Fa...
+1 failed, 197 passed in 0.30s
+
