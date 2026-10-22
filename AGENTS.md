@@ -487,3 +487,14 @@ syntactic arithmetic contract, not demonstrated discovery defects. Four parser
 errors become kills after a test-only output-validity assertion; three error
 controls and the survivor retain their outcomes. Preserve original scores and do
 not describe assertion attribution refinement as new test coverage or equivalence.
+
+`benchmarks/python-dependencies-tinycss2.md` records the first application dependency:
+exact-hash webencodings 0.5.1, declared explicitly and accessed through five named
+imports. Reject missing/undeclared packages, byte drift, transitives, native
+additions and entry points; preserve every pre/post identity check. Never resolve
+or install dependencies inside Mutie. Unchanged Tinycss2 1.2.1 passes 480 tests;
+14 selected candidates have four survivors/ten errors, and separate-copy tests
+kill all four with 484 cases. Preserve original failed scores and distinguish the
+92-site discovery inventory from the 14 executed candidates. Current Tinycss2's
+17,120-test native control is not production acceptance. Retain lifecycle errors
+and conservative exception classification across dependency calls.

@@ -5,6 +5,108 @@ use crate::report::Outcome;
 use std::{ffi::OsStr, fs, path::PathBuf};
 
 #[tokio::test]
+#[ignore = "requires MUTIE_PYTHON_DEPENDENCY; audited webencodings environment"]
+async fn declared_dependency_preserves_body_and_lifecycle_attribution() -> Result<()> {
+    let root = tempfile::tempdir()?;
+    fs::create_dir(root.path().join("sample"))?;
+    fs::create_dir(root.path().join("tests"))?;
+    fs::write(
+        root.path().join("pyproject.toml"),
+        "[project]\nname='sample'\ndependencies=['webencodings>=0.4']\n",
+    )?;
+    let source = root.path().join("sample/__init__.py");
+    fs::write(
+        &source,
+        "from webencodings import decode, UTF8\ndef value():\n return decode(b'hello', UTF8)[0]\n",
+    )?;
+    let tests = root.path().join("tests/test_sample.py");
+    fs::write(
+        &tests,
+        "from sample import value\ndef test_value(): assert value() == 'hello'\n",
+    )?;
+    let executable = PathBuf::from(std::env::var("MUTIE_PYTHON_DEPENDENCY")?);
+    let timeout = Duration::from_secs(15);
+    let limit = NonZeroUsize::new(4194304).unwrap();
+    let (identity, collection) = execution_scope(
+        root.path(),
+        &executable,
+        timeout,
+        limit,
+        &Cancellation::default(),
+    )
+    .await?;
+    assert_eq!(collection.classify()?, Outcome::Missed);
+    let check = |identity: ExecutionScope, root: PathBuf| async move {
+        test(
+            &root,
+            timeout,
+            None,
+            Some(limit),
+            &identity,
+            &Cancellation::default(),
+        )
+        .await
+    };
+    assert_eq!(
+        check(identity.clone(), root.path().into())
+            .await?
+            .classify()?,
+        Outcome::Missed
+    );
+    fs::write(
+        &source,
+        "from webencodings import decode, UTF8\ndef value():\n return decode(b'other', UTF8)[0]\n",
+    )?;
+    assert_eq!(
+        check(identity.clone(), root.path().into())
+            .await?
+            .classify()?,
+        Outcome::Killed
+    );
+    fs::write(
+        &source,
+        "from webencodings import decode, UTF8\ndef value():\n return decode(bytes([255]), UTF8, errors='strict')[0]\n",
+    )?;
+    assert!(
+        check(identity.clone(), root.path().into())
+            .await?
+            .classify()
+            .is_err()
+    );
+    fs::write(
+        &source,
+        "from webencodings import decode, UTF8\ndef value():\n return decode(b'hello', UTF8)[0]\n",
+    )?;
+    fs::write(
+        &tests,
+        "import pytest\nfrom sample import value\n@pytest.fixture(autouse=True)\ndef cleanup():\n yield\n assert False\ndef test_value(): assert value() == 'hello'\n",
+    )?;
+    assert!(
+        check(identity.clone(), root.path().into())
+            .await?
+            .classify()
+            .is_err()
+    );
+    // An installed audited package is insufficient without an explicit declaration.
+    fs::write(
+        root.path().join("pyproject.toml"),
+        "[project]\nname='sample'\n",
+    )?;
+    assert!(
+        execution_scope(
+            root.path(),
+            &executable,
+            timeout,
+            limit,
+            &Cancellation::default()
+        )
+        .await
+        .is_err()
+    );
+    Ok(())
+}
+
+#[tokio::test]
 #[ignore = "requires MUTIE_PYTHON; copied-input reads and confined temporary file output"]
 async fn native_project_file_access_boundaries() -> Result<()> {
     let outside = tempfile::tempdir()?;

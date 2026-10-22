@@ -40,6 +40,8 @@ pub(crate) struct ExecutionScope {
     data_fingerprints: BTreeMap<String, String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     data_directories: Vec<String>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    application_dependencies: BTreeMap<String, String>,
     recipe_fingerprint: String,
     test_files: Vec<String>,
     test_nodes: Vec<String>,
@@ -179,6 +181,11 @@ impl ExecutionScope {
                 })
                 .collect::<Result<_>>()?,
             recipe_fingerprint: recipe(),
+            application_dependencies: project
+                .get("application_dependencies")
+                .map(|value| serde_json::from_value(value.clone()))
+                .transpose()?
+                .unwrap_or_default(),
             data_directories: project
                 .get("directories")
                 .map(|value| serde_json::from_value(value.clone()))
@@ -242,12 +249,18 @@ impl ExecutionScope {
                 .versions
                 .get(*name)
                 .is_some_and(|v| v == version))
-                && self
-                    .runtime
-                    .versions
-                    .keys()
-                    .all(|name| name == "pip" || pinned.iter().any(|(p, _)| p == name)),
+                && self.runtime.versions.keys().all(|name| name == "pip"
+                    || name == "webencodings"
+                    || pinned.iter().any(|(p, _)| p == name)),
             "unsupported saved Python dependencies"
+        );
+        ensure!(
+            self.application_dependencies
+                .iter()
+                .all(|(name, version)| name == "webencodings" && version == "0.5.1")
+                && self.application_dependencies.get("webencodings")
+                    == self.runtime.versions.get("webencodings"),
+            "Python application dependency declaration does not match the audited environment"
         );
         let valid = |value: &str| {
             value
@@ -356,6 +369,7 @@ impl ExecutionScope {
                 && self.support_fingerprints == current.support_fingerprints
                 && self.data_fingerprints == current.data_fingerprints
                 && self.data_directories == current.data_directories
+                && self.application_dependencies == current.application_dependencies
                 && self.recipe_fingerprint == current.recipe_fingerprint,
             "Python execution identity changed; start a fresh run"
         );
@@ -400,6 +414,34 @@ mod tests {
             Duration::from_secs(5),
             NonZeroUsize::new(4096).unwrap(),
         )?;
+        let mut declared = original.clone();
+        declared
+            .application_dependencies
+            .insert("webencodings".into(), "0.5.1".into());
+        assert!(declared.validate_record().is_err());
+        declared
+            .runtime
+            .versions
+            .insert("webencodings".into(), "0.5.1".into());
+        declared.validate_record()?;
+        assert!(original.validate_rerun(&declared).is_err());
+        let mut undeclared = declared.clone();
+        undeclared.application_dependencies.clear();
+        assert!(undeclared.validate_record().is_err());
+        let mut drifted = declared.clone();
+        drifted.runtime.packages = fingerprint(b"dependency bytes drifted");
+        assert!(declared.validate_rerun(&drifted).is_err());
+        for version in ["0.5.2", "1.0"] {
+            let mut changed = declared.clone();
+            changed
+                .runtime
+                .versions
+                .insert("webencodings".into(), version.into());
+            changed
+                .application_dependencies
+                .insert("webencodings".into(), version.into());
+            assert!(changed.validate_record().is_err());
+        }
         let mut stronger = original.clone();
         let mut with_expected = original.clone();
         with_expected.bind(vec![

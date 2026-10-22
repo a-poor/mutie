@@ -46,6 +46,8 @@ struct Document {
     data_files: Vec<String>,
     #[serde(default)]
     directories: Vec<String>,
+    #[serde(default)]
+    application_dependencies: std::collections::BTreeMap<String, String>,
 }
 
 pub(crate) struct Project {
@@ -63,6 +65,8 @@ impl Project {
                 && self.document.conftests == copied.document.conftests
                 && self.document.data_files == copied.document.data_files
                 && self.document.directories == copied.document.directories
+                && self.document.application_dependencies
+                    == copied.document.application_dependencies
                 && self
                     .document
                     .data_files

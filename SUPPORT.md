@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, single-comparison boundaries and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison boundaries and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -495,3 +495,23 @@ the original tests. A separate full-suite test refinement converts four parser
 failures to explicit assertion kills, while three error controls and the survivor
 retain their outcomes. No discovery/classification change or new coverage-gap
 claim follows; original failed reports remain unchanged and unscored.
+
+### Audited pure-Python dependency
+
+[Dependency acceptance](benchmarks/python-dependencies-tinycss2.md) validates
+unchanged Tinycss2 **1.2.1**, not its current release. Its sole dependency is
+`webencodings` 0.5.1 with an exact audited package-tree hash, no transitive
+requirements or entry points, and a pure-Python wheel. Only named imports of
+`UTF8`, `Encoding`, `decode`, `lookup` and `ascii_lower` are admitted, with an
+explicit compatible manifest declaration. The caller supplies the environment;
+Mutie never installs/resolves dependencies. Declaration, runtime versions, full
+site-package bytes and recipe are bound to snapshot/execution/rerun identity.
+
+All 480 original tests pass. Fourteen selected byte-input/serializer candidates
+produce four survivors and ten errors; separate-copy stronger tests kill all four
+with a 484-test baseline. Original failed/unscored reports remain unchanged.
+Remaining candidates are not claimed as executed. Eleven native regression groups
+and twelve disposable-environment controls retain lifecycle/resource and drift
+boundaries. Arbitrary dependency versions/APIs, transitives, native additions,
+plugins and editable installs remain unsupported. Current Tinycss2's 17,120-test
+native control is audit evidence only, outside this acceptance claim.

@@ -160,6 +160,11 @@ in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
 Python/pytest is Validated within its pinned serial scope on macOS arm64.
+[Scoped dependency acceptance](benchmarks/python-dependencies-tinycss2.md) adds
+one explicitly declared dependency: the byte-verified pure-Python `webencodings`
+0.5.1 package and five audited imports. Unchanged Tinycss2 **1.2.1** runs 480 tests;
+a separate 484-test copy kills four default-filtering and escaping survivors.
+This does not establish support for arbitrary dependencies or current Tinycss2.
 [Unchanged Tomli-W validation](benchmarks/python-tomli-w.md) adds a non-numerical
 271-case suite, copied fixture-data reads, confined temporary binary output and
 explicit expected failures bound to a pristine executed baseline. Its 30 candidates
@@ -214,7 +219,7 @@ survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
 Boolean flips, binary arithmetic and single-comparison boundaries (`<` ↔ `<=`, `>` ↔ `>=`)
 are supported, with full tests and one worker. Chained comparisons and annotations
-are excluded. See [comparison semantics and validation](benchmarks/python-comparison-boundaries.md). Application
+are excluded. See [comparison semantics and validation](benchmarks/python-comparison-boundaries.md). Other application
 dependencies, general conftest hooks/user plugins, async/thread-starting suites and
 multi-package layouts remain excluded. Completed assertion bodies can be kills;
 runtime exceptions and ambiguous/lifecycle failures remain errors. See
@@ -222,7 +227,10 @@ runtime exceptions and ambiguous/lifecycle failures remain errors. See
 
 Create a dedicated environment with CPython **3.14.7**, install only the pinned
 [pytest requirements](benchmarks/fixtures/pytest-audit/requirements.txt), and
-pass that environment's launcher without resolving its symlink:
+pass that environment's launcher without resolving its symlink. For a project
+that declares the supported `webencodings` requirement, use a separate environment
+with the additional [hash-pinned wheel](benchmarks/fixtures/python-dependency/requirements.txt).
+Mutie never resolves or installs dependencies; undeclared additions are rejected:
 
 ```sh
 mutie python-list /path/to/project --python /path/to/venv/bin/python

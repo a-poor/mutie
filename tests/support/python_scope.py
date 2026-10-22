@@ -25,6 +25,68 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def test_audited_dependency_requires_declaration_and_narrow_imports(self):
+        manifest = '[project]\nname="sample"\ndependencies=["webencodings >=0.4"]\n'
+        self.write('pyproject.toml', manifest)
+        self.write('sample/__init__.py', 'from webencodings import decode, UTF8, ascii_lower\n')
+        self.assertEqual(scope.inspect(self.root)['application_dependencies'], {'webencodings':'0.5.1'})
+        for source in ('import webencodings', 'from webencodings import encode',
+                       'from webencodings.tests import test_lookup', 'from webencodings import *',
+                       'from webencodings import lookup\nlookup = None'):
+            self.write('sample/__init__.py', source)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write('sample/__init__.py', 'from webencodings import lookup')
+        for dep in ('[]', '["webencodings>=1"]', '["webencodings[extra]>=0.4"]',
+                    '["webencodings @ file:///tmp/evil"]', '["webencodings>=0.4", "other"]'):
+            self.write('pyproject.toml', manifest.replace('["webencodings >=0.4"]', dep))
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+
+    def test_local_base_initialization_and_method_namespace(self):
+        source = """from collections import deque
+class Base:
+    def __init__(self, value): self.value = value
+class Child(Base):
+    def __init__(self, value): Base.__init__(self, value)
+    def deque(self): return deque()
+"""
+        self.write('sample/__init__.py', source)
+        scope.inspect(self.root)
+        for bad in (source + '\ndef deque(): pass', source.replace('Base.__init__(self, value)', 'Base.__init__'),
+                    source.replace('class Child(Base)', 'class Child(object)'),
+                    source.replace('Base.__init__(self, value)', 'Base.__dict__')):
+            self.write('sample/__init__.py', bad)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+
+    def test_data_only_exclusions_and_git_pointer_do_not_hide_tests(self):
+        self.write('pyproject.toml', '[project]\nname="sample"\n[tool.pytest.ini_options]\nnorecursedirs=["tests/css-parsing-tests"]\n')
+        helper = 'tests/css-parsing-tests/make_color3_hsl.py'
+        self.write(helper, 'import colorsys\nprint(colorsys.hls_to_rgb(0, 0, 0))')
+        self.write('tests/css-parsing-tests/.git', 'gitdir: ../../.git/modules/data\n')
+        document = scope.inspect(self.root)
+        self.assertIn(helper, document['files'])
+        self.assertNotIn(helper, document['tests'])
+        self.write(helper, 'def test_hidden(): assert False')
+        with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write(helper, 'import pytest')
+        with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write(helper, 'pass')
+        self.write('tests/css-parsing-tests/test_hidden.py', 'def test_hidden(): pass')
+        with self.assertRaisesRegex(ValueError, 'excluded data directory'): scope.inspect(self.root)
+
+    def test_readonly_unicode_bound_and_test_function_names(self):
+        self.write('sample/__init__.py', 'import sys\nvalue = sys.maxunicode\n')
+        self.write('tests/test_sample.py', 'import pprint\ndef decorate(function): return function.__name__\ndef test_a(): pprint.pprint(1)\n')
+        scope.inspect(self.root)
+        for source in ('import pprint as p', 'import pprint\npprint._sys.exit()',
+                       'import pprint\npprint = None', 'import pprint\nalias = pprint'):
+            self.write('tests/test_sample.py', source)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+        self.write('tests/test_sample.py', 'def test_a(): pass')
+        for source in ('import sys\nsys.maxunicode = 1', 'import sys\nvalue = sys.modules',
+                       'import sys\nvalue = sys', 'import sys as other'):
+            self.write('sample/__init__.py', source)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+
     def test_independent_random_generator_without_global_rng_access(self):
         self.write('sample/__init__.py', 'import random as rng\ndef draw(seed):\n    return rng.Random(seed).random()\n')
         scope.inspect(self.root)

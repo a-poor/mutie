@@ -113,6 +113,28 @@ class RuntimeTree(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'regular files'):
             runtime.fingerprint_tree(self.root)
 
+    def test_dependency_requires_exact_bytes_version_purity_and_no_plugins(self):
+        from types import SimpleNamespace
+        self.put('webencodings/__init__.py', b'known audited bytes')
+        dist = SimpleNamespace(version='0.5.1', requires=[], entry_points=[],
+                               read_text=lambda name: 'Root-Is-Purelib: true')
+        expected = runtime.fingerprint_tree(self.root / 'webencodings', site=True)
+        with patch.object(runtime, 'WEBENCODINGS', expected):
+            runtime.validate_application_dependency(self.root, dist)
+            for field, value in [('version','0.5.2'), ('requires',['other']),
+                                 ('entry_points',['plugin']), ('read_text',lambda name:'Root-Is-Purelib: false')]:
+                old = getattr(dist, field)
+                setattr(dist, field, value)
+                with self.assertRaises(ValueError): runtime.validate_application_dependency(self.root, dist)
+                setattr(dist, field, old)
+            for filename in ('webencodings/extra.py', 'webencodings/native.so', 'webencodings/startup.pth'):
+                file = self.put(filename)
+                with self.assertRaises(ValueError): runtime.validate_application_dependency(self.root, dist)
+                file.unlink()
+            self.put('webencodings/__init__.py', b'changed bytes')
+            with self.assertRaisesRegex(ValueError, 'bytes differ'):
+                runtime.validate_application_dependency(self.root, dist)
+
     def test_scan_errors_propagate(self):
         with patch.object(runtime.os, 'scandir', side_effect=PermissionError('denied')):
             with self.assertRaises(PermissionError):

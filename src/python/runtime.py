@@ -12,6 +12,11 @@ PINNED = {
     "iniconfig": "2.3.1", "pygments": "2.21.0",
 }
 
+# Audited pure-Python wheel webencodings-0.5.1-py2.py3-none-any.whl.
+# Application imports are separately constrained by scope.py; this is not a
+# resolver or permission to load arbitrary installed dependencies.
+WEBENCODINGS = "sha256:c1e7f05855fc3004d21de68f4a04d7e9d88ba13544f02f705f9af26a1cb48026"
+
 
 def require(condition, message):
     if not condition:
@@ -57,6 +62,18 @@ def fingerprint_tree(root, *, site=False):
     return "sha256:" + digest.hexdigest()
 
 
+def validate_application_dependency(site, distribution):
+    require((site / "webencodings").is_dir() and not (site / "webencodings").is_symlink(),
+            "Python dependency must be an owned package directory")
+    require(distribution.version == "0.5.1", "Python requires webencodings 0.5.1")
+    require(not distribution.requires and not distribution.entry_points,
+            "Python dependency transitives and entry points unsupported")
+    require("Root-Is-Purelib: true" in (distribution.read_text("WHEEL") or ""),
+            "Python dependency must be a pure-Python wheel")
+    require(fingerprint_tree(site / "webencodings", site=True) == WEBENCODINGS,
+            "Python webencodings bytes differ from the audited dependency")
+
+
 def identify():
     require(sys.implementation.name == "cpython" and sys.version_info[:3] == (3, 14, 7),
             "Python requires CPython 3.14.7")
@@ -74,9 +91,11 @@ def identify():
         name = distribution.metadata["Name"].lower().replace("_", "-")
         require(name not in versions, "Python duplicate installed distribution")
         versions[name] = distribution.version
+        if name == "webencodings":
+            validate_application_dependency(site, distribution)
     require(all(versions.get(k) == v for k, v in PINNED.items()),
             "Python requires the pinned pytest environment from the fixture requirements")
-    require(set(versions) <= set(PINNED) | {"pip"}, "Python extra installed packages unsupported")
+    require(set(versions) <= set(PINNED) | {"pip", "webencodings"}, "Python extra installed packages unsupported")
     stdlib = Path(sysconfig.get_path("stdlib"))
     executable = Path(sys.executable)
     library_root = (sysconfig.get_config_var("PYTHONFRAMEWORKPREFIX")

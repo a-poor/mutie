@@ -2064,3 +2064,25 @@ never contribute kills; all-expected-failure suites are rejected. Stronger-test
 reruns establish a fresh pristine inventory and expected-failure set rather than
 reusing historical body outcomes. Arbitrary marks/plugins and unittest expected
 failures remain excluded.
+
+## Scoped Python application dependency
+
+The first [dependency slice](benchmarks/python-dependencies-tinycss2.md) is an
+explicit audited allowlist, not a resolver. Static discovery admits only the
+known webencodings requirement forms and named root-module imports. Runtime
+identification, with site initialization disabled, verifies version 0.5.1,
+pure-wheel metadata, no transitives/entry points and the exact package-tree hash.
+The full environment is still fingerprinted before and after every command.
+Snapshot and execution identity bind the manifest-derived dependency map; missing
+or undeclared installed dependencies are rejected. Focused reruns require matching
+runtime bytes and declaration, while allowing stronger tests as before.
+
+Dependency calls use the unchanged body/fixture/process-lifetime observer. Runtime
+exceptions remain errors and cleanup mixtures cannot become kills. No dependency
+sources are mutated. The selected application is unchanged Tinycss2 1.2.1 with
+its pinned data submodule; data-only Git pointer files are excluded consistently
+with copying, while nested Git directories and hidden excluded tests are rejected.
+Small compatibility additions admit literal Flit versions, inert docs/data
+helpers, direct local-base initialization, class-method names that do not rebind
+module imports, test decorator name reads, sys.maxunicode and narrow pprint/colorsys
+APIs. They do not admit arbitrary reflection, plugin hooks or build execution.

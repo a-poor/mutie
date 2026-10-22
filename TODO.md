@@ -83,6 +83,12 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 
 ## Selected Python / pytest scope audit
 
+- [x] Validate one audited pure-Python runtime dependency through unchanged
+  Tinycss2 1.2.1: exact webencodings 0.5.1 bytes, explicit declaration, lifecycle
+  and identity controls, 480 original tests and four stronger-test kills in a
+  separate 484-case copy. See [dependency acceptance](benchmarks/python-dependencies-tinycss2.md).
+  Other dependencies and current Tinycss2 remain separate scope decisions.
+
 - [x] Review all 19 Tomli-W errors and the remaining survivor. Separate operand
   limitations from behavioral failures; a test-only validity assertion yields
   four kills while three error controls and the survivor retain their outcomes.
