@@ -40,6 +40,12 @@ struct Document {
     conftests: Vec<String>,
     sources: Vec<String>,
     mutations: Vec<Site>,
+    #[serde(default)]
+    expected_failure_calls: bool,
+    #[serde(default)]
+    data_files: Vec<String>,
+    #[serde(default)]
+    directories: Vec<String>,
 }
 
 pub(crate) struct Project {
@@ -55,6 +61,13 @@ impl Project {
                 && self.document.sources == copied.document.sources
                 && self.document.tests == copied.document.tests
                 && self.document.conftests == copied.document.conftests
+                && self.document.data_files == copied.document.data_files
+                && self.document.directories == copied.document.directories
+                && self
+                    .document
+                    .data_files
+                    .iter()
+                    .all(|path| self.document.files.get(path) == copied.document.files.get(path))
                 && ["pytest.ini", "tests/__init__.py"].iter().all(|path| self
                     .document
                     .files
@@ -292,6 +305,15 @@ mod tests {
             document: serde_json::from_value(project.value()?)?,
         };
         project.validate_snapshot(&copied)?;
+        copied
+            .document
+            .data_files
+            .push("tests/data/input.toml".into());
+        assert!(project.validate_snapshot(&copied).is_err());
+        copied.document.data_files.clear();
+        copied.document.directories.push("tests/data/empty".into());
+        assert!(project.validate_snapshot(&copied).is_err());
+        copied.document.directories.clear();
         copied.document.source_root = "src".into();
         assert!(project.validate_snapshot(&copied).is_err());
         copied.document.source_root.clear();

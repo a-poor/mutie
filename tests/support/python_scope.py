@@ -42,6 +42,137 @@ class ScopeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     scope.inspect(self.root)
 
+    def test_flit_and_inert_tools_do_not_execute_or_enable_plugins(self):
+        config = '''[project]
+name="sample"
+version="1.0"
+[build-system]
+requires=["flit_core>=3.11.0,<4"]
+build-backend="flit_core.buildapi"
+[tool.isort]
+profile="black"
+[tool.tox.env_run_base]
+commands=[["this-command-must-never-run"]]
+deps=["pytest-profiling"]
+[tool.coverage.run]
+branch=true
+source=["sample"]
+[tool.mypy]
+warn_unreachable=true
+incremental=false
+[[tool.mypy.overrides]]
+module="tests.*"
+disallow_untyped_defs=false
+[tool.pytest.ini_options]
+addopts="--strict-markers --strict-config"
+xfail_strict=true
+'''
+        self.write('pyproject.toml', config)
+        result = scope.inspect(self.root)
+        self.assertIn('pyproject.toml', result['files'])
+        for old, new in [
+            ('flit_core.buildapi', 'unreviewed.buildapi'),
+            ('version="1.0"', 'dynamic=["version"]'),
+            ('branch=true', 'branch=true\n[tool.unreviewed]\nplugin="bad"'),
+            ('warn_unreachable=true', 'plugins=["bad"]'),
+            ('incremental=false', 'incremental="false"'),
+            ('disallow_untyped_defs=false', 'plugins=["bad"]'),
+            ('--strict-markers --strict-config', '-p bad'),
+            ('xfail_strict=true', 'xfail_strict="true"'),
+        ]:
+            with self.subTest(new=new):
+                self.write('pyproject.toml', config.replace(old, new))
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
+    def test_datetime_types_and_direct_type_display_name(self):
+        self.write('sample/__init__.py', '''from datetime import date, datetime, time, timezone
+def describe(value):
+    return f"Unsupported {type(value).__qualname__}"
+def offset_time():
+    return time(23, 59, tzinfo=timezone.utc)
+''')
+        scope.inspect(self.root)
+        for source in ('import datetime', 'from datetime import timedelta',
+                       'def f(v): return v.__qualname__',
+                       'def f(v): return type(v).__dict__',
+                       'def f(v): return type(v).__mro__',
+                       'def f(v): type(v).__qualname__ = "changed"'):
+            with self.subTest(source=source):
+                self.write('sample/__init__.py', source)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
+    def test_pinned_tomllib_import_branch_does_not_admit_general_sys_or_files(self):
+        source = '''import sys
+if sys.version_info >= (3, 11):
+    import tomllib as tomli
+else:
+    import tomli
+def test_toml():
+    assert tomli.loads('key = 1') == {'key': 1}
+'''
+        self.write('tests/test_sample.py', source)
+        scope.inspect(self.root)
+        for old, new in [('(3, 11)', '(99, 0)'),
+                         ('import tomli\n', 'import forbidden\n'),
+                         ('import tomli\n', 'import tomli\n    raise Exception()\n'),
+                         ('tomli.loads', 'tomli.load'),
+                         ('assert tomli.loads', 'assert sys.modules or tomli.loads'),
+                         ('assert tomli.loads', 'module = tomli\n    assert tomli.loads'),
+                         ('assert tomli.loads', 'module = sys\n    assert tomli.loads')]:
+            with self.subTest(new=new):
+                self.write('tests/test_sample.py', source.replace(old, new))
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
+    def test_only_explicit_literal_expected_failure_calls(self):
+        source = 'import pytest\ndef test_expected():\n    pytest.xfail("known unsupported input")\n'
+        self.write('tests/test_sample.py', source)
+        self.assertTrue(scope.inspect(self.root)['expected_failure_calls'])
+        for source in ('from pytest import xfail\n',
+                       'import pytest\nxfail = pytest.xfail\n',
+                       'import pytest\ndef test_a(): pytest.xfail(str(1))\n',
+                       'import pytest\n@pytest.mark.xfail\ndef test_a(): pass\n'):
+            with self.subTest(source=source):
+                self.write('tests/test_sample.py', source)
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
+    def test_input_paths_and_binary_temporary_output_have_narrow_entry_points(self):
+        source = '''from pathlib import Path
+import os
+DATA = Path(__file__).parent / "data"
+FILES = tuple(DATA.glob("**/*.toml"))
+def test_data(tmp_path):
+    iterations = int(os.environ.get("PROFILER_ITERATIONS", 1))
+    for path in FILES:
+        assert path.read_bytes()
+    path = tmp_path / "output"
+    with open(path, "wb") as stream:
+        stream.write(b"ok")
+    assert path.read_bytes() == b"ok"
+'''
+        self.write('tests/test_sample.py', source)
+        self.write('tests/data/sample.toml', 'value=1\n')
+        result = scope.inspect(self.root)
+        self.assertIn('tests/data/sample.toml', result['data_files'])
+        self.assertIn('tests/data', result['directories'])
+        (self.root / 'tests/data/empty').mkdir()
+        self.assertNotEqual(scope.inspect(self.root)['directories'], result['directories'])
+        for old, new in [('Path(__file__)', 'Path("/tmp")'),
+                         ('from pathlib import Path', 'from pathlib import PurePath as Path'),
+                         ('"wb"', '"rb"'),
+                         ('open(path, "wb")', 'open(path, "wb", opener=lambda *a: 1)'),
+                         ('"PROFILER_ITERATIONS"', '"SECRET"'),
+                         ('"PROFILER_ITERATIONS", 1', '"PROFILER_ITERATIONS", 100'),
+                         ('int(os.environ.get("PROFILER_ITERATIONS", 1))', 'os.environ'),
+                         ('int(os.environ.get("PROFILER_ITERATIONS", 1))', 'os.system("true")')]:
+            with self.subTest(new=new):
+                self.write('tests/test_sample.py', source.replace(old, new))
+                with self.assertRaises(ValueError):
+                    scope.inspect(self.root)
+
     def test_versioned_development_extras_and_inert_numeric_tool_settings(self):
         config = ('[project]\nname="sample"\n'
                   '[project.optional-dependencies]\ndev=["pytest>=7.0", "mypy>=1.0", "ruff>=0.4"]\n'

@@ -36,9 +36,15 @@ pub(crate) struct ExecutionScope {
     conftest_fingerprints: BTreeMap<String, String>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     support_fingerprints: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    data_fingerprints: BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    data_directories: Vec<String>,
     recipe_fingerprint: String,
     test_files: Vec<String>,
     test_nodes: Vec<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    expected_failure_nodes: Vec<String>,
     timeout_millis: u128,
     capture_bytes: usize,
     evidence_file_bytes: u64,
@@ -116,6 +122,19 @@ impl ExecutionScope {
         self.validate_ready()
     }
 
+    pub(super) fn bind_expected_failures(&mut self, nodes: Vec<String>) -> Result<()> {
+        self.expected_failure_nodes = nodes;
+        self.validate_ready()
+    }
+
+    pub(super) fn validate_expected_failures(&self, nodes: &[String]) -> Result<()> {
+        ensure!(
+            self.expected_failure_nodes == nodes,
+            "Python expected failures differ from pristine baseline"
+        );
+        Ok(())
+    }
+
     pub(super) fn validate_inventory(&self, nodes: &[String]) -> Result<()> {
         self.validate_ready()?;
         ensure!(
@@ -160,6 +179,25 @@ impl ExecutionScope {
                 })
                 .collect::<Result<_>>()?,
             recipe_fingerprint: recipe(),
+            data_directories: project
+                .get("directories")
+                .map(|value| serde_json::from_value(value.clone()))
+                .transpose()?
+                .unwrap_or_default(),
+            data_fingerprints: project
+                .get("data_files")
+                .map(|value| serde_json::from_value::<Vec<String>>(value.clone()))
+                .transpose()?
+                .unwrap_or_default()
+                .into_iter()
+                .map(|path| {
+                    let hash = project["files"][&path]
+                        .as_str()
+                        .context("missing Python data identity")?
+                        .to_owned();
+                    Ok((path, hash))
+                })
+                .collect::<Result<_>>()?,
             conftest_fingerprints: project
                 .get("conftests")
                 .and_then(Value::as_array)
@@ -175,6 +213,7 @@ impl ExecutionScope {
                 .collect::<Result<_>>()?,
             test_files: serde_json::from_value(project["tests"].clone())?,
             test_nodes: Vec::new(),
+            expected_failure_nodes: Vec::new(),
             timeout_millis: timeout.as_millis(),
             capture_bytes: capture.get(),
             evidence_file_bytes: 4 * 1024 * 1024,
@@ -248,6 +287,30 @@ impl ExecutionScope {
             "invalid saved Python conftest identity"
         );
         ensure!(
+            self.data_directories.windows(2).all(|w| w[0] < w[1])
+                && self.data_directories.iter().all(|path| !path.is_empty()
+                    && !path.contains('\0')
+                    && Path::new(path)
+                        .components()
+                        .all(|c| matches!(c, Component::Normal(_)))),
+            "invalid saved Python data directories"
+        );
+        ensure!(
+            self.data_fingerprints
+                .iter()
+                .all(|(path, hash)| !path.is_empty()
+                    && !path.contains('\0')
+                    && Path::new(path)
+                        .components()
+                        .all(|c| matches!(c, Component::Normal(_)))
+                    && !matches!(
+                        Path::new(path).extension().and_then(|s| s.to_str()),
+                        Some("py" | "pyc")
+                    )
+                    && valid(hash)),
+            "invalid saved Python data identity"
+        );
+        ensure!(
             matches!(self.source_root.as_str(), "" | "src")
                 && !self.package.is_empty()
                 && Path::new(&self.package).components().count() == 1
@@ -257,6 +320,13 @@ impl ExecutionScope {
             "invalid saved Python package"
         );
         let unique: BTreeSet<_> = self.test_files.iter().collect();
+        let expected: BTreeSet<_> = self.expected_failure_nodes.iter().collect();
+        ensure!(
+            expected.len() == self.expected_failure_nodes.len()
+                && expected.iter().all(|node| self.test_nodes.contains(node))
+                && (expected.is_empty() || expected.len() < self.test_nodes.len()),
+            "invalid saved Python expected failures"
+        );
         ensure!(
             !unique.is_empty()
                 && unique.len() == self.test_files.len()
@@ -284,6 +354,8 @@ impl ExecutionScope {
                 && self.manifest_fingerprint == current.manifest_fingerprint
                 && self.conftest_fingerprints == current.conftest_fingerprints
                 && self.support_fingerprints == current.support_fingerprints
+                && self.data_fingerprints == current.data_fingerprints
+                && self.data_directories == current.data_directories
                 && self.recipe_fingerprint == current.recipe_fingerprint,
             "Python execution identity changed; start a fresh run"
         );
@@ -329,6 +401,43 @@ mod tests {
             NonZeroUsize::new(4096).unwrap(),
         )?;
         let mut stronger = original.clone();
+        let mut with_expected = original.clone();
+        with_expected.bind(vec![
+            "tests/test_sample.py::test_a".into(),
+            "tests/test_sample.py::test_b".into(),
+        ])?;
+        with_expected.bind_expected_failures(vec!["tests/test_sample.py::test_a".into()])?;
+        with_expected.validate_expected_failures(&["tests/test_sample.py::test_a".into()])?;
+        assert!(with_expected.validate_expected_failures(&[]).is_err());
+        assert!(
+            with_expected
+                .validate_expected_failures(&["tests/test_sample.py::test_b".into()])
+                .is_err()
+        );
+        assert!(
+            with_expected
+                .bind_expected_failures(with_expected.test_nodes.clone())
+                .is_err()
+        );
+        let mut with_data = original.clone();
+        with_data
+            .data_fingerprints
+            .insert("tests/data/input.toml".into(), hash.clone());
+        with_data.validate_record()?;
+        assert!(original.validate_rerun(&with_data).is_err());
+        let mut with_directory = original.clone();
+        with_directory.data_directories = vec!["tests/data/empty".into()];
+        with_directory.validate_record()?;
+        assert!(original.validate_rerun(&with_directory).is_err());
+        for directories in [vec!["../escape"], vec!["b", "a"], vec!["same", "same"]] {
+            with_directory.data_directories = directories.into_iter().map(str::to_owned).collect();
+            assert!(with_directory.validate_record().is_err());
+        }
+        for path in ["../escape", "/absolute", "tests/code.py", ""] {
+            let mut invalid = with_data.clone();
+            invalid.data_fingerprints.insert(path.into(), hash.clone());
+            assert!(invalid.validate_record().is_err());
+        }
         stronger.test_files.push("tests/test_stronger.py".into());
         stronger.timeout_millis = 9000;
         stronger.capture_bytes = 8192;

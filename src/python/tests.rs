@@ -2,7 +2,118 @@
 //! Passing a probe does not admit its imports into the supported project scope.
 use super::*;
 use crate::report::Outcome;
-use std::{ffi::OsStr, fs};
+use std::{ffi::OsStr, fs, path::PathBuf};
+
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; copied-input reads and confined temporary file output"]
+async fn native_project_file_access_boundaries() -> Result<()> {
+    let outside = tempfile::tempdir()?;
+    let sentinel = outside.path().join("sentinel");
+    fs::write(&sentinel, b"unchanged")?;
+    let outside_path = format!("{:?}", sentinel);
+    let outside_dir = format!("{:?}", outside.path());
+    for (name, body, passing) in [
+        ("read_input", "assert Path(__file__).read_bytes()".to_owned(), true),
+        ("temporary_output", "p = tmp_path / 'value'\n with open(p, 'wb') as f: f.write(b'ok')\n assert p.read_bytes() == b'ok'".to_owned(), true),
+        ("input_write", "with pytest.raises(PermissionError): Path(__file__).write_text('changed')".to_owned(), false),
+        ("input_remove", "with pytest.raises(PermissionError): Path(__file__).unlink()".to_owned(), false),
+        ("external_read", format!("with pytest.raises(PermissionError): Path({outside_path}).read_bytes()"), false),
+        ("external_write", format!("with pytest.raises(PermissionError): Path({outside_path}).write_bytes(b'changed')"), false),
+        ("external_scan", format!("with pytest.raises(PermissionError): list(Path({outside_dir}).iterdir())"), false),
+        ("descriptor", "with pytest.raises(PermissionError): open(1, 'wb', closefd=False)".to_owned(), false),
+        ("symlink_escape", format!("with pytest.raises(PermissionError): (tmp_path / 'link').symlink_to({outside_path})"), false),
+    ] {
+        let source = format!("from pathlib import Path\nimport pytest\ndef test_body(tmp_path):\n {body}\n");
+        let (_, outcome, owned) = probe(&source, Duration::from_secs(15), 4194304, &Cancellation::default()).await?;
+        if passing {
+            assert_eq!(outcome?, Outcome::Missed, "{name}");
+        } else {
+            assert!(outcome.is_err(), "{name}");
+        }
+        assert_eq!(fs::read_to_string(owned.path().join("repo/tests/test_probe.py"))?, source, "{name}");
+        assert_eq!(fs::read(&sentinel)?, b"unchanged", "{name}");
+    }
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; pristine expected-failure identity and lifecycle controls"]
+async fn expected_failures_bind_to_pristine_bodies() -> Result<()> {
+    let root = tempfile::tempdir()?;
+    fs::create_dir(root.path().join("sample"))?;
+    fs::create_dir(root.path().join("tests"))?;
+    fs::write(
+        root.path().join("pyproject.toml"),
+        "[project]\nname='sample'\n",
+    )?;
+    let source = root.path().join("sample/__init__.py");
+    fs::write(&source, "expected = True\nvalue = True\n")?;
+    let tests = root.path().join("tests/test_sample.py");
+    let original_tests = "import pytest\nimport sample\ndef test_expected():\n if sample.expected: pytest.xfail('known input')\ndef test_value():\n assert sample.value\n";
+    fs::write(&tests, original_tests)?;
+    let executable = PathBuf::from(std::env::var("MUTIE_PYTHON")?);
+    let cancellation = Cancellation::default();
+    let timeout = Duration::from_secs(15);
+    let limit = NonZeroUsize::new(4194304).unwrap();
+    let (identity, baseline) =
+        execution_scope(root.path(), &executable, timeout, limit, &cancellation).await?;
+    assert_eq!(baseline.classify()?, Outcome::Missed);
+    let check = |root: PathBuf, identity: ExecutionScope| async move {
+        test(
+            &root,
+            timeout,
+            None,
+            Some(limit),
+            &identity,
+            &Cancellation::default(),
+        )
+        .await
+    };
+    assert_eq!(
+        check(root.path().into(), identity.clone())
+            .await?
+            .classify()?,
+        Outcome::Missed
+    );
+    fs::write(&source, "expected = True\nvalue = False\n")?;
+    assert_eq!(
+        check(root.path().into(), identity.clone())
+            .await?
+            .classify()?,
+        Outcome::Killed
+    );
+    fs::write(&source, "expected = False\nvalue = True\n")?;
+    assert!(
+        check(root.path().into(), identity.clone())
+            .await?
+            .classify()
+            .is_err()
+    );
+    fs::write(&source, "expected = True\nvalue = True\n")?;
+    fs::write(
+        &tests,
+        original_tests.replace("assert sample.value", "pytest.xfail('new skip')"),
+    )?;
+    assert!(
+        check(root.path().into(), identity.clone())
+            .await?
+            .classify()
+            .is_err()
+    );
+    fs::write(
+        &tests,
+        format!(
+            "{original_tests}\n@pytest.fixture(autouse=True)\ndef cleanup():\n yield\n assert False\n"
+        ),
+    )?;
+    assert!(
+        check(root.path().into(), identity.clone())
+            .await?
+            .classify()
+            .is_err()
+    );
+    Ok(())
+}
 
 #[tokio::test]
 #[ignore = "requires MUTIE_PYTHON; shared discovery, mutation writes and classified execution"]
@@ -382,6 +493,17 @@ async fn probe_with_conftest(
     budget: usize,
     cancellation: &Cancellation,
 ) -> Result<(process::CommandOutput, Result<Outcome>, tempfile::TempDir)> {
+    probe_with_temporary(source, conftest, timeout, budget, cancellation, None).await
+}
+
+async fn probe_with_temporary(
+    source: &str,
+    conftest: Option<&str>,
+    timeout: Duration,
+    budget: usize,
+    cancellation: &Cancellation,
+    temporary: Option<&Path>,
+) -> Result<(process::CommandOutput, Result<Outcome>, tempfile::TempDir)> {
     let directory = tempfile::tempdir()?;
     let owned = directory.path().canonicalize()?;
     let root = owned.join("repo");
@@ -425,7 +547,7 @@ async fn probe_with_conftest(
             ("PYTEST_ADDOPTS", OsStr::new("")),
             ("PYTEST_PLUGINS", OsStr::new("")),
             ("HOME", owned.as_os_str()),
-            ("TMPDIR", owned.as_os_str()),
+            ("TMPDIR", temporary.unwrap_or(&owned).as_os_str()),
         ],
         4 * 1024 * 1024,
     )
@@ -442,7 +564,7 @@ async fn probe_with_conftest(
             vec![]
         },
     )
-    .and_then(|(_, outcome)| match outcome {
+    .and_then(|(_, outcome, _)| match outcome {
         protocol::CandidateOutcome::Scored(outcome) => Ok(outcome),
         protocol::CandidateOutcome::BodyError => {
             anyhow::bail!("Python run contains an unsupported phase failure")
@@ -550,7 +672,7 @@ async fn native_capture_and_file_limits() -> Result<()> {
             true,
         ),
         (
-            "def test_body():\n with open('large.bin', 'wb') as f: f.write(b'x'*(5*1024*1024))\n",
+            "def test_body(tmp_path):\n with open(tmp_path / 'large.bin', 'wb') as f: f.write(b'x'*(5*1024*1024))\n",
             4194304,
             false,
         ),
@@ -570,6 +692,22 @@ async fn native_capture_and_file_limits() -> Result<()> {
         assert!(outcome.is_err());
         if capture_failure {
             assert!(raw.capture_error.is_some(), "{}", raw.stdout.text()?);
+        }
+        if source.contains("large.bin") {
+            let mut files = Vec::new();
+            let mut pending = vec![directory.path().to_owned()];
+            while let Some(path) = pending.pop() {
+                for entry in fs::read_dir(path)? {
+                    let entry = entry?;
+                    if entry.file_type()?.is_dir() {
+                        pending.push(entry.path());
+                    } else if entry.file_name() == "large.bin" {
+                        files.push(entry.path());
+                    }
+                }
+            }
+            assert_eq!(files.len(), 1, "file-limit probe did not write its output");
+            assert_eq!(fs::metadata(&files[0])?.len(), 4 * 1024 * 1024);
         }
         for path in [
             directory.path().join("repo/large.bin"),
@@ -619,8 +757,9 @@ async fn native_descendant_shutdown() -> Result<()> {
             }
             Ok::<_, anyhow::Error>(())
         });
-        let result = probe(
+        let result = probe_with_temporary(
             &source,
+            None,
             if mode == "timeout" {
                 Duration::from_secs(3)
             } else {
@@ -628,6 +767,7 @@ async fn native_descendant_shutdown() -> Result<()> {
             },
             4194304,
             &cancellation,
+            Some(markers.path()),
         )
         .await;
         stop.await??;

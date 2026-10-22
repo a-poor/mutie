@@ -467,3 +467,16 @@ The unchanged 194-candidate arithmetic batch matches all prior outcomes
 (61 kills, 97 survivors, 36 errors) in one failed, unscored report, preserving
 original inputs and historical reports. Native exception, lifecycle/resource,
 limit and cancellation controls establish this narrow continuation boundary.
+
+`benchmarks/python-tomli-w.md` records unchanged Tomli-W acceptance: 271 cases,
+30 candidates (nine kills, two survivors, 19 errors), and a separate 272-case
+stronger-test rerun killing the default newline-format survivor. Preserve failed,
+unscored original reports and distinguish combined accounting from a full score.
+Non-Python data hashes and directory membership join snapshot/rerun identity.
+Test-only path access is runtime-guarded; denied accesses emit fatal evidence even
+when caught. Input/runtime reads, owned temporary output and opening the null
+device do not imply general filesystem or sandbox support. Explicit test xfail
+calls require exact native evidence and the pristine expected-failure node set;
+new/missing expected failures and cleanup errors remain errors. General skips,
+marks/plugins and unittest expected failures remain excluded. The fixed profiler
+iteration value and all observer/scope changes remain bound to execution identity.

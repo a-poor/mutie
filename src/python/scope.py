@@ -20,7 +20,7 @@ FORBIDDEN_NAMES = {
     "getattr", "setattr", "delattr", "open", "breakpoint", "input",
     "exit", "quit", "__builtins__", "__loader__", "__spec__", "__path__", "__test__",
 }
-PYTEST_MEMBERS = {"fixture", "mark", "param", "raises", "fail", "approx"}
+PYTEST_MEMBERS = {"fixture", "mark", "param", "raises", "fail", "approx", "xfail"}
 UNIT_INTERNALS = {"run", "debug", "doCleanups", "doClassCleanups", "subTest", "skipTest",
                   "failureException", "_outcome", "_cleanups", "_class_cleanups",
                   "_callSetUp", "_callTestMethod", "_callTearDown", "_callCleanup",
@@ -32,6 +32,7 @@ FROM_MEMBERS = {
     "io": {"StringIO"},
     "abc": {"ABC", "abstractmethod"},
     "types": {"MappingProxyType"},
+    "datetime": {"date", "datetime", "time", "timezone"},
     "time": {"time", "sleep"},
     "fnmatch": {"fnmatch", "fnmatchcase"},
     "urllib.parse": {"parse_qsl", "urlencode", "urlsplit", "urlunsplit"},
@@ -185,6 +186,7 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
 def inspect(root):
     root = root.resolve(strict=True)
     files = {}
+    directories = []
     total = 0
 
     def walk(directory):
@@ -198,6 +200,7 @@ def inspect(root):
             if path.is_dir():
                 require(path.name not in (".venv", "venv", "node_modules"),
                         f"Python installed project environments unsupported: {relative}")
+                directories.append(relative)
                 walk(path)
             else:
                 require(path.is_file(), f"Python input must be a regular file: {relative}")
@@ -246,15 +249,31 @@ def inspect(root):
     require(project.get("dynamic", []) in ([], ["version"]) and not project.get("entry-points"),
             "Python dynamic metadata and entry-point plugins unsupported")
     tool = config.get("tool", {})
-    require(set(tool) <= {"pytest", "setuptools", "hatch", "ruff", "uv", "mypy"}, "unsupported Python tool configuration")
+    require(set(tool) <= {"pytest", "setuptools", "hatch", "ruff", "uv", "mypy",
+                          "isort", "tox", "coverage"}, "unsupported Python tool configuration")
+    # These tools are never invoked by the runner. Their declarative settings
+    # remain fingerprinted inputs; admitting them does not install their plugins
+    # or execute their commands (including tox's build/test environments).
+    for name in ("isort", "tox", "coverage"):
+        require(isinstance(tool.get(name, {}), dict), f"invalid Python {name} metadata")
     uv = tool.get("uv", {})
     require(set(uv) <= {"override-dependencies"} and isinstance(uv.get("override-dependencies", []), list)
             and all(isinstance(item, str) and re.fullmatch(r"(?:cryptography|urllib3)>=[0-9]+(?:\.[0-9]+)*", item)
                     for item in uv.get("override-dependencies", [])), "unsupported Python resolver metadata")
     mypy = tool.get("mypy", {})
-    require(set(mypy) <= {"python_version", "strict", "files", "warn_return_any", "warn_unused_configs", "disallow_untyped_defs"}
+    mypy_flags = {"strict", "warn_return_any", "warn_unused_configs", "disallow_untyped_defs",
+                  "show_error_codes", "warn_unreachable", "warn_unused_ignores",
+                  "warn_redundant_casts", "incremental", "check_untyped_defs",
+                  "strict_equality", "implicit_reexport", "no_implicit_optional"}
+    overrides = mypy.get("overrides", [])
+    require(set(mypy) <= {"python_version", "files", "overrides"} | mypy_flags
             and mypy.get("python_version", "3.11") in ("3.10", "3.11")
-            and all(type(mypy.get(key, False)) is bool for key in ("strict", "warn_return_any", "warn_unused_configs", "disallow_untyped_defs"))
+            and all(type(mypy.get(key, False)) is bool for key in mypy_flags)
+            and isinstance(overrides, list) and all(isinstance(item, dict)
+                and set(item) <= {"module", "disallow_untyped_defs", "ignore_errors"}
+                and isinstance(item.get("module"), str)
+                and all(type(item.get(key, False)) is bool
+                        for key in ("disallow_untyped_defs", "ignore_errors")) for item in overrides)
             and mypy.get("files", ["src", "tests", "examples"]) == ["src", "tests", "examples"],
             "unsupported Python type-checker metadata")
     ruff = tool.get("ruff", {})
@@ -279,15 +298,19 @@ def inspect(root):
                 "Python pytest.ini only admits testpaths")
         options = {"testpaths": ini["pytest"].get("testpaths", "tests").split()}
 
-    require(set(options) <= {"testpaths", "pythonpath", "addopts"}
+    require(set(options) <= {"testpaths", "pythonpath", "addopts", "xfail_strict"}
             and options.get("testpaths", ["tests"]) in (["tests"], ["."])
-            and options.get("addopts", "") in ("", "-q"),
+            and options.get("addopts", "") in ("", "-q", "--strict-markers --strict-config")
+            and type(options.get("xfail_strict", False)) is bool,
             "Python only accepts full tests with optional quiet output")
     # Build metadata is never executed. Admit only a conventional static backend.
     build = config.get("build-system")
     if build is not None:
         require(set(build) <= {"requires", "build-backend"}
                 and ((build.get("build-backend") == "hatchling.build" and build.get("requires") == ["hatchling"])
+                     or (build.get("build-backend") == "flit_core.buildapi"
+                         and build.get("requires") == ["flit_core>=3.11.0,<4"]
+                         and not project.get("dynamic"))
                      or (build.get("build-backend") == "setuptools.build_meta"
                 and isinstance(build.get("requires"), list)
                 and all(isinstance(x, str) and
@@ -349,6 +372,7 @@ def inspect(root):
     conftests = []
     mutations = []
     sources = []
+    expected_failure_calls = False
     for relative in files:
         path = Path(relative)
         is_conftest = path.name == "conftest.py"
@@ -371,7 +395,8 @@ def inspect(root):
         package_parts = (source_root, package) if source_root else (package,)
         in_package = parts[:len(package_parts)] == package_parts
         if not in_package and (relative in {"doc/source/conf.py", "docs/source/conf.py"}
-                               or (len(parts) == 2 and parts[0] in {".circleci", "examples"})):
+                               or (len(parts) == 2 and parts[0] in {".circleci", "examples"})
+                               or relative == "benchmark/run.py"):
             # Documentation configuration and CI scripts are retained, never
             # imported or executed. They cannot conceal tests or pytest hooks.
             require(not path.name.startswith("test_") and not path.name.endswith("_test.py"),
@@ -380,7 +405,8 @@ def inspect(root):
             require(not any(
                 (isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef))
                  and (node.name.startswith(("test", "Test", "pytest_"))))
-                or (isinstance(node, ast.Name) and node.id.startswith(("pytest", "test_", "Test")))
+                or (isinstance(node, ast.Name) and node.id.startswith(("pytest", "test_", "Test"))
+                    and relative != "benchmark/run.py")
                 or (isinstance(node, (ast.Import, ast.ImportFrom)) and any(
                     alias.name.split(".")[0] in {"pytest", "unittest"} for alias in node.names))
                 or (isinstance(node, ast.ImportFrom) and (node.module or "").split(".")[0]
@@ -430,6 +456,26 @@ def inspect(root):
         main_calls = set()
         case_bases = set()
         parents = {child: parent for parent in ast.walk(tree) for child in ast.iter_child_nodes(parent)}
+        # Only this conventional stdlib compatibility branch is resolved using
+        # the pinned interpreter. Do not evaluate arbitrary project conditions
+        # or silently admit imports in other unreachable code.
+        inactive_imports = set()
+        version_accesses = set()
+        if is_test:
+            expected_guard = ast.dump(ast.parse('sys.version_info >= (3, 11)', mode='eval').body)
+            for statement in tree.body:
+                if isinstance(statement, ast.If) and ast.dump(statement.test) == expected_guard:
+                    require(len(statement.body) == len(statement.orelse) == 1
+                            and isinstance(statement.body[0], ast.Import)
+                            and isinstance(statement.orelse[0], ast.Import)
+                            and len(statement.body[0].names) == len(statement.orelse[0].names) == 1
+                            and statement.body[0].names[0].name == "tomllib"
+                            and statement.body[0].names[0].asname == "tomli"
+                            and statement.orelse[0].names[0].name == "tomli"
+                            and statement.orelse[0].names[0].asname is None,
+                            "Python version branch only admits the pinned tomllib fallback")
+                    inactive_imports.add(statement.orelse[0])
+                    version_accesses.add(statement.test.left)
         for cls in (node for node in ast.walk(tree) if isinstance(node, ast.ClassDef)):
             bases = [base for base in cls.bases if
                      (isinstance(base, ast.Name) and base.id == "TestCase") or
@@ -466,16 +512,28 @@ def inspect(root):
         copy_aliases = set()
         random_aliases = set()
         json_aliases = set()
+        toml_aliases = set()
         pytest_marks = {"mark"}
         for node in ast.walk(tree):
+            if node in inactive_imports:
+                continue
             if isinstance(node, ast.Import):
                 for alias in node.names:
                     top = alias.name.split(".")[0]
-                    require(top in STDLIB | {package, "logging", "copy", "random"} | ({"pytest", "unittest", "random", "json"} if is_test else set()),
+                    require(top in STDLIB | {package, "logging", "copy", "random"} | ({"pytest", "unittest", "random", "json", "tomllib", "sys", "os"} if is_test else set()),
                             f"unsupported Python import {alias.name} in {relative}")
                     if top == "json":
                         require(alias.name == "json", "Python json submodules unsupported")
                         json_aliases.add(alias.asname or "json")
+                    if top == "tomllib":
+                        require(alias.name == "tomllib", "Python tomllib submodules unsupported")
+                        toml_aliases.add(alias.asname or "tomllib")
+                    if top == "sys":
+                        require(alias.name == "sys" and alias.asname is None,
+                                "Python only admits unaliased sys for the pinned version branch")
+                    if top == "os":
+                        require(alias.name == "os" and alias.asname is None,
+                                "Python only admits unaliased os for the profiling iteration control")
                     if top == "random":
                         require(alias.name == "random", "Python random submodules unsupported")
                         random_aliases.add(alias.asname or "random")
@@ -516,17 +574,21 @@ def inspect(root):
                 else:
                     top = (node.module or "").split(".")[0]
                     require(top in STDLIB | {package} | ({"pytest", "unittest"} if is_test else set())
-                            or node.module in FROM_MEMBERS or node.module == "__future__",
+                            or node.module in FROM_MEMBERS or node.module == "__future__"
+                            or (is_test and node.module == "pathlib"),
                             f"unsupported Python import {node.module} in {relative}")
                     if node.module in FROM_MEMBERS:
                         require(all(a.name in FROM_MEMBERS[node.module] for a in node.names),
                                 f"unsupported Python API from {node.module}")
+                    if node.module == "pathlib":
+                        require(all(a.name == "Path" and a.asname is None for a in node.names),
+                                "Python only admits unaliased test pathlib.Path")
                     if top == package:
                         require(module_exists(import_root, node.module.split(".")),
                                 "unresolved local Python import")
                 require(all(a.name != "*" for a in node.names), "Python wildcard imports unsupported")
                 if top == "pytest":
-                    require(all(a.name in PYTEST_MEMBERS for a in node.names),
+                    require(all(a.name in PYTEST_MEMBERS - {"xfail"} for a in node.names),
                             "unsupported pytest import")
                     pytest_marks.update(a.asname or a.name for a in node.names if a.name == "mark")
                 if top == "unittest":
@@ -566,6 +628,30 @@ def inspect(root):
                                           ast.AsyncWith, ast.TypeAlias)),
                     f"Python async/type-alias execution unsupported: {relative}")
             if isinstance(node, ast.Name):
+                if node.id == "Path" and "Path" in aliases:
+                    call = parents.get(node)
+                    require(isinstance(call, ast.Call) and call.func is node
+                            and len(call.args) == 1 and not call.keywords
+                            and isinstance(call.args[0], ast.Name) and call.args[0].id == "__file__",
+                            "Python test Path must be constructed from __file__")
+                if node.id == "os" and "os" in aliases:
+                    attribute = parents.get(node)
+                    method = parents.get(attribute)
+                    call = parents.get(method)
+                    require(isinstance(attribute, ast.Attribute) and attribute.attr == "environ"
+                            and isinstance(method, ast.Attribute) and method.attr == "get"
+                            and isinstance(call, ast.Call) and call.func is method and not call.keywords
+                            and len(call.args) == 2
+                            and all(isinstance(arg, ast.Constant) for arg in call.args)
+                            and call.args[0].value == "PROFILER_ITERATIONS"
+                            and type(call.args[1].value) is int and call.args[1].value == 1,
+                            "Python environment access only admits the fixed profiling iteration control")
+                if node.id == "sys" and "sys" in aliases:
+                    require(parents.get(node) in version_accesses,
+                            "Python sys access only admits the pinned version branch")
+                if node.id in toml_aliases:
+                    require(isinstance(parents.get(node), ast.Attribute) and parents[node].value is node,
+                            "Python tomllib aliasing unsupported")
                 if node.id in json_aliases:
                     require(isinstance(parents.get(node), ast.Attribute) and parents[node].value is node,
                             "Python json aliasing unsupported")
@@ -576,7 +662,14 @@ def inspect(root):
                     require(node in case_bases, "Python TestCase is only supported as a direct base")
                 if unit_module and node.id == "unittest":
                     require(isinstance(parents.get(node), ast.Attribute), "Python unittest aliasing unsupported")
-                require((node.id not in FORBIDDEN_NAMES or node in input_parameters)
+                temporary_open = False
+                if node.id == "open" and is_test:
+                    call = parents.get(node)
+                    temporary_open = (isinstance(call, ast.Call) and call.func is node
+                        and len(call.args) == 2 and not call.keywords
+                        and isinstance(call.args[0], ast.Name)
+                        and isinstance(call.args[1], ast.Constant) and call.args[1].value == "wb")
+                require((node.id not in FORBIDDEN_NAMES or node in input_parameters or temporary_open)
                         and not node.id.startswith("pytest_"),
                         f"unsupported Python runtime access: {node.id}")
                 require(not (isinstance(node.ctx, (ast.Store, ast.Del)) and node.id in aliases),
@@ -584,6 +677,9 @@ def inspect(root):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
                 require(node.func.id != "input", "Python interactive input unsupported")
             if isinstance(node, ast.Attribute):
+                if isinstance(node.value, ast.Name) and node.value.id in toml_aliases:
+                    require(node.attr == "loads" and isinstance(node.ctx, ast.Load),
+                            "Python only admits in-memory TOML in tests")
                 require(not unit_module or node.attr not in UNIT_INTERNALS,
                         "Python unittest dispatch/internal APIs unsupported")
                 require(not unit_module or node.attr not in UNIT_REGISTRATION
@@ -608,7 +704,13 @@ def inspect(root):
                     and isinstance(method, ast.FunctionDef) and method.name == "__init__"
                     and isinstance(cls, ast.ClassDef) and len(cls.bases) == 1
                     and isinstance(cls.bases[0], ast.Name) and cls.bases[0].id == "Exception")
-                require(super_init or exception_init or node.attr == "__getitem__"
+                # Formatting a type's display name does not expose an object's
+                # dictionary, MRO or arbitrary reflective lookup.
+                type_name = (node.attr == "__qualname__" and isinstance(node.ctx, ast.Load)
+                    and isinstance(node.value, ast.Call)
+                    and isinstance(node.value.func, ast.Name) and node.value.func.id == "type"
+                    and len(node.value.args) == 1 and not node.value.keywords)
+                require(super_init or exception_init or type_name or node.attr == "__getitem__"
                         or not (node.attr.startswith("__") and node.attr.endswith("__")),
                         f"Python reflective attribute unsupported: {node.attr}")
                 if isinstance(node.value, ast.Name) and node.value.id in json_aliases:
@@ -627,6 +729,14 @@ def inspect(root):
                     require(node.attr == "copy", "Python only admits copy.copy")
                 if isinstance(node.value, ast.Name) and node.value.id == "pytest":
                     require(node.attr in PYTEST_MEMBERS, f"unsupported pytest API: {node.attr}")
+                    if node.attr == "xfail":
+                        call = parents.get(node)
+                        require(is_test and not is_conftest and isinstance(call, ast.Call)
+                                and call.func is node and len(call.args) == 1 and not call.keywords
+                                and isinstance(call.args[0], ast.Constant)
+                                and isinstance(call.args[0].value, str) and call.args[0].value,
+                                "Python xfail requires a direct test-only call with a literal reason")
+                        expected_failure_calls = True
                 mark = (isinstance(node.value, ast.Attribute) and node.value.attr == "mark"
                         and isinstance(node.value.value, ast.Name) and node.value.value.id == "pytest")
                 mark = mark or (isinstance(node.value, ast.Name) and node.value.id in pytest_marks)
@@ -656,6 +766,9 @@ def inspect(root):
             mutations.extend(operator_sites(tree, text, data, annotation_nodes, relative))
     require(tests, "Python requires test_*.py files at the root or under tests/")
     return dict(package=package, source_root=source_root, files=files, tests=sorted(tests), conftests=sorted(conftests), sources=sorted(sources),
+                expected_failure_calls=expected_failure_calls,
+                data_files=sorted(f for f in files if Path(f).suffix not in {".py", ".pyc"}),
+                directories=sorted(directories),
                 mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))
 
 

@@ -81,9 +81,82 @@ def install_lifetime(emit):
     return checkpoint
 
 
+def install_project_io_guard(root, temporary, emit):
+    """Constrain I/O originating in audited project frames, including callees.
+
+    This complements static admission and post-run hashes; it is not a general
+    Python sandbox. Interpreter imports may read the pinned runtime. Pytest's
+    own bookkeeping outside project calls retains its normal behavior.
+    """
+    root = os.path.realpath(root)
+    temporary = os.path.realpath(temporary)
+    # Imports may probe the runner's fresh bytecode prefix even with -B. This
+    # prefix is owned by the command and never reused; writing remains forbidden.
+    runtime = tuple(os.path.realpath(p) for p in
+                    (sys.prefix, sys.base_prefix, sys.pycache_prefix) if p)
+    realpath, fspath, frame = os.path.realpath, os.fspath, sys._getframe
+    write_flags = os.O_WRONLY | os.O_RDWR | os.O_CREAT | os.O_TRUNC | os.O_APPEND
+
+    def inside(path, directory):
+        return path == directory or path.startswith(directory + os.sep)
+
+    def project_call():
+        current = frame()
+        while current is not None:
+            filename = current.f_code.co_filename
+            if filename.startswith(root + os.sep):
+                return True
+            current = current.f_back
+        return False
+
+    def reject():
+        # Retain evidence even when a test catches the exception.
+        emit("unsupported", kind="project_file_access")
+        raise PermissionError("Python project file access escaped audited inputs/temporary output")
+
+    def check(path, write=False):
+        if isinstance(path, int):
+            reject()
+        path = realpath(fspath(path))
+        if isinstance(path, bytes):
+            reject()
+        if inside(path, root):
+            if write:
+                reject()
+            return
+        if inside(path, temporary):
+            return
+        if not write and any(inside(path, p) for p in runtime):
+            return
+        reject()
+
+    def audit(event, args):
+        if event not in {"open", "os.listdir", "os.scandir", "os.remove", "os.rmdir",
+                         "os.mkdir", "os.rename", "os.link", "os.symlink", "os.chmod",
+                         "os.chown", "os.utime", "os.truncate"} or not project_call():
+            return
+        if event == "open":
+            path, mode, flags = args
+            # The null device is an empty input/discarded output, not host data.
+            # This exception applies to opening only, never filesystem mutation.
+            if isinstance(path, str) and realpath(path) == os.devnull:
+                return
+            check(path, bool(flags & write_flags))
+        elif event in {"os.listdir", "os.scandir"}:
+            check(args[0])
+        elif event in {"os.rename", "os.link", "os.symlink"}:
+            check(args[0], True)
+            check(args[1], True)
+        else:
+            check(args[0], True)
+
+    sys.addaudithook(audit)
+
+
 root, evidence, config, nonce, source_root, package, *selection = sys.argv[1:]
 root = Path(root).resolve()
 os.chdir(root)
+os.environ["PROFILER_ITERATIONS"] = "1"
 if source_root not in ("", "src") or not package.isidentifier():
     raise RuntimeError("invalid audited Python package root")
 import_root = root / source_root
@@ -96,6 +169,8 @@ checkpoint = install_lifetime(emit)
 emit("lifetime_start")
 
 import pytest  # noqa: E402: lifecycle observation precedes third-party imports.
+
+install_project_io_guard(root, os.environ["TMPDIR"], emit)
 
 if sys.version_info[:3] != (3, 14, 7) or pytest.__version__ != "9.0.2":
     raise RuntimeError("runner requires CPython 3.14.7 / pytest 9.0.2")
@@ -253,7 +328,9 @@ class Observer:
         result = yield
         report = result.get_result()
         # A same-named user exception is not positive assertion evidence.
-        assertion = bool(call.excinfo and isinstance(
+        expected_failure = bool(call.when == "call" and call.excinfo
+                                and type(call.excinfo.value) is pytest.xfail.Exception)
+        assertion = bool(not expected_failure and call.excinfo and isinstance(
             call.excinfo.value, (AssertionError, pytest.fail.Exception)))
         # Only type/value/arithmetic/lookup errors are eligible for bounded
         # continuation. Resource and system failures remain fatal, including
@@ -272,7 +349,7 @@ class Observer:
              outcome=report.outcome,
              exception=call.excinfo.typename if call.excinfo else None,
              assertion=assertion, candidate_exception=candidate_exception,
-             xfail=hasattr(report, "wasxfail"), unittest=unit)
+             xfail=hasattr(report, "wasxfail"), expected_failure=expected_failure, unittest=unit)
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
         emit("warning", category=warning_message.category.__name__, node=nodeid)

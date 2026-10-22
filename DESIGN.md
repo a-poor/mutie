@@ -2039,3 +2039,28 @@ errors cancel immediately. All error reports remain failed/unscored and normal
 cancellation/persistence precedence is retained. Eligibility starts with audited
 Python type/value/arithmetic/lookup exceptions only; never infer continuation
 from exit status, error strings or another runner's generic failure evidence.
+
+## Python fixture data and explicit expected failures
+
+[Tomli-W](benchmarks/python-tomli-w.md) drives scoped filesystem compatibility.
+Static admission allows test paths derived from `__file__` and binary temporary
+output. A process audit hook checks filesystem calls with project frames on the
+stack, including their callees. Copied inputs and pinned-runtime/cache paths are
+read-only; writes stay under the owned temporary directory. Rejected operations
+emit fatal evidence before raising, so caught exceptions cannot conceal violations.
+The hook supplements static scope, bounded processes and post-run hashes; it is
+not a general Python sandbox. Non-Python files and directory membership participate
+in snapshot and execution identity, preventing report exclusions or data drift
+from silently changing fixtures. Optional build, formatter, coverage and tox
+metadata remains inert and fingerprinted.
+
+A project containing explicit literal-reason `pytest.xfail` calls gets a pristine
+executed baseline when establishing its execution scope. The saved identity binds
+the expected-failure node set, and every candidate must reproduce it. Positive
+evidence requires the exact native XFailed exception in a skipped call phase,
+not a same-named exception, assertion, setup failure or generic skip. Complete
+fixture, teardown and process-lifetime evidence remains mandatory. These nodes
+never contribute kills; all-expected-failure suites are rejected. Stronger-test
+reruns establish a fresh pristine inventory and expected-failure set rather than
+reusing historical body outcomes. Arbitrary marks/plugins and unittest expected
+failures remain excluded.

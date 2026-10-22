@@ -31,7 +31,7 @@ fn read_evidence(
     root: &str,
     collect_only: bool,
     conftests: &[String],
-) -> Result<(Vec<String>, protocol::CandidateOutcome)> {
+) -> Result<(Vec<String>, protocol::CandidateOutcome, Vec<String>)> {
     ensure!(
         !output.interrupted && !output.timed_out && output.capture_error.is_none(),
         "Python process did not complete cleanly"
@@ -53,7 +53,7 @@ fn read_evidence(
         .take(4 * 1024 * 1024 + 1)
         .read_to_end(&mut bytes)
         .context("reading bounded Python evidence")?;
-    protocol::inspect(
+    protocol::inspect_expected_failures(
         &bytes,
         output.pid,
         nonce,
@@ -317,6 +317,12 @@ async fn execute_mode(
     timings.finish("runtime_before");
     let root_text = root.to_str().context("Python root is not UTF-8")?;
     let original = helper(&executable, SCOPE, &[root_text], cancellation).await?;
+    // Explicit xfail calls require a pristine executed baseline so a candidate
+    // cannot introduce or remove a skipped body while retaining a passing score.
+    let collection_only = collection_only
+        && !original["expected_failure_calls"]
+            .as_bool()
+            .unwrap_or(false);
     #[cfg(test)]
     timings.finish("scope_original");
     let mut execution_identity =
@@ -428,7 +434,7 @@ async fn execute_mode(
         #[cfg(test)]
         timings.finish("pytest_process");
         let validated = async {
-            let (nodes, outcome) = read_evidence(
+            let (nodes, outcome, expected_failures) = read_evidence(
                 &output,
                 &evidence,
                 nonce,
@@ -438,6 +444,9 @@ async fn execute_mode(
             )?;
             if let Some(expected) = expected {
                 expected.validate_inventory(&nodes)?;
+                if !collect_only {
+                    expected.validate_expected_failures(&expected_failures)?;
+                }
             }
             let collected_files: std::collections::BTreeSet<_> = nodes
                 .iter()
@@ -485,31 +494,37 @@ async fn execute_mode(
             );
             #[cfg(test)]
             timings.finish("scope_original_after");
-            Ok::<_, anyhow::Error>((nodes, outcome))
+            Ok::<_, anyhow::Error>((nodes, outcome, expected_failures))
         }
         .await;
         if collect_only
             && !collection_only
-            && let Ok((nodes, protocol::CandidateOutcome::Scored(crate::report::Outcome::Missed))) =
-                &validated
+            && let Ok((
+                nodes,
+                protocol::CandidateOutcome::Scored(crate::report::Outcome::Missed),
+                _,
+            )) = &validated
         {
             inventory = Some(nodes.clone());
             continue;
         }
         let nodes = validated
             .as_ref()
-            .map(|(nodes, _)| nodes.clone())
+            .map(|(nodes, _, _)| nodes.clone())
             .unwrap_or_default();
         if !nodes.is_empty() {
             execution_identity.bind(nodes.clone())?;
+            if let Ok((_, _, expected_failures)) = &validated {
+                execution_identity.bind_expected_failures(expected_failures.clone())?;
+            }
         }
         let evidence = match validated {
-            Ok((_, protocol::CandidateOutcome::BodyError)) => {
+            Ok((_, protocol::CandidateOutcome::BodyError, _)) => {
                 crate::command::OutcomeEvidence::IsolatedCandidateError(
                     "Python run contains an unsupported phase failure".into(),
                 )
             }
-            Ok((_, protocol::CandidateOutcome::Scored(outcome))) => {
+            Ok((_, protocol::CandidateOutcome::Scored(outcome), _)) => {
                 crate::command::OutcomeEvidence::Validated(Ok(outcome))
             }
             Err(error) => crate::command::OutcomeEvidence::Validated(Err(format!("{error:#}"))),

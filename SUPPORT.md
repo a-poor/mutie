@@ -36,7 +36,7 @@ does not by itself validate a new runner.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, single-comparison boundaries and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini and betting-math-kit evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one dependency-free flat or src package, root/tests-directory suites, serial boolean flips, single-comparison boundaries and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -462,3 +462,28 @@ The unchanged 194-candidate arithmetic batch matches all prior outcomes
 (61 kills, 97 survivors, 36 errors) in one failed, unscored report, preserving
 original inputs and historical reports. Native exception, lifecycle/resource,
 limit and cancellation controls establish this narrow continuation boundary.
+
+### Unchanged Tomli-W and scoped data access
+
+[Tomli-W acceptance](benchmarks/python-tomli-w.md) covers 271 original cases
+(269 passing bodies, two explicit expected failures) and all 30 candidates:
+nine kills, two survivors and 19 errors. One separate-copy assertion kills the
+default newline-formatting survivor with a 272-case full baseline. Original
+inputs/reports remain unchanged; combined inventory accounting is not a score.
+
+Static Flit metadata, inert isort/tox/coverage settings, named datetime types,
+direct type-name formatting, test-only in-memory TOML and its exact pinned-version
+import fallback are admitted. Test `Path(__file__)` access is checked at runtime:
+copied inputs and pinned-runtime/cache reads, runner-owned temporary output and
+opening the null device are supported. Attempts to access other host files or
+write inputs remain errors even when caught. This is not a general Python sandbox.
+Non-Python file hashes and directory membership join snapshot/rerun identity;
+changing them requires a fresh run. Ordinary stronger-test additions within the
+existing test directory are permitted. Profiling iterations are fixed at one.
+
+Only direct test `pytest.xfail` calls with literal reasons are supported. Their
+exact native exception evidence and node set must match a pristine executed
+baseline, with complete setup/teardown and fixture/lifetime evidence. New or
+removed expected failures are errors, all-expected-failure suites are rejected,
+and expected failures never count as kills. General skips, xfail decorators/marks,
+unittest expected failures and setup/cleanup failures remain unsupported.

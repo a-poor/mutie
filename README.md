@@ -160,6 +160,13 @@ in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
 
 Python/pytest is Validated within its pinned serial scope on macOS arm64.
+[Unchanged Tomli-W validation](benchmarks/python-tomli-w.md) adds a non-numerical
+271-case suite, copied fixture-data reads, confined temporary binary output and
+explicit expected failures bound to a pristine executed baseline. Its 30 candidates
+produce nine kills, two survivors and 19 errors across preserved runs; one extra
+test in a separate copy kills a default newline-formatting survivor. Error reports
+remain failed and unscored. Fixture data and directory changes require fresh runs;
+general skip/xfail marks, plugins and unrestricted filesystem access remain excluded.
 [Unchanged betting-math-kit validation](benchmarks/python-betting-math.md) covers
 198 original tests and six metric-boundary survivors killed by a separate
 205-test stronger suite. Narrow inert tool metadata and direct independent
@@ -205,7 +212,7 @@ metadata. All 38 mutations are accounted for across four runs; three selected
 survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
 
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
-Boolean flips and single-comparison boundaries (`<` ↔ `<=`, `>` ↔ `>=`)
+Boolean flips, binary arithmetic and single-comparison boundaries (`<` ↔ `<=`, `>` ↔ `>=`)
 are supported, with full tests and one worker. Chained comparisons and annotations
 are excluded. See [comparison semantics and validation](benchmarks/python-comparison-boundaries.md). Application
 dependencies, general conftest hooks/user plugins, async/thread-starting suites and

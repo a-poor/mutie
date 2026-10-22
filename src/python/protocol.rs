@@ -36,6 +36,8 @@ enum Event {
         assertion: bool,
         candidate_exception: bool,
         xfail: bool,
+        #[serde(default)]
+        expected_failure: bool,
         #[serde(deserialize_with = "Option::deserialize")]
         unittest: Option<UnitEvidence>,
     },
@@ -152,6 +154,7 @@ pub(super) fn classify(
     }
 }
 
+#[cfg(test)]
 pub(super) fn inspect(
     bytes: &[u8],
     pid: u32,
@@ -161,6 +164,31 @@ pub(super) fn inspect(
     code: i32,
     expected_conftests: &[String],
 ) -> Result<(Vec<String>, CandidateOutcome)> {
+    let (nodes, outcome, expected_failures) = inspect_expected_failures(
+        bytes,
+        pid,
+        nonce,
+        root,
+        collect_only,
+        code,
+        expected_conftests,
+    )?;
+    ensure!(
+        expected_failures.is_empty(),
+        "Python run contains an unsupported phase failure"
+    );
+    Ok((nodes, outcome))
+}
+
+pub(super) fn inspect_expected_failures(
+    bytes: &[u8],
+    pid: u32,
+    nonce: &str,
+    root: &str,
+    collect_only: bool,
+    code: i32,
+    expected_conftests: &[String],
+) -> Result<(Vec<String>, CandidateOutcome, Vec<String>)> {
     ensure!(
         matches!(code, 0 | 1) && (!collect_only || code == 0),
         "unsupported Python exit status"
@@ -244,6 +272,7 @@ pub(super) fn inspect(
     let mut fixtures = Vec::<usize>::new();
     let mut failed = false;
     let mut body_error = false;
+    let mut expected_failures = Vec::new();
     for record in &records[3..tail] {
         if let Event::Fixture { token, stage } = &record.event {
             ensure!(!collect_only, "Python collection executed a fixture");
@@ -268,6 +297,7 @@ pub(super) fn inspect(
             assertion,
             candidate_exception,
             xfail,
+            expected_failure,
             unittest,
         } = &record.event
         else {
@@ -288,15 +318,28 @@ pub(super) fn inspect(
             && *candidate_exception
             && exception.as_ref().is_some_and(|kind| !kind.is_empty())
             && !unit_nodes.contains(node);
+        let expected_skip = *expected_failure
+            && *xfail
+            && outcome == "skipped"
+            && when == "call"
+            && exception.as_deref() == Some("XFailed")
+            && !assertion
+            && !candidate_exception
+            && !unit_nodes.contains(node);
         ensure!(
             !collect_only
                 && unique.contains(node)
-                && !xfail
-                && (passed || body_failure || runtime_failure),
+                && (expected_skip
+                    || (!xfail
+                        && !expected_failure
+                        && (passed || body_failure || runtime_failure))),
             "Python run contains an unsupported phase failure"
         );
         failed |= body_failure || runtime_failure;
         body_error |= runtime_failure;
+        if expected_skip {
+            expected_failures.push(node.clone());
+        }
         if when == "call" && unit_nodes.contains(node) {
             unittest
                 .as_ref()
@@ -336,6 +379,7 @@ pub(super) fn inspect(
         } else {
             CandidateOutcome::Scored(Outcome::Missed)
         },
+        expected_failures,
     ))
 }
 
@@ -364,6 +408,40 @@ mod tests {
             value["nonce"] = json!("token");
             format!("{value}\n").into_bytes()
         }).collect()
+    }
+
+    #[test]
+    fn explicit_expected_failure_requires_exact_call_evidence_and_complete_teardown() {
+        let mut records: Vec<serde_json::Value> = String::from_utf8(evidence())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        records[4]["outcome"] = json!("skipped");
+        records[4]["exception"] = json!("XFailed");
+        records[4]["xfail"] = json!(true);
+        records[4]["expected_failure"] = json!(true);
+        let check = |r: &[serde_json::Value]| {
+            let bytes = r.iter().map(|v| format!("{v}\n")).collect::<String>();
+            inspect_expected_failures(bytes.as_bytes(), 17, "token", "/repo", false, 0, &[])
+        };
+        let (_, outcome, nodes) = check(&records).unwrap();
+        assert_eq!(outcome, CandidateOutcome::Scored(Outcome::Missed));
+        assert_eq!(nodes, ["tests/test_a.py::test_a"]);
+        for (index, field, value) in [
+            (4, "expected_failure", json!(false)),
+            (4, "xfail", json!(false)),
+            (4, "exception", json!("Skipped")),
+            (4, "assertion", json!(true)),
+            (4, "candidate_exception", json!(true)),
+            (4, "when", json!("setup")),
+            (5, "outcome", json!("failed")),
+            (9, "hooks_intact", json!(false)),
+        ] {
+            let mut changed = records.clone();
+            changed[index][field] = value;
+            assert!(check(&changed).is_err(), "{field}");
+        }
     }
 
     #[test]
