@@ -86,7 +86,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Second slice completed: JS/TS logical swaps and negation removal across all
    three runners, with grouping/value/short-circuit controls and a separate-copy
    boxed-Boolean finding on unchanged pp-is. See [acceptance](benchmarks/javascript-logical.md).
-   Arithmetic/modulo and remaining Rust/Python expression gaps are still open.
+   Third slice completed: JS/TS arithmetic and remainder replacement, native
+   coercion/BigInt/zero controls, six runner/syntax workflows and exact impact-score
+   findings on unchanged Bragkit. See [acceptance](benchmarks/javascript-arithmetic.md).
+   The JS/TS expression rows are now covered; remaining Rust/Python expression
+   gaps still need their own semantic and real-project validation.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

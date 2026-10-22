@@ -2163,3 +2163,22 @@ candidates sort by operator and end offset. Existing boolean workflows use expli
 operator selection where their acceptance counts intentionally describe boolean
 mutations. [Acceptance](benchmarks/javascript-logical.md) records semantic controls,
 six runner/syntax fixtures, unchanged public inputs and a useful stronger-test rerun.
+
+
+### Shared JS/TS arithmetic expressions
+
+`arithmetic_replace` adds binary `+ ↔ -`, `* ↔ /` and `% → *` to shared JS/TS
+discovery. The full-expression recipe used for logical swaps now also encloses
+arithmetic operands/results, preserving their grouping and trivia. Native operator
+semantics determine coercion hints, concatenation, Number/BigInt results and
+exceptions; there is no numeric inference or custom arithmetic helper. Unary
+signs, update/assignment forms, powers and type-only syntax remain excluded.
+Readers reconstruct the exact arithmetic replacement before source-identity
+matching. Existing logical replacement bytes remain the same after sharing the
+binary renderer. Runtime recipes/classifiers are otherwise unchanged.
+
+[Acceptance](benchmarks/javascript-arithmetic.md) covers strings, signed zero,
+NaN/Infinity, BigInt truncation/zero/mixed-type exceptions, evaluation and coercion
+order, six scored JS/TS workflows, and unchanged Bragkit weight findings killed by
+separate-copy exact-score tests. Modulo/remainder has native and fixture evidence;
+the selected public-project findings are division/multiplication replacements.

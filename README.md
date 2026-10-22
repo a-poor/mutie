@@ -31,7 +31,7 @@ uses a different bundled runner and is explicitly unsupported. See the
 [package-manager audit and validation](benchmarks/package-managers.md).
 
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM
-package to discover boolean, comparison and logical mutations, run the full suite in isolated copies, and save
+package to discover supported expression mutations, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
 Vite/Vitest config is accepted without executing it; coverage remains disabled.
 Plain-JSON NodeNext type-checking configs are accepted only for JavaScript-only
@@ -79,14 +79,14 @@ metadata are fingerprinted and copied into isolated runs. Imports must be
 static literal relative paths within those directories or `node:` built-ins.
 CommonJS, custom loaders/runner flags, workspaces and runtime dependencies are
 unsupported. The supported operators are `boolean_flip`, `comparison_invert`,
-`comparison_boundary`, `logical_swap` and `negation_remove`, with `--jobs 1`
+`comparison_boundary`, `logical_swap`, `negation_remove` and `arithmetic_replace`, with `--jobs 1`
 and full-suite testing.
 
 The validated native TypeScript extension also accepts erasable `.ts` files
 under `src/` and `test/`, using `node --test` or exactly `node --test test/*.test.ts`.
 JavaScript tests may import `.ts` sources, and TypeScript tests may import `.js`
 helpers. Local imports must include the real file extension, including `import type`.
-Runtime booleans, comparisons, logical expressions and negations are mutated; type-only syntax is excluded. Node strips types without type-checking or
+Runtime booleans, comparisons, logical expressions, negations and arithmetic are mutated; type-only syntax is excluded. Node strips types without type-checking or
 applying `tsconfig.json`; type errors alone cannot kill mutations. An optional
 plain-JSON NodeNext type-checking config is audited and fingerprinted, including
 its absence. Config edits require a fresh scan. Enums, namespaces, parameter
@@ -149,9 +149,9 @@ fingerprinted, including owned links within `node_modules`. Examples/release scr
 by audited source/tests. The unchanged 272-test Composer baseline and stronger-test
 finding now pass through this executor; see [acceptance](benchmarks/bun-composer-execution.md).
 `mutie bun-list PATH [--include GLOB] [--exclude GLOB] [--json]` previews runtime
-boolean, comparison and logical mutations without launching Bun. `bun-check --json` emits baseline execution
+supported expression mutations without launching Bun. `bun-check --json` emits baseline execution
 identity; see [discovery and identity](benchmarks/bun-discovery-identity.md).
-`mutie PATH --lang bun` now runs serial, full-suite boolean, comparison and logical mutations with saved
+`mutie PATH --lang bun` now runs serial, full-suite expression mutations with saved
 reports and focused reruns (`--rerun RUN_DIR --id ID` or `--rerun-missed RUN_DIR`).
 JavaScript and TypeScript are independently Validated within this scope. Raw captures have a mandatory
 4 MiB default budget; Unix per-file limits bound evidence, not total disk usage.
@@ -535,8 +535,8 @@ Support differs by language and applies within each runner's validated scope:
 
 | Mutation | Go | Rust | Python | JS/TS (Vitest, Node, Bun) |
 | --- | --- | --- | --- | --- |
-| Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | No | Yes | No |
-| Modulo replacement: `% → *` | Yes | No | No | No |
+| Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | No | Yes | Yes |
+| Modulo replacement: `% → *` | Yes | No | No | Yes |
 | Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | No | No | Yes |
 | Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | Yes |
 | Logical swap: `&& ↔ \|\|` | Yes | Yes | No | Yes |
@@ -566,6 +566,14 @@ TypeScript postfix non-null and definite-assignment assertions, nullish operator
 logical assignments and bitwise operators are excluded. See
 [semantic controls and unchanged-project findings](benchmarks/javascript-logical.md).
 
+JS/TS `arithmetic_replace` supports binary `+ ↔ -`, `* ↔ /` and `% → *`
+(JavaScript `%` is remainder). Parsed operands and results are parenthesized,
+retaining grouping, comments and evaluation order. Native string concatenation,
+coercion, BigInt and Number semantics apply: zero division may produce Infinity,
+NaN or a BigInt exception. No numeric type inference or exception reclassification
+is added. Unary signs, updates, augmented assignments, powers and types remain
+excluded. See [semantic controls and unchanged Bragkit findings](benchmarks/javascript-arithmetic.md).
+
 Python binary arithmetic supports `+ ↔ -` and `* ↔ /`, preserving native
 grouping and operand evaluation. Unary signs, augmented-assignment operators, floor
 division, modulo, powers and annotations are excluded. Operand types are not
@@ -593,7 +601,7 @@ All ten Go operators run by default; Rust runs `boolean_flip`,
 `comparison_boundary`, and `logical_swap`. Python runs `boolean_flip`,
 `comparison_boundary`, and `arithmetic_replace`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`, and
-`negation_remove`.
+`negation_remove`, and `arithmetic_replace`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 

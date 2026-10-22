@@ -1,0 +1,502 @@
+{
+  "project": {
+    "url": "https://github.com/artmsilva/bragkit",
+    "commit": "458d31127f1d3a6f3fd28afd2d7a4741ebc648a7",
+    "files": {
+      ".claude/agents/achievement-curator.md": "482a1643a6ccd256d2e2cc22566064058707832133472d1ca6b2fdbed7af1d72",
+      ".claude/commands/brag-collect.md": "7d2e79b84e0df3c6ab8a7d0250ff37017d12781312e83bf30d2d3c69c5607326",
+      ".claude/commands/brag-compensation.md": "3085664b4f9ea87c0aeebf893f1c0c294a4216b7c0bc4db09e544d0a2ef64f1f",
+      ".claude/commands/brag-dashboard.md": "8f8ecbfa2bc7dce8f0f77f69653f69bc16011c3c06fcdf5285811a0e4da2cd9b",
+      ".claude/commands/brag-quarterly.md": "c64a3325fa07d857fdcb7fd84c82a0b692528775e53500a82919c3a9ec63e503",
+      ".claude/commands/brag-report.md": "0d4394c607763f82299134f0aba3f1286f72d3da3f781bac8d6676d746aba707",
+      ".claude/skills/bragkit/SKILL.md": "47f41f1aa67af50ccb0fd491b0f900d49d59c2d60f74fffcdd174ce67ec043b1",
+      ".claude/skills/create-collector/SKILL.md": "0c6fb7a1e4dcb69398266bbce0253b0ee13c746627407845275a8a8660d05176",
+      ".github/workflows/ci.yml": "4a08552a0e4175417d8129e151016e44e0603a0ca9151e69c779940923d6b8ee",
+      ".gitignore": "f48917d430ecbd88a87dc172badf624b12bcad95fa24867c8a40643215213f72",
+      "AGENTS.md": "a6bab39ff523008a9f19932702ee5b141941d7ec97ad0b2d811427afd3c59b51",
+      "BACKLOG.md": "b124be96727f6816d8060337fe4d50659c3d4bea5dd93ffb33a25ea8f4835e8e",
+      "CLAUDE.md": "8435d8a70c32845d580fb528e0c9b65b020fd00bc0f6649b7b5e5ec1bc5e9b12",
+      "LICENSE": "ff9b8d39b1d94486a322c9899ac8596749208a27cf8e28780df9d02c2621924c",
+      "README.md": "bf1243d6c38bad7f0f29470e7910081c5b8cdab4dc8021a4a879b0373dafce05",
+      "bin/brag.ts": "cd6c3e20bb033c11d1f1166506315ef92b8e3e5fc4168cead34e03f70fcd24a3",
+      "data/market-bands.sample.json": "2f9efbdbaa378dcaf485a056ee007b8e7e42053b89f38f33c47984f4f098ff07",
+      "docs/dashboard.png": "4253e9f5d04b845f63bbdaaf52e7b89bf4da487afa3b9b7b46651b6f72c3f522",
+      "package-lock.json": "6c4969adca064ab98b1cfa147ccc9498511d1377621046efd3656da0efa4eefe",
+      "package.json": "cd379cd2c66e983240d26a528d7180b98e1710fcab20cb026ec7781280e5ab1f",
+      "scripts/pack-smoke.ts": "35c79de7daacfab01a459b6963b36219a90fe596a2d28dd5b5088ae22b71dfde",
+      "scripts/smoke.ts": "b148660b4d756e9d68a8f122dee2da041c19d0c882c40cf47f191f232e4b375a",
+      "src/achievement.ts": "89b8ec21b0138dc8c2ffccd0cbfb2bf2d90acbe16d36304b52c3bdaa0e0d95ea",
+      "src/atlassian.ts": "7a093599d3c46d227b6099df58aee68b13e222493a09971a7ba283480a7437e9",
+      "src/cli.ts": "a4cab11c3067e77df1ecd7fc4e82b02d5b9a689dc2854a6366d1f923ac40f9de",
+      "src/collectors/confluence.ts": "2a76f3f8c060ccc960f0ed5ab7acda335cf49727abb375960b61dbc0e476fcde",
+      "src/collectors/github.ts": "6a3154f9621441c3e695eec74a307a14b610ae588e1c7b07b7ead32a1720c1b4",
+      "src/collectors/jira.ts": "ac6fe46e57e133f2e63a172739abdd8cc0b42495873bc96b9be60307afe078c6",
+      "src/collectors/registry.ts": "fa7ea0ea06f96650fb9b5a3e489d7b3237f8460bd60f49d24f63c657d44a55d9",
+      "src/collectors/slack.ts": "d4c0fee42f152bbac9d96d6ad9642ee4dafc2e56fe6b2d04aad9c8472b200c9e",
+      "src/config.ts": "5062f4621899b1fbb27c4b28c627cec520dd3afea554f40b27e05894ef968b75",
+      "src/dates.ts": "39e1ab2baf8c2804b784f176d2d5ef53a20959e743d840df2b6ce0c910b9dd10",
+      "src/index.ts": "8f63d8dea9bf87c9dc2c1ee7a72bcbbd33d0959dbbde31435c4101306da6d8ee",
+      "src/reports/csv.ts": "7c6c52e5ab93359db1cc7385fbc62ca33254ac840cc2419dc4ffb735ae72f77e",
+      "src/reports/impact.ts": "57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+      "src/reports/markdown.ts": "c4934254b9f6d73f86df675940eab4981deb83ed4082ea7c71744bff98832754",
+      "src/reports/pdf.ts": "42e087c8e61f40af117e5adcdf5c3c4612295359b52e9283d46dfba702824fc1",
+      "src/reports/salary.ts": "f0e5cac6dbfec8dceb446d36444003059a99f79cf6d0530726d28770c300a15d",
+      "src/reports/trends.ts": "a2849ee225f5310dfc20a8b3c2346ff0421aa14ce2d4b34ddb220ecbd0866d44",
+      "src/store.ts": "06a5c32aff72a2cb5c03e4d2d8c6f88e456b7eab3f22a8cf599d277c5ecf0866",
+      "src/tagging.ts": "8a336b3234e50274f90057b916f3450cd8fa9865baa461f7da8a07a6373b0072",
+      "test/atlassian.test.ts": "232c53c4031b4f6dc2cf7aa90033bc204299ff43ec70c88f5be00d6c4bfcbd1a",
+      "test/config.test.ts": "2f45a8cfe97031a41073b6a6ea67ba25f35c2e7bb06b85cd80239de52b14ae54",
+      "test/csv.test.ts": "70163590cc93b4cbb853ad413ef2dcfcae3e122a4d1dd94c125ee91c12de3b99",
+      "test/dates.test.ts": "aa01428230c8b42bb3140fa107bdef53e94f9211f724b9da7f027b88ed5a1e67",
+      "test/impact.test.ts": "74f7816f21225b0fe0d4110796068e275491c02fbf1c30cd31983ff198bf7800",
+      "test/reports.test.ts": "ef50a618ad7de5ce2c3ee55ce6dd511824a8728e2b8ca32efa16602deed48d64",
+      "test/slack.test.ts": "a8e99e846e7027cf8bd91bae59c221f3bd0f2bd0ebb46fc6194eda476cc8b76c",
+      "test/store.test.ts": "de58358f855c1ba033a67ea487b9f39085033b96f4aa784a83061ae626a10d35",
+      "test/tagging.test.ts": "cc3461925ae52e37bc5e2485fe87e306ff55b9a645ebb55c449fa67a6f1ca281",
+      "test/trends.test.ts": "5afeb8c3e74e22907c69d561f76b260c4d49a1c34476aba7348f8e38058a3b2d",
+      "tsconfig.build.json": "3e135d828248006e96b5620aa3a3d20b3890b663d6f1be7d570ab316a31c35c2",
+      "tsconfig.json": "9b7f62a18b508ce209be7a7c8eec6e316f98165e28d7130e97af402f65e47f55",
+      "web/index.html": "72ed97868bafc569f3d085e9ea6f6389324849e48fbeb3cd028e3e8e868e3ed8",
+      "web/main.js": "fcfe4acbdaa5f14ade6dd7196a624e24cbeddc10e1c71a8255b9309794b183a9",
+      "web/public/achievements.sample.json": "fa0bee80751a83cd70b8e8ccf79de003143ea8a3837384b4afd9e46a669b9ee7",
+      "web/vite.config.js": "5cd31c06019e3f099fc85d5e3a132d06af5a9e79aaa5c806d08d1d264af0d544"
+    }
+  },
+  "original_report_hashes": {
+    "run-1792697053-AlWWOg/outcomes.json": "a1588ae197cc4c6d83e396ae33af55996f50f50468f82e4db0a4a88124a3a727",
+    "run-1792697053-AlWWOg/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/missed.txt": "43755db035da91062a2a806e6b46e1bbc4e676a1edebbc1ae493194131f21066",
+    "run-1792697053-AlWWOg/errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/mutants.json": "cf5157ac41dcf45b669b59057ce91a5b429a24586abf35509af0e5facffd093f",
+    "run-1792697053-AlWWOg/summary.txt": "6faeef6d3ceb9a5d9bdb055c44b3ad44a2a6468fd0d8e6a238998e1d462d313d",
+    "run-1792697053-AlWWOg/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/killed.txt": "419826d291f346c37d74971796f4a989bb7b674305df9bb391ff3b268aa833ee",
+    "run-1792697053-AlWWOg/run.json": "41fe42b722e12105667ae70c7c8a3cd121007e08b1736d0039369087a70ea871",
+    "run-1792697053-AlWWOg/diff/000003.diff": "4b29ab563d972c1a24a202bce3ac1068c4c4985f088277422d430be07fe7f6e8",
+    "run-1792697053-AlWWOg/diff/000002.diff": "9e14452d5852955d1f1c753a649072b6671a9e0e4b6856353f981c9382c94a84",
+    "run-1792697053-AlWWOg/diff/000004.diff": "62619b6d02c3f03275005bea4cd5972f40127f98516b5e8ef298b0bab6412b87",
+    "run-1792697053-AlWWOg/diff/000001.diff": "2532b48dcfbdceb26cbcea0ec043db6d7dac65b268b17d24116e2629dbae0b46",
+    "run-1792697053-AlWWOg/logs/000004.log": "16bc5feab2924a05552920eb3866d09b1752f86e93be0b42443560c7375ce05b",
+    "run-1792697053-AlWWOg/logs/000003.stdout.log": "dfc9ba857cbf23bd4458f42956e8384cc526d1cda5d657adeaeb7ba69f798f39",
+    "run-1792697053-AlWWOg/logs/000001.log": "4b53e955f8a6ebfc4a3b219a0f6be83cdebb30613855ea7cebbab87f01db5e5a",
+    "run-1792697053-AlWWOg/logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/logs/000002.log": "bc50ba8108d0673dccf5023fd9f43c0641512cc9cc01b39868b09f044a4be1e4",
+    "run-1792697053-AlWWOg/logs/000003.log": "dfc9ba857cbf23bd4458f42956e8384cc526d1cda5d657adeaeb7ba69f798f39",
+    "run-1792697053-AlWWOg/logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/logs/000001.stdout.log": "4b53e955f8a6ebfc4a3b219a0f6be83cdebb30613855ea7cebbab87f01db5e5a",
+    "run-1792697053-AlWWOg/logs/000004.stdout.log": "16bc5feab2924a05552920eb3866d09b1752f86e93be0b42443560c7375ce05b",
+    "run-1792697053-AlWWOg/logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/logs/baseline.log": "1150a1278a4f61b9e895734770b10fb79d0cda1869b0143bff18ba383d5a0beb",
+    "run-1792697053-AlWWOg/logs/000002.stdout.log": "bc50ba8108d0673dccf5023fd9f43c0641512cc9cc01b39868b09f044a4be1e4",
+    "run-1792697053-AlWWOg/logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792697053-AlWWOg/logs/baseline.stdout.log": "1150a1278a4f61b9e895734770b10fb79d0cda1869b0143bff18ba383d5a0beb",
+    "run-1792697053-AlWWOg/logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-js-arithmetic-audit/original-reports/run-1792697053-AlWWOg",
+      "status": "completed",
+      "duration_seconds": 6.510941709,
+      "score": {
+        "scope": "filtered",
+        "killed": 2,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 50.0,
+        "unavailable_reason": null
+      },
+      "node_scope": {
+        "package": "bragkit",
+        "node": "24.22.0",
+        "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+        "manifest_fingerprint": "sha256:cd379cd2c66e983240d26a528d7180b98e1710fcab20cb026ec7781280e5ab1f",
+        "recipe_fingerprint": "sha256:3495fb3c8e102a1b7bf2d3d45be26b3f0f57e84da23414dc038123580f412307",
+        "typescript": {
+          "test_pattern": "native-default",
+          "tsconfig_fingerprint": "sha256:9b7f62a18b508ce209be7a7c8eec6e316f98165e28d7130e97af402f65e47f55"
+        },
+        "default_discovery": true,
+        "development_fingerprints": {
+          "development_installation_recipe": "sha256:a635d4c32feaec6cf56c0b033a6d9946d0c6d2ca32b36ff3573fc860f962c298",
+          "package-lock.json": "sha256:6c4969adca064ab98b1cfa147ccc9498511d1377621046efd3656da0efa4eefe"
+        }
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/reports/impact.ts",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 35,
+          "column": 25,
+          "end_line": 35,
+          "end_column": 48,
+          "byte_start": 1067,
+          "byte_end": 1090,
+          "original": "num(md.additions) / 100",
+          "replacement": "((num(md.additions)) * (100))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/reports/impact.ts",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 37,
+          "column": 12,
+          "end_line": 37,
+          "end_column": 37,
+          "byte_start": 1132,
+          "byte_end": 1157,
+          "original": "num(md.reactionCount) * 5",
+          "replacement": "((num(md.reactionCount)) / (5))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/reports/impact.ts",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 38,
+          "column": 12,
+          "end_line": 38,
+          "end_column": 35,
+          "byte_start": 1170,
+          "byte_end": 1193,
+          "original": "num(md.storyPoints) * 2",
+          "replacement": "((num(md.storyPoints)) / (2))",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/reports/impact.ts",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 71,
+          "column": 43,
+          "end_line": 71,
+          "end_column": 74,
+          "byte_start": 2557,
+          "byte_end": 2588,
+          "original": "impactScore(b) - impactScore(a)",
+          "replacement": "((impactScore(b)) + (impactScore(a)))",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.779639708,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 82,
+                "head_bytes": 82,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 82,
+                "head_bytes": 82,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.805252875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 410,
+                "head_bytes": 410,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 410,
+                "head_bytes": 410,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.790483959,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 84,
+                "head_bytes": 84,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 84,
+                "head_bytes": 84,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.781678125,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 272,
+                "head_bytes": 272,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 272,
+                "head_bytes": 272,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "baseline_log_tail": "tests 61\nsuites 0\npass 61\nfail 0\ncancelled 0\nskipped 0\ntodo 0\nduration_ms 787.624333\n"
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-js-arithmetic-audit/stronger-reports/run-1792697111-Q9D6bo",
+      "status": "completed",
+      "duration_seconds": 4.8108270829999995,
+      "score": {
+        "scope": "rerun",
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "node_scope": {
+        "package": "bragkit",
+        "node": "24.22.0",
+        "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+        "manifest_fingerprint": "sha256:cd379cd2c66e983240d26a528d7180b98e1710fcab20cb026ec7781280e5ab1f",
+        "recipe_fingerprint": "sha256:3495fb3c8e102a1b7bf2d3d45be26b3f0f57e84da23414dc038123580f412307",
+        "typescript": {
+          "test_pattern": "native-default",
+          "tsconfig_fingerprint": "sha256:9b7f62a18b508ce209be7a7c8eec6e316f98165e28d7130e97af402f65e47f55"
+        },
+        "default_discovery": true,
+        "development_fingerprints": {
+          "development_installation_recipe": "sha256:a635d4c32feaec6cf56c0b033a6d9946d0c6d2ca32b36ff3573fc860f962c298",
+          "package-lock.json": "sha256:6c4969adca064ab98b1cfa147ccc9498511d1377621046efd3656da0efa4eefe"
+        }
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/reports/impact.ts",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 35,
+          "column": 25,
+          "end_line": 35,
+          "end_column": 48,
+          "byte_start": 1067,
+          "byte_end": 1090,
+          "original": "num(md.additions) / 100",
+          "replacement": "((num(md.additions)) * (100))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/reports/impact.ts",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 38,
+          "column": 12,
+          "end_line": 38,
+          "end_column": 35,
+          "byte_start": 1170,
+          "byte_end": 1193,
+          "original": "num(md.storyPoints) * 2",
+          "replacement": "((num(md.storyPoints)) / (2))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.883156792,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 310,
+                "head_bytes": 310,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 310,
+                "head_bytes": 310,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.886482,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 310,
+                "head_bytes": 310,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 310,
+                "head_bytes": 310,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "baseline_log_tail": "tests 62\nsuites 0\npass 62\nfail 0\ncancelled 0\nskipped 0\ntodo 0\nduration_ms 878.954375\n"
+    }
+  },
+  "validation": {
+    "default_suite": {
+      "passed": 313,
+      "failed": 0,
+      "ignored": 127
+    },
+    "native_semantic_processes": 20,
+    "semantic_seconds": 0.82,
+    "all_javascript_unit_controls_passed": 17,
+    "scored_runner_syntax_combinations": 6,
+    "scored_seconds": 141.83,
+    "cargo_fmt_check": "passed",
+    "cargo_clippy_all_targets_deny_warnings": "passed"
+  }
+}

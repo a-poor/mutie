@@ -550,3 +550,15 @@ logical edits must reconstruct exactly from the parsed original, and reruns stil
 require source identity. Unchanged pp-is has eight selected candidates (six kills,
 two survivors); separate-copy boxed-Boolean tests kill the outer swap while the
 inner fast-path survivor remains open. Preserve original scores/inputs/reports.
+
+
+`benchmarks/javascript-arithmetic.md` records JS/TS binary arithmetic and remainder
+replacement (`+ ↔ -`, `* ↔ /`, `% → *`) across Vitest, Node and Bun. Preserve parsed
+operand/parent grouping and trivia through the full-expression recipe. Native
+coercion hints, concatenation, signed zero, NaN/Infinity, BigInt truncation and
+exceptions apply; no type inference or error reclassification is introduced.
+Unary signs, updates, augmented assignment and powers remain excluded. Saved
+arithmetic edits must reconstruct exactly. Six scored runner/syntax workflows
+cover both arithmetic and remainder; unchanged Bragkit contributes two arithmetic
+weight survivors killed by separate-copy exact-score assertions. Keep original
+61-test inputs and reports distinct from the 62-test stronger rerun.

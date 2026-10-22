@@ -47,24 +47,36 @@ fn expression_replacement(
     source: &str,
 ) -> Option<String> {
     let token = node.child_by_field_name("operator")?;
-    match (operator, node.kind(), &source[token.byte_range()]) {
-        (Operator::LogicalSwap, "binary_expression", original @ ("&&" | "||")) => {
-            let left = node.child_by_field_name("left")?;
-            let right = node.child_by_field_name("right")?;
-            Some(format!(
-                "(({}){}{}{}({}))",
-                &source[left.byte_range()],
-                &source[left.end_byte()..token.start_byte()],
-                if original == "&&" { "||" } else { "&&" },
-                &source[token.end_byte()..right.start_byte()],
-                &source[right.byte_range()]
-            ))
-        }
-        (Operator::NegationRemove, "unary_expression", "!") => {
-            Some(format!("({})", &source[token.end_byte()..node.end_byte()]))
-        }
+    let swapped = match (operator, &source[token.byte_range()]) {
+        (Operator::LogicalSwap, "&&") => Some("||"),
+        (Operator::LogicalSwap, "||") => Some("&&"),
+        (Operator::ArithmeticReplace, "+") => Some("-"),
+        (Operator::ArithmeticReplace, "-") => Some("+"),
+        (Operator::ArithmeticReplace, "*") => Some("/"),
+        (Operator::ArithmeticReplace, "/" | "%") => Some("*"),
         _ => None,
+    };
+    if node.kind() == "binary_expression"
+        && let Some(swapped) = swapped
+    {
+        let left = node.child_by_field_name("left")?;
+        let right = node.child_by_field_name("right")?;
+        return Some(format!(
+            "(({}){}{}{}({}))",
+            &source[left.byte_range()],
+            &source[left.end_byte()..token.start_byte()],
+            swapped,
+            &source[token.end_byte()..right.start_byte()],
+            &source[right.byte_range()]
+        ));
     }
+    if operator == Operator::NegationRemove
+        && node.kind() == "unary_expression"
+        && &source[token.byte_range()] == "!"
+    {
+        return Some(format!("({})", &source[token.end_byte()..node.end_byte()]));
+    }
+    None
 }
 
 /// Validate full-expression edits by reconstructing the same parsed recipe.
@@ -78,7 +90,10 @@ pub fn valid_replacement(
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
     }
-    if !matches!(operator, Operator::LogicalSwap | Operator::NegationRemove) {
+    if !matches!(
+        operator,
+        Operator::LogicalSwap | Operator::NegationRemove | Operator::ArithmeticReplace
+    ) {
         return false;
     }
     let prefix = "const value = (\n";
@@ -311,7 +326,11 @@ fn discover_with_ambient(
                     }
                 }
             }
-            for operator in [Operator::LogicalSwap, Operator::NegationRemove] {
+            for operator in [
+                Operator::LogicalSwap,
+                Operator::NegationRemove,
+                Operator::ArithmeticReplace,
+            ] {
                 if let Some(replacement) = expression_replacement(operator, node, &file.source) {
                     mutations.push(Mutation {
                         file: file.clone(),
@@ -812,3 +831,7 @@ let calls = 0; const value = false && compare(++calls, 0); assert.equal(calls, 0
 #[cfg(test)]
 #[path = "javascript/logical_tests.rs"]
 mod logical_tests;
+
+#[cfg(test)]
+#[path = "javascript/arithmetic_tests.rs"]
+mod arithmetic_tests;

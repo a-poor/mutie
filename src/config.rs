@@ -300,12 +300,13 @@ impl RunConfig {
                                     | Operator::ComparisonBoundary
                                     | Operator::LogicalSwap
                                     | Operator::NegationRemove
+                                    | Operator::ArithmeticReplace
                             ))),
                 "{runner} supports only boolean_flip{}",
                 if config.lang == Lang::Python {
                     ", comparison_boundary, and arithmetic_replace"
                 } else {
-                    ", comparison_invert, comparison_boundary, logical_swap, and negation_remove"
+                    ", comparison_invert, comparison_boundary, logical_swap, negation_remove, and arithmetic_replace"
                 }
             );
         }
