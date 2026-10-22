@@ -9,6 +9,7 @@ mod coordinator;
 mod dismissals;
 mod go;
 mod identity;
+mod init;
 mod javascript;
 mod language;
 mod mutation;
@@ -53,6 +54,17 @@ async fn main() -> Result<ExitCode> {
             .listen()
             .context("installing cancellation handlers")?;
         let result = match command {
+            cli::Command::Init {
+                path,
+                lang,
+                python,
+                non_interactive,
+                dry_run,
+            } => tokio::task::spawn_blocking(move || {
+                init::run(&path, lang, python, non_interactive, dry_run)
+            })
+            .await
+            .context("project initialization panicked")?,
             cli::Command::PythonList { path, python, json } => {
                 python::list(&path, &python, json, &cancellation).await
             }

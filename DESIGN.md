@@ -20,12 +20,14 @@ within explicit tested scopes on macOS/Linux. Expand operator coverage, includin
 numeric/string literals, ordinary Rust workspaces and JS/TS package-manager
 compatibility, alongside usable setup and unchanged-project acceptance.
 
-Planned `mutie init` distinguishes language syntax, test runner, package manager
+`mutie init` now distinguishes language syntax, test runner, package manager
 and runtime version, infers only unambiguous choices, and supports explicit and
 noninteractive configuration. TOML/CLI overrides retain existing precedence.
 Runner flags require validated semantics and saved execution identity; arbitrary
 commands or flags must not bypass complete test inventory or failure attribution.
-Source filters and test selection are separate concepts. Exact-byte observers
+Source filters and test selection are separate concepts. See the
+[onboarding contract](benchmarks/project-init.md) for implemented setup and future
+runner-option/operator-exclusion semantics. Exact-byte observers
 mean runner upgrades require attribution/regression validation, not just matching
 exit codes. npm, pnpm, Yarn, Bun and Vite+ compatibility must be audited separately
 from test-runner support; these are targets, not current compatibility claims.

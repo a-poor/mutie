@@ -42,7 +42,7 @@ record its impact honestly during release qualification without changing deadlin
 Each numbered item is a proposed bounded goal, not an automatically active goal.
 Split implementation goals by language/runner when acceptance becomes too large.
 
-1. [ ] **Project configuration and onboarding contract — first goal.** Audit
+1. [x] **Project configuration and onboarding contract — first goal.** Audit
    current configuration and representative public project manifests; define
    language/runner/package-manager/version selection and ambiguity handling.
    Implement `mutie init` for currently supported scopes, interactive and
@@ -50,6 +50,7 @@ Split implementation goals by language/runner when acceptance becomes too large.
    diagnostics, config round-trip/precedence checks and fixture smoke runs.
    Specify validated runner-option and operator-exclusion semantics; do not emit
    configuration for capabilities that have not shipped.
+   Completed: [init contract and acceptance](benchmarks/project-init.md).
 2. [ ] **JS/TS package-manager compatibility.** Audit npm/pnpm/Yarn/Bun installation
    layouts, lockfiles, invocation and dependency isolation; assess Vite+ explicitly
    before promising an adapter. Implement in bounded manager-specific goals,

@@ -410,9 +410,32 @@ cargo test --test rust_workflow -- --ignored --test-threads=1
 
 ## Repository configuration
 
-`mutie init` and broader tooling inference are planned in the
-[public release roadmap](TODO.md#public-release-scope-and-goal-sequence-2026-10-22);
-they are not implemented yet. Current configuration is described below.
+Create a starting configuration with `mutie init PATH`. It infers Go, Rust,
+Python or a recognized Node/Bun/Vitest test recipe from project manifests. If
+multiple adapters are found, a terminal session offers a choice; automation must
+supply `--lang`. Package-manager metadata is reported separately and never used
+to assume that Bun installed dependencies means Bun runs the tests.
+
+```sh
+mutie init PATH --non-interactive
+mutie init PATH --lang node --non-interactive
+mutie init PATH --lang python --python /path/to/venv/bin/python
+mutie init PATH --lang rust --dry-run
+```
+
+`--dry-run` prints TOML without writing it. Existing `mutie.toml` files (including
+symlinks) are never overwritten; preview and merge changes manually. Init does
+not execute project scripts, install dependencies, run tests or certify project
+compatibility. It reports required runtime versions and known package-manager
+restrictions. Run discovery and an ordinary run afterward to validate the full
+adapter scope. Relative `--python` paths are resolved from the invocation directory;
+the virtual-environment launcher symlink is preserved.
+
+Source include/exclude patterns select mutation locations, not which tests run.
+The current `operators` setting is an inclusion list; omit operators to exclude
+them from that explicit list. A dedicated exclusion setting and additional runner
+flags are not implemented. Arbitrary test commands/flags cannot bypass adapter
+inventory or failure-attribution checks.
 
 Mutie reads an optional `mutie.toml` beside the selected project's manifest.
 Settings apply in this order: built-in defaults, then the file, then explicitly

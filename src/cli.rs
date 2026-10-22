@@ -152,6 +152,23 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Command {
+    /// Create mutie.toml from detected project tooling (does not run tests)
+    Init {
+        #[arg(default_value = ".", value_name = "PATH")]
+        path: PathBuf,
+        /// Explicit execution adapter when detection is ambiguous
+        #[arg(long, value_enum)]
+        lang: Option<Lang>,
+        /// Pinned virtual-environment launcher for Python
+        #[arg(long, value_name = "EXECUTABLE")]
+        python: Option<PathBuf>,
+        /// Never prompt; ambiguous detection requires --lang
+        #[arg(long)]
+        non_interactive: bool,
+        /// Print proposed configuration without writing it
+        #[arg(long)]
+        dry_run: bool,
+    },
     /// Check an isolated scoped Python baseline (no mutations or saved reports)
     PythonCheck {
         #[arg(default_value = ".", value_name = "PATH")]
