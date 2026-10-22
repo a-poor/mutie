@@ -2120,3 +2120,24 @@ Small compatibility additions admit literal Flit versions, inert docs/data
 helpers, direct local-base initialization, class-method names that do not rebind
 module imports, test decorator name reads, sys.maxunicode and narrow pprint/colorsys
 APIs. They do not admit arbitrary reflection, plugin hooks or build execution.
+
+
+### Shared JS/TS comparison mutations
+
+Vitest, Node and Bun share parsed runtime comparison discovery in
+`src/javascript.rs`: `comparison_invert` swaps strict/loose equality separately
+and exchanges `< ↔ >=` / `<= ↔ >`; `comparison_boundary` swaps `< ↔ <=` /
+`> ↔ >=`. Only the operator token changes. Operand expressions and comments are
+retained, including native evaluation/coercion order and nested binary grouping.
+The operator name describes the token pair, not universal Boolean complementation
+(`NaN` is unordered). Type-only nodes, strings/comments, shifts, `in` and
+`instanceof` are not comparison candidates. No inference or exception conversion
+is introduced. Candidates at the same span sort by operator before report IDs
+are assigned. Exact saved token pairs are checked before source rediscovery.
+
+[Acceptance](benchmarks/javascript-comparisons.md) covers the six runner/syntax
+combinations, native semantics, report corruption rejection, filtered selection,
+stronger-test reruns and unchanged pp-is endpoint findings. Existing observer and
+classification contracts remain intact. Bun's existing recipe fingerprint includes
+discovery bytes, so older Bun recipes require fresh scans; Node/Vitest execution
+recipes are unchanged and source identities select rediscovered candidates.

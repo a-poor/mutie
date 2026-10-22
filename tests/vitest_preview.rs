@@ -170,6 +170,22 @@ fn preview(fixture: &Fixture, args: &[&str]) -> std::process::Output {
 }
 
 #[test]
+fn previews_comparison_operator_names_without_executing_vitest() {
+    let project = fixture();
+    write(
+        project.path(),
+        "src/comparisons.ts",
+        b"export const same = 1 === 1; export const less = 1 < 2;",
+    );
+    let output = preview(&project, &["--include", "src/comparisons.ts"]);
+    assert!(output.status.success(), "{output:?}");
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    assert_eq!(stdout.matches(": comparison_invert ").count(), 2);
+    assert_eq!(stdout.matches(": comparison_boundary ").count(), 1);
+    assert!(!project.path().join(".mutie").exists());
+}
+
+#[test]
 fn identity_fixture_rejects_other_commands_without_consuming_response() {
     let project = fixture();
     let program = project.tools.join("identity node");

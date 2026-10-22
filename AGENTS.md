@@ -526,3 +526,16 @@ provides unchanged root-workspace evidence: 140 tests, fresh/cached agreement on
 four boolean survivors, and three stronger-test kills with 142 tests. Preserve the
 failed exploratory abort report, original inputs/reports and unresolved fourth
 survivor; do not infer a full workspace mutation score from member/operator filtering.
+
+
+`benchmarks/javascript-comparisons.md` records shared JS/TS comparison inversion
+and boundary support across Vitest, Node and Bun. Replace only parsed operator
+tokens; preserve strict versus loose equality, native operand/coercion order,
+NaN behavior and binary grouping. Do not describe ordering inversions as Boolean
+negation. Keep type syntax, text, shifts, in/instanceof and tests excluded. Saved
+JS/TS reports require exact operator/token pairs; discovery order is source span
+then operator. Six independent scored JS/TS workflows and native semantic probes
+cover the extension. Unchanged pp-is IPv4 validation has four inversion kills and
+two boundary survivors, killed by endpoint tests in a separate copy. Preserve
+original inputs/reports and filtered scores; no classifier or lifecycle rule was
+relaxed. Bun's source-bound recipe changes require fresh original scans.

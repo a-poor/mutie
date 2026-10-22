@@ -58,6 +58,29 @@ fn previews_js_ts_and_filters_without_a_runtime_or_writes() {
         assert_eq!(filtered["input_fingerprint"], value["input_fingerprint"]);
         assert_eq!(fs::read(&source).unwrap(), before);
         assert!(!root.path().join(".mutie").exists());
+        fs::write(
+            &source,
+            "export const same = 1 === 1; export const less = 1 < 2;",
+        )
+        .unwrap();
+        let comparisons = list(root.path(), &[]);
+        assert!(comparisons.status.success());
+        let comparisons: Value = serde_json::from_slice(&comparisons.stdout).unwrap();
+        let operators: Vec<_> = comparisons["mutations"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|m| m["operator"].as_str().unwrap())
+            .collect();
+        assert_eq!(
+            operators,
+            [
+                "comparison_invert",
+                "comparison_invert",
+                "comparison_boundary"
+            ]
+        );
+        fs::write(&source, &before).unwrap();
         // Filtering all production files must not hide an invalid test/import.
         fs::write(
             root.path().join(format!("test/bad.test.{syntax}")),

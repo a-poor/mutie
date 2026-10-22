@@ -1,0 +1,1193 @@
+{
+  "project": {
+    "repository": "https://github.com/carlos-sweb/pp-is.git",
+    "commit": "1d5b3bac804e1e67da289f3d2a14bd0705a383fb",
+    "files": {
+      ".gitignore": "d6dfbd171508132516e67b8632585ef614a1b215472a0409e10e7cbec8828048",
+      "LICENSE.txt": "0e3ad81a678d1b8e24a4b149e0a82e18e510203523b55f1f3e78777698c2758b",
+      "README.md": "04a75fcc997e0ba1d52a578c4f9eb56e8bebcda85c246e985a228712b1108c49",
+      "README_es.md": "8c597eeb0a349956b2231d0e6ac2ca94db6a9681ffde47a7ef3bffb2d050e86b",
+      "dist/pp-is.cjs": "ee8223b30ac50e260f8a635019f44d5cd5e154955d63f8761dd7999244d9a0e5",
+      "dist/pp-is.min.js": "00e82d616984b8eb1ca1cfa546e40230ba1937df53d3adf1dba2c3e0bac41d09",
+      "dist/pp-is.mjs": "807864b0c6a78bfdaf9f37fb03cf9226357a140a289d0ad5fcb4e244ed589748",
+      "index.d.ts": "c55e0ba2b335cbb6eb41286bda9f14d6399ba2a1b017227dee04ed38f152695e",
+      "package.json": "b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+      "scripts/build.mjs": "1a16ee277484dc18b672f0687827e4614eae19518e09e35261061913368ed379",
+      "src/browser.js": "9cc26d5b7207cb8796a5eaba1750833d4c1b7713f4c7a1a2ff4b4ea4d7da2059",
+      "src/helper/base.js": "a06f9adddc62f7922c4bdc9e9149759c16b212d237f7818a0ab47f767394a5de",
+      "src/helper/baseEvaluate.js": "910250adff36acafa5b1482ff98614296de9200708fded343bfca740e576ed47",
+      "src/helper/baseSanitize.js": "40e85e0d3f2382741338785e94c20c5d03820dfe8fdcbd5ed9bba65cde62d1ce",
+      "src/helper/getType.js": "2c48513ccb88854b9baffa3c9425e8208440da5014f0eb45d525f08720e7fcc6",
+      "src/helper/getTypeCompare.js": "05ce815354c999c7c632db6b2b7907fbfe0a515183638cf17ecc35ac831e0451",
+      "src/main/isAlpha.js": "a4e41ec7a8356d7dbd12699e0ddf0b36b3a4e410342dccb4025512db273e0f66",
+      "src/main/isAlphanumeric.js": "3ed788817af344a70b9787ae2b2a548baba86cdde731c3d279cea3e52cd05fd6",
+      "src/main/isArray.js": "f73e19e363753717fba2d76e568ad2bf5087e6b4fb4a6849733c658720e5a2c3",
+      "src/main/isAsyncFunction.js": "c02075e20de4f8fd61cb67e62ebbf4db6a5b9f22623068bf2a0042703b676fa5",
+      "src/main/isBigInt.js": "ac31f7e23aee0c68db0b922213e64c4edff847ea9e7b2cfc34939c2a2dfd623a",
+      "src/main/isBlank.js": "0c8569af16edaa6ac9a7b861df5990b2c88596634fd9a6eac663e22d01d84ccd",
+      "src/main/isBoolean.js": "c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+      "src/main/isCallable.js": "6d5ee0e47e208bad717ae9c1314c21357ccd1933d99a51d659c1356f22260594",
+      "src/main/isDate.js": "5910f39e1539a279e2a605cebd3d395b4998bc89bcbd64b4dd0dcb4299fca530",
+      "src/main/isElement.js": "2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+      "src/main/isEmail.js": "f4c58c5289036b292d8207bf9f87f7a6502cbcb166b59887517c7f2755b3b9f5",
+      "src/main/isEmpty.js": "091d9e29d2b6b50061486854f19081afded548a79304dcbdfc5df6dc729f7c9e",
+      "src/main/isFalsy.js": "53a880b95622bd4906698ae2f092eefb9a021a46a4cf1c6512c436b869c8e18c",
+      "src/main/isFinite.js": "7cbd0547f3f918c5f77b4bb0f0d8ade3144ae718268f6112b75b40ffcca97177",
+      "src/main/isFrozen.js": "97e55658eadf22f81e4e1a18ea39a29c1491f9cb188a60f11bfbd26271595030",
+      "src/main/isFunction.js": "83b99538d8f06efd6550258c2ebe290d9af9ba28cabde2448aaaae35cb7a1bf3",
+      "src/main/isHTMLCollection.js": "ccb0a72988fe828f22f83702926b9086ecbfe4cf8cfcfe08cfe6d8129c659cbf",
+      "src/main/isHexColor.js": "c687b87d7eca8420070ac6245b0aebaa468bd981a154a79cefbf5dfab3d533f4",
+      "src/main/isIPv4.js": "f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+      "src/main/isInteger.js": "3496177b739499565e882495933b5398c9820af56d3dd56d198c8ba5f5abc4f4",
+      "src/main/isIterable.js": "47596718e64523309b32540da5ed0ed719eca79c3ac46e5006c11e0bbeaef2bf",
+      "src/main/isJSON.js": "e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+      "src/main/isLowercase.js": "3c9ac0fd642ad02295efb254741ca7e9e272b2700404645e6f7de98397aba12c",
+      "src/main/isNaN.js": "421c368e4d684efd28f90d7762a9a257ff43172937b59b6a57f31fc9f20f9728",
+      "src/main/isNegative.js": "403893a7e3f66f9a1f958b5f2deb6b0eacef078f733d39f9f526f12cbf0ad907",
+      "src/main/isNil.js": "b3024928bd418656d27460e7e136a1b5051cf358a3a00c17ef861063bfae15b3",
+      "src/main/isNodeList.js": "68782998c02ce9a4b4764a879ef2b0a1841ee23a3fcc59a8841d4665adeb1690",
+      "src/main/isNull.js": "e952413f0498046959af021043325206f07393f51e8fa2df9e1d3133427364a6",
+      "src/main/isNumber.js": "8ac832d477165c1eae04ac6c558e74cb6f617438fb688c5c2157c7006b2d9cf0",
+      "src/main/isNumericString.js": "042ab23d8286cda33db4f4ea382204e45f98b11f60301a37d500a554142bce00",
+      "src/main/isObject.js": "425079d3b8b3ef581350b5c730f39acc929349b7ccc22f4fdca9421949bd2690",
+      "src/main/isPositive.js": "3eb1781e09b5d1fc093e4ba934028524acb3bfc0b2e5639d7bfc2a6fc4c9f62b",
+      "src/main/isPromise.js": "01ea4131f4bf72239f123d232f843a94df77c8e346ae278281708d30cc09ab6c",
+      "src/main/isPromiseLike.js": "59b5f080332b983fe17f247104972a58162c0379c3818f69bdfa497e07a43c8f",
+      "src/main/isRegExp.js": "80e61c9ce211703e0363e085ad0676efcb4ebe3dc3103b41e66b93e51ae6afad",
+      "src/main/isSealed.js": "6cdbf6108b204f0736484a653bbe2a378bb2731549f67e4888daca7075d370a3",
+      "src/main/isString.js": "0c6bd6124ca737c724e0ea334aaded1671b9de232248085c056ecead7b68d0ae",
+      "src/main/isSymbol.js": "9ce1a6bfaaff7980696e6c6036aeed0c442ce03987599594e7f6297558097acc",
+      "src/main/isTruthy.js": "fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+      "src/main/isUUID.js": "c47426a2f40c69e5a04084e41d3ae829f03a8c4aeb819ad3c274848d43b9035f",
+      "src/main/isUndefined.js": "e6c86ed0535bd5f4fcd891e95d50cf3e0f836cdfc10453f72cc630437526046a",
+      "src/main/isUppercase.js": "8727e34e23126ce008dfdbb62acc4c3602d8983f05cb4da367df880292ec72fa",
+      "src/main/isUrl.js": "da3695ea94c89334d2b9b44bdd59f1fe26092e5c8fcf0be97b1f39566fd2d532",
+      "src/pp-is.js": "ec0c19655ca0a4c79959f1cee61ebaae13d0736e12897a15a61b7bb769ec9c67",
+      "test/callbacks.test.js": "3e0ef94078f9b5f9566a127ecc3096e53ce907218594767c26c78f7c40b3206c",
+      "test/is.test.js": "ca5c923d89847b996ada33ff2f35e29fb2cbb96c4eaadd0bc5de4bca41ab9e2f",
+      "test/regressions.test.js": "f39111a620e1e4c12ea35d4b77cde92e0a788157804bd6e4bfee15d7958226b0"
+    }
+  },
+  "runs": {
+    "pp-is-reports": {
+      "path": "/tmp/mutie-js-comparisons-audit/pp-is-reports/run-1792693837-TwfQNe",
+      "status": "completed",
+      "duration_seconds": 4.7944725,
+      "score": {
+        "scope": "filtered",
+        "killed": 4,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 66.66666666666667,
+        "unavailable_reason": null
+      },
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/is.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:2ce23480d0d3056b80b47cb3c074d7804a1dc6d1b782006ae70872f2ff6da53c",
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "summary": {
+        "killed": 4,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_tests": 58,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 11,
+          "column": 18,
+          "end_line": 11,
+          "end_column": 21,
+          "byte_start": 285,
+          "byte_end": 288,
+          "original": "!==",
+          "replacement": "===",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 15,
+          "end_line": 15,
+          "end_column": 17,
+          "byte_start": 422,
+          "byte_end": 424,
+          "original": ">=",
+          "replacement": "<",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 15,
+          "end_line": 15,
+          "end_column": 17,
+          "byte_start": 422,
+          "byte_end": 424,
+          "original": ">=",
+          "replacement": ">",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 25,
+          "end_line": 15,
+          "end_column": 27,
+          "byte_start": 432,
+          "byte_end": 434,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 25,
+          "end_line": 15,
+          "end_column": 27,
+          "byte_start": 432,
+          "byte_end": 434,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 45,
+          "end_line": 15,
+          "end_column": 48,
+          "byte_start": 452,
+          "byte_end": 455,
+          "original": "===",
+          "replacement": "!==",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.036988292,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.034982125,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.042333833,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.036162666,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.031536625,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.032760791,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pp-is-stronger-reports": {
+      "path": "/tmp/mutie-js-comparisons-audit/pp-is-stronger-reports/run-1792693875-63Cncs",
+      "status": "completed",
+      "duration_seconds": 2.0332645,
+      "score": {
+        "scope": "rerun",
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/comparison-boundaries.test.js",
+          "test/is.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:2ce23480d0d3056b80b47cb3c074d7804a1dc6d1b782006ae70872f2ff6da53c",
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_tests": 59,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 15,
+          "end_line": 15,
+          "end_column": 17,
+          "byte_start": 422,
+          "byte_end": 424,
+          "original": ">=",
+          "replacement": ">",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 25,
+          "end_line": 15,
+          "end_column": 27,
+          "byte_start": 432,
+          "byte_end": 434,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.03339525,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4658,
+                "head_bytes": 4658,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4629,
+                "head_bytes": 4629,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.032826875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4658,
+                "head_bytes": 4658,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4629,
+                "head_bytes": 4629,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "final-original": {
+      "path": "/tmp/mutie-js-comparisons-audit/final-original/run-1792694141-1MNrdT",
+      "status": "completed",
+      "duration_seconds": 4.427222917,
+      "score": {
+        "scope": "filtered",
+        "killed": 4,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 66.66666666666667,
+        "unavailable_reason": null
+      },
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/is.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:e66b184d24fbeaf2057028042b02c7a14e471dbd70cf2f738c46a0c998a712c5",
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "summary": {
+        "killed": 4,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_tests": 58,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 11,
+          "column": 18,
+          "end_line": 11,
+          "end_column": 21,
+          "byte_start": 285,
+          "byte_end": 288,
+          "original": "!==",
+          "replacement": "===",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 15,
+          "end_line": 15,
+          "end_column": 17,
+          "byte_start": 422,
+          "byte_end": 424,
+          "original": ">=",
+          "replacement": "<",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 15,
+          "end_line": 15,
+          "end_column": 17,
+          "byte_start": 422,
+          "byte_end": 424,
+          "original": ">=",
+          "replacement": ">",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 25,
+          "end_line": 15,
+          "end_column": 27,
+          "byte_start": 432,
+          "byte_end": 434,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 25,
+          "end_line": 15,
+          "end_column": 27,
+          "byte_start": 432,
+          "byte_end": 434,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 45,
+          "end_line": 15,
+          "end_column": 48,
+          "byte_start": 452,
+          "byte_end": 455,
+          "original": "===",
+          "replacement": "!==",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.033074875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.033649625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.033203333,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.032550666,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.032440416,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.033449875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4384,
+                "head_bytes": 4384,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "final-stronger": {
+      "path": "/tmp/mutie-js-comparisons-audit/final-stronger/run-1792694212-qEvYH5",
+      "status": "completed",
+      "duration_seconds": 2.49647575,
+      "score": {
+        "scope": "rerun",
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/comparison-boundaries.test.js",
+          "test/is.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:e66b184d24fbeaf2057028042b02c7a14e471dbd70cf2f738c46a0c998a712c5",
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_tests": 59,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 15,
+          "end_line": 15,
+          "end_column": 17,
+          "byte_start": 422,
+          "byte_end": 424,
+          "original": ">=",
+          "replacement": ">",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isIPv4.js",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+          "line": 15,
+          "column": 25,
+          "end_line": 15,
+          "end_column": 27,
+          "byte_start": 432,
+          "byte_end": 434,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.040509625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4658,
+                "head_bytes": 4658,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4629,
+                "head_bytes": 4629,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.038631458,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4658,
+                "head_bytes": 4658,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4629,
+                "head_bytes": 4629,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "preserved_original_reports": {
+    "outcomes.json": "cf5ebc05e785b5c1e5a797134ece8ba71aa3cb8d241d46a2944deb19b86a36fe",
+    "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "missed.txt": "e244172351936fe8d93e2f24aa77541acc17709e7dc927eecfac5c93b7078f2f",
+    "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mutants.json": "badaca02d734e84267d5697912386c846cd641bacd9de0b5e74ad85d07a047d7",
+    "summary.txt": "357bef3fe9c9ed19748b5e61d58026db0db5f08f79da39e28ef50aeefcca3c09",
+    ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "killed.txt": "436749adf49fe9de3581029b4542662745db12e841eb26470d01ee2cbce9a3e7",
+    "run.json": "f9673407fc86b8953d3cad0a3760ed20e095a65a6d5077c83352a19753a8ae6d",
+    "diff/000003.diff": "26ed3428ca4581d4f9e7f67a17ed96e8f55c561c7e30f9811d779842d42514a0",
+    "diff/000002.diff": "bb030d212c3b70ad6906dde05d4c1493c455fa3b4f42f6bfa535b29f54966a46",
+    "diff/000005.diff": "2ec3cdc89c6afd391cc90f3f8210727ef72f73ab17285a8fd3d411d0c3804058",
+    "diff/000004.diff": "954be53eb96796abe7b4548c118a0b639555a802375cfa5660bf53eb96957fe8",
+    "diff/000006.diff": "72407e5e732469f0049f97c511173331a693cc8d597c668912e956b203a7dd14",
+    "diff/000001.diff": "10b669a5372eafe7c7da11ce883569b92f4c24b6dda1cdb41b7186ac047688ee",
+    "logs/000006.log": "06356d3b5f2edff09be9251ef9110e09eefa790e68e43561eeef39b5c5c35648",
+    "logs/000004.log": "ea974593c2d02bb073c6d9a619fdd6e66f0798520409613e9684809caeb497e5",
+    "logs/000005.log": "1163ef65b4cbfc4d635000c6d96ebcafb87916793bebfb5f1ff64c28fb1dd1b2",
+    "logs/000003.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000001.log": "535fead06908149fa222314a2db302f5ea1fcc74934c44358e1c8514d835aa63",
+    "logs/000006.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000002.stderr.log": "b7041fc972debf0a5fa11311fb8ae29fd3af8836e240afe6457bef986f452c47",
+    "logs/000002.log": "5106458341c8cfc9e50573e9b6107bbabf37a6e71d71eec2934cf1b0485992e1",
+    "logs/000003.log": "5d27f997b19aa66a8a2977097a947a440571a78b9169961fc184cada7e9b41a1",
+    "logs/baseline.stderr.log": "9a171c58a7c0c2a070efdfd7ba51db43479a8dca17956c4d3cbe5b39e9142bfa",
+    "logs/000005.stderr.log": "ee406aa17b43915403d703aec9eb6c154e4ee9e1c93ed252d1a79f1240bc0c3d",
+    "logs/000001.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000004.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000003.stderr.log": "6f763951f5360f3646c2616905fe0ed7826f8d334aaaefbeb6b07c3af82a3ac7",
+    "logs/baseline.log": "76a0d8ced6ada71739ce02258f7c174ab2f9dd7ca0238e6d07b49872e558b7d8",
+    "logs/000002.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000006.stderr.log": "3763e5cb8fcc076aecf3d982027906c4e2c0105511cfee83ee1d2aa0455afc06",
+    "logs/000001.stderr.log": "133b1f5cefe0f26f65d75e64a74b4ddf3a384a01aa26fbca7f5c5b90fa0a82b6",
+    "logs/000005.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/baseline.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "logs/000004.stderr.log": "6b378d05e63d56b2d6154c2be471da4126869629f39f62e3937ce13114d66fc7"
+  },
+  "preserved_earlier_original_reports": {
+    "run-1792693837-TwfQNe/outcomes.json": "f9d79423087f36dbbbca58ff90950b12cca94aa6a0c3bf03f9421344c10359ef",
+    "run-1792693837-TwfQNe/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792693837-TwfQNe/missed.txt": "e244172351936fe8d93e2f24aa77541acc17709e7dc927eecfac5c93b7078f2f",
+    "run-1792693837-TwfQNe/errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792693837-TwfQNe/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792693837-TwfQNe/mutants.json": "badaca02d734e84267d5697912386c846cd641bacd9de0b5e74ad85d07a047d7",
+    "run-1792693837-TwfQNe/summary.txt": "7af873ac687a3371b7fd597ed728ef81c30958d00aef360485fc641380617637",
+    "run-1792693837-TwfQNe/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792693837-TwfQNe/killed.txt": "436749adf49fe9de3581029b4542662745db12e841eb26470d01ee2cbce9a3e7",
+    "run-1792693837-TwfQNe/run.json": "432670f1976ac4637e6382495694bc5d1e5022ea8648f8b08c96c5ca294435fa",
+    "run-1792693837-TwfQNe/diff/000003.diff": "26ed3428ca4581d4f9e7f67a17ed96e8f55c561c7e30f9811d779842d42514a0",
+    "run-1792693837-TwfQNe/diff/000002.diff": "bb030d212c3b70ad6906dde05d4c1493c455fa3b4f42f6bfa535b29f54966a46",
+    "run-1792693837-TwfQNe/diff/000005.diff": "2ec3cdc89c6afd391cc90f3f8210727ef72f73ab17285a8fd3d411d0c3804058",
+    "run-1792693837-TwfQNe/diff/000004.diff": "954be53eb96796abe7b4548c118a0b639555a802375cfa5660bf53eb96957fe8",
+    "run-1792693837-TwfQNe/diff/000006.diff": "72407e5e732469f0049f97c511173331a693cc8d597c668912e956b203a7dd14",
+    "run-1792693837-TwfQNe/diff/000001.diff": "10b669a5372eafe7c7da11ce883569b92f4c24b6dda1cdb41b7186ac047688ee",
+    "run-1792693837-TwfQNe/logs/000006.log": "59609b12d45b3368eff8a78fb00cdab5360e2b3f90e5db4e03ffabbee73e3752",
+    "run-1792693837-TwfQNe/logs/000004.log": "a444b7e0ca6360a7e2e2b4765a62996561a9b331eb1a514ce0eec2054606b4f6",
+    "run-1792693837-TwfQNe/logs/000005.log": "670faf8772b50a177fc010985e9e815bee66dfce97e77fcf3c543638b52e3506",
+    "run-1792693837-TwfQNe/logs/000003.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/000001.log": "b479a93ffd42fdef7b345154fc64e17c41ecba3c2957a3ec69ee9b226c626665",
+    "run-1792693837-TwfQNe/logs/000006.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/000002.stderr.log": "b587d3709600e88ff913fddc2d3f92f97a43e17ac9d24b54463d1491b8d26368",
+    "run-1792693837-TwfQNe/logs/000002.log": "f05951d57a7e609c620ee3026bec307148d3fe017853ab9451f9a01b96f0833a",
+    "run-1792693837-TwfQNe/logs/000003.log": "38ca398eae816f7edf4990bfeb944e9923ff749142eb19f269ae1de4b2478849",
+    "run-1792693837-TwfQNe/logs/baseline.stderr.log": "90c29c264e6e9945639894346af6f65df39f01b5cfc7ce9f8db4456d33ad6742",
+    "run-1792693837-TwfQNe/logs/000005.stderr.log": "45435792002f31f5e868e0f0eef4b71052927df8cf0bfae12aac8560e9ee887c",
+    "run-1792693837-TwfQNe/logs/000001.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/000004.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/000003.stderr.log": "770b2c6719326445d01f6a48d1c2bda2160db54a2ed0f2ac505759126ba312ce",
+    "run-1792693837-TwfQNe/logs/baseline.log": "a3c2abb5610ec6cd741ef1c25f79f45b8a8fb2946953871ad5f6485a81af1e3e",
+    "run-1792693837-TwfQNe/logs/000002.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/000006.stderr.log": "d4ed944151c664d3edade6a46d25624b3943d70a119752e180c0b74bc9b903b4",
+    "run-1792693837-TwfQNe/logs/000001.stderr.log": "2dce059d1e51868042e9bdbdd971a87510f7f0ff2941ab8c817993d396419c16",
+    "run-1792693837-TwfQNe/logs/000005.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/baseline.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792693837-TwfQNe/logs/000004.stderr.log": "b393b310674a7650eaed0897990ebaca073d69602d4ebb6d6d8e7d9db5f28142"
+  },
+  "validation": {
+    "default_suite": {
+      "passed": 309,
+      "failed": 0,
+      "ignored": 113,
+      "log": "/tmp/mutie-js-comparisons-final-suite.log"
+    },
+    "semantic_controls": {
+      "passed": 11,
+      "native_process_cases": 48,
+      "elapsed_seconds": 2.08,
+      "log": "/tmp/mutie-js-comparisons-semantics-bounded.log"
+    },
+    "preview_controls": {
+      "passed": 6,
+      "log": "/tmp/mutie-js-comparisons-preview.log"
+    },
+    "clippy": "passed --all-targets -- -D warnings",
+    "fmt": "passed",
+    "initial_scored_matrix": {
+      "passed_combinations": [
+        "node/js",
+        "node/ts",
+        "bun/js",
+        "bun/ts",
+        "vitest/js",
+        "vitest/ts"
+      ],
+      "logs": [
+        "/tmp/mutie-js-comparisons-matrix.log",
+        "/tmp/mutie-js-comparisons-vitest.log"
+      ],
+      "note": "First Vitest attempts through host shim failed Node identification; direct pinned Node passed both syntax controls."
+    },
+    "lifecycle_matrix_attempt": {
+      "passed_combinations": [
+        "node/js",
+        "node/ts",
+        "bun/js",
+        "bun/ts",
+        "vitest/js"
+      ],
+      "failed_combinations": [
+        "vitest/ts"
+      ],
+      "log": "/tmp/mutie-js-comparisons-final-matrix.log",
+      "failure": "Exact expected 13-kill assertion failed (8 kills); available incomplete snapshot retains four 20-second timeouts with empty output. Cause unestablished. Deadlines and assertions unchanged."
+    },
+    "vitest_typescript_isolated_recheck": {
+      "passed": 1,
+      "elapsed_seconds": 58.34,
+      "log": "/tmp/mutie-js-comparisons-vitest-ts-recheck.log",
+      "deadlines_and_assertions_unchanged": true,
+      "includes_lifecycle_error_control": true
+    }
+  }
+}

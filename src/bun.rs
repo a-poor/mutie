@@ -72,7 +72,7 @@ pub fn list(
             .enumerate()
             .map(|(i, m)| {
                 serde_json::json!({
-                    "id":i+1, "operator":"boolean_flip", "file":m.file.path,
+                    "id":i+1, "operator":m.operator, "file":m.file.path,
                     "source_fingerprint":m.file.fingerprint, "line":m.line, "column":m.column,
                     "byte_start":m.range.start, "byte_end":m.range.end,
                     "original":m.original(), "replacement":m.replacement,
@@ -93,7 +93,12 @@ pub fn list(
             println!("Excluded {exclusion}");
         }
         for (i, mutation) in found.mutations.iter().enumerate() {
-            println!("{}: boolean_flip {}", i + 1, mutation.description());
+            println!(
+                "{}: {} {}",
+                i + 1,
+                mutation.operator,
+                mutation.description()
+            );
         }
         println!("{} mutations", found.mutations.len());
     }

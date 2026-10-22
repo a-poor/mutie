@@ -78,6 +78,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    evaluation/grouping, short-circuit and overloaded/coercion semantics; retain
    compilation/runtime error distinctions. Require discovery/identity regressions,
    independent JS/TS runner checks and useful stronger-test acceptance per slice.
+   First slice completed: JS/TS comparison inversion and boundaries across
+   Vitest, Node and Bun, with independent JS/TS workflows, native semantic controls
+   and unchanged pp-is endpoint findings killed by stronger tests. See
+   [acceptance](benchmarks/javascript-comparisons.md). Remaining expression operators
+   and language gaps still need separate validation.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

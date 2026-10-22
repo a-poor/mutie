@@ -17,6 +17,28 @@ pub struct Discovery {
     pub exclusions: Vec<String>,
 }
 
+/// Native token replacements: never wrap, reorder or duplicate operands. In
+/// particular, ordering inversion is not Boolean negation for NaN operands.
+pub fn replacement(operator: Operator, original: &str) -> Option<&'static str> {
+    match (operator, original) {
+        (Operator::BooleanFlip, "true") => Some("false"),
+        (Operator::BooleanFlip, "false") => Some("true"),
+        (Operator::ComparisonInvert, "==") => Some("!="),
+        (Operator::ComparisonInvert, "!=") => Some("=="),
+        (Operator::ComparisonInvert, "===") => Some("!=="),
+        (Operator::ComparisonInvert, "!==") => Some("==="),
+        (Operator::ComparisonInvert, "<") => Some(">="),
+        (Operator::ComparisonInvert, "<=") => Some(">"),
+        (Operator::ComparisonInvert, ">") => Some("<="),
+        (Operator::ComparisonInvert, ">=") => Some("<"),
+        (Operator::ComparisonBoundary, "<") => Some("<="),
+        (Operator::ComparisonBoundary, "<=") => Some("<"),
+        (Operator::ComparisonBoundary, ">") => Some(">="),
+        (Operator::ComparisonBoundary, ">=") => Some(">"),
+        _ => None,
+    }
+}
+
 /// Tree-sitter treats a literal NUL as end-of-input even inside otherwise valid
 /// JavaScript comments and strings. Mask only for parsing, preserve every byte
 /// offset, and require each masked byte to be in literal text (never code).
@@ -204,11 +226,32 @@ fn discover_with_ambient(
                     end_column: end.column + 1,
                 });
             }
+            if kind == "binary_expression"
+                && let Some(token) = node.child_by_field_name("operator")
+            {
+                let original = &file.source[token.byte_range()];
+                for operator in [Operator::ComparisonInvert, Operator::ComparisonBoundary] {
+                    if let Some(replacement) = replacement(operator, original) {
+                        mutations.push(Mutation {
+                            file: file.clone(),
+                            operator,
+                            range: token.byte_range(),
+                            replacement: replacement.into(),
+                            line: token.start_position().row + 1,
+                            column: token.start_position().column + 1,
+                            end_line: token.end_position().row + 1,
+                            end_column: token.end_position().column + 1,
+                        });
+                    }
+                }
+            }
             let mut cursor = node.walk();
             pending.extend(node.named_children(&mut cursor));
         }
     }
-    mutations.sort_by(|a, b| (&a.file.path, a.range.start).cmp(&(&b.file.path, b.range.start)));
+    mutations.sort_by(|a, b| {
+        (&a.file.path, a.range.start, a.operator).cmp(&(&b.file.path, b.range.start, b.operator))
+    });
     Ok(Discovery {
         mutations,
         exclusions: exclusions.into_iter().collect(),
@@ -333,6 +376,74 @@ mod tests {
             &Scope::new(&[], &[]).unwrap(),
             &Cancellation::default(),
         )
+    }
+    #[test]
+    fn comparisons_use_exact_tokens_and_stable_operator_order_in_both_grammars() -> Result<()> {
+        for syntax in ["js", "ts"] {
+            let source = "// 🦀 < >=\r\nexport const f = (a,b) => [a == b, a != b, a === b, a !== b, a < b, a <= b, a > b, a >= b];";
+            let path = format!("src/comparisons.{syntax}");
+            let dir = fixture(&[(&path, source)]);
+            let found = find(dir.path())?;
+            let pairs: Vec<_> = found
+                .mutations
+                .iter()
+                .map(|m| (m.original(), m.replacement.as_ref()))
+                .collect();
+            assert_eq!(
+                pairs,
+                [
+                    ("==", "!="),
+                    ("!=", "=="),
+                    ("===", "!=="),
+                    ("!==", "==="),
+                    ("<", ">="),
+                    ("<", "<="),
+                    ("<=", ">"),
+                    ("<=", "<"),
+                    (">", "<="),
+                    (">", ">="),
+                    (">=", "<"),
+                    (">=", ">")
+                ]
+            );
+            for m in found.mutations {
+                assert_eq!(m.line, 2);
+                assert_eq!(&source[m.range.clone()], m.original());
+                m.apply(dir.path())?;
+                let edited = fs::read_to_string(dir.path().join(&path))?;
+                assert_eq!(
+                    edited,
+                    format!(
+                        "{}{}{}",
+                        &source[..m.range.start],
+                        m.replacement,
+                        &source[m.range.end..]
+                    )
+                );
+                fs::write(dir.path().join(&path), source)?;
+            }
+        }
+        Ok(())
+    }
+    #[test]
+    fn comparisons_exclude_type_syntax_text_and_noncomparison_operators() -> Result<()> {
+        let source = "type F<T> = T extends string ? true : false; interface X<T> { f: F<T> } const text = '< ==='; const re = /<=/; function f<T>(a: T, b: T) { return (a as T) < b; } const value = f<number>(1, 2); const x = 1 << 2; const y = 2 >> 1; const obj = { '<': 1 };";
+        let dir = fixture(&[("src/code.ts", source)]);
+        let found = find(dir.path())?;
+        assert_eq!(found.mutations.len(), 2);
+        assert!(found.mutations.iter().all(|m| m.original() == "<"));
+        // Nested comparisons remain separate native binary expressions; each
+        // mutation preserves JavaScript's existing left-associative grouping.
+        fs::write(dir.path().join("src/code.ts"), "const x = 1 < 2 < 3;")?;
+        assert_eq!(find(dir.path())?.mutations.len(), 4);
+        for (op, original, changed) in [
+            (Operator::ComparisonInvert, "===", "!="),
+            (Operator::ComparisonBoundary, "==", "!="),
+            (Operator::ComparisonBoundary, "<", ">="),
+        ] {
+            assert_ne!(replacement(op, original), Some(changed));
+        }
+        Ok(())
     }
     #[test]
     fn separate_grammars_exclude_types_and_text_but_keep_runtime_values() {
@@ -512,6 +623,103 @@ mod bun_scope_tests {
             "enum State { Yes = 1 } const flag=true;",
         )?;
         assert!(discover_bun(root.path(), &scope, &cancellation).is_err());
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod comparison_semantics {
+    use super::*;
+    #[tokio::test]
+    #[ignore = "requires pinned Node and Bun; executes discovered JS/TS comparison replacements"]
+    async fn native_comparison_evaluation_coercion_and_exceptions() -> Result<()> {
+        for runtime in ["node", "bun"] {
+            for syntax in ["js", "ts"] {
+                let root = tempfile::tempdir()?;
+                fs::create_dir(root.path().join("src"))?;
+                fs::write(root.path().join("package.json"), r#"{"type":"module"}"#)?;
+                let path = root.path().join(format!("src/control.{syntax}"));
+                let params = if syntax == "ts" {
+                    "a: any, b: any"
+                } else {
+                    "a,b"
+                };
+                for original in ["==", "!=", "===", "!==", "<", "<=", ">", ">="] {
+                    let source =
+                        format!("export function compare({params}) {{ return a {original} b; }}\n");
+                    fs::write(&path, &source)?;
+                    let discovered = discover(
+                        root.path(),
+                        &Scope::new(&[], &[])?,
+                        &Cancellation::default(),
+                    )?;
+                    for mutation in discovered.mutations {
+                        mutation.apply(root.path())?;
+                        let relational =
+                            matches!(mutation.replacement.as_ref(), "<" | "<=" | ">" | ">=");
+                        let expected = match mutation.replacement.as_ref() {
+                            "==" => "[true,false,true,false,true,true]",
+                            "!=" => "[false,true,false,true,false,false]",
+                            "===" => "[true,false,false,false,true,false]",
+                            "!==" => "[false,true,true,true,false,true]",
+                            "<" => "[false,false,false,false,false,false]",
+                            "<=" => "[true,false,true,false,true,false]",
+                            ">" => "[false,false,false,true,false,false]",
+                            ">=" => "[true,false,true,true,true,false]",
+                            _ => unreachable!(),
+                        };
+                        let trace = if relational {
+                            "['eval:left','eval:right','coerce:left:number','coerce:right:number']"
+                        } else {
+                            "['eval:left','eval:right']"
+                        };
+                        let throws = if matches!(mutation.replacement.as_ref(), "===" | "!==") {
+                            "compare(broken, right()); assert.deepEqual(trace, ['right']);"
+                        } else {
+                            "assert.throws(() => compare(broken, right()), e => e === sentinel); assert.deepEqual(trace, ['right','throw']);"
+                        };
+                        let script = format!(
+                            r#"
+import assert from 'node:assert/strict';
+import {{compare}} from './src/control.{syntax}';
+const pairs = [[1,1], [NaN,0], [1n,'1'], ['2','10'], [-0,0], [null,undefined]];
+assert.deepEqual(pairs.map(([a,b]) => compare(a,b)), {expected});
+const trace = [];
+function operand(name) {{ trace.push('eval:'+name); return {{[Symbol.toPrimitive](hint) {{ trace.push('coerce:'+name+':'+hint); return 1; }} }}; }}
+compare(operand('left'), operand('right'));
+assert.deepEqual(trace, {trace});
+trace.length = 0;
+const sentinel = new Error('coercion');
+const broken = {{[Symbol.toPrimitive]() {{ trace.push('throw'); throw sentinel; }} }};
+function right() {{ trace.push('right'); return 1; }}
+{throws}
+let calls = 0; const value = false && compare(++calls, 0); assert.equal(calls, 0); assert.equal(value, false);
+"#
+                        );
+                        let harness = root.path().join(format!("control.{syntax}"));
+                        fs::write(&harness, script)?;
+                        let output = crate::process::run(
+                            runtime,
+                            &[harness.to_str().unwrap()],
+                            root.path(),
+                            std::time::Duration::from_secs(10),
+                            std::num::NonZeroUsize::new(64 * 1024),
+                            &Cancellation::default(),
+                        )
+                        .await?;
+                        ensure!(
+                            output.status.success()
+                                && !output.timed_out
+                                && output.capture_error.is_none(),
+                            "{runtime}/{syntax}/{original} -> {}: {}",
+                            mutation.replacement,
+                            output.stderr.text()?
+                        );
+                        fs::write(&path, &source)?;
+                    }
+                }
+            }
+        }
         Ok(())
     }
 }

@@ -33,7 +33,12 @@ pub async fn list(
         println!("Excluded {exclusion}");
     }
     for (index, mutation) in found.mutations.iter().enumerate() {
-        println!("{}: boolean_flip {}", index + 1, mutation.description());
+        println!(
+            "{}: {} {}",
+            index + 1,
+            mutation.operator,
+            mutation.description()
+        );
     }
     println!("{} mutations", found.mutations.len());
     Ok(())

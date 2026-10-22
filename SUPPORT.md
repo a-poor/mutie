@@ -35,11 +35,11 @@ requires adapter evidence, including exact-runner observer checks where used.
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; 3 operators | Broader project/platform evidence; build scripts/proc macros and external paths |
-| TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
-| JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
-| JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
+| TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; boolean/comparison mutations; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
+| JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial boolean/comparison mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
+| JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean/comparison mutations; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
-| JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
+| JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean/comparison mutations, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
 | Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison boundaries and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
@@ -124,6 +124,21 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
   is complete; reassess the next major objective against the planned JS/TS and
   Python targets rather than automatically adding another Rust operator.
 
+## Shared JavaScript / TypeScript comparison support
+
+Vitest, Node and Bun now support `comparison_invert` and `comparison_boundary`
+alongside `boolean_flip`, independently checked for JavaScript and TypeScript.
+Strict equality stays strict; loose equality stays loose. Token-only edits retain
+operand evaluation and native coercion, including unordered `NaN` results. Types,
+text and non-comparison operators remain outside discovery. Saved report readers
+require exact operator/token pairs; reruns rediscover and match source identities.
+Execution classification and lifecycle requirements are unchanged.
+[Acceptance](benchmarks/javascript-comparisons.md) records six scored fixture
+workflows and unchanged pp-is IPv4 findings: four inversion kills, two boundary
+survivors, then two kills from endpoint tests in a separate copy. This is a
+selected-file result, not a full-project score; existing public JS/TS runner
+milestones remain independently recorded below.
+
 ## JavaScript / TypeScript — Vitest
 
 **Levels: TypeScript and JavaScript Validated within the pinned ESM runner scope.**
@@ -143,7 +158,7 @@ Vite+ installation delegation does not establish support for its bundled `vp tes
 The mixed-syntax fixture passes four direct Vitest tests; separate JS/TS probes
 show survivors killed by stronger tests. Pathe is selected for real TypeScript
 validation: its direct full Vitest baseline passes 467 tests (8 skipped, 8 todo).
-`mutie vitest-list` validates metadata and discovers boolean flips.
+`mutie vitest-list` validates metadata and discovers boolean flips and comparison mutations.
 [`mutie vitest-check`](benchmarks/vitest-execution.md) now runs an isolated baseline;
 its adapter has fixture mutation/failure/cleanup probes through the shared command
 classifier, including rejection of missing completion after exit zero.
@@ -296,7 +311,7 @@ baseline, surviving manual candidate, and one stronger-test body failure. The la
 [Discovery and diagnostic identity](benchmarks/bun-discovery-identity.md) now cover
 12 Composer runtime flips and a passing baseline with matching input fingerprints.
 
-Explicit `--lang bun` connects serial full-suite boolean flips to saved reports,
+Explicit `--lang bun` connects serial full-suite boolean and comparison mutations to saved reports,
 scores and focused reruns. Runtime bytes, package/config and observer recipe must
 match saved identity; stronger tests and changed budgets are allowed. Captures have
 a mandatory 4 MiB default budget. Source and independent test inventories are

@@ -1,2 +1,2 @@
-//! Shared JavaScript/TypeScript boolean discovery.
+//! Shared JavaScript/TypeScript expression discovery.
 pub use crate::javascript::*;

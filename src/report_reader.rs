@@ -337,7 +337,8 @@ impl LoadedReport {
                 crate::cli::Lang::Vitest | crate::cli::Lang::Bun
             ) {
                 ensure!(
-                    mutation.operator == Operator::BooleanFlip
+                    crate::javascript::replacement(mutation.operator, &mutation.original)
+                        == Some(mutation.replacement.as_str())
                         && matches!(
                             mutation.file.extension().and_then(|s| s.to_str()),
                             Some("js" | "ts")
@@ -354,7 +355,8 @@ impl LoadedReport {
             }
             if run.language() == crate::cli::Lang::Node {
                 ensure!(
-                    mutation.operator == Operator::BooleanFlip
+                    crate::javascript::replacement(mutation.operator, &mutation.original)
+                        == Some(mutation.replacement.as_str())
                         && (mutation.file.extension().and_then(|s| s.to_str()) == Some("js")
                             || (mutation.file.extension().and_then(|s| s.to_str()) == Some("ts")
                                 && !mutation.file.to_string_lossy().ends_with(".d.ts")

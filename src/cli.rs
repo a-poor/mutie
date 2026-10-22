@@ -205,7 +205,7 @@ pub enum Command {
         #[arg(long)]
         json: bool,
     },
-    /// Preview scoped Bun boolean mutations without executing Bun or tests
+    /// Preview scoped Bun mutations without executing Bun or tests
     BunList {
         #[arg(default_value = ".", value_name = "PATH")]
         path: PathBuf,
@@ -240,7 +240,7 @@ pub enum Command {
         #[arg(long, default_value = "4194304")]
         max_capture_bytes: NonZeroUsize,
     },
-    /// Preview Vitest boolean mutations (read-only)
+    /// Preview Vitest mutations (read-only)
     VitestList {
         #[arg(default_value = ".", value_name = "PATH")]
         path: PathBuf,
