@@ -37,6 +37,14 @@ without admitting runtime dependency imports. Vite+ installation delegation is
 separate from its unsupported bundled `vp test` runner; alternative linkers and
 workspaces still need their own acceptance.
 
+Ordinary Rust workspaces now use root-relative identities and per-member production
+inventories. `rust_packages` selects mutation members; execution explicitly tests
+all workspace members. Worker caches clean every local package to prevent stale
+internal-dependency results. Root/member manifests, lockfile, selection and toolchain
+bind focused reruns. [Workspace acceptance](benchmarks/rust-workspaces.md) supersedes
+historical workspace exclusions below; build scripts, proc macros, external paths
+and custom dev/test profiles remain outside this scope.
+
 ## Goal
 
 Mutie is a Rust CLI for finding gaps in tests by making small changes to source

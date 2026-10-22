@@ -19,6 +19,7 @@ use crate::{
 
 pub mod discovery;
 pub mod project;
+mod workspace;
 pub use project::{ExecutionScope, Project};
 
 pub const TEST_ARGS: &[&str] = &[
@@ -153,8 +154,10 @@ pub async fn versions(
     Ok(())
 }
 
+#[allow(clippy::too_many_arguments)]
 pub async fn test<F, Fut>(
     root: &Path,
+    scope: &ExecutionScope,
     limit: Duration,
     log_limit: Option<NonZeroUsize>,
     capture_limit: Option<NonZeroUsize>,
@@ -184,8 +187,23 @@ where
     // including integration tests, independently of source mtimes or file size.
     // Registry dependencies remain in this worker's owned directory.
     let cleaned = if let Some(cache) = cache {
+        let packages: Vec<&str> = scope
+            .workspace
+            .as_ref()
+            .map(|workspace| {
+                workspace
+                    .members
+                    .iter()
+                    .map(|member| member.name.as_str())
+                    .collect()
+            })
+            .unwrap_or_else(|| vec![cache.package.as_str()]);
+        let mut clean_args = vec!["clean", "--locked"];
+        for package in packages {
+            clean_args.extend(["--package", package]);
+        }
         let mut clean = cargo(
-            &["clean", "--locked", "--package", &cache.package],
+            &clean_args,
             root,
             artifacts,
             limit.saturating_sub(started.elapsed()),
@@ -213,7 +231,12 @@ where
     } else {
         None
     };
-    let build_args: Vec<_> = TEST_ARGS.iter().copied().chain(["--no-run"]).collect();
+    let test_args: Vec<_> = TEST_ARGS
+        .iter()
+        .copied()
+        .chain(scope.workspace.is_some().then_some("--workspace"))
+        .collect();
+    let build_args: Vec<_> = test_args.iter().copied().chain(["--no-run"]).collect();
     let build = cargo(
         &build_args,
         root,
@@ -273,7 +296,7 @@ where
     )
     .await;
     let tests = cargo(
-        TEST_ARGS,
+        &test_args,
         root,
         artifacts,
         limit.saturating_sub(started.elapsed()),

@@ -8,10 +8,12 @@ use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(try_from = "ScopeRecord")]
 pub struct ExecutionScope {
     pub package: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub workspace: Option<super::workspace::WorkspaceScope>,
     pub targets: Vec<ProductionTarget>,
     // Reports lacking this evidence remain inspectable, but cannot validate a rerun.
     pub manifest_fingerprint: Option<String>,
@@ -28,6 +30,7 @@ pub struct ExecutionScope {
 #[derive(Deserialize)]
 struct ScopeRecord {
     package: String,
+    workspace: Option<super::workspace::WorkspaceScope>,
     targets: Option<Vec<ProductionTarget>>,
     binary: Option<String>,
     source: Option<PathBuf>,
@@ -57,8 +60,17 @@ impl TryFrom<ScopeRecord> for ExecutionScope {
             }],
             _ => anyhow::bail!("Rust report requires one unambiguous target identity"),
         };
-        validate_targets(&targets)?;
+        if let Some(workspace) = &record.workspace {
+            workspace.validate()?;
+            ensure!(
+                targets.is_empty(),
+                "workspace targets must be recorded per member"
+            );
+        } else {
+            validate_targets(&targets)?;
+        }
         Ok(Self {
+            workspace: record.workspace,
             targets,
             package: record.package,
             manifest_fingerprint: record.manifest_fingerprint,
@@ -97,7 +109,7 @@ pub struct ProductionTarget {
     pub edition: String,
 }
 
-fn validate_targets(targets: &[ProductionTarget]) -> Result<()> {
+pub(super) fn validate_targets(targets: &[ProductionTarget]) -> Result<()> {
     ensure!(!targets.is_empty(), "Rust target inventory is empty");
     let mut kinds = BTreeSet::new();
     for target in targets {
@@ -127,6 +139,46 @@ fn validate_targets(targets: &[ProductionTarget]) -> Result<()> {
 }
 
 impl ExecutionScope {
+    pub fn package_directories(&self) -> Vec<PathBuf> {
+        self.workspace
+            .as_ref()
+            .map(|workspace| {
+                workspace
+                    .members
+                    .iter()
+                    .filter(|member| workspace.selected.contains(&member.name))
+                    .map(|member| member.directory.clone())
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+    pub fn test_command(&self) -> Vec<&'static str> {
+        std::iter::once("cargo")
+            .chain(super::TEST_ARGS.iter().copied())
+            .chain(self.workspace.is_some().then_some("--workspace"))
+            .collect()
+    }
+    pub fn entries(&self) -> Vec<PathBuf> {
+        if let Some(workspace) = &self.workspace {
+            workspace
+                .members
+                .iter()
+                .filter(|member| workspace.selected.contains(&member.name))
+                .flat_map(|member| {
+                    member
+                        .targets
+                        .iter()
+                        .map(|target| member.directory.join(&target.source))
+                })
+                .collect()
+        } else {
+            self.targets
+                .iter()
+                .map(|target| target.source.clone())
+                .collect()
+        }
+    }
+
     pub fn validate_rerun_record(&self) -> Result<()> {
         ensure!(
             self.manifest_fingerprint
@@ -143,6 +195,10 @@ impl ExecutionScope {
         self.validate_rerun_record()?;
         for (matches, setting) in [
             (self.package == current.package, "package"),
+            (
+                self.workspace == current.workspace,
+                "workspace membership, selection or manifests",
+            ),
             (self.targets == current.targets, "production targets"),
             (
                 self.manifest_fingerprint == current.manifest_fingerprint,
@@ -178,9 +234,30 @@ pub struct Project {
 }
 
 impl Project {
+    #[cfg(test)]
     pub fn load(root: &Path) -> Result<Self> {
-        ensure!(cfg!(unix), "initial Rust support requires a Unix host");
+        Self::load_selected(root, &[])
+    }
+
+    pub fn load_selected(root: &Path, selected: &[String]) -> Result<Self> {
+        ensure!(cfg!(unix), "Rust support requires a Unix host");
         let manifest = read_manifest(&root.join("Cargo.toml"))?;
+        if manifest.get("workspace").is_some() {
+            return super::workspace::load(root, manifest, selected);
+        }
+        let project = Self::load_manifest(root, &manifest, None)?;
+        ensure!(
+            selected.is_empty() || selected == [project.scope.package.clone()],
+            "unknown Rust package selection"
+        );
+        Ok(project)
+    }
+
+    pub(super) fn load_manifest(
+        root: &Path,
+        manifest: &toml::Value,
+        workspace_root: Option<&Path>,
+    ) -> Result<Self> {
         let package = manifest
             .get("package")
             .context("Rust requires one package, not a virtual workspace")?;
@@ -189,7 +266,7 @@ impl Project {
             .and_then(toml::Value::as_str)
             .context("Cargo package.name must be a string")?;
         ensure!(
-            package.get("workspace").is_none(),
+            workspace_root.is_some() || package.get("workspace").is_none(),
             "enclosing Cargo workspaces are not supported yet"
         );
         ensure!(
@@ -203,38 +280,33 @@ impl Project {
             manifest.get("patch").is_none() && manifest.get("replace").is_none(),
             "Cargo dependency overrides are not supported yet"
         );
-        ensure!(
-            manifest.get("profile").is_none(),
-            "custom Cargo profiles are not supported yet"
-        );
-        validate_dependencies(&manifest)?;
-        if let Some(workspace) = manifest.get("workspace") {
-            for key in ["members", "default-members"] {
-                ensure!(
-                    workspace.get(key).is_none_or(|v| v
-                        .as_array()
-                        .is_some_and(|v| v.iter().all(|m| m.as_str() == Some(".")))),
-                    "multi-package Cargo workspaces are not supported yet"
-                );
-            }
-        } else {
+        validate_profiles(manifest)?;
+        if workspace_root.is_none() {
+            validate_dependencies(manifest)?;
+        }
+        if workspace_root.is_none() {
             for ancestor in root.ancestors().skip(1) {
                 let path = ancestor.join("Cargo.toml");
                 if path.is_file() {
                     ensure!(
                         read_manifest(&path)?.get("workspace").is_none(),
-                        "package belongs to an enclosing workspace; workspace member selection is not supported yet"
+                        "package belongs to an enclosing workspace; run from its root with --rust-package NAME"
                     );
                 }
             }
         }
         for kind in ["bin", "test", "example", "bench"] {
             if let Some(targets) = manifest.get(kind).and_then(toml::Value::as_array) {
-                ensure!(
-                    !matches!(kind, "example" | "bench"),
-                    "Rust examples and benchmarks are outside the initial test scope"
-                );
                 for target in targets {
+                    if matches!(kind, "example" | "bench") {
+                        ensure!(
+                            target
+                                .get("test")
+                                .is_none_or(|v| v.as_bool() == Some(false)),
+                            "examples and benchmarks enabled as tests require separate support"
+                        );
+                        continue;
+                    }
                     ensure!(
                         target
                             .get("harness")
@@ -249,8 +321,9 @@ impl Project {
                 }
             }
         }
-        let targets = production_targets(root, &manifest, package, name)?;
-        let lock = inside(root, &root.join("Cargo.lock"))
+        let targets = production_targets(root, manifest, package, name)?;
+        let lock_root = workspace_root.unwrap_or(root);
+        let lock = inside(lock_root, &lock_root.join("Cargo.lock"))
             .context("Rust requires a checked-in usable Cargo.lock")?;
         let mut excluded = BTreeSet::from([root.join("target")]);
         validate_environment(root, &mut excluded)?;
@@ -340,6 +413,7 @@ impl Project {
         Ok(Self {
             scope: ExecutionScope {
                 package: name.into(),
+                workspace: None,
                 targets,
                 manifest_fingerprint: Some(format!(
                     "sha256:{:x}",
@@ -347,7 +421,7 @@ impl Project {
                 )),
                 lockfile_fingerprint: format!(
                     "sha256:{:x}",
-                    Sha256::digest(fs::read(root.join(lock))?)
+                    Sha256::digest(fs::read(lock_root.join(lock))?)
                 ),
                 default_features: true,
                 test_scope: test_scope.into(),
@@ -361,6 +435,9 @@ impl Project {
     }
 
     pub fn validate_metadata(&self, root: &Path, value: &serde_json::Value) -> Result<()> {
+        if let Some(workspace) = &self.scope.workspace {
+            return super::workspace::validate_metadata(root, workspace, value);
+        }
         let members = value["workspace_members"]
             .as_array()
             .context("Cargo metadata has no workspace members")?;
@@ -385,21 +462,30 @@ impl Project {
                 == Some(root.join("Cargo.toml").as_path()),
             "Cargo manifest escaped the snapshot"
         );
-        let mut targets = Vec::new();
-        for target in package["targets"]
+        validate_package_metadata(root, package, &self.scope.targets, &self.excluded)
+    }
+}
+
+pub(super) fn validate_package_metadata(
+    root: &Path,
+    package: &serde_json::Value,
+    expected: &[ProductionTarget],
+    excluded: &[PathBuf],
+) -> Result<()> {
+    let mut targets = Vec::new();
+    for target in package["targets"]
+        .as_array()
+        .context("Cargo metadata has no targets")?
+    {
+        let kind = target["kind"]
             .as_array()
-            .context("Cargo metadata has no targets")?
-        {
-            let kind = target["kind"]
-                .as_array()
-                .context("Cargo target has no kind")?;
+            .context("Cargo target has no kind")?;
+        if kind.len() == 1 && matches!(kind[0].as_str(), Some("bench" | "example")) {
             ensure!(
-                kind.len() == 1
-                    && matches!(kind[0].as_str(), Some("bin" | "test" | "lib" | "rlib")),
-                "only ordinary libraries, one binary and integration tests are supported Rust targets"
+                target["test"] == false,
+                "examples and benchmarks enabled as tests require separate support"
             );
-            ensure!(target["test"] == true, "Rust targets must enable tests");
-            let path = inside(
+            inside(
                 root,
                 Path::new(
                     target["src_path"]
@@ -407,45 +493,58 @@ impl Project {
                         .context("Cargo target has no source")?,
                 ),
             )?;
-            ensure!(
-                !self
-                    .excluded
-                    .iter()
-                    .filter_map(|p| p.strip_prefix(root).ok())
-                    .any(|p| path.starts_with(p)),
-                "Cargo target lies inside an excluded artifact directory"
-            );
-            if kind[0] != "test" {
-                ensure!(
-                    target["crate_types"] == target["kind"],
-                    "unsupported Cargo production crate type"
-                );
-                targets.push(ProductionTarget {
-                    kind: if kind[0] == "bin" {
-                        TargetKind::Bin
-                    } else {
-                        TargetKind::Lib
-                    },
-                    name: target["name"]
-                        .as_str()
-                        .context("Cargo target has no name")?
-                        .into(),
-                    source: path,
-                    edition: target["edition"]
-                        .as_str()
-                        .context("Cargo target has no edition")?
-                        .into(),
-                });
-            }
+            continue;
         }
-        targets.sort();
-        validate_targets(&targets)?;
         ensure!(
-            targets == self.scope.targets,
-            "Cargo production targets differ from the selected manifest"
+            kind.len() == 1 && matches!(kind[0].as_str(), Some("bin" | "test" | "lib" | "rlib")),
+            "only ordinary libraries, one binary and integration tests are supported Rust targets"
         );
-        Ok(())
+        ensure!(target["test"] == true, "Rust targets must enable tests");
+        let path = inside(
+            root,
+            Path::new(
+                target["src_path"]
+                    .as_str()
+                    .context("Cargo target has no source")?,
+            ),
+        )?;
+        ensure!(
+            !excluded
+                .iter()
+                .filter_map(|p| p.strip_prefix(root).ok())
+                .any(|p| path.starts_with(p)),
+            "Cargo target lies inside an excluded artifact directory"
+        );
+        if kind[0] != "test" {
+            ensure!(
+                target["crate_types"] == target["kind"],
+                "unsupported Cargo production crate type"
+            );
+            targets.push(ProductionTarget {
+                kind: if kind[0] == "bin" {
+                    TargetKind::Bin
+                } else {
+                    TargetKind::Lib
+                },
+                name: target["name"]
+                    .as_str()
+                    .context("Cargo target has no name")?
+                    .into(),
+                source: path,
+                edition: target["edition"]
+                    .as_str()
+                    .context("Cargo target has no edition")?
+                    .into(),
+            });
+        }
     }
+    targets.sort();
+    validate_targets(&targets)?;
+    ensure!(
+        targets == expected,
+        "Cargo production targets differ from the selected manifest"
+    );
+    Ok(())
 }
 
 fn production_targets(
@@ -607,11 +706,23 @@ pub fn inside(root: &Path, path: &Path) -> Result<PathBuf> {
         .to_owned())
 }
 
-fn read_manifest(path: &Path) -> Result<toml::Value> {
+pub(super) fn read_manifest(path: &Path) -> Result<toml::Value> {
     toml::from_str(
         &fs::read_to_string(path).with_context(|| format!("reading {}", path.display()))?,
     )
     .with_context(|| format!("parsing {}", path.display()))
+}
+
+pub(super) fn validate_profiles(manifest: &toml::Value) -> Result<()> {
+    if let Some(profiles) = manifest.get("profile") {
+        ensure!(
+            profiles.as_table().is_some_and(|table| table
+                .keys()
+                .all(|name| matches!(name.as_str(), "release" | "bench"))),
+            "custom Cargo dev/test profiles are not supported yet"
+        );
+    }
+    Ok(())
 }
 
 fn validate_dependencies(value: &toml::Value) -> Result<()> {
@@ -909,7 +1020,7 @@ mod tests {
         for (extra, expected) in [
             ("build = 'generate.rs'", "build scripts"),
             ("[lib]\nproc-macro = true", "proc macros"),
-            ("[workspace]\nmembers = ['sibling']", "multi-package"),
+            ("[workspace]\nmembers = ['sibling']", "matches no package"),
             (
                 "[dependencies]\nother = { path = '../other' }",
                 "dependencies",

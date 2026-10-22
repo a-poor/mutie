@@ -44,6 +44,7 @@ async fn adapter_matrix(job_counts: &[usize], modes: &[(bool, usize)]) -> Result
                         let mut phases = Vec::new();
                         let output = test(
                             &project,
+                            &Project::load(&project)?.scope,
                             Duration::from_secs(300),
                             None,
                             None,

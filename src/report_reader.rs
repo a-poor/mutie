@@ -99,6 +99,8 @@ struct ScoreConfig {
     exclude: Vec<String>,
     #[serde(default)]
     operators: Vec<Operator>,
+    #[serde(default)]
+    rust_packages: Vec<String>,
     rerun: Option<serde_json::Value>,
     min_score: Option<MinimumScore>,
 }
@@ -445,7 +447,8 @@ impl LoadedReport {
                     config.rerun.is_some(),
                     !config.include.is_empty()
                         || !config.exclude.is_empty()
-                        || !config.operators.is_empty(),
+                        || !config.operators.is_empty()
+                        || !config.rust_packages.is_empty(),
                 ),
                 run.status,
                 inventory.complete,

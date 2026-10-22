@@ -275,7 +275,24 @@ impl Browser {
                             .executable()
                     )?
                 ),
-                crate::cli::Lang::Rust => " --lang rust".to_owned(),
+                crate::cli::Lang::Rust => {
+                    let mut args = " --lang rust".to_owned();
+                    if let Some(workspace) = self
+                        .report
+                        .run
+                        .rust_scope
+                        .as_ref()
+                        .and_then(|scope| scope.workspace.as_ref())
+                    {
+                        for package in &workspace.selected {
+                            args.push_str(&format!(
+                                " --rust-package {}",
+                                quote_path(Path::new(package))?
+                            ));
+                        }
+                    }
+                    args
+                }
                 crate::cli::Lang::Vitest => " --lang vitest".to_owned(),
                 crate::cli::Lang::Node => " --lang node".to_owned(),
                 crate::cli::Lang::Bun => " --lang bun".to_owned(),
@@ -1473,6 +1490,27 @@ mod tests {
             command.starts_with("mutie '/moved/a project'\\''s checkout' --lang rust --rerun '")
         );
         assert!(command.ends_with("--id 1"));
+        let identity = run["rust_scope"].as_object_mut().unwrap();
+        for field in ["binary", "source", "edition"] {
+            identity.remove(field);
+        }
+        identity.insert("targets".into(), serde_json::json!([]));
+        identity.insert("workspace".into(), serde_json::json!({
+            "selected": ["core"], "members": [{
+                "name":"core", "directory":"crates/core", "manifest_fingerprint": format!("sha256:{}", "a".repeat(64)),
+                "targets":[{"kind":"lib","name":"core","source":"src/lib.rs","edition":"2024"}]
+            }]
+        }));
+        fs::write(&path, serde_json::to_vec(&run).unwrap()).unwrap();
+        let app = Browser::new(
+            LoadedReport::load(temp.path()).unwrap(),
+            Some("/checkout".into()),
+        );
+        assert!(
+            app.command()
+                .unwrap()
+                .contains(" --lang rust --rust-package 'core' --rerun ")
+        );
     }
 
     #[test]

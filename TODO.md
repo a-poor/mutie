@@ -62,12 +62,17 @@ Split implementation goals by language/runner when acceptance becomes too large.
    unchanged Bragkit with installed development tools retains its findings and
    stronger-test kills. Alternative linkers, workspaces and bundled `vp test`
    remain separate scopes, not implied compatibility.
-3. [ ] **Ordinary Rust workspaces.** Support workspace roots/member selection,
+3. [x] **Ordinary Rust workspaces.** Support workspace roots/member selection,
    inherited metadata and in-workspace path dependencies; copy complete needed
    context and bind selection to reports/reruns. Start with full supported workspace
    tests, not affected selection. Validate virtual/root-package fixtures and an
    unchanged public project, fresh/cached builds and cleanup. Audit build-script,
    proc-macro and out-of-tree dependency limits explicitly.
+   Completed: [workspace acceptance](benchmarks/rust-workspaces.md), including
+   inherited/globbed fixture coverage, full cross-member tests, all-local-package
+   cache cleanup, and unchanged UCD Generate findings with three stronger-test kills.
+   Workspace build scripts/proc-macro members, external paths and custom dev/test
+   profiles remain explicit limits.
 4. [ ] **Expression-operator parity.** Add missing arithmetic/modulo, comparison
    inversion/boundaries, logical swaps and negation removal by language. Preserve
    evaluation/grouping, short-circuit and overloaded/coercion semantics; retain
@@ -137,7 +142,7 @@ Native reports conflate body, hook and process failures. A bounded file-backed
 [observer prototype](benchmarks/bun-body-attribution.md) now passes 112 paired cases
 and Composer controls. Shared scored execution, focused reruns,
 review/policies and scored cleanup pass. TypeScript and JavaScript are independently Validated;
-JavaScript now has unchanged pp-is layout acceptance following the documented adaptation. Rust workspaces remain a separate decision.
+JavaScript now has unchanged pp-is layout acceptance following the documented adaptation. Ordinary Rust workspaces are now validated within the scope recorded above.
 Explicit user priorities and demonstrated reliability blockers take precedence.
 
 Python/pytest's first scoped milestone is Validated on CPython 3.14.7 / pytest

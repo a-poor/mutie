@@ -1,0 +1,2449 @@
+{
+  "commit": "e8fa937f0cac643669dcaf5edac2785b15cab917",
+  "inputs": {
+    ".github/FUNDING.yml": "0c65f392d32a8639ba7986bbb42ca124505b462122382f314c89d84c95dd27f1",
+    ".github/workflows/ci.yml": "2dde7ac0172fb49f95cf5782db7ade2c2d39dcff7b135e0e135e3d287c27668d",
+    ".gitignore": "6e5d7a411dc4f7e9d5ce19687c5edad5c33f722d44465efc74a5df75bf7820d1",
+    "Cargo.lock": "328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+    "Cargo.toml": "7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+    "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+    "README.md": "945197dc45e5ddb35d47164ee52188f706244203f099dbf6d2a5469094ed46c8",
+    "benches/bench.rs": "25fd13f527aa48dc7dde4af1f1e72aec8578e6b94390193e30e01e73658fa788",
+    "benches/tables/fst/general_category.fst": "993dd5be5b88cad8dafc60959eb11f4f67dc6c7a7b6ca05ad6e5e1881c8e4579",
+    "benches/tables/fst/general_category.rs": "1823bb425bf04100738e546d69cecf3322dad03269d0696e7d5ed602cf161cbf",
+    "benches/tables/fst/jamo_short_name.fst": "bc19c4c4a1861bda08986a853cc761fa67b65dbbabc5c5a04ea6bd6fadae2425",
+    "benches/tables/fst/jamo_short_name.rs": "e52a2dbb24c2fd3e066cfd5c6a06e356bb4c65b14db93930d158d9a1c406cdf2",
+    "benches/tables/fst/mod.rs": "3cc6f392082a72ea5de5ced62673019c3eef69811a940ba86cf53e40663aad91",
+    "benches/tables/fst/names.fst": "925e826d4810ab586d6eefdac16dbddde0d2b5b3bf00ed047aba6db3a5a298eb",
+    "benches/tables/fst/names.rs": "ff6da5b0b900112b1a60d3f23d904e7c191ac235c6976e49f30101c1dd122489",
+    "benches/tables/mod.rs": "1ddcf03199c71849b67d7e38a3b15db22c7f3f8d4fe7a533913c92067811809d",
+    "benches/tables/slice/general_categories.rs": "260f9b311a306385d6c453b313c41bb8b873f796bd224e844810d0d6d7db3d18",
+    "benches/tables/slice/general_category.rs": "1aded08571a9f02e50b98949e2c2c602cb3a2f7172c03db59a890a22a9224ae3",
+    "benches/tables/slice/jamo_short_name.rs": "2b8103524cb0b8caf475d5a5e0cc525c4cf39648b50d148e51c24c8954f61db3",
+    "benches/tables/slice/mod.rs": "e35e86c786c187625b8870b933bbcaafb7b9072e4a359c01030809b292012b73",
+    "benches/tables/slice/names.rs": "95bb9ec37b3a12dfb4d86d5f8d35c5b6e83da2b608f3f3ae7fe9117e455ffa3d",
+    "benches/tables/trie/general_categories.rs": "311b690a97c02cec2a2400da91bfc4fd0135e5366acfb31a19ea5afb74fcf324",
+    "benches/tables/trie/mod.rs": "1d1da1f5d793ceecb18ced8e36942ab618d93a935e4ab73ebe598deeef5b70f4",
+    "rustfmt.toml": "1ca600239a27401c4a43f363cf3f38183a212affc1f31bff3ae93234bbaec228",
+    "scripts/generate-unicode-tables": "1a7fb54f979d19d09147d1e0db566ff445abb322aeff4f376636763456e542e0",
+    "src/age.rs": "0a65e71415375df0d1d0e4b9e7ee6d8e70e2f71b4365e1161352a5fdcbb61ca2",
+    "src/app.rs": "b9f04821ac70b33bbfe87d7e1b9bc4477ed55c0e7e1eed4453028fd9e85975fc",
+    "src/args.rs": "af4acb2df4fd7538a0fc9db4fd407e7b4e96c296d99d39674eff536a79e0e014",
+    "src/bidi_class.rs": "174ccc26c7909f1ace8541471b23efb944700cb814b270f70cb42c1e44fae586",
+    "src/bidi_mirroring_glyph.rs": "15200fa0de289ba8b752911d1d642f6a1ead1642a83ed1e7c9bb77cf4593bfd7",
+    "src/brk.rs": "b947d63bac2944a73d6541276e7d95455af48d63ca4593c25814434fa007557f",
+    "src/canonical_combining_class.rs": "18fa984a52246a22436f7a936d08e600466cc1e6f2c165b92f7a4beb7a7b9672",
+    "src/case_folding.rs": "b113cd7176501311884655f75c1bba86a3c5f567b932af6109cdaa807b31a613",
+    "src/case_mapping.rs": "38145ea1fec615fe6ec7155fbab819d5b2efb4c189365d5c5bf0d7542d0e8919",
+    "src/error.rs": "34cd68d2d242a4f97a5303969effab3ec661b04ed7faafa47a7908f7fffca4a4",
+    "src/general_category.rs": "71d3956e5badfc74b94b4a30749c77f4dd60e66473dae994791be7a1f2b8b193",
+    "src/jamo_short_name.rs": "fea541fca7033949b2b0154568df2d710be842a400a689f2a47ebe00be3587cc",
+    "src/joining_type.rs": "ac081feb2fbf3d67604e9b01f25c999eccd59b936df945fbbcf6277f0c73f58a",
+    "src/main.rs": "1373b58787596bcf7787a3009122c5b4d28025b24fb1bed213548c4954a7ca0a",
+    "src/names.rs": "80ce1a2cd0b270c0b7b2e79ad76f24cd03539ba590616bdcc6530bc7022a79f6",
+    "src/property_bool.rs": "5cadcbf565d7d543ec0c9980a79fe3f408e4f692ae20e972a0edf3228d168db0",
+    "src/script.rs": "56da4c6d02942e9b0e4f8408d42ca22b483ea977e36c28f7fb677c97fd8cfe65",
+    "src/util.rs": "63f4e791f6616ea4f405fa7fa61e1706e8b8d591cb285b05b201e70a7ae97762",
+    "src/writer.rs": "05fa0d7bc3aa0e6d2594e029d4768c48fb7bb6a19d89efc436a2371d21fc7e92",
+    "ucd-parse/Cargo.toml": "922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+    "ucd-parse/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "ucd-parse/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "ucd-parse/README.md": "8c52a24f51bf5374f687c5a7be756b40a5433e5afe20355f08f50cfaa46416ab",
+    "ucd-parse/src/age.rs": "50a5f2026a512f77d93c6a514784ecb473347aa3a6975d091dcfece728333b9e",
+    "ucd-parse/src/arabic_shaping.rs": "da620c534a1e51acdc435175bae19407e0fa7bf8cf23b8dc1d57ccf32ef11bd7",
+    "ucd-parse/src/bidi_mirroring_glyph.rs": "b8de1775014ba81e18c95e2a69a3fe64e95fc9bdef6b23178c7ce80c35ce355a",
+    "ucd-parse/src/case_folding.rs": "1010b5d65fe08a0210c2f2111ddd07a4d949206f3604bd2bb89cb258076c74ce",
+    "ucd-parse/src/common.rs": "69ab3c81aae84bdfa0aadd8998de4d955798e562ba0be6561142baacf8e0ec65",
+    "ucd-parse/src/core_properties.rs": "cc6ebafae4c39fb883a32911769baac7a7297f75ca7bc6a0ee35c5ff8e1764f0",
+    "ucd-parse/src/derived_normalization_properties.rs": "b6ecbd6f471e3dda33d12e3d534e65ae2e6997b88f9e382997389fd2c992e1b4",
+    "ucd-parse/src/east_asian_width.rs": "3df868265c5c97d2d5306c51d9689dc8e3fff993fc20abc06ffe849d514a0301",
+    "ucd-parse/src/emoji_properties.rs": "789e83c4dc57d6270f1dd21ea2bf89baf9576b7147fe5d95001b35b2c2ce3d1a",
+    "ucd-parse/src/error.rs": "6341f5337a7527f18886d3b6418ec7d25fbfecd4851b6c7f2a3356983f1e409e",
+    "ucd-parse/src/extracted/derived_bidi_class.rs": "75ae854b153fdccd5c472562d5f3327c25329861baa12f9b010a25b66d2f373d",
+    "ucd-parse/src/extracted/derived_binary_properties.rs": "01f483444dce00e7f9295a6b8f20c2bb78c507cacf5ce6a3889e11c06944f62a",
+    "ucd-parse/src/extracted/derived_combining_class.rs": "2ea60fd91f6ce48697d152f76d0e8321548ec009626177674333341672220368",
+    "ucd-parse/src/extracted/derived_decomposition_type.rs": "513d9262e1ee3410aa7d650ea8ed87041a3c7b638ebdcbaa72651ec63ab694f2",
+    "ucd-parse/src/extracted/derived_east_asian_width.rs": "b98c1768fbe84679aa0e687fcaa2e16cf9d0f4084f7ec5a5fafdc377e5bd03a6",
+    "ucd-parse/src/extracted/derived_general_category.rs": "17d33bf58ce01ccdd7b2fa37feb877111bb7371d6f59d77425e249bc45bcb7f6",
+    "ucd-parse/src/extracted/derived_joining_group.rs": "fce870567dac1541c412c71c169cd8a84f17846358d3c07ea2a156b8b3d991c6",
+    "ucd-parse/src/extracted/derived_joining_type.rs": "57591a20898532b05908d50aff0d3902ea6447a8ef9086fc0e365732931b204b",
+    "ucd-parse/src/extracted/derived_line_break.rs": "2343e0b6d806206ecacaa229e3bbb30f92bbdf2e8a7900159357673e519bcc63",
+    "ucd-parse/src/extracted/derived_name.rs": "f6c955175138de3b7fd8442a3d337a49214f5cc4fb31dfba1b2b44049fa7c174",
+    "ucd-parse/src/extracted/derived_numeric_type.rs": "a95de68ba6e9d951d40902e188e28ba6b942ae62e1dcaa5367c522bb178a2036",
+    "ucd-parse/src/extracted/derived_numeric_values.rs": "ab66990bf8f151a2cdb9721108e9bebb3f1136ab1be56da45fbbf3874ec5f96c",
+    "ucd-parse/src/extracted/mod.rs": "d55adeda4d08406ef7aaad0979d86a90f3996c66b83af4a47e4762c7fda486e8",
+    "ucd-parse/src/grapheme_cluster_break.rs": "5f400a5972214d29df8823c628dca20e2d7ff8a8441ec90ee6908c909b2c2829",
+    "ucd-parse/src/jamo_short_name.rs": "1428d8b7f2e45de99314589c3534dd8dc6d6997dc38fda96d1d3b56fefdcbee2",
+    "ucd-parse/src/lib.rs": "9930a99879ab62cd4ad71354bd622d89d15464c455f575dc9e36896831e510c1",
+    "ucd-parse/src/line_break.rs": "8873ca5d75b64d57a4280e8b0136c47d09f4397aae65ad8b904f689590aae8ca",
+    "ucd-parse/src/name_aliases.rs": "9e523a3aab303efd37d4e696bb4d47ccc6f2e22e9768bf6e901ed8d00b94604e",
+    "ucd-parse/src/prop_list.rs": "3e8394421da893ed7856fd5b58f1fb32d3c26bcc972b544829ad2c12468c6f46",
+    "ucd-parse/src/property_aliases.rs": "35607fb7f644c92e5f67b4ade794944c55f8397b6d4154cd4f78fd032837a04d",
+    "ucd-parse/src/property_value_aliases.rs": "5230356694bd20fdfe06b3ccbc737ac84708f674907ef6a78be3458badfc9235",
+    "ucd-parse/src/script_extensions.rs": "c013f98e61cfbc91a0f1dbea6118cb7b28c5c27a1b608fe03b8c164e1627be7a",
+    "ucd-parse/src/scripts.rs": "58843b1e6ea8d0f1784eff76773ca589d4e06a5f6ad26048aabf91f0b1773f83",
+    "ucd-parse/src/sentence_break.rs": "d3ec597ff15118cf9e5064842d393962b3fe219430ef36d109812a4c45c25d9b",
+    "ucd-parse/src/special_casing.rs": "dd3a1d264545b586470d9f1db7eff54cd62e637b69c712acb41d084db13d488d",
+    "ucd-parse/src/unicode_data.rs": "0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+    "ucd-parse/src/word_break.rs": "7f929fedc231f9099694ef632eb3166dbcd458dc62a73942d0a94136fbac5e96",
+    "ucd-trie/Cargo.toml": "2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+    "ucd-trie/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "ucd-trie/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "ucd-trie/README.md": "6687ddcfa8075f52ea4326b3caa756165236ff6f75e3379e55ea9f6841821324",
+    "ucd-trie/benches/bench.rs": "9b74139d17cfcccb502f2abe80b8a4c15a17037a681f27ec914d51e83ea7e55f",
+    "ucd-trie/src/general_category.rs": "42cbf05dc036e46256621f008f557821f8d3597607c3b8ab62532cdf51b97f6d",
+    "ucd-trie/src/lib.rs": "99bedb2b655b39ac3a2cc7b4b79a381f7d1e086a20558eec52968f556a638ec4",
+    "ucd-trie/src/owned.rs": "b897f815685f597f3a98613d5f8196153a207a741e61bbb19f48f90c2bf594ae",
+    "ucd-util/Cargo.toml": "19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+    "ucd-util/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+    "ucd-util/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "ucd-util/LICENSE-UNICODE": "ea8df489e83b7674d5c9d50c320bec3b15d2e2eeb7a3a8879a666d91e5640c16",
+    "ucd-util/README.md": "ccfb24f60893d9f0911fc0a6ccd2dd42c9512d3941c8caff5d65153af75496c0",
+    "ucd-util/src/hangul.rs": "7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+    "ucd-util/src/ideograph.rs": "c36548cfd47885a88ae8c71fb91025586d370e7e4399d3a59286e098a16f4136",
+    "ucd-util/src/lib.rs": "0fa7d116ae2d201e7dcd872f05ca4558d69cb1c96f74ebf9c17eb540dea8e3ef",
+    "ucd-util/src/name.rs": "17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+    "ucd-util/src/property.rs": "9c42b9345ea10c445870d82fa19703ad6122f39228b1437725d46d9b07577b18",
+    "ucd-util/src/unicode_tables/jamo_short_name.rs": "2b8103524cb0b8caf475d5a5e0cc525c4cf39648b50d148e51c24c8954f61db3",
+    "ucd-util/src/unicode_tables/mod.rs": "efa5af1e97be12c1f3541a24763278a821bd1bdfd1631d4f922b68e8d6997e40",
+    "ucd-util/src/unicode_tables/property_names.rs": "124bbc8331890d193448dc51fa7160353637e86746b178a08cd6a04534ee5020",
+    "ucd-util/src/unicode_tables/property_values.rs": "dd39f19d46e26edc07c2da98c9fb26fb93a46fe533454ef567e78cce99be11ee"
+  },
+  "preserved_reports": {
+    "/tmp/mutie-rust-workspace-audit/original-reports/run-1792690796-nVwpGg": {
+      "outcomes.json": "8b7f9db750492d4944d22461151635a392542d889954b5f38250e21529494200",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missed.txt": "dfff5f5a1aa2b6363b34e1bfcea85f6e20ac96a2f48ff15af45c4ddc4e8e751a",
+      "errors.txt": "5aca7fb8beb5a48e382d4c5b4d6515966450945879260250efcadec7015f4c0f",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "4a4bcc943a04b43cdcb5e78b5462e0629fdd6985b124ef126af118a1f88fafa1",
+      "summary.txt": "da06497cb35aa086602dcb480b7be690b67e5d174ad99464725c8d1d3834194c",
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "77ee97b68db42e9d4e78499d00a654d14e98ab8b6083677d1c2509c10c79320d",
+      "run.json": "e4befcef70ae0e4f4d7beda16c952fdeb2486dfdd7f90cde246389764a214475",
+      "diff/000003.diff": "38ff3f67236d1776d371c97211ed166e32d9e5dd1003133ff65ba1928208fae8",
+      "diff/000015.diff": "02117f2c2889f7a4f7d730ffc4f8a9c04544ad0668104948e3545a7e9d253fc5",
+      "diff/000023.diff": "6f20a6fcf9a3595df0171d7d5922e9ffb73043ba99454952c5705d670cbc4d21",
+      "diff/000019.diff": "d8754ecd5365e168e58837a86848efec6906cdadccd1a74bc731fb8b1100457f",
+      "diff/000018.diff": "71ab031022e7c7b476d579b40d108ce0a20c156e9f3215cc3214f3830639e92f",
+      "diff/000022.diff": "1985120ac265356aa57dc92f3e06f04c49d3b6e26e32c62e4dc7ea9495a1bda4",
+      "diff/000014.diff": "7921850b8d8f56335f0b158b8f10cfb91e53f66211c34e6fc9a1193b9bf26ca0",
+      "diff/000002.diff": "8be52c30a6605912edbee634b96981fc6510373ff66537b6008ab7edd520131f",
+      "diff/000025.diff": "326742b07bdd5955f14797b75765049ef51131afb648d4f3955d01bd6380b60e",
+      "diff/000009.diff": "c7e66258ccc8b54d2da9fb2d6dc88be44263d5f2d9b1a2ab9499011f408d2de1",
+      "diff/000029.diff": "fca8765229c71732238e255f2b232f7a098a4f10d2d4a9e09b6c0754c7237b44",
+      "diff/000005.diff": "f9c50e63d1b345d5b88525d7481f093b4341c31edfefd44dd939371ed526b4d2",
+      "diff/000013.diff": "e2703e6a84d61d63df1225940b28225b1ee504358abf535c99b01e11f8fb41f4",
+      "diff/000012.diff": "964b9497d5538798b078c5b14ed9069b8ccb715d8c74aec2694e9a776a3b4402",
+      "diff/000004.diff": "9441452ea150fe17a52989fb55a7408d5b338f0f207a684ef7cede4681ecc15b",
+      "diff/000028.diff": "b7df6829c21fdfb677dbdeb6aaa00bb61bd21e96b4f16b6b0eab8ee2f280a252",
+      "diff/000008.diff": "a0000e57fa0df728d7d949c382388bbb79de9f5c6ff9c8df5b79df1ed7f5b2f6",
+      "diff/000024.diff": "ffe043d04a96ed54935bcd7b4d1f6529af04fe207e639e356e6e6d96d402173b",
+      "diff/000027.diff": "f03810b9c1edd674f97387c5051134fdfc73e8ccb10b1674943b2faca5fd5361",
+      "diff/000011.diff": "39a35387b70411d309b7ce05fc6303adf5547a49f2eca7a3d2db8ccd732e5179",
+      "diff/000007.diff": "c6c48a623c4debe6fc299dad765f6034525c0a3d77c0338162504f93b27a3389",
+      "diff/000006.diff": "90f2a6286490f2700e0e107bd881129d46363e53961ab1bfd448238b02f55da5",
+      "diff/000010.diff": "62566a90eb4e5f684851103adac49a4d5f41635414e2fbc3b646794d4816ea39",
+      "diff/000030.diff": "91405c3a9cd28f9393c9799c60a82a06bab42fad0b53665cc1bb61269be66f1c",
+      "diff/000026.diff": "dba1deae17783d47b5d7c5bde1ca5c7dfb246a31d284940705460d308f328289",
+      "diff/000017.diff": "049dd3f7ae21a9935c687ea7fc3a0749fa63aa58724be5fe115a7d3bfb832b9f",
+      "diff/000001.diff": "9a707e7f1c2c88e3505d996b57dbb7f24b2882a3ae3dd6499cfb5b08c43d4776",
+      "diff/000021.diff": "4715ec8b485f9f1b0eb26538ad6ed1259d5257c28bc7d12851794a597ac50aa2",
+      "diff/000020.diff": "d547cb664765fcfacce4105311d772cf2278580ee5956db2a78b829d0282f8ee",
+      "diff/000016.diff": "62e69d49827685b54d6846f4870f922a8f0ae3e625fed37edeae53763bc51c32",
+      "logs/000012.stdout.log": "b2fe0ff6073b42b4587aa687b826565f4cd979c0efa315edd7e22161ee4a336a",
+      "logs/000013.log": "24eaf630a89e4e72add420bdf6859e435dba21d004acd61b816401a3181268ac",
+      "logs/000007.log": "b93c1c7952486f629160c644ded96e68dc482608e7b2df3cddd92b86de0000e8",
+      "logs/000006.log": "e0406ac51057e6e84e749bd8669898fd8efb56fe2ec5ce135ab9288337732887",
+      "logs/000012.log": "108ff5850e64c12c03807f7ebca4bd80dc539db09d2eef160909db9787fc79d7",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/000004.log": "ca3564ade3f1cad68da1451fb2b827f8fcb24cdb79f6b199bbd0018a517831ba",
+      "logs/000010.log": "cadd56917a55501fc5cc9ab1e2c2f6e84ab6e7992e0d27d8d60af6efc2435d79",
+      "logs/000007.stderr.log": "602dc4f30759adeea5ec4db20402b1d5be7b991b91d4abcb7b6791d00c07e042",
+      "logs/000011.log": "b746c2e760916ad38a7525c0fcacb0ec08837fcc26a974702ac770ec0922ac40",
+      "logs/000005.log": "8fcd0df2624e622a5289831bcd691e7fbf8e6fb7d1e0c800451edf8d6baa21a0",
+      "logs/000003.stdout.log": "87c9926b3bbc213a404e83911df71b1df0d385dd4b387df479efc83f85a3257d",
+      "logs/000001.log": "d5ef5734856f865fd346e1279c5842cba4135d6ded6437847ca29d2861e1a96c",
+      "logs/000006.stdout.log": "894c774bf40733c1854cc8ebe912a6cee85e01e542c105eb194c4b2a1669e8bd",
+      "logs/000014.log": "c5c27accbee85d5422c361f200f3133aba3230f626617547bbf459de64c23d92",
+      "logs/000002.stderr.log": "fbbd910e034252fa62e925041e18656cd9c27c6c24ce2b6eb21f2ce50cf8f4a0",
+      "logs/000013.stderr.log": "188f650e7f00de8a88e39915234c84769e1432fce8cb114587e7bb4f719acfee",
+      "logs/000002.log": "7c03fb01d7bc76945c8318e666b9aa9c2fda5ea6ceeb9235e6295255753a8e4b",
+      "logs/000003.log": "8b2cbd30283b81fe9cb524254ceb7c4ab1e45a86fd5ee915bd9a8a1e43af76a4",
+      "logs/baseline.stderr.log": "ee308963e2b2d006c006e090e20ac5d4e6a0ea70c3bb3f78483cd5e2f3c6ff3d",
+      "logs/000008.stderr.log": "61d79e62a922ca192790acedf1ad5d46102b86008f67763e3e1599bb585a77cb",
+      "logs/000010.stdout.log": "2896f5335a9b17b057ec45e9483c84210b2794d7ee47d93662eb1f526f2d9eeb",
+      "logs/discovery.log": "09a73ea83dfaf08348b0485364e24bfcd00f984963bd43251f40bcaaa702cfb5",
+      "logs/000014.stderr.log": "fe36f5482ac14bc62a1be3763a0c2a5a420ca2975ccf408aa2c2f5b1cc29d7ae",
+      "logs/000005.stderr.log": "f543741355369d9d8be8428ca6c03804e85be551c7791c8771cfa3c5df060432",
+      "logs/000001.stdout.log": "de7acadb3793d0c651c0a608d9077c711589091299c1ae5b047b6a59f324174c",
+      "logs/000004.stdout.log": "0eb8fda75061509e0d8da1ff9c8205c4bac259e7b244597991e6f9f5a3011047",
+      "logs/000009.stdout.log": "f9f7a55bb47810c1eddbdd0758a387547d3681cb9759bbe61c4ad4e4aea2b6ba",
+      "logs/000011.stderr.log": "fbbd910e034252fa62e925041e18656cd9c27c6c24ce2b6eb21f2ce50cf8f4a0",
+      "logs/discovery.stdout.log": "70fbd4b64ae592279330677290f936b8f35260ba97bef3a9e5488fb26f15d1f6",
+      "logs/000003.stderr.log": "061fcc1b19845c6477de00ab33317a5572c2c42b9d7bae36c9f193929945930b",
+      "logs/baseline.log": "80a4b9c250f739f1f0ed8887b1054b416c92aa61e9eb07819b7d6a08382ecb16",
+      "logs/000007.stdout.log": "988f740dfe5f2f4bfa26ac1b7068d798bd1513af89225ff1eb30235f89fcac07",
+      "logs/000012.stderr.log": "f543741355369d9d8be8428ca6c03804e85be551c7791c8771cfa3c5df060432",
+      "logs/000013.stdout.log": "a0b97183acdcdbdc7d85f35f0c312506d8469dbdb4ac384879758445cf07de13",
+      "logs/000002.stdout.log": "c1378bde5ad64ce1d3c2c9b98266544bd4e8764285de3d5de662aa47baf5c84c",
+      "logs/000006.stderr.log": "3036bfbf0a5710857cfba194b919433ee2feb757dd166d9cba84a62087d9795e",
+      "logs/000001.stderr.log": "aedb6525d22fe3fb3723dc5955554afc89738dce2df0f30697fd9e24eccfcc22",
+      "logs/000005.stdout.log": "f31887641861f8cb5ad7fdda6430026c75d0b9781905851a25798f5f17152c8f",
+      "logs/000008.stdout.log": "cae2c10c0c4f8b3d40299b903d65e139683efd3e48c0e13363bfe19ab7d9ba2a",
+      "logs/baseline.stdout.log": "70ce142e3cc4c07a48e8896c58a62544700d03f6cf7731cb040ab98db66dbb0f",
+      "logs/000014.stdout.log": "0b71401d729846cf9f9f03c76cbab9c5f6c83f8a5c99af01c931ca7745864432",
+      "logs/000010.stderr.log": "323928d59af8a7a676178923bbbebea368f52595b9b2645c02d0ef2f22419697",
+      "logs/000009.stderr.log": "6207ca144bee573fe21d831de6b2cf43b3e1f3f8dd976a7a9c1a8ecd3f951cb0",
+      "logs/000008.log": "15ecb8786360e4eff3ca27c16eae0b4990478ff7c17e914405ff9f7656d134a7",
+      "logs/000009.log": "fd5ed5f3716bac8869e6cc7a756da8849846bededd48854fa909bff7e5e74fc0",
+      "logs/000011.stdout.log": "7932ba6a7ba9a30070ad8a13d6a8ae95ef4a09ad8290c3c84fa66605293f9bf3",
+      "logs/000004.stderr.log": "5dd29afe66a2700f546b9dcfd53a6f14e89e031636a8ca2550f22b44ed398b44"
+    },
+    "/tmp/mutie-rust-workspace-audit/boolean-reports/run-1792690940-xrJrHW": {
+      "outcomes.json": "53abcab96e4b6d798e0ae866e098fcc19935b727b413a76e4d0071cb24a6607a",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missed.txt": "e988d54e856cff492750317842f52fbd2c3e914b85c560d47b0fd0494ca8a59c",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "352da49a99fbb8e667a4fb5064c0d443612cb57cb1fbd03585e5f94b9eda670f",
+      "summary.txt": "4cc3212577b4d8419abdc96b42cd395139da3f4284efa409b6a8ecf721971f01",
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run.json": "da3d41c0969cbf1824c5218e35def49e78fcce775a1090b6be9e416aad3adb80",
+      "diff/000003.diff": "c6c48a623c4debe6fc299dad765f6034525c0a3d77c0338162504f93b27a3389",
+      "diff/000002.diff": "90f2a6286490f2700e0e107bd881129d46363e53961ab1bfd448238b02f55da5",
+      "diff/000004.diff": "71ab031022e7c7b476d579b40d108ce0a20c156e9f3215cc3214f3830639e92f",
+      "diff/000001.diff": "9441452ea150fe17a52989fb55a7408d5b338f0f207a684ef7cede4681ecc15b",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/000004.log": "2ccb148383366ae53677afd1056ba585d22af287b1cab5c6abd7e39b020b5f82",
+      "logs/000003.stdout.log": "a238273bbc454208c756fa6165e139df537b7017f6701adb8b6da08f25893950",
+      "logs/000001.log": "dec433e185b82d6dc173788300b99047d1aa552b986b1dcf6825f3d3eb016fa2",
+      "logs/000002.stderr.log": "83d36dc8011acb2334b0d60c7c4f5e418895d18d156219aab44c327045cf98af",
+      "logs/000002.log": "449e53c3990a5f08bf731584367790d9481d3c12eea076a34b48e6d9d8c019a1",
+      "logs/000003.log": "16f04a61bb5b2712c826eaba51374f6ed1eefc33650a9a4acad282bcf330f0bc",
+      "logs/baseline.stderr.log": "99c14e53f18b3168e05962914b5695de424fe8d6021a9cccf2c0a614fa4ad624",
+      "logs/discovery.log": "03981279639ff5082020905e7ee3adf0992a80532067225acc9ec56d982cbe6d",
+      "logs/000001.stdout.log": "06f67f8e5e356cd26f39dd1c293c3b5100e1fda1f067ff5bf7bb536d66a3ca0c",
+      "logs/000004.stdout.log": "0a988b9dc9d579ead6f1ab5ac0a09bfdfa683170d8ad258abacc4346701d323d",
+      "logs/discovery.stdout.log": "c7c7c66132fcc75874b2ffe08e07ec07bcf47eb52be0c2a553b7c21ce750ed96",
+      "logs/000003.stderr.log": "73cca8fc5c1a76964cd59173245bfa0d00625ab8a80ed61a711e12d1be58d421",
+      "logs/baseline.log": "de39519f263ea06db8cbf92b859389102571ab84d4df7e617708a5a9ef88577d",
+      "logs/000002.stdout.log": "3b56d176934d508b8e8b270e766d6db22b0704e9e55e2a2144f6fc7f93cb6cab",
+      "logs/000001.stderr.log": "265e7005fed0fe647549f633afd85e0fed086ec8c98cbe50733789f093466f9d",
+      "logs/baseline.stdout.log": "6716d25bb814672022116b60f93effb17fced6fc505396597491b0d2c9fa6c44",
+      "logs/000004.stderr.log": "990552c057b256596e80de79d6dc975f7765186a6d61e7ee7e977ad020526594"
+    }
+  },
+  "runs": {
+    "original": {
+      "directory": "/tmp/mutie-rust-workspace-audit/original-reports/run-1792690796-nVwpGg",
+      "status": "failed",
+      "seconds": 91.682175291,
+      "score": {
+        "scope": "all_discovered",
+        "killed": 8,
+        "missed": 5,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 16,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "summary": {
+        "killed": 8,
+        "missed": 5,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "baseline_passed_counts": [
+        3,
+        84,
+        40,
+        13
+      ],
+      "rust_scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "ucd-generate",
+              "directory": "",
+              "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "ucd-generate",
+                  "source": "src/main.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-parse",
+              "directory": "ucd-parse",
+              "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_parse",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-trie",
+              "directory": "ucd-trie",
+              "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_trie",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-util",
+              "directory": "ucd-util",
+              "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_util",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "ucd-util"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+        "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+          "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+        ]
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 56,
+          "column": 10,
+          "end_line": 56,
+          "end_column": 38,
+          "byte_start": 2046,
+          "byte_end": 2074,
+          "original": "0xAC00 <= cp && cp <= 0xD7A3",
+          "replacement": "0xAC00 <= cp || cp <= 0xD7A3",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 56,
+          "column": 17,
+          "end_line": 56,
+          "end_column": 19,
+          "byte_start": 2053,
+          "byte_end": 2055,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 56,
+          "column": 29,
+          "end_line": 56,
+          "end_column": 31,
+          "byte_start": 2065,
+          "byte_end": 2067,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 27,
+          "column": 27,
+          "end_line": 27,
+          "end_column": 32,
+          "byte_start": 1164,
+          "byte_end": 1169,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 5,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 39,
+          "column": 26,
+          "end_line": 40,
+          "end_column": 79,
+          "byte_start": 1661,
+          "byte_end": 1751,
+          "original": "prev_letter\n                && slice.get(i + 1).map_or(false, |b| b.is_ascii_alphabetic())",
+          "replacement": "prev_letter\n                || slice.get(i + 1).map_or(false, |b| b.is_ascii_alphabetic())",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 6,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 44,
+          "end_line": 40,
+          "end_column": 49,
+          "byte_start": 1716,
+          "byte_end": 1721,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 7,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 47,
+          "column": 41,
+          "end_line": 47,
+          "end_column": 46,
+          "byte_start": 2114,
+          "byte_end": 2119,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 8,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 47,
+          "column": 53,
+          "end_line": 47,
+          "end_column": 75,
+          "byte_start": 2126,
+          "byte_end": 2148,
+          "original": "b == b'E' || b == b'e'",
+          "replacement": "b == b'E' && b == b'e'",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 9,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 50,
+          "column": 30,
+          "end_line": 51,
+          "end_column": 74,
+          "byte_start": 2298,
+          "byte_end": 2392,
+          "original": "i + 2 >= slice.len()\n                || slice[i + 2..].iter().all(|&b| b == b' ' || b == b'_')",
+          "replacement": "i + 2 >= slice.len()\n                && slice[i + 2..].iter().all(|&b| b == b' ' || b == b'_')",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 10,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 50,
+          "column": 36,
+          "end_line": 50,
+          "end_column": 38,
+          "byte_start": 2304,
+          "byte_end": 2306,
+          "original": ">=",
+          "replacement": ">",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 11,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 51,
+          "column": 51,
+          "end_line": 51,
+          "end_column": 73,
+          "byte_start": 2369,
+          "byte_end": 2391,
+          "original": "b == b' ' || b == b'_'",
+          "replacement": "b == b' ' && b == b'_'",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 12,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 52,
+          "column": 16,
+          "end_line": 52,
+          "end_column": 52,
+          "byte_start": 2409,
+          "byte_end": 2445,
+          "original": "!keep_hyphen && next_e && rest_empty",
+          "replacement": "!keep_hyphen && next_e || rest_empty",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 13,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 52,
+          "column": 16,
+          "end_line": 52,
+          "end_column": 38,
+          "byte_start": 2409,
+          "byte_end": 2431,
+          "original": "!keep_hyphen && next_e",
+          "replacement": "(!keep_hyphen || next_e)",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 14,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 59,
+          "column": 19,
+          "end_line": 59,
+          "end_column": 41,
+          "byte_start": 2673,
+          "byte_end": 2695,
+          "original": "b'A' <= b && b <= b'Z'",
+          "replacement": "b'A' <= b || b <= b'Z'",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 15,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 59,
+          "column": 24,
+          "end_line": 59,
+          "end_column": 26,
+          "byte_start": 2678,
+          "byte_end": 2680,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 16,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 59,
+          "column": 34,
+          "end_line": 59,
+          "end_column": 36,
+          "byte_start": 2688,
+          "byte_end": 2690,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 17,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 62,
+          "column": 21,
+          "end_line": 62,
+          "end_column": 23,
+          "byte_start": 2798,
+          "byte_end": 2800,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000017.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 18,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 104,
+          "column": 30,
+          "end_line": 104,
+          "end_column": 35,
+          "byte_start": 4354,
+          "byte_end": 4359,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000018.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 19,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 105,
+          "column": 20,
+          "end_line": 105,
+          "end_column": 21,
+          "byte_start": 4380,
+          "byte_end": 4381,
+          "original": ">",
+          "replacement": ">=",
+          "diff": "diff/000019.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 20,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 107,
+          "column": 26,
+          "end_line": 110,
+          "end_column": 40,
+          "byte_start": 4446,
+          "byte_end": 4590,
+          "original": "slice[0..2] == b\"is\"[..]\n            || slice[0..2] == b\"IS\"[..]\n            || slice[0..2] == b\"iS\"[..]\n            || slice[0..2] == b\"Is\"[..]",
+          "replacement": "(slice[0..2] == b\"is\"[..]\n            || slice[0..2] == b\"IS\"[..]\n            || slice[0..2] == b\"iS\"[..])\n            && slice[0..2] == b\"Is\"[..]",
+          "diff": "diff/000020.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 21,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 107,
+          "column": 26,
+          "end_line": 109,
+          "end_column": 40,
+          "byte_start": 4446,
+          "byte_end": 4550,
+          "original": "slice[0..2] == b\"is\"[..]\n            || slice[0..2] == b\"IS\"[..]\n            || slice[0..2] == b\"iS\"[..]",
+          "replacement": "(slice[0..2] == b\"is\"[..]\n            || slice[0..2] == b\"IS\"[..])\n            && slice[0..2] == b\"iS\"[..]",
+          "diff": "diff/000021.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 22,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 107,
+          "column": 26,
+          "end_line": 108,
+          "end_column": 40,
+          "byte_start": 4446,
+          "byte_end": 4510,
+          "original": "slice[0..2] == b\"is\"[..]\n            || slice[0..2] == b\"IS\"[..]",
+          "replacement": "slice[0..2] == b\"is\"[..]\n            && slice[0..2] == b\"IS\"[..]",
+          "diff": "diff/000022.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 23,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 121,
+          "column": 12,
+          "end_line": 121,
+          "end_column": 47,
+          "byte_start": 4986,
+          "byte_end": 5021,
+          "original": "b == b' ' || b == b'_' || b == b'-'",
+          "replacement": "(b == b' ' || b == b'_') && b == b'-'",
+          "diff": "diff/000023.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 24,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 121,
+          "column": 12,
+          "end_line": 121,
+          "end_column": 34,
+          "byte_start": 4986,
+          "byte_end": 5008,
+          "original": "b == b' ' || b == b'_'",
+          "replacement": "b == b' ' && b == b'_'",
+          "diff": "diff/000024.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 25,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 123,
+          "column": 19,
+          "end_line": 123,
+          "end_column": 41,
+          "byte_start": 5064,
+          "byte_end": 5086,
+          "original": "b'A' <= b && b <= b'Z'",
+          "replacement": "b'A' <= b || b <= b'Z'",
+          "diff": "diff/000025.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 26,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 123,
+          "column": 24,
+          "end_line": 123,
+          "end_column": 26,
+          "byte_start": 5069,
+          "byte_end": 5071,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000026.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 27,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 123,
+          "column": 34,
+          "end_line": 123,
+          "end_column": 36,
+          "byte_start": 5079,
+          "byte_end": 5081,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000027.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 28,
+          "file": "ucd-util/src/name.rs",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 126,
+          "column": 21,
+          "end_line": 126,
+          "end_column": 23,
+          "byte_start": 5189,
+          "byte_end": 5191,
+          "original": "<=",
+          "replacement": "<",
+          "diff": "diff/000028.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 29,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 135,
+          "column": 8,
+          "end_line": 135,
+          "end_column": 61,
+          "byte_start": 5578,
+          "byte_end": 5631,
+          "original": "starts_with_is && next_write == 1 && slice[0] == b'c'",
+          "replacement": "starts_with_is && next_write == 1 || slice[0] == b'c'",
+          "diff": "diff/000029.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 30,
+          "file": "ucd-util/src/name.rs",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 135,
+          "column": 8,
+          "end_line": 135,
+          "end_column": 41,
+          "byte_start": 5578,
+          "byte_end": 5611,
+          "original": "starts_with_is && next_write == 1",
+          "replacement": "(starts_with_is || next_write == 1)",
+          "diff": "diff/000030.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "executions": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 6.837863417,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 17738,
+                "head_bytes": 17738,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 69616,
+                "head_bytes": 69616,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1615,
+                "head_bytes": 1615,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.783287583,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19098,
+                "head_bytes": 19098,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74058,
+                "head_bytes": 74058,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.582710458,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19098,
+                "head_bytes": 19098,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74058,
+                "head_bytes": 74058,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 5.824970542,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.591263042,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19170,
+                "head_bytes": 19170,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74130,
+                "head_bytes": 74130,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 6.132186792,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 6.074545916,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.706819291,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19168,
+                "head_bytes": 19168,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74128,
+                "head_bytes": 74128,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.680494042,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19168,
+                "head_bytes": 19168,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74128,
+                "head_bytes": 74128,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 5.772474708,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.576359458,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19168,
+                "head_bytes": 19168,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74128,
+                "head_bytes": 74128,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.562363208,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19162,
+                "head_bytes": 19162,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74122,
+                "head_bytes": 74122,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 5.667176042,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running ucd-util/src/name.rs:59:19: \"b'A' <= b && b <= b'Z'\" -> \"b'A' <= b || b <= b'Z'\": Cargo command failed without a test or build failure (exit status: 101):\n\n--- Cargo compilation ---\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1160:24\n     |\n1160 |     if n <= ::std::u8::MAX as u64 {\n     |                        ^^^\n     |\n     = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u16::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1162:32\n     |\n1162 |     } else if n <= ::std::u16::MAX as u64 {\n     |                                ^^^\n\nwarning: use of deprecated constant `std::u32::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1164:32\n     |\n1164 |     } else if n <= ::std::u32::MAX as u64 {\n     |                                ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:22.700 xcodebuild[83347:20123132]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:22.955 xcodebuild[83347:20123126] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.468 xcodebuild[83380:20123207]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.639 xcodebuild[83380:20123206] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:22.700 xcodebuild[83348:20123136]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:22.955 xcodebuild[83348:20123128] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.468 xcodebuild[83381:20123209]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.639 xcodebuild[83381:20123205] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:22.824 xcodebuild[83364:20123166]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.015 xcodebuild[83364:20123165] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.485 xcodebuild[83382:20123214]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.651 xcodebuild[83382:20123213] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:23.125 xcodebuild[83379:20123196]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.280 xcodebuild[83379:20123195] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.772 xcodebuild[83383:20123227]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.931 xcodebuild[83383:20123226] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\n\n--- Cargo test execution ---\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:22.700 xcodebuild[83348:20123136]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:22.955 xcodebuild[83348:20123128] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.468 xcodebuild[83381:20123209]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.639 xcodebuild[83381:20123205] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:22.824 xcodebuild[83364:20123166]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.015 xcodebuild[83364:20123165] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.485 xcodebuild[83382:20123214]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.651 xcodebuild[83382:20123213] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:22.700 xcodebuild[83347:20123132]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:22.955 xcodebuild[83347:20123126] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.468 xcodebuild[83380:20123207]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.639 xcodebuild[83380:20123206] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1160:24\n     |\n1160 |     if n <= ::std::u8::MAX as u64 {\n     |                        ^^^\n     |\n     = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u16::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1162:32\n     |\n1162 |     } else if n <= ::std::u16::MAX as u64 {\n     |                                ^^^\n\nwarning: use of deprecated constant `std::u32::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1164:32\n     |\n1164 |     } else if n <= ::std::u32::MAX as u64 {\n     |                                ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 10:41:23.125 xcodebuild[83379:20123196]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.280 xcodebuild[83379:20123195] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 10:41:23.772 xcodebuild[83383:20123227]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 10:41:23.931 xcodebuild[83383:20123226] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\n\nrunning 3 tests\ntest writer::tests::packed ... ok\ntest writer::tests::test_rust_type_name ... ok\ntest writer::tests::codepoint_to_codepoint_fn_error ... ok\n\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 84 tests\ntest bidi_mirroring_glyph::tests::parse ... ok\ntest arabic_shaping::tests::parse1 ... ok\ntest case_folding::tests::parse_common ... ok\ntest arabic_shaping::tests::parse2 ... ok\ntest age::tests::parse_range ... ok\ntest age::tests::parse_single ... ok\ntest arabic_shaping::tests::parse3 ... ok\ntest bidi_mirroring_glyph::tests::parse_best_fit ... ok\ntest case_folding::tests::parse_full ... ok\ntest case_folding::tests::parse_special ... ok\ntest case_folding::tests::parse_simple ... ok\ntest core_properties::tests::parse_range ... ok\ntest core_properties::tests::parse_single ... ok\ntest derived_normalization_properties::tests::parse_range ... ok\ntest east_asian_width::tests::parse_range ... ok\ntest derived_normalization_properties::tests::parse_single ... ok\ntest east_asian_width::tests::parse_single ... ok\ntest emoji_properties::tests::parse_single ... ok\ntest extracted::derived_bidi_class::tests::parse_range ... ok\ntest extracted::derived_bidi_class::tests::parse_single ... ok\ntest extracted::derived_binary_properties::tests::parse_single ... ok\ntest emoji_properties::tests::parse_range ... ok\ntest extracted::derived_binary_properties::tests::parse_range ... ok\ntest extracted::derived_combining_class::tests::parse_range ... ok\ntest extracted::derived_combining_class::tests::parse_single ... ok\ntest extracted::derived_decomposition_type::tests::parse_single ... ok\ntest extracted::derived_east_asian_width::tests::parse_range ... ok\ntest extracted::derived_east_asian_width::tests::parse_single ... ok\ntest extracted::derived_general_category::tests::parse_single ... ok\ntest extracted::derived_joining_group::tests::parse_range ... ok\ntest extracted::derived_decomposition_type::tests::parse_range ... ok\ntest extracted::derived_joining_group::tests::parse_single ... ok\ntest extracted::derived_general_category::tests::parse_range ... ok\ntest extracted::derived_joining_type::tests::parse_single ... ok\ntest extracted::derived_joining_type::tests::parse_range ... ok\ntest extracted::derived_line_break::tests::parse_single ... ok\ntest extracted::derived_line_break::tests::parse_range ... ok\ntest extracted::derived_name::tests::parse_single ... ok\ntest extracted::derived_name::tests::parse_range ... ok\ntest extracted::derived_numeric_type::tests::parse_single ... ok\ntest extracted::derived_numeric_type::tests::parse_range ... ok\ntest grapheme_cluster_break::tests::parse_range ... ok\ntest extracted::derived_numeric_values::tests::parse_range ... ok\ntest grapheme_cluster_break::tests::parse_single ... ok\ntest extracted::derived_numeric_values::tests::parse_single ... ok\ntest jamo_short_name::tests::parse1 ... ok\ntest jamo_short_name::tests::parse2 ... ok\ntest prop_list::tests::parse_range ... ok\ntest prop_list::tests::parse_single ... ok\ntest name_aliases::tests::parse1 ... ok\ntest name_aliases::tests::parse4 ... ok\ntest grapheme_cluster_break::tests::parse_test ... ok\ntest name_aliases::tests::parse2 ... ok\ntest line_break::tests::parse_test ... ok\ntest name_aliases::tests::parse3 ... ok\ntest property_aliases::tests::parse1 ... ok\ntest property_aliases::tests::parse2 ... ok\ntest property_aliases::tests::parse3 ... ok\ntest property_aliases::tests::parse5 ... ok\ntest property_aliases::tests::parse4 ... ok\ntest script_extensions::tests::parse_single ... ok\ntest script_extensions::tests::parse_range ... ok\ntest property_value_aliases::tests::parse4 ... ok\ntest property_value_aliases::tests::parse3 ... ok\ntest property_value_aliases::tests::parse5 ... ok\ntest scripts::tests::parse_range ... ok\ntest property_value_aliases::tests::parse2 ... ok\ntest scripts::tests::parse_single ... ok\ntest sentence_break::tests::parse_range ... ok\ntest property_value_aliases::tests::parse1 ... ok\ntest property_value_aliases::tests::parse6 ... ok\ntest sentence_break::tests::parse_single ... ok\ntest special_casing::tests::parse_no_conds ... ok\ntest special_casing::tests::parse_conds ... ok\ntest word_break::tests::parse_range ... ok\ntest word_break::tests::parse_single ... ok\ntest sentence_break::tests::parse_test ... ok\ntest unicode_data::tests::parse4 ... ok\ntest unicode_data::tests::parse2 ... ok\ntest unicode_data::tests::parse5 ... ok\ntest unicode_data::tests::parse1 ... ok\ntest unicode_data::tests::parse3 ... ok\ntest word_break::tests::parse_test ... ok\ntest unicode_data::tests::expander ... ok\n\ntest result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n\nrunning 40 tests\ntest owned::tests::gencat_control ... ok\ntest owned::tests::gencat_currency_symbol ... ok\ntest owned::tests::gencat_connector_punctuation ... ok\ntest owned::tests::gencat_close_punctuation ... ok\ntest owned::tests::gencat_enclosing_mark ... ok\ntest owned::tests::gencat_decimal_number ... ok\ntest owned::tests::gencat_dash_punctuation ... ok\ntest owned::tests::gencat_cased_letter ... ok\ntest owned::tests::gencat_final_punctuation ... ok\ntest owned::tests::gencat_format ... ok\ntest owned::tests::gencat_initial_punctuation ... ok\ntest owned::tests::gencat_letter_number ... ok\ntest owned::tests::gencat_line_separator ... ok\ntest owned::tests::gencat_lowercase_letter ... ok\ntest owned::tests::gencat_letter ... ok\ntest owned::tests::gencat_mark ... ok\ntest owned::tests::gencat_math_symbol ... ok\ntest owned::tests::gencat_nonspacing_mark ... ok\ntest owned::tests::gencat_modifier_symbol ... ok\ntest owned::tests::gencat_number ... ok\ntest owned::tests::gencat_modifier_letter ... ok\ntest owned::tests::gencat_open_punctuation ... ok\ntest owned::tests::gencat_other_letter ... ok\ntest owned::tests::gencat_other_number ... ok\ntest owned::tests::gencat_paragraph_separator ... ok\ntest owned::tests::gencat_other_symbol ... ok\ntest owned::tests::gencat_other_punctuation ... ok\ntest owned::tests::gencat_private_use ... ok\ntest owned::tests::gencat_punctuation ... ok\ntest owned::tests::gencat_separator ... ok\ntest owned::tests::gencat_other ... ok\ntest owned::tests::set1 ... ok\ntest owned::tests::set_combined ... ok\ntest owned::tests::gencat_space_separator ... ok\ntest owned::tests::gencat_surrogate ... ok\ntest owned::tests::gencat_symbol ... ok\ntest owned::tests::gencat_spacing_mark ... ok\ntest owned::tests::gencat_titlecase_letter ... ok\ntest owned::tests::gencat_uppercase_letter ... ok\ntest owned::tests::gencat_unassigned ... ok\n\ntest result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s\n\n\nrunning 13 tests\ntest hangul::tests::canon_decomp ... ok\ntest hangul::tests::invalid ... ok\ntest hangul::tests::name ... ok\n\n     Removed 73 files, 16.7MiB total\n\n--- Cargo compilation ---\n   Compiling ucd-util v0.2.2 (/tmp/mutie-lRcTS5/repo/ucd-util)\n   Compiling ucd-trie v0.1.7 (/tmp/mutie-lRcTS5/repo/ucd-trie)\n   Compiling ucd-parse v0.1.13 (/tmp/mutie-lRcTS5/repo/ucd-parse)\n   Compiling ucd-generate v0.3.1 (/tmp/mutie-lRcTS5/repo)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.84s\n\n--- Cargo test execution ---\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running unittests src/main.rs (/tmp/mutie-cargo-worker-ap55Kk/debug/deps/ucd_generate-1de71f0fdfa5498c)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-ap55Kk/debug/deps/ucd_parse-57f0eb8d6e55f764)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-ap55Kk/debug/deps/ucd_trie-5e0a987af9bc5564)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-ap55Kk/debug/deps/ucd_util-1a6978839a86eeb2)\npanicked at /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/fmt/mod.rs:2949:38:\n\nthread panicked while processing panic. aborting.\nerror: test failed, to rerun pass `-p ucd-util --lib`\n\nCaused by:\n  process didn't exit successfully: `/tmp/mutie-cargo-worker-ap55Kk/debug/deps/ucd_util-1a6978839a86eeb2` (signal: 6, SIGABRT: process abort signal)\nerror: 1 target failed:\n    `-p ucd-util --lib`\n",
+          "duration_seconds": 5.711937917,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18626,
+                "head_bytes": 18626,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73233,
+                "head_bytes": 73233,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1751,
+                "head_bytes": 1751,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 16,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 17,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 18,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 19,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 20,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 21,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 22,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 23,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 24,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 25,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 26,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 27,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 28,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 29,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 30,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        }
+      ]
+    },
+    "boolean": {
+      "directory": "/tmp/mutie-rust-workspace-audit/boolean-reports/run-1792690940-xrJrHW",
+      "status": "completed",
+      "seconds": 40.6565115,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_passed_counts": [
+        3,
+        84,
+        40,
+        13
+      ],
+      "rust_scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "ucd-generate",
+              "directory": "",
+              "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "ucd-generate",
+                  "source": "src/main.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-parse",
+              "directory": "ucd-parse",
+              "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_parse",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-trie",
+              "directory": "ucd-trie",
+              "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_trie",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-util",
+              "directory": "ucd-util",
+              "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_util",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "ucd-util"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+        "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+          "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+        ]
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 27,
+          "column": 27,
+          "end_line": 27,
+          "end_column": 32,
+          "byte_start": 1164,
+          "byte_end": 1169,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 44,
+          "end_line": 40,
+          "end_column": 49,
+          "byte_start": 1716,
+          "byte_end": 1721,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 47,
+          "column": 41,
+          "end_line": 47,
+          "end_column": 46,
+          "byte_start": 2114,
+          "byte_end": 2119,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 104,
+          "column": 30,
+          "end_line": 104,
+          "end_column": 35,
+          "byte_start": 4354,
+          "byte_end": 4359,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "executions": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 6.765405125,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18209,
+                "head_bytes": 18209,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 72479,
+                "head_bytes": 72479,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1513,
+                "head_bytes": 1513,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 6.279721792,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.262108917,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 9.957057667,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "fresh": {
+      "directory": "/tmp/mutie-rust-workspace-audit/fresh-reports/run-1792691043-DY6MNW",
+      "status": "completed",
+      "seconds": 61.900090083,
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 4,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_passed_counts": [
+        3,
+        84,
+        40,
+        13
+      ],
+      "rust_scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "ucd-generate",
+              "directory": "",
+              "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "ucd-generate",
+                  "source": "src/main.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-parse",
+              "directory": "ucd-parse",
+              "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_parse",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-trie",
+              "directory": "ucd-trie",
+              "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_trie",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-util",
+              "directory": "ucd-util",
+              "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_util",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "ucd-util"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+        "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+          "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+        ]
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 27,
+          "column": 27,
+          "end_line": 27,
+          "end_column": 32,
+          "byte_start": 1164,
+          "byte_end": 1169,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 44,
+          "end_line": 40,
+          "end_column": 49,
+          "byte_start": 1716,
+          "byte_end": 1721,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 47,
+          "column": 41,
+          "end_line": 47,
+          "end_column": 46,
+          "byte_start": 2114,
+          "byte_end": 2119,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 104,
+          "column": 30,
+          "end_line": 104,
+          "end_column": 35,
+          "byte_start": 4354,
+          "byte_end": 4359,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "executions": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 14.127742417,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 16528,
+                "head_bytes": 16528,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 67788,
+                "head_bytes": 67788,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1461,
+                "head_bytes": 1461,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 12.495310666,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 16528,
+                "head_bytes": 16528,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 67788,
+                "head_bytes": 67788,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1461,
+                "head_bytes": 1461,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 11.916863625,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 16528,
+                "head_bytes": 16528,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 67788,
+                "head_bytes": 67788,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1461,
+                "head_bytes": 1461,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 7.845963584,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 17260,
+                "head_bytes": 17260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 69228,
+                "head_bytes": 69228,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1461,
+                "head_bytes": 1461,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stronger": {
+      "directory": "/tmp/mutie-rust-workspace-audit/stronger-reports/run-1792691042-Y8sDHG",
+      "status": "completed",
+      "seconds": 54.903481209,
+      "score": {
+        "scope": "rerun",
+        "killed": 3,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 3,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "baseline_passed_counts": [
+        3,
+        84,
+        40,
+        13,
+        2
+      ],
+      "rust_scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "ucd-generate",
+              "directory": "",
+              "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "ucd-generate",
+                  "source": "src/main.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-parse",
+              "directory": "ucd-parse",
+              "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_parse",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-trie",
+              "directory": "ucd-trie",
+              "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_trie",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            },
+            {
+              "name": "ucd-util",
+              "directory": "ucd-util",
+              "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ucd_util",
+                  "source": "src/lib.rs",
+                  "edition": "2021"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "ucd-util"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+        "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+          "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+          "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+        ]
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 27,
+          "column": 27,
+          "end_line": 27,
+          "end_column": 32,
+          "byte_start": 1164,
+          "byte_end": 1169,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 44,
+          "end_line": 40,
+          "end_column": 49,
+          "byte_start": 1716,
+          "byte_end": 1721,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-util/src/name.rs",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 104,
+          "column": 30,
+          "end_line": 104,
+          "end_column": 35,
+          "byte_start": 4354,
+          "byte_end": 4359,
+          "original": "false",
+          "replacement": "true",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "executions": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 14.908305875,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19160,
+                "head_bytes": 19160,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74970,
+                "head_bytes": 74970,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1844,
+                "head_bytes": 1844,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 12.220121125,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20521,
+                "head_bytes": 20521,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 79413,
+                "head_bytes": 79413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1627,
+                "head_bytes": 1627,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 11.480077917,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20503,
+                "head_bytes": 20503,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 79395,
+                "head_bytes": 79395,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1627,
+                "head_bytes": 1627,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "verification": {
+    "default_suite": {
+      "passed": 306,
+      "failed": 0,
+      "ignored": 106
+    },
+    "workspace_workflow_seconds": 35.91,
+    "single_package_library_regression_seconds": 83.75,
+    "clippy_all_targets_warnings_denied": "passed",
+    "format_and_diff_checks": "passed"
+  }
+}

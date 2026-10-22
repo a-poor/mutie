@@ -32,6 +32,18 @@ pub struct Cli {
     #[arg(long, value_enum)]
     pub rust_build_cache: Option<RustBuildCache>,
 
+    /// Mutate these Rust workspace members by package name (repeatable; tests cover all members)
+    #[arg(
+        long = "rust-package",
+        value_name = "NAME",
+        conflicts_with = "clear_rust_packages"
+    )]
+    pub rust_packages: Vec<String>,
+
+    /// Clear configured Rust member selection, mutating all workspace members
+    #[arg(long)]
+    pub clear_rust_packages: bool,
+
     /// Number of mutation workers (default: 1)
     #[arg(short, long)]
     pub jobs: Option<NonZeroUsize>,

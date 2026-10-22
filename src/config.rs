@@ -24,6 +24,7 @@ struct RepositoryConfig {
     lang: Option<Lang>,
     python: Option<PathBuf>,
     rust_build_cache: Option<RustBuildCache>,
+    rust_packages: Option<Vec<String>>,
     jobs: Option<NonZeroUsize>,
     test_scope: Option<TestScope>,
     include: Option<Vec<String>>,
@@ -51,6 +52,8 @@ pub struct RunConfig {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub python: Option<PathBuf>,
     pub rust_build_cache: RustBuildCache,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub rust_packages: Vec<String>,
     pub jobs: NonZeroUsize,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub continue_on_error: Option<NonZeroUsize>,
@@ -113,6 +116,22 @@ impl RunConfig {
             lang == Lang::Rust || rust_build_cache.is_none(),
             "--rust-build-cache / rust_build_cache is only supported for Rust"
         );
+        let rust_selection_explicit = cli.clear_rust_packages
+            || !cli.rust_packages.is_empty()
+            || file.rust_packages.is_some();
+        let mut rust_packages = if cli.clear_rust_packages {
+            Vec::new()
+        } else if !cli.rust_packages.is_empty() {
+            cli.rust_packages
+        } else {
+            file.rust_packages.unwrap_or_default()
+        };
+        ensure!(
+            lang == Lang::Rust || !rust_selection_explicit,
+            "--rust-package / rust_packages is only supported for Rust"
+        );
+        rust_packages.sort();
+        rust_packages.dedup();
         let output_dir = match cli.output_dir {
             Some(path) => nonempty_path(invocation, path)?,
             None => nonempty_path(&root, file.output_dir.unwrap_or_else(|| ".mutie".into()))?,
@@ -180,6 +199,7 @@ impl RunConfig {
                 .map(|p| invocation.join(p))
                 .or_else(|| file.python.map(|p| root.join(p))),
             rust_build_cache: rust_build_cache.unwrap_or_default(),
+            rust_packages,
             continue_on_error: cli.continue_on_error,
             jobs: cli
                 .jobs
@@ -313,7 +333,10 @@ impl RunConfig {
     pub fn score_scope(&self) -> ScoreScope {
         ScoreScope::selected(
             self.rerun.is_some(),
-            !self.include.is_empty() || !self.exclude.is_empty() || !self.operators.is_empty(),
+            !self.include.is_empty()
+                || !self.exclude.is_empty()
+                || !self.operators.is_empty()
+                || !self.rust_packages.is_empty(),
         )
     }
 }
@@ -369,6 +392,40 @@ pub(crate) fn resolve_output_path(path: &Path) -> Result<PathBuf> {
 mod tests {
     use super::*;
     use clap::Parser;
+
+    #[test]
+    fn rust_member_selection_overrides_config_and_can_be_cleared() -> Result<()> {
+        let temp = project()?;
+        assert!(resolve(temp.path(), &["--rust-package", "core"]).is_err());
+        fs::remove_file(temp.path().join("module/go.mod"))?;
+        fs::write(
+            temp.path().join("module/Cargo.toml"),
+            "[workspace]\nmembers=[]",
+        )?;
+        fs::write(
+            temp.path().join("module/mutie.toml"),
+            "rust_packages = ['core']",
+        )?;
+        assert_eq!(resolve(temp.path(), &[])?.rust_packages, ["core"]);
+        assert_eq!(
+            resolve(temp.path(), &[])?.score_scope(),
+            ScoreScope::Filtered
+        );
+        assert_eq!(
+            resolve(
+                temp.path(),
+                &["--rust-package", "cli", "--rust-package", "cli"]
+            )?
+            .rust_packages,
+            ["cli"]
+        );
+        assert!(
+            resolve(temp.path(), &["--clear-rust-packages"])?
+                .rust_packages
+                .is_empty()
+        );
+        Ok(())
+    }
 
     #[test]
     fn rust_build_cache_is_opt_in_configurable_and_rejected_for_go() -> Result<()> {

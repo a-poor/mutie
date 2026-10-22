@@ -34,7 +34,7 @@ requires adapter evidence, including exact-runner observer checks where used.
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
-| Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
+| Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; 3 operators | Broader project/platform evidence; build scripts/proc macros and external paths |
 | TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
@@ -73,12 +73,13 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
 
 ## Rust — Cargo
 
-**Level: Validated within the ordinary single-package scope.**
+**Level: Validated within the ordinary package/workspace scope.**
 
-- Project/test scope: one ordinary package with a binary, library, or library plus
-  one binary; usable lockfile, registry
-  dependencies, default features and standard unit/integration tests on Unix.
-  Executes `cargo test --locked --tests --no-fail-fast`; no affected-test selection.
+- Project/test scope: ordinary packages and workspaces, each member with a binary,
+  library, or library plus one binary; root lockfile, registry/internal path
+  dependencies, inherited metadata, default features and unit/integration tests.
+  Executes `cargo test --locked --tests --no-fail-fast`, adding `--workspace` for
+  workspaces. Member selection narrows mutations, not tests. No affected-test selection.
 - Mutation coverage: `boolean_flip`, `comparison_boundary`, `logical_swap`.
   Discovery follows supported source modules and excludes test-only, generated,
   macro-token and other unsupported contexts described in the
@@ -97,8 +98,8 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
   393 seconds; this is not a universal Rust performance estimate.
   Real-Cargo workflows are opt-in in `tests/rust_workflow.rs`.
 - Limits: no proc macros or library crate types other than `lib`/`rlib`,
-  multiple binaries, multi-package/enclosing
-  workspaces, local/git dependencies, project build scripts, custom harnesses,
+  multiple binaries per package, nested workspaces, external path/git dependencies,
+  project build scripts, custom dev/test profiles or harnesses,
   feature selection or cross-compilation. Doctests and ignored tests are outside
   the execution scope. Validation is on macOS; Unix scope is not a claim of equal
   platform evidence. Full-suite feedback time remains a practical constraint.
@@ -114,8 +115,12 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
   saved survivors in matching fresh/cached reruns, with one equivalent survivor
   retained and reviewed. Full-suite baselines pass 182/184 tests. Marathon supplies
   library-plus-binary real-project evidence; library-only evidence is fixture-based.
+- Workspace evidence: [UCD Generate and fixture acceptance](benchmarks/rust-workspaces.md)
+  covers virtual/root-package workspaces, full cross-member tests, fresh/cached
+  agreement, saved identity and three useful stronger-test kills. Original failed
+  exploratory reports and the unresolved survivor remain distinct from filtered scores.
 - Next support gains: broader project/platform evidence before Established, and
-  separately scoped workspaces/local dependencies. The ordinary-library milestone
+  separately scoped build scripts/proc macros or external dependency layouts. The ordinary-library milestone
   is complete; reassess the next major objective against the planned JS/TS and
   Python targets rather than automatically adding another Rust operator.
 

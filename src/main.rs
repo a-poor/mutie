@@ -296,7 +296,7 @@ async fn execute(
     let root = &config.module_root;
     let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
     let mut rust_project = (config.lang == Lang::Rust)
-        .then(|| rust::Project::load(root))
+        .then(|| rust::Project::load_selected(root, &config.rust_packages))
         .transpose()?;
     let bun_project = (config.lang == Lang::Bun)
         .then(|| bun::project::Project::load(root, cancellation))
@@ -451,7 +451,12 @@ async fn execute(
     if rust_project.is_some() {
         // Scope and lockfile identity must describe the captured input, not a
         // manifest that could have changed while the snapshot was being copied.
-        rust_project = Some(rust::Project::load(&snapshot.path())?);
+        let captured = rust::Project::load_selected(&snapshot.path(), &config.rust_packages)?;
+        ensure!(
+            rust_project.as_ref().unwrap().scope == captured.scope,
+            "Rust package/workspace identity changed during snapshotting"
+        );
+        rust_project = Some(captured);
     }
     let vitest_scope = if config.lang == Lang::Vitest {
         let identity = vitest::execution_scope(&snapshot.path(), cancellation).await?;
@@ -545,6 +550,7 @@ async fn execute(
             config.max_log_bytes,
             config.max_capture_bytes,
             None,
+            rust_project.as_ref().map(|project| &project.scope),
             vitest_scope.as_ref(),
             node_scope.as_ref(),
             bun_scope.as_ref(),
@@ -615,15 +621,17 @@ async fn execute(
     let (mutations, graph) = if let Some(project) = &mut rust_project {
         drop(baseline_workspace);
         let source = snapshot.path();
-        let entries: Vec<_> = project
-            .scope
-            .targets
-            .iter()
-            .map(|target| target.source.clone())
-            .collect();
+        let entries = project.scope.entries();
+        let packages = project.scope.package_directories();
         let discovery_cancellation = cancellation.clone();
         let found = tokio::task::spawn_blocking(move || {
-            rust::discovery::discover(&source, &entries, &scope, &discovery_cancellation)
+            rust::discovery::discover_packages(
+                &source,
+                &entries,
+                &packages,
+                &scope,
+                &discovery_cancellation,
+            )
         })
         .await
         .context("Rust discovery panicked")??;
@@ -812,6 +820,7 @@ async fn execute(
             .as_ref()
             .filter(|_| config.rust_build_cache == cli::RustBuildCache::Worker)
             .map(|project| project.scope.package.clone()),
+        rust_scope: rust_project.map(|project| Arc::new(project.scope)),
         vitest_scope: vitest_scope.map(Arc::new),
         node_scope: node_scope.map(Arc::new),
         bun_scope: bun_scope.map(Arc::new),
@@ -835,6 +844,7 @@ struct WorkerContext {
     lang: Lang,
     continue_on_error: Option<std::num::NonZeroUsize>,
     rust_cache_package: Option<String>,
+    rust_scope: Option<Arc<rust::ExecutionScope>>,
     snapshot: Arc<Workspace>,
     test_packages: Arc<Vec<Vec<String>>>,
     timeout: Duration,
@@ -941,6 +951,7 @@ impl WorkerJob {
                             context.max_log_bytes,
                             context.max_capture_bytes,
                             cache.as_ref(),
+                            context.rust_scope.as_deref(),
                             context.vitest_scope.as_deref(),
                             context.node_scope.as_deref(),
                             context.bun_scope.as_deref(),

@@ -100,7 +100,7 @@ fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
         Lang::Bun => "Bun 1.3.11+af24e281e",
         Lang::Vitest => "Node 24.22.0 / Vitest 4.1.9 / an audited package-manager installation",
         Lang::Rust => {
-            "host Cargo toolchain; ordinary single package (workspaces not supported yet)"
+            "host Cargo toolchain; ordinary packages/workspaces; --rust-package selects mutation members, tests cover the full workspace"
         }
         _ => "Go 1.24+",
     };
@@ -166,6 +166,9 @@ fn render(lang: Lang, python: Option<&Path>) -> Result<String> {
         "# Generated setup; project/runtime compatibility is checked when Mutie runs.\n# Precedence: defaults < this file < explicit CLI options.\n",
     );
     text.push_str(&toml::to_string(&table)?);
+    if lang == Lang::Rust {
+        text.push_str("\n# Rust workspace mutation members; empty selects all. Tests cover every member.\n# rust_packages = []\n# rust_build_cache = \"fresh\"\n");
+    }
     text.push_str("\n# Source filters select mutations, not tests.\n# include = [\"src/**\"]\n# exclude = []\n# operators = [] # all operators supported by this adapter\n# jobs = 1\n# baseline_timeout = 300\n# ui = \"auto\"\n");
     Ok(text)
 }

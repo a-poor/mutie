@@ -510,3 +510,19 @@ Bragkit with installed development tools retains all 23 outcomes and three stron
 HTML boundary kills. Preserve original inputs/reports. PnP, alternative linkers,
 workspaces and Vite+'s bundled `vp test` need separate acceptance; incidental Vite+
 devDependencies do not select a runner. No package manager is invoked by Mutie.
+
+`benchmarks/rust-workspaces.md` supersedes earlier workspace exclusions. Ordinary
+virtual/root-package workspaces support member selection (`--rust-package`,
+`rust_packages`), inherited metadata/dependencies, and internal path dependencies.
+Selection narrows mutations; every baseline/mutation tests all members with
+`--workspace --tests`. Worker caches clean all local packages, including unselected
+dependents. Bind every member manifest/target, root manifest/lock, toolchain and
+selection to reruns; preserve standalone empty-workspace report compatibility.
+Explicit member selection is a filtered score in both writer and reader. Non-test
+auxiliary targets and release/bench-only profiles are inert under the test command.
+Build scripts, workspace proc macros, external paths/git dependencies, custom
+dev/test profiles and feature-gated test targets remain separate scope. UCD Generate
+provides unchanged root-workspace evidence: 140 tests, fresh/cached agreement on
+four boolean survivors, and three stronger-test kills with 142 tests. Preserve the
+failed exploratory abort report, original inputs/reports and unresolved fourth
+survivor; do not infer a full workspace mutation score from member/operator filtering.

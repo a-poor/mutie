@@ -544,7 +544,7 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
     }
     let scope = Scope::new(&config.include, &config.exclude)?;
     let project = (config.lang == Lang::Rust)
-        .then(|| crate::rust::Project::load(&config.module_root))
+        .then(|| crate::rust::Project::load_selected(&config.module_root, &config.rust_packages))
         .transpose()?;
     let mut excluded = vec![config.module_root.join(".mutie"), config.output_dir.clone()];
     if let Some(project) = &project {
@@ -559,7 +559,7 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
         crate::create_workspace(snapshot.path(), vec![], cancellation.clone()).await?;
     let limit = Duration::from_secs(config.baseline_timeout.get());
     let mutations = if project.is_some() {
-        let project = crate::rust::Project::load(&snapshot.path())?;
+        let project = crate::rust::Project::load_selected(&snapshot.path(), &config.rust_packages)?;
         let output = crate::rust::discover(
             &discovery_workspace.path(),
             limit,
@@ -579,14 +579,10 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
         let discovery_cancellation = cancellation.clone();
         let source = snapshot.path();
         let found = tokio::task::spawn_blocking(move || {
-            crate::rust::discovery::discover(
+            crate::rust::discovery::discover_packages(
                 &source,
-                &project
-                    .scope
-                    .targets
-                    .iter()
-                    .map(|target| target.source.clone())
-                    .collect::<Vec<_>>(),
+                &project.scope.entries(),
+                &project.scope.package_directories(),
                 &scope,
                 &discovery_cancellation,
             )

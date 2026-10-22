@@ -27,6 +27,8 @@ mod library;
 mod logical;
 #[path = "support/rust_reruns.rs"]
 mod reruns;
+#[path = "support/rust_workspace.rs"]
+mod workspace;
 
 struct Fixture {
     temp: tempfile::TempDir,

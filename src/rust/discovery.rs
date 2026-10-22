@@ -20,13 +20,25 @@ pub struct Discovery {
     pub exclusions: Vec<String>,
 }
 
+#[cfg(test)]
 pub fn discover(
     root: &Path,
     entries: &[PathBuf],
     scope: &Scope,
     cancellation: &Cancellation,
 ) -> Result<Discovery> {
+    discover_packages(root, entries, &[], scope, cancellation)
+}
+
+pub fn discover_packages(
+    root: &Path,
+    entries: &[PathBuf],
+    packages: &[PathBuf],
+    scope: &Scope,
+    cancellation: &Cancellation,
+) -> Result<Discovery> {
     let mut walker = Walker {
+        packages,
         root,
         scope,
         cancellation,
@@ -54,6 +66,7 @@ pub fn discover(
 }
 
 struct Walker<'a> {
+    packages: &'a [PathBuf],
     root: &'a Path,
     scope: &'a Scope,
     cancellation: &'a Cancellation,
@@ -82,6 +95,7 @@ impl Walker<'_> {
         while let Some(directory) = parent {
             if !directory.as_os_str().is_empty()
                 && self.root.join(directory).join("Cargo.toml").is_file()
+                && !self.packages.iter().any(|package| package == directory)
             {
                 self.exclude(&path, "nested Cargo package");
                 return Ok(());

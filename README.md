@@ -2,7 +2,7 @@
 
 A CLI for performing mutation testing.
 
-Mutie supports Go modules, scoped Rust packages, pinned Vitest packages, and a scoped Node test runner. It runs a
+Mutie supports Go modules, scoped Rust packages/workspaces, pinned Vitest packages, and a scoped Node test runner. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
 Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
@@ -293,11 +293,11 @@ The bundled Go fixture deliberately produces all four outcomes:
 cargo run -- tests/fixtures/go --jobs 2 --timeout 5
 ```
 
-## Initial Rust support
+## Rust support
 
-Rust supports one ordinary package with a binary, a library, or a library plus
-one binary, with a usable `Cargo.lock`, default features, and standard
-unit/integration tests on Unix. The ordinary-library scope is validated through
+Rust supports ordinary packages and workspaces whose members have a binary,
+a library, or a library plus one binary, with a usable root `Cargo.lock`, default
+features, and standard unit/integration tests on Unix. The ordinary-library scope is validated through
 fixtures and [Marathon findings and focused reruns](benchmarks/rust-library-marathon.md);
 Mutie remains the binary-only real-project control.
 Try the [small fixture](tests/fixtures/rust/README.md):
@@ -331,7 +331,14 @@ verified workflow, scope limits and runtime evidence. The
 redundant report writes and preserves the saved-selection outcomes in a measured
 Mutie self-run; tests still run in full. The [library fixture](tests/fixtures/rust-library/README.md)
 extends discovery to all production roots and exercises fresh/cached execution
-and stronger-test reruns. Workspaces remain future scope.
+and stronger-test reruns. [Workspace acceptance](benchmarks/rust-workspaces.md)
+adds virtual/root-package workspaces, inherited metadata and internal path dependencies.
+Run from the workspace root; repeat `--rust-package NAME` to select mutation members,
+or set `rust_packages = ["core", "cli"]` in `mutie.toml`. Omit selection (or use
+`--clear-rust-packages`) to mutate all members. Both baseline and mutations run
+all workspace members' unit/integration tests with `--workspace`, regardless of
+`default-members`. Member selection produces a filtered score, and source globs
+are workspace-relative. Saved reports and browser commands retain the selection.
 
 Cargo metadata validates the package before the baseline. Mutie compiles tests
 with `cargo test --locked --tests --no-fail-fast --message-format=json --no-run`,
@@ -345,7 +352,7 @@ Opt into per-worker dependency reuse with `--rust-build-cache worker` (or
 `rust_build_cache = "worker"` in a Rust project's `mutie.toml`). The baseline
 still builds fresh. Each worker retains its own dependency artifacts for that
 run, but runs `cargo clean --locked --package PACKAGE` before every mutation's
-compilation. This forces the package's binary, unit tests and integration tests
+compilation (all local packages in a workspace). This forces local binaries, unit tests and integration tests
 to rebuild even when source timestamps move backwards. Caches are never shared
 between workers or runs and are removed when the run ends. Use
 `--rust-build-cache fresh` to select the default behavior explicitly. Saved
@@ -396,10 +403,12 @@ Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
 macro tokens/expansions, generated files, constants/type-level code and array repeat lengths are
 excluded. The run prints and saves discovery exclusions. Libraries use ordinary
 `lib` or `rlib` crate types; doctests and ignored tests are not run. Proc-macro
-packages, other library crate types, multiple binaries, multi-package or enclosing
-workspaces, local/git dependencies,
-project build scripts, custom profiles/harnesses, feature selection, and custom
-compiler/runner settings are outside this first scope. Only artifact-location,
+packages, other library crate types, multiple binaries per package, nested workspaces,
+external path/git dependencies, project build scripts, custom dev/test profiles
+or harnesses, feature selection, and custom
+compiler/runner settings are outside this scope. Release/bench-only profiles and
+non-test examples/benchmarks are retained; they do not expand the test scope.
+Only artifact-location,
 network and terminal Cargo config sections are accepted; in-project artifact
 directories must be under `target/`. Toolchain override files are rejected;
 an inherited `RUSTUP_TOOLCHAIN` selection is preserved and actual tool versions
@@ -476,6 +485,8 @@ ui = "auto"
 The configuration example above is for Go. Use `lang = "rust"` (or automatic
 detection) and Rust file globs for a Cargo package. Rust accepts only
 `test_scope = "full"` and the `boolean_flip`, `comparison_boundary`, and `logical_swap` operators.
+`rust_packages = []` selects all Rust workspace members for mutation; a list of
+package names narrows mutations while tests still cover all members.
 `rust_build_cache = "fresh"` (default) or `"worker"` applies only to Rust;
 specifying it for Go is rejected.
 

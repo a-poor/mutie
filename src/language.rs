@@ -87,6 +87,7 @@ pub async fn test<F, Fut>(
     log_limit: Option<NonZeroUsize>,
     capture_limit: Option<NonZeroUsize>,
     cache: Option<&rust::BuildCache>,
+    rust_scope: Option<&rust::ExecutionScope>,
     vitest_scope: Option<&crate::vitest::ExecutionScope>,
     node_scope: Option<&crate::node::ExecutionScope>,
     bun_scope: Option<&crate::bun::ExecutionScope>,
@@ -146,6 +147,7 @@ where
         Lang::Rust => {
             rust::test(
                 root,
+                rust_scope.ok_or_else(|| anyhow::anyhow!("missing Rust execution identity"))?,
                 limit,
                 log_limit,
                 capture_limit,

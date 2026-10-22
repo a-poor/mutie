@@ -1,0 +1,7 @@
+[package]
+name = "workspace-consumer"
+version.workspace = true
+edition.workspace = true
+
+[dependencies]
+workspace-core.workspace = true

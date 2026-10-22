@@ -199,6 +199,8 @@ impl SavedReport {
     }
 
     pub fn rust_scope(&mut self, scope: &crate::rust::ExecutionScope) -> Result<()> {
+        self.run.baseline_command = scope.test_command();
+        self.run.mutation_command_prefix = scope.test_command();
         self.run.rust_scope = Some(scope.clone());
         self.flush()
     }
@@ -717,6 +719,20 @@ impl SavedReport {
                     "Cargo package: {}\nLockfile: {}\n",
                     scope.package, scope.lockfile_fingerprint
                 ));
+                if let Some(workspace) = &scope.workspace {
+                    text.push_str(&format!(
+                        "Mutation members: {}\nTests: all workspace members\n",
+                        workspace.selected.join(", ")
+                    ));
+                    for member in &workspace.members {
+                        text.push_str(&format!(
+                            "Workspace member: {} | path: {} | manifest: {}\n",
+                            member.name,
+                            member.directory.display(),
+                            member.manifest_fingerprint
+                        ));
+                    }
+                }
                 for target in &scope.targets {
                     text.push_str(&format!(
                         "Cargo {}: {} | source: {} | edition: {}\n",
