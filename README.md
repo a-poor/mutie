@@ -17,7 +17,7 @@ not necessarily available in the current CLI.
 
 See [target support](SUPPORT.md) for Go/Rust support and validated scoped
 JavaScript/TypeScript support through Vitest. The Node runner has a validated
-JavaScript scope and a separately validated native TypeScript scope. Bun has independently validated scoped JavaScript and TypeScript support; pytest remains planned.
+JavaScript scope and a separately validated native TypeScript scope. Bun has independently validated scoped JavaScript and TypeScript support; Python/pytest is also validated within its documented scope.
 Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
@@ -409,6 +409,10 @@ cargo test --test rust_workflow -- --ignored --test-threads=1
 ```
 
 ## Repository configuration
+
+`mutie init` and broader tooling inference are planned in the
+[public release roadmap](TODO.md#public-release-scope-and-goal-sequence-2026-10-22);
+they are not implemented yet. Current configuration is described below.
 
 Mutie reads an optional `mutie.toml` beside the selected project's manifest.
 Settings apply in this order: built-in defaults, then the file, then explicitly

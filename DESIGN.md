@@ -6,10 +6,29 @@ documents the current CLI and behavior; [TODO.md](TODO.md) tracks implementation
 progress. Update this reference as decisions change.
 
 [SUPPORT.md](SUPPORT.md) is the target support ledger: it defines maturity levels
-and tracks verified scope separately for Go/go test, Rust/Cargo, and the planned
+and tracks verified scope separately for Go/go test, Rust/Cargo, and the
 JavaScript/TypeScript runners (Vitest, Node and Bun) and Python/pytest. New runner
 support requires its own scope and validation evidence even when language parsing
 or shared reporting can be reused. The ledger is not an implementation ordering.
+
+## Public release direction (2026-10-22)
+
+The [release scope and ordered goals](TODO.md#public-release-scope-and-goal-sequence-2026-10-22)
+are the current planning authority over historical next-step notes below. The
+public release may remain `0.x`; all existing languages/runners are first-class
+within explicit tested scopes on macOS/Linux. Expand operator coverage, including
+numeric/string literals, ordinary Rust workspaces and JS/TS package-manager
+compatibility, alongside usable setup and unchanged-project acceptance.
+
+Planned `mutie init` distinguishes language syntax, test runner, package manager
+and runtime version, infers only unambiguous choices, and supports explicit and
+noninteractive configuration. TOML/CLI overrides retain existing precedence.
+Runner flags require validated semantics and saved execution identity; arbitrary
+commands or flags must not bypass complete test inventory or failure attribution.
+Source filters and test selection are separate concepts. Exact-byte observers
+mean runner upgrades require attribution/regression validation, not just matching
+exit codes. npm, pnpm, Yarn, Bun and Vite+ compatibility must be audited separately
+from test-runner support; these are targets, not current compatibility claims.
 
 ## Goal
 

@@ -4,6 +4,93 @@ Track implementation here; keep design decisions and rationale in
 [DESIGN.md](DESIGN.md) and current usage in [README.md](README.md). Update this
 checklist as work lands, checking items off after appropriate verification.
 
+## Public release scope and goal sequence (2026-10-22)
+
+This is the current release direction and supersedes historical “next runner”
+priorities below. Target a substantial public release usable by other developers;
+it may remain `0.x`. No version bump is authorized by this roadmap. Go, Rust,
+Python/pytest and JavaScript/TypeScript through Vitest, Node and Bun are all
+first-class targets. macOS and Linux are release platforms; Windows is deferred.
+Use public unchanged projects for acceptance until user-selected projects arrive.
+
+Release scope includes ordinary Rust workspaces, broader JS/TS package-manager
+compatibility (npm, pnpm, Yarn and Bun), and an explicit Vite+ compatibility audit.
+Keep language, test runner, package manager and toolchain/version distinct.
+Support a documented tested version set, not arbitrary runtime versions. Exact
+runner instrumentation currently makes upgrades more than a command-line check.
+
+Aim to fill the README operator table, including bounded numeric/string literal
+replacement. Existing operator-family parity is a commitment; evaluate scoped
+statement/block removal too. Document concrete semantic or candidate-quality
+blockers and discuss significant deferrals with the user rather than silently
+excluding an entire family. A “Yes” requires implementation and validation.
+
+Configuration/onboarding includes `mutie init`, inferred project tooling with
+explicit choices for ambiguity, noninteractive setup, and TOML/CLI overrides.
+Include mutation-source filters, operator inclusion/exclusion and validated
+runner options. Distinguish source selection from test selection; options must
+not silently omit tests, disable attribution or change saved execution scope.
+Existing precedence remains defaults < TOML < explicit CLI options. Arbitrary
+shell test commands are not an implied replacement for supported adapters.
+
+Documentation will be developed collaboratively with the user. HTML dashboards,
+hosted services, editor integrations and a plugin framework are outside this
+release. No hosting is required. Exhaustive review of historical survivors is
+not a release gate. The macOS startup investigation remains explicitly deferred;
+record its impact honestly during release qualification without changing deadlines.
+
+Each numbered item is a proposed bounded goal, not an automatically active goal.
+Split implementation goals by language/runner when acceptance becomes too large.
+
+1. [ ] **Project configuration and onboarding contract — first goal.** Audit
+   current configuration and representative public project manifests; define
+   language/runner/package-manager/version selection and ambiguity handling.
+   Implement `mutie init` for currently supported scopes, interactive and
+   noninteractive, with safe existing-file handling, actionable unsupported-scope
+   diagnostics, config round-trip/precedence checks and fixture smoke runs.
+   Specify validated runner-option and operator-exclusion semantics; do not emit
+   configuration for capabilities that have not shipped.
+2. [ ] **JS/TS package-manager compatibility.** Audit npm/pnpm/Yarn/Bun installation
+   layouts, lockfiles, invocation and dependency isolation; assess Vite+ explicitly
+   before promising an adapter. Implement in bounded manager-specific goals,
+   covering dependency resolution, source preservation, rerun drift and unchanged
+   public-project workflows. Record supported versions and any PnP/workspace limits.
+3. [ ] **Ordinary Rust workspaces.** Support workspace roots/member selection,
+   inherited metadata and in-workspace path dependencies; copy complete needed
+   context and bind selection to reports/reruns. Start with full supported workspace
+   tests, not affected selection. Validate virtual/root-package fixtures and an
+   unchanged public project, fresh/cached builds and cleanup. Audit build-script,
+   proc-macro and out-of-tree dependency limits explicitly.
+4. [ ] **Expression-operator parity.** Add missing arithmetic/modulo, comparison
+   inversion/boundaries, logical swaps and negation removal by language. Preserve
+   evaluation/grouping, short-circuit and overloaded/coercion semantics; retain
+   compilation/runtime error distinctions. Require discovery/identity regressions,
+   independent JS/TS runner checks and useful stronger-test acceptance per slice.
+5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
+   loop skipping and standalone-call removal across languages. Audit binding
+   conditions, empty blocks and side effects; evaluate broader statement/block
+   removal and record concrete exclusions. Measure invalid-candidate noise.
+6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
+   sets per language, avoid duplicate/no-op and type-only candidates, and validate
+   escaping, numeric edge cases, source identity and real-project usefulness.
+   Discuss significant blockers rather than requiring unbounded transformations.
+7. [ ] **Routine project compatibility and feedback.** Maintain representative
+   unchanged public projects for every language/runner, including realistic
+   dependencies/configuration. Address demonstrated onboarding/runtime blockers
+   in bounded goals; verify run → inspect → improve tests → rerun and record
+   timings/noise. Do not select only projects that fit existing restrictions.
+8. [ ] **Public release qualification and documentation.** Automate a documented
+   macOS/Linux test matrix including real adapters and supported versions; verify
+   clean installation, cancellation, reports and example CI policies. Collaborate
+   on quickstarts, compatibility/errors and release notes; choose distribution
+   channels and compatibility policy. Review unresolved failures explicitly;
+   focused green tests are not a substitute for release acceptance.
+
+Start compatibility/project sampling alongside the first goal so it informs the
+configuration contract. Build the release matrix incrementally rather than
+postponing all automation until the final goal. Tinycss2's remaining 78 candidates
+are useful optional evidence, not the next automatic priority.
+
 ## Current direction
 
 The Go MVP and the initial Rust binary-package milestone are complete for their

@@ -24,6 +24,11 @@ runner version or language construct is supported. Operator breadth and project
 compatibility are tracked separately below. A shared UI or report implementation
 does not by itself validate a new runner.
 
+Release targets (including broader package-manager support and operator parity)
+are tracked in the [public release roadmap](TODO.md#public-release-scope-and-goal-sequence-2026-10-22).
+They do not promote the verified support levels below. Version compatibility
+requires adapter evidence, including exact-runner observer checks where used.
+
 ## Matrix
 
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
