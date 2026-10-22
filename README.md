@@ -486,6 +486,15 @@ inferred: unsupported operations and division by zero remain errors. See
 [semantic controls and unchanged-project validation](benchmarks/python-arithmetic.md)
 and the [complete 194-candidate review](benchmarks/python-arithmetic-full.md).
 Python comparison boundaries exclude chained comparisons such as `0 < x < 10`.
+
+For larger Python inventories, `--continue-on-error MAX_ERRORS` can continue
+verified type/value/arithmetic/lookup exceptions from ordinary pytest bodies,
+up to a positive error limit. Reaching the limit stops the run; omitted or `1`
+stops at the first error. Lifecycle/resource/infrastructure errors still stop
+immediately. Runs containing errors remain failed (exit 1) with no score, even
+when all candidates finish. This option is Python-only and invocation-only;
+reruns must opt in again. See [continuation boundaries and validation](benchmarks/python-candidate-continuation.md).
+
 Call removal deletes eligible standalone call statements; it excludes calls used
 as values, `go`/`defer` calls, initializers and loop updates. Boolean literal
 flipping does not force arbitrary conditions. Branch forcing and loop skipping

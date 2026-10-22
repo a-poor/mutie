@@ -36,6 +36,10 @@ pub struct Cli {
     #[arg(short, long)]
     pub jobs: Option<NonZeroUsize>,
 
+    /// Continue verified Python body errors until MAX_ERRORS total errors (default: stop at first)
+    #[arg(long, value_name = "MAX_ERRORS", conflicts_with = "list")]
+    pub continue_on_error: Option<NonZeroUsize>,
+
     /// Mutation tests to run (default: full; baseline always tests the full module)
     #[arg(long, value_enum)]
     pub test_scope: Option<TestScope>,

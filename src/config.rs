@@ -52,6 +52,8 @@ pub struct RunConfig {
     pub python: Option<PathBuf>,
     pub rust_build_cache: RustBuildCache,
     pub jobs: NonZeroUsize,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub continue_on_error: Option<NonZeroUsize>,
     pub test_scope: TestScope,
     pub include: Vec<String>,
     pub exclude: Vec<String>,
@@ -102,6 +104,10 @@ impl RunConfig {
             }
         };
         let lang = crate::language::resolve(&root, cli.lang.or(file.lang).unwrap_or(Lang::Auto))?;
+        ensure!(
+            lang == Lang::Python || cli.continue_on_error.is_none(),
+            "--continue-on-error is only supported for Python"
+        );
         let rust_build_cache = cli.rust_build_cache.or(file.rust_build_cache);
         ensure!(
             lang == Lang::Rust || rust_build_cache.is_none(),
@@ -174,6 +180,7 @@ impl RunConfig {
                 .map(|p| invocation.join(p))
                 .or_else(|| file.python.map(|p| root.join(p))),
             rust_build_cache: rust_build_cache.unwrap_or_default(),
+            continue_on_error: cli.continue_on_error,
             jobs: cli
                 .jobs
                 .or(file.jobs)

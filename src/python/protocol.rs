@@ -34,6 +34,7 @@ enum Event {
         #[serde(deserialize_with = "Option::deserialize")]
         exception: Option<String>,
         assertion: bool,
+        candidate_exception: bool,
         xfail: bool,
         #[serde(deserialize_with = "Option::deserialize")]
         unittest: Option<UnitEvidence>,
@@ -117,6 +118,14 @@ fn baseline(
     Ok(nodes)
 }
 
+/// A body exception remains an error, but only after the entire ledger is valid.
+#[derive(Debug, PartialEq, Eq)]
+pub(super) enum CandidateOutcome {
+    Scored(Outcome),
+    BodyError,
+}
+
+#[cfg(test)]
 pub(super) fn classify(
     bytes: &[u8],
     pid: u32,
@@ -126,6 +135,32 @@ pub(super) fn classify(
     code: i32,
     expected_conftests: &[String],
 ) -> Result<(Vec<String>, Outcome)> {
+    let (nodes, outcome) = inspect(
+        bytes,
+        pid,
+        nonce,
+        root,
+        collect_only,
+        code,
+        expected_conftests,
+    )?;
+    match outcome {
+        CandidateOutcome::Scored(outcome) => Ok((nodes, outcome)),
+        CandidateOutcome::BodyError => {
+            anyhow::bail!("Python run contains an unsupported phase failure")
+        }
+    }
+}
+
+pub(super) fn inspect(
+    bytes: &[u8],
+    pid: u32,
+    nonce: &str,
+    root: &str,
+    collect_only: bool,
+    code: i32,
+    expected_conftests: &[String],
+) -> Result<(Vec<String>, CandidateOutcome)> {
     ensure!(
         matches!(code, 0 | 1) && (!collect_only || code == 0),
         "unsupported Python exit status"
@@ -208,6 +243,7 @@ pub(super) fn classify(
     let mut phases = BTreeMap::<&str, usize>::new();
     let mut fixtures = Vec::<usize>::new();
     let mut failed = false;
+    let mut body_error = false;
     for record in &records[3..tail] {
         if let Event::Fixture { token, stage } = &record.event {
             ensure!(!collect_only, "Python collection executed a fixture");
@@ -230,22 +266,37 @@ pub(super) fn classify(
             outcome,
             exception,
             assertion,
+            candidate_exception,
             xfail,
             unittest,
         } = &record.event
         else {
             anyhow::bail!("unexpected Python lifecycle evidence");
         };
-        let passed = outcome == "passed" && exception.is_none() && !assertion;
+        let passed =
+            outcome == "passed" && exception.is_none() && !assertion && !candidate_exception;
         let body_failure = outcome == "failed"
             && when == "call"
             && *assertion
+            && !candidate_exception
             && exception.as_ref().is_some_and(|kind| !kind.is_empty());
+        // Only ordinary pytest body exceptions are eligible. Unittest dispatch,
+        // setup/teardown and fixture errors retain their fatal boundary.
+        let runtime_failure = outcome == "failed"
+            && when == "call"
+            && !assertion
+            && *candidate_exception
+            && exception.as_ref().is_some_and(|kind| !kind.is_empty())
+            && !unit_nodes.contains(node);
         ensure!(
-            !collect_only && unique.contains(node) && !xfail && (passed || body_failure),
+            !collect_only
+                && unique.contains(node)
+                && !xfail
+                && (passed || body_failure || runtime_failure),
             "Python run contains an unsupported phase failure"
         );
-        failed |= body_failure;
+        failed |= body_failure || runtime_failure;
+        body_error |= runtime_failure;
         if when == "call" && unit_nodes.contains(node) {
             unittest
                 .as_ref()
@@ -278,10 +329,12 @@ pub(super) fn classify(
     );
     Ok((
         nodes.clone(),
-        if failed {
-            Outcome::Killed
+        if body_error {
+            CandidateOutcome::BodyError
+        } else if failed {
+            CandidateOutcome::Scored(Outcome::Killed)
         } else {
-            Outcome::Missed
+            CandidateOutcome::Scored(Outcome::Missed)
         },
     ))
 }
@@ -305,12 +358,55 @@ mod tests {
             json!({"event":"checkpoint","stage":"atexit","hooks_intact":true,"alive_threads":[]}),
         ].into_iter().enumerate().flat_map(|(seq, mut value)| {
             if value["event"] == "collection" { value["unittest"] = json!([]); value["conftests"] = json!([]); }
-            if value["event"] == "phase" { value["unittest"] = json!(null); }
+            if value["event"] == "phase" { value["unittest"] = json!(null); value["candidate_exception"] = json!(false); }
             value["seq"] = json!(seq);
             value["pid"] = json!(17);
             value["nonce"] = json!("token");
             format!("{value}\n").into_bytes()
         }).collect()
+    }
+
+    #[test]
+    fn candidate_errors_require_complete_lifetime_and_positive_type_evidence() {
+        let mut records: Vec<serde_json::Value> = String::from_utf8(evidence())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        records[4]["outcome"] = json!("failed");
+        records[4]["exception"] = json!("ValueError");
+        records[4]["candidate_exception"] = json!(true);
+        records[6]["status"] = json!(1);
+        records[7]["status"] = json!(1);
+        let inspect_records = |r: &[serde_json::Value]| {
+            let bytes = r.iter().map(|v| format!("{v}\n")).collect::<String>();
+            inspect(bytes.as_bytes(), 17, "token", "/repo", false, 1, &[])
+        };
+        assert_eq!(
+            inspect_records(&records).unwrap().1,
+            CandidateOutcome::BodyError
+        );
+        // Body evidence must not short-circuit any subsequent lifecycle checks.
+        for (index, key, value) in [
+            (4, "candidate_exception", json!(false)),
+            (4, "assertion", json!(true)),
+            (4, "exception", json!(null)),
+            (4, "xfail", json!(true)),
+            (5, "outcome", json!("failed")),
+            (5, "when", json!("call")),
+            (7, "status", json!(0)),
+            (8, "hooks_intact", json!(false)),
+            (9, "alive_threads", json!(["late"])),
+        ] {
+            let mut changed = records.clone();
+            changed[index][key] = value;
+            assert!(inspect_records(&changed).is_err(), "{index}/{key}");
+        }
+        for index in 0..records.len() {
+            let mut changed = records.clone();
+            changed.remove(index);
+            assert!(inspect_records(&changed).is_err());
+        }
     }
 
     #[test]

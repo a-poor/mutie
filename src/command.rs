@@ -16,6 +16,9 @@ pub struct CommandOutput {
 pub enum OutcomeEvidence {
     ExitStatus(Failure),
     Validated(Result<Outcome, String>),
+    /// Complete isolated execution with a body exception. Still an error;
+    /// adapters must finish all lifetime, inventory and identity checks first.
+    IsolatedCandidateError(String),
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -46,6 +49,15 @@ impl CommandOutput {
         classify(self)
     }
 
+    pub fn isolated_candidate_error(&self) -> bool {
+        matches!(self.evidence, OutcomeEvidence::IsolatedCandidateError(_))
+            && self.status.code() == Some(1)
+            && !self.interrupted
+            && !self.timed_out
+            && self.capture_error.is_none()
+            && !self.group_remaining
+    }
+
     #[cfg(test)]
     pub fn mark_interrupted(&mut self) {
         self.raw.interrupted = true;
@@ -63,6 +75,7 @@ pub fn classify(output: &CommandOutput) -> Result<Outcome> {
         return Ok(Outcome::Timeout);
     }
     let failure = match &output.evidence {
+        OutcomeEvidence::IsolatedCandidateError(error) => bail!("{error}"),
         OutcomeEvidence::Validated(result) => {
             return result
                 .as_ref()
@@ -174,6 +187,29 @@ mod tests {
             assert_eq!(classify(&structured(Ok(outcome), code))?, outcome);
         }
         Ok(())
+    }
+
+    #[test]
+    fn continuation_needs_adapter_evidence_and_clean_process_completion() {
+        let make = || {
+            let mut output = structured(Err("body".into()), 1);
+            output.evidence = OutcomeEvidence::IsolatedCandidateError("body".into());
+            output
+        };
+        assert!(!structured(Err("body".into()), 1).isolated_candidate_error());
+        assert!(make().isolated_candidate_error());
+        assert!(classify(&make()).is_err());
+        for kind in 0..5 {
+            let mut output = make();
+            match kind {
+                0 => output.raw.interrupted = true,
+                1 => output.raw.timed_out = true,
+                2 => output.raw.capture_error = Some("capture failed".into()),
+                3 => output.raw.group_remaining = true,
+                _ => output.raw.status = std::process::ExitStatus::from_raw(0),
+            }
+            assert!(!output.isolated_candidate_error());
+        }
     }
 
     #[test]

@@ -732,6 +732,18 @@ fn scored_resource_limits_preserve_score_boundaries() {
 #[test]
 #[ignore = "requires MUTIE_PYTHON; interrupt an observed running mutant and clean owned workspaces"]
 fn scored_cancellation_cleans_owned_workspaces() {
+    cancellation_contract(false);
+}
+
+#[cfg(unix)]
+#[test]
+#[ignore = "requires MUTIE_PYTHON; cancellation after a continued error keeps interruption precedence"]
+fn candidate_error_continuation_still_cancels() {
+    cancellation_contract(true);
+}
+
+#[cfg(unix)]
+fn cancellation_contract(continuation: bool) {
     use std::{
         process::Stdio,
         thread,
@@ -753,10 +765,19 @@ fn scored_cancellation_cleans_owned_workspaces() {
     let reports = tempfile::tempdir().unwrap();
     let scratch = tempfile::tempdir().unwrap();
     let source = root.path().join("sample/__init__.py");
-    fs::write(&source, "def enabled():\n    return True\n").unwrap();
+    fs::write(
+        &source,
+        if continuation {
+            "def earlier():\n    return True\ndef enabled():\n    return True\n"
+        } else {
+            "def enabled():\n    return True\n"
+        },
+    )
+    .unwrap();
     let before = fs::read(&source).unwrap();
     fs::write(root.path().join("tests/test_sample.py"),
-        "from sample import enabled\ndef test_body(tmp_path):\n    if not enabled():\n        (tmp_path / 'mutant-ready').write_text('ready')\n        while True: pass\n").unwrap();
+        format!("{}from sample import enabled\ndef test_body(tmp_path):\n    if not enabled():\n        (tmp_path / 'mutant-ready').write_text('ready')\n        while True: pass\n",
+            if continuation { "from sample import earlier\ndef test_earlier():\n    if not earlier(): raise ValueError('candidate')\n" } else { "" })).unwrap();
     let stdout = reports.path().join("stdout");
     let stderr = reports.path().join("stderr");
     let mut child = Command::new(env!("CARGO_BIN_EXE_mutie"))
@@ -775,6 +796,11 @@ fn scored_cancellation_cleans_owned_workspaces() {
             "--output-dir",
         ])
         .arg(reports.path())
+        .args(if continuation {
+            vec!["--continue-on-error", "10"]
+        } else {
+            vec![]
+        })
         .env("TMPDIR", scratch.path())
         .stdout(Stdio::from(fs::File::create(&stdout).unwrap()))
         .stderr(Stdio::from(fs::File::create(&stderr).unwrap()))
@@ -815,7 +841,11 @@ fn scored_cancellation_cleans_owned_workspaces() {
     let (_, run, outcomes) = saved(&output);
     assert_eq!(run["status"], "interrupted", "{output:?}");
     assert_eq!(outcomes["baseline"]["outcome"], "passed");
-    assert_eq!(outcomes["mutations"][0]["state"], "interrupted");
+    assert_eq!(
+        outcomes["mutations"][usize::from(continuation)]["state"],
+        "interrupted"
+    );
+    assert_eq!(outcomes["summary"]["errors"], usize::from(continuation));
     assert_eq!(outcomes["summary"]["killed"], 0);
     assert!(run["score"]["percentage"].is_null());
     assert_eq!(fs::read(source).unwrap(), before);
@@ -1129,5 +1159,179 @@ fn arithmetic_dispatch_and_zero_division_are_not_kills() {
             fs::read_to_string(root.path().join("sample/__init__.py")).unwrap(),
             source
         );
+    }
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; bounded continuation and unchanged failure/score policy"]
+fn candidate_error_continuation_is_bounded_and_explicit() {
+    let root = fixture();
+    let reports = tempfile::tempdir().unwrap();
+    let source = "def combine(a,b): return a + b\ndef multiply(a,b): return a * b\ndef sum_value(a,b): return a + b\ndef neutral(a,b): return a + b\n";
+    let tests = "from sample import combine, multiply, sum_value, neutral\ndef test_string(): assert combine('a','b') == 'ab'\ndef test_number(): assert combine(2,3) == 5\ndef test_zero(): assert multiply(2,0) == 0\ndef test_sum(): assert sum_value(2,3) == 5\ndef test_neutral(): assert neutral(2,0) == 2\n";
+    fs::write(root.path().join("sample/__init__.py"), source).unwrap();
+    fs::write(root.path().join("tests/test_sample.py"), tests).unwrap();
+    let mut complete = None;
+    for (limit, completed) in [(None, 1), (Some("1"), 1), (Some("2"), 2), (Some("10"), 4)] {
+        let mut args = vec![
+            "--operator",
+            "arithmetic_replace",
+            "--min-score",
+            "100",
+            "--fail-on-missed",
+            "--max-log-bytes",
+            "128",
+        ];
+        if let Some(limit) = limit {
+            args.extend(["--continue-on-error", limit]);
+        }
+        let output = scored_with_timeout(root.path(), reports.path(), &args, "15");
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        let (path, run, outcomes) = saved(&output);
+        assert_eq!(run["status"], "failed");
+        assert!(run["score"]["percentage"].is_null());
+        assert_eq!(
+            outcomes["mutations"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|m| m["state"] == "completed")
+                .count(),
+            completed,
+            "{outcomes}"
+        );
+        assert_eq!(outcomes["summary"]["errors"], completed.min(2));
+        if completed == 4 {
+            assert_eq!(outcomes["summary"]["killed"], 1);
+            assert_eq!(outcomes["summary"]["missed"], 1);
+            assert_eq!(run["effective_config"]["continue_on_error"], 10);
+            complete = Some(path);
+        }
+        assert_eq!(
+            fs::read_to_string(root.path().join("sample/__init__.py")).unwrap(),
+            source
+        );
+        assert_eq!(
+            fs::read_to_string(root.path().join("tests/test_sample.py")).unwrap(),
+            tests
+        );
+    }
+    // Reruns must opt in again; policy is not silently inherited from a report.
+    let path = complete.unwrap();
+    let before = fs::read(path.join("outcomes.json")).unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--rerun", path.to_str().unwrap(), "--id", "1,2"],
+        "15",
+    );
+    let (_, _, outcomes) = saved(&output);
+    assert_eq!(outcomes["summary"]["errors"], 1);
+    assert_eq!(outcomes["mutations"][1]["state"], "pending");
+    assert_eq!(fs::read(path.join("outcomes.json")).unwrap(), before);
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &[
+            "--rerun",
+            path.to_str().unwrap(),
+            "--id",
+            "3,4",
+            "--continue-on-error",
+            "10",
+        ],
+        "15",
+    );
+    assert!(output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["status"], "completed");
+    assert_eq!(outcomes["summary"]["killed"], 1);
+    assert_eq!(outcomes["summary"]["missed"], 1);
+    assert!(!run["score"]["percentage"].is_null());
+
+    fs::write(
+        root.path().join("tests/test_sample.py"),
+        format!("{tests}\ndef test_baseline_error(): raise ValueError('pristine')\n"),
+    )
+    .unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--continue-on-error", "10"],
+        "15",
+    );
+    assert_eq!(output.status.code(), Some(1));
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["status"], "failed");
+    assert_eq!(outcomes["summary"]["errors"], 0);
+    assert!(run["score"]["percentage"].is_null());
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; lifecycle/resource errors remain fatal under continuation"]
+fn candidate_error_continuation_stops_on_unsafe_failures() {
+    for (name, body, cleanup) in [
+        ("cleanup", "        raise ValueError('body')\n", true),
+        (
+            "capture",
+            "        with capsys.disabled(): print('x' * 65536, flush=True)\n",
+            false,
+        ),
+        (
+            "file",
+            "        (tmp_path / 'large').write_bytes(b'x' * (5 * 1024 * 1024))\n",
+            false,
+        ),
+    ] {
+        let root = fixture();
+        let reports = tempfile::tempdir().unwrap();
+        let original = fs::read(root.path().join("sample/__init__.py")).unwrap();
+        fs::write(root.path().join("tests/test_sample.py"), format!("from sample import enabled\ndef test_body(capsys, tmp_path):\n    if not enabled():\n{body}")).unwrap();
+        if cleanup {
+            fs::write(root.path().join("tests/conftest.py"), "import pytest\nfrom sample import enabled\n@pytest.fixture(autouse=True)\ndef cleanup():\n yield\n assert enabled()\n").unwrap();
+        }
+        let output = scored_with_timeout(
+            root.path(),
+            reports.path(),
+            &["--continue-on-error", "10", "--max-capture-bytes", "8192"],
+            "15",
+        );
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let (_, run, outcomes) = saved(&output);
+        assert_eq!(run["status"], "failed", "{name}");
+        assert_eq!(outcomes["summary"]["errors"], 1, "{name}");
+        assert_eq!(
+            outcomes["mutations"][1]["state"], "pending",
+            "{name}: {outcomes}"
+        );
+        assert!(run["score"]["percentage"].is_null());
+        assert_eq!(
+            fs::read(root.path().join("sample/__init__.py")).unwrap(),
+            original
+        );
+    }
+}
+
+#[test]
+fn candidate_error_continuation_rejects_zero_and_unsupported_runners() {
+    let root = tempfile::tempdir().unwrap();
+    fs::write(
+        root.path().join("go.mod"),
+        "module example.com/continuation\n",
+    )
+    .unwrap();
+    for args in [
+        vec!["--continue-on-error", "0"],
+        vec!["--continue-on-error", "2"],
+        vec!["--continue-on-error", "2", "--list"],
+    ] {
+        let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .arg(root.path())
+            .args(args)
+            .output()
+            .unwrap();
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("continue-on-error"));
+        assert!(!root.path().join(".mutie").exists());
     }
 }

@@ -2027,3 +2027,15 @@ for all 194 sites on unchanged betting-math-kit: 61 kills, 97 survivors and
 36 native errors. A separate 219-test copy kills 54 more survivors; with eight
 prior kills, 35 remain open. Numerical questions are recorded per candidate. Preserve original report scores and the
 source-identity mapping; combined accounting is not a full-run score.
+
+## Bounded Python error continuation
+
+[Candidate continuation](benchmarks/python-candidate-continuation.md) separates
+classification from scheduling. Complete adapter validation may produce an
+internal isolated-body-error marker, but the shared classifier still rejects the
+candidate. An explicit invocation-only error budget lets the serial scheduler
+continue these errors, then return failure after a complete inventory. Fatal
+errors cancel immediately. All error reports remain failed/unscored and normal
+cancellation/persistence precedence is retained. Eligibility starts with audited
+Python type/value/arithmetic/lookup exceptions only; never infer continuation
+from exit status, error strings or another runner's generic failure evidence.

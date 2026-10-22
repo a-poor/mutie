@@ -449,3 +449,16 @@ for all 194 sites on unchanged betting-math-kit: 61 kills, 97 survivors and
 36 native errors. A separate 219-test copy kills 54 more survivors; with eight
 prior kills, 35 remain open. Numerical questions are recorded per candidate. Preserve original report scores and the
 source-identity mapping; combined accounting is not a full-run score.
+
+`--continue-on-error MAX_ERRORS` is invocation-only and Python-only. It continues
+only positively typed ordinary pytest body errors after complete lifecycle,
+inventory, process cleanup and input/runtime checks. Reaching the positive limit
+stops execution. Type/value/arithmetic/lookup subclasses qualify; resource/system,
+unittest and lifecycle errors remain fatal. Runs containing errors stay failed,
+exit 1 and unscored. Reruns must opt in again, and changed observer/protocol recipes
+require fresh execution identities. See `benchmarks/python-candidate-continuation.md`;
+never infer eligibility from error names, exit status or generic adapter errors.
+The unchanged 194-candidate arithmetic batch matches all prior outcomes
+(61 kills, 97 survivors, 36 errors) in one failed, unscored report, preserving
+original inputs and historical reports. Native exception, lifecycle/resource,
+limit and cancellation controls establish this narrow continuation boundary.

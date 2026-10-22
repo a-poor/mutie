@@ -442,7 +442,12 @@ async fn probe_with_conftest(
             vec![]
         },
     )
-    .map(|(_, outcome)| outcome);
+    .and_then(|(_, outcome)| match outcome {
+        protocol::CandidateOutcome::Scored(outcome) => Ok(outcome),
+        protocol::CandidateOutcome::BodyError => {
+            anyhow::bail!("Python run contains an unsupported phase failure")
+        }
+    });
     Ok((raw, outcome, directory))
 }
 
@@ -644,6 +649,57 @@ async fn native_descendant_shutdown() -> Result<()> {
         }
         tokio::time::sleep(Duration::from_secs(5)).await;
         assert!(!leaked.exists(), "descendant survived {mode}");
+    }
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; actual exception types bound continuation eligibility"]
+async fn native_continuation_exception_types() -> Result<()> {
+    for (source, expected) in [
+        (
+            "def test_body(): raise ValueError('body')\n",
+            Some(protocol::CandidateOutcome::BodyError),
+        ),
+        (
+            "class DomainError(ValueError): pass\ndef test_body(): raise DomainError('body')\n",
+            Some(protocol::CandidateOutcome::BodyError),
+        ),
+        (
+            "class ValueError(Exception): pass\ndef test_body(): raise ValueError('fake')\n",
+            None,
+        ),
+        ("def test_body(): raise OSError('resource')\n", None),
+        ("def test_body(): raise MemoryError('resource')\n", None),
+        (
+            "class ResourceError(OSError, ValueError): pass\ndef test_body(): raise ResourceError('resource')\n",
+            None,
+        ),
+        (
+            "class BodyAssertion(AssertionError, ValueError): pass\ndef test_body(): raise BodyAssertion('assertion')\n",
+            Some(protocol::CandidateOutcome::Scored(Outcome::Killed)),
+        ),
+    ] {
+        let (raw, _, directory) = probe(
+            source,
+            Duration::from_secs(15),
+            4194304,
+            &Cancellation::default(),
+        )
+        .await?;
+        let root = directory.path().canonicalize()?.join("repo");
+        let actual = read_evidence(
+            &raw,
+            &directory.path().join("evidence.jsonl"),
+            "probe-token",
+            root.to_str().unwrap(),
+            false,
+            &[],
+        );
+        match expected {
+            Some(expected) => assert_eq!(actual?.1, expected, "{source}"),
+            None => assert!(actual.is_err(), "{source}"),
+        }
     }
     Ok(())
 }

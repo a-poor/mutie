@@ -1,0 +1,11 @@
+   Compiling mutie v0.1.0 (/path/to/mutie)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.45s
+     Running tests/python_workflow.rs (target/debug/deps/python_workflow-f0868b7c6dacc99d)
+
+running 3 tests
+test candidate_error_continuation_is_bounded_and_explicit ... ok
+test candidate_error_continuation_still_cancels ... ok
+test candidate_error_continuation_stops_on_unsafe_failures ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 27 filtered out; finished in 123.83s
+

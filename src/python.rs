@@ -31,7 +31,7 @@ fn read_evidence(
     root: &str,
     collect_only: bool,
     conftests: &[String],
-) -> Result<(Vec<String>, crate::report::Outcome)> {
+) -> Result<(Vec<String>, protocol::CandidateOutcome)> {
     ensure!(
         !output.interrupted && !output.timed_out && output.capture_error.is_none(),
         "Python process did not complete cleanly"
@@ -53,7 +53,7 @@ fn read_evidence(
         .take(4 * 1024 * 1024 + 1)
         .read_to_end(&mut bytes)
         .context("reading bounded Python evidence")?;
-    protocol::classify(
+    protocol::inspect(
         &bytes,
         output.pid,
         nonce,
@@ -490,7 +490,8 @@ async fn execute_mode(
         .await;
         if collect_only
             && !collection_only
-            && let Ok((nodes, crate::report::Outcome::Missed)) = &validated
+            && let Ok((nodes, protocol::CandidateOutcome::Scored(crate::report::Outcome::Missed))) =
+                &validated
         {
             inventory = Some(nodes.clone());
             continue;
@@ -502,9 +503,17 @@ async fn execute_mode(
         if !nodes.is_empty() {
             execution_identity.bind(nodes.clone())?;
         }
-        let evidence = validated
-            .map(|(_, outcome)| outcome)
-            .map_err(|e| format!("{e:#}"));
+        let evidence = match validated {
+            Ok((_, protocol::CandidateOutcome::BodyError)) => {
+                crate::command::OutcomeEvidence::IsolatedCandidateError(
+                    "Python run contains an unsupported phase failure".into(),
+                )
+            }
+            Ok((_, protocol::CandidateOutcome::Scored(outcome))) => {
+                crate::command::OutcomeEvidence::Validated(Ok(outcome))
+            }
+            Err(error) => crate::command::OutcomeEvidence::Validated(Err(format!("{error:#}"))),
+        };
         let mut rendered = tempfile::NamedTempFile::new()?;
         crate::command::write_lossy(&mut output.stdout.reader()?, &mut rendered)?;
         writeln!(rendered)?;
@@ -519,7 +528,7 @@ async fn execute_mode(
             command: crate::command::CommandOutput {
                 raw: output,
                 text,
-                evidence: crate::command::OutcomeEvidence::Validated(evidence),
+                evidence,
                 tool: "Python",
             },
             identity: execution_identity,

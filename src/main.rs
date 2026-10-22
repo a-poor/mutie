@@ -794,6 +794,7 @@ async fn execute(
     ));
     let context = WorkerContext {
         lang: config.lang,
+        continue_on_error: config.continue_on_error,
         rust_cache_package: rust_project
             .as_ref()
             .filter(|_| config.rust_build_cache == cli::RustBuildCache::Worker)
@@ -819,6 +820,7 @@ struct WorkerContext {
     bun_scope: Option<Arc<bun::ExecutionScope>>,
     python_scope: Option<Arc<python::ExecutionScope>>,
     lang: Lang,
+    continue_on_error: Option<std::num::NonZeroUsize>,
     rust_cache_package: Option<String>,
     snapshot: Arc<Workspace>,
     test_packages: Arc<Vec<Vec<String>>>,
@@ -843,6 +845,7 @@ struct FinishedWorker {
     workspace: Option<Workspace>,
     cache: Option<rust::BuildCache>,
     result: MutationResult,
+    continuable_error: bool,
     preparation: Option<(WorkspaceKind, WorkspaceMeasurement)>,
 }
 
@@ -978,11 +981,18 @@ impl WorkerJob {
                 Some(format!("running {}: {error:#}", mutation.description())),
             ),
         };
-        // Stop peers immediately on a tool failure, before the coordinator persists it.
-        if outcome == Some(Outcome::Error) {
+        let continuable_error = context.continue_on_error.is_some()
+            && outcome == Some(Outcome::Error)
+            && output
+                .as_ref()
+                .is_some_and(command::CommandOutput::isolated_candidate_error);
+        // Only adapter-proven body errors may avoid cancellation. All other
+        // failures stop peers before the coordinator persists the result.
+        if outcome == Some(Outcome::Error) && !continuable_error {
             context.cancellation.cancel();
         }
         FinishedWorker {
+            continuable_error,
             worker,
             workspace,
             cache,
@@ -1010,6 +1020,8 @@ async fn run_workers(
     let mut available: VecDeque<_> = (1..=jobs).map(|worker| (worker, None, None)).collect();
     let mut next = 0;
     let mut failure = None;
+    let mut candidate_errors = 0usize;
+    let mut deferred_error = None;
     let total = mutations.len();
     loop {
         while failure.is_none() && !context.cancellation.is_cancelled() && next < total {
@@ -1063,6 +1075,7 @@ async fn run_workers(
                 workspace,
                 cache,
                 result,
+                continuable_error,
                 preparation,
             }) => {
                 available.push_back((worker, workspace, cache));
@@ -1088,6 +1101,17 @@ async fn run_workers(
                         )
                     })
                     .and_then(|()| match result.error {
+                        Some(error) if continuable_error => {
+                            candidate_errors += 1;
+                            deferred_error.get_or_insert_with(|| error.clone());
+                            if candidate_errors >= context.continue_on_error.unwrap().get() {
+                                Err(anyhow::anyhow!(error).context(format!(
+                                    "candidate error limit reached ({candidate_errors})"
+                                )))
+                            } else {
+                                Ok(())
+                            }
+                        }
                         Some(error) => Err(anyhow::anyhow!(error)),
                         None => Ok(()),
                     })
@@ -1114,6 +1138,11 @@ async fn run_workers(
         coordinator.state.summary.total() == total,
         "workers did not report every mutation"
     );
+    if let Some(error) = deferred_error {
+        anyhow::bail!(
+            "completed inventory with {candidate_errors} candidate error(s); first error: {error}"
+        );
+    }
     Ok(())
 }
 

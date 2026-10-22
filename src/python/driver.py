@@ -255,6 +255,12 @@ class Observer:
         # A same-named user exception is not positive assertion evidence.
         assertion = bool(call.excinfo and isinstance(
             call.excinfo.value, (AssertionError, pytest.fail.Exception)))
+        # Only type/value/arithmetic/lookup errors are eligible for bounded
+        # continuation. Resource and system failures remain fatal, including
+        # multiply inherited application exceptions.
+        candidate_exception = bool(not assertion and call.when == "call" and call.excinfo
+            and isinstance(call.excinfo.value, (TypeError, ValueError, ArithmeticError, LookupError))
+            and not isinstance(call.excinfo.value, (OSError, MemoryError, SystemError, RecursionError)))
         unit = None
         if call.when == "call" and item.nodeid in unit_nodes:
             state = unit_results.pop(item.nodeid, None)
@@ -265,7 +271,8 @@ class Observer:
         emit("phase", node=report.nodeid, when=report.when,
              outcome=report.outcome,
              exception=call.excinfo.typename if call.excinfo else None,
-             assertion=assertion, xfail=hasattr(report, "wasxfail"), unittest=unit)
+             assertion=assertion, candidate_exception=candidate_exception,
+             xfail=hasattr(report, "wasxfail"), unittest=unit)
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
         emit("warning", category=warning_message.category.__name__, node=nodeid)

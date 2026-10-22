@@ -1,0 +1,960 @@
+mutie 0.1.0
+Module: /tmp/mutie-python-betting-math-original
+Status: failed
+Phase: mutations
+Duration: 843.30s
+
+194 mutations: 61 killed, 97 missed, 0 timed out, 0 failed to compile, 36 errors
+Workspaces: snapshot 0.022s | setup 0.007s | reset 1.838s (cumulative)
+Copies: 3940 reflinked | 0 copied (0 bytes) | 197 ops, 0 failed, 0 interrupted
+Findings policy: not evaluated (--fail-on-missed requires a completed run)
+Mutation score: unavailable
+Scope: filtered selection only
+Killed / (killed + missed): 61 / 158
+Excluded: 0 timeout, 0 build failed
+Execution errors: 36; unfinished: 0
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully
+Minimum-score policy: not evaluated (minimum 100.00%)
+Runner: CPython 3.14.7 / pytest 9.0.2
+Full suite; serial; pristine test inventory; owned workspaces
+Workspace temporary root: /tmp
+Dismissals (saved at discovery): 0 matched; 0 need review
+Missed review: 97 undismissed; 0 dismissed (outcomes unchanged)
+Reported: 194/194
+Pending: 0
+Running: 0
+Interrupted: 0
+Baseline: passed (1.63s), output: logs/baseline.log
+
+Error: completed inventory with 36 candidate error(s); first error: running src/betting_math_kit/devig.py:58:23: "+" -> "-": Python run contains an unsupported phase failure
+
+Operator breakdown (saved run selection):
+
+arithmetic_replace
+  Planned: 194 | Completed: 194
+  Killed: 61 | Missed: 97 | Timeout: 0
+  Build failed: 0 | Error: 36
+  Pending: 0 | Running: 0 | Interrupted: 0
+  Time: 339.28s (194 recorded, 0 missing)
+
+Totals use the entire saved run selection.
+Filters, marks and dismissals do not change them.
+Time sums recorded mutation command durations,
+including interrupted commands. It excludes baseline,
+discovery and workspace work; it may exceed wall time.
+Missing/invalid timings are unknown, not zero.
+Pending mutations are not counted as missing timings.
+
+Missed mutations:
+  [000004] src/betting_math_kit/devig.py:68:20: "+" -> "-"
+    Diff: diff/000004.diff
+    Output: logs/000004.log
+  [000006] src/betting_math_kit/devig.py:69:30: "+" -> "-"
+    Diff: diff/000006.diff
+    Output: logs/000006.log
+  [000007] src/betting_math_kit/devig.py:70:22: "-" -> "+"
+    Diff: diff/000007.diff
+    Output: logs/000007.log
+  [000011] src/betting_math_kit/devig.py:84:23: "+" -> "-"
+    Diff: diff/000011.diff
+    Output: logs/000011.log
+  [000013] src/betting_math_kit/devig.py:85:28: "/" -> "*"
+    Diff: diff/000013.diff
+    Output: logs/000013.log
+  [000017] src/betting_math_kit/devig.py:90:22: "/" -> "*"
+    Diff: diff/000017.diff
+    Output: logs/000017.log
+  [000018] src/betting_math_kit/devig.py:90:41: "/" -> "*"
+    Diff: diff/000018.diff
+    Output: logs/000018.log
+  [000019] src/betting_math_kit/devig.py:104:23: "/" -> "*"
+    Diff: diff/000019.diff
+    Output: logs/000019.log
+  [000020] src/betting_math_kit/devig.py:105:17: "*" -> "/"
+    Diff: diff/000020.diff
+    Output: logs/000020.log
+  [000021] src/betting_math_kit/devig.py:105:24: "-" -> "+"
+    Diff: diff/000021.diff
+    Output: logs/000021.log
+  [000024] src/betting_math_kit/devig.py:107:46: "-" -> "+"
+    Diff: diff/000024.diff
+    Output: logs/000024.log
+  [000025] src/betting_math_kit/devig.py:108:28: "/" -> "*"
+    Diff: diff/000025.diff
+    Output: logs/000025.log
+  [000026] src/betting_math_kit/devig.py:114:23: "+" -> "-"
+    Diff: diff/000026.diff
+    Output: logs/000026.log
+  [000027] src/betting_math_kit/devig.py:119:20: "+" -> "-"
+    Diff: diff/000027.diff
+    Output: logs/000027.log
+  [000028] src/betting_math_kit/devig.py:119:30: "/" -> "*"
+    Diff: diff/000028.diff
+    Output: logs/000028.log
+  [000029] src/betting_math_kit/devig.py:126:27: "+" -> "-"
+    Diff: diff/000029.diff
+    Output: logs/000029.log
+  [000030] src/betting_math_kit/devig.py:127:29: "-" -> "+"
+    Diff: diff/000030.diff
+    Output: logs/000030.log
+  [000031] src/betting_math_kit/devig.py:140:31: "/" -> "*"
+    Diff: diff/000031.diff
+    Output: logs/000031.log
+  [000032] src/betting_math_kit/devig.py:141:31: "/" -> "*"
+    Diff: diff/000032.diff
+    Output: logs/000032.log
+  [000036] src/betting_math_kit/devig.py:188:21: "+" -> "-"
+    Diff: diff/000036.diff
+    Output: logs/000036.log
+  [000037] src/betting_math_kit/devig.py:188:33: "-" -> "+"
+    Diff: diff/000037.diff
+    Output: logs/000037.log
+  [000038] src/betting_math_kit/devig.py:213:21: "+" -> "-"
+    Diff: diff/000038.diff
+    Output: logs/000038.log
+  [000039] src/betting_math_kit/devig.py:213:33: "-" -> "+"
+    Diff: diff/000039.diff
+    Output: logs/000039.log
+  [000040] src/betting_math_kit/devig.py:234:21: "+" -> "-"
+    Diff: diff/000040.diff
+    Output: logs/000040.log
+  [000041] src/betting_math_kit/devig.py:234:33: "-" -> "+"
+    Diff: diff/000041.diff
+    Output: logs/000041.log
+  [000042] src/betting_math_kit/devig.py:257:21: "+" -> "-"
+    Diff: diff/000042.diff
+    Output: logs/000042.log
+  [000043] src/betting_math_kit/devig.py:257:33: "-" -> "+"
+    Diff: diff/000043.diff
+    Output: logs/000043.log
+  [000046] src/betting_math_kit/devig.py:327:20: "+" -> "-"
+    Diff: diff/000046.diff
+    Output: logs/000046.log
+  [000048] src/betting_math_kit/devig.py:329:22: "-" -> "+"
+    Diff: diff/000048.diff
+    Output: logs/000048.log
+  [000050] src/betting_math_kit/devig.py:367:24: "/" -> "*"
+    Diff: diff/000050.diff
+    Output: logs/000050.log
+  [000051] src/betting_math_kit/devig.py:368:21: "*" -> "/"
+    Diff: diff/000051.diff
+    Output: logs/000051.log
+  [000052] src/betting_math_kit/devig.py:368:28: "-" -> "+"
+    Diff: diff/000052.diff
+    Output: logs/000052.log
+  [000054] src/betting_math_kit/devig.py:369:28: "*" -> "/"
+    Diff: diff/000054.diff
+    Output: logs/000054.log
+  [000055] src/betting_math_kit/devig.py:369:35: "-" -> "+"
+    Diff: diff/000055.diff
+    Output: logs/000055.log
+  [000056] src/betting_math_kit/devig.py:369:40: "*" -> "/"
+    Diff: diff/000056.diff
+    Output: logs/000056.log
+  [000057] src/betting_math_kit/devig.py:369:46: "/" -> "*"
+    Diff: diff/000057.diff
+    Output: logs/000057.log
+  [000058] src/betting_math_kit/devig.py:370:34: "-" -> "+"
+    Diff: diff/000058.diff
+    Output: logs/000058.log
+  [000059] src/betting_math_kit/devig.py:370:39: "/" -> "*"
+    Diff: diff/000059.diff
+    Output: logs/000059.log
+  [000060] src/betting_math_kit/devig.py:376:20: "+" -> "-"
+    Diff: diff/000060.diff
+    Output: logs/000060.log
+  [000061] src/betting_math_kit/devig.py:376:30: "/" -> "*"
+    Diff: diff/000061.diff
+    Output: logs/000061.log
+  [000062] src/betting_math_kit/devig.py:380:29: "-" -> "+"
+    Diff: diff/000062.diff
+    Output: logs/000062.log
+  [000063] src/betting_math_kit/devig.py:388:28: "/" -> "*"
+    Diff: diff/000063.diff
+    Output: logs/000063.log
+  [000064] src/betting_math_kit/devig.py:394:28: "/" -> "*"
+    Diff: diff/000064.diff
+    Output: logs/000064.log
+  [000065] src/betting_math_kit/devig.py:396:20: "/" -> "*"
+    Diff: diff/000065.diff
+    Output: logs/000065.log
+  [000067] src/betting_math_kit/devig.py:401:20: "/" -> "*"
+    Diff: diff/000067.diff
+    Output: logs/000067.log
+  [000068] src/betting_math_kit/devig.py:455:17: "-" -> "+"
+    Diff: diff/000068.diff
+    Output: logs/000068.log
+  [000080] src/betting_math_kit/kelly.py:144:29: "/" -> "*"
+    Diff: diff/000080.diff
+    Output: logs/000080.log
+  [000084] src/betting_math_kit/kelly.py:187:42: "-" -> "+"
+    Diff: diff/000084.diff
+    Output: logs/000084.log
+  [000089] src/betting_math_kit/kelly.py:253:23: "-" -> "+"
+    Diff: diff/000089.diff
+    Output: logs/000089.log
+  [000090] src/betting_math_kit/kelly.py:253:29: "/" -> "*"
+    Diff: diff/000090.diff
+    Output: logs/000090.log
+  [000091] src/betting_math_kit/kelly.py:260:21: "*" -> "/"
+    Diff: diff/000091.diff
+    Output: logs/000091.log
+  [000094] src/betting_math_kit/kelly.py:282:23: "-" -> "+"
+    Diff: diff/000094.diff
+    Output: logs/000094.log
+  [000095] src/betting_math_kit/kelly.py:282:29: "/" -> "*"
+    Diff: diff/000095.diff
+    Output: logs/000095.log
+  [000096] src/betting_math_kit/kelly.py:292:17: "-" -> "+"
+    Diff: diff/000096.diff
+    Output: logs/000096.log
+  [000104] src/betting_math_kit/metrics.py:130:41: "-" -> "+"
+    Diff: diff/000104.diff
+    Output: logs/000104.log
+  [000112] src/betting_math_kit/metrics.py:195:26: "-" -> "+"
+    Diff: diff/000112.diff
+    Output: logs/000112.log
+  [000115] src/betting_math_kit/metrics.py:208:38: "*" -> "/"
+    Diff: diff/000115.diff
+    Output: logs/000115.log
+  [000116] src/betting_math_kit/metrics.py:209:39: "+" -> "-"
+    Diff: diff/000116.diff
+    Output: logs/000116.log
+  [000117] src/betting_math_kit/metrics.py:209:44: "*" -> "/"
+    Diff: diff/000117.diff
+    Output: logs/000117.log
+  [000119] src/betting_math_kit/metrics.py:250:29: "/" -> "*"
+    Diff: diff/000119.diff
+    Output: logs/000119.log
+  [000125] src/betting_math_kit/metrics.py:389:49: "/" -> "*"
+    Diff: diff/000125.diff
+    Output: logs/000125.log
+  [000126] src/betting_math_kit/metrics.py:393:27: "-" -> "+"
+    Diff: diff/000126.diff
+    Output: logs/000126.log
+  [000127] src/betting_math_kit/metrics.py:393:39: "/" -> "*"
+    Diff: diff/000127.diff
+    Output: logs/000127.log
+  [000132] src/betting_math_kit/metrics.py:402:22: "-" -> "+"
+    Diff: diff/000132.diff
+    Output: logs/000132.log
+  [000133] src/betting_math_kit/metrics.py:402:34: "/" -> "*"
+    Diff: diff/000133.diff
+    Output: logs/000133.log
+  [000135] src/betting_math_kit/metrics.py:417:45: "+" -> "-"
+    Diff: diff/000135.diff
+    Output: logs/000135.log
+  [000136] src/betting_math_kit/metrics.py:417:49: "*" -> "/"
+    Diff: diff/000136.diff
+    Output: logs/000136.log
+  [000137] src/betting_math_kit/metrics.py:418:45: "+" -> "-"
+    Diff: diff/000137.diff
+    Output: logs/000137.log
+  [000138] src/betting_math_kit/metrics.py:418:50: "+" -> "-"
+    Diff: diff/000138.diff
+    Output: logs/000138.log
+  [000139] src/betting_math_kit/metrics.py:418:55: "*" -> "/"
+    Diff: diff/000139.diff
+    Output: logs/000139.log
+  [000140] src/betting_math_kit/metrics.py:420:46: "/" -> "*"
+    Diff: diff/000140.diff
+    Output: logs/000140.log
+  [000141] src/betting_math_kit/metrics.py:421:49: "/" -> "*"
+    Diff: diff/000141.diff
+    Output: logs/000141.log
+  [000142] src/betting_math_kit/metrics.py:422:55: "/" -> "*"
+    Diff: diff/000142.diff
+    Output: logs/000142.log
+  [000160] src/betting_math_kit/odds.py:261:34: "/" -> "*"
+    Diff: diff/000160.diff
+    Output: logs/000160.log
+  [000161] src/betting_math_kit/odds.py:265:22: "*" -> "/"
+    Diff: diff/000161.diff
+    Output: logs/000161.log
+  [000162] src/betting_math_kit/odds.py:313:22: "-" -> "+"
+    Diff: diff/000162.diff
+    Output: logs/000162.log
+  [000164] src/betting_math_kit/odds.py:316:16: "*" -> "/"
+    Diff: diff/000164.diff
+    Output: logs/000164.log
+  [000165] src/betting_math_kit/odds.py:316:29: "-" -> "+"
+    Diff: diff/000165.diff
+    Output: logs/000165.log
+  [000166] src/betting_math_kit/odds.py:316:34: "/" -> "*"
+    Diff: diff/000166.diff
+    Output: logs/000166.log
+  [000167] src/betting_math_kit/odds.py:321:23: "*" -> "/"
+    Diff: diff/000167.diff
+    Output: logs/000167.log
+  [000171] src/betting_math_kit/simulation.py:99:17: "+" -> "-"
+    Diff: diff/000171.diff
+    Output: logs/000171.log
+  [000172] src/betting_math_kit/simulation.py:99:24: "-" -> "+"
+    Diff: diff/000172.diff
+    Output: logs/000172.log
+  [000173] src/betting_math_kit/simulation.py:100:16: "-" -> "+"
+    Diff: diff/000173.diff
+    Output: logs/000173.log
+  [000174] src/betting_math_kit/simulation.py:101:28: "+" -> "-"
+    Diff: diff/000174.diff
+    Output: logs/000174.log
+  [000176] src/betting_math_kit/simulation.py:101:56: "-" -> "+"
+    Diff: diff/000176.diff
+    Output: logs/000176.log
+  [000177] src/betting_math_kit/simulation.py:113:19: "-" -> "+"
+    Diff: diff/000177.diff
+    Output: logs/000177.log
+  [000179] src/betting_math_kit/simulation.py:113:34: "/" -> "*"
+    Diff: diff/000179.diff
+    Output: logs/000179.log
+  [000180] src/betting_math_kit/simulation.py:176:24: "/" -> "*"
+    Diff: diff/000180.diff
+    Output: logs/000180.log
+  [000182] src/betting_math_kit/simulation.py:181:29: "-" -> "+"
+    Diff: diff/000182.diff
+    Output: logs/000182.log
+  [000183] src/betting_math_kit/simulation.py:196:30: "*" -> "/"
+    Diff: diff/000183.diff
+    Output: logs/000183.log
+  [000184] src/betting_math_kit/simulation.py:198:29: "*" -> "/"
+    Diff: diff/000184.diff
+    Output: logs/000184.log
+  [000185] src/betting_math_kit/simulation.py:217:30: "-" -> "+"
+    Diff: diff/000185.diff
+    Output: logs/000185.log
+  [000186] src/betting_math_kit/simulation.py:217:36: "/" -> "*"
+    Diff: diff/000186.diff
+    Output: logs/000186.log
+  [000187] src/betting_math_kit/simulation.py:220:48: "/" -> "*"
+    Diff: diff/000187.diff
+    Output: logs/000187.log
+  [000188] src/betting_math_kit/simulation.py:220:60: "/" -> "*"
+    Diff: diff/000188.diff
+    Output: logs/000188.log
+  [000190] src/betting_math_kit/simulation.py:233:32: "/" -> "*"
+    Diff: diff/000190.diff
+    Output: logs/000190.log
+  [000191] src/betting_math_kit/simulation.py:348:30: "+" -> "-"
+    Diff: diff/000191.diff
+    Output: logs/000191.log
+
+All mutations (source paths are module-relative; artifact paths are report-relative):
+  [000001] src/betting_math_kit/devig.py:58:23: "+" -> "-": error
+    Diff: diff/000001.diff
+    Output: logs/000001.log
+    Error: running src/betting_math_kit/devig.py:58:23: "+" -> "-": Python run contains an unsupported phase failure
+  [000002] src/betting_math_kit/devig.py:59:22: "/" -> "*": error
+    Diff: diff/000002.diff
+    Output: logs/000002.log
+    Error: running src/betting_math_kit/devig.py:59:22: "/" -> "*": Python run contains an unsupported phase failure
+  [000003] src/betting_math_kit/devig.py:59:41: "/" -> "*": error
+    Diff: diff/000003.diff
+    Output: logs/000003.log
+    Error: running src/betting_math_kit/devig.py:59:41: "/" -> "*": Python run contains an unsupported phase failure
+  [000004] src/betting_math_kit/devig.py:68:20: "+" -> "-": missed
+    Diff: diff/000004.diff
+    Output: logs/000004.log
+  [000005] src/betting_math_kit/devig.py:68:30: "/" -> "*": error
+    Diff: diff/000005.diff
+    Output: logs/000005.log
+    Error: running src/betting_math_kit/devig.py:68:30: "/" -> "*": Python run contains an unsupported phase failure
+  [000006] src/betting_math_kit/devig.py:69:30: "+" -> "-": missed
+    Diff: diff/000006.diff
+    Output: logs/000006.log
+  [000007] src/betting_math_kit/devig.py:70:22: "-" -> "+": missed
+    Diff: diff/000007.diff
+    Output: logs/000007.log
+  [000008] src/betting_math_kit/devig.py:79:23: "+" -> "-": error
+    Diff: diff/000008.diff
+    Output: logs/000008.log
+    Error: running src/betting_math_kit/devig.py:79:23: "+" -> "-": Python run contains an unsupported phase failure
+  [000009] src/betting_math_kit/devig.py:80:22: "/" -> "*": error
+    Diff: diff/000009.diff
+    Output: logs/000009.log
+    Error: running src/betting_math_kit/devig.py:80:22: "/" -> "*": Python run contains an unsupported phase failure
+  [000010] src/betting_math_kit/devig.py:80:41: "/" -> "*": error
+    Diff: diff/000010.diff
+    Output: logs/000010.log
+    Error: running src/betting_math_kit/devig.py:80:41: "/" -> "*": Python run contains an unsupported phase failure
+  [000011] src/betting_math_kit/devig.py:84:23: "+" -> "-": missed
+    Diff: diff/000011.diff
+    Output: logs/000011.log
+  [000012] src/betting_math_kit/devig.py:85:21: "-" -> "+": killed
+    Diff: diff/000012.diff
+    Output: logs/000012.log
+  [000013] src/betting_math_kit/devig.py:85:28: "/" -> "*": missed
+    Diff: diff/000013.diff
+    Output: logs/000013.log
+  [000014] src/betting_math_kit/devig.py:87:37: "-" -> "+": killed
+    Diff: diff/000014.diff
+    Output: logs/000014.log
+  [000015] src/betting_math_kit/devig.py:88:37: "-" -> "+": killed
+    Diff: diff/000015.diff
+    Output: logs/000015.log
+  [000016] src/betting_math_kit/devig.py:89:23: "+" -> "-": error
+    Diff: diff/000016.diff
+    Output: logs/000016.log
+    Error: running src/betting_math_kit/devig.py:89:23: "+" -> "-": Python run contains an unsupported phase failure
+  [000017] src/betting_math_kit/devig.py:90:22: "/" -> "*": missed
+    Diff: diff/000017.diff
+    Output: logs/000017.log
+  [000018] src/betting_math_kit/devig.py:90:41: "/" -> "*": missed
+    Diff: diff/000018.diff
+    Output: logs/000018.log
+  [000019] src/betting_math_kit/devig.py:104:23: "/" -> "*": missed
+    Diff: diff/000019.diff
+    Output: logs/000019.log
+  [000020] src/betting_math_kit/devig.py:105:17: "*" -> "/": missed
+    Diff: diff/000020.diff
+    Output: logs/000020.log
+  [000021] src/betting_math_kit/devig.py:105:24: "-" -> "+": missed
+    Diff: diff/000021.diff
+    Output: logs/000021.log
+  [000022] src/betting_math_kit/devig.py:107:23: "+" -> "-": error
+    Diff: diff/000022.diff
+    Output: logs/000022.log
+    Error: running src/betting_math_kit/devig.py:107:23: "+" -> "-": Python run contains an unsupported phase failure
+  [000023] src/betting_math_kit/devig.py:107:29: "*" -> "/": killed
+    Diff: diff/000023.diff
+    Output: logs/000023.log
+  [000024] src/betting_math_kit/devig.py:107:46: "-" -> "+": missed
+    Diff: diff/000024.diff
+    Output: logs/000024.log
+  [000025] src/betting_math_kit/devig.py:108:28: "/" -> "*": missed
+    Diff: diff/000025.diff
+    Output: logs/000025.log
+  [000026] src/betting_math_kit/devig.py:114:23: "+" -> "-": missed
+    Diff: diff/000026.diff
+    Output: logs/000026.log
+  [000027] src/betting_math_kit/devig.py:119:20: "+" -> "-": missed
+    Diff: diff/000027.diff
+    Output: logs/000027.log
+  [000028] src/betting_math_kit/devig.py:119:30: "/" -> "*": missed
+    Diff: diff/000028.diff
+    Output: logs/000028.log
+  [000029] src/betting_math_kit/devig.py:126:27: "+" -> "-": missed
+    Diff: diff/000029.diff
+    Output: logs/000029.log
+  [000030] src/betting_math_kit/devig.py:127:29: "-" -> "+": missed
+    Diff: diff/000030.diff
+    Output: logs/000030.log
+  [000031] src/betting_math_kit/devig.py:140:31: "/" -> "*": missed
+    Diff: diff/000031.diff
+    Output: logs/000031.log
+  [000032] src/betting_math_kit/devig.py:141:31: "/" -> "*": missed
+    Diff: diff/000032.diff
+    Output: logs/000032.log
+  [000033] src/betting_math_kit/devig.py:143:22: "+" -> "-": error
+    Diff: diff/000033.diff
+    Output: logs/000033.log
+    Error: running src/betting_math_kit/devig.py:143:22: "+" -> "-": Python run contains an unsupported phase failure
+  [000034] src/betting_math_kit/devig.py:145:26: "/" -> "*": error
+    Diff: diff/000034.diff
+    Output: logs/000034.log
+    Error: running src/betting_math_kit/devig.py:145:26: "/" -> "*": Python run contains an unsupported phase failure
+  [000035] src/betting_math_kit/devig.py:145:44: "/" -> "*": error
+    Diff: diff/000035.diff
+    Output: logs/000035.log
+    Error: running src/betting_math_kit/devig.py:145:44: "/" -> "*": Python run contains an unsupported phase failure
+  [000036] src/betting_math_kit/devig.py:188:21: "+" -> "-": missed
+    Diff: diff/000036.diff
+    Output: logs/000036.log
+  [000037] src/betting_math_kit/devig.py:188:33: "-" -> "+": missed
+    Diff: diff/000037.diff
+    Output: logs/000037.log
+  [000038] src/betting_math_kit/devig.py:213:21: "+" -> "-": missed
+    Diff: diff/000038.diff
+    Output: logs/000038.log
+  [000039] src/betting_math_kit/devig.py:213:33: "-" -> "+": missed
+    Diff: diff/000039.diff
+    Output: logs/000039.log
+  [000040] src/betting_math_kit/devig.py:234:21: "+" -> "-": missed
+    Diff: diff/000040.diff
+    Output: logs/000040.log
+  [000041] src/betting_math_kit/devig.py:234:33: "-" -> "+": missed
+    Diff: diff/000041.diff
+    Output: logs/000041.log
+  [000042] src/betting_math_kit/devig.py:257:21: "+" -> "-": missed
+    Diff: diff/000042.diff
+    Output: logs/000042.log
+  [000043] src/betting_math_kit/devig.py:257:33: "-" -> "+": missed
+    Diff: diff/000043.diff
+    Output: logs/000043.log
+  [000044] src/betting_math_kit/devig.py:301:21: "+" -> "-": killed
+    Diff: diff/000044.diff
+    Output: logs/000044.log
+  [000045] src/betting_math_kit/devig.py:301:33: "-" -> "+": killed
+    Diff: diff/000045.diff
+    Output: logs/000045.log
+  [000046] src/betting_math_kit/devig.py:327:20: "+" -> "-": missed
+    Diff: diff/000046.diff
+    Output: logs/000046.log
+  [000047] src/betting_math_kit/devig.py:327:30: "/" -> "*": error
+    Diff: diff/000047.diff
+    Output: logs/000047.log
+    Error: running src/betting_math_kit/devig.py:327:30: "/" -> "*": Python run contains an unsupported phase failure
+  [000048] src/betting_math_kit/devig.py:329:22: "-" -> "+": missed
+    Diff: diff/000048.diff
+    Output: logs/000048.log
+  [000049] src/betting_math_kit/devig.py:338:20: "/" -> "*": error
+    Diff: diff/000049.diff
+    Output: logs/000049.log
+    Error: running src/betting_math_kit/devig.py:338:20: "/" -> "*": Python run contains an unsupported phase failure
+  [000050] src/betting_math_kit/devig.py:367:24: "/" -> "*": missed
+    Diff: diff/000050.diff
+    Output: logs/000050.log
+  [000051] src/betting_math_kit/devig.py:368:21: "*" -> "/": missed
+    Diff: diff/000051.diff
+    Output: logs/000051.log
+  [000052] src/betting_math_kit/devig.py:368:28: "-" -> "+": missed
+    Diff: diff/000052.diff
+    Output: logs/000052.log
+  [000053] src/betting_math_kit/devig.py:369:22: "+" -> "-": error
+    Diff: diff/000053.diff
+    Output: logs/000053.log
+    Error: running src/betting_math_kit/devig.py:369:22: "+" -> "-": Python run contains an unsupported phase failure
+  [000054] src/betting_math_kit/devig.py:369:28: "*" -> "/": missed
+    Diff: diff/000054.diff
+    Output: logs/000054.log
+  [000055] src/betting_math_kit/devig.py:369:35: "-" -> "+": missed
+    Diff: diff/000055.diff
+    Output: logs/000055.log
+  [000056] src/betting_math_kit/devig.py:369:40: "*" -> "/": missed
+    Diff: diff/000056.diff
+    Output: logs/000056.log
+  [000057] src/betting_math_kit/devig.py:369:46: "/" -> "*": missed
+    Diff: diff/000057.diff
+    Output: logs/000057.log
+  [000058] src/betting_math_kit/devig.py:370:34: "-" -> "+": missed
+    Diff: diff/000058.diff
+    Output: logs/000058.log
+  [000059] src/betting_math_kit/devig.py:370:39: "/" -> "*": missed
+    Diff: diff/000059.diff
+    Output: logs/000059.log
+  [000060] src/betting_math_kit/devig.py:376:20: "+" -> "-": missed
+    Diff: diff/000060.diff
+    Output: logs/000060.log
+  [000061] src/betting_math_kit/devig.py:376:30: "/" -> "*": missed
+    Diff: diff/000061.diff
+    Output: logs/000061.log
+  [000062] src/betting_math_kit/devig.py:380:29: "-" -> "+": missed
+    Diff: diff/000062.diff
+    Output: logs/000062.log
+  [000063] src/betting_math_kit/devig.py:388:28: "/" -> "*": missed
+    Diff: diff/000063.diff
+    Output: logs/000063.log
+  [000064] src/betting_math_kit/devig.py:394:28: "/" -> "*": missed
+    Diff: diff/000064.diff
+    Output: logs/000064.log
+  [000065] src/betting_math_kit/devig.py:396:20: "/" -> "*": missed
+    Diff: diff/000065.diff
+    Output: logs/000065.log
+  [000066] src/betting_math_kit/devig.py:400:24: "/" -> "*": error
+    Diff: diff/000066.diff
+    Output: logs/000066.log
+    Error: running src/betting_math_kit/devig.py:400:24: "/" -> "*": Python run contains an unsupported phase failure
+  [000067] src/betting_math_kit/devig.py:401:20: "/" -> "*": missed
+    Diff: diff/000067.diff
+    Output: logs/000067.log
+  [000068] src/betting_math_kit/devig.py:455:17: "-" -> "+": missed
+    Diff: diff/000068.diff
+    Output: logs/000068.log
+  [000069] src/betting_math_kit/devig.py:458:24: "/" -> "*": error
+    Diff: diff/000069.diff
+    Output: logs/000069.log
+    Error: running src/betting_math_kit/devig.py:458:24: "/" -> "*": Python run contains an unsupported phase failure
+  [000070] src/betting_math_kit/devig.py:496:22: "+" -> "-": killed
+    Diff: diff/000070.diff
+    Output: logs/000070.log
+  [000071] src/betting_math_kit/devig.py:496:34: "-" -> "+": killed
+    Diff: diff/000071.diff
+    Output: logs/000071.log
+  [000072] src/betting_math_kit/kelly.py:138:26: "+" -> "-": killed
+    Diff: diff/000072.diff
+    Output: logs/000072.log
+  [000073] src/betting_math_kit/kelly.py:138:42: "-" -> "+": killed
+    Diff: diff/000073.diff
+    Output: logs/000073.log
+  [000074] src/betting_math_kit/kelly.py:138:49: "*" -> "/": killed
+    Diff: diff/000074.diff
+    Output: logs/000074.log
+  [000075] src/betting_math_kit/kelly.py:138:56: "-" -> "+": killed
+    Diff: diff/000075.diff
+    Output: logs/000075.log
+  [000076] src/betting_math_kit/kelly.py:139:24: "-" -> "+": killed
+    Diff: diff/000076.diff
+    Output: logs/000076.log
+  [000077] src/betting_math_kit/kelly.py:143:13: "-" -> "+": killed
+    Diff: diff/000077.diff
+    Output: logs/000077.log
+  [000078] src/betting_math_kit/kelly.py:144:17: "*" -> "/": killed
+    Diff: diff/000078.diff
+    Output: logs/000078.log
+  [000079] src/betting_math_kit/kelly.py:144:24: "-" -> "+": killed
+    Diff: diff/000079.diff
+    Output: logs/000079.log
+  [000080] src/betting_math_kit/kelly.py:144:29: "/" -> "*": missed
+    Diff: diff/000080.diff
+    Output: logs/000080.log
+  [000081] src/betting_math_kit/kelly.py:173:22: "*" -> "/": killed
+    Diff: diff/000081.diff
+    Output: logs/000081.log
+  [000082] src/betting_math_kit/kelly.py:173:37: "/" -> "*": killed
+    Diff: diff/000082.diff
+    Output: logs/000082.log
+  [000083] src/betting_math_kit/kelly.py:187:26: "+" -> "-": killed
+    Diff: diff/000083.diff
+    Output: logs/000083.log
+  [000084] src/betting_math_kit/kelly.py:187:42: "-" -> "+": missed
+    Diff: diff/000084.diff
+    Output: logs/000084.log
+  [000085] src/betting_math_kit/kelly.py:187:49: "*" -> "/": killed
+    Diff: diff/000085.diff
+    Output: logs/000085.log
+  [000086] src/betting_math_kit/kelly.py:187:56: "-" -> "+": killed
+    Diff: diff/000086.diff
+    Output: logs/000086.log
+  [000087] src/betting_math_kit/kelly.py:188:17: "*" -> "/": killed
+    Diff: diff/000087.diff
+    Output: logs/000087.log
+  [000088] src/betting_math_kit/kelly.py:188:34: "-" -> "+": killed
+    Diff: diff/000088.diff
+    Output: logs/000088.log
+  [000089] src/betting_math_kit/kelly.py:253:23: "-" -> "+": missed
+    Diff: diff/000089.diff
+    Output: logs/000089.log
+  [000090] src/betting_math_kit/kelly.py:253:29: "/" -> "*": missed
+    Diff: diff/000090.diff
+    Output: logs/000090.log
+  [000091] src/betting_math_kit/kelly.py:260:21: "*" -> "/": missed
+    Diff: diff/000091.diff
+    Output: logs/000091.log
+  [000092] src/betting_math_kit/kelly.py:261:22: "*" -> "/": killed
+    Diff: diff/000092.diff
+    Output: logs/000092.log
+  [000093] src/betting_math_kit/kelly.py:271:24: "*" -> "/": killed
+    Diff: diff/000093.diff
+    Output: logs/000093.log
+  [000094] src/betting_math_kit/kelly.py:282:23: "-" -> "+": missed
+    Diff: diff/000094.diff
+    Output: logs/000094.log
+  [000095] src/betting_math_kit/kelly.py:282:29: "/" -> "*": missed
+    Diff: diff/000095.diff
+    Output: logs/000095.log
+  [000096] src/betting_math_kit/kelly.py:292:17: "-" -> "+": missed
+    Diff: diff/000096.diff
+    Output: logs/000096.log
+  [000097] src/betting_math_kit/kelly.py:292:23: "/" -> "*": killed
+    Diff: diff/000097.diff
+    Output: logs/000097.log
+  [000098] src/betting_math_kit/kelly.py:362:29: "*" -> "/": killed
+    Diff: diff/000098.diff
+    Output: logs/000098.log
+  [000099] src/betting_math_kit/kelly.py:365:30: "/" -> "*": killed
+    Diff: diff/000099.diff
+    Output: logs/000099.log
+  [000100] src/betting_math_kit/kelly.py:368:54: "*" -> "/": killed
+    Diff: diff/000100.diff
+    Output: logs/000100.log
+  [000101] src/betting_math_kit/kelly.py:379:38: "+" -> "-": error
+    Diff: diff/000101.diff
+    Output: logs/000101.log
+    Error: running src/betting_math_kit/kelly.py:379:38: "+" -> "-": Python run contains an unsupported phase failure
+  [000102] src/betting_math_kit/metrics.py:93:21: "-" -> "+": killed
+    Diff: diff/000102.diff
+    Output: logs/000102.log
+  [000103] src/betting_math_kit/metrics.py:94:18: "/" -> "*": killed
+    Diff: diff/000103.diff
+    Output: logs/000103.log
+  [000104] src/betting_math_kit/metrics.py:130:41: "-" -> "+": missed
+    Diff: diff/000104.diff
+    Output: logs/000104.log
+  [000105] src/betting_math_kit/metrics.py:134:36: "-" -> "+": killed
+    Diff: diff/000105.diff
+    Output: logs/000105.log
+  [000106] src/betting_math_kit/metrics.py:135:18: "/" -> "*": killed
+    Diff: diff/000106.diff
+    Output: logs/000106.log
+  [000107] src/betting_math_kit/metrics.py:184:21: "/" -> "*": killed
+    Diff: diff/000107.diff
+    Output: logs/000107.log
+  [000108] src/betting_math_kit/metrics.py:187:40: "*" -> "/": error
+    Diff: diff/000108.diff
+    Output: logs/000108.log
+    Error: running src/betting_math_kit/metrics.py:187:40: "*" -> "/": Python run contains an unsupported phase failure
+  [000109] src/betting_math_kit/metrics.py:188:43: "*" -> "/": error
+    Diff: diff/000109.diff
+    Output: logs/000109.log
+    Error: running src/betting_math_kit/metrics.py:188:43: "*" -> "/": Python run contains an unsupported phase failure
+  [000110] src/betting_math_kit/metrics.py:189:33: "*" -> "/": error
+    Diff: diff/000110.diff
+    Output: logs/000110.log
+    Error: running src/betting_math_kit/metrics.py:189:33: "*" -> "/": Python run contains an unsupported phase failure
+  [000111] src/betting_math_kit/metrics.py:192:21: "/" -> "*": killed
+    Diff: diff/000111.diff
+    Output: logs/000111.log
+  [000112] src/betting_math_kit/metrics.py:195:26: "-" -> "+": missed
+    Diff: diff/000112.diff
+    Output: logs/000112.log
+  [000113] src/betting_math_kit/metrics.py:204:37: "/" -> "*": killed
+    Diff: diff/000113.diff
+    Output: logs/000113.log
+  [000114] src/betting_math_kit/metrics.py:205:42: "/" -> "*": killed
+    Diff: diff/000114.diff
+    Output: logs/000114.log
+  [000115] src/betting_math_kit/metrics.py:208:38: "*" -> "/": missed
+    Diff: diff/000115.diff
+    Output: logs/000115.log
+  [000116] src/betting_math_kit/metrics.py:209:39: "+" -> "-": missed
+    Diff: diff/000116.diff
+    Output: logs/000116.log
+  [000117] src/betting_math_kit/metrics.py:209:44: "*" -> "/": missed
+    Diff: diff/000117.diff
+    Output: logs/000117.log
+  [000118] src/betting_math_kit/metrics.py:213:33: "-" -> "+": killed
+    Diff: diff/000118.diff
+    Output: logs/000118.log
+  [000119] src/betting_math_kit/metrics.py:250:29: "/" -> "*": missed
+    Diff: diff/000119.diff
+    Output: logs/000119.log
+  [000120] src/betting_math_kit/metrics.py:251:23: "*" -> "/": error
+    Diff: diff/000120.diff
+    Output: logs/000120.log
+    Error: running src/betting_math_kit/metrics.py:251:23: "*" -> "/": Python run contains an unsupported phase failure
+  [000121] src/betting_math_kit/metrics.py:251:45: "-" -> "+": killed
+    Diff: diff/000121.diff
+    Output: logs/000121.log
+  [000122] src/betting_math_kit/metrics.py:290:25: "-" -> "+": killed
+    Diff: diff/000122.diff
+    Output: logs/000122.log
+  [000123] src/betting_math_kit/metrics.py:316:25: "-" -> "+": killed
+    Diff: diff/000123.diff
+    Output: logs/000123.log
+  [000124] src/betting_math_kit/metrics.py:388:40: "/" -> "*": killed
+    Diff: diff/000124.diff
+    Output: logs/000124.log
+  [000125] src/betting_math_kit/metrics.py:389:49: "/" -> "*": missed
+    Diff: diff/000125.diff
+    Output: logs/000125.log
+  [000126] src/betting_math_kit/metrics.py:393:27: "-" -> "+": missed
+    Diff: diff/000126.diff
+    Output: logs/000126.log
+  [000127] src/betting_math_kit/metrics.py:393:39: "/" -> "*": missed
+    Diff: diff/000127.diff
+    Output: logs/000127.log
+  [000128] src/betting_math_kit/metrics.py:396:40: "*" -> "/": error
+    Diff: diff/000128.diff
+    Output: logs/000128.log
+    Error: running src/betting_math_kit/metrics.py:396:40: "*" -> "/": Python run contains an unsupported phase failure
+  [000129] src/betting_math_kit/metrics.py:397:40: "*" -> "/": error
+    Diff: diff/000129.diff
+    Output: logs/000129.log
+    Error: running src/betting_math_kit/metrics.py:397:40: "*" -> "/": Python run contains an unsupported phase failure
+  [000130] src/betting_math_kit/metrics.py:398:43: "*" -> "/": error
+    Diff: diff/000130.diff
+    Output: logs/000130.log
+    Error: running src/betting_math_kit/metrics.py:398:43: "*" -> "/": Python run contains an unsupported phase failure
+  [000131] src/betting_math_kit/metrics.py:399:33: "*" -> "/": error
+    Diff: diff/000131.diff
+    Output: logs/000131.log
+    Error: running src/betting_math_kit/metrics.py:399:33: "*" -> "/": Python run contains an unsupported phase failure
+  [000132] src/betting_math_kit/metrics.py:402:22: "-" -> "+": missed
+    Diff: diff/000132.diff
+    Output: logs/000132.log
+  [000133] src/betting_math_kit/metrics.py:402:34: "/" -> "*": missed
+    Diff: diff/000133.diff
+    Output: logs/000133.log
+  [000134] src/betting_math_kit/metrics.py:404:26: "-" -> "+": error
+    Diff: diff/000134.diff
+    Output: logs/000134.log
+    Error: running src/betting_math_kit/metrics.py:404:26: "-" -> "+": Python run contains an unsupported phase failure
+  [000135] src/betting_math_kit/metrics.py:417:45: "+" -> "-": missed
+    Diff: diff/000135.diff
+    Output: logs/000135.log
+  [000136] src/betting_math_kit/metrics.py:417:49: "*" -> "/": missed
+    Diff: diff/000136.diff
+    Output: logs/000136.log
+  [000137] src/betting_math_kit/metrics.py:418:45: "+" -> "-": missed
+    Diff: diff/000137.diff
+    Output: logs/000137.log
+  [000138] src/betting_math_kit/metrics.py:418:50: "+" -> "-": missed
+    Diff: diff/000138.diff
+    Output: logs/000138.log
+  [000139] src/betting_math_kit/metrics.py:418:55: "*" -> "/": missed
+    Diff: diff/000139.diff
+    Output: logs/000139.log
+  [000140] src/betting_math_kit/metrics.py:420:46: "/" -> "*": missed
+    Diff: diff/000140.diff
+    Output: logs/000140.log
+  [000141] src/betting_math_kit/metrics.py:421:49: "/" -> "*": missed
+    Diff: diff/000141.diff
+    Output: logs/000141.log
+  [000142] src/betting_math_kit/metrics.py:422:55: "/" -> "*": missed
+    Diff: diff/000142.diff
+    Output: logs/000142.log
+  [000143] src/betting_math_kit/odds.py:67:20: "+" -> "-": error
+    Diff: diff/000143.diff
+    Output: logs/000143.log
+    Error: running src/betting_math_kit/odds.py:67:20: "+" -> "-": Python run contains an unsupported phase failure
+  [000144] src/betting_math_kit/odds.py:67:28: "/" -> "*": killed
+    Diff: diff/000144.diff
+    Output: logs/000144.log
+  [000145] src/betting_math_kit/odds.py:69:20: "+" -> "-": error
+    Diff: diff/000145.diff
+    Output: logs/000145.log
+    Error: running src/betting_math_kit/odds.py:69:20: "+" -> "-": Python run contains an unsupported phase failure
+  [000146] src/betting_math_kit/odds.py:69:29: "/" -> "*": killed
+    Diff: diff/000146.diff
+    Output: logs/000146.log
+  [000147] src/betting_math_kit/odds.py:92:34: "-" -> "+": killed
+    Diff: diff/000147.diff
+    Output: logs/000147.log
+  [000148] src/betting_math_kit/odds.py:92:39: "*" -> "/": killed
+    Diff: diff/000148.diff
+    Output: logs/000148.log
+  [000149] src/betting_math_kit/odds.py:94:25: "/" -> "*": killed
+    Diff: diff/000149.diff
+    Output: logs/000149.log
+  [000150] src/betting_math_kit/odds.py:94:41: "-" -> "+": killed
+    Diff: diff/000150.diff
+    Output: logs/000150.log
+  [000151] src/betting_math_kit/odds.py:114:16: "/" -> "*": killed
+    Diff: diff/000151.diff
+    Output: logs/000151.log
+  [000152] src/betting_math_kit/odds.py:135:16: "/" -> "*": error
+    Diff: diff/000152.diff
+    Output: logs/000152.log
+    Error: running src/betting_math_kit/odds.py:135:16: "/" -> "*": Python run contains an unsupported phase failure
+  [000153] src/betting_math_kit/odds.py:163:23: "-" -> "+": killed
+    Diff: diff/000153.diff
+    Output: logs/000153.log
+  [000154] src/betting_math_kit/odds.py:219:28: "-" -> "+": killed
+    Diff: diff/000154.diff
+    Output: logs/000154.log
+  [000155] src/betting_math_kit/odds.py:221:27: "-" -> "+": killed
+    Diff: diff/000155.diff
+    Output: logs/000155.log
+  [000156] src/betting_math_kit/odds.py:259:22: "-" -> "+": killed
+    Diff: diff/000156.diff
+    Output: logs/000156.log
+  [000157] src/betting_math_kit/odds.py:260:13: "-" -> "+": killed
+    Diff: diff/000157.diff
+    Output: logs/000157.log
+  [000158] src/betting_math_kit/odds.py:261:16: "*" -> "/": killed
+    Diff: diff/000158.diff
+    Output: logs/000158.log
+  [000159] src/betting_math_kit/odds.py:261:29: "-" -> "+": killed
+    Diff: diff/000159.diff
+    Output: logs/000159.log
+  [000160] src/betting_math_kit/odds.py:261:34: "/" -> "*": missed
+    Diff: diff/000160.diff
+    Output: logs/000160.log
+  [000161] src/betting_math_kit/odds.py:265:22: "*" -> "/": missed
+    Diff: diff/000161.diff
+    Output: logs/000161.log
+  [000162] src/betting_math_kit/odds.py:313:22: "-" -> "+": missed
+    Diff: diff/000162.diff
+    Output: logs/000162.log
+  [000163] src/betting_math_kit/odds.py:315:13: "-" -> "+": killed
+    Diff: diff/000163.diff
+    Output: logs/000163.log
+  [000164] src/betting_math_kit/odds.py:316:16: "*" -> "/": missed
+    Diff: diff/000164.diff
+    Output: logs/000164.log
+  [000165] src/betting_math_kit/odds.py:316:29: "-" -> "+": missed
+    Diff: diff/000165.diff
+    Output: logs/000165.log
+  [000166] src/betting_math_kit/odds.py:316:34: "/" -> "*": missed
+    Diff: diff/000166.diff
+    Output: logs/000166.log
+  [000167] src/betting_math_kit/odds.py:321:23: "*" -> "/": missed
+    Diff: diff/000167.diff
+    Output: logs/000167.log
+  [000168] src/betting_math_kit/simulation.py:97:14: "/" -> "*": error
+    Diff: diff/000168.diff
+    Output: logs/000168.log
+    Error: running src/betting_math_kit/simulation.py:97:14: "/" -> "*": Python run contains an unsupported phase failure
+  [000169] src/betting_math_kit/simulation.py:97:23: "*" -> "/": killed
+    Diff: diff/000169.diff
+    Output: logs/000169.log
+  [000170] src/betting_math_kit/simulation.py:97:28: "-" -> "+": error
+    Diff: diff/000170.diff
+    Output: logs/000170.log
+    Error: running src/betting_math_kit/simulation.py:97:28: "-" -> "+": Python run contains an unsupported phase failure
+  [000171] src/betting_math_kit/simulation.py:99:17: "+" -> "-": missed
+    Diff: diff/000171.diff
+    Output: logs/000171.log
+  [000172] src/betting_math_kit/simulation.py:99:24: "-" -> "+": missed
+    Diff: diff/000172.diff
+    Output: logs/000172.log
+  [000173] src/betting_math_kit/simulation.py:100:16: "-" -> "+": missed
+    Diff: diff/000173.diff
+    Output: logs/000173.log
+  [000174] src/betting_math_kit/simulation.py:101:28: "+" -> "-": missed
+    Diff: diff/000174.diff
+    Output: logs/000174.log
+  [000175] src/betting_math_kit/simulation.py:101:37: "*" -> "/": error
+    Diff: diff/000175.diff
+    Output: logs/000175.log
+    Error: running src/betting_math_kit/simulation.py:101:37: "*" -> "/": Python run contains an unsupported phase failure
+  [000176] src/betting_math_kit/simulation.py:101:56: "-" -> "+": missed
+    Diff: diff/000176.diff
+    Output: logs/000176.log
+  [000177] src/betting_math_kit/simulation.py:113:19: "-" -> "+": missed
+    Diff: diff/000177.diff
+    Output: logs/000177.log
+  [000178] src/betting_math_kit/simulation.py:113:24: "+" -> "-": killed
+    Diff: diff/000178.diff
+    Output: logs/000178.log
+  [000179] src/betting_math_kit/simulation.py:113:34: "/" -> "*": missed
+    Diff: diff/000179.diff
+    Output: logs/000179.log
+  [000180] src/betting_math_kit/simulation.py:176:24: "/" -> "*": missed
+    Diff: diff/000180.diff
+    Output: logs/000180.log
+  [000181] src/betting_math_kit/simulation.py:177:29: "+" -> "-": killed
+    Diff: diff/000181.diff
+    Output: logs/000181.log
+  [000182] src/betting_math_kit/simulation.py:181:29: "-" -> "+": missed
+    Diff: diff/000182.diff
+    Output: logs/000182.log
+  [000183] src/betting_math_kit/simulation.py:196:30: "*" -> "/": missed
+    Diff: diff/000183.diff
+    Output: logs/000183.log
+  [000184] src/betting_math_kit/simulation.py:198:29: "*" -> "/": missed
+    Diff: diff/000184.diff
+    Output: logs/000184.log
+  [000185] src/betting_math_kit/simulation.py:217:30: "-" -> "+": missed
+    Diff: diff/000185.diff
+    Output: logs/000185.log
+  [000186] src/betting_math_kit/simulation.py:217:36: "/" -> "*": missed
+    Diff: diff/000186.diff
+    Output: logs/000186.log
+  [000187] src/betting_math_kit/simulation.py:220:48: "/" -> "*": missed
+    Diff: diff/000187.diff
+    Output: logs/000187.log
+  [000188] src/betting_math_kit/simulation.py:220:60: "/" -> "*": missed
+    Diff: diff/000188.diff
+    Output: logs/000188.log
+  [000189] src/betting_math_kit/simulation.py:231:30: "/" -> "*": killed
+    Diff: diff/000189.diff
+    Output: logs/000189.log
+  [000190] src/betting_math_kit/simulation.py:233:32: "/" -> "*": missed
+    Diff: diff/000190.diff
+    Output: logs/000190.log
+  [000191] src/betting_math_kit/simulation.py:348:30: "+" -> "-": missed
+    Diff: diff/000191.diff
+    Output: logs/000191.log
+  [000192] src/betting_math_kit/types.py:43:32: "+" -> "-": error
+    Diff: diff/000192.diff
+    Output: logs/000192.log
+    Error: running src/betting_math_kit/types.py:43:32: "+" -> "-": Python run contains an unsupported phase failure
+  [000193] src/betting_math_kit/types.py:44:22: "-" -> "+": error
+    Diff: diff/000193.diff
+    Output: logs/000193.log
+    Error: running src/betting_math_kit/types.py:44:22: "-" -> "+": Python run contains an unsupported phase failure
+  [000194] src/betting_math_kit/types.py:66:22: "-" -> "+": error
+    Diff: diff/000194.diff
+    Output: logs/000194.log
+    Error: running src/betting_math_kit/types.py:66:22: "-" -> "+": Python run contains an unsupported phase failure

@@ -1,0 +1,973 @@
+....FFF.F.F.F.FF.F.....F.....F.F...FFFF....FFFFFFFFFF................... [ 36%]
+.................................................F.F..................FF [ 72%]
+FF.....F......F.....F.................................                   [100%]
+=================================== FAILURES ===================================
+___________________ TestDevigMultiplicative.test_sums_to_one ___________________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_multiplicative(-150, 130)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:187: in devig_multiplicative
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+______________ TestDevigMultiplicative.test_favorite_higher_prob _______________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_favorite_higher_prob(self):
+>       r = devig_multiplicative(-200, 170)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:52: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:187: in devig_multiplicative
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.7
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.7
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_________________ TestDevigMultiplicative.test_heavy_favorite __________________
+
+self = <tests.test_devig.TestDevigMultiplicative object at [address]>
+
+    def test_heavy_favorite(self):
+>       r = devig_multiplicative(-500, 400)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:56: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:187: in devig_multiplicative
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -3.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -3.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_______________________ TestDevigPower.test_sums_to_one ________________________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_power(-300, 250)
+            ^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:72: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:212: in devig_power
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -1.5
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -1.5
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+__________ TestDevigPower.test_diverges_from_multiplicative_on_skewed __________
+
+self = <tests.test_devig.TestDevigPower object at [address]>
+
+    def test_diverges_from_multiplicative_on_skewed(self):
+        """Power and multiplicative diverge on heavily skewed lines."""
+>       m = devig_multiplicative(-500, 400)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:187: in devig_multiplicative
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -3.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -3.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+______________________ TestDevigAdditive.test_sums_to_one ______________________
+
+self = <tests.test_devig.TestDevigAdditive object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_additive(-150, 130)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:99: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:233: in devig_additive
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________________________ TestDevigShin.test_sums_to_one ________________________
+
+self = <tests.test_devig.TestDevigShin object at [address]>
+
+    def test_sums_to_one(self):
+>       r = devig_shin(-200, 170)
+            ^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:256: in devig_shin
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.7
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.7
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_______________________ TestDevigShin.test_extreme_odds ________________________
+
+self = <tests.test_devig.TestDevigShin object at [address]>
+
+    def test_extreme_odds(self):
+>       r = devig_shin(-10000, 5000)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:118: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:256: in devig_shin
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -49.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -49.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+____________________ TestDevigDispatch.test_power_dispatch _____________________
+
+self = <tests.test_devig.TestDevigDispatch object at [address]>
+
+    def test_power_dispatch(self):
+>       r1 = devig(-150, 130, method=DevigMethod.POWER)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:136: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+____________________________ TestGetVig.test_no_vig ____________________________
+
+self = <tests.test_devig.TestGetVig object at [address]>
+
+    def test_no_vig(self):
+>       assert get_vig(100, 100) == pytest.approx(0.0, abs=1e-10)
+               ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:166: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:494: in get_vig
+    home_impl = decimal_to_implied_prob(american_to_decimal(home_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+______________________ TestDevigMulti.test_three_outcomes ______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_three_outcomes(self):
+>       r = devig_multi([200, 300, 150])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:202: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:452: in devig_multi
+    implied.append(decimal_to_implied_prob(american_to_decimal(odds)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -1.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -1.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_______________________ TestDevigMulti.test_six_outcomes _______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_six_outcomes(self):
+        odds = [-200, 300, 500, 800, 1000, 1500]
+>       r = devig_multi(odds)
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:452: in devig_multi
+    implied.append(decimal_to_implied_prob(american_to_decimal(odds)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -2.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -2.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_______________________ TestDevigMulti.test_power_method _______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_power_method(self):
+>       r = devig_multi([-110, -110, 300], method=DevigMethod.POWER)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:452: in devig_multi
+    implied.append(decimal_to_implied_prob(american_to_decimal(odds)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -2.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -2.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_______________________ TestDevigMulti.test_shin_method ________________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_shin_method(self):
+>       r = devig_multi([-110, -110, 300], method=DevigMethod.SHIN)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:238: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:452: in devig_multi
+    implied.append(decimal_to_implied_prob(american_to_decimal(odds)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -2.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -2.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+____________________ TestDevigMulti.test_ordering_preserved ____________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_ordering_preserved(self):
+        odds = [150, -200, 300]
+>       r = devig_multi(odds)
+            ^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:243: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:452: in devig_multi
+    implied.append(decimal_to_implied_prob(american_to_decimal(odds)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.5
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.5
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_______________________ TestDevigMulti.test_vig_positive _______________________
+
+self = <tests.test_devig.TestDevigMulti object at [address]>
+
+    def test_vig_positive(self):
+>       r = devig_multi([-110, -110, 300])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:248: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:452: in devig_multi
+    implied.append(decimal_to_implied_prob(american_to_decimal(odds)))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -2.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -2.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_all_methods_sum_to_one[-150-130] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_all_methods_sum_to_one[-200-170] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.7
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.7
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_all_methods_sum_to_one[-300-250] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -1.5
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -1.5
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_all_methods_sum_to_one[-500-400] _____________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250), (-500, 400)],
+    )
+    def test_all_methods_sum_to_one(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -3.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -3.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_probabilities_bounded[-150-130] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_probabilities_bounded[-200-170] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.7
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.7
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_____________ TestInvariants.test_probabilities_bounded[-300-250] ______________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -300
+away = 250
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-300, 250)],
+    )
+    def test_probabilities_bounded(self, home, away):
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:284: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -1.5
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -1.5
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________ TestInvariants.test_favorite_always_has_higher_prob[-150-130] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -150
+away = 130
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________ TestInvariants.test_favorite_always_has_higher_prob[-200-170] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -200
+away = 170
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.7
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.7
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________ TestInvariants.test_favorite_always_has_higher_prob[-500-400] _________
+
+self = <tests.test_devig.TestInvariants object at [address]>, home = -500
+away = 400
+
+    @pytest.mark.parametrize(
+        "home,away",
+        [(-150, 130), (-200, 170), (-500, 400)],
+    )
+    def test_favorite_always_has_higher_prob(self, home, away):
+        """The favorite (negative odds) should always have higher fair prob."""
+        for method in DevigMethod:
+>           r = devig(home, away, method=method)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_devig.py:295: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -3.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -3.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+____________________ TestAmericanToDecimal.test_even_money _____________________
+
+self = <tests.test_odds.TestAmericanToDecimal object at [address]>
+
+    def test_even_money(self):
+>       assert american_to_decimal(100) == 2.0
+E       assert 0.0 == 2.0
+E        +  where 0.0 = american_to_decimal(100)
+
+tests/test_odds.py:25: AssertionError
+_____________________ TestAmericanToDecimal.test_underdog ______________________
+
+self = <tests.test_odds.TestAmericanToDecimal object at [address]>
+
+    def test_underdog(self):
+>       assert american_to_decimal(150) == 2.5
+E       assert -0.5 == 2.5
+E        +  where -0.5 = american_to_decimal(150)
+
+tests/test_odds.py:31: AssertionError
+_________________ TestRoundTrips.test_american_round_trip[100] _________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, odds = 100
+
+    @pytest.mark.parametrize("odds", [-500, -200, -110, 100, 150, 300, 1000])
+    def test_american_round_trip(self, odds):
+        """american -> decimal -> american should be close (rounding ok)."""
+        decimal = american_to_decimal(odds)
+>       back = decimal_to_american(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:90: in decimal_to_american
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_________________ TestRoundTrips.test_american_round_trip[150] _________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, odds = 150
+
+    @pytest.mark.parametrize("odds", [-500, -200, -110, 100, 150, 300, 1000])
+    def test_american_round_trip(self, odds):
+        """american -> decimal -> american should be close (rounding ok)."""
+        decimal = american_to_decimal(odds)
+>       back = decimal_to_american(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:90: in decimal_to_american
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.5
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.5
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+_________________ TestRoundTrips.test_american_round_trip[300] _________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, odds = 300
+
+    @pytest.mark.parametrize("odds", [-500, -200, -110, 100, 150, 300, 1000])
+    def test_american_round_trip(self, odds):
+        """american -> decimal -> american should be close (rounding ok)."""
+        decimal = american_to_decimal(odds)
+>       back = decimal_to_american(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:90: in decimal_to_american
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -2.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -2.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________________ TestRoundTrips.test_american_round_trip[1000] _________________
+
+self = <tests.test_odds.TestRoundTrips object at [address]>, odds = 1000
+
+    @pytest.mark.parametrize("odds", [-500, -200, -110, 100, 150, 300, 1000])
+    def test_american_round_trip(self, odds):
+        """american -> decimal -> american should be close (rounding ok)."""
+        decimal = american_to_decimal(odds)
+>       back = decimal_to_american(decimal)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:102: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:90: in decimal_to_american
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -9.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -9.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________________________ TestCalculateEdge.test_no_edge ________________________
+
+self = <tests.test_odds.TestCalculateEdge object at [address]>
+
+    def test_no_edge(self):
+>       edge = calculate_edge(0.5, 100)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:162: in calculate_edge
+    implied_prob = decimal_to_implied_prob(decimal_odds)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = 0.0
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got 0.0
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+__________________ TestCalculateEdgeCalibrated.test_away_pick __________________
+
+self = <tests.test_odds.TestCalculateEdgeCalibrated object at [address]>
+
+    def test_away_pick(self):
+>       r = calculate_edge_calibrated(0.45, -150, 130, pick=Side.AWAY)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_odds.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/betting_math_kit/odds.py:210: in calculate_edge_calibrated
+    result = devig(home_odds, away_odds, method_enum)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/devig.py:300: in devig
+    away_impl = decimal_to_implied_prob(american_to_decimal(away_odds))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/betting_math_kit/odds.py:113: in decimal_to_implied_prob
+    _validate_decimal_odds(decimal_odds)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+decimal_odds = -0.30000000000000004
+
+    def _validate_decimal_odds(decimal_odds: float) -> None:
+        """Raise if decimal odds are not > 1."""
+        if decimal_odds <= 1.0:
+>           raise InvalidOddsError(f"Decimal odds must be > 1.0, got {decimal_odds}")
+E           betting_math_kit.exceptions.InvalidOddsError: Decimal odds must be > 1.0, got -0.30000000000000004
+
+src/betting_math_kit/odds.py:39: InvalidOddsError
+________________________ TestKellyFraction.test_no_edge ________________________
+
+self = <tests.test_odds.TestKellyFraction object at [address]>
+
+    def test_no_edge(self):
+>       assert kelly_fraction(0.50, 100) == 0.0
+E       assert 0.25 == 0.0
+E        +  where 0.25 = kelly_fraction(0.5, 100)
+
+tests/test_odds.py:186: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_sums_to_one - betti...
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_favorite_higher_prob
+FAILED tests/test_devig.py::TestDevigMultiplicative::test_heavy_favorite - be...
+FAILED tests/test_devig.py::TestDevigPower::test_sums_to_one - betting_math_k...
+FAILED tests/test_devig.py::TestDevigPower::test_diverges_from_multiplicative_on_skewed
+FAILED tests/test_devig.py::TestDevigAdditive::test_sums_to_one - betting_mat...
+FAILED tests/test_devig.py::TestDevigShin::test_sums_to_one - betting_math_ki...
+FAILED tests/test_devig.py::TestDevigShin::test_extreme_odds - betting_math_k...
+FAILED tests/test_devig.py::TestDevigDispatch::test_power_dispatch - betting_...
+FAILED tests/test_devig.py::TestGetVig::test_no_vig - betting_math_kit.except...
+FAILED tests/test_devig.py::TestDevigMulti::test_three_outcomes - betting_mat...
+FAILED tests/test_devig.py::TestDevigMulti::test_six_outcomes - betting_math_...
+FAILED tests/test_devig.py::TestDevigMulti::test_power_method - betting_math_...
+FAILED tests/test_devig.py::TestDevigMulti::test_shin_method - betting_math_k...
+FAILED tests/test_devig.py::TestDevigMulti::test_ordering_preserved - betting...
+FAILED tests/test_devig.py::TestDevigMulti::test_vig_positive - betting_math_...
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_all_methods_sum_to_one[-500-400]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_probabilities_bounded[-300-250]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-150-130]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-200-170]
+FAILED tests/test_devig.py::TestInvariants::test_favorite_always_has_higher_prob[-500-400]
+FAILED tests/test_odds.py::TestAmericanToDecimal::test_even_money - assert 0....
+FAILED tests/test_odds.py::TestAmericanToDecimal::test_underdog - assert -0.5...
+FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[100] - be...
+FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[150] - be...
+FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[300] - be...
+FAILED tests/test_odds.py::TestRoundTrips::test_american_round_trip[1000] - b...
+FAILED tests/test_odds.py::TestCalculateEdge::test_no_edge - betting_math_kit...
+FAILED tests/test_odds.py::TestCalculateEdgeCalibrated::test_away_pick - bett...
+FAILED tests/test_odds.py::TestKellyFraction::test_no_edge - assert 0.25 == 0.0
+35 failed, 163 passed in 0.52s
+

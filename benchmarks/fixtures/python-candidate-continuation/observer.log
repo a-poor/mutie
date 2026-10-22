@@ -1,0 +1,13 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.39s
+     Running unittests src/main.rs (target/debug/deps/mutie-f2e7291bcbe62ebc)
+
+running 6 tests
+test python::tests::native_body_and_lifetime_attribution ... ok
+test python::tests::native_capture_and_file_limits ... ok
+test python::tests::native_conftest_lifecycle_attribution ... ok
+test python::tests::native_conftest_shared_lifetimes ... ok
+test python::tests::native_descendant_shutdown ... ok
+test python::tests::native_unittest_lifecycle_attribution ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 220 filtered out; finished in 90.99s
+

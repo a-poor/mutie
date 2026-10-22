@@ -1,0 +1,15 @@
+Saving report to /tmp/mutie-python-candidate-continuation/reports/run-1792625838-injAyq
+Snapshotting /tmp/mutie-python-betting-math-original
+
+0 mutations: 0 killed, 0 missed, 0 timed out, 0 failed to compile
+Run failed in 2.80s
+Workspaces: snapshot 0.004s | setup 0.000s | reset 0.000s (cumulative)
+Copies: 20 reflinked | 0 copied (0 bytes) | 1 ops, 0 failed, 0 interrupted
+Report saved: /tmp/mutie-python-candidate-continuation/reports/run-1792625838-injAyq/summary.txt
+Mutation score: unavailable
+Scope: rerun selection only
+Killed / (killed + missed): 0 / 0
+Excluded: 0 timeout, 0 build failed
+Execution errors: 0; unfinished: 0
+Dismissed in score: 0 (included)
+Unavailable: run did not complete successfully

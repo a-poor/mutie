@@ -83,6 +83,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 
 ## Selected Python / pytest scope audit
 
+- [x] Validate bounded opt-in candidate-error continuation against all 194
+  unchanged betting-math-kit arithmetic outcomes, preserving fatal boundaries,
+  cancellation, failed/unscored error reports and historical evidence; see
+  [continuation acceptance](benchmarks/python-candidate-continuation.md).
+
 - [x] Pin an isolated Python/pytest environment and retain reproducible native probes.
 - [x] Audit parametrization, setup/call/teardown, collection errors, incomplete runs,
   warnings, exits and conservative attribution; retain unittest/atexit negative controls.
