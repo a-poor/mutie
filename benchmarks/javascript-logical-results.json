@@ -1,0 +1,739 @@
+{
+  "project": {
+    "url": "https://github.com/carlos-sweb/pp-is",
+    "commit": "1d5b3bac804e1e67da289f3d2a14bd0705a383fb",
+    "files": {
+      ".gitignore": "d6dfbd171508132516e67b8632585ef614a1b215472a0409e10e7cbec8828048",
+      "LICENSE.txt": "0e3ad81a678d1b8e24a4b149e0a82e18e510203523b55f1f3e78777698c2758b",
+      "README.md": "04a75fcc997e0ba1d52a578c4f9eb56e8bebcda85c246e985a228712b1108c49",
+      "README_es.md": "8c597eeb0a349956b2231d0e6ac2ca94db6a9681ffde47a7ef3bffb2d050e86b",
+      "dist/pp-is.cjs": "ee8223b30ac50e260f8a635019f44d5cd5e154955d63f8761dd7999244d9a0e5",
+      "dist/pp-is.min.js": "00e82d616984b8eb1ca1cfa546e40230ba1937df53d3adf1dba2c3e0bac41d09",
+      "dist/pp-is.mjs": "807864b0c6a78bfdaf9f37fb03cf9226357a140a289d0ad5fcb4e244ed589748",
+      "index.d.ts": "c55e0ba2b335cbb6eb41286bda9f14d6399ba2a1b017227dee04ed38f152695e",
+      "package.json": "b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+      "scripts/build.mjs": "1a16ee277484dc18b672f0687827e4614eae19518e09e35261061913368ed379",
+      "src/browser.js": "9cc26d5b7207cb8796a5eaba1750833d4c1b7713f4c7a1a2ff4b4ea4d7da2059",
+      "src/helper/base.js": "a06f9adddc62f7922c4bdc9e9149759c16b212d237f7818a0ab47f767394a5de",
+      "src/helper/baseEvaluate.js": "910250adff36acafa5b1482ff98614296de9200708fded343bfca740e576ed47",
+      "src/helper/baseSanitize.js": "40e85e0d3f2382741338785e94c20c5d03820dfe8fdcbd5ed9bba65cde62d1ce",
+      "src/helper/getType.js": "2c48513ccb88854b9baffa3c9425e8208440da5014f0eb45d525f08720e7fcc6",
+      "src/helper/getTypeCompare.js": "05ce815354c999c7c632db6b2b7907fbfe0a515183638cf17ecc35ac831e0451",
+      "src/main/isAlpha.js": "a4e41ec7a8356d7dbd12699e0ddf0b36b3a4e410342dccb4025512db273e0f66",
+      "src/main/isAlphanumeric.js": "3ed788817af344a70b9787ae2b2a548baba86cdde731c3d279cea3e52cd05fd6",
+      "src/main/isArray.js": "f73e19e363753717fba2d76e568ad2bf5087e6b4fb4a6849733c658720e5a2c3",
+      "src/main/isAsyncFunction.js": "c02075e20de4f8fd61cb67e62ebbf4db6a5b9f22623068bf2a0042703b676fa5",
+      "src/main/isBigInt.js": "ac31f7e23aee0c68db0b922213e64c4edff847ea9e7b2cfc34939c2a2dfd623a",
+      "src/main/isBlank.js": "0c8569af16edaa6ac9a7b861df5990b2c88596634fd9a6eac663e22d01d84ccd",
+      "src/main/isBoolean.js": "c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+      "src/main/isCallable.js": "6d5ee0e47e208bad717ae9c1314c21357ccd1933d99a51d659c1356f22260594",
+      "src/main/isDate.js": "5910f39e1539a279e2a605cebd3d395b4998bc89bcbd64b4dd0dcb4299fca530",
+      "src/main/isElement.js": "2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+      "src/main/isEmail.js": "f4c58c5289036b292d8207bf9f87f7a6502cbcb166b59887517c7f2755b3b9f5",
+      "src/main/isEmpty.js": "091d9e29d2b6b50061486854f19081afded548a79304dcbdfc5df6dc729f7c9e",
+      "src/main/isFalsy.js": "53a880b95622bd4906698ae2f092eefb9a021a46a4cf1c6512c436b869c8e18c",
+      "src/main/isFinite.js": "7cbd0547f3f918c5f77b4bb0f0d8ade3144ae718268f6112b75b40ffcca97177",
+      "src/main/isFrozen.js": "97e55658eadf22f81e4e1a18ea39a29c1491f9cb188a60f11bfbd26271595030",
+      "src/main/isFunction.js": "83b99538d8f06efd6550258c2ebe290d9af9ba28cabde2448aaaae35cb7a1bf3",
+      "src/main/isHTMLCollection.js": "ccb0a72988fe828f22f83702926b9086ecbfe4cf8cfcfe08cfe6d8129c659cbf",
+      "src/main/isHexColor.js": "c687b87d7eca8420070ac6245b0aebaa468bd981a154a79cefbf5dfab3d533f4",
+      "src/main/isIPv4.js": "f2df142ac00c15609db1e744b96b74eca0703dcf2e292433633ebcff0fbcf49c",
+      "src/main/isInteger.js": "3496177b739499565e882495933b5398c9820af56d3dd56d198c8ba5f5abc4f4",
+      "src/main/isIterable.js": "47596718e64523309b32540da5ed0ed719eca79c3ac46e5006c11e0bbeaef2bf",
+      "src/main/isJSON.js": "e0fcb39b05ca39478ea4d44706159e81f7150bf8baa52772e7644bb376896c78",
+      "src/main/isLowercase.js": "3c9ac0fd642ad02295efb254741ca7e9e272b2700404645e6f7de98397aba12c",
+      "src/main/isNaN.js": "421c368e4d684efd28f90d7762a9a257ff43172937b59b6a57f31fc9f20f9728",
+      "src/main/isNegative.js": "403893a7e3f66f9a1f958b5f2deb6b0eacef078f733d39f9f526f12cbf0ad907",
+      "src/main/isNil.js": "b3024928bd418656d27460e7e136a1b5051cf358a3a00c17ef861063bfae15b3",
+      "src/main/isNodeList.js": "68782998c02ce9a4b4764a879ef2b0a1841ee23a3fcc59a8841d4665adeb1690",
+      "src/main/isNull.js": "e952413f0498046959af021043325206f07393f51e8fa2df9e1d3133427364a6",
+      "src/main/isNumber.js": "8ac832d477165c1eae04ac6c558e74cb6f617438fb688c5c2157c7006b2d9cf0",
+      "src/main/isNumericString.js": "042ab23d8286cda33db4f4ea382204e45f98b11f60301a37d500a554142bce00",
+      "src/main/isObject.js": "425079d3b8b3ef581350b5c730f39acc929349b7ccc22f4fdca9421949bd2690",
+      "src/main/isPositive.js": "3eb1781e09b5d1fc093e4ba934028524acb3bfc0b2e5639d7bfc2a6fc4c9f62b",
+      "src/main/isPromise.js": "01ea4131f4bf72239f123d232f843a94df77c8e346ae278281708d30cc09ab6c",
+      "src/main/isPromiseLike.js": "59b5f080332b983fe17f247104972a58162c0379c3818f69bdfa497e07a43c8f",
+      "src/main/isRegExp.js": "80e61c9ce211703e0363e085ad0676efcb4ebe3dc3103b41e66b93e51ae6afad",
+      "src/main/isSealed.js": "6cdbf6108b204f0736484a653bbe2a378bb2731549f67e4888daca7075d370a3",
+      "src/main/isString.js": "0c6bd6124ca737c724e0ea334aaded1671b9de232248085c056ecead7b68d0ae",
+      "src/main/isSymbol.js": "9ce1a6bfaaff7980696e6c6036aeed0c442ce03987599594e7f6297558097acc",
+      "src/main/isTruthy.js": "fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+      "src/main/isUUID.js": "c47426a2f40c69e5a04084e41d3ae829f03a8c4aeb819ad3c274848d43b9035f",
+      "src/main/isUndefined.js": "e6c86ed0535bd5f4fcd891e95d50cf3e0f836cdfc10453f72cc630437526046a",
+      "src/main/isUppercase.js": "8727e34e23126ce008dfdbb62acc4c3602d8983f05cb4da367df880292ec72fa",
+      "src/main/isUrl.js": "da3695ea94c89334d2b9b44bdd59f1fe26092e5c8fcf0be97b1f39566fd2d532",
+      "src/pp-is.js": "ec0c19655ca0a4c79959f1cee61ebaae13d0736e12897a15a61b7bb769ec9c67",
+      "test/callbacks.test.js": "3e0ef94078f9b5f9566a127ecc3096e53ce907218594767c26c78f7c40b3206c",
+      "test/is.test.js": "ca5c923d89847b996ada33ff2f35e29fb2cbb96c4eaadd0bc5de4bca41ab9e2f",
+      "test/regressions.test.js": "f39111a620e1e4c12ea35d4b77cde92e0a788157804bd6e4bfee15d7958226b0"
+    }
+  },
+  "original_report_hashes": {
+    "run-1792696400-nzPoyQ/outcomes.json": "ff76addfc2bf406a10f56a5674f40d69c49ae154d704b0fee41fadc261dcdfe5",
+    "run-1792696400-nzPoyQ/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792696400-nzPoyQ/missed.txt": "72c28825cf67880562a8711bccc7f81c944f4cc7952265a8813ae2220a9c3d02",
+    "run-1792696400-nzPoyQ/errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792696400-nzPoyQ/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792696400-nzPoyQ/mutants.json": "dfc8920f16e5bac5590a17277c82bec1375ee7743abb16603282cc94b3b02eca",
+    "run-1792696400-nzPoyQ/summary.txt": "e469f259dbb098d8e467ddbe00b54a39e857f5bfdbe697418231008d91fe3d2c",
+    "run-1792696400-nzPoyQ/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "run-1792696400-nzPoyQ/killed.txt": "cb6d7de955e57e74ea79438769decbe1dd457a1ac8b340161e292c406b1224df",
+    "run-1792696400-nzPoyQ/run.json": "6ab51ad6fff556b4d4165daaf04daa5f0e8b156730ffb3cc0dd0fa3cd5ccc772",
+    "run-1792696400-nzPoyQ/diff/000003.diff": "e2c4ff8069b175c81bb7eb5a7a40b6596f70e2020e092d72fa91804ffd30612d",
+    "run-1792696400-nzPoyQ/diff/000002.diff": "968f1ff6157ac7b1402cc4e6222876c416e87d415a4142052c523e1830db0a33",
+    "run-1792696400-nzPoyQ/diff/000005.diff": "989e05237709c5ab60a9c2c7a7f00b22455022a44a6229ffa7224bbeb3c23df0",
+    "run-1792696400-nzPoyQ/diff/000004.diff": "64042d1298ec13282ff7936f907b94b127a5bd22ad636e8204c3786097eb9e08",
+    "run-1792696400-nzPoyQ/diff/000008.diff": "7ee80faf26061d62d15273c75c09546cded8fceb084e4d7f140ee185fe8c7829",
+    "run-1792696400-nzPoyQ/diff/000007.diff": "ebccecac8098c6db962e5964fbf7ec385c77865057a029afb2afa20fd765e5f3",
+    "run-1792696400-nzPoyQ/diff/000006.diff": "8557ebf128a2a901712cf104c443a8823a37ea9b46b1123ed4cf42e4b5bf1606",
+    "run-1792696400-nzPoyQ/diff/000001.diff": "488c0513af1052377c8729105ed1c762254720484e62553306430bf8354e914d",
+    "run-1792696400-nzPoyQ/logs/000007.log": "9911a84e04c1dc208fc5efe385251a36681f7e473b0bbdfd70436f5e0645b4ab",
+    "run-1792696400-nzPoyQ/logs/000006.log": "d76edfbbd87b76fd36a2b728bdf380b165031a6fbc446a40a868b727aac117b6",
+    "run-1792696400-nzPoyQ/logs/000004.log": "970d6ae8370c4b9f2d119ce0c3adcdd5bcd74664f3c76f1ef02559ba157a179a",
+    "run-1792696400-nzPoyQ/logs/000007.stderr.log": "2ee5ccf07c2f722f79c0e85096a537eef2cf90599070b3412aa7ec6bba34eb54",
+    "run-1792696400-nzPoyQ/logs/000005.log": "d0466f5db66f0c3261636c40e6c344a2f9a7f0af20566fab1d97d849d93596a7",
+    "run-1792696400-nzPoyQ/logs/000003.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000001.log": "fad9ff45eb35f52915f9183638cc8fc46a1c1b26c6bfd21289514207d7c41a00",
+    "run-1792696400-nzPoyQ/logs/000006.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000002.stderr.log": "c8e17fdd67d76145330df5fb330042ca3fe655a9a07422cd3824e6453ca32367",
+    "run-1792696400-nzPoyQ/logs/000002.log": "337534a0a383638424b3597d7e3051b36706718b00ec13871d71563aae8f62e6",
+    "run-1792696400-nzPoyQ/logs/000003.log": "ea2ef925466172b3d6caec8a7dad0e42514f5fccf74e25a01b305d934e3a6cbc",
+    "run-1792696400-nzPoyQ/logs/baseline.stderr.log": "fd4ad5a9a20abba1c770a33bf342eeafe1dd95d671adffde74a69d4fc1fc27ac",
+    "run-1792696400-nzPoyQ/logs/000008.stderr.log": "6378eb84b87579aec701d70fe2e9ec8b44473a0133ba2bb63e18207a27e3707c",
+    "run-1792696400-nzPoyQ/logs/000005.stderr.log": "5ddfb34b962d6da9762ac81834b30bdca7d3168de9750425dc1c6144cd563a28",
+    "run-1792696400-nzPoyQ/logs/000001.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000004.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000003.stderr.log": "0348a440105f2dce3eeda9fa6c6bc1693e7c3f9d02b04426a1deab4fbd55cdba",
+    "run-1792696400-nzPoyQ/logs/baseline.log": "1c4c5e4f1c66ccf1a0ed5d2ee978aebcc5c1e6992f2eec3c6c7216d213f9133e",
+    "run-1792696400-nzPoyQ/logs/000007.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000002.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000006.stderr.log": "ef22da9b9bd9afce157796a5b6965808e67d16dda24754edbcbe5cda8097ec5b",
+    "run-1792696400-nzPoyQ/logs/000001.stderr.log": "8b22dee8aa478b3ea3f82bc46e19cca8ad56f414ef7761f5809e30e47dc2754f",
+    "run-1792696400-nzPoyQ/logs/000005.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000008.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/baseline.stdout.log": "72af121bdc4cbb1d32d4d3454fb83f73b6700b1a1e939b5ec41ab8d6819f89b2",
+    "run-1792696400-nzPoyQ/logs/000008.log": "1783340f2a4374d42471f4fe6819bb5a568ed72fd13d16aa5b3abe320ee3dc5f",
+    "run-1792696400-nzPoyQ/logs/000004.stderr.log": "62a1691524c1c6fef5ce20ab6e2be390532813f3f6f60a905dd5d57a9b402a9c"
+  },
+  "runs": {
+    "exploratory-reports": {
+      "path": "/tmp/mutie-js-logical-audit/exploratory-reports/run-1792696400-nzPoyQ",
+      "status": "completed",
+      "duration_seconds": 6.5154542079999995,
+      "score": {
+        "scope": "filtered",
+        "killed": 6,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 75.0,
+        "unavailable_reason": null
+      },
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/is.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:59ad89ba25ac96969f3d56b33d5d80e07ef3381a75ee1690812783adb9b3baf6",
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "baseline_tests": 58,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isBoolean.js",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 26,
+          "end_line": 8,
+          "end_column": 59,
+          "byte_start": 226,
+          "byte_end": 259,
+          "original": "value === true || value === false",
+          "replacement": "((value === true) && (value === false))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isBoolean.js",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 26,
+          "end_line": 8,
+          "end_column": 94,
+          "byte_start": 226,
+          "byte_end": 294,
+          "original": "value === true || value === false || getTypeCompare(value,'Boolean')",
+          "replacement": "((value === true || value === false) && (getTypeCompare(value,'Boolean')))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/main/isElement.js",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+          "line": 7,
+          "column": 26,
+          "end_line": 7,
+          "end_column": 61,
+          "byte_start": 136,
+          "byte_end": 171,
+          "original": "!!( value && value.nodeType === 1 )",
+          "replacement": "(!( value && value.nodeType === 1 ))",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/main/isElement.js",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+          "line": 7,
+          "column": 27,
+          "end_line": 7,
+          "end_column": 61,
+          "byte_start": 137,
+          "byte_end": 171,
+          "original": "!( value && value.nodeType === 1 )",
+          "replacement": "(( value && value.nodeType === 1 ))",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/main/isElement.js",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:2d9fb4e5d58f9bae838674ac2d66947875c9c0fa437f10129bf28fd950a08f8a",
+          "line": 7,
+          "column": 30,
+          "end_line": 7,
+          "end_column": 59,
+          "byte_start": 140,
+          "byte_end": 169,
+          "original": "value && value.nodeType === 1",
+          "replacement": "((value) || (value.nodeType === 1))",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/main/isFalsy.js",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:53a880b95622bd4906698ae2f092eefb9a021a46a4cf1c6512c436b869c8e18c",
+          "line": 7,
+          "column": 24,
+          "end_line": 7,
+          "end_column": 30,
+          "byte_start": 148,
+          "byte_end": 154,
+          "original": "!value",
+          "replacement": "(value)",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/main/isTruthy.js",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+          "line": 7,
+          "column": 25,
+          "end_line": 7,
+          "end_column": 32,
+          "byte_start": 151,
+          "byte_end": 158,
+          "original": "!!value",
+          "replacement": "(!value)",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/main/isTruthy.js",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:fcf846ca9843ceb47dcb84dc085b04ca1782bee69b46d81476c60990659c824e",
+          "line": 7,
+          "column": 26,
+          "end_line": 7,
+          "end_column": 32,
+          "byte_start": 152,
+          "byte_end": 158,
+          "original": "!value",
+          "replacement": "(value)",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        }
+      ],
+      "summary": {
+        "killed": 6,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.039184042,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.037506667,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3766,
+                "head_bytes": 3766,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3737,
+                "head_bytes": 3737,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.040483625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4332,
+                "head_bytes": 4332,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4303,
+                "head_bytes": 4303,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.048555625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4332,
+                "head_bytes": 4332,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4303,
+                "head_bytes": 4303,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.062625625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4381,
+                "head_bytes": 4381,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4352,
+                "head_bytes": 4352,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.041838666,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4353,
+                "head_bytes": 4353,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4324,
+                "head_bytes": 4324,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.0393115,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4364,
+                "head_bytes": 4364,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4335,
+                "head_bytes": 4335,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.055228083,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4364,
+                "head_bytes": 4364,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4335,
+                "head_bytes": 4335,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-js-logical-audit/stronger-reports/run-1792696501-yyOCbT",
+      "status": "completed",
+      "duration_seconds": 2.519299375,
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 50.0,
+        "unavailable_reason": null
+      },
+      "bun_scope": {
+        "runtime_version": "1.3.11",
+        "runtime_revision": "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
+        "executable": "/tmp/mutie-bun-pinned-1.3.11/bun-darwin-aarch64/bun",
+        "executable_fingerprint": "sha256:1d77af7bfd811aebb7d37bec496a5eed14fe227ded3ab7866d2f39786e8107b6",
+        "manifest_fingerprint": "sha256:b51a61cdc32aceccba52a39cacd7983ecc85b727bd8a955dcd680d79bdda604e",
+        "configuration_fingerprints": {},
+        "test_files": [
+          "test/callbacks.test.js",
+          "test/is.test.js",
+          "test/logical-boolean.test.js",
+          "test/regressions.test.js"
+        ],
+        "recipe_fingerprint": "sha256:59ad89ba25ac96969f3d56b33d5d80e07ef3381a75ee1690812783adb9b3baf6",
+        "timeout_millis": 30000,
+        "capture_bytes": 4194304,
+        "evidence_file_bytes": 8388608
+      },
+      "baseline_tests": 59,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/main/isBoolean.js",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 26,
+          "end_line": 8,
+          "end_column": 59,
+          "byte_start": 226,
+          "byte_end": 259,
+          "original": "value === true || value === false",
+          "replacement": "((value === true) && (value === false))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/main/isBoolean.js",
+          "operator": "logical_swap",
+          "source_fingerprint": "sha256:c90be92c53bd1b43036c71e3ac0aee83870306f6fe50023620b7e1c2be208302",
+          "line": 8,
+          "column": 26,
+          "end_line": 8,
+          "end_column": 94,
+          "byte_start": 226,
+          "byte_end": 294,
+          "original": "value === true || value === false || getTypeCompare(value,'Boolean')",
+          "replacement": "((value === true || value === false) && (getTypeCompare(value,'Boolean')))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        }
+      ],
+      "summary": {
+        "killed": 1,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.040143667,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3871,
+                "head_bytes": 3871,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 3842,
+                "head_bytes": 3842,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.0397975,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4570,
+                "head_bytes": 4570,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28,
+                "head_bytes": 28,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 4541,
+                "head_bytes": 4541,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "validation": {
+    "semantic_cases": 72,
+    "semantic_log": "/tmp/mutie-js-logical-semantics-final.log",
+    "semantic_seconds": 4.53,
+    "scored_combinations": 6,
+    "scored_log": "/tmp/mutie-js-logical-matrix.log",
+    "scored_seconds": 94.96,
+    "default_suite": {
+      "passed": 311,
+      "failed": 0,
+      "ignored": 120,
+      "log": "/tmp/mutie-js-logical-default-final.log"
+    },
+    "boolean_regressions": {
+      "node_tests": 2,
+      "node_seconds": 87.98,
+      "bun_tests": 1,
+      "bun_seconds": 85.93,
+      "bun_syntaxes": [
+        "js",
+        "ts"
+      ]
+    },
+    "clippy": "passed --all-targets -- -D warnings",
+    "fmt": "passed"
+  }
+}

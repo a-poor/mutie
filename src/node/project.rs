@@ -346,7 +346,15 @@ mod tests {
             &Cancellation::default(),
         )
         .unwrap();
-        assert_eq!(discovery.mutations.len(), 3);
+        assert_eq!(discovery.mutations.len(), 4);
+        assert_eq!(
+            discovery
+                .mutations
+                .iter()
+                .filter(|m| m.operator == crate::mutation::Operator::LogicalSwap)
+                .count(),
+            1
+        );
         assert!(
             discovery
                 .mutations

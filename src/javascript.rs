@@ -39,6 +39,72 @@ pub fn replacement(operator: Operator, original: &str) -> Option<&'static str> {
     }
 }
 
+// Wrap both operands and the result so swapping precedence cannot regroup
+// either a child or the enclosing expression. Keep inter-operand trivia intact.
+fn expression_replacement(
+    operator: Operator,
+    node: tree_sitter::Node<'_>,
+    source: &str,
+) -> Option<String> {
+    let token = node.child_by_field_name("operator")?;
+    match (operator, node.kind(), &source[token.byte_range()]) {
+        (Operator::LogicalSwap, "binary_expression", original @ ("&&" | "||")) => {
+            let left = node.child_by_field_name("left")?;
+            let right = node.child_by_field_name("right")?;
+            Some(format!(
+                "(({}){}{}{}({}))",
+                &source[left.byte_range()],
+                &source[left.end_byte()..token.start_byte()],
+                if original == "&&" { "||" } else { "&&" },
+                &source[token.end_byte()..right.start_byte()],
+                &source[right.byte_range()]
+            ))
+        }
+        (Operator::NegationRemove, "unary_expression", "!") => {
+            Some(format!("({})", &source[token.end_byte()..node.end_byte()]))
+        }
+        _ => None,
+    }
+}
+
+/// Validate full-expression edits by reconstructing the same parsed recipe.
+/// A different grouping or arbitrary replacement must not enter saved reruns.
+pub fn valid_replacement(
+    operator: Operator,
+    original: &str,
+    changed: &str,
+    typescript: bool,
+) -> bool {
+    if let Some(expected) = replacement(operator, original) {
+        return expected == changed;
+    }
+    if !matches!(operator, Operator::LogicalSwap | Operator::NegationRemove) {
+        return false;
+    }
+    let prefix = "const value = (\n";
+    let source = format!("{prefix}{original}\n);");
+    let mut parser = Parser::new();
+    let language = if typescript {
+        tree_sitter_typescript::LANGUAGE_TYPESCRIPT
+    } else {
+        tree_sitter_javascript::LANGUAGE
+    };
+    if parser.set_language(&language.into()).is_err() {
+        return false;
+    }
+    let Ok(tree) = parse(&mut parser, &source) else {
+        return false;
+    };
+    let Some(node) = tree
+        .root_node()
+        .descendant_for_byte_range(prefix.len(), prefix.len() + original.len())
+    else {
+        return false;
+    };
+    node.byte_range() == (prefix.len()..prefix.len() + original.len())
+        && expression_replacement(operator, node, &source).as_deref() == Some(changed)
+}
+
 /// Tree-sitter treats a literal NUL as end-of-input even inside otherwise valid
 /// JavaScript comments and strings. Mask only for parsing, preserve every byte
 /// offset, and require each masked byte to be in literal text (never code).
@@ -245,12 +311,31 @@ fn discover_with_ambient(
                     }
                 }
             }
+            for operator in [Operator::LogicalSwap, Operator::NegationRemove] {
+                if let Some(replacement) = expression_replacement(operator, node, &file.source) {
+                    mutations.push(Mutation {
+                        file: file.clone(),
+                        operator,
+                        range: node.byte_range(),
+                        replacement: replacement.into(),
+                        line: node.start_position().row + 1,
+                        column: node.start_position().column + 1,
+                        end_line: node.end_position().row + 1,
+                        end_column: node.end_position().column + 1,
+                    });
+                }
+            }
             let mut cursor = node.walk();
             pending.extend(node.named_children(&mut cursor));
         }
     }
     mutations.sort_by(|a, b| {
-        (&a.file.path, a.range.start, a.operator).cmp(&(&b.file.path, b.range.start, b.operator))
+        (&a.file.path, a.range.start, a.operator, a.range.end).cmp(&(
+            &b.file.path,
+            b.range.start,
+            b.operator,
+            b.range.end,
+        ))
     });
     Ok(Discovery {
         mutations,
@@ -723,3 +808,7 @@ let calls = 0; const value = false && compare(++calls, 0); assert.equal(calls, 0
         Ok(())
     }
 }
+
+#[cfg(test)]
+#[path = "javascript/logical_tests.rs"]
+mod logical_tests;

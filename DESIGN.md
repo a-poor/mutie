@@ -2141,3 +2141,25 @@ stronger-test reruns and unchanged pp-is endpoint findings. Existing observer an
 classification contracts remain intact. Bun's existing recipe fingerprint includes
 discovery bytes, so older Bun recipes require fresh scans; Node/Vitest execution
 recipes are unchanged and source identities select rediscovered candidates.
+
+
+### Shared JS/TS logical expressions
+
+`logical_swap` replaces a complete parsed `&&`/`||` expression with parenthesized
+left and right operands and a parenthesized result. Inter-operand comments and
+whitespace are retained. This prevents a changed precedence from regrouping a
+nested expression or its parent. `negation_remove` replaces a parsed unary `!`
+expression with its parenthesized operand and retained trivia. It removes the
+boolean conversion as well as negation; no Boolean wrapper is introduced.
+Native truthiness determines which operands are evaluated, and logical expressions
+retain raw operand values. Each `!` in `!!x` remains an independent mutation.
+TS non-null/definite-assignment syntax, `??`, logical assignments and bitwise
+operators are outside this slice. Runtime type checking is not added.
+
+Saved logical replacements are validated by parsing the saved original expression
+in its JS/TS grammar and reconstructing the same recipe. Source rediscovery still
+binds spans, fingerprints and replacement bytes before reruns. Nested same-start
+candidates sort by operator and end offset. Existing boolean workflows use explicit
+operator selection where their acceptance counts intentionally describe boolean
+mutations. [Acceptance](benchmarks/javascript-logical.md) records semantic controls,
+six runner/syntax fixtures, unchanged public inputs and a useful stronger-test rerun.

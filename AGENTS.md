@@ -539,3 +539,14 @@ cover the extension. Unchanged pp-is IPv4 validation has four inversion kills an
 two boundary survivors, killed by endpoint tests in a separate copy. Preserve
 original inputs/reports and filtered scores; no classifier or lifecycle rule was
 relaxed. Bun's source-bound recipe changes require fresh original scans.
+
+
+`benchmarks/javascript-logical.md` records JS/TS logical swaps and negation removal
+across Vitest, Node and Bun. Preserve parsed operand/parent grouping with the full
+expression recipe, trivia and raw JS values. Changed short-circuit decisions are
+intentional; duplicate evaluation and added coercion are not. Keep TS postfix
+assertions, nullish/logical assignment and bitwise operators excluded. Saved
+logical edits must reconstruct exactly from the parsed original, and reruns still
+require source identity. Unchanged pp-is has eight selected candidates (six kills,
+two survivors); separate-copy boxed-Boolean tests kill the outer swap while the
+inner fast-path survivor remains open. Preserve original scores/inputs/reports.

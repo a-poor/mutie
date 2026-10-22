@@ -337,12 +337,15 @@ impl LoadedReport {
                 crate::cli::Lang::Vitest | crate::cli::Lang::Bun
             ) {
                 ensure!(
-                    crate::javascript::replacement(mutation.operator, &mutation.original)
-                        == Some(mutation.replacement.as_str())
-                        && matches!(
-                            mutation.file.extension().and_then(|s| s.to_str()),
-                            Some("js" | "ts")
-                        ),
+                    crate::javascript::valid_replacement(
+                        mutation.operator,
+                        &mutation.original,
+                        &mutation.replacement,
+                        mutation.file.extension().and_then(|s| s.to_str()) == Some("ts")
+                    ) && matches!(
+                        mutation.file.extension().and_then(|s| s.to_str()),
+                        Some("js" | "ts")
+                    ),
                     "saved JavaScript/TypeScript mutation is outside the supported scope"
                 );
             }
@@ -355,15 +358,18 @@ impl LoadedReport {
             }
             if run.language() == crate::cli::Lang::Node {
                 ensure!(
-                    crate::javascript::replacement(mutation.operator, &mutation.original)
-                        == Some(mutation.replacement.as_str())
-                        && (mutation.file.extension().and_then(|s| s.to_str()) == Some("js")
-                            || (mutation.file.extension().and_then(|s| s.to_str()) == Some("ts")
-                                && !mutation.file.to_string_lossy().ends_with(".d.ts")
-                                && run
-                                    .node_scope
-                                    .as_ref()
-                                    .is_some_and(|s| s.typescript.is_some()))),
+                    crate::javascript::valid_replacement(
+                        mutation.operator,
+                        &mutation.original,
+                        &mutation.replacement,
+                        mutation.file.extension().and_then(|s| s.to_str()) == Some("ts")
+                    ) && (mutation.file.extension().and_then(|s| s.to_str()) == Some("js")
+                        || (mutation.file.extension().and_then(|s| s.to_str()) == Some("ts")
+                            && !mutation.file.to_string_lossy().ends_with(".d.ts")
+                            && run
+                                .node_scope
+                                .as_ref()
+                                .is_some_and(|s| s.typescript.is_some()))),
                     "saved Node mutation is outside the supported scope"
                 );
             }

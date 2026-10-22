@@ -50,6 +50,8 @@ fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
         .args([
             "--lang",
             "node",
+            "--operator",
+            "boolean_flip",
             "--ui",
             "plain",
             "--timeout",
@@ -538,7 +540,7 @@ fn rejects_unsupported_scope_before_invoking_node() {
         "Node supports only full test scope",
     );
     check(
-        &["--operator", "logical_swap"],
+        &["--operator", "call_remove"],
         "Node supports only boolean_flip",
     );
     fs::write(temp.path().join("package.json"), r#"{"workspaces":["*"]}"#).unwrap();

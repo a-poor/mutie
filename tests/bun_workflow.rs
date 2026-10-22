@@ -38,6 +38,8 @@ fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
         .args([
             "--lang",
             "bun",
+            "--operator",
+            "boolean_flip",
             "--ui",
             "plain",
             "--timeout",
