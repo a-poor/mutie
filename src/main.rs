@@ -6,6 +6,7 @@ mod cli;
 mod command;
 mod config;
 mod coordinator;
+mod dependency_tree;
 mod dismissals;
 mod go;
 mod identity;

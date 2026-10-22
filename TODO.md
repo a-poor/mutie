@@ -51,11 +51,17 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Specify validated runner-option and operator-exclusion semantics; do not emit
    configuration for capabilities that have not shipped.
    Completed: [init contract and acceptance](benchmarks/project-init.md).
-2. [ ] **JS/TS package-manager compatibility.** Audit npm/pnpm/Yarn/Bun installation
+2. [x] **JS/TS package-manager compatibility.** Audit npm/pnpm/Yarn/Bun installation
    layouts, lockfiles, invocation and dependency isolation; assess Vite+ explicitly
    before promising an adapter. Implement in bounded manager-specific goals,
    covering dependency resolution, source preservation, rerun drift and unchanged
    public-project workflows. Record supported versions and any PnP/workspace limits.
+   Completed for pinned npm/Yarn/Bun hoisting and pnpm's local isolated store:
+   [acceptance and Vite+ limits](benchmarks/package-managers.md). All four managers
+   pass Vitest adapter/scored/lifecycle controls and the Node/Bun JS/TS matrix;
+   unchanged Bragkit with installed development tools retains its findings and
+   stronger-test kills. Alternative linkers, workspaces and bundled `vp test`
+   remain separate scopes, not implied compatibility.
 3. [ ] **Ordinary Rust workspaces.** Support workspace roots/member selection,
    inherited metadata and in-workspace path dependencies; copy complete needed
    context and bind selection to reports/reruns. Start with full supported workspace

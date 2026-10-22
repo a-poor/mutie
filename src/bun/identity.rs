@@ -67,10 +67,9 @@ impl ExecutionIdentity {
                 && self
                     .configuration_fingerprints
                     .iter()
-                    .all(
-                        |(k, v)| matches!(k.as_str(), "tsconfig.json" | "bun.lock" | "bun.lockb")
-                            && valid(v)
-                    ),
+                    .all(|(k, v)| (k == "tsconfig.json"
+                        || crate::dependency_tree::identity_key(k))
+                        && valid(v)),
             "invalid saved Bun fingerprints"
         );
         let unique: std::collections::BTreeSet<_> = self.test_files.iter().collect();
@@ -133,7 +132,7 @@ impl ExecutionIdentity {
                 .files
                 .iter()
                 .filter(|(path, _)| {
-                    matches!(path.as_str(), "tsconfig.json" | "bun.lock" | "bun.lockb")
+                    path.as_str() == "tsconfig.json" || crate::dependency_tree::identity_key(path)
                 })
                 .map(|(k, v)| (k.clone(), v.clone()))
                 .collect(),

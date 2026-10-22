@@ -149,6 +149,10 @@ pub struct ExecutionScope {
     pub node: String,
     pub node_executable: std::path::PathBuf,
     pub pnpm: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub package_manager: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub installation_fingerprint: Option<String>,
     pub vitest: String,
     pub vite: String,
     pub manifest_fingerprint: String,
@@ -173,10 +177,20 @@ async fn execution_scope_with_node(
     let node = identify_node(program, root, cancellation).await?;
     Ok(ExecutionScope {
         project_config_fingerprints: project.project_config_fingerprints,
+        installation_fingerprint: Some(project.installation_fingerprint),
         package: project.name,
         node: "24.22.0".into(),
         node_executable: node.executable,
-        pnpm: "11.10.0".into(),
+        pnpm: if project.package_manager == "pnpm@11.10.0" {
+            "11.10.0".into()
+        } else {
+            String::new()
+        },
+        package_manager: if project.package_manager == "pnpm@11.10.0" {
+            None
+        } else {
+            Some(project.package_manager)
+        },
         vitest: project.vitest,
         vite: project.vite,
         manifest_fingerprint: project.manifest_fingerprint,
@@ -191,7 +205,10 @@ async fn execution_scope_with_node(
             Sha256::digest(
                 [
                     include_bytes!("vitest/reporter.mjs").as_slice(),
-                    include_bytes!("vitest/lifecycle.rs").as_slice()
+                    include_bytes!("vitest/lifecycle.rs").as_slice(),
+                    include_bytes!("vitest/project.rs").as_slice(),
+                    include_bytes!("vitest/installation.rs").as_slice(),
+                    include_bytes!("dependency_tree.rs").as_slice()
                 ]
                 .concat()
             )
@@ -249,15 +266,24 @@ impl ExecutionScope {
         );
         ensure!(
             self.node == "24.22.0"
-                && self.pnpm == "11.10.0"
+                && ((self.pnpm == "11.10.0" && self.package_manager.is_none())
+                    || (self.pnpm.is_empty()
+                        && matches!(
+                            self.package_manager.as_deref(),
+                            Some("npm@11.19.1" | "yarn@4.18.1" | "bun@1.3.11")
+                        )))
                 && self.vitest == "4.1.9"
                 && matches!(self.vite.as_str(), "8.1.3" | "8.3.4"),
             "unsupported saved Vitest tool identity"
         );
         ensure!(
+            self.package_manager.is_none() || self.installation_fingerprint.is_some(),
+            "package-manager identity requires installed dependency fingerprint"
+        );
+        ensure!(
             self.project_config_fingerprints.keys().all(|name| matches!(
                 name.as_str(),
-                "tsconfig.json" | "pnpm-workspace.yaml"
+                "tsconfig.json" | "pnpm-workspace.yaml" | ".yarnrc.yml"
             ) || config::FILES
                 .contains(&name.as_str())),
             "unsupported saved Vitest project configuration"
@@ -269,6 +295,7 @@ impl ExecutionScope {
         ]
         .into_iter()
         .chain(self.project_config_fingerprints.values())
+        .chain(self.installation_fingerprint.iter())
         {
             ensure!(
                 fingerprint
@@ -302,6 +329,8 @@ pub(crate) fn fixture_scope() -> ExecutionScope {
         node: "24.22.0".into(),
         node_executable: "/tools/node".into(),
         pnpm: "11.10.0".into(),
+        package_manager: None,
+        installation_fingerprint: None,
         vitest: "4.1.9".into(),
         vite: "8.3.4".into(),
         manifest_fingerprint: format!("sha256:{}", "a".repeat(64)),

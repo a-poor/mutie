@@ -1,0 +1,13 @@
+{
+  "name": "mutie-vitest-fixture",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.11",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "4.1.9",
+    "vite": "8.1.3"
+  }
+}

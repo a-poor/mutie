@@ -35,8 +35,8 @@ requires adapter evidence, including exact-runner observer checks where used.
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | One package on Unix: binary, library, or library + one binary; unit/integration tests; 3 operators | Broader project/platform evidence; workspaces remain separate |
-| TypeScript | Vitest | Validated | One pinned ESM/pnpm package; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
-| JavaScript | Vitest | Validated | One pinned ESM/pnpm package; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
+| TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; boolean flips; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
+| JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial boolean flips; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial boolean flips; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial boolean flips, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
@@ -121,14 +121,19 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
 
 ## JavaScript / TypeScript — Vitest
 
-**Levels: TypeScript and JavaScript Validated within the pinned ESM/pnpm scope.**
+**Levels: TypeScript and JavaScript Validated within the pinned ESM runner scope.**
 
 The [first scope audit](benchmarks/vitest-initial-scope.md) selects one ESM package,
 Node execution, `.js`/`.ts` source, pnpm's self-contained locked dependencies and
 `boolean_flip`. Initial tool evidence is Node 24.22.0, pnpm 11.10.0 and Vitest 4.1.9
 on macOS. Config support is limited to static coverage-reporter-only declarations;
 other custom configs/plugins, browser environments, JSX/TSX, CommonJS,
-monorepos and other package managers are deferred.
+monorepos remain deferred. The package-manager extension accepts npm 11.19.1
+(lock v3), Yarn 4.18.1 (node-modules/classic), Bun 1.3.11 (hoisted text lock)
+and the original pnpm 11.10.0 isolated store. Exact runner instrumentation is
+unchanged. See [installation acceptance and limits](benchmarks/package-managers.md).
+PnP, external links, alternative linkers and workspaces need separate validation.
+Vite+ installation delegation does not establish support for its bundled `vp test` runner.
 
 The mixed-syntax fixture passes four direct Vitest tests; separate JS/TS probes
 show survivors killed by stronger tests. Pathe is selected for real TypeScript
@@ -197,6 +202,11 @@ TypeScript milestone; neither promotes JSX or TSX support.
 ## JavaScript / TypeScript — Node.js test runner
 
 **JavaScript and native TypeScript: independently Validated within the pinned scope.**
+
+Declared Node/Bun development installations may now be present and are retained
+in isolated copies. Manager metadata and installed bytes join rerun identity;
+runtime dependency imports remain unsupported. The cross-manager JS/TS fixture
+matrix is recorded in the [package-manager audit](benchmarks/package-managers.md).
 
 Explicit `--lang node` supports one dependency-free ESM package with `.js` files
 under `src/` and `test/`, exact `node --test` or `node --test test/*.test.js` script, no installed

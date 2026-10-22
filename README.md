@@ -18,7 +18,19 @@ not necessarily available in the current CLI.
 See [target support](SUPPORT.md) for Go/Rust support and validated scoped
 JavaScript/TypeScript support through Vitest. The Node runner has a validated
 JavaScript scope and a separately validated native TypeScript scope. Bun has independently validated scoped JavaScript and TypeScript support; Python/pytest is also validated within its documented scope.
-Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM/pnpm
+
+Package installation and test-runner selection are separate. Vitest accepts
+`packageManager` selectors `pnpm@11.10.0` (isolated local store), `npm@11.19.1`
+(lock v3), `yarn@4.18.1` (node-modules/classic), and `bun@1.3.11` (hoisted text
+lock), with the audited Vitest 4.1.9 and Node 24.22.0 runtime. Install dependencies
+before running Mutie; Mutie does not install packages or execute package-manager
+scripts. Node/Bun tests still use their own pinned runtime regardless of installer.
+PnP, external dependency links, workspaces, Yarn's pnpm linker and Bun's isolated
+linker are outside this acceptance. Vite+ may manage installation, but `vp test`
+uses a different bundled runner and is explicitly unsupported. See the
+[package-manager audit and validation](benchmarks/package-managers.md).
+
+Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM
 package to discover boolean flips, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
 Vite/Vitest config is accepted without executing it; coverage remains disabled.
@@ -61,8 +73,9 @@ mutie PATH --lang node --rerun-missed RUN_DIR
 
 The initial scope is one dependency-free ESM package using audited Node **24.22.0**
 on PATH and `.js` files under `src/` and `test/`. The package test script may be
-exactly `node --test` or `node --test test/*.test.js`. There must be no installed
-`node_modules`; unused build-only devDependencies are allowed. Imports must be
+exactly `node --test` or `node --test test/*.test.js`. Declared development
+installations may be present: their complete owned `node_modules` tree and manager
+metadata are fingerprinted and copied into isolated runs. Imports must be
 static literal relative paths within those directories or `node:` built-ins.
 CommonJS, custom loaders/runner flags, workspaces and runtime dependencies are
 unsupported. Only `boolean_flip`, `--jobs 1` and full-suite testing are accepted.
@@ -128,8 +141,9 @@ checks a baseline in a fresh copy using pinned Bun 1.3.11+af24e281e. This diagno
 accepts dependency-free ESM packages with `scripts.test: "bun test"`, `.js`/`.ts`
 source under `src/`, and `.test.js`/`.test.ts` tests under `test/` or `tests/`.
 A narrow plain-JSON NodeNext/ES2022 tsconfig is accepted; aliases, inherited config,
-custom Bun configuration, installed dependencies, symlinks and dynamic imports
-remain unsupported. Examples/release scripts may be present but cannot be imported
+custom Bun configuration, runtime dependency imports, project symlinks and dynamic
+imports remain unsupported. Declared development installations are retained and
+fingerprinted, including owned links within `node_modules`. Examples/release scripts may be present but cannot be imported
 by audited source/tests. The unchanged 272-test Composer baseline and stronger-test
 finding now pass through this executor; see [acceptance](benchmarks/bun-composer-execution.md).
 `mutie bun-list PATH [--include GLOB] [--exclude GLOB] [--json]` previews runtime

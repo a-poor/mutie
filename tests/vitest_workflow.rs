@@ -10,6 +10,35 @@ use std::{
 #[path = "support/vitest_dismissals.rs"]
 mod review;
 
+fn lockfile(root: &Path) -> &'static str {
+    let locks: Vec<_> = [
+        "pnpm-lock.yaml",
+        "package-lock.json",
+        "yarn.lock",
+        "bun.lock",
+    ]
+    .into_iter()
+    .filter(|name| root.join(name).is_file())
+    .collect();
+    assert_eq!(
+        locks.len(),
+        1,
+        "fixture must have exactly one manager lockfile"
+    );
+    locks[0]
+}
+
+fn worker_runner(root: &Path) -> PathBuf {
+    let vitest = root.join("node_modules/vitest").canonicalize().unwrap();
+    for parent in vitest.ancestors() {
+        let candidate = parent.join("node_modules/@vitest/runner/dist/chunk-artifact.js");
+        if candidate.is_file() {
+            return candidate.canonicalize().unwrap();
+        }
+    }
+    panic!("fixture is missing Vitest worker runner");
+}
+
 fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
     let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
     command.arg(root).args([
@@ -63,7 +92,7 @@ fn scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure() {
     let before: Vec<_> = [
         "src/flags.js",
         "src/flags.ts",
-        "pnpm-lock.yaml",
+        lockfile(&root),
         "package.json",
     ]
     .into_iter()
@@ -184,7 +213,7 @@ fn scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure() {
         original_report
     );
     assert_eq!(fs::read(directory.join("run.json")).unwrap(), run_bytes);
-    for file in ["package.json", "pnpm-lock.yaml", "tsconfig.json"] {
+    for file in ["package.json", lockfile(&root), "tsconfig.json"] {
         let path = root.join(file);
         let original = fs::read(&path).ok();
         let modified = match &original {
@@ -359,8 +388,8 @@ fn lifecycle_cli_cases(cases: &[(bool, &str)]) {
             .unwrap()
             .success()
     );
-    let runner = "node_modules/.pnpm/@vitest+runner@4.1.9/node_modules/@vitest/runner/dist/chunk-artifact.js";
-    let original_runner = fs::read(root.join(runner)).unwrap();
+    let runner = worker_runner(&root);
+    let original_runner = fs::read(root.join(&runner)).unwrap();
     let source = "export const ready = true;\n";
     fs::write(root.join("src/lifecycle.js"), source).unwrap();
     let reports = temp.path().join("reports");
@@ -395,7 +424,7 @@ fn lifecycle_cli_cases(cases: &[(bool, &str)]) {
             if killed { "killed" } else { "error" }
         );
         assert_eq!(saved["score"]["killed"], u64::from(killed));
-        assert_eq!(fs::read(root.join(runner)).unwrap(), original_runner);
+        assert_eq!(fs::read(root.join(&runner)).unwrap(), original_runner);
         assert_eq!(
             fs::read_to_string(root.join("src/lifecycle.js")).unwrap(),
             source

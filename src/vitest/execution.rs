@@ -93,7 +93,9 @@ pub(super) async fn run(
     timings.finish("adapter_copy");
     let captured = Project::load(&root, cancellation)?;
     ensure!(
-        captured.manifest_fingerprint == project.manifest_fingerprint
+        captured.installation_fingerprint == project.installation_fingerprint
+            && captured.package_manager == project.package_manager
+            && captured.manifest_fingerprint == project.manifest_fingerprint
             && captured.lockfile_fingerprint == project.lockfile_fingerprint
             && captured.project_config_fingerprints == project.project_config_fingerprints,
         "Vitest package or configuration changed during snapshotting"

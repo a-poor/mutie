@@ -29,8 +29,13 @@ Source filters and test selection are separate concepts. See the
 [onboarding contract](benchmarks/project-init.md) for implemented setup and future
 runner-option/operator-exclusion semantics. Exact-byte observers
 mean runner upgrades require attribution/regression validation, not just matching
-exit codes. npm, pnpm, Yarn, Bun and Vite+ compatibility must be audited separately
-from test-runner support; these are targets, not current compatibility claims.
+exit codes. The [package-manager audit](benchmarks/package-managers.md) separates
+npm/pnpm/Yarn/Bun installation validation from test-runner selection. Vitest now
+resolves its exact-byte worker through owned dependency ancestry and binds installed
+content to snapshots/reruns. Node/Bun retain declared development installations
+without admitting runtime dependency imports. Vite+ installation delegation is
+separate from its unsupported bundled `vp test` runner; alternative linkers and
+workspaces still need their own acceptance.
 
 ## Goal
 

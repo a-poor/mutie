@@ -36,6 +36,7 @@ fn detect(root: &Path) -> Result<Vec<Lang>> {
         let value: serde_json::Value = serde_json::from_str(&fs::read_to_string(&package)?)
             .context("reading package.json for tooling detection")?;
         let script = value["scripts"]["test"].as_str().unwrap_or("");
+        reject_vite_plus_test(&value)?;
         // Recognize exact command prefixes, never execute scripts or infer Bun from a lockfile.
         if script == "node --test" || script.starts_with("node --test ") {
             choices.push(Lang::Node);
@@ -83,12 +84,21 @@ fn choose(choices: &[Lang], interactive: bool) -> Result<Lang> {
         .context("no matching adapter selected; rerun with --lang")
 }
 
+fn reject_vite_plus_test(package: &serde_json::Value) -> Result<()> {
+    let script = package["scripts"]["test"].as_str().unwrap_or("");
+    ensure!(
+        script != "vp test" && !script.starts_with("vp test "),
+        "Vite+ vp test uses bundled runner APIs that need a separate attribution audit; package-manager delegation is distinct from test-runner support"
+    );
+    Ok(())
+}
+
 fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
     let runtime = match lang {
         Lang::Python => "CPython 3.14.7 / pytest 9.0.2 in an explicitly supplied venv",
         Lang::Node => "Node 24.22.0",
         Lang::Bun => "Bun 1.3.11+af24e281e",
-        Lang::Vitest => "Node 24.22.0 / Vitest 4.1.9 / audited pnpm installation",
+        Lang::Vitest => "Node 24.22.0 / Vitest 4.1.9 / an audited package-manager installation",
         Lang::Rust => {
             "host Cargo toolchain; ordinary single package (workspaces not supported yet)"
         }
@@ -120,14 +130,20 @@ fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
             "Package-manager metadata does not select or certify a test runner. No install will be performed."
         );
         if lang == Lang::Vitest {
+            reject_vite_plus_test(&package)?;
             ensure!(
-                manager == Some("pnpm@11.10.0"),
-                "current Vitest support requires packageManager pnpm@11.10.0; npm/Yarn/Bun/Vite+ compatibility is planned, not implemented; project files were not changed"
+                manager
+                    .is_some_and(|name| crate::vitest::project::PACKAGE_MANAGERS.contains(&name)),
+                "unsupported packageManager; supported installation selectors: {}; other versions/layouts are not implemented; project files were not changed",
+                crate::vitest::project::PACKAGE_MANAGERS.join(", ")
+            );
+            eprintln!(
+                "pnpm requires its isolated layout; npm, Yarn and Bun require the audited hoisted layout. Yarn PnP/workspaces are not supported. Full installation validation happens on a run."
             );
         }
         if matches!(lang, Lang::Node | Lang::Bun) {
             eprintln!(
-                "This adapter currently requires its documented dependency-free project scope; package-manager installation layouts are not generally supported yet."
+                "Runtime dependency imports remain unsupported. Declared development installations may be retained as owned, fingerprinted artifacts; PnP loaders and external dependency links are rejected. Full scope validation happens on a run."
             );
         }
     }

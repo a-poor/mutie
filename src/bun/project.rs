@@ -43,6 +43,11 @@ impl Project {
                 "unsupported Bun package setting: {key}"
             );
         }
+        files.extend(crate::dependency_tree::development(
+            &root,
+            &manifest,
+            cancellation,
+        )?);
         for parent in root.ancestors().skip(1) {
             ensure!(
                 !parent.join("pnpm-workspace.yaml").exists(),
@@ -107,10 +112,9 @@ fn collect(
             if entry.file_name() == ".git" {
                 continue;
             }
-            ensure!(
-                entry.file_name() != "node_modules",
-                "installed Bun dependencies unsupported"
-            );
+            if relative.as_os_str().is_empty() && entry.file_name() == "node_modules" {
+                continue;
+            }
             collect(
                 root,
                 &relative.join(entry.file_name()),
@@ -224,6 +228,7 @@ fn validate_imports(
             file.display()
         );
     }
+    let installed_development = root.join("node_modules").exists();
     let mut pending = vec![tree.root_node()];
     while let Some(node) = pending.pop() {
         cancellation.check()?;
@@ -235,6 +240,15 @@ fn validate_imports(
                 ),
                 "CommonJS identifiers are unsupported in Bun implicit ESM: {}",
                 file.display()
+            );
+        }
+        if installed_development && matches!(node.kind(), "identifier" | "property_identifier") {
+            ensure!(
+                !matches!(
+                    &source[node.byte_range()],
+                    "createRequire" | "getBuiltinModule" | "eval" | "Function"
+                ),
+                "reflective module loading is unsupported with development installations"
             );
         }
         let import = node.child_by_field_name("source");
@@ -416,6 +430,34 @@ mod tests {
             "export const enabled: boolean = true;",
         )?;
         assert!(Project::load(root.path(), &Cancellation::default()).is_err());
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod development_tests {
+    use super::*;
+    #[test]
+    fn development_tree_is_in_identity_and_runtime_imports_stay_rejected() -> Result<()> {
+        let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/bun-js");
+        let work = crate::workspace::Workspace::create(&source, &[], &Cancellation::default())?;
+        let root = work.path();
+        let mut manifest: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(root.join("package.json"))?)?;
+        manifest["devDependencies"] = serde_json::json!({"tool":"1.0.0"});
+        fs::write(root.join("package.json"), serde_json::to_vec(&manifest)?)?;
+        fs::create_dir_all(root.join("node_modules/tool"))?;
+        fs::write(
+            root.join("node_modules/tool/index.js"),
+            "throw Error('not imported')",
+        )?;
+        let project = Project::load(&root, &Cancellation::default())?;
+        assert!(project.files.contains_key("node_modules"));
+        fs::write(
+            root.join("src/dependency.js"),
+            "import 'tool'; export const flag=true;",
+        )?;
+        assert!(Project::load(&root, &Cancellation::default()).is_err());
         Ok(())
     }
 }

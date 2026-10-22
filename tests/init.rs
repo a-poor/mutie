@@ -123,3 +123,35 @@ fn python_launcher_symlink_is_preserved_and_not_executed() {
         toml::from_str(&fs::read_to_string(root.path().join("mutie.toml")).unwrap()).unwrap();
     assert_eq!(config["python"].as_str(), launcher.to_str());
 }
+
+#[test]
+fn package_managers_do_not_change_runner_selection_and_vite_plus_is_explicit() {
+    for manager in ["npm@11.19.1", "pnpm@11.10.0", "yarn@4.18.1", "bun@1.3.11"] {
+        let root = tempfile::tempdir().unwrap();
+        let manifest = serde_json::json!({"name":"fixture","type":"module","packageManager":manager,"scripts":{"test":"vitest run"}});
+        fs::write(
+            root.path().join("package.json"),
+            serde_json::to_vec(&manifest).unwrap(),
+        )
+        .unwrap();
+        let output = invoke(root.path(), &["--non-interactive"]);
+        assert!(
+            output.status.success(),
+            "{manager}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let config: toml::Value =
+            toml::from_str(&fs::read_to_string(root.path().join("mutie.toml")).unwrap()).unwrap();
+        assert_eq!(config["lang"].as_str(), Some("vitest"));
+    }
+    let root = tempfile::tempdir().unwrap();
+    fs::write(
+        root.path().join("package.json"),
+        r#"{"scripts":{"test":"vp test"},"packageManager":"pnpm@11.10.0"}"#,
+    )
+    .unwrap();
+    let output = invoke(root.path(), &["--non-interactive"]);
+    assert!(!output.status.success());
+    assert!(String::from_utf8_lossy(&output.stderr).contains("separate attribution audit"));
+    assert!(!root.path().join("mutie.toml").exists());
+}

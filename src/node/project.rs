@@ -14,6 +14,7 @@ pub struct Project {
     pub tests: Vec<String>,
     pub typescript: Option<TypeScriptScope>,
     pub default_discovery: bool,
+    pub development_fingerprints: std::collections::BTreeMap<String, String>,
 }
 impl Project {
     pub fn load(root: &Path, cancellation: &Cancellation) -> Result<Self> {
@@ -57,10 +58,8 @@ impl Project {
                 "unsupported Node package setting: {key}"
             );
         }
-        ensure!(
-            !root.join("node_modules").exists(),
-            "Node initial scope requires no installed dependencies"
-        );
+        let development_fingerprints =
+            crate::dependency_tree::development(&root, &manifest, cancellation)?;
         for parent in root.ancestors().skip(1) {
             ensure!(
                 !parent.join("pnpm-workspace.yaml").exists(),
@@ -111,6 +110,7 @@ impl Project {
             tests,
             typescript,
             default_discovery,
+            development_fingerprints,
         })
     }
 }
@@ -180,11 +180,21 @@ fn validate_imports(
     parser.set_language(&language.into())?;
     let tree = crate::javascript::parse(&mut parser, &source)
         .with_context(|| format!("cannot parse Node file {}", file.display()))?;
+    let installed_development = root.join("node_modules").exists();
     let mut pending = vec![tree.root_node()];
     while let Some(node) = pending.pop() {
         cancellation.check()?;
         if typescript {
             super::typescript::validate_syntax(node, file)?;
+        }
+        if installed_development && matches!(node.kind(), "identifier" | "property_identifier") {
+            ensure!(
+                !matches!(
+                    &source[node.byte_range()],
+                    "createRequire" | "getBuiltinModule" | "eval" | "Function"
+                ),
+                "reflective module loading is unsupported with development installations"
+            );
         }
         let import = node.child_by_field_name("source");
         if node.kind() == "call_expression"
@@ -294,6 +304,36 @@ mod tests {
         fs::create_dir(root.path().join("node_modules")).unwrap();
         assert!(load().is_err());
     }
+    #[test]
+    fn installed_development_tools_are_preserved_but_not_importable() -> Result<()> {
+        let source = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/node");
+        let work = crate::workspace::Workspace::create(&source, &[], &Cancellation::default())?;
+        let root = work.path();
+        let mut manifest: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(root.join("package.json"))?)?;
+        manifest["devDependencies"] = serde_json::json!({"tool":"1.0.0"});
+        fs::write(root.join("package.json"), serde_json::to_vec(&manifest)?)?;
+        fs::create_dir_all(root.join("node_modules/tool"))?;
+        fs::write(
+            root.join("node_modules/tool/index.js"),
+            "throw Error('not imported')",
+        )?;
+        let project = Project::load(&root, &Cancellation::default())?;
+        assert!(
+            project
+                .development_fingerprints
+                .contains_key("node_modules")
+        );
+        for source in [
+            "import 'tool'; export const flag=true;",
+            "import {createRequire as loader} from 'node:module'; export const flag=true;",
+        ] {
+            fs::write(root.join("src/flags.js"), source)?;
+            assert!(Project::load(&root, &Cancellation::default()).is_err());
+        }
+        Ok(())
+    }
+
     #[test]
     fn audits_native_typescript_sources_tests_and_mixed_imports() {
         let original = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/node-typescript");

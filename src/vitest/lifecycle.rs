@@ -50,13 +50,17 @@ const REPLACEMENTS: &[(&str, &str, usize)] = &[
 ];
 
 pub fn instrument(root: &Path) -> Result<()> {
-    // pnpm's pinned virtual-store path; Project::load validates self-contained deps.
-    let path = root.join("node_modules/.pnpm/@vitest+runner@4.1.9/node_modules/@vitest/runner/dist/chunk-artifact.js");
-    let resolved = path
+    let vitest = root
+        .join("node_modules/vitest")
+        .canonicalize()
+        .context("locating installed Vitest")?;
+    let runner = super::project::resolve_dependency(root, &vitest, "@vitest/runner")?;
+    let resolved = runner
+        .join("dist/chunk-artifact.js")
         .canonicalize()
         .context("locating pinned Vitest worker runner")?;
     ensure!(
-        resolved.starts_with(root),
+        resolved.starts_with(root.join("node_modules")),
         "Vitest worker runner escapes isolated project"
     );
     let source = fs::read(&resolved).context("reading pinned Vitest worker runner")?;

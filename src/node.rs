@@ -33,6 +33,8 @@ pub struct ExecutionScope {
     pub typescript: Option<typescript::TypeScriptScope>,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub default_discovery: bool,
+    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    pub development_fingerprints: std::collections::BTreeMap<String, String>,
 }
 fn recipe(typescript: bool, default_discovery: bool) -> String {
     if default_discovery {
@@ -78,6 +80,13 @@ impl ExecutionScope {
         ensure!(
             valid_fingerprint(&self.manifest_fingerprint),
             "invalid saved Node manifest fingerprint"
+        );
+        ensure!(
+            self.development_fingerprints
+                .iter()
+                .all(|(key, value)| crate::dependency_tree::identity_key(key)
+                    && valid_fingerprint(value)),
+            "invalid Node development installation identity"
         );
         if let Some(scope) = &self.typescript {
             scope.validate_record()?;
@@ -161,6 +170,7 @@ async fn scope_with(
         recipe_fingerprint: recipe(project.typescript.is_some(), project.default_discovery),
         default_discovery: project.default_discovery,
         typescript: project.typescript,
+        development_fingerprints: project.development_fingerprints,
     };
     scope.validate_record()?;
     Ok(scope)
@@ -201,7 +211,8 @@ pub async fn test(
     ensure!(
         project.manifest == expected.manifest_fingerprint
             && project.typescript == expected.typescript
-            && project.default_discovery == expected.default_discovery,
+            && project.default_discovery == expected.default_discovery
+            && project.development_fingerprints == expected.development_fingerprints,
         "Node manifest or native TypeScript configuration changed during snapshotting"
     );
     if project.default_discovery {

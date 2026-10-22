@@ -498,3 +498,15 @@ kill all four with 484 cases. Preserve original failed scores and distinguish th
 92-site discovery inventory from the 14 executed candidates. Current Tinycss2's
 17,120-test native control is not production acceptance. Retain lifecycle errors
 and conservative exception classification across dependency calls.
+
+`benchmarks/package-managers.md` records npm 11.19.1 lock-v3, Yarn 4.18.1
+node-modules/classic, Bun 1.3.11 hoisted text-lock and original pnpm 11.10.0
+isolated-store acceptance. Keep installer identity distinct from runner identity.
+Vitest resolves its exact-byte worker through owned node_modules ancestry; complete
+installation content joins snapshot and focused-rerun identity. Node/Bun preserve
+and fingerprint declared development installations without admitting runtime
+package imports. The 16-case JS/TS matrix and content-drift controls pass; unchanged
+Bragkit with installed development tools retains all 23 outcomes and three stronger
+HTML boundary kills. Preserve original inputs/reports. PnP, alternative linkers,
+workspaces and Vite+'s bundled `vp test` need separate acceptance; incidental Vite+
+devDependencies do not select a runner. No package manager is invoked by Mutie.

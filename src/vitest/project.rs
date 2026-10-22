@@ -1,3 +1,12 @@
+#[path = "installation.rs"]
+mod installation;
+#[cfg(test)]
+use installation::json_trailing_commas;
+use installation::{
+    installation_fingerprint, validate_bun_installation, validate_npm_installation,
+    validate_pnpm_installation, validate_yarn_installation,
+};
+
 use crate::cancellation::Cancellation;
 use anyhow::{Context, Result, bail, ensure};
 use serde_json::Value as Json;
@@ -9,11 +18,15 @@ use std::{
     path::{Path, PathBuf},
 };
 
+pub const PACKAGE_MANAGERS: &[&str] = &["pnpm@11.10.0", "npm@11.19.1", "yarn@4.18.1", "bun@1.3.11"];
+
 #[derive(Debug)]
 pub struct Project {
     pub root: PathBuf,
     pub project_config_fingerprints: BTreeMap<String, String>,
     pub name: String,
+    pub package_manager: String,
+    pub installation_fingerprint: String,
     pub vitest: String,
     pub vite: String,
     pub manifest_fingerprint: String,
@@ -57,9 +70,13 @@ impl Project {
             .filter(|s| !s.trim().is_empty())
             .context("package.json requires a name")?
             .to_owned();
+        let package_manager = manifest["packageManager"]
+            .as_str()
+            .context("Vitest requires an explicit packageManager")?
+            .to_owned();
         ensure!(
-            manifest["packageManager"] == "pnpm@11.10.0",
-            "Vitest preview requires packageManager pnpm@11.10.0"
+            PACKAGE_MANAGERS.contains(&package_manager.as_str()),
+            "unsupported Vitest package manager: {package_manager}"
         );
         for key in [
             "workspaces",
@@ -117,10 +134,10 @@ impl Project {
                         name.as_ref(),
                         ".pnpmfile.cjs"
                             | ".npmrc"
-                            | "package-lock.json"
-                            | "yarn.lock"
-                            | "bun.lock"
                             | "bun.lockb"
+                            | ".pnp.cjs"
+                            | ".pnp.loader.mjs"
+                            | "bunfig.toml"
                     ),
                 "unsupported Vitest project configuration: {name}"
             );
@@ -137,113 +154,45 @@ impl Project {
             // Only the audited plain-JSON compiler settings are accepted.
             validate_tsconfig(&root.join("tsconfig.json"), cancellation)?;
         }
-        for name in ["tsconfig.json", "pnpm-workspace.yaml"] {
+        for name in ["tsconfig.json", "pnpm-workspace.yaml", ".yarnrc.yml"] {
             if root.join(name).exists() {
                 project_config_fingerprints
                     .insert(name.to_owned(), fingerprint(&read(&root.join(name))?));
             }
         }
-        let lock_text = read(&root.join("pnpm-lock.yaml"))?;
-        let lock: Yaml = serde_yaml_ng::from_str(&lock_text).context("parsing pnpm-lock.yaml")?;
-        ensure!(
-            lock["lockfileVersion"].as_str() == Some("9.0"),
-            "expected pnpm lockfileVersion 9.0"
-        );
-        let importers = lock["importers"]
-            .as_mapping()
-            .context("lockfile requires importers")?;
-        ensure!(
-            importers.len() == 1 && importers.contains_key(Yaml::String(".".into())),
-            "only one root lockfile importer is supported"
-        );
-        let importer = &lock["importers"]["."];
-        for group in ["dependencies", "devDependencies", "optionalDependencies"] {
-            let deps = manifest
-                .get(group)
-                .map(|v| v.as_object().context("dependency group must be an object"))
-                .transpose()?;
-            let locked = importer[group].as_mapping();
+        let expected_lock = match package_manager.as_str() {
+            "npm@11.19.1" => "package-lock.json",
+            "yarn@4.18.1" => "yarn.lock",
+            "bun@1.3.11" => "bun.lock",
+            _ => "pnpm-lock.yaml",
+        };
+        for name in [
+            "package-lock.json",
+            "yarn.lock",
+            "bun.lock",
+            "pnpm-lock.yaml",
+            "npm-shrinkwrap.json",
+        ] {
             ensure!(
-                deps.map_or(0, |d| d.len()) == locked.map_or(0, |d| d.len()),
-                "manifest/lockfile {group} mismatch; install with the frozen lockfile"
-            );
-            if let Some(deps) = deps {
-                for (name, spec) in deps {
-                    let spec = spec
-                        .as_str()
-                        .context("dependency specifier must be a string")?;
-                    ensure!(!spec.is_empty() && spec.chars().all(|c| c.is_ascii_digit() || " .^~<>=|*-+xXvabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(c)), "only registry version dependencies are supported: {name}");
-                    ensure!(
-                        importer[group][name.as_str()]["specifier"].as_str() == Some(spec),
-                        "manifest/lockfile specifier mismatch for {name}"
-                    );
-                }
-            }
-        }
-        let packages = lock["packages"]
-            .as_mapping()
-            .context("lockfile requires registry packages")?;
-        for (_, package) in packages {
-            let resolution = package["resolution"]
-                .as_mapping()
-                .context("package requires a registry integrity resolution")?;
-            ensure!(
-                resolution.len() == 1
-                    && package["resolution"]["integrity"]
-                        .as_str()
-                        .is_some_and(|s| s.starts_with("sha512-")),
-                "only integrity-pinned registry dependencies are supported"
+                name == expected_lock || !root.join(name).exists(),
+                "mixed or unsupported lockfiles: {name}"
             );
         }
+        ensure!(
+            package_manager.starts_with("pnpm@") || !root.join("pnpm-workspace.yaml").exists(),
+            "pnpm configuration requires pnpm"
+        );
+        ensure!(
+            package_manager.starts_with("yarn@") || !root.join(".yarnrc.yml").exists(),
+            "Yarn configuration requires Yarn"
+        );
+        let (lock_text, locked_vitest, packages) = match package_manager.as_str() {
+            "npm@11.19.1" => validate_npm_installation(&root, &manifest, cancellation)?,
+            "yarn@4.18.1" => validate_yarn_installation(&root, &manifest, cancellation)?,
+            "bun@1.3.11" => validate_bun_installation(&root, &manifest, cancellation)?,
+            _ => validate_pnpm_installation(&root, &manifest, cancellation)?,
+        };
         let modules = root.join("node_modules");
-        ensure!(fs::symlink_metadata(&modules).context("install dependencies with pnpm install --frozen-lockfile --ignore-scripts before listing")?.file_type().is_dir(), "node_modules must be a local directory");
-        validate_tree(&modules, &modules, cancellation, &mut 0)?;
-        let layout = yaml(&modules.join(".modules.yaml"))?;
-        ensure!(
-            layout["packageManager"].as_str() == Some("pnpm@11.10.0")
-                && layout["nodeLinker"].as_str() == Some("isolated")
-                && layout["virtualStoreDir"].as_str() == Some(".pnpm"),
-            "installed dependencies require pnpm 11.10.0 with a local isolated virtual store"
-        );
-        for group in ["dependencies", "devDependencies", "optionalDependencies"] {
-            if let Some(deps) = importer[group].as_mapping() {
-                for (name, entry) in deps {
-                    let name = name.as_str().context("dependency name must be a string")?;
-                    ensure!(
-                        !name.contains("..") && !name.starts_with('/') && !name.contains('\\'),
-                        "invalid dependency name: {name}"
-                    );
-                    let version = entry["version"]
-                        .as_str()
-                        .context("locked dependency version is missing")?
-                        .split('(')
-                        .next()
-                        .unwrap();
-                    ensure!(
-                        packages.contains_key(Yaml::String(format!("{name}@{version}"))),
-                        "dependency is not a locked registry package: {name}"
-                    );
-                    let installed = modules.join(name).join("package.json");
-                    if group == "optionalDependencies" && !installed.exists() {
-                        continue;
-                    }
-                    let data = json(
-                        &installed
-                            .canonicalize()
-                            .with_context(|| format!("missing installed dependency {name}"))?,
-                    )?;
-                    ensure!(
-                        data["name"] == name && data["version"] == version,
-                        "installed dependency differs from lockfile: {name}"
-                    );
-                }
-            }
-        }
-        let installed_lock = yaml(&modules.join(".pnpm/lock.yaml"))?;
-        ensure!(
-            installed_lock == lock,
-            "installed dependency lock differs from pnpm-lock.yaml; reinstall with the frozen lockfile"
-        );
         let vitest_root = modules
             .join("vitest")
             .canonicalize()
@@ -257,24 +206,11 @@ impl Project {
             vitest_root.join("vitest.mjs").is_file(),
             "installed Vitest CLI is missing"
         );
-        let locked_vitest = ["devDependencies", "dependencies"]
-            .iter()
-            .find_map(|group| importer[*group]["vitest"]["version"].as_str())
-            .context("Vitest must be a direct dependency")?;
         ensure!(
             locked_vitest == "4.1.9" || locked_vitest.starts_with("4.1.9("),
             "locked Vitest must match installed 4.1.9"
         );
-        let vite_root = vitest_root
-            .parent()
-            .context("invalid installed Vitest path")?
-            .join("vite")
-            .canonicalize()
-            .context("missing Vitest's Vite dependency")?;
-        ensure!(
-            vite_root.starts_with(&modules),
-            "Vite dependency escapes node_modules"
-        );
+        let vite_root = resolve_dependency(&root, &vitest_root, "vite")?;
         let vite = json(&vite_root.join("package.json"))?;
         let vite_version = vite["version"].as_str().context("Vite version missing")?;
         ensure!(
@@ -282,7 +218,7 @@ impl Project {
             "Vitest preview requires verified Vite 8.1.3 or 8.3.4"
         );
         ensure!(
-            packages.contains_key(Yaml::String(format!("vite@{vite_version}"))),
+            packages.contains(&format!("vite@{vite_version}")),
             "installed Vite is not in the lockfile"
         );
         ensure!(
@@ -290,7 +226,9 @@ impl Project {
             "Vitest preview requires a src directory"
         );
         Ok(Self {
+            installation_fingerprint: installation_fingerprint(&root, cancellation)?,
             project_config_fingerprints,
+            package_manager,
             root,
             name,
             vitest: "4.1.9".into(),
@@ -299,6 +237,48 @@ impl Project {
             lockfile_fingerprint: fingerprint(&lock_text),
         })
     }
+}
+
+/// Resolve a dependency using native node_modules ancestry without executing JS.
+/// Canonical package directories must stay in the owned installation.
+pub(super) fn resolve_dependency(root: &Path, from: &Path, name: &str) -> Result<PathBuf> {
+    let modules = root.join("node_modules").canonicalize()?;
+    let from = from.canonicalize()?;
+    ensure!(
+        from.starts_with(&modules),
+        "dependency origin escapes node_modules"
+    );
+    ensure!(
+        !name.is_empty() && !name.contains("..") && !name.starts_with('/') && !name.contains('\\'),
+        "invalid dependency name"
+    );
+    for parent in from.ancestors() {
+        if !parent.starts_with(root) {
+            break;
+        }
+        if parent
+            .file_name()
+            .is_some_and(|part| part == "node_modules")
+        {
+            continue;
+        }
+        let candidate = parent.join("node_modules").join(name);
+        match fs::symlink_metadata(&candidate) {
+            Ok(_) => {
+                let resolved = candidate
+                    .canonicalize()
+                    .with_context(|| format!("resolving dependency {name}"))?;
+                ensure!(
+                    resolved.starts_with(&modules) && resolved.is_dir(),
+                    "dependency {name} escapes node_modules or is not a directory"
+                );
+                return Ok(resolved);
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error).context("reading dependency path"),
+        }
+    }
+    bail!("missing installed dependency {name}")
 }
 
 fn validate_tsconfig(path: &Path, cancellation: &Cancellation) -> Result<()> {
@@ -686,5 +666,186 @@ mod tests {
         )
         .unwrap();
         assert!(format!("{:#}", load(&nested).unwrap_err()).contains("enclosing"));
+    }
+}
+
+#[cfg(test)]
+mod dependency_resolution_tests {
+    use super::*;
+
+    #[test]
+    fn resolves_hoisted_and_nearer_dependencies() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path().canonicalize()?;
+        let vitest = root.join("node_modules/vitest");
+        let hoisted = root.join("node_modules/@vitest/runner");
+        fs::create_dir_all(&vitest)?;
+        fs::create_dir_all(&hoisted)?;
+        assert_eq!(
+            resolve_dependency(&root, &vitest, "@vitest/runner")?,
+            hoisted
+        );
+        let nested = vitest.join("node_modules/@vitest/runner");
+        fs::create_dir_all(&nested)?;
+        assert_eq!(
+            resolve_dependency(&root, &vitest, "@vitest/runner")?,
+            nested
+        );
+        Ok(())
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn resolves_isolated_links_but_rejects_external_dependencies() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path().canonicalize()?;
+        let store = root.join("node_modules/.pnpm/vitest@4.1.9/node_modules");
+        let vitest = store.join("vitest");
+        let runner = root.join("node_modules/.pnpm/runner/node_modules/@vitest/runner");
+        fs::create_dir_all(&vitest)?;
+        fs::create_dir_all(store.join("@vitest"))?;
+        fs::create_dir_all(&runner)?;
+        let link = store.join("@vitest/runner");
+        std::os::unix::fs::symlink(&runner, &link)?;
+        assert_eq!(
+            resolve_dependency(&root, &vitest, "@vitest/runner")?,
+            runner
+        );
+        fs::remove_file(&link)?;
+        std::os::unix::fs::symlink(&root, &link)?;
+        assert!(resolve_dependency(&root, &vitest, "@vitest/runner").is_err());
+        Ok(())
+    }
+}
+
+#[cfg(test)]
+mod npm_tests {
+    use super::*;
+
+    #[test]
+    fn npm_lock_validation_rejects_drift_and_local_packages() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path();
+        fs::create_dir_all(root.join("node_modules/vitest"))?;
+        let manifest = serde_json::json!({"devDependencies":{"vitest":"4.1.9"}});
+        let entry = serde_json::json!({"version":"4.1.9","resolved":"https://registry.npmjs.org/vitest/-/vitest-4.1.9.tgz","integrity":"sha512-test"});
+        let lock = serde_json::json!({"lockfileVersion":3,"packages":{"":manifest,"node_modules/vitest":entry}});
+        let hidden =
+            serde_json::json!({"lockfileVersion":3,"packages":{"node_modules/vitest":entry}});
+        fs::write(root.join("package-lock.json"), serde_json::to_vec(&lock)?)?;
+        fs::write(
+            root.join("node_modules/.package-lock.json"),
+            serde_json::to_vec(&hidden)?,
+        )?;
+        fs::write(
+            root.join("node_modules/vitest/package.json"),
+            r#"{"name":"vitest","version":"4.1.9"}"#,
+        )?;
+        validate_npm_installation(root, &manifest, &Cancellation::default())?;
+        let mut wrong = manifest.clone();
+        wrong["devDependencies"]["vitest"] = "4.1.8".into();
+        assert!(validate_npm_installation(root, &wrong, &Cancellation::default()).is_err());
+        let mut wrong_lock = lock.clone();
+        wrong_lock["packages"]["node_modules/vitest"]["resolved"] = "file:../vitest".into();
+        fs::write(
+            root.join("package-lock.json"),
+            serde_json::to_vec(&wrong_lock)?,
+        )?;
+        assert!(validate_npm_installation(root, &manifest, &Cancellation::default()).is_err());
+        fs::write(root.join("package-lock.json"), serde_json::to_vec(&lock)?)?;
+        fs::write(
+            root.join("node_modules/vitest/package.json"),
+            r#"{"name":"vitest","version":"4.1.8"}"#,
+        )?;
+        assert!(validate_npm_installation(root, &manifest, &Cancellation::default()).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn yarn_and_bun_validate_installed_versions_and_manifest_drift() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path();
+        fs::create_dir_all(root.join("node_modules/vitest"))?;
+        fs::write(
+            root.join("node_modules/vitest/package.json"),
+            r#"{"name":"vitest","version":"4.1.9"}"#,
+        )?;
+        let manifest = serde_json::json!({"name":"fixture","devDependencies":{"vitest":"4.1.9"}});
+        let lock = serde_json::json!({"lockfileVersion":1,"configVersion":1,"workspaces":{"":manifest},"packages":{"vitest":["vitest@4.1.9","",{},"sha512-test"]}});
+        fs::write(root.join("bun.lock"), serde_json::to_vec(&lock)?)?;
+        validate_bun_installation(root, &manifest, &Cancellation::default())?;
+        fs::write(
+            root.join(".yarnrc.yml"),
+            "nodeLinker: node-modules\nenableScripts: false\n",
+        )?;
+        fs::write(
+            root.join("yarn.lock"),
+            "__metadata: {version: 10}\n'fixture@workspace:.':\n  dependencies: {vitest: 'npm:4.1.9'}\n'vitest@npm:4.1.9':\n  resolution: 'vitest@npm:4.1.9'\n  version: '4.1.9'\n  checksum: test\n",
+        )?;
+        fs::write(
+            root.join("node_modules/.yarn-state.yml"),
+            "__metadata: {version: 1, nmMode: classic}\n'vitest@npm:4.1.9':\n  locations: ['node_modules/vitest']\n",
+        )?;
+        validate_yarn_installation(root, &manifest, &Cancellation::default())?;
+        let mut changed = manifest.clone();
+        changed["devDependencies"]["vitest"] = "4.1.8".into();
+        assert!(validate_bun_installation(root, &changed, &Cancellation::default()).is_err());
+        assert!(validate_yarn_installation(root, &changed, &Cancellation::default()).is_err());
+        fs::write(
+            root.join("node_modules/vitest/package.json"),
+            r#"{"name":"vitest","version":"4.1.8"}"#,
+        )?;
+        assert!(validate_bun_installation(root, &manifest, &Cancellation::default()).is_err());
+        assert!(validate_yarn_installation(root, &manifest, &Cancellation::default()).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn installation_identity_detects_same_length_changes_and_ignores_owned_caches() -> Result<()> {
+        let temp = tempfile::tempdir()?;
+        let root = temp.path();
+        fs::create_dir(root.join("node_modules"))?;
+        fs::write(root.join("node_modules/module.js"), "true")?;
+        let a = installation_fingerprint(root, &Cancellation::default())?;
+        fs::create_dir(root.join("node_modules/.vite"))?;
+        fs::write(root.join("node_modules/.vite/cache"), "temporary")?;
+        assert_eq!(a, installation_fingerprint(root, &Cancellation::default())?);
+        fs::write(root.join("node_modules/module.js"), "null")?;
+        assert_ne!(a, installation_fingerprint(root, &Cancellation::default())?);
+        Ok(())
+    }
+
+    #[test]
+    fn bun_trailing_comma_parser_preserves_strings_and_rejects_code() -> Result<()> {
+        assert_eq!(
+            json_trailing_commas(r#"{"text":",}","array":[1,],}"#)?["text"],
+            ",}"
+        );
+        assert!(json_trailing_commas("{x: process.exit()}").is_err());
+        assert!(json_trailing_commas("{\"a\": 1,,}").is_err());
+        Ok(())
+    }
+
+    #[test]
+    #[ignore = "requires MUTIE_MANAGER_AUDIT with prepared npm/Yarn/Bun fixtures"]
+    fn real_manager_project_metadata() -> Result<()> {
+        let base =
+            std::env::var_os("MUTIE_MANAGER_AUDIT").context("MUTIE_MANAGER_AUDIT required")?;
+        for (manager, version) in [("npm", "11.19.1"), ("yarn", "4.18.1"), ("bun", "1.3.11")] {
+            let project = Project::load(&Path::new(&base).join(manager), &Cancellation::default())
+                .with_context(|| format!("loading {manager}"))?;
+            assert_eq!(project.package_manager, format!("{manager}@{version}"));
+        }
+        Ok(())
+    }
+
+    #[test]
+    #[ignore = "requires MUTIE_NPM_FIXTURE prepared with audited npm/Vitest versions"]
+    fn real_npm_project_metadata() -> Result<()> {
+        let root = std::env::var_os("MUTIE_NPM_FIXTURE").context("MUTIE_NPM_FIXTURE required")?;
+        let project = Project::load(Path::new(&root), &Cancellation::default())?;
+        assert_eq!(project.package_manager, "npm@11.19.1");
+        assert_eq!(project.vitest, "4.1.9");
+        Ok(())
     }
 }
