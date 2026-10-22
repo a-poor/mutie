@@ -1,0 +1,2208 @@
+{
+  "project": {
+    "url": "https://github.com/BurntSushi/ucd-generate",
+    "commit": "e8fa937f0cac643669dcaf5edac2785b15cab917",
+    "files": {
+      ".github/FUNDING.yml": "0c65f392d32a8639ba7986bbb42ca124505b462122382f314c89d84c95dd27f1",
+      ".github/workflows/ci.yml": "2dde7ac0172fb49f95cf5782db7ade2c2d39dcff7b135e0e135e3d287c27668d",
+      ".gitignore": "6e5d7a411dc4f7e9d5ce19687c5edad5c33f722d44465efc74a5df75bf7820d1",
+      "Cargo.lock": "328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+      "Cargo.toml": "7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+      "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+      "README.md": "945197dc45e5ddb35d47164ee52188f706244203f099dbf6d2a5469094ed46c8",
+      "benches/bench.rs": "25fd13f527aa48dc7dde4af1f1e72aec8578e6b94390193e30e01e73658fa788",
+      "benches/tables/fst/general_category.fst": "993dd5be5b88cad8dafc60959eb11f4f67dc6c7a7b6ca05ad6e5e1881c8e4579",
+      "benches/tables/fst/general_category.rs": "1823bb425bf04100738e546d69cecf3322dad03269d0696e7d5ed602cf161cbf",
+      "benches/tables/fst/jamo_short_name.fst": "bc19c4c4a1861bda08986a853cc761fa67b65dbbabc5c5a04ea6bd6fadae2425",
+      "benches/tables/fst/jamo_short_name.rs": "e52a2dbb24c2fd3e066cfd5c6a06e356bb4c65b14db93930d158d9a1c406cdf2",
+      "benches/tables/fst/mod.rs": "3cc6f392082a72ea5de5ced62673019c3eef69811a940ba86cf53e40663aad91",
+      "benches/tables/fst/names.fst": "925e826d4810ab586d6eefdac16dbddde0d2b5b3bf00ed047aba6db3a5a298eb",
+      "benches/tables/fst/names.rs": "ff6da5b0b900112b1a60d3f23d904e7c191ac235c6976e49f30101c1dd122489",
+      "benches/tables/mod.rs": "1ddcf03199c71849b67d7e38a3b15db22c7f3f8d4fe7a533913c92067811809d",
+      "benches/tables/slice/general_categories.rs": "260f9b311a306385d6c453b313c41bb8b873f796bd224e844810d0d6d7db3d18",
+      "benches/tables/slice/general_category.rs": "1aded08571a9f02e50b98949e2c2c602cb3a2f7172c03db59a890a22a9224ae3",
+      "benches/tables/slice/jamo_short_name.rs": "2b8103524cb0b8caf475d5a5e0cc525c4cf39648b50d148e51c24c8954f61db3",
+      "benches/tables/slice/mod.rs": "e35e86c786c187625b8870b933bbcaafb7b9072e4a359c01030809b292012b73",
+      "benches/tables/slice/names.rs": "95bb9ec37b3a12dfb4d86d5f8d35c5b6e83da2b608f3f3ae7fe9117e455ffa3d",
+      "benches/tables/trie/general_categories.rs": "311b690a97c02cec2a2400da91bfc4fd0135e5366acfb31a19ea5afb74fcf324",
+      "benches/tables/trie/mod.rs": "1d1da1f5d793ceecb18ced8e36942ab618d93a935e4ab73ebe598deeef5b70f4",
+      "rustfmt.toml": "1ca600239a27401c4a43f363cf3f38183a212affc1f31bff3ae93234bbaec228",
+      "scripts/generate-unicode-tables": "1a7fb54f979d19d09147d1e0db566ff445abb322aeff4f376636763456e542e0",
+      "src/age.rs": "0a65e71415375df0d1d0e4b9e7ee6d8e70e2f71b4365e1161352a5fdcbb61ca2",
+      "src/app.rs": "b9f04821ac70b33bbfe87d7e1b9bc4477ed55c0e7e1eed4453028fd9e85975fc",
+      "src/args.rs": "af4acb2df4fd7538a0fc9db4fd407e7b4e96c296d99d39674eff536a79e0e014",
+      "src/bidi_class.rs": "174ccc26c7909f1ace8541471b23efb944700cb814b270f70cb42c1e44fae586",
+      "src/bidi_mirroring_glyph.rs": "15200fa0de289ba8b752911d1d642f6a1ead1642a83ed1e7c9bb77cf4593bfd7",
+      "src/brk.rs": "b947d63bac2944a73d6541276e7d95455af48d63ca4593c25814434fa007557f",
+      "src/canonical_combining_class.rs": "18fa984a52246a22436f7a936d08e600466cc1e6f2c165b92f7a4beb7a7b9672",
+      "src/case_folding.rs": "b113cd7176501311884655f75c1bba86a3c5f567b932af6109cdaa807b31a613",
+      "src/case_mapping.rs": "38145ea1fec615fe6ec7155fbab819d5b2efb4c189365d5c5bf0d7542d0e8919",
+      "src/error.rs": "34cd68d2d242a4f97a5303969effab3ec661b04ed7faafa47a7908f7fffca4a4",
+      "src/general_category.rs": "71d3956e5badfc74b94b4a30749c77f4dd60e66473dae994791be7a1f2b8b193",
+      "src/jamo_short_name.rs": "fea541fca7033949b2b0154568df2d710be842a400a689f2a47ebe00be3587cc",
+      "src/joining_type.rs": "ac081feb2fbf3d67604e9b01f25c999eccd59b936df945fbbcf6277f0c73f58a",
+      "src/main.rs": "1373b58787596bcf7787a3009122c5b4d28025b24fb1bed213548c4954a7ca0a",
+      "src/names.rs": "80ce1a2cd0b270c0b7b2e79ad76f24cd03539ba590616bdcc6530bc7022a79f6",
+      "src/property_bool.rs": "5cadcbf565d7d543ec0c9980a79fe3f408e4f692ae20e972a0edf3228d168db0",
+      "src/script.rs": "56da4c6d02942e9b0e4f8408d42ca22b483ea977e36c28f7fb677c97fd8cfe65",
+      "src/util.rs": "63f4e791f6616ea4f405fa7fa61e1706e8b8d591cb285b05b201e70a7ae97762",
+      "src/writer.rs": "05fa0d7bc3aa0e6d2594e029d4768c48fb7bb6a19d89efc436a2371d21fc7e92",
+      "ucd-parse/Cargo.toml": "922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+      "ucd-parse/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "ucd-parse/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+      "ucd-parse/README.md": "8c52a24f51bf5374f687c5a7be756b40a5433e5afe20355f08f50cfaa46416ab",
+      "ucd-parse/src/age.rs": "50a5f2026a512f77d93c6a514784ecb473347aa3a6975d091dcfece728333b9e",
+      "ucd-parse/src/arabic_shaping.rs": "da620c534a1e51acdc435175bae19407e0fa7bf8cf23b8dc1d57ccf32ef11bd7",
+      "ucd-parse/src/bidi_mirroring_glyph.rs": "b8de1775014ba81e18c95e2a69a3fe64e95fc9bdef6b23178c7ce80c35ce355a",
+      "ucd-parse/src/case_folding.rs": "1010b5d65fe08a0210c2f2111ddd07a4d949206f3604bd2bb89cb258076c74ce",
+      "ucd-parse/src/common.rs": "69ab3c81aae84bdfa0aadd8998de4d955798e562ba0be6561142baacf8e0ec65",
+      "ucd-parse/src/core_properties.rs": "cc6ebafae4c39fb883a32911769baac7a7297f75ca7bc6a0ee35c5ff8e1764f0",
+      "ucd-parse/src/derived_normalization_properties.rs": "b6ecbd6f471e3dda33d12e3d534e65ae2e6997b88f9e382997389fd2c992e1b4",
+      "ucd-parse/src/east_asian_width.rs": "3df868265c5c97d2d5306c51d9689dc8e3fff993fc20abc06ffe849d514a0301",
+      "ucd-parse/src/emoji_properties.rs": "789e83c4dc57d6270f1dd21ea2bf89baf9576b7147fe5d95001b35b2c2ce3d1a",
+      "ucd-parse/src/error.rs": "6341f5337a7527f18886d3b6418ec7d25fbfecd4851b6c7f2a3356983f1e409e",
+      "ucd-parse/src/extracted/derived_bidi_class.rs": "75ae854b153fdccd5c472562d5f3327c25329861baa12f9b010a25b66d2f373d",
+      "ucd-parse/src/extracted/derived_binary_properties.rs": "01f483444dce00e7f9295a6b8f20c2bb78c507cacf5ce6a3889e11c06944f62a",
+      "ucd-parse/src/extracted/derived_combining_class.rs": "2ea60fd91f6ce48697d152f76d0e8321548ec009626177674333341672220368",
+      "ucd-parse/src/extracted/derived_decomposition_type.rs": "513d9262e1ee3410aa7d650ea8ed87041a3c7b638ebdcbaa72651ec63ab694f2",
+      "ucd-parse/src/extracted/derived_east_asian_width.rs": "b98c1768fbe84679aa0e687fcaa2e16cf9d0f4084f7ec5a5fafdc377e5bd03a6",
+      "ucd-parse/src/extracted/derived_general_category.rs": "17d33bf58ce01ccdd7b2fa37feb877111bb7371d6f59d77425e249bc45bcb7f6",
+      "ucd-parse/src/extracted/derived_joining_group.rs": "fce870567dac1541c412c71c169cd8a84f17846358d3c07ea2a156b8b3d991c6",
+      "ucd-parse/src/extracted/derived_joining_type.rs": "57591a20898532b05908d50aff0d3902ea6447a8ef9086fc0e365732931b204b",
+      "ucd-parse/src/extracted/derived_line_break.rs": "2343e0b6d806206ecacaa229e3bbb30f92bbdf2e8a7900159357673e519bcc63",
+      "ucd-parse/src/extracted/derived_name.rs": "f6c955175138de3b7fd8442a3d337a49214f5cc4fb31dfba1b2b44049fa7c174",
+      "ucd-parse/src/extracted/derived_numeric_type.rs": "a95de68ba6e9d951d40902e188e28ba6b942ae62e1dcaa5367c522bb178a2036",
+      "ucd-parse/src/extracted/derived_numeric_values.rs": "ab66990bf8f151a2cdb9721108e9bebb3f1136ab1be56da45fbbf3874ec5f96c",
+      "ucd-parse/src/extracted/mod.rs": "d55adeda4d08406ef7aaad0979d86a90f3996c66b83af4a47e4762c7fda486e8",
+      "ucd-parse/src/grapheme_cluster_break.rs": "5f400a5972214d29df8823c628dca20e2d7ff8a8441ec90ee6908c909b2c2829",
+      "ucd-parse/src/jamo_short_name.rs": "1428d8b7f2e45de99314589c3534dd8dc6d6997dc38fda96d1d3b56fefdcbee2",
+      "ucd-parse/src/lib.rs": "9930a99879ab62cd4ad71354bd622d89d15464c455f575dc9e36896831e510c1",
+      "ucd-parse/src/line_break.rs": "8873ca5d75b64d57a4280e8b0136c47d09f4397aae65ad8b904f689590aae8ca",
+      "ucd-parse/src/name_aliases.rs": "9e523a3aab303efd37d4e696bb4d47ccc6f2e22e9768bf6e901ed8d00b94604e",
+      "ucd-parse/src/prop_list.rs": "3e8394421da893ed7856fd5b58f1fb32d3c26bcc972b544829ad2c12468c6f46",
+      "ucd-parse/src/property_aliases.rs": "35607fb7f644c92e5f67b4ade794944c55f8397b6d4154cd4f78fd032837a04d",
+      "ucd-parse/src/property_value_aliases.rs": "5230356694bd20fdfe06b3ccbc737ac84708f674907ef6a78be3458badfc9235",
+      "ucd-parse/src/script_extensions.rs": "c013f98e61cfbc91a0f1dbea6118cb7b28c5c27a1b608fe03b8c164e1627be7a",
+      "ucd-parse/src/scripts.rs": "58843b1e6ea8d0f1784eff76773ca589d4e06a5f6ad26048aabf91f0b1773f83",
+      "ucd-parse/src/sentence_break.rs": "d3ec597ff15118cf9e5064842d393962b3fe219430ef36d109812a4c45c25d9b",
+      "ucd-parse/src/special_casing.rs": "dd3a1d264545b586470d9f1db7eff54cd62e637b69c712acb41d084db13d488d",
+      "ucd-parse/src/unicode_data.rs": "0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+      "ucd-parse/src/word_break.rs": "7f929fedc231f9099694ef632eb3166dbcd458dc62a73942d0a94136fbac5e96",
+      "ucd-trie/Cargo.toml": "2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+      "ucd-trie/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "ucd-trie/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+      "ucd-trie/README.md": "6687ddcfa8075f52ea4326b3caa756165236ff6f75e3379e55ea9f6841821324",
+      "ucd-trie/benches/bench.rs": "9b74139d17cfcccb502f2abe80b8a4c15a17037a681f27ec914d51e83ea7e55f",
+      "ucd-trie/src/general_category.rs": "42cbf05dc036e46256621f008f557821f8d3597607c3b8ab62532cdf51b97f6d",
+      "ucd-trie/src/lib.rs": "99bedb2b655b39ac3a2cc7b4b79a381f7d1e086a20558eec52968f556a638ec4",
+      "ucd-trie/src/owned.rs": "b897f815685f597f3a98613d5f8196153a207a741e61bbb19f48f90c2bf594ae",
+      "ucd-util/Cargo.toml": "19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+      "ucd-util/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "ucd-util/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+      "ucd-util/LICENSE-UNICODE": "ea8df489e83b7674d5c9d50c320bec3b15d2e2eeb7a3a8879a666d91e5640c16",
+      "ucd-util/README.md": "ccfb24f60893d9f0911fc0a6ccd2dd42c9512d3941c8caff5d65153af75496c0",
+      "ucd-util/src/hangul.rs": "7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+      "ucd-util/src/ideograph.rs": "c36548cfd47885a88ae8c71fb91025586d370e7e4399d3a59286e098a16f4136",
+      "ucd-util/src/lib.rs": "0fa7d116ae2d201e7dcd872f05ca4558d69cb1c96f74ebf9c17eb540dea8e3ef",
+      "ucd-util/src/name.rs": "17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+      "ucd-util/src/property.rs": "9c42b9345ea10c445870d82fa19703ad6122f39228b1437725d46d9b07577b18",
+      "ucd-util/src/unicode_tables/jamo_short_name.rs": "2b8103524cb0b8caf475d5a5e0cc525c4cf39648b50d148e51c24c8954f61db3",
+      "ucd-util/src/unicode_tables/mod.rs": "efa5af1e97be12c1f3541a24763278a821bd1bdfd1631d4f922b68e8d6997e40",
+      "ucd-util/src/unicode_tables/property_names.rs": "124bbc8331890d193448dc51fa7160353637e86746b178a08cd6a04534ee5020",
+      "ucd-util/src/unicode_tables/property_values.rs": "dd39f19d46e26edc07c2da98c9fb26fb93a46fe533454ef567e78cce99be11ee"
+    }
+  },
+  "original_report_hashes": {
+    "original-reports/run-1792711188-Ujbtmw/outcomes.json": "a8a361aa3f8b675e28ca5b4118f00122aeb03412cf04fc1812a46cdc2174286a",
+    "original-reports/run-1792711188-Ujbtmw/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792711188-Ujbtmw/missed.txt": "d0cea980c5bf25072d624fdbda8a57383cd4dd2dbb6ebbe8efc9bfa60fc459d7",
+    "original-reports/run-1792711188-Ujbtmw/errors.txt": "2a1175b68cab67bcb9aca58b39808b14767e63d32f8d0087f2d4555a9dc5623c",
+    "original-reports/run-1792711188-Ujbtmw/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792711188-Ujbtmw/mutants.json": "cd70d82b36070507d8e44054b601e493611cf7206d8f8c9c6100263a010ce1ef",
+    "original-reports/run-1792711188-Ujbtmw/summary.txt": "851bb55bf6efe3fd9383d91e30dbe3693fc8fc0b3ba2e3b1fc2d922d0ee8c2d9",
+    "original-reports/run-1792711188-Ujbtmw/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792711188-Ujbtmw/killed.txt": "1eeebe6d2be62ad32d2e5e69b6b559fa106d55762b862f224fdc25a932983546",
+    "original-reports/run-1792711188-Ujbtmw/run.json": "2a5f6f034edde3559cea5e9c6d49fa7cc1700a8a58d0c7fab70469aa9c4ae3b8",
+    "original-reports/run-1792711188-Ujbtmw/diff/000003.diff": "ea1314ba464aa79964652f8cb1981b54d662fca55242a9e52406269677c672be",
+    "original-reports/run-1792711188-Ujbtmw/diff/000015.diff": "0f08e266d0465cde9bc6a7c09093368a8f8cf3696cbaf13eceecbd4083135e24",
+    "original-reports/run-1792711188-Ujbtmw/diff/000014.diff": "7dd472c24477c2f8a372b04fb2ac939c65e9b72ae649159678b8614a4aa705ec",
+    "original-reports/run-1792711188-Ujbtmw/diff/000002.diff": "a462c777095ecee97e4e8f223f6fcae47dc21aab14cdb1c302937ebe8ff8219a",
+    "original-reports/run-1792711188-Ujbtmw/diff/000009.diff": "ddf76d8750ed681f20ad8781c1a3ed3d01a5038d28f16ec27458fcff32f39390",
+    "original-reports/run-1792711188-Ujbtmw/diff/000005.diff": "a00414b043ce8c98549133be55c9b7060191a6d4fbf1fae4f1694a244a244c09",
+    "original-reports/run-1792711188-Ujbtmw/diff/000013.diff": "decaefb4485715d21e4f7d91c540a67b46baed18246167959dddb64e3402777f",
+    "original-reports/run-1792711188-Ujbtmw/diff/000012.diff": "29fc8b8acd7d5aa9a90c63bc96192ca61273bb7d0773cb6d3395f2a8e500d64d",
+    "original-reports/run-1792711188-Ujbtmw/diff/000004.diff": "08ea91953e3835ae224e980c5e40e466fefadf7725d3ca0fbe8225c8994cf665",
+    "original-reports/run-1792711188-Ujbtmw/diff/000008.diff": "f5d130526675c24e63cdb443b636eb9d2bee3e8c6341015572399df6323660a2",
+    "original-reports/run-1792711188-Ujbtmw/diff/000011.diff": "a4832ef32a6d6038faaeb0dc18650668b0c7dbbbe9718c544ee391f47882f8f0",
+    "original-reports/run-1792711188-Ujbtmw/diff/000007.diff": "cc94df114916333630aa05d710bb6aa982884fce418b316f8fb28e5778d57b44",
+    "original-reports/run-1792711188-Ujbtmw/diff/000006.diff": "630d42a6088bb6fc6e5116e0ee32da09462baecd76fbd3ee28d7bd663c74fa0d",
+    "original-reports/run-1792711188-Ujbtmw/diff/000010.diff": "97c96ae462cc09b9a76a254942546222a43efdf9fd290086ecd291cda5d19b00",
+    "original-reports/run-1792711188-Ujbtmw/diff/000001.diff": "3efd695d4105afc20240fa7a25a1d9e0f96e73189670d4100c1b89f9da686e0f",
+    "original-reports/run-1792711188-Ujbtmw/diff/000016.diff": "6c82fcaa39faf5c197cd23ee925eccc27d2a9007207cdc8d6a88f716e21fe2b3",
+    "original-reports/run-1792711188-Ujbtmw/logs/000012.stdout.log": "a3ded21c323d85c1d5bda367967be0646041f98b39e4a63b8b4e239fb4f3f9e5",
+    "original-reports/run-1792711188-Ujbtmw/logs/000013.log": "82be0c7cb5141907e37511a2c1e1facde83d28d2ee41fb9c2a94252224a67f0e",
+    "original-reports/run-1792711188-Ujbtmw/logs/000007.log": "843b5245bc61356a0e1622c669a47f1a3e57e95d9962774d75dbe1ecc7e03f08",
+    "original-reports/run-1792711188-Ujbtmw/logs/000006.log": "260b2a8c45e4cbfdacafdb0cf8ebd944418a8efa1869e67df45856fe5121f996",
+    "original-reports/run-1792711188-Ujbtmw/logs/000012.log": "a54bb6d404ebca59035a63650353fa492634673e0964154a55ffac2cee422ef3",
+    "original-reports/run-1792711188-Ujbtmw/logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792711188-Ujbtmw/logs/000004.log": "219a84bfb4f3ad08fa75b928daea3d1f1f664408af90a92cde88934d5fe72cde",
+    "original-reports/run-1792711188-Ujbtmw/logs/000010.log": "d572b32455db79198d41d621b4c6b37ebbe1d3534e9d7f44890899f882dd6fb5",
+    "original-reports/run-1792711188-Ujbtmw/logs/000007.stderr.log": "70e7ee8d9f5d3483c9f2a7a77808a918f03e9c69e2ba4d33873d9038bed59c75",
+    "original-reports/run-1792711188-Ujbtmw/logs/000011.log": "c2c2faf55056d817704795d0ec9cd37b24809125d34a8dac93b5a586760afd17",
+    "original-reports/run-1792711188-Ujbtmw/logs/000005.log": "3650bbdf083ec7a7738d356ee151132f357bed361fd90909f22d694b07be67f9",
+    "original-reports/run-1792711188-Ujbtmw/logs/000003.stdout.log": "233169b338a947f759d5be2b0c4461926b04b45733a744019f5b52122247089f",
+    "original-reports/run-1792711188-Ujbtmw/logs/000001.log": "25c254c00d242f3ea5449487967c0cef18fa52a0702385873ae8e2ec12aa82f7",
+    "original-reports/run-1792711188-Ujbtmw/logs/000015.log": "10e4750274eeb47966aaa05f48701822d2a2626a682f72a723eec0d4fc8fa1cc",
+    "original-reports/run-1792711188-Ujbtmw/logs/000006.stdout.log": "50c6ff6e70763095d08c300fcf9c91e15d3a0d58d3076c183b6f52c3045e88dc",
+    "original-reports/run-1792711188-Ujbtmw/logs/000014.log": "70f58bb7762e0c4a57daf7edb23d1b512ccc0687a4d37f4c54f4505f75afef40",
+    "original-reports/run-1792711188-Ujbtmw/logs/000002.stderr.log": "64116a6fc3755d466922a061f7f17d8cdbdef942e0d597715056e1b04655c808",
+    "original-reports/run-1792711188-Ujbtmw/logs/000013.stderr.log": "e4c07fe6dd62eed6e8fbb89ff6dad0d043371ee73eee418281fe073cc83f16f2",
+    "original-reports/run-1792711188-Ujbtmw/logs/000002.log": "53f25220266175f3d81e26e7000f800bb17769e6007a06b3e9cbb7868e507efa",
+    "original-reports/run-1792711188-Ujbtmw/logs/000003.log": "dbb30e134ef128df4eaa871ec6a80a9c383056f902d9d9ef3ba1d33e82ab0af9",
+    "original-reports/run-1792711188-Ujbtmw/logs/baseline.stderr.log": "6f3885272c12998f43f1d73545797ad47788a1ab704ea12e1821dbb5f44b4902",
+    "original-reports/run-1792711188-Ujbtmw/logs/000008.stderr.log": "efde81261a1f6b857544e68bb4946952278d44be228356c815e4ab256e510ea3",
+    "original-reports/run-1792711188-Ujbtmw/logs/000010.stdout.log": "db05781da09eb0e3bf01ed74bbee47a37b7ca0335dd444593871130e6c47df61",
+    "original-reports/run-1792711188-Ujbtmw/logs/discovery.log": "2a9e97b88bc7c332186c28cc042a4943ac7f94d19c78cb6b09a4c7d269b9bb22",
+    "original-reports/run-1792711188-Ujbtmw/logs/000014.stderr.log": "f63dd24f530841622208d4f2dff551115a26dfc8f95f4008568c41c8611ac86c",
+    "original-reports/run-1792711188-Ujbtmw/logs/000005.stderr.log": "700044b3d496ddbb5e81a02c6a8596c6e64436bcb68d6606a87c1c9a6fcf040c",
+    "original-reports/run-1792711188-Ujbtmw/logs/000001.stdout.log": "5b3363cb5dac13ae1c40553ff6f5841c5af08202bcac1b811d13dbff14b6373a",
+    "original-reports/run-1792711188-Ujbtmw/logs/000004.stdout.log": "44002e220578ef5402a78a2dca7d40591f473972776b0d1bee644aadd418928c",
+    "original-reports/run-1792711188-Ujbtmw/logs/000009.stdout.log": "b3c38265eb28df11da62e2c54a35758c4b096ad570c8c0cfdfd09535164f66dd",
+    "original-reports/run-1792711188-Ujbtmw/logs/000011.stderr.log": "722e97bb1bceddb036645c1edf62735f67a63bddc59887511582a45526719afd",
+    "original-reports/run-1792711188-Ujbtmw/logs/000015.stdout.log": "acd29d7e49fa87fb82b1ee46a36d700e603b48807c6ead65ad5df9afa35a4108",
+    "original-reports/run-1792711188-Ujbtmw/logs/discovery.stdout.log": "4886109c212311b272243c387a25f5151e7f23aea0e947ec41b56a0c368e4a6d",
+    "original-reports/run-1792711188-Ujbtmw/logs/000003.stderr.log": "b5408912b789c600fdcd144243f1f673eab23e22f1216d606aa8787d3059c5e8",
+    "original-reports/run-1792711188-Ujbtmw/logs/baseline.log": "d0d2337895f8a6dc75acde37a660b5808bcaca9ad70d5e3f87c7863170408540",
+    "original-reports/run-1792711188-Ujbtmw/logs/000007.stdout.log": "2071f1754c847a54e4215e7a4879491d5389a00d7820539dc94d1ce8975a45ba",
+    "original-reports/run-1792711188-Ujbtmw/logs/000012.stderr.log": "744b7930756514969f0c8d36ec36168610e6f9f6a097ee74139736c44e395a3c",
+    "original-reports/run-1792711188-Ujbtmw/logs/000013.stdout.log": "322f042a79b6ec052ab74b1a31958040323f6548e87b4aaefe4dd68e6e1852ab",
+    "original-reports/run-1792711188-Ujbtmw/logs/000002.stdout.log": "43f0051570650628134b709abc268d2d4e3f397021285c7dbeb5b3dba2e7397f",
+    "original-reports/run-1792711188-Ujbtmw/logs/000006.stderr.log": "97322192b377f280908c23d210135bdd23044b0d4b1abbaa842c4c9f4777a908",
+    "original-reports/run-1792711188-Ujbtmw/logs/000001.stderr.log": "1499b9fc7744d4df8e750a46a65d77c9c7aa5113166b9fbcabb5539db7f5d738",
+    "original-reports/run-1792711188-Ujbtmw/logs/000005.stdout.log": "ba4f9f6ac082409ed7a012d821bc273a4dae5a1d97991665364b1ebb580a4209",
+    "original-reports/run-1792711188-Ujbtmw/logs/000008.stdout.log": "9e1feb16162e65335cac8f3b78ffd128631c68af4f1e992a129e16207fc7aeb1",
+    "original-reports/run-1792711188-Ujbtmw/logs/baseline.stdout.log": "6c68dedadc8868c9bd3919340ebfa4efb4075df2d457409320ef5e583be01ee9",
+    "original-reports/run-1792711188-Ujbtmw/logs/000014.stdout.log": "9844da099e5e005e11e4b8836709c6595ae7719889861ba56ce4f3eca8a7d357",
+    "original-reports/run-1792711188-Ujbtmw/logs/000010.stderr.log": "6514d70172460cdd2ebc2ac054014a9d94b66afe765e74a53eee99ff2f317f3d",
+    "original-reports/run-1792711188-Ujbtmw/logs/000009.stderr.log": "033a4e392cb4fb7757eac11b251a4c4f0719cac2b5c20365bf763123ce62a6fb",
+    "original-reports/run-1792711188-Ujbtmw/logs/000008.log": "fa377ff887c4e8b05637824a0e4d902f4bd8896390f172d02cf2b51fad3893ad",
+    "original-reports/run-1792711188-Ujbtmw/logs/000015.stderr.log": "25842ac8648f78e0626431d6a3150f813d77ff6c231fd744dc666d16bbdaccc3",
+    "original-reports/run-1792711188-Ujbtmw/logs/000009.log": "efc0457bd9b837eb2a4f8c6ad1fd4486e1f41bd0179bdac3c27f4583376d0cf6",
+    "original-reports/run-1792711188-Ujbtmw/logs/000011.stdout.log": "47eb640885f28a719253df675c84fff518b076ae6b956e43c30c9d151cc11226",
+    "original-reports/run-1792711188-Ujbtmw/logs/000004.stderr.log": "9e3c726724c2d13faf30608ee2e862e9e06d2550d4c2db2db5d25ccd1f5d41ca",
+    "focused-original-reports/run-1792711412-IMCpOM/outcomes.json": "1cb4252e8ff4291596cb6f48be664bea3f65087d46ba5e28b643d3868d84e120",
+    "focused-original-reports/run-1792711412-IMCpOM/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-original-reports/run-1792711412-IMCpOM/missed.txt": "1a04498eec9143d3ad0661a3a112085285a2a500a46521a8618f4eacdd124e2a",
+    "focused-original-reports/run-1792711412-IMCpOM/errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-original-reports/run-1792711412-IMCpOM/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-original-reports/run-1792711412-IMCpOM/mutants.json": "731c53730a61eb99de5a760268a76ef2528c770ce798abdf81f7d7bcfec01a3d",
+    "focused-original-reports/run-1792711412-IMCpOM/summary.txt": "fb2d82ca974318ea73f449bdcdf4e356ab26192fd78f73905c27e3eeecd47a2b",
+    "focused-original-reports/run-1792711412-IMCpOM/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-original-reports/run-1792711412-IMCpOM/killed.txt": "2f6b0ebaa72c934311bfc67374a15cc9298bb4d30080eef8733b54911fdcbf70",
+    "focused-original-reports/run-1792711412-IMCpOM/run.json": "5ab5dd1792587a5977c8b2fc97d0fdbcfa5742f1fb1fd3550632611201f36244",
+    "focused-original-reports/run-1792711412-IMCpOM/diff/000003.diff": "ddf76d8750ed681f20ad8781c1a3ed3d01a5038d28f16ec27458fcff32f39390",
+    "focused-original-reports/run-1792711412-IMCpOM/diff/000002.diff": "a00414b043ce8c98549133be55c9b7060191a6d4fbf1fae4f1694a244a244c09",
+    "focused-original-reports/run-1792711412-IMCpOM/diff/000004.diff": "a4832ef32a6d6038faaeb0dc18650668b0c7dbbbe9718c544ee391f47882f8f0",
+    "focused-original-reports/run-1792711412-IMCpOM/diff/000001.diff": "ea1314ba464aa79964652f8cb1981b54d662fca55242a9e52406269677c672be",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000004.log": "e7ce0af4833f2f0c11bba109f1966a3e9aad0bb0b9b78fe906f53f5505cfcd98",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000003.stdout.log": "8f732c7dc4769752d6fa59d563be19fe76965a55ffc150bc48613f7238ee61b0",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000001.log": "de634c2aa70713eb905c0319dd702527a24d4844b3de43120f80098b8a02c636",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000002.stderr.log": "9561c496e45340b31df77e5580c2c0dc12952ba6f7dc935d77ea3f0ad81db64d",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000002.log": "81fc369867cebcd62e5a8b6922f6b6ff390edd4db40c73d6faade8c5e56070eb",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000003.log": "d6cd320a9a887be477f800ca9fd59b5d6a986fe8b15dbac5aac27ad1aaaba889",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/baseline.stderr.log": "b97cff341b321fbcbe880bf507b54858be9ac1cefeadea2e9eb5421f209d6c12",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/discovery.log": "84c332c54d319e944c82a5415085308d22ae95a60c30f8921e7ca618aa0de9de",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000001.stdout.log": "a595f5e560efabd2f23a1c77f15ecf9cd7cd92974f27663418605cfbc4e82e32",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000004.stdout.log": "c062313fb7cbce3bfdd962ab686ed66963871cd25454cf7c3fab8e7b4c949fa4",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/discovery.stdout.log": "f3ccf1e852e8ab42188c4efd29fe103b5550dbefb508469cd71b6c309931d883",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000003.stderr.log": "936709070cac98ad2ad96ecbba27e16e1ed6292431d75f6319fd556110e417df",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/baseline.log": "b4bda7690290ee794f6ce817af97c19f0e984458e82adefef8fcfd5dcf9e2430",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000002.stdout.log": "e3f076b833567b320d2a2967bc9a7dda6c1474f8fe1e80a96681e39b01d8d115",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000001.stderr.log": "46b850f3aa10c98b36ef68235cf86333087f4d96ea519bcdcb41ebbd032af904",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/baseline.stdout.log": "3a47532a5324783600f94a91d5fee30142cb2c145176671c60cbe56d34e12b5d",
+    "focused-original-reports/run-1792711412-IMCpOM/logs/000004.stderr.log": "ceaa6def64f9bfbed9b3fccec19cc32937c208f27412eca8e97115ff47b2952c"
+  },
+  "runs": {
+    "exploratory": {
+      "path": "/tmp/mutie-rust-arithmetic-audit/original-reports/run-1792711188-Ujbtmw",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 42,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-rust-workspace-ucd",
+        "effective_config": {
+          "module_root": "/tmp/mutie-rust-workspace-ucd",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "rust_packages": [
+            "ucd-util"
+          ],
+          "jobs": 2,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [
+            "arithmetic_replace"
+          ],
+          "timeout": 60,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 120,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-arithmetic-audit/original-reports",
+          "verbose": false,
+          "list": false,
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792711188,
+        "finished_at_unix_seconds": 1792711361,
+        "duration_seconds": 172.58609175,
+        "status": "failed",
+        "phase": "mutations",
+        "error": "running ucd-util/src/name.rs:60:43: \"-\" -> \"+\": Cargo command failed without a test or build failure (exit status: 101):\n\n--- Cargo compilation ---\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1160:24\n     |\n1160 |     if n <= ::std::u8::MAX as u64 {\n     |                        ^^^\n     |\n     = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u16::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1162:32\n     |\n1162 |     } else if n <= ::std::u16::MAX as u64 {\n     |                                ^^^\n\nwarning: use of deprecated constant `std::u32::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1164:32\n     |\n1164 |     } else if n <= ::std::u32::MAX as u64 {\n     |                                ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.196 xcodebuild[83170:20746041]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.697 xcodebuild[83170:20746038] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.673 xcodebuild[83434:20746588]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.083 xcodebuild[83434:20746587] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.110 xcodebuild[83116:20745960]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.653 xcodebuild[83116:20745958] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.676 xcodebuild[83433:20746583]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.076 xcodebuild[83433:20746581] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.839 xcodebuild[83415:20746534]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.159 xcodebuild[83415:20746533] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.074 xcodebuild[83439:20746622]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.539 xcodebuild[83439:20746621] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:29.293 xcodebuild[83430:20746561]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.589 xcodebuild[83430:20746560] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.864 xcodebuild[83441:20746680]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:31.637 xcodebuild[83441:20746675] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\n\n--- Cargo test execution ---\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.196 xcodebuild[83170:20746041]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.697 xcodebuild[83170:20746038] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.673 xcodebuild[83434:20746588]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.083 xcodebuild[83434:20746587] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.839 xcodebuild[83415:20746534]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.159 xcodebuild[83415:20746533] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.074 xcodebuild[83439:20746622]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.539 xcodebuild[83439:20746621] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.110 xcodebuild[83116:20745960]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.653 xcodebuild[83116:20745958] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.676 xcodebuild[83433:20746583]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.076 xcodebuild[83433:20746581] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1160:24\n     |\n1160 |     if n <= ::std::u8::MAX as u64 {\n     |                        ^^^\n     |\n     = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u16::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1162:32\n     |\n1162 |     } else if n <= ::std::u16::MAX as u64 {\n     |                                ^^^\n\nwarning: use of deprecated constant `std::u32::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1164:32\n     |\n1164 |     } else if n <= ::std::u32::MAX as u64 {\n     |                                ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:29.293 xcodebuild[83430:20746561]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.589 xcodebuild[83430:20746560] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.864 xcodebuild[83441:20746680]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:31.637 xcodebuild[83441:20746675] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\n\nrunning 3 tests\ntest writer::tests::codepoint_to_codepoint_fn_error ... ok\ntest writer::tests::packed ... ok\ntest writer::tests::test_rust_type_name ... ok\n\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 84 tests\ntest case_folding::tests::parse_common ... ok\ntest bidi_mirroring_glyph::tests::parse ... ok\ntest age::tests::parse_single ... ok\ntest bidi_mirroring_glyph::tests::parse_best_fit ... ok\ntest age::tests::parse_range ... ok\ntest case_folding::tests::parse_full ... ok\ntest case_folding::tests::parse_simple ... ok\ntest case_folding::tests::parse_special ... ok\ntest core_properties::tests::parse_range ... ok\ntest arabic_shaping::tests::parse2 ... ok\ntest core_properties::tests::parse_single ... ok\ntest arabic_shaping::tests::parse1 ... ok\ntest derived_normalization_properties::tests::parse_single ... ok\ntest arabic_shaping::tests::parse3 ... ok\ntest derived_normalization_properties::tests::parse_range ... ok\ntest east_asian_width::tests::parse_range ... ok\ntest east_asian_width::tests::parse_single ... ok\ntest extracted::derived_bidi_class::tests::parse_range ... ok\ntest extracted::derived_bidi_class::tests::parse_single ... ok\ntest emoji_properties::tests::parse_single ... ok\ntest emoji_properties::tests::parse_range ... ok\ntest extracted::derived_decomposition_type::tests::parse_range ... ok\ntest extracted::derived_binary_properties::tests::parse_single ... ok\ntest extracted::derived_combining_class::tests::parse_range ... ok\ntest extracted::derived_binary_properties::tests::parse_range ... ok\ntest extracted::derived_combining_class::tests::parse_single ... ok\ntest extracted::derived_decomposition_type::tests::parse_single ... ok\ntest extracted::derived_east_asian_width::tests::parse_range ... ok\ntest extracted::derived_east_asian_width::tests::parse_single ... ok\ntest extracted::derived_general_category::tests::parse_single ... ok\ntest extracted::derived_general_category::tests::parse_range ... ok\ntest extracted::derived_joining_group::tests::parse_range ... ok\ntest extracted::derived_joining_group::tests::parse_single ... ok\ntest extracted::derived_joining_type::tests::parse_range ... ok\ntest extracted::derived_joining_type::tests::parse_single ... ok\ntest extracted::derived_line_break::tests::parse_range ... ok\ntest extracted::derived_line_break::tests::parse_single ... ok\ntest extracted::derived_name::tests::parse_range ... ok\ntest extracted::derived_numeric_type::tests::parse_range ... ok\ntest extracted::derived_name::tests::parse_single ... ok\ntest extracted::derived_numeric_type::tests::parse_single ... ok\ntest extracted::derived_numeric_values::tests::parse_single ... ok\ntest extracted::derived_numeric_values::tests::parse_range ... ok\ntest grapheme_cluster_break::tests::parse_single ... ok\ntest grapheme_cluster_break::tests::parse_range ... ok\ntest jamo_short_name::tests::parse1 ... ok\ntest jamo_short_name::tests::parse2 ... ok\ntest grapheme_cluster_break::tests::parse_test ... ok\ntest line_break::tests::parse_test ... ok\ntest name_aliases::tests::parse1 ... ok\ntest name_aliases::tests::parse2 ... ok\ntest name_aliases::tests::parse4 ... ok\ntest name_aliases::tests::parse3 ... ok\ntest prop_list::tests::parse_range ... ok\ntest property_aliases::tests::parse1 ... ok\ntest prop_list::tests::parse_single ... ok\ntest property_aliases::tests::parse2 ... ok\ntest property_aliases::tests::parse4 ... ok\ntest property_aliases::tests::parse5 ... ok\ntest property_aliases::tests::parse3 ... ok\ntest property_value_aliases::tests::parse2 ... ok\ntest property_value_aliases::tests::parse3 ... ok\ntest script_extensions::tests::parse_range ... ok\ntest property_value_aliases::tests::parse4 ... ok\ntest property_value_aliases::tests::parse5 ... ok\ntest property_value_aliases::tests::parse1 ... ok\ntest property_value_aliases::tests::parse6 ... ok\ntest script_extensions::tests::parse_single ... ok\ntest scripts::tests::parse_range ... ok\ntest scripts::tests::parse_single ... ok\ntest sentence_break::tests::parse_single ... ok\ntest sentence_break::tests::parse_range ... ok\ntest special_casing::tests::parse_conds ... ok\ntest sentence_break::tests::parse_test ... ok\ntest special_casing::tests::parse_no_conds ... ok\ntest word_break::tests::parse_single ... ok\ntest word_break::tests::parse_range ... ok\ntest unicode_data::tests::parse2 ... ok\ntest unicode_data::tests::parse1 ... ok\ntest unicode_data::tests::parse4 ... ok\ntest unicode_data::tests::parse5 ... ok\ntest word_break::tests::parse_test ... ok\ntest unicode_data::tests::parse3 ... ok\ntest unicode_data::tests::expander ... ok\n\ntest result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n\nrunning 40 tests\ntest owned::tests::gencat_connector_punctuation ... ok\ntest owned::tests::gencat_enclosing_mark ... ok\ntest owned::tests::gencat_control ... ok\ntest owned::tests::gencat_currency_symbol ... ok\ntest owned::tests::gencat_cased_letter ... ok\ntest owned::tests::gencat_close_punctuation ... ok\ntest owned::tests::gencat_decimal_number ... ok\ntest owned::tests::gencat_dash_punctuation ... ok\ntest owned::tests::gencat_final_punctuation ... ok\ntest owned::tests::gencat_format ... ok\ntest owned::tests::gencat_line_separator ... ok\ntest owned::tests::gencat_initial_punctuation ... ok\ntest owned::tests::gencat_letter_number ... ok\ntest owned::tests::gencat_lowercase_letter ... ok\ntest owned::tests::gencat_mark ... ok\ntest owned::tests::gencat_letter ... ok\ntest owned::tests::gencat_math_symbol ... ok\ntest owned::tests::gencat_modifier_symbol ... ok\ntest owned::tests::gencat_nonspacing_mark ... ok\ntest owned::tests::gencat_open_punctuation ... ok\ntest owned::tests::gencat_number ... ok\ntest owned::tests::gencat_modifier_letter ... ok\ntest owned::tests::gencat_other_letter ... ok\ntest owned::tests::gencat_other_number ... ok\ntest owned::tests::gencat_other_punctuation ... ok\ntest owned::tests::gencat_other_symbol ... ok\ntest owned::tests::gencat_paragraph_separator ... ok\ntest owned::tests::gencat_punctuation ... ok\ntest owned::tests::gencat_separator ... ok\ntest owned::tests::gencat_private_use ... ok\ntest owned::tests::gencat_space_separator ... ok\ntest owned::tests::set1 ... ok\ntest owned::tests::set_combined ... ok\ntest owned::tests::gencat_surrogate ... ok\ntest owned::tests::gencat_spacing_mark ... ok\ntest owned::tests::gencat_symbol ... ok\ntest owned::tests::gencat_titlecase_letter ... ok\ntest owned::tests::gencat_uppercase_letter ... ok\ntest owned::tests::gencat_other ... ok\ntest owned::tests::gencat_unassigned ... ok\n\ntest result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.05s\n\n\nrunning 13 tests\n\n     Removed 73 files, 16.7MiB total\n\n--- Cargo compilation ---\n   Compiling ucd-util v0.2.2 (/tmp/mutie-Qa6TNT/repo/ucd-util)\n   Compiling ucd-trie v0.1.7 (/tmp/mutie-Qa6TNT/repo/ucd-trie)\n   Compiling ucd-parse v0.1.13 (/tmp/mutie-Qa6TNT/repo/ucd-parse)\n   Compiling ucd-generate v0.3.1 (/tmp/mutie-Qa6TNT/repo)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.16s\n\n--- Cargo test execution ---\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running unittests src/main.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_generate-1de71f0fdfa5498c)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_parse-57f0eb8d6e55f764)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_trie-5e0a987af9bc5564)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_util-1a6978839a86eeb2)\npanicked at /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/fmt/mod.rs:2949:38:\n\nthread panicked while processing panic. aborting.\nerror: test failed, to rerun pass `-p ucd-util --lib`\n\nCaused by:\n  process didn't exit successfully: `/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_util-1a6978839a86eeb2` (signal: 6, SIGABRT: process abort signal)\nerror: 1 target failed:\n    `-p ucd-util --lib`\n",
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "filtered",
+          "killed": 11,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 1,
+          "unfinished": 2,
+          "dismissed_in_score": 0,
+          "percentage": null,
+          "unavailable_reason": "incomplete_run"
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "workspace",
+          "workspace": {
+            "members": [
+              {
+                "name": "ucd-generate",
+                "directory": "",
+                "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+                "targets": [
+                  {
+                    "kind": "bin",
+                    "name": "ucd-generate",
+                    "source": "src/main.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-parse",
+                "directory": "ucd-parse",
+                "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_parse",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-trie",
+                "directory": "ucd-trie",
+                "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_trie",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-util",
+                "directory": "ucd-util",
+                "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_util",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              }
+            ],
+            "selected": [
+              "ucd-util"
+            ]
+          },
+          "targets": [],
+          "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+          "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+          "default_features": true,
+          "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+            "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 2,
+        "workers": 2,
+        "baseline_timeout_seconds": 120,
+        "mutation_timeout_seconds": 60.0,
+        "planned_mutations": 16,
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.015071125,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.014452542,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.032424084,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.050233166999999995,
+            "reflink_files": 216,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 13,
+            "completed": 13,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.5549450410000001,
+            "reflink_files": 1404,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 11,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 60,
+          "column": 22,
+          "end_line": 60,
+          "end_column": 23,
+          "byte_start": 2127,
+          "byte_end": 2128,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 61,
+          "column": 27,
+          "end_line": 61,
+          "end_column": 28,
+          "byte_start": 2163,
+          "byte_end": 2164,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 62,
+          "column": 28,
+          "end_line": 62,
+          "end_column": 29,
+          "byte_start": 2201,
+          "byte_end": 2202,
+          "original": "%",
+          "replacement": "*",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 62,
+          "column": 39,
+          "end_line": 62,
+          "end_column": 40,
+          "byte_start": 2212,
+          "byte_end": 2213,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 5,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 63,
+          "column": 27,
+          "end_line": 63,
+          "end_column": 28,
+          "byte_start": 2249,
+          "byte_end": 2250,
+          "original": "%",
+          "replacement": "*",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 6,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 65,
+          "column": 25,
+          "end_line": 65,
+          "end_column": 26,
+          "byte_start": 2285,
+          "byte_end": 2286,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 7,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 66,
+          "column": 25,
+          "end_line": 66,
+          "end_column": 26,
+          "byte_start": 2320,
+          "byte_end": 2321,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 8,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 67,
+          "column": 62,
+          "end_line": 67,
+          "end_column": 63,
+          "byte_start": 2392,
+          "byte_end": 2393,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 9,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 32,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1704,
+          "byte_end": 1705,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 10,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 47,
+          "column": 29,
+          "end_line": 47,
+          "end_column": 30,
+          "byte_start": 2102,
+          "byte_end": 2103,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 11,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 50,
+          "column": 32,
+          "end_line": 50,
+          "end_column": 33,
+          "byte_start": 2300,
+          "byte_end": 2301,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 12,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 51,
+          "column": 28,
+          "end_line": 51,
+          "end_column": 29,
+          "byte_start": 2346,
+          "byte_end": 2347,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 13,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 60,
+          "column": 35,
+          "end_line": 60,
+          "end_column": 36,
+          "byte_start": 2732,
+          "byte_end": 2733,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 14,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 60,
+          "column": 43,
+          "end_line": 60,
+          "end_column": 44,
+          "byte_start": 2740,
+          "byte_end": 2741,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 15,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 124,
+          "column": 35,
+          "end_line": 124,
+          "end_column": 36,
+          "byte_start": 5123,
+          "byte_end": 5124,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 16,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 124,
+          "column": 43,
+          "end_line": 124,
+          "end_column": 44,
+          "byte_start": 5131,
+          "byte_end": 5132,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 15.122858042,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 17488,
+                "head_bytes": 17488,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 68658,
+                "head_bytes": 68658,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1615,
+                "head_bytes": 1615,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 14.921978082999999,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 17491,
+                "head_bytes": 17491,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 68661,
+                "head_bytes": 68661,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1615,
+                "head_bytes": 1615,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.228040084,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19583,
+                "head_bytes": 19583,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74543,
+                "head_bytes": 74543,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.224234459,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19582,
+                "head_bytes": 19582,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74542,
+                "head_bytes": 74542,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.955506875,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19583,
+                "head_bytes": 19583,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74543,
+                "head_bytes": 74543,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.976066875,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19579,
+                "head_bytes": 19579,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74539,
+                "head_bytes": 74539,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.988661375,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19581,
+                "head_bytes": 19581,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74541,
+                "head_bytes": 74541,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.949112708,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19581,
+                "head_bytes": 19581,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74541,
+                "head_bytes": 74541,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 14.355315084,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 13.796735875,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19168,
+                "head_bytes": 19168,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74128,
+                "head_bytes": 74128,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 51.3450685,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 58.277834958,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20038,
+                "head_bytes": 20038,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 77288,
+                "head_bytes": 77288,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 15.719074416,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19168,
+                "head_bytes": 19168,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74128,
+                "head_bytes": 74128,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "error",
+          "error": "running ucd-util/src/name.rs:60:43: \"-\" -> \"+\": Cargo command failed without a test or build failure (exit status: 101):\n\n--- Cargo compilation ---\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1160:24\n     |\n1160 |     if n <= ::std::u8::MAX as u64 {\n     |                        ^^^\n     |\n     = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u16::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1162:32\n     |\n1162 |     } else if n <= ::std::u16::MAX as u64 {\n     |                                ^^^\n\nwarning: use of deprecated constant `std::u32::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1164:32\n     |\n1164 |     } else if n <= ::std::u32::MAX as u64 {\n     |                                ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.196 xcodebuild[83170:20746041]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.697 xcodebuild[83170:20746038] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.673 xcodebuild[83434:20746588]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.083 xcodebuild[83434:20746587] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.110 xcodebuild[83116:20745960]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.653 xcodebuild[83116:20745958] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.676 xcodebuild[83433:20746583]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.076 xcodebuild[83433:20746581] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.839 xcodebuild[83415:20746534]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.159 xcodebuild[83415:20746533] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.074 xcodebuild[83439:20746622]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.539 xcodebuild[83439:20746621] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:29.293 xcodebuild[83430:20746561]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.589 xcodebuild[83430:20746560] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.864 xcodebuild[83441:20746680]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:31.637 xcodebuild[83441:20746675] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\n\n--- Cargo test execution ---\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:235:35\n    |\n235 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n    |\n    = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n   --> ucd-trie/src/owned.rs:257:35\n    |\n257 |             if start > ::std::u8::MAX as usize {\n    |                                   ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.196 xcodebuild[83170:20746041]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.697 xcodebuild[83170:20746038] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.673 xcodebuild[83434:20746588]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.083 xcodebuild[83434:20746587] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.839 xcodebuild[83415:20746534]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.159 xcodebuild[83415:20746533] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.074 xcodebuild[83439:20746622]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.539 xcodebuild[83439:20746621] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:28.110 xcodebuild[83116:20745960]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:28.653 xcodebuild[83116:20745958] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:29.676 xcodebuild[83433:20746583]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:30.076 xcodebuild[83433:20746581] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\nwarning: use of deprecated constant `std::u8::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1160:24\n     |\n1160 |     if n <= ::std::u8::MAX as u64 {\n     |                        ^^^\n     |\n     = note: `#[warn(deprecated)]` on by default\n\nwarning: use of deprecated constant `std::u16::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1162:32\n     |\n1162 |     } else if n <= ::std::u16::MAX as u64 {\n     |                                ^^^\n\nwarning: use of deprecated constant `std::u32::MAX`: replaced by the `MAX` associated constant on this type\n    --> src/writer.rs:1164:32\n     |\n1164 |     } else if n <= ::std::u32::MAX as u64 {\n     |                                ^^^\n\nwarning: output of `xcrun` while finding MacOSX.sdk\n  |\n  = note: 2026-10-22 16:22:29.293 xcodebuild[83430:20746561]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:29.589 xcodebuild[83430:20746560] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n          2026-10-22 16:22:30.864 xcodebuild[83441:20746680]  DVTFilePathFSEvents: Failed to start fs event stream.\n          2026-10-22 16:22:31.637 xcodebuild[83441:20746675] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 \"Input/output error\". Using NSCachesDirectory instead.\n\n\nrunning 3 tests\ntest writer::tests::codepoint_to_codepoint_fn_error ... ok\ntest writer::tests::packed ... ok\ntest writer::tests::test_rust_type_name ... ok\n\ntest result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n\nrunning 84 tests\ntest case_folding::tests::parse_common ... ok\ntest bidi_mirroring_glyph::tests::parse ... ok\ntest age::tests::parse_single ... ok\ntest bidi_mirroring_glyph::tests::parse_best_fit ... ok\ntest age::tests::parse_range ... ok\ntest case_folding::tests::parse_full ... ok\ntest case_folding::tests::parse_simple ... ok\ntest case_folding::tests::parse_special ... ok\ntest core_properties::tests::parse_range ... ok\ntest arabic_shaping::tests::parse2 ... ok\ntest core_properties::tests::parse_single ... ok\ntest arabic_shaping::tests::parse1 ... ok\ntest derived_normalization_properties::tests::parse_single ... ok\ntest arabic_shaping::tests::parse3 ... ok\ntest derived_normalization_properties::tests::parse_range ... ok\ntest east_asian_width::tests::parse_range ... ok\ntest east_asian_width::tests::parse_single ... ok\ntest extracted::derived_bidi_class::tests::parse_range ... ok\ntest extracted::derived_bidi_class::tests::parse_single ... ok\ntest emoji_properties::tests::parse_single ... ok\ntest emoji_properties::tests::parse_range ... ok\ntest extracted::derived_decomposition_type::tests::parse_range ... ok\ntest extracted::derived_binary_properties::tests::parse_single ... ok\ntest extracted::derived_combining_class::tests::parse_range ... ok\ntest extracted::derived_binary_properties::tests::parse_range ... ok\ntest extracted::derived_combining_class::tests::parse_single ... ok\ntest extracted::derived_decomposition_type::tests::parse_single ... ok\ntest extracted::derived_east_asian_width::tests::parse_range ... ok\ntest extracted::derived_east_asian_width::tests::parse_single ... ok\ntest extracted::derived_general_category::tests::parse_single ... ok\ntest extracted::derived_general_category::tests::parse_range ... ok\ntest extracted::derived_joining_group::tests::parse_range ... ok\ntest extracted::derived_joining_group::tests::parse_single ... ok\ntest extracted::derived_joining_type::tests::parse_range ... ok\ntest extracted::derived_joining_type::tests::parse_single ... ok\ntest extracted::derived_line_break::tests::parse_range ... ok\ntest extracted::derived_line_break::tests::parse_single ... ok\ntest extracted::derived_name::tests::parse_range ... ok\ntest extracted::derived_numeric_type::tests::parse_range ... ok\ntest extracted::derived_name::tests::parse_single ... ok\ntest extracted::derived_numeric_type::tests::parse_single ... ok\ntest extracted::derived_numeric_values::tests::parse_single ... ok\ntest extracted::derived_numeric_values::tests::parse_range ... ok\ntest grapheme_cluster_break::tests::parse_single ... ok\ntest grapheme_cluster_break::tests::parse_range ... ok\ntest jamo_short_name::tests::parse1 ... ok\ntest jamo_short_name::tests::parse2 ... ok\ntest grapheme_cluster_break::tests::parse_test ... ok\ntest line_break::tests::parse_test ... ok\ntest name_aliases::tests::parse1 ... ok\ntest name_aliases::tests::parse2 ... ok\ntest name_aliases::tests::parse4 ... ok\ntest name_aliases::tests::parse3 ... ok\ntest prop_list::tests::parse_range ... ok\ntest property_aliases::tests::parse1 ... ok\ntest prop_list::tests::parse_single ... ok\ntest property_aliases::tests::parse2 ... ok\ntest property_aliases::tests::parse4 ... ok\ntest property_aliases::tests::parse5 ... ok\ntest property_aliases::tests::parse3 ... ok\ntest property_value_aliases::tests::parse2 ... ok\ntest property_value_aliases::tests::parse3 ... ok\ntest script_extensions::tests::parse_range ... ok\ntest property_value_aliases::tests::parse4 ... ok\ntest property_value_aliases::tests::parse5 ... ok\ntest property_value_aliases::tests::parse1 ... ok\ntest property_value_aliases::tests::parse6 ... ok\ntest script_extensions::tests::parse_single ... ok\ntest scripts::tests::parse_range ... ok\ntest scripts::tests::parse_single ... ok\ntest sentence_break::tests::parse_single ... ok\ntest sentence_break::tests::parse_range ... ok\ntest special_casing::tests::parse_conds ... ok\ntest sentence_break::tests::parse_test ... ok\ntest special_casing::tests::parse_no_conds ... ok\ntest word_break::tests::parse_single ... ok\ntest word_break::tests::parse_range ... ok\ntest unicode_data::tests::parse2 ... ok\ntest unicode_data::tests::parse1 ... ok\ntest unicode_data::tests::parse4 ... ok\ntest unicode_data::tests::parse5 ... ok\ntest word_break::tests::parse_test ... ok\ntest unicode_data::tests::parse3 ... ok\ntest unicode_data::tests::expander ... ok\n\ntest result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s\n\n\nrunning 40 tests\ntest owned::tests::gencat_connector_punctuation ... ok\ntest owned::tests::gencat_enclosing_mark ... ok\ntest owned::tests::gencat_control ... ok\ntest owned::tests::gencat_currency_symbol ... ok\ntest owned::tests::gencat_cased_letter ... ok\ntest owned::tests::gencat_close_punctuation ... ok\ntest owned::tests::gencat_decimal_number ... ok\ntest owned::tests::gencat_dash_punctuation ... ok\ntest owned::tests::gencat_final_punctuation ... ok\ntest owned::tests::gencat_format ... ok\ntest owned::tests::gencat_line_separator ... ok\ntest owned::tests::gencat_initial_punctuation ... ok\ntest owned::tests::gencat_letter_number ... ok\ntest owned::tests::gencat_lowercase_letter ... ok\ntest owned::tests::gencat_mark ... ok\ntest owned::tests::gencat_letter ... ok\ntest owned::tests::gencat_math_symbol ... ok\ntest owned::tests::gencat_modifier_symbol ... ok\ntest owned::tests::gencat_nonspacing_mark ... ok\ntest owned::tests::gencat_open_punctuation ... ok\ntest owned::tests::gencat_number ... ok\ntest owned::tests::gencat_modifier_letter ... ok\ntest owned::tests::gencat_other_letter ... ok\ntest owned::tests::gencat_other_number ... ok\ntest owned::tests::gencat_other_punctuation ... ok\ntest owned::tests::gencat_other_symbol ... ok\ntest owned::tests::gencat_paragraph_separator ... ok\ntest owned::tests::gencat_punctuation ... ok\ntest owned::tests::gencat_separator ... ok\ntest owned::tests::gencat_private_use ... ok\ntest owned::tests::gencat_space_separator ... ok\ntest owned::tests::set1 ... ok\ntest owned::tests::set_combined ... ok\ntest owned::tests::gencat_surrogate ... ok\ntest owned::tests::gencat_spacing_mark ... ok\ntest owned::tests::gencat_symbol ... ok\ntest owned::tests::gencat_titlecase_letter ... ok\ntest owned::tests::gencat_uppercase_letter ... ok\ntest owned::tests::gencat_other ... ok\ntest owned::tests::gencat_unassigned ... ok\n\ntest result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.05s\n\n\nrunning 13 tests\n\n     Removed 73 files, 16.7MiB total\n\n--- Cargo compilation ---\n   Compiling ucd-util v0.2.2 (/tmp/mutie-Qa6TNT/repo/ucd-util)\n   Compiling ucd-trie v0.1.7 (/tmp/mutie-Qa6TNT/repo/ucd-trie)\n   Compiling ucd-parse v0.1.13 (/tmp/mutie-Qa6TNT/repo/ucd-parse)\n   Compiling ucd-generate v0.3.1 (/tmp/mutie-Qa6TNT/repo)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 7.16s\n\n--- Cargo test execution ---\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running unittests src/main.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_generate-1de71f0fdfa5498c)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_parse-57f0eb8d6e55f764)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_trie-5e0a987af9bc5564)\n     Running unittests src/lib.rs (/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_util-1a6978839a86eeb2)\npanicked at /rustc/58cf8f9c35b355199727627d07ae34a4e2846d67/library/core/src/fmt/mod.rs:2949:38:\n\nthread panicked while processing panic. aborting.\nerror: test failed, to rerun pass `-p ucd-util --lib`\n\nCaused by:\n  process didn't exit successfully: `/tmp/mutie-cargo-worker-tOg2Iw/debug/deps/ucd_util-1a6978839a86eeb2` (signal: 6, SIGABRT: process abort signal)\nerror: 1 target failed:\n    `-p ucd-util --lib`\n",
+          "duration_seconds": 13.53519875,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18519,
+                "head_bytes": 18519,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73126,
+                "head_bytes": 73126,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1751,
+                "head_bytes": 1751,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "interrupted",
+          "worker": 1,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": 4.696422833,
+          "exit_code": null,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4411,
+                "head_bytes": 4411,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 26706,
+                "head_bytes": 26706,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 522,
+                "head_bytes": 522,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        }
+      ],
+      "baseline_results": [
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.58s",
+        "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+      ]
+    },
+    "focused_original": {
+      "path": "/tmp/mutie-rust-arithmetic-audit/focused-original-reports/run-1792711412-IMCpOM",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 20,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-rust-workspace-ucd",
+        "effective_config": {
+          "module_root": "/tmp/mutie-rust-workspace-ucd",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "rust_packages": [
+            "ucd-util"
+          ],
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [],
+          "timeout": 60,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 120,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-arithmetic-audit/focused-original-reports",
+          "verbose": false,
+          "list": false,
+          "rerun": {
+            "source_run": "/tmp/mutie-rust-arithmetic-audit/original-reports/run-1792711188-Ujbtmw",
+            "selection": "all",
+            "source_ids": [
+              3,
+              5,
+              9,
+              11
+            ]
+          },
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792711412,
+        "finished_at_unix_seconds": 1792711447,
+        "duration_seconds": 34.458652959,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 2,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 50.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "workspace",
+          "workspace": {
+            "members": [
+              {
+                "name": "ucd-generate",
+                "directory": "",
+                "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+                "targets": [
+                  {
+                    "kind": "bin",
+                    "name": "ucd-generate",
+                    "source": "src/main.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-parse",
+                "directory": "ucd-parse",
+                "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_parse",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-trie",
+                "directory": "ucd-trie",
+                "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_trie",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-util",
+                "directory": "ucd-util",
+                "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_util",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              }
+            ],
+            "selected": [
+              "ucd-util"
+            ]
+          },
+          "targets": [],
+          "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+          "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+          "default_features": true,
+          "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+            "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 120,
+        "mutation_timeout_seconds": 60.0,
+        "planned_mutations": 4,
+        "rerun": {
+          "source_run": "/tmp/mutie-rust-arithmetic-audit/original-reports/run-1792711188-Ujbtmw",
+          "source_checkpoint": 42,
+          "source_status": "failed",
+          "selection": "all",
+          "source_ids": [
+            3,
+            5,
+            9,
+            11
+          ],
+          "mutations": [
+            {
+              "id": 1,
+              "source_id": 3
+            },
+            {
+              "id": 2,
+              "source_id": 5
+            },
+            {
+              "id": 3,
+              "source_id": 9
+            },
+            {
+              "id": 4,
+              "source_id": 11
+            }
+          ]
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.016896667,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0351425,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.023619417,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.015985667,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 3,
+            "completed": 3,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.068667792,
+            "reflink_files": 324,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 62,
+          "column": 28,
+          "end_line": 62,
+          "end_column": 29,
+          "byte_start": 2201,
+          "byte_end": 2202,
+          "original": "%",
+          "replacement": "*",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/hangul.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+          "line": 63,
+          "column": 27,
+          "end_line": 63,
+          "end_column": 28,
+          "byte_start": 2249,
+          "byte_end": 2250,
+          "original": "%",
+          "replacement": "*",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 32,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1704,
+          "byte_end": 1705,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 50,
+          "column": 32,
+          "end_line": 50,
+          "end_column": 33,
+          "byte_start": 2300,
+          "byte_end": 2301,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 7.1840445840000005,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18222,
+                "head_bytes": 18222,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 70100,
+                "head_bytes": 70100,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1615,
+                "head_bytes": 1615,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 6.105794334,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19583,
+                "head_bytes": 19583,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74543,
+                "head_bytes": 74543,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1398,
+                "head_bytes": 1398,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 6.057279166,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 6.050015583,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "baseline_results": [
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.20s",
+        "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+      ]
+    },
+    "stronger": {
+      "path": "/tmp/mutie-rust-arithmetic-audit/stronger-reports/run-1792711467-9EYkOr",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 16,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-rust-arithmetic-audit/stronger",
+        "effective_config": {
+          "module_root": "/tmp/mutie-rust-arithmetic-audit/stronger",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "rust_packages": [
+            "ucd-util"
+          ],
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [],
+          "timeout": 60,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 120,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-arithmetic-audit/stronger-reports",
+          "verbose": false,
+          "list": false,
+          "rerun": {
+            "source_run": "/tmp/mutie-rust-arithmetic-audit/focused-original-reports/run-1792711412-IMCpOM",
+            "selection": "missed"
+          },
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792711467,
+        "finished_at_unix_seconds": 1792711495,
+        "duration_seconds": 28.107324833,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "workspace",
+          "workspace": {
+            "members": [
+              {
+                "name": "ucd-generate",
+                "directory": "",
+                "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+                "targets": [
+                  {
+                    "kind": "bin",
+                    "name": "ucd-generate",
+                    "source": "src/main.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-parse",
+                "directory": "ucd-parse",
+                "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_parse",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-trie",
+                "directory": "ucd-trie",
+                "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_trie",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-util",
+                "directory": "ucd-util",
+                "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_util",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              }
+            ],
+            "selected": [
+              "ucd-util"
+            ]
+          },
+          "targets": [],
+          "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+          "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+          "default_features": true,
+          "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "ucd-util/src/hangul.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/ideograph.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/ideograph.rs: macro tokens/expansions (including include!)",
+            "ucd-util/src/name.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/property.rs: conditional, test-only, or remapped source",
+            "ucd-util/src/unicode_tables/mod.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 120,
+        "mutation_timeout_seconds": 60.0,
+        "planned_mutations": 2,
+        "rerun": {
+          "source_run": "/tmp/mutie-rust-arithmetic-audit/focused-original-reports/run-1792711412-IMCpOM",
+          "source_checkpoint": 20,
+          "source_status": "completed",
+          "selection": "missed",
+          "mutations": [
+            {
+              "id": 1,
+              "source_id": 3
+            },
+            {
+              "id": 2,
+              "source_id": 4
+            }
+          ]
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.015608125,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.014433167,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.036741708,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.03280725,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.029135625,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "mutations": [
+        {
+          "id": 1,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 40,
+          "column": 32,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1704,
+          "byte_end": 1705,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-util/src/name.rs",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+          "line": 50,
+          "column": 32,
+          "end_line": 50,
+          "end_column": 33,
+          "byte_start": 2300,
+          "byte_end": 2301,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.422462375,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19097,
+                "head_bytes": 19097,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74851,
+                "head_bytes": 74851,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1816,
+                "head_bytes": 1816,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 7.006906833,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21139,
+                "head_bytes": 21139,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 80683,
+                "head_bytes": 80683,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1599,
+                "head_bytes": 1599,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "baseline_results": [
+        "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+        "test result: ok. 84 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.39s",
+        "test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+        "test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+      ]
+    }
+  },
+  "preservation": {
+    "tracked_inputs_in_each_copy": 108,
+    "original_report_files": 109,
+    "stronger_test": "benchmarks/fixtures/rust-arithmetic-ucd/arithmetic_hyphen.rs",
+    "original_git_clean": true
+  },
+  "validation": {
+    "native_semantic_cases": 5,
+    "native_semantic_operand_types": [
+      "i32",
+      "f64",
+      "owned overloaded value",
+      "borrowed overloaded value"
+    ],
+    "native_seconds": 2.99,
+    "scored_fixture_summary": {
+      "killed": 7,
+      "missed": 2,
+      "build_failed": 1,
+      "errors": 0,
+      "timeout": 0
+    },
+    "scored_fixture_stronger_summary": {
+      "killed": 2,
+      "missed": 0,
+      "build_failed": 0,
+      "errors": 0,
+      "timeout": 0
+    },
+    "scored_fixture_post_separator_seconds": 27.19,
+    "initial_fixture_attempt": {
+      "killed": 5,
+      "missed": 2,
+      "build_failed": 1,
+      "timeout": 2,
+      "errors": 0,
+      "note": "Unchanged-limit repeat passed; no cause established."
+    },
+    "cargo_clippy_all_targets_deny_warnings": "passed",
+    "cargo_fmt_check": "passed",
+    "default_suite": {
+      "passed": 315,
+      "failed": 0,
+      "ignored": 129
+    }
+  }
+}

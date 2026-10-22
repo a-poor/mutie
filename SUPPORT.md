@@ -80,10 +80,15 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
   dependencies, inherited metadata, default features and unit/integration tests.
   Executes `cargo test --locked --tests --no-fail-fast`, adding `--workspace` for
   workspaces. Member selection narrows mutations, not tests. No affected-test selection.
-- Mutation coverage: `boolean_flip`, `comparison_boundary`, `logical_swap`.
+- Mutation coverage: `boolean_flip`, `comparison_boundary`, `logical_swap`,
+  `arithmetic_replace` (binary `+ ↔ -`, `* ↔ /`, `% → *`).
   Discovery follows supported source modules and excludes test-only, generated,
   macro-token and other unsupported contexts described in the
   [scope contract](DESIGN.md#initial-rust-support-contract).
+- Arithmetic edits preserve native grouping, ownership and trait dispatch.
+  Unary/compound assignments and existing constant/macro/test exclusions remain.
+  [Arithmetic acceptance](benchmarks/rust-arithmetic.md) records semantic controls,
+  scored panic/build-failure distinctions and separate-copy real-project reruns.
 - Workflow: shared status/report/browser, focused reruns, dismissals, scores and
   policies are validated. Fresh artifacts are the default; dependency reuse is
   opt-in and worker-local, with local package targets rebuilt every time.

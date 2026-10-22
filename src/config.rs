@@ -318,9 +318,12 @@ impl RunConfig {
             ensure!(
                 config.operators.iter().all(|op| matches!(
                     op,
-                    Operator::BooleanFlip | Operator::ComparisonBoundary | Operator::LogicalSwap
+                    Operator::BooleanFlip
+                        | Operator::ComparisonBoundary
+                        | Operator::LogicalSwap
+                        | Operator::ArithmeticReplace
                 )),
-                "Rust currently supports only boolean_flip, comparison_boundary, and logical_swap"
+                "Rust currently supports only boolean_flip, comparison_boundary, logical_swap, and arithmetic_replace"
             );
         }
         for (name, timeout) in [
@@ -490,7 +493,7 @@ mod tests {
         assert_eq!(resolve(temp.path(), &[])?.lang, Lang::Rust);
         for args in [
             &["--test-scope", "affected"][..],
-            &["--operator", "arithmetic_replace"][..],
+            &["--operator", "comparison_invert"][..],
         ] {
             assert!(resolve(temp.path(), args).is_err());
         }
@@ -503,11 +506,12 @@ mod tests {
                 temp.path(),
                 &[
                     "--operator",
-                    "boolean_flip,comparison_boundary,logical_swap"
+                    "boolean_flip,comparison_boundary,logical_swap,arithmetic_replace"
                 ]
             )?
             .operators,
             [
+                Operator::ArithmeticReplace,
                 Operator::ComparisonBoundary,
                 Operator::LogicalSwap,
                 Operator::BooleanFlip

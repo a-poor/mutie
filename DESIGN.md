@@ -214,7 +214,8 @@ provide build evidence, not stable structured libtest result events.
 
 #### Source eligibility and Rust operators
 
-Rust supports `boolean_flip` (`true` ↔ `false`), `logical_swap` (`&&` ↔ `||`), and `comparison_boundary`
+Rust supports `boolean_flip` (`true` ↔ `false`), `logical_swap` (`&&` ↔ `||`), `arithmetic_replace`
+(binary `+ ↔ -`, `* ↔ /`, `% → *`), and `comparison_boundary`
 (`<` ↔ `<=`, `>` ↔ `>=`) in ordinary function/method bodies, including closures
 and match guards. The first slice began with boolean flips; the boundary operator
 reuses the shared catalog name, filters, identities, reports and focused reruns.
@@ -1294,7 +1295,7 @@ automatic sequence of work:
 
 - Extend comparison inversion and negation removal to additional languages to
   expose reversed validation/filtering decisions, beyond equality-at-a-cutoff gaps.
-- Extend arithmetic replacement to Rust for formulas, counters and indexing.
+- Rust now has [scoped arithmetic replacement](benchmarks/rust-arithmetic.md) for formulas, counters and indexing.
   Python now has a [validated scoped binary slice](benchmarks/python-arithmetic.md);
   broader Python operators need separate semantic and real-project evidence.
 - Consider a small numeric-literal replacement set (`0`, `1`, `-1`, or adjacent
@@ -2182,3 +2183,15 @@ NaN/Infinity, BigInt truncation/zero/mixed-type exceptions, evaluation and coerc
 order, six scored JS/TS workflows, and unchanged Bragkit weight findings killed by
 separate-copy exact-score tests. Modulo/remainder has native and fixture evidence;
 the selected public-project findings are division/multiplication replacements.
+
+### Rust arithmetic expressions
+
+Binary `arithmetic_replace` uses equal-precedence/associativity token edits for
+`+ ↔ -`, `* ↔ /`, `% → *`. A new division token adjacent to a comment gets one
+separating space to prevent accidental `//` lexing. Operands are neither cloned
+nor borrowed by instrumentation; native trait resolution and ownership apply.
+Saved readers validate exact token pairs and Rust extensions; reruns retain
+source identity checks. Compilation errors, runtime panics and aborts continue
+through the existing Cargo evidence classifier, without arithmetic exceptions.
+[Acceptance](benchmarks/rust-arithmetic.md) records native move/borrow/numeric
+controls, scored fixtures, unchanged UCD Generate and stronger-test reruns.

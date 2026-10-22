@@ -305,6 +305,17 @@ impl LoadedReport {
         }
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
+            if run.language() == crate::cli::Lang::Rust
+                && mutation.operator == Operator::ArithmeticReplace
+            {
+                ensure!(
+                    matches!(
+                        (mutation.original.as_str(), mutation.replacement.as_str()),
+                        ("+", "-") | ("-", "+") | ("*", "/" | "/ ") | ("/", "*") | ("%", "*")
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("rs"),
+                    "saved Rust arithmetic mutation is outside supported source scope"
+                );
+            }
             if run.language() == crate::cli::Lang::Python {
                 ensure!(
                     matches!(
@@ -1045,9 +1056,58 @@ mod tests {
     }
 
     #[test]
+    fn rust_arithmetic_saved_recipes_require_exact_tokens_and_rust_source() {
+        let temp = fixture();
+        update(temp.path(), "run.json", |v| {
+            v["effective_config"] = serde_json::json!({"lang":"rust"});
+        });
+        update(temp.path(), "mutants.json", |v| {
+            let m = &mut v["mutations"][1];
+            m["file"] = "src/math.rs".into();
+            m["byte_end"] = 1.into();
+            m["end_column"] = 2.into();
+        });
+        for (original, replacement) in [
+            ("+", "-"),
+            ("-", "+"),
+            ("*", "/"),
+            ("*", "/ "),
+            ("/", "*"),
+            ("%", "*"),
+        ] {
+            update(temp.path(), "mutants.json", |v| {
+                v["mutations"][1]["original"] = original.into();
+                v["mutations"][1]["replacement"] = replacement.into();
+            });
+            LoadedReport::load(temp.path()).unwrap();
+        }
+        for (original, replacement, file) in [
+            ("+", "*", "src/math.rs"),
+            ("%", "/", "src/math.rs"),
+            ("*", "/", "src/math.go"),
+        ] {
+            update(temp.path(), "mutants.json", |v| {
+                let m = &mut v["mutations"][1];
+                m["original"] = original.into();
+                m["replacement"] = replacement.into();
+                m["file"] = file.into();
+            });
+            assert!(
+                format!("{:#}", LoadedReport::load(temp.path()).unwrap_err())
+                    .contains("saved Rust arithmetic mutation")
+            );
+        }
+    }
+
+    #[test]
     fn saved_reviews_keep_legacy_go_meaning_and_validate_rust_language() {
         let temp = fixture_with_dismissals();
         LoadedReport::load(temp.path()).unwrap();
+        // Match the generic fixture's actual true -> false edit when relabeling
+        // it as Rust; arithmetic reports now require an exact token pair.
+        update(temp.path(), "mutants.json", |v| {
+            v["mutations"][1]["operator"] = "boolean_flip".into();
+        });
         update(temp.path(), "run.json", |v| {
             v["effective_config"] = serde_json::json!({"lang":"rust"});
         });

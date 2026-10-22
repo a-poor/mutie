@@ -91,6 +91,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    findings on unchanged Bragkit. See [acceptance](benchmarks/javascript-arithmetic.md).
    The JS/TS expression rows are now covered; remaining Rust/Python expression
    gaps still need their own semantic and real-project validation.
+   Fourth slice completed: Rust binary arithmetic/remainder with token-safe
+   comment handling, ownership/overload/numeric controls, build-failure distinction
+   and unchanged UCD Generate findings killed in a separate stronger copy. See
+   [acceptance](benchmarks/rust-arithmetic.md). Rust comparison inversion/negation
+   removal and Python expression gaps remain.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

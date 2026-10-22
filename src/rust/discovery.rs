@@ -243,6 +243,21 @@ impl Walker<'_> {
                         // precedence and borrowing, including overloaded comparisons.
                         self.push(file, operator, Operator::ComparisonBoundary, replacement);
                     }
+                    let replacement = match &file.source[operator.byte_range()] {
+                        "+" => Some("-"),
+                        "-" => Some("+"),
+                        "*" if file.source[operator.end_byte()..].starts_with('/') => Some("/ "),
+                        "*" => Some("/"),
+                        "/" | "%" => Some("*"),
+                        _ => None,
+                    };
+                    if let Some(replacement) = replacement {
+                        // Each pair has identical precedence and associativity. A token
+                        // edit retains evaluation, ownership and native trait dispatch.
+                        // Separate division from an immediately following comment so
+                        // the replacement cannot lex as a new line comment.
+                        self.push(file, operator, Operator::ArithmeticReplace, replacement);
+                    }
                 }
             }
             _ => {}
@@ -785,3 +800,7 @@ fn main() {
         Ok(())
     }
 }
+
+#[cfg(test)]
+#[path = "arithmetic_tests.rs"]
+mod arithmetic_tests;

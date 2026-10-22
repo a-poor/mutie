@@ -1439,6 +1439,13 @@ mod tests {
     #[test]
     fn rust_reports_export_explicit_language_and_legacy_reports_remain_inspectable() {
         let temp = crate::report_reader::fixture();
+        // The generic fixture labels a boolean edit as arithmetic. Rust recipes
+        // now require exact arithmetic tokens, so use its actual boolean operator.
+        let inventory_path = temp.path().join("mutants.json");
+        let mut inventory: serde_json::Value =
+            serde_json::from_slice(&fs::read(&inventory_path).unwrap()).unwrap();
+        inventory["mutations"][1]["operator"] = "boolean_flip".into();
+        fs::write(inventory_path, serde_json::to_vec(&inventory).unwrap()).unwrap();
         let path = temp.path().join("run.json");
         let mut run: serde_json::Value = serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
         run["effective_config"] = serde_json::json!({ "lang": "rust" });

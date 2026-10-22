@@ -13,6 +13,8 @@ use std::{
 
 use serde_json::Value;
 
+#[path = "support/rust_arithmetic.rs"]
+mod arithmetic;
 #[path = "support/rust_boundaries.rs"]
 mod boundaries;
 #[path = "support/rust_cache.rs"]

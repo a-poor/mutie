@@ -13,7 +13,7 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
 - `src/language.rs` dispatches language commands; `command.rs` shares captures,
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;
   `rust/project.rs` validates the initial scope and `rust/discovery.rs` traverses
-  Rust modules for boolean flips, comparison-boundary mutations, and logical swaps.
+  Rust modules for boolean flips, comparison-boundary mutations, logical swaps, and binary arithmetic/remainder replacements.
 - `src/bun.rs` implements scored `--lang bun`, read-only `bun-list` and baseline-only `bun-check` with the pinned Bun runtime,
   owned workspaces and bounded process/evidence captures. `bun/project.rs` validates
   the dependency-free JS/TS scope and independent test inventory. `bun/config.rs`
@@ -562,3 +562,14 @@ arithmetic edits must reconstruct exactly. Six scored runner/syntax workflows
 cover both arithmetic and remainder; unchanged Bragkit contributes two arithmetic
 weight survivors killed by separate-copy exact-score assertions. Keep original
 61-test inputs and reports distinct from the 62-test stronger rerun.
+
+`benchmarks/rust-arithmetic.md` records binary `+ ↔ -`, `* ↔ /`, `% → *`
+support. Replace only parsed operator tokens; insert a separating space when a
+new `/` immediately precedes a comment. Preserve native grouping, evaluation,
+borrowing/moves and trait dispatch. Keep unary/dereference/compound assignment,
+macro/test/constant/type exclusions. Exact saved pairs and source rediscovery bind
+reruns. Missing traits remain build failures, test panics retain existing Cargo
+classification, and unsafe-invariant aborts remain errors. UCD Generate contributes
+two killed Hangul remainder sites and two hyphen-index survivors killed in a
+separate stronger copy. Preserve the failed 16-site exploratory report (one abort,
+two unfinished), the original 140-test inputs, and the distinct 141-test rerun.

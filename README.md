@@ -5,7 +5,7 @@ A CLI for performing mutation testing.
 Mutie supports Go modules, scoped Rust packages/workspaces, pinned Vitest packages, and a scoped Node test runner. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
-Rust currently supports `boolean_flip`, `comparison_boundary`, and `logical_swap` in the
+Rust currently supports `boolean_flip`, `comparison_boundary`, `logical_swap`, and `arithmetic_replace` in the
 [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
 Go and Rust support focused reruns and dismissal review. The
 [initial Rust milestone is accepted](benchmarks/rust-milestone-acceptance.md)
@@ -390,7 +390,7 @@ and output-capture overflow stop the run as errors. Completed results and active
 diagnostics survive, unfinished work keeps its interrupted/pending state, and
 findings/score policies remain unevaluated.
 
-Discovery follows ordinary Rust modules and mutates boolean literals, logical operators, and ordering
+Discovery follows ordinary Rust modules and mutates boolean literals, logical operators, arithmetic, and ordering
 comparisons in function/method bodies, including closures and match guards.
 `comparison_boundary` swaps `<` ↔ `<=` and `>` ↔ `>=` by editing only the operator
 token. It leaves operand expressions intact and supports generic/overloaded
@@ -401,6 +401,13 @@ the changed operator intentionally changes short-circuit evaluation. Let-chain
 connectors are excluded, while ordinary boolean expressions inside the chain
 remain eligible. Bitwise operators, reference syntax and closure delimiters are
 not logical-swap candidates.
+`arithmetic_replace` edits binary `+ ↔ -`, `* ↔ /`, and `% → *` tokens. These
+pairs share precedence/associativity, retaining grouping, evaluation order and
+ownership without added borrows or clones. Native overloaded traits, integer
+truncation, floating-point values and panics apply. Missing replacement traits or
+compile-time arithmetic errors produce `build_failed`; runtime panics retain the
+existing test-failure classification. Unary signs, dereferences and compound
+assignments are excluded. See [semantic controls and real-project evidence](benchmarks/rust-arithmetic.md).
 Test-only code, `cfg`/`cfg_attr` subtrees (including active platform code),
 macro tokens/expansions, generated files, constants/type-level code and array repeat lengths are
 excluded. The run prints and saves discovery exclusions. Libraries use ordinary
@@ -486,7 +493,7 @@ ui = "auto"
 
 The configuration example above is for Go. Use `lang = "rust"` (or automatic
 detection) and Rust file globs for a Cargo package. Rust accepts only
-`test_scope = "full"` and the `boolean_flip`, `comparison_boundary`, and `logical_swap` operators.
+`test_scope = "full"` and the `boolean_flip`, `comparison_boundary`, `logical_swap`, and `arithmetic_replace` operators.
 `rust_packages = []` selects all Rust workspace members for mutation; a list of
 package names narrows mutations while tests still cover all members.
 `rust_build_cache = "fresh"` (default) or `"worker"` applies only to Rust;
@@ -535,8 +542,8 @@ Support differs by language and applies within each runner's validated scope:
 
 | Mutation | Go | Rust | Python | JS/TS (Vitest, Node, Bun) |
 | --- | --- | --- | --- | --- |
-| Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | No | Yes | Yes |
-| Modulo replacement: `% → *` | Yes | No | No | Yes |
+| Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | Yes | Yes | Yes |
+| Modulo replacement: `% → *` | Yes | Yes | No | Yes |
 | Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | No | No | Yes |
 | Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | Yes |
 | Logical swap: `&& ↔ \|\|` | Yes | Yes | No | Yes |
@@ -598,7 +605,7 @@ See [proposed operator expansion](DESIGN.md#proposed-operator-expansion) for ide
 that are not yet implemented.
 
 All ten Go operators run by default; Rust runs `boolean_flip`,
-`comparison_boundary`, and `logical_swap`. Python runs `boolean_flip`,
+`comparison_boundary`, `logical_swap`, and `arithmetic_replace`. Python runs `boolean_flip`,
 `comparison_boundary`, and `arithmetic_replace`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`, and
 `negation_remove`, and `arithmetic_replace`.
