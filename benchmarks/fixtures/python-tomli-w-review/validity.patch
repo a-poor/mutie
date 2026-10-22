@@ -1,0 +1,16 @@
+--- a/tests/test_valid.py
++++ b/tests/test_valid.py
+@@ -31,7 +31,12 @@
+     original_str = valid.read_bytes().decode()
+     original_data = tomli.loads(original_str)
+     dump_str = tomli_w.dumps(original_data)
+-    after_dump_data = tomli.loads(dump_str)
++    # A serializer must produce valid TOML before round-trip equality is useful.
++    # Catch only the parser's ValueError family, not writer or lifecycle errors.
++    try:
++        after_dump_data = tomli.loads(dump_str)
++    except ValueError as error:
++        pytest.fail(f"Serializer emitted invalid TOML: {error}")
+     assert replace_nans(after_dump_data) == replace_nans(original_data)
+ 
+ 

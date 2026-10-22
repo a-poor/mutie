@@ -1,0 +1,542 @@
+[
+  {
+    "canonical_id": 1,
+    "source_identity": {
+      "id": 1,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 7,
+      "column": 17,
+      "end_line": 7,
+      "end_column": 22,
+      "byte_start": 166,
+      "byte_end": 171,
+      "original": "False",
+      "replacement": "True",
+      "diff": "diff/000001.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "missed",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632821-s3OO74",
+      "local_id": 1
+    },
+    "category": "unresolved_survivor",
+    "review": "Enables type-only imports; no demonstrated public serialization difference; not proven equivalent.",
+    "log_sha256": "70fb5b6e1c8bb4c4cc57e0b581ace2650d3c1ec83d6574fff5c932dca158433e"
+  },
+  {
+    "canonical_id": 2,
+    "source_identity": {
+      "id": 2,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 14,
+      "column": 57,
+      "end_line": 14,
+      "end_column": 58,
+      "byte_start": 431,
+      "byte_end": 432,
+      "original": "-",
+      "replacement": "+",
+      "diff": "diff/000002.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632821-s3OO74",
+      "local_id": 2
+    },
+    "category": "operand_type_error",
+    "review": "Set difference becomes unsupported frozenset addition at module import.",
+    "log_sha256": "0ab992cd18e2026138aef51ede9a8b25bbe54856f660775f15d2be051f6b98d8"
+  },
+  {
+    "canonical_id": 3,
+    "source_identity": {
+      "id": 3,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "comparison_boundary",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 35,
+      "column": 19,
+      "end_line": 35,
+      "end_column": 20,
+      "byte_start": 985,
+      "byte_end": 986,
+      "original": "<",
+      "replacement": "<=",
+      "diff": "diff/000003.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 1
+    },
+    "category": "boundary_rejection",
+    "review": "Zero indentation becomes invalid, raising ValueError in an existing style test.",
+    "log_sha256": "7c84f36455d07ad6515b01b10764b812d366d71add6a5eb2d4f49589378a66eb"
+  },
+  {
+    "canonical_id": 4,
+    "source_identity": {
+      "id": 4,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 40,
+      "column": 38,
+      "end_line": 40,
+      "end_column": 39,
+      "byte_start": 1296,
+      "byte_end": 1297,
+      "original": "*",
+      "replacement": "/",
+      "diff": "diff/000004.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 2
+    },
+    "category": "operand_type_error",
+    "review": "String repetition becomes string division.",
+    "log_sha256": "dd651d16a450ea5fe7b8429f1b599601715e96c3dab9aea98a258a817eb2d1de"
+  },
+  {
+    "canonical_id": 7,
+    "source_identity": {
+      "id": 7,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 68,
+      "column": 24,
+      "end_line": 68,
+      "end_column": 29,
+      "byte_start": 1903,
+      "byte_end": 1908,
+      "original": "False",
+      "replacement": "True",
+      "diff": "diff/000007.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 5
+    },
+    "category": "invalid_toml",
+    "review": "Default root table becomes an array-of-tables header, including invalid empty header.",
+    "log_sha256": "3b29a8fee6940c2054c28a7042845a71c1843fccb379c3bcb31dbf3b6af09ba7"
+  },
+  {
+    "canonical_id": 10,
+    "source_identity": {
+      "id": 10,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 77,
+      "column": 34,
+      "end_line": 77,
+      "end_column": 38,
+      "byte_start": 2268,
+      "byte_end": 2272,
+      "original": "True",
+      "replacement": "False",
+      "diff": "diff/000010.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 8
+    },
+    "category": "invalid_toml",
+    "review": "Array-of-tables entries become ordinary table headers, causing duplicate-table parse errors.",
+    "log_sha256": "65c7c2564fca145ed91c97e70f5f2dfd379216f1e8a359cf3ab8211a8d3edce6"
+  },
+  {
+    "canonical_id": 14,
+    "source_identity": {
+      "id": 14,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 132,
+      "column": 69,
+      "end_line": 132,
+      "end_column": 70,
+      "byte_start": 4087,
+      "byte_end": 4088,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000014.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 12
+    },
+    "category": "operand_type_error",
+    "review": "Decimal suffix concatenation becomes string subtraction.",
+    "log_sha256": "a4d1e05adacd493e59e1e4319be6d9c09a68df217405dcfd00be4ffe77f29ac2"
+  },
+  {
+    "canonical_id": 15,
+    "source_identity": {
+      "id": 15,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 146,
+      "column": 13,
+      "end_line": 146,
+      "end_column": 14,
+      "byte_start": 4389,
+      "byte_end": 4390,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000015.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 13
+    },
+    "category": "operand_type_error",
+    "review": "Inline-table opening concatenation becomes string subtraction.",
+    "log_sha256": "5536c378e88334ba518f5a04abbc59e9a153f22ea40c4ad2b40bcc21a58404fe"
+  },
+  {
+    "canonical_id": 16,
+    "source_identity": {
+      "id": 16,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 150,
+      "column": 13,
+      "end_line": 150,
+      "end_column": 14,
+      "byte_start": 4535,
+      "byte_end": 4536,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000016.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 14
+    },
+    "category": "operand_type_error",
+    "review": "Inline-table closing concatenation becomes string subtraction.",
+    "log_sha256": "14c96e062c36e48008eeebba10a3eb112daee2d51f8f4dbb5a4a8f9529ce80e4"
+  },
+  {
+    "canonical_id": 17,
+    "source_identity": {
+      "id": 17,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 159,
+      "column": 34,
+      "end_line": 159,
+      "end_column": 35,
+      "byte_start": 4771,
+      "byte_end": 4772,
+      "original": "*",
+      "replacement": "/",
+      "diff": "diff/000017.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 15
+    },
+    "category": "operand_type_error",
+    "review": "Array item indentation repetition becomes string division.",
+    "log_sha256": "aaa1093043d69c23428eb429eb7a1958b05e2b7f216aefd240397b0e55d44911"
+  },
+  {
+    "canonical_id": 19,
+    "source_identity": {
+      "id": 19,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 160,
+      "column": 45,
+      "end_line": 160,
+      "end_column": 46,
+      "byte_start": 4834,
+      "byte_end": 4835,
+      "original": "*",
+      "replacement": "/",
+      "diff": "diff/000019.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 17
+    },
+    "category": "operand_type_error",
+    "review": "Closing-bracket indentation repetition becomes string division.",
+    "log_sha256": "2c1e6674755d0deecdc802f7cb0cd3a3394e51b1420fe5a2b42da3f5866b0473"
+  },
+  {
+    "canonical_id": 20,
+    "source_identity": {
+      "id": 20,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 163,
+      "column": 9,
+      "end_line": 163,
+      "end_column": 10,
+      "byte_start": 4882,
+      "byte_end": 4883,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000020.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 18
+    },
+    "category": "operand_type_error",
+    "review": "Array opening concatenation becomes string subtraction.",
+    "log_sha256": "89a794c51b2fdc1701b6dbad675fbe5709979217d6f9e67bf15a7a9452faf144"
+  },
+  {
+    "canonical_id": 21,
+    "source_identity": {
+      "id": 21,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 164,
+      "column": 25,
+      "end_line": 164,
+      "end_column": 26,
+      "byte_start": 4920,
+      "byte_end": 4921,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000021.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 19
+    },
+    "category": "operand_type_error",
+    "review": "Array item prefix concatenation becomes string subtraction.",
+    "log_sha256": "52c0cec69832065201615b04b561adb4a4c626fb4ee26f76a7114977d7219088"
+  },
+  {
+    "canonical_id": 23,
+    "source_identity": {
+      "id": 23,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 167,
+      "column": 9,
+      "end_line": 167,
+      "end_column": 10,
+      "byte_start": 5021,
+      "byte_end": 5022,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000023.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 21
+    },
+    "category": "operand_type_error",
+    "review": "Array closing concatenation becomes string subtraction.",
+    "log_sha256": "96d59d43dbaacc7f258c4d724867f7f3d64ab970269c3873873b9091b62d227c"
+  },
+  {
+    "canonical_id": 24,
+    "source_identity": {
+      "id": 24,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 182,
+      "column": 48,
+      "end_line": 182,
+      "end_column": 53,
+      "byte_start": 5463,
+      "byte_end": 5468,
+      "original": "False",
+      "replacement": "True",
+      "diff": "diff/000024.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 22
+    },
+    "category": "invalid_toml",
+    "review": "Multiline formatting becomes enabled for keys; newline-containing keys become invalid.",
+    "log_sha256": "98f1df93f5f24c6b3967f16be06a03ba8b0287a7c465415eaacfdaa93acbb6f9"
+  },
+  {
+    "canonical_id": 25,
+    "source_identity": {
+      "id": 25,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "boolean_flip",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 194,
+      "column": 11,
+      "end_line": 194,
+      "end_column": 15,
+      "byte_start": 5729,
+      "byte_end": 5733,
+      "original": "True",
+      "replacement": "False",
+      "diff": "diff/000025.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 23
+    },
+    "category": "loop_skip_mixed_errors",
+    "review": "String formatting loop is skipped, implicitly returning None; both parser errors and writer TypeErrors result.",
+    "log_sha256": "2f6b21fe06814757237f5c567135f76ec6ec2b5d0f19be09e76edac0e66d41d9"
+  },
+  {
+    "canonical_id": 26,
+    "source_identity": {
+      "id": 26,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 200,
+      "column": 31,
+      "end_line": 200,
+      "end_column": 32,
+      "byte_start": 5899,
+      "byte_end": 5900,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000026.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 24
+    },
+    "category": "operand_type_error",
+    "review": "Multiline string closing delimiter concatenation becomes subtraction.",
+    "log_sha256": "8f551d1d569f79d6c4c9848761338129680dec098a13fc9a60ed269a9c96eb08"
+  },
+  {
+    "canonical_id": 27,
+    "source_identity": {
+      "id": 27,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 201,
+      "column": 27,
+      "end_line": 201,
+      "end_column": 28,
+      "byte_start": 5933,
+      "byte_end": 5934,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000027.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 25
+    },
+    "category": "operand_type_error",
+    "review": "Single-line string closing delimiter concatenation becomes subtraction.",
+    "log_sha256": "bff93f43b5aa2bb6043c40ac9e873d61550a6eaa5baf26e7c6463f5bd38157e7"
+  },
+  {
+    "canonical_id": 28,
+    "source_identity": {
+      "id": 28,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 210,
+      "column": 33,
+      "end_line": 210,
+      "end_column": 34,
+      "byte_start": 6271,
+      "byte_end": 6272,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000028.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 26
+    },
+    "category": "operand_type_error",
+    "review": "Unicode escape prefix concatenation becomes subtraction.",
+    "log_sha256": "65aba9db92f8bb0bfc881575e4a0d476c1f3bacb72b76d711c884c256d376c12"
+  },
+  {
+    "canonical_id": 29,
+    "source_identity": {
+      "id": 29,
+      "file": "src/tomli_w/_writer.py",
+      "operator": "arithmetic_replace",
+      "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+      "line": 211,
+      "column": 29,
+      "end_line": 211,
+      "end_column": 30,
+      "byte_start": 6334,
+      "byte_end": 6335,
+      "original": "+",
+      "replacement": "-",
+      "diff": "diff/000029.diff",
+      "test_packages": []
+    },
+    "original": {
+      "outcome": "error",
+      "report": "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo",
+      "local_id": 27
+    },
+    "category": "invalid_toml",
+    "review": "Escape slice restart moves backward, duplicating characters and reintroducing unescaped content.",
+    "log_sha256": "d8ea8218195d3d38fa18239ef72e2f1bbfea072a9631832f1a6668120e4a06fc"
+  }
+]

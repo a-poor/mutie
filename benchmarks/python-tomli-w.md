@@ -135,3 +135,7 @@ It then stalled for more than four minutes launching the dismissals executable,
 without announcing any tests, and was interrupted. Later targets were not
 validated by that run. This is a recorded regression-check limitation, not a
 Python acceptance failure or evidence that the deferred startup issue is fixed.
+
+The [candidate-quality follow-up](python-tomli-w-review.md) now reviews all 19
+errors and the remaining survivor, with four test-only error-to-kill reruns and
+unchanged error/survivor controls. It establishes no discovery defect.

@@ -487,3 +487,11 @@ baseline, with complete setup/teardown and fixture/lifetime evidence. New or
 removed expected failures are errors, all-expected-failure suites are rejected,
 and expected failures never count as kills. General skips, xfail decorators/marks,
 unittest expected failures and setup/cleanup failures remain unsupported.
+
+[Tomli-W candidate-quality review](benchmarks/python-tomli-w-review.md) accounts
+for all 19 errors and the remaining TYPE_CHECKING survivor. Thirteen errors are
+unsupported arithmetic operands; six are behavioral failures already detected by
+the original tests. A separate full-suite test refinement converts four parser
+failures to explicit assertion kills, while three error controls and the survivor
+retain their outcomes. No discovery/classification change or new coverage-gap
+claim follows; original failed reports remain unchanged and unscored.

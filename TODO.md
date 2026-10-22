@@ -83,6 +83,11 @@ through the support gates recorded in the ledger. The selected Vitest objective 
 
 ## Selected Python / pytest scope audit
 
+- [x] Review all 19 Tomli-W errors and the remaining survivor. Separate operand
+  limitations from behavioral failures; a test-only validity assertion yields
+  four kills while three error controls and the survivor retain their outcomes.
+  No discovery defect established; see [quality review](benchmarks/python-tomli-w-review.md).
+
 - [x] Validate unchanged Tomli-W's complete 271-case suite and all 30 candidates
   across all Python operators; retain failed/unscored error reports and kill a
   useful formatting survivor in a separate 272-case stronger-test rerun. Bind

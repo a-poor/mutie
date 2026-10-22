@@ -480,3 +480,10 @@ calls require exact native evidence and the pristine expected-failure node set;
 new/missing expected failures and cleanup errors remain errors. General skips,
 marks/plugins and unittest expected failures remain excluded. The fixed profiler
 iteration value and all observer/scope changes remain bound to execution identity.
+
+`benchmarks/python-tomli-w-review.md` reviews all 19 errors and the remaining
+TYPE_CHECKING survivor. Thirteen errors are operand incompatibilities within the
+syntactic arithmetic contract, not demonstrated discovery defects. Four parser
+errors become kills after a test-only output-validity assertion; three error
+controls and the survivor retain their outcomes. Preserve original scores and do
+not describe assertion attribution refinement as new test coverage or equivalence.
