@@ -134,7 +134,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    three runners, with initializer/scope/await/yield controls and independent
    JS/TS fixtures. An unchanged OpenClaw long-message-loss survivor is killed
    by a separate-copy exact chunk test. See [acceptance](benchmarks/javascript-loops.md).
-   Rust/Python conditional loop skipping and standalone-call removal remain.
+   Fifth slice completed: Rust ordinary Boolean `while` skipping, with native
+   ownership/borrowing/drop controls and explicit binding-condition exclusions.
+   A separate-copy terminal test kills an unchanged Marathon event-loop survivor.
+   See [acceptance](benchmarks/rust-loops.md). Python conditional-loop skipping
+   and standalone-call removal remain; Marathon's search-scrolling survivor is open.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

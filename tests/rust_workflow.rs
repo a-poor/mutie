@@ -31,6 +31,8 @@ mod inversions;
 mod library;
 #[path = "support/rust_logical.rs"]
 mod logical;
+#[path = "support/rust_loops.rs"]
+mod loops;
 #[path = "support/rust_reruns.rs"]
 mod reruns;
 #[path = "support/rust_workspace.rs"]

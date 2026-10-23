@@ -255,6 +255,24 @@ impl Walker<'_> {
                     }
                 }
             }
+            "while_expression" if in_body && self.scope.matches(&file.path) => {
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    if matches!(
+                        unwrapped_condition(condition).kind(),
+                        "let_condition" | "let_chain"
+                    ) {
+                        self.exclude(
+                            &file.path,
+                            "loop skipping excludes while-let/let-chain bindings",
+                        );
+                    }
+                    if let Some(replacement) =
+                        branch_replacement(Operator::LoopSkip, condition, &file.source)
+                    {
+                        self.push(file, condition, Operator::LoopSkip, replacement);
+                    }
+                }
+            }
             "let_chain" => {
                 self.exclude(
                     &file.path,
@@ -384,14 +402,40 @@ fn branch_replacement(operator: Operator, condition: Node<'_>, source: &str) -> 
     }
     let guard = match operator {
         Operator::BranchForceTrue => "true ||",
-        Operator::BranchForceFalse => "false &&",
+        Operator::BranchForceFalse | Operator::LoopSkip => "false &&",
         _ => return None,
     };
     Some(format!("{guard} ({})", &source[condition.byte_range()]))
 }
 
 pub fn valid_branch_replacement(operator: Operator, original: &str, replacement: &str) -> bool {
-    let prefix = "fn __mutie() { if ";
+    if !matches!(
+        operator,
+        Operator::BranchForceTrue | Operator::BranchForceFalse
+    ) {
+        return false;
+    }
+    valid_condition_replacement(operator, original, replacement, "if", "if_expression")
+}
+
+pub fn valid_loop_replacement(original: &str, replacement: &str) -> bool {
+    valid_condition_replacement(
+        Operator::LoopSkip,
+        original,
+        replacement,
+        "while",
+        "while_expression",
+    )
+}
+
+fn valid_condition_replacement(
+    operator: Operator,
+    original: &str,
+    replacement: &str,
+    keyword: &str,
+    kind: &str,
+) -> bool {
+    let prefix = format!("fn __mutie() {{ {keyword} ");
     let source = format!("{prefix}{original} {{}} }}");
     let mut parser = Parser::new();
     if parser
@@ -418,7 +462,7 @@ pub fn valid_branch_replacement(operator: Operator, original: &str, replacement:
                 Some(statement)
             }
         })
-        .filter(|n| n.kind() == "if_expression")
+        .filter(|n| n.kind() == kind)
         .and_then(|n| n.child_by_field_name("condition"));
     condition.is_some_and(|condition| {
         condition.byte_range() == (prefix.len()..prefix.len() + original.len())
@@ -961,3 +1005,7 @@ mod inversion_tests;
 #[cfg(test)]
 #[path = "branch_tests.rs"]
 mod branch_tests;
+
+#[cfg(test)]
+#[path = "loop_tests.rs"]
+mod loop_tests;

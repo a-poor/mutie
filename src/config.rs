@@ -325,8 +325,9 @@ impl RunConfig {
                         | Operator::ArithmeticReplace
                         | Operator::BranchForceTrue
                         | Operator::BranchForceFalse
+                        | Operator::LoopSkip
                 )),
-                "Rust currently supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, and branch_force_false"
+                "Rust currently supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, branch_force_false, and loop_skip"
             );
         }
         for (name, timeout) in [

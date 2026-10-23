@@ -666,3 +666,15 @@ syntax workflows preserve lifecycle errors as errors. Unchanged OpenClaw's singl
 selected Telegram loop survives; a separate-copy chunk-content assertion kills
 it with a 63-test baseline. Preserve all 63 original inputs, historical reports
 and the original filtered 0% score; focused evidence is not a full-project score.
+
+
+`benchmarks/rust-loops.md` records Rust `loop_skip` for ordinary Boolean `while`.
+Preserve exact `false && (ORIGINAL)` guards, skipped condition/body effects and
+native ownership/borrowing/drop checks. Literal Boolean conditions, while-let,
+let-chains, iterator for, unconditional loop and existing constant/type/test/macro
+exclusions remain. Definite-initialization failures stay build failures. Saved
+loop edits require exact parsed spans/recipes and fresh source identity. Unchanged
+Marathon has two selected TUI-loop survivors; a separate-copy bounded PTY test
+kills the event-loop survivor by requiring document rendering before quit. The
+search-scrolling survivor remains open. Preserve all original inputs, internal
+symlink targets and original report scores; focused evidence is not a full score.

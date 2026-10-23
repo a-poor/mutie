@@ -1,0 +1,900 @@
+{
+  "project": {
+    "project": "/path/to/home/code/tools/marathon",
+    "commit": "750e21cf7778f0b59c19df194cdb85d15afe2963",
+    "inputs": {
+      ".agents/skills": "722a918d6dee037f575ef1bf214371f14f77047e71bd75cff39f182b2ba9f6b0",
+      ".claude/skills/ratatui/SKILL.md": "b460853889bafeb00789109c5bb63ed6e7d19ba36c0e400b885857746c267e80",
+      ".claude/skills/ratatui/evals/evals.json": "a2dfc25aab3a05cba5e0ad8bdac108a7fcb1d99926cc5bcbe9258d2187b3b53b",
+      ".claude/skills/ratatui/references/01-core-concepts.md": "6925eb3037a35800ef5c8fc375fa244c586bf40ce063d4a5f91855bcc4b2e3e5",
+      ".claude/skills/ratatui/references/02-layout.md": "eb823953a47d0d51f96dd6e586334277e3286179ce093027fa88803303cf94ce",
+      ".claude/skills/ratatui/references/03-text-and-styling.md": "fc945ebc504e3a926714e0024dd9ce3a478abbba58f110d303c2bb8709c64512",
+      ".claude/skills/ratatui/references/04-widgets.md": "797bdfed7a514e8fe102d78e5ca04c73f3c57e03d8f6416d5aec923feb034922",
+      ".claude/skills/ratatui/references/05-events-and-input.md": "f62a9ce0f6ee4939d1e12ca606e0ff42a5e250f8ee077add0d3c1d144d13f133",
+      ".claude/skills/ratatui/references/06-text-editing.md": "3c30da3f17bdcd88ec76e3164e02a1600ab09bfefa3de82a63f387e15802dc9e",
+      ".claude/skills/ratatui/references/07-async-and-architecture.md": "5edf1ca769901393b4b51f380934c684573c5c4e189736c9e2f5c3a476056e2e",
+      ".github/workflows/ci.yml": "3428d814fb54333409176eae3910e8f1228d73b9e1db48a3e65fc24fbe9d8d42",
+      ".github/workflows/fuzz.yml": "8ed8cbb8c20c4e22a1947a3e0b115bebc23f26dcea56512fca010bf08641ba67",
+      ".github/workflows/release-smoke.yml": "2133a973b65f9472d72c70276d9bd02a88c1fe29800164e4dab164551b2fdbb2",
+      ".gitignore": "672ff16e085e292a4ece8fc1e09aeb8cc5ca129797140ae08731ac498709d608",
+      ".goreleaser.yaml": "cdf8dbcefda8dd34e17a57a33773bf177b24bd7cc8992d40ff5679c8ce165bcd",
+      "AGENTS.md": "6ebdb617a8104a7756d0cf36578ab01103dc9f07e4dc6feb751296b9c402faf7",
+      "CHANGELOG.md": "8275114c9d56499128607ea6d7a75e37017e4ce86feb3247d90722c2a6261acf",
+      "CLAUDE.md": "c82ee9f859517de221fd5ed2528fa5922cd7f92fd0f5913fc695f4de82e959da",
+      "Cargo.lock": "7650be39db2021ee21a7ad5534d82d7435c531ad49f4e8768f25c0291f9ac5af",
+      "Cargo.toml": "aa2aa252bd616765bd8b08622e305281094638a9dca895da1fd77fa237611ae7",
+      "DESIGN.md": "46313fcf3f1f1c9cb1892a4964c45be7875d9bd7cc5af07e6a542257947203aa",
+      "LICENSE-APACHE.txt": "127a8f2e9e1944cf5a35f04e0895d37b51b9d446ea817463a8238628c8b90972",
+      "LICENSE-MIT.txt": "87718bec5ad84f1d6f88f527003430af2985bcb1d13b4d5fa0dc9af402904dac",
+      "README.md": "cb3d0072a9a821a3616c03a83bc5c00d039ae6ff292f6bcf252a4a278d4cb853",
+      "TODO.md": "760ce0e472d48c18240856507166b7822bccafe6c103c554f46ca82cea2025b5",
+      "assets/demo.gif": "51a935a92a9d997c0729791d8b08cc4a430f3a3534c925cef1bd8c78f41c2d3a",
+      "assets/skills/marathon/SKILL.md": "d886bc58531bc69e1d1f15d8c979e9749e2bf48930783a803964baeae0dfe6a7",
+      "demo.tape": "ffc7c5ad9b71edcdc6fb982bcc55befa722a730ad4febb67d037fb7a08d3bf9b",
+      "fuzz/.gitignore": "a5623e21503adbf1a52ee6815079a7e771058589b1e83615fb53650caedfe6db",
+      "fuzz/Cargo.lock": "7cbfd02df52d0ef0bcb59085017ef3e6f227e52c8150bacfe752ce144acccb77",
+      "fuzz/Cargo.toml": "ec2e8f1b8e7cba8167ed1d126cce504c82404a5405b0f338200b9d17dcbd680b",
+      "fuzz/fuzz_targets/output.rs": "478ad994c37dc483ccd677231486f91d9d5a818923194972fb5a31df39129708",
+      "fuzz/fuzz_targets/runbook.rs": "16c60c65c97429f9b535cd6fdc4cf78a313fe4dd2697a2804c940b1148797c6d",
+      "fuzz/output.dict": "d29332c9b941ef2f479fc5237524568e507a44c46fc86d801ab110ddcb078b99",
+      "fuzz/runbook.dict": "ad3ab834f5328f74b639291b0f664f7ef28f585561de17989fe9cf1316b7cb31",
+      "fuzz/seeds/output/plain.txt": "7b00bd0b964ff805b34f508d529381d38c5c7d956e897e3f4391db176809ef5e",
+      "fuzz/seeds/runbook/inputs.txt": "4619d40955e320414c4af649ced8f9dddf98d78aeea72f137b1db263bb773ccd",
+      "fuzz/seeds/runbook/markdown.txt": "be7976b08e1073daf19eadb3678e7fc3a622569a1d801c7c3e5fc8936ec98c3a",
+      "fuzz/seeds/runbook/setext-heading.txt": "aff0eeb5e08f3c86cca7bf781967f336e1a7f1986c20041d96815594a49cd23d",
+      "fuzz/seeds/runbook/unclosed-frontmatter.txt": "8f61f6a9b34cbcc483529664c1ae26996fa2ef0348eaf3cc776358ee95503372",
+      "samples/README.md": "21b819ef8c8f02ae13dc3ea6c12e2ea86f0eb5fb04ebc32eb4d72dbd35c95247",
+      "samples/demo.md": "b8776618915773f51ef3f8032bc63f75131c776b0538761e9019585914a8346f",
+      "samples/execution-controls.md": "b4be10d171bb137ed7f9c9aed532f5464339ff90bbb5f2ecafa6e5ddc6967a34",
+      "samples/hello.md": "bdc894b3fc3a66a4f86f84b84ff40c9625e41bcf2fc1a27d24422a0823833f99",
+      "samples/interactive.md": "a03fc7c91c4b5814adaa606fce53d24cd32a83e3b7ed5b3ae1951633fc78c217",
+      "samples/output-spooling.md": "1fce61bb70e6f375ec8a13768ae143651bdf4fc6c5de73e196995397b415c906",
+      "samples/shell-override.md": "390293a10d419ef928d4d59b8015c055da22981e1796245b54e6ef6ab0dad3c4",
+      "samples/tmpdir.md": "c2ca387b039d0c5ac81e91edf3fc2ee97b957eb35c6f8d33dc765eb300fd2bb8",
+      "scripts/homebrew-quarantine-smoke.rb": "9c64cc38cd2c3411eb60eb4bead94fb41af106d490e527aa56753b121ebf6d1e",
+      "scripts/homebrew-smoke.py": "aa7cce79d59a8ccf227bb66d9a97d3ab5d899f4f5f2d41ce72cb31a967086ce5",
+      "scripts/release-config.py": "c43e2a6ac2acbae3ebfbf235465c99db3091df54d9da92a77e3155e8bd97a939",
+      "scripts/release-smoke-requirements.txt": "8b57d1775801933ce082ab66728a2a88cee0f020911f8c6e6d36c7ea70c868bb",
+      "scripts/release-smoke.py": "788856808f758f42176c123c1394d533083b38a6c9b0cdc09816b3277866d8c4",
+      "scripts/tui-profile.py": "0714d2e4c6d3415b39a1e4c30a5d085cbc5f3cbf538bb3e7dfb1df565c660aed",
+      "scripts/tui-smoke.py": "5073fffd981acbc4aea08e49114c162da2080dd1516338a49b81c188018f10bf",
+      "src/ansi.rs": "b354f442ceaebf36d9863654010b51fa26d8e8743432d8b34bc155ef21481286",
+      "src/book.rs": "ca2a601a0a645df4b1290ba64fb33b10d47933294cbb2cb1eee61127f3f6cef5",
+      "src/cli.rs": "2a338369f455b5c24c24400900daf69eeb551969e9d300d69b1ed0b8b00cb268",
+      "src/exec.rs": "5189d6cb2db21e7e7b1976847276ad54e688c71bfaf0481c06fe6deb1fee0619",
+      "src/execution.rs": "5dfec21fe6835fc0fef23d52215bbac89de6850020ff3d3a430853d9cb3153fc",
+      "src/lib.rs": "3ff665db0ca9b723deb73941e0573cac56fdea47469976ea6f954c4c69f3206b",
+      "src/main.rs": "f539078e647452d6ff395e3012f02e3beb7fe5d80dbd214ec8888cb6dc632efc",
+      "src/markdown.rs": "fa8b7476dfc69af793b8cbec5e7ca53e89177f16cb459e20d923e2c5519aa50c",
+      "src/output.rs": "dfc78f84dccea4b64e649e8c1bb05e9e487491c4eb097b812e3e96f52119114d",
+      "src/runner.rs": "a93408c3d5717207e55d8d991fa5862367d210b51e78e312fd59d6bb38b201f9",
+      "src/scaffold.rs": "eeff5f08cf5905d6441b9f8c34275f2814c629d6d9027e89331b12bf928e61bb",
+      "src/skills.rs": "073f47ea142ccc2ca82227b7e8e77dda52c66ee77e83e2b535ba95d225442557",
+      "src/term.rs": "c4136ad9e8cf0eab00bd7bf93b6644929e77611ae74c646f9827c80c22f1a021",
+      "src/tui.rs": "8bca1833955f7981c501cac2716ad70c1b4022331ed3b7e5434ee570ba9f08a9",
+      "src/util.rs": "9f0353f2739bd9b0e70fe0b545dc700a09f9ea0b26cac010673265fea5b6e48d",
+      "src/widgets/code.rs": "526b6068b9d7c0a6bf451e30adad39e7f8acd3d41f66a40a8c48bad9131250db",
+      "src/widgets/footer.rs": "07819b7572b3f6a9a9a0cef2a1f8e5fd56dcd4db39e90ef582b1e3b7b30bf5ff",
+      "src/widgets/help.rs": "63e68e96f92958b4a4d1ee52ccafeb073f3c323c61832ab80bdc60610d835302",
+      "src/widgets/markdown.rs": "766308b7d3ecfc7231042018cf2c5be9cef375146da1e4f02e5da84b155123ac",
+      "src/widgets/mod.rs": "b97d7b701746987ec6afdb39c233b6f806ad8f6752fc98df74b45085c72f9e91",
+      "src/widgets/scrollview.rs": "d852800e20f3afccf89d7617b17e0a939e3197570b65122cd0f51bba8e8b18c2",
+      "src/widgets/search.rs": "3d88d553ec7263facd93be9fbf9eb4eca79a3101b59290d2c2b5f42226185e71",
+      "src/widgets/spinner.rs": "11c21fa7b1ce96b27987687e6ff590a026fb528673d69df5dd299c944b7271ab",
+      "src/widgets/wrap.rs": "23a6629860029e4d7c0f9d19cb0404b2c1c37093f42a9c1dc5814f3da11b32ab",
+      "tests/cli_exec.rs": "c46ab7122442f9e7d38f11202e6c4819a34f2dde03f0bbb1b592307ad0525890",
+      "tests/cli_validate.rs": "891b405eb27ba3580e360c449cbf21ac08645b5848cac69f7434fc026029cfd6",
+      "tests/exec_flow.rs": "ea279c9115f7ade1e0d0d120a96b61d0525683d74e0b1f388f6dbb4499c2e63b",
+      "tests/output_properties.rs": "ed79cc3f70c751250476160c06e64f9eef62b05331347dea2935fc0035fd1a94",
+      "tests/parser_compatibility.rs": "0974d833c111bab6045b52ce715e10b0f04a63968543981d00976adf8ec2f337",
+      "tests/sample_parse.rs": "2d147078d7a4f2587176c825f8cfd3d4ce2ad5079ec799788647fe799c7a1438",
+      "tests/support/output_properties.rs": "4a901d9180e428cbc54b4a47b8d3a3e1b9c36f54ed1f8bcae96afa448d8b8d90"
+    },
+    "symlinks": {
+      ".agents/skills": "../.claude/skills",
+      "AGENTS.md": "CLAUDE.md"
+    }
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-rust-loops-audit/original-reports/run-1792727129-RrxnLf",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 16,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/path/to/home/code/tools/marathon",
+        "effective_config": {
+          "module_root": "/path/to/home/code/tools/marathon",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "jobs": 2,
+          "test_scope": "full",
+          "include": [
+            "src/tui.rs"
+          ],
+          "exclude": [],
+          "operators": [
+            "loop_skip"
+          ],
+          "timeout": 120,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 240,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-loops-audit/original-reports",
+          "verbose": false,
+          "list": false,
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792727129,
+        "finished_at_unix_seconds": 1792727218,
+        "duration_seconds": 88.620383916,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "filtered",
+          "killed": 0,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 0.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "marathon",
+          "targets": [
+            {
+              "kind": "bin",
+              "name": "marathon",
+              "source": "src/main.rs",
+              "edition": "2024"
+            },
+            {
+              "kind": "lib",
+              "name": "marathon",
+              "source": "src/lib.rs",
+              "edition": "2024"
+            }
+          ],
+          "manifest_fingerprint": "sha256:aa2aa252bd616765bd8b08622e305281094638a9dca895da1fd77fa237611ae7",
+          "lockfile_fingerprint": "sha256:7650be39db2021ee21a7ad5534d82d7435c531ad49f4e8768f25c0291f9ac5af",
+          "default_features": true,
+          "test_scope": "library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "src/ansi.rs: conditional, test-only, or remapped source",
+            "src/book.rs: conditional, test-only, or remapped source",
+            "src/book.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/book.rs: macro tokens/expansions (including include!)",
+            "src/cli.rs: conditional, test-only, or remapped source",
+            "src/cli.rs: macro tokens/expansions (including include!)",
+            "src/exec.rs: macro tokens/expansions (including include!)",
+            "src/execution.rs: conditional, test-only, or remapped source",
+            "src/execution.rs: macro tokens/expansions (including include!)",
+            "src/main.rs: macro tokens/expansions (including include!)",
+            "src/markdown.rs: macro tokens/expansions (including include!)",
+            "src/output.rs: conditional, test-only, or remapped source",
+            "src/output.rs: macro tokens/expansions (including include!)",
+            "src/runner.rs: conditional, test-only, or remapped source",
+            "src/runner.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/runner.rs: macro tokens/expansions (including include!)",
+            "src/scaffold.rs: conditional, test-only, or remapped source",
+            "src/scaffold.rs: macro tokens/expansions (including include!)",
+            "src/skills.rs: conditional, test-only, or remapped source",
+            "src/skills.rs: macro tokens/expansions (including include!)",
+            "src/term.rs: conditional, test-only, or remapped source",
+            "src/tui.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/tui.rs: conditional, test-only, or remapped source",
+            "src/tui.rs: macro tokens/expansions (including include!)",
+            "src/util.rs: conditional, test-only, or remapped source",
+            "src/util.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/util.rs: macro tokens/expansions (including include!)",
+            "src/widgets/footer.rs: conditional, test-only, or remapped source",
+            "src/widgets/footer.rs: macro tokens/expansions (including include!)",
+            "src/widgets/help.rs: conditional, test-only, or remapped source",
+            "src/widgets/help.rs: macro tokens/expansions (including include!)",
+            "src/widgets/markdown.rs: conditional, test-only, or remapped source",
+            "src/widgets/markdown.rs: macro tokens/expansions (including include!)",
+            "src/widgets/scrollview.rs: conditional, test-only, or remapped source",
+            "src/widgets/scrollview.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/widgets/scrollview.rs: macro tokens/expansions (including include!)",
+            "src/widgets/search.rs: conditional, test-only, or remapped source",
+            "src/widgets/search.rs: macro tokens/expansions (including include!)",
+            "src/widgets/spinner.rs: macro tokens/expansions (including include!)",
+            "src/widgets/wrap.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [
+          "src/tui.rs"
+        ],
+        "exclude": [],
+        "requested_workers": 2,
+        "workers": 2,
+        "baseline_timeout_seconds": 240,
+        "mutation_timeout_seconds": 120.0,
+        "planned_mutations": 2,
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 4.593239916,
+            "reflink_files": 23136,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 3.684821083,
+            "reflink_files": 23136,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 5.755478166,
+            "reflink_files": 23136,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 8.325196833,
+            "reflink_files": 46272,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 0,
+            "completed": 0,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0,
+            "reflink_files": 0,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/tui.rs",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:8bca1833955f7981c501cac2716ad70c1b4022331ed3b7e5434ee570ba9f08a9",
+          "line": 123,
+          "column": 19,
+          "end_line": 123,
+          "end_column": 29,
+          "byte_start": 4679,
+          "byte_end": 4689,
+          "original": "!self.exit",
+          "replacement": "false && (!self.exit)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "src/tui.rs",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:8bca1833955f7981c501cac2716ad70c1b4022331ed3b7e5434ee570ba9f08a9",
+          "line": 205,
+          "column": 15,
+          "end_line": 205,
+          "end_column": 91,
+          "byte_start": 7635,
+          "byte_end": 7711,
+          "original": "start < cursor && Line::raw(&draft.value[start..cursor]).width() > available",
+          "replacement": "false && (start < cursor && Line::raw(&draft.value[start..cursor]).width() > available)",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 37.619148875,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20504,
+                "head_bytes": 20504,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 310814,
+                "head_bytes": 310814,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 5761,
+                "head_bytes": 5761,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 36.884327959,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20504,
+                "head_bytes": 20504,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 310814,
+                "head_bytes": 310814,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 5761,
+                "head_bytes": 5761,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "782fa10a5733f8de908688a4367c519a125ea8587f767e2da559a4c1eefa5bed",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "46c2cd658563c55c4b8d5d83072114aaa48541d140330474fb5ae6f1dbf68e78",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "ce60e157241a74e6525f02da493b3cd3ca7ad55ac002e9640fba2e252de235e7",
+        "summary.txt": "6a38b0cc2d4f50b0d8107327b2a486eb022ee4e2ad2c63946f2d2360785248a3",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run.json": "cc1f3d12d57eaffc5426b8bff1c4e4b17d24ef0de7cdbda067015decba718fe6",
+        "diff/000002.diff": "2a637f31d3ba1194940a593c9890c40e66bb3c0f66d28cf972dc1017ba529a85",
+        "diff/000001.diff": "247e5d460fe9cd3414b5370353ddcbe7f4e40ad029bf3c734f059fb9ec9cbc7b",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "56a7660239b9e3c7e3d84fbca6327241f8aae3d9a5ea8f24026601074e9675f8",
+        "logs/000002.stderr.log": "6fdd35690a2bddb700cc8abecae52bed3c807800f1380bb5fe2fa7cc2410e47f",
+        "logs/000002.log": "10023b920c0ab3cc53f05882d3850b5f8e1f6a30b9f7dd53ae9a1c9dcd938ef3",
+        "logs/baseline.stderr.log": "7248f0212512bec6583e0f274e41dc6c34a6415a39c5b92314e445faa1a7fbc6",
+        "logs/discovery.log": "c108ec91c18335a212764c8743e18de210225376dd72d60199d0ebf05896bbc6",
+        "logs/000001.stdout.log": "b59f8772f6c10c419cc9bc500835b28cce7d824648bf25f4888ff667136196ac",
+        "logs/discovery.stdout.log": "9a690c799b067e46df6eb86a96c67177329d45fd092751830a5c97520242c96a",
+        "logs/baseline.log": "b9e9bbc827f5db67d6cddcc74a7dd1ba59567728a25232cb54383419edc90355",
+        "logs/000002.stdout.log": "5f6ce37d0d1a0be65995fcfaf49ce154c3d8c5047ba2b4f338906445ff9d318e",
+        "logs/000001.stderr.log": "a3ac48b36c7d644358b93060dc0aaeaa7b0bdd9828848be63bc2a15d542c1992",
+        "logs/baseline.stdout.log": "329f33fef8a9eac1470d33fa5a42d09758b7b6d9cd3092f1ed994a096f33871a"
+      }
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792728016-3E3O6G",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 14,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-rust-loops-audit/stronger",
+        "effective_config": {
+          "module_root": "/tmp/mutie-rust-loops-audit/stronger",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "jobs": 2,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [],
+          "timeout": 120,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 240,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-loops-audit/stronger-reports",
+          "verbose": false,
+          "list": false,
+          "rerun": {
+            "source_run": "/tmp/mutie-rust-loops-audit/original-reports/run-1792727129-RrxnLf",
+            "selection": "all",
+            "source_ids": [
+              1
+            ]
+          },
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792728016,
+        "finished_at_unix_seconds": 1792728065,
+        "duration_seconds": 49.701420916000004,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 1,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "marathon",
+          "targets": [
+            {
+              "kind": "bin",
+              "name": "marathon",
+              "source": "src/main.rs",
+              "edition": "2024"
+            },
+            {
+              "kind": "lib",
+              "name": "marathon",
+              "source": "src/lib.rs",
+              "edition": "2024"
+            }
+          ],
+          "manifest_fingerprint": "sha256:aa2aa252bd616765bd8b08622e305281094638a9dca895da1fd77fa237611ae7",
+          "lockfile_fingerprint": "sha256:7650be39db2021ee21a7ad5534d82d7435c531ad49f4e8768f25c0291f9ac5af",
+          "default_features": true,
+          "test_scope": "library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "src/ansi.rs: conditional, test-only, or remapped source",
+            "src/book.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/book.rs: conditional, test-only, or remapped source",
+            "src/book.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/book.rs: loop skipping excludes while-let/let-chain bindings",
+            "src/book.rs: macro tokens/expansions (including include!)",
+            "src/cli.rs: conditional, test-only, or remapped source",
+            "src/cli.rs: macro tokens/expansions (including include!)",
+            "src/exec.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/exec.rs: loop skipping excludes while-let/let-chain bindings",
+            "src/exec.rs: macro tokens/expansions (including include!)",
+            "src/execution.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/execution.rs: conditional, test-only, or remapped source",
+            "src/execution.rs: loop skipping excludes while-let/let-chain bindings",
+            "src/execution.rs: macro tokens/expansions (including include!)",
+            "src/main.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/main.rs: macro tokens/expansions (including include!)",
+            "src/markdown.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/markdown.rs: macro tokens/expansions (including include!)",
+            "src/output.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/output.rs: conditional, test-only, or remapped source",
+            "src/output.rs: macro tokens/expansions (including include!)",
+            "src/runner.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/runner.rs: conditional, test-only, or remapped source",
+            "src/runner.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/runner.rs: loop skipping excludes while-let/let-chain bindings",
+            "src/runner.rs: macro tokens/expansions (including include!)",
+            "src/scaffold.rs: conditional, test-only, or remapped source",
+            "src/scaffold.rs: macro tokens/expansions (including include!)",
+            "src/skills.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/skills.rs: conditional, test-only, or remapped source",
+            "src/skills.rs: macro tokens/expansions (including include!)",
+            "src/term.rs: conditional, test-only, or remapped source",
+            "src/tui.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/tui.rs: conditional, test-only, or remapped source",
+            "src/tui.rs: macro tokens/expansions (including include!)",
+            "src/util.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/util.rs: conditional, test-only, or remapped source",
+            "src/util.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/util.rs: macro tokens/expansions (including include!)",
+            "src/widgets/footer.rs: conditional, test-only, or remapped source",
+            "src/widgets/footer.rs: macro tokens/expansions (including include!)",
+            "src/widgets/help.rs: conditional, test-only, or remapped source",
+            "src/widgets/help.rs: macro tokens/expansions (including include!)",
+            "src/widgets/markdown.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/widgets/markdown.rs: conditional, test-only, or remapped source",
+            "src/widgets/markdown.rs: macro tokens/expansions (including include!)",
+            "src/widgets/scrollview.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/widgets/scrollview.rs: conditional, test-only, or remapped source",
+            "src/widgets/scrollview.rs: let-chain connectors (ordinary boolean operands remain eligible)",
+            "src/widgets/scrollview.rs: macro tokens/expansions (including include!)",
+            "src/widgets/search.rs: conditional, test-only, or remapped source",
+            "src/widgets/search.rs: macro tokens/expansions (including include!)",
+            "src/widgets/spinner.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/widgets/spinner.rs: macro tokens/expansions (including include!)",
+            "src/widgets/wrap.rs: branch forcing excludes if-let/let-chain bindings",
+            "src/widgets/wrap.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 2,
+        "workers": 1,
+        "baseline_timeout_seconds": 240,
+        "mutation_timeout_seconds": 120.0,
+        "planned_mutations": 1,
+        "rerun": {
+          "source_run": "/tmp/mutie-rust-loops-audit/original-reports/run-1792727129-RrxnLf",
+          "source_checkpoint": 16,
+          "source_status": "completed",
+          "selection": "all",
+          "source_ids": [
+            1
+          ],
+          "mutations": [
+            {
+              "id": 1,
+              "source_id": 1
+            }
+          ]
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.013571334,
+            "reflink_files": 85,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.011702583,
+            "reflink_files": 85,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.025197542,
+            "reflink_files": 85,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.016151042,
+            "reflink_files": 85,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 0,
+            "completed": 0,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0,
+            "reflink_files": 0,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/tui.rs",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:8bca1833955f7981c501cac2716ad70c1b4022331ed3b7e5434ee570ba9f08a9",
+          "line": 123,
+          "column": 19,
+          "end_line": 123,
+          "end_column": 29,
+          "byte_start": 4679,
+          "byte_end": 4689,
+          "original": "!self.exit",
+          "replacement": "false && (!self.exit)",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 23.435980791,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21351,
+                "head_bytes": 21351,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 313181,
+                "head_bytes": 313181,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 6036,
+                "head_bytes": 6036,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "cb3355539d17b447c5dcf5f305b76393f2f9b3846421d22dbf45cd16cf20b5fc",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "5416b4d8c32c85ad339470195e7c703dd02bae832e3702f37c7296c678cdefcd",
+        "summary.txt": "dc3482f3b3b76ae95727a41d9d36f33be523e58999c64d23c3a02447e8cfdd5b",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "c068c4e4ed03545eef075aecc5afc3475a34c0324231d79f8ee68aafee2159a5",
+        "run.json": "6ddb41f171aeab671dffcbcc799fd77478237d5d82fa3ae5473607d279503a04",
+        "diff/000001.diff": "247e5d460fe9cd3414b5370353ddcbe7f4e40ad029bf3c734f059fb9ec9cbc7b",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "6573f7da90c7c93f5b0b5508f1a69bd1a6424fdfa3ba43ac47f9c5e3f91f231d",
+        "logs/baseline.stderr.log": "7134e63609945fa5536ac3cb35f7da60f01b84ecac1312caa63d36dd3a3176d3",
+        "logs/discovery.log": "4f7ba21a6f8da03203cbbd5296b7de47263a6b76339f3d65cea3365d2fbd1568",
+        "logs/000001.stdout.log": "06b653c76e4de0a1da127c1c871465f8b239e05d580bda1616d81f6eefeb7e6b",
+        "logs/discovery.stdout.log": "6f85e2ec105e3da2f73770015a51e250d59f5df9bf55e10ff8884df2979322d5",
+        "logs/baseline.log": "d08252a3e5a489ecf8c08db106651c109c501bc38c5d88623a9a75ed4d900028",
+        "logs/000001.stderr.log": "729ef3a44e81cfb5cb34990c7fa8b9a321ccbd4c9467b5673d27be1766c0311f",
+        "logs/baseline.stdout.log": "f8125fcfff41b2b8251ea53e28e687b300b6b8da8fe1558ffa284ddff3c97c11"
+      }
+    }
+  },
+  "cli_sha256": "05b3951a7006418e6fa0888de1f8cb5f9fa44e4024954fd06995448ece40f6f0",
+  "stronger_test_sha256": "eb2f6d088c167cc166dcf5d5c78a317bd62ba0e84a92279467c7db088be9b2f6",
+  "preservation_verified": true,
+  "prior_report_files_preserved": 557,
+  "validation": {
+    "default_passed": 327,
+    "default_ignored": 158,
+    "native_compile_run_cases": 6,
+    "scored_workflows_passed": 1,
+    "fmt": "passed",
+    "clippy": "passed"
+  },
+  "diagnostics": {
+    "/tmp/mutie-rust-loops-audit/diagnostics/rust-loop-test-sample.txt": "7bbd0bc7ff6e2ee42a64801ca4309314303e17459d672c9854b7e9ee8d1deffa",
+    "/tmp/mutie-rust-loops-audit/diagnostics/rust-loops-pty-direct.log": "8244db012a6538a0beaca6d3ad2740c7a865a450b243af84ff2c31c73a55ceb3",
+    "/tmp/mutie-rust-loops-audit/diagnostics/rust-loops-pty-drain.log": "4bf28b59ed3d803ee748bc0dfc8c153d4177de73ad66737b3c3a8f9db97fc084"
+  },
+  "attempts": {
+    "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792727327-U5zoa0": {
+      "outcomes.json": "79b14b5294101cb45394addbd54301a32b6c070bedca29b1480977eae620ec63",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "b560c729b6956c2cab33291aff71f0109156c7ba302248f7aa022e11f38fc047",
+      "summary.txt": "69e179d5dfef54e144bc482586795171caa37d30b4af463ed3aaa13207b3e1e3",
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run.json": "5dc6ebbf023f9f39e4e692def8a8e2e020a84f2918afb02f551d65f4055e7afc",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/baseline.stderr.log": "b36041f21c06473753e557d8b7dfbccd0132d50aad7ecc4e47e781f57e608982",
+      "logs/discovery.log": "08e2437c165c4daa65c85c964247710a8c7f008a13bd92e0df5c76d517d256c5",
+      "logs/discovery.stdout.log": "a5c5057c7e697c4e4a338bdd3c523eef650d03066fc21e94ef84a7773b9f1ed0",
+      "logs/baseline.log": "4a5a8b1519535d315e7bba20f61f9af9e5e5b50f7c9a0c1c77ed4dd8c068e315",
+      "logs/baseline.stdout.log": "cb66a716cd4f230bb6131f0f7f2b9bf0748cdf5c3bad5d7b6c57cc2bb476e4ea"
+    },
+    "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792727265-bSagLo": {
+      "outcomes.json": "17e08e943d3ee8242665ce19e357a160fbc3e3f319f0efda536f3121ee79b1ec",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "b560c729b6956c2cab33291aff71f0109156c7ba302248f7aa022e11f38fc047",
+      "summary.txt": "0878e6a70a1541fae3857057a543b5915778f05aee722ac0a6e5b8aac42bc51f",
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run.json": "df69860a173a5217d1abc4c10b8aebf1ecf419c6202b34737f46c338ee54e2af",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/baseline.stderr.log": "948a20a26ed0e26c178281403747c3757c1dfb900baa4068f7a16d1bd2b268f0",
+      "logs/discovery.log": "baf2960210023b49c7111959bca2ab7b1e102c47811a9e58c308524180f97265",
+      "logs/discovery.stdout.log": "c08daaeaacc072aa926a7b77a78e5fbc43608f9377b91140e22a4a2c76525197",
+      "logs/baseline.log": "5b2cd0a497e3c34bc4707e76e8badb02ed4c9624c26bc8c48f8fbb81d10ee6f8",
+      "logs/baseline.stdout.log": "323314f529ee9d799d1fa519f9c79e4abb3cfb13e80ddf6a31db9fab91446669"
+    },
+    "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792727589-r9A8Ha": {
+      "outcomes.json": "914dbd22cdf2481b9bbaa8719a950dcedb0e68fc6bfb742740ec9cb29a490747",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "b560c729b6956c2cab33291aff71f0109156c7ba302248f7aa022e11f38fc047",
+      "summary.txt": "557131f4c1ae5d83e79b61bd6750dc2e6015b08359f3313c7a4b6dd25e388a85",
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "run.json": "0d37ee1d1b1157883fbc94f3c30559e31318f9d63ef44ce426efd8fffc1273a2",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/baseline.stderr.log": "952a3346af5f958057a8ab41529f6b147bd8fbba80d96b847606a0366fc8f705",
+      "logs/discovery.log": "eb9f5779c9bdba5305dfb5f1daa76e0abfafa0492db79a4318df14b87c45ab8c",
+      "logs/discovery.stdout.log": "64ea338aae54a3058373cb9095b98b1101c5ebbc3a75d4e62a990b5a288e2db0",
+      "logs/baseline.log": "aac3fc8b6748271ecade637e334d209007e5cc13326b6833c5e1c93fa1a75859",
+      "logs/baseline.stdout.log": "0b316ec276204c54d6964b58fa9b386b6fd65755dac9bbafd101795b2ada35f8"
+    },
+    "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792728016-3E3O6G": {
+      "outcomes.json": "cb3355539d17b447c5dcf5f305b76393f2f9b3846421d22dbf45cd16cf20b5fc",
+      "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "mutants.json": "5416b4d8c32c85ad339470195e7c703dd02bae832e3702f37c7296c678cdefcd",
+      "summary.txt": "dc3482f3b3b76ae95727a41d9d36f33be523e58999c64d23c3a02447e8cfdd5b",
+      ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "killed.txt": "c068c4e4ed03545eef075aecc5afc3475a34c0324231d79f8ee68aafee2159a5",
+      "run.json": "6ddb41f171aeab671dffcbcc799fd77478237d5d82fa3ae5473607d279503a04",
+      "diff/000001.diff": "247e5d460fe9cd3414b5370353ddcbe7f4e40ad029bf3c734f059fb9ec9cbc7b",
+      "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "logs/000001.log": "6573f7da90c7c93f5b0b5508f1a69bd1a6424fdfa3ba43ac47f9c5e3f91f231d",
+      "logs/baseline.stderr.log": "7134e63609945fa5536ac3cb35f7da60f01b84ecac1312caa63d36dd3a3176d3",
+      "logs/discovery.log": "4f7ba21a6f8da03203cbbd5296b7de47263a6b76339f3d65cea3365d2fbd1568",
+      "logs/000001.stdout.log": "06b653c76e4de0a1da127c1c871465f8b239e05d580bda1616d81f6eefeb7e6b",
+      "logs/discovery.stdout.log": "6f85e2ec105e3da2f73770015a51e250d59f5df9bf55e10ff8884df2979322d5",
+      "logs/baseline.log": "d08252a3e5a489ecf8c08db106651c109c501bc38c5d88623a9a75ed4d900028",
+      "logs/000001.stderr.log": "729ef3a44e81cfb5cb34990c7fa8b9a321ccbd4c9467b5673d27be1766c0311f",
+      "logs/baseline.stdout.log": "f8125fcfff41b2b8251ea53e28e687b300b6b8da8fe1558ffa284ddff3c97c11"
+    }
+  },
+  "preservation_manifest": "/tmp/mutie-rust-loops-audit/preservation.json",
+  "preservation_manifest_sha256": "2b931f5c195f439481a5ffed5bb76673fed94fef142bc4002b3b2581f2fad1e1"
+}
