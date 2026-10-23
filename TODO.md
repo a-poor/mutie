@@ -123,6 +123,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    unchanged Bragkit survivors killed by separate-copy exact bonus/count tests.
    See [acceptance](benchmarks/javascript-branches.md). Rust/Python branch forcing,
    loops and call removal remain.
+   Second slice completed: Rust ordinary Boolean `if` forcing, skipped-effect and
+   ownership/borrowing/drop controls, explicit binding-condition exclusions and
+   four unchanged UCD Parse field-loss survivors killed in a separate copy. See
+   [acceptance](benchmarks/rust-branches.md). Python branch forcing remains next
+   within this parity slice; seven reviewed-file Rust survivors remain open.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

@@ -235,6 +235,26 @@ impl Walker<'_> {
                     self.push(file, node, Operator::NegationRemove, replacement);
                 }
             }
+            "if_expression" if in_body && self.scope.matches(&file.path) => {
+                if let Some(condition) = node.child_by_field_name("condition") {
+                    if matches!(
+                        unwrapped_condition(condition).kind(),
+                        "let_condition" | "let_chain"
+                    ) {
+                        self.exclude(
+                            &file.path,
+                            "branch forcing excludes if-let/let-chain bindings",
+                        );
+                    }
+                    for operator in [Operator::BranchForceTrue, Operator::BranchForceFalse] {
+                        if let Some(replacement) =
+                            branch_replacement(operator, condition, &file.source)
+                        {
+                            self.push(file, condition, operator, replacement);
+                        }
+                    }
+                }
+            }
             "let_chain" => {
                 self.exclude(
                     &file.path,
@@ -341,6 +361,69 @@ impl Walker<'_> {
             end_column: end.column + 1,
         });
     }
+}
+
+fn unwrapped_condition(mut node: Node<'_>) -> Node<'_> {
+    while node.kind() == "parenthesized_expression" {
+        let mut cursor = node.walk();
+        let child = node.named_children(&mut cursor).find(|n| !n.is_extra());
+        match child {
+            Some(child) => node = child,
+            None => break,
+        }
+    }
+    node
+}
+
+fn branch_replacement(operator: Operator, condition: Node<'_>, source: &str) -> Option<String> {
+    if matches!(
+        unwrapped_condition(condition).kind(),
+        "boolean_literal" | "let_condition" | "let_chain"
+    ) {
+        return None;
+    }
+    let guard = match operator {
+        Operator::BranchForceTrue => "true ||",
+        Operator::BranchForceFalse => "false &&",
+        _ => return None,
+    };
+    Some(format!("{guard} ({})", &source[condition.byte_range()]))
+}
+
+pub fn valid_branch_replacement(operator: Operator, original: &str, replacement: &str) -> bool {
+    let prefix = "fn __mutie() { if ";
+    let source = format!("{prefix}{original} {{}} }}");
+    let mut parser = Parser::new();
+    if parser
+        .set_language(&tree_sitter_rust::LANGUAGE.into())
+        .is_err()
+    {
+        return false;
+    }
+    let Some(tree) = parser.parse(&source, None) else {
+        return false;
+    };
+    if tree.root_node().has_error() {
+        return false;
+    }
+    let condition = tree
+        .root_node()
+        .named_child(0)
+        .and_then(|f| f.child_by_field_name("body"))
+        .and_then(|b| b.named_child(0))
+        .and_then(|statement| {
+            if statement.kind() == "expression_statement" {
+                statement.named_child(0)
+            } else {
+                Some(statement)
+            }
+        })
+        .filter(|n| n.kind() == "if_expression")
+        .and_then(|n| n.child_by_field_name("condition"));
+    condition.is_some_and(|condition| {
+        condition.byte_range() == (prefix.len()..prefix.len() + original.len())
+            && branch_replacement(operator, condition, &source).as_deref() == Some(replacement)
+    })
 }
 
 // A tuple value forces the operand into the same value context as Not, even
@@ -874,3 +957,7 @@ mod arithmetic_tests;
 #[cfg(test)]
 #[path = "inversion_tests.rs"]
 mod inversion_tests;
+
+#[cfg(test)]
+#[path = "branch_tests.rs"]
+mod branch_tests;

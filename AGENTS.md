@@ -639,3 +639,15 @@ source identity and Bun recipe drift checks remain mandatory. Unchanged Bragkit'
 and closed-issue-count tests kill all seven. Preserve 57 original inputs, the
 original 56.25% filtered score and 295 historical report files. Do not generalize
 native TypeScript acceptance to type-checking builds or change lifecycle attribution.
+
+
+`benchmarks/rust-branches.md` records ordinary Rust Boolean `if` forcing. Preserve
+`true || (ORIGINAL)` / `false && (ORIGINAL)` recipes and deliberately skipped
+condition execution. Exclude if-let/let-chains, literal conditions and existing
+macro-token/constant/type/test scope; nested ordinary branches remain eligible.
+Retained expressions/bodies still undergo Rust ownership/borrowing checks. The
+fixture's definite-initialization failures stay build failures. Saved readers
+reconstruct exact recipes and require fresh source identities. Unchanged UCD Parse
+has 26 selected workspace candidates (15 kills, 11 survivors); a separate 142-test
+copy kills field-loss IDs 4/6/10/14. Preserve 108 original inputs, 225 historical
+report files, original 57.69% score and seven open survivors; no equivalence claims.

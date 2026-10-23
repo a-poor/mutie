@@ -631,3 +631,13 @@ and execution identity checks and lifecycle classification remain intact.
 Unchanged Bragkit has 16 selected sites (nine kills, seven survivors); a separate
 63-test copy kills all seven with exact achievement-type bonus and closed-issue
 count assertions. Preserve original inputs, 56.25% selected score and prior reports.
+
+
+[Rust branch forcing](benchmarks/rust-branches.md) adds ordinary Boolean `if`
+conditions with skipped evaluation and retained condition bytes. `if let` and
+let-chains remain excluded; their pattern bindings cannot be discarded. Preserve
+native type/ownership/definite-initialization failures as build failures, exact
+saved recipes and source rediscovery. Unchanged UCD Parse contributes 26 selected
+workspace candidates (15 kills, 11 survivors); separate-copy parser field assertions
+kill four survivors with 142 tests. Seven remain open. Preserve original inputs,
+reports and the filtered 57.69% score; the focused score is separate evidence.

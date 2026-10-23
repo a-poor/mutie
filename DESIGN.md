@@ -2299,3 +2299,21 @@ discovery; its original acceptance must be fresh. No execution observer or failu
 classifier changes. TypeScript narrowing does not guarantee the forced branch is
 safe; existing adapters classify native failures under their normal body/lifecycle
 rules. See [acceptance](benchmarks/javascript-branches.md).
+
+
+## Rust branch forcing
+
+Ordinary Boolean `if_expression` conditions receive independent true/false guards:
+`true || (ORIGINAL)` and `false && (ORIGINAL)`. Preserve condition bytes and source
+references while deliberately skipping all runtime evaluation, including moves,
+borrows, effects and panics. Bodies remain unchanged. Parenthesized Boolean
+literals are excluded. `if let`/let-chains are excluded because their bindings can
+be required by the branch body; nested ordinary branches remain eligible.
+
+Compiler checks remain authoritative for retained expressions and bodies; the
+fixture preserves definite-initialization failures as build failures. Saved
+readers parse an exact original condition and regenerate the exact guard, then
+require normal source rediscovery. No macro-token/constant/type scope broadening
+or exception reclassification. [Acceptance](benchmarks/rust-branches.md) records
+native ownership/drop/borrowing controls and four unchanged UCD Parse field-loss
+survivors killed in a separate 142-test workspace copy. Seven survivors remain open.

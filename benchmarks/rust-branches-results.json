@@ -1,0 +1,2468 @@
+{
+  "project": {
+    "project": "/tmp/mutie-rust-workspace-ucd",
+    "commit": "e8fa937f0cac643669dcaf5edac2785b15cab917",
+    "inputs": {
+      ".github/FUNDING.yml": "0c65f392d32a8639ba7986bbb42ca124505b462122382f314c89d84c95dd27f1",
+      ".github/workflows/ci.yml": "2dde7ac0172fb49f95cf5782db7ade2c2d39dcff7b135e0e135e3d287c27668d",
+      ".gitignore": "6e5d7a411dc4f7e9d5ce19687c5edad5c33f722d44465efc74a5df75bf7820d1",
+      "Cargo.lock": "328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+      "Cargo.toml": "7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+      "LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "LICENSE-MIT": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb",
+      "README.md": "945197dc45e5ddb35d47164ee52188f706244203f099dbf6d2a5469094ed46c8",
+      "benches/bench.rs": "25fd13f527aa48dc7dde4af1f1e72aec8578e6b94390193e30e01e73658fa788",
+      "benches/tables/fst/general_category.fst": "993dd5be5b88cad8dafc60959eb11f4f67dc6c7a7b6ca05ad6e5e1881c8e4579",
+      "benches/tables/fst/general_category.rs": "1823bb425bf04100738e546d69cecf3322dad03269d0696e7d5ed602cf161cbf",
+      "benches/tables/fst/jamo_short_name.fst": "bc19c4c4a1861bda08986a853cc761fa67b65dbbabc5c5a04ea6bd6fadae2425",
+      "benches/tables/fst/jamo_short_name.rs": "e52a2dbb24c2fd3e066cfd5c6a06e356bb4c65b14db93930d158d9a1c406cdf2",
+      "benches/tables/fst/mod.rs": "3cc6f392082a72ea5de5ced62673019c3eef69811a940ba86cf53e40663aad91",
+      "benches/tables/fst/names.fst": "925e826d4810ab586d6eefdac16dbddde0d2b5b3bf00ed047aba6db3a5a298eb",
+      "benches/tables/fst/names.rs": "ff6da5b0b900112b1a60d3f23d904e7c191ac235c6976e49f30101c1dd122489",
+      "benches/tables/mod.rs": "1ddcf03199c71849b67d7e38a3b15db22c7f3f8d4fe7a533913c92067811809d",
+      "benches/tables/slice/general_categories.rs": "260f9b311a306385d6c453b313c41bb8b873f796bd224e844810d0d6d7db3d18",
+      "benches/tables/slice/general_category.rs": "1aded08571a9f02e50b98949e2c2c602cb3a2f7172c03db59a890a22a9224ae3",
+      "benches/tables/slice/jamo_short_name.rs": "2b8103524cb0b8caf475d5a5e0cc525c4cf39648b50d148e51c24c8954f61db3",
+      "benches/tables/slice/mod.rs": "e35e86c786c187625b8870b933bbcaafb7b9072e4a359c01030809b292012b73",
+      "benches/tables/slice/names.rs": "95bb9ec37b3a12dfb4d86d5f8d35c5b6e83da2b608f3f3ae7fe9117e455ffa3d",
+      "benches/tables/trie/general_categories.rs": "311b690a97c02cec2a2400da91bfc4fd0135e5366acfb31a19ea5afb74fcf324",
+      "benches/tables/trie/mod.rs": "1d1da1f5d793ceecb18ced8e36942ab618d93a935e4ab73ebe598deeef5b70f4",
+      "rustfmt.toml": "1ca600239a27401c4a43f363cf3f38183a212affc1f31bff3ae93234bbaec228",
+      "scripts/generate-unicode-tables": "1a7fb54f979d19d09147d1e0db566ff445abb322aeff4f376636763456e542e0",
+      "src/age.rs": "0a65e71415375df0d1d0e4b9e7ee6d8e70e2f71b4365e1161352a5fdcbb61ca2",
+      "src/app.rs": "b9f04821ac70b33bbfe87d7e1b9bc4477ed55c0e7e1eed4453028fd9e85975fc",
+      "src/args.rs": "af4acb2df4fd7538a0fc9db4fd407e7b4e96c296d99d39674eff536a79e0e014",
+      "src/bidi_class.rs": "174ccc26c7909f1ace8541471b23efb944700cb814b270f70cb42c1e44fae586",
+      "src/bidi_mirroring_glyph.rs": "15200fa0de289ba8b752911d1d642f6a1ead1642a83ed1e7c9bb77cf4593bfd7",
+      "src/brk.rs": "b947d63bac2944a73d6541276e7d95455af48d63ca4593c25814434fa007557f",
+      "src/canonical_combining_class.rs": "18fa984a52246a22436f7a936d08e600466cc1e6f2c165b92f7a4beb7a7b9672",
+      "src/case_folding.rs": "b113cd7176501311884655f75c1bba86a3c5f567b932af6109cdaa807b31a613",
+      "src/case_mapping.rs": "38145ea1fec615fe6ec7155fbab819d5b2efb4c189365d5c5bf0d7542d0e8919",
+      "src/error.rs": "34cd68d2d242a4f97a5303969effab3ec661b04ed7faafa47a7908f7fffca4a4",
+      "src/general_category.rs": "71d3956e5badfc74b94b4a30749c77f4dd60e66473dae994791be7a1f2b8b193",
+      "src/jamo_short_name.rs": "fea541fca7033949b2b0154568df2d710be842a400a689f2a47ebe00be3587cc",
+      "src/joining_type.rs": "ac081feb2fbf3d67604e9b01f25c999eccd59b936df945fbbcf6277f0c73f58a",
+      "src/main.rs": "1373b58787596bcf7787a3009122c5b4d28025b24fb1bed213548c4954a7ca0a",
+      "src/names.rs": "80ce1a2cd0b270c0b7b2e79ad76f24cd03539ba590616bdcc6530bc7022a79f6",
+      "src/property_bool.rs": "5cadcbf565d7d543ec0c9980a79fe3f408e4f692ae20e972a0edf3228d168db0",
+      "src/script.rs": "56da4c6d02942e9b0e4f8408d42ca22b483ea977e36c28f7fb677c97fd8cfe65",
+      "src/util.rs": "63f4e791f6616ea4f405fa7fa61e1706e8b8d591cb285b05b201e70a7ae97762",
+      "src/writer.rs": "05fa0d7bc3aa0e6d2594e029d4768c48fb7bb6a19d89efc436a2371d21fc7e92",
+      "ucd-parse/Cargo.toml": "922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+      "ucd-parse/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "ucd-parse/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+      "ucd-parse/README.md": "8c52a24f51bf5374f687c5a7be756b40a5433e5afe20355f08f50cfaa46416ab",
+      "ucd-parse/src/age.rs": "50a5f2026a512f77d93c6a514784ecb473347aa3a6975d091dcfece728333b9e",
+      "ucd-parse/src/arabic_shaping.rs": "da620c534a1e51acdc435175bae19407e0fa7bf8cf23b8dc1d57ccf32ef11bd7",
+      "ucd-parse/src/bidi_mirroring_glyph.rs": "b8de1775014ba81e18c95e2a69a3fe64e95fc9bdef6b23178c7ce80c35ce355a",
+      "ucd-parse/src/case_folding.rs": "1010b5d65fe08a0210c2f2111ddd07a4d949206f3604bd2bb89cb258076c74ce",
+      "ucd-parse/src/common.rs": "69ab3c81aae84bdfa0aadd8998de4d955798e562ba0be6561142baacf8e0ec65",
+      "ucd-parse/src/core_properties.rs": "cc6ebafae4c39fb883a32911769baac7a7297f75ca7bc6a0ee35c5ff8e1764f0",
+      "ucd-parse/src/derived_normalization_properties.rs": "b6ecbd6f471e3dda33d12e3d534e65ae2e6997b88f9e382997389fd2c992e1b4",
+      "ucd-parse/src/east_asian_width.rs": "3df868265c5c97d2d5306c51d9689dc8e3fff993fc20abc06ffe849d514a0301",
+      "ucd-parse/src/emoji_properties.rs": "789e83c4dc57d6270f1dd21ea2bf89baf9576b7147fe5d95001b35b2c2ce3d1a",
+      "ucd-parse/src/error.rs": "6341f5337a7527f18886d3b6418ec7d25fbfecd4851b6c7f2a3356983f1e409e",
+      "ucd-parse/src/extracted/derived_bidi_class.rs": "75ae854b153fdccd5c472562d5f3327c25329861baa12f9b010a25b66d2f373d",
+      "ucd-parse/src/extracted/derived_binary_properties.rs": "01f483444dce00e7f9295a6b8f20c2bb78c507cacf5ce6a3889e11c06944f62a",
+      "ucd-parse/src/extracted/derived_combining_class.rs": "2ea60fd91f6ce48697d152f76d0e8321548ec009626177674333341672220368",
+      "ucd-parse/src/extracted/derived_decomposition_type.rs": "513d9262e1ee3410aa7d650ea8ed87041a3c7b638ebdcbaa72651ec63ab694f2",
+      "ucd-parse/src/extracted/derived_east_asian_width.rs": "b98c1768fbe84679aa0e687fcaa2e16cf9d0f4084f7ec5a5fafdc377e5bd03a6",
+      "ucd-parse/src/extracted/derived_general_category.rs": "17d33bf58ce01ccdd7b2fa37feb877111bb7371d6f59d77425e249bc45bcb7f6",
+      "ucd-parse/src/extracted/derived_joining_group.rs": "fce870567dac1541c412c71c169cd8a84f17846358d3c07ea2a156b8b3d991c6",
+      "ucd-parse/src/extracted/derived_joining_type.rs": "57591a20898532b05908d50aff0d3902ea6447a8ef9086fc0e365732931b204b",
+      "ucd-parse/src/extracted/derived_line_break.rs": "2343e0b6d806206ecacaa229e3bbb30f92bbdf2e8a7900159357673e519bcc63",
+      "ucd-parse/src/extracted/derived_name.rs": "f6c955175138de3b7fd8442a3d337a49214f5cc4fb31dfba1b2b44049fa7c174",
+      "ucd-parse/src/extracted/derived_numeric_type.rs": "a95de68ba6e9d951d40902e188e28ba6b942ae62e1dcaa5367c522bb178a2036",
+      "ucd-parse/src/extracted/derived_numeric_values.rs": "ab66990bf8f151a2cdb9721108e9bebb3f1136ab1be56da45fbbf3874ec5f96c",
+      "ucd-parse/src/extracted/mod.rs": "d55adeda4d08406ef7aaad0979d86a90f3996c66b83af4a47e4762c7fda486e8",
+      "ucd-parse/src/grapheme_cluster_break.rs": "5f400a5972214d29df8823c628dca20e2d7ff8a8441ec90ee6908c909b2c2829",
+      "ucd-parse/src/jamo_short_name.rs": "1428d8b7f2e45de99314589c3534dd8dc6d6997dc38fda96d1d3b56fefdcbee2",
+      "ucd-parse/src/lib.rs": "9930a99879ab62cd4ad71354bd622d89d15464c455f575dc9e36896831e510c1",
+      "ucd-parse/src/line_break.rs": "8873ca5d75b64d57a4280e8b0136c47d09f4397aae65ad8b904f689590aae8ca",
+      "ucd-parse/src/name_aliases.rs": "9e523a3aab303efd37d4e696bb4d47ccc6f2e22e9768bf6e901ed8d00b94604e",
+      "ucd-parse/src/prop_list.rs": "3e8394421da893ed7856fd5b58f1fb32d3c26bcc972b544829ad2c12468c6f46",
+      "ucd-parse/src/property_aliases.rs": "35607fb7f644c92e5f67b4ade794944c55f8397b6d4154cd4f78fd032837a04d",
+      "ucd-parse/src/property_value_aliases.rs": "5230356694bd20fdfe06b3ccbc737ac84708f674907ef6a78be3458badfc9235",
+      "ucd-parse/src/script_extensions.rs": "c013f98e61cfbc91a0f1dbea6118cb7b28c5c27a1b608fe03b8c164e1627be7a",
+      "ucd-parse/src/scripts.rs": "58843b1e6ea8d0f1784eff76773ca589d4e06a5f6ad26048aabf91f0b1773f83",
+      "ucd-parse/src/sentence_break.rs": "d3ec597ff15118cf9e5064842d393962b3fe219430ef36d109812a4c45c25d9b",
+      "ucd-parse/src/special_casing.rs": "dd3a1d264545b586470d9f1db7eff54cd62e637b69c712acb41d084db13d488d",
+      "ucd-parse/src/unicode_data.rs": "0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+      "ucd-parse/src/word_break.rs": "7f929fedc231f9099694ef632eb3166dbcd458dc62a73942d0a94136fbac5e96",
+      "ucd-trie/Cargo.toml": "2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+      "ucd-trie/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "ucd-trie/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+      "ucd-trie/README.md": "6687ddcfa8075f52ea4326b3caa756165236ff6f75e3379e55ea9f6841821324",
+      "ucd-trie/benches/bench.rs": "9b74139d17cfcccb502f2abe80b8a4c15a17037a681f27ec914d51e83ea7e55f",
+      "ucd-trie/src/general_category.rs": "42cbf05dc036e46256621f008f557821f8d3597607c3b8ab62532cdf51b97f6d",
+      "ucd-trie/src/lib.rs": "99bedb2b655b39ac3a2cc7b4b79a381f7d1e086a20558eec52968f556a638ec4",
+      "ucd-trie/src/owned.rs": "b897f815685f597f3a98613d5f8196153a207a741e61bbb19f48f90c2bf594ae",
+      "ucd-util/Cargo.toml": "19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+      "ucd-util/LICENSE-APACHE": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "ucd-util/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+      "ucd-util/LICENSE-UNICODE": "ea8df489e83b7674d5c9d50c320bec3b15d2e2eeb7a3a8879a666d91e5640c16",
+      "ucd-util/README.md": "ccfb24f60893d9f0911fc0a6ccd2dd42c9512d3941c8caff5d65153af75496c0",
+      "ucd-util/src/hangul.rs": "7cb3f411bd043c00cf6008ce537ce2f595a89bea10fda15b719ac144380069c2",
+      "ucd-util/src/ideograph.rs": "c36548cfd47885a88ae8c71fb91025586d370e7e4399d3a59286e098a16f4136",
+      "ucd-util/src/lib.rs": "0fa7d116ae2d201e7dcd872f05ca4558d69cb1c96f74ebf9c17eb540dea8e3ef",
+      "ucd-util/src/name.rs": "17ece2047e181e5d1e2f341b8a9901dd0125de8189e8b61069fc4c5c800c5375",
+      "ucd-util/src/property.rs": "9c42b9345ea10c445870d82fa19703ad6122f39228b1437725d46d9b07577b18",
+      "ucd-util/src/unicode_tables/jamo_short_name.rs": "2b8103524cb0b8caf475d5a5e0cc525c4cf39648b50d148e51c24c8954f61db3",
+      "ucd-util/src/unicode_tables/mod.rs": "efa5af1e97be12c1f3541a24763278a821bd1bdfd1631d4f922b68e8d6997e40",
+      "ucd-util/src/unicode_tables/property_names.rs": "124bbc8331890d193448dc51fa7160353637e86746b178a08cd6a04534ee5020",
+      "ucd-util/src/unicode_tables/property_values.rs": "dd39f19d46e26edc07c2da98c9fb26fb93a46fe533454ef567e78cce99be11ee"
+    }
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-rust-branches-audit/original-reports/run-1792721915-G9MR0H",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 64,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-rust-workspace-ucd",
+        "effective_config": {
+          "module_root": "/tmp/mutie-rust-workspace-ucd",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "rust_packages": [
+            "ucd-parse"
+          ],
+          "jobs": 2,
+          "test_scope": "full",
+          "include": [
+            "ucd-parse/src/unicode_data.rs"
+          ],
+          "exclude": [],
+          "operators": [
+            "branch_force_true",
+            "branch_force_false"
+          ],
+          "timeout": 60,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 120,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-branches-audit/original-reports",
+          "verbose": false,
+          "list": false,
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792721915,
+        "finished_at_unix_seconds": 1792722068,
+        "duration_seconds": 153.44690125,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "filtered",
+          "killed": 15,
+          "missed": 11,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 57.69230769230769,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "workspace",
+          "workspace": {
+            "members": [
+              {
+                "name": "ucd-generate",
+                "directory": "",
+                "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+                "targets": [
+                  {
+                    "kind": "bin",
+                    "name": "ucd-generate",
+                    "source": "src/main.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-parse",
+                "directory": "ucd-parse",
+                "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_parse",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-trie",
+                "directory": "ucd-trie",
+                "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_trie",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-util",
+                "directory": "ucd-util",
+                "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_util",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              }
+            ],
+            "selected": [
+              "ucd-parse"
+            ]
+          },
+          "targets": [],
+          "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+          "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+          "default_features": true,
+          "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "ucd-parse/src/age.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/arabic_shaping.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/arabic_shaping.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/bidi_mirroring_glyph.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/bidi_mirroring_glyph.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/case_folding.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/case_folding.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/common.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/core_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/derived_normalization_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/east_asian_width.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/emoji_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/error.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/extracted/derived_bidi_class.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_binary_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_combining_class.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_decomposition_type.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_east_asian_width.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_general_category.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_joining_group.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_joining_type.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_line_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_name.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_numeric_type.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_numeric_values.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_numeric_values.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/grapheme_cluster_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/jamo_short_name.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/jamo_short_name.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/lib.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/line_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/name_aliases.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/name_aliases.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/prop_list.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/property_aliases.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/property_aliases.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/property_value_aliases.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/property_value_aliases.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/script_extensions.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/scripts.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/sentence_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/special_casing.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/special_casing.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/unicode_data.rs: branch forcing excludes if-let/let-chain bindings",
+            "ucd-parse/src/unicode_data.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/unicode_data.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/word_break.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [
+          "ucd-parse/src/unicode_data.rs"
+        ],
+        "exclude": [],
+        "requested_workers": 2,
+        "workers": 2,
+        "baseline_timeout_seconds": 120,
+        "mutation_timeout_seconds": 60.0,
+        "planned_mutations": 26,
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.733297667,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.993689334,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.028206708,
+            "reflink_files": 108,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.059268248999999995,
+            "reflink_files": 216,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 24,
+            "completed": 24,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 3.0617350839999995,
+            "reflink_files": 2592,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 15,
+        "missed": 11,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 140,
+          "column": 12,
+          "end_line": 140,
+          "end_column": 31,
+          "byte_start": 5368,
+          "byte_end": 5387,
+          "original": "!caps[6].is_empty()",
+          "replacement": "true || (!caps[6].is_empty())",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 140,
+          "column": 12,
+          "end_line": 140,
+          "end_column": 31,
+          "byte_start": 5368,
+          "byte_end": 5387,
+          "original": "!caps[6].is_empty()",
+          "replacement": "false && (!caps[6].is_empty())",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 145,
+          "column": 12,
+          "end_line": 145,
+          "end_column": 33,
+          "byte_start": 5533,
+          "byte_end": 5554,
+          "original": "!capget(7).is_empty()",
+          "replacement": "true || (!capget(7).is_empty())",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 145,
+          "column": 12,
+          "end_line": 145,
+          "end_column": 33,
+          "byte_start": 5533,
+          "byte_end": 5554,
+          "original": "!capget(7).is_empty()",
+          "replacement": "false && (!capget(7).is_empty())",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 5,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 157,
+          "column": 12,
+          "end_line": 157,
+          "end_column": 33,
+          "byte_start": 5932,
+          "byte_end": 5953,
+          "original": "!capget(8).is_empty()",
+          "replacement": "true || (!capget(8).is_empty())",
+          "diff": "diff/000005.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 6,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 157,
+          "column": 12,
+          "end_line": 157,
+          "end_column": 33,
+          "byte_start": 5932,
+          "byte_end": 5953,
+          "original": "!capget(8).is_empty()",
+          "replacement": "false && (!capget(8).is_empty())",
+          "diff": "diff/000006.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 7,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 169,
+          "column": 12,
+          "end_line": 169,
+          "end_column": 33,
+          "byte_start": 6327,
+          "byte_end": 6348,
+          "original": "!capget(9).is_empty()",
+          "replacement": "true || (!capget(9).is_empty())",
+          "diff": "diff/000007.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 8,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 169,
+          "column": 12,
+          "end_line": 169,
+          "end_column": 33,
+          "byte_start": 6327,
+          "byte_end": 6348,
+          "original": "!capget(9).is_empty()",
+          "replacement": "false && (!capget(9).is_empty())",
+          "diff": "diff/000008.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 9,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 175,
+          "column": 12,
+          "end_line": 175,
+          "end_column": 34,
+          "byte_start": 6590,
+          "byte_end": 6612,
+          "original": "!capget(13).is_empty()",
+          "replacement": "true || (!capget(13).is_empty())",
+          "diff": "diff/000009.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 10,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 175,
+          "column": 12,
+          "end_line": 175,
+          "end_column": 34,
+          "byte_start": 6590,
+          "byte_end": 6612,
+          "original": "!capget(13).is_empty()",
+          "replacement": "false && (!capget(13).is_empty())",
+          "diff": "diff/000010.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 11,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 178,
+          "column": 12,
+          "end_line": 178,
+          "end_column": 34,
+          "byte_start": 6707,
+          "byte_end": 6729,
+          "original": "!capget(14).is_empty()",
+          "replacement": "true || (!capget(14).is_empty())",
+          "diff": "diff/000011.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 12,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 178,
+          "column": 12,
+          "end_line": 178,
+          "end_column": 34,
+          "byte_start": 6707,
+          "byte_end": 6729,
+          "original": "!capget(14).is_empty()",
+          "replacement": "false && (!capget(14).is_empty())",
+          "diff": "diff/000012.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 13,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 181,
+          "column": 12,
+          "end_line": 181,
+          "end_column": 34,
+          "byte_start": 6824,
+          "byte_end": 6846,
+          "original": "!capget(15).is_empty()",
+          "replacement": "true || (!capget(15).is_empty())",
+          "diff": "diff/000013.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 14,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 181,
+          "column": 12,
+          "end_line": 181,
+          "end_column": 34,
+          "byte_start": 6824,
+          "byte_end": 6846,
+          "original": "!capget(15).is_empty()",
+          "replacement": "false && (!capget(15).is_empty())",
+          "diff": "diff/000014.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 15,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 195,
+          "column": 12,
+          "end_line": 196,
+          "end_column": 65,
+          "byte_start": 7315,
+          "byte_end": 7413,
+          "original": "self.decomposition.is_canonical()\n            && self.decomposition.mapping() == &[self.codepoint]",
+          "replacement": "true || (self.decomposition.is_canonical()\n            && self.decomposition.mapping() == &[self.codepoint])",
+          "diff": "diff/000015.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 16,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 195,
+          "column": 12,
+          "end_line": 196,
+          "end_column": 65,
+          "byte_start": 7315,
+          "byte_end": 7413,
+          "original": "self.decomposition.is_canonical()\n            && self.decomposition.mapping() == &[self.codepoint]",
+          "replacement": "false && (self.decomposition.is_canonical()\n            && self.decomposition.mapping() == &[self.codepoint])",
+          "diff": "diff/000016.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 17,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 271,
+          "column": 12,
+          "end_line": 271,
+          "end_column": 42,
+          "byte_start": 9879,
+          "byte_end": 9909,
+          "original": "self.len >= self.mapping.len()",
+          "replacement": "true || (self.len >= self.mapping.len())",
+          "diff": "diff/000017.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 18,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 271,
+          "column": 12,
+          "end_line": 271,
+          "end_column": 42,
+          "byte_start": 9879,
+          "byte_end": 9909,
+          "original": "self.len >= self.mapping.len()",
+          "replacement": "false && (self.len >= self.mapping.len())",
+          "diff": "diff/000018.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 19,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 300,
+          "column": 12,
+          "end_line": 300,
+          "end_column": 24,
+          "byte_start": 10802,
+          "byte_end": 10814,
+          "original": "s.is_empty()",
+          "replacement": "true || (s.is_empty())",
+          "diff": "diff/000019.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 20,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 300,
+          "column": 12,
+          "end_line": 300,
+          "end_column": 24,
+          "byte_start": 10802,
+          "byte_end": 10814,
+          "original": "s.is_empty()",
+          "replacement": "false && (s.is_empty())",
+          "diff": "diff/000020.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 21,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 331,
+          "column": 16,
+          "end_line": 331,
+          "end_column": 22,
+          "byte_start": 11821,
+          "byte_end": 11827,
+          "original": "!first",
+          "replacement": "true || (!first)",
+          "diff": "diff/000021.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 22,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 331,
+          "column": 16,
+          "end_line": 331,
+          "end_column": 22,
+          "byte_start": 11821,
+          "byte_end": 11827,
+          "original": "!first",
+          "replacement": "false && (!first)",
+          "diff": "diff/000022.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 23,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 449,
+          "column": 12,
+          "end_line": 449,
+          "end_column": 24,
+          "byte_start": 14817,
+          "byte_end": 14829,
+          "original": "s.is_empty()",
+          "replacement": "true || (s.is_empty())",
+          "diff": "diff/000023.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 24,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 449,
+          "column": 12,
+          "end_line": 449,
+          "end_column": 24,
+          "byte_start": 14817,
+          "byte_end": 14829,
+          "original": "s.is_empty()",
+          "replacement": "false && (s.is_empty())",
+          "diff": "diff/000024.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 25,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 561,
+          "column": 12,
+          "end_line": 562,
+          "end_column": 73,
+          "byte_start": 18560,
+          "byte_end": 18655,
+          "original": "!row1.is_range_start()\n            || !self.it.peek().map_or(false, |row2| row2.is_range_end())",
+          "replacement": "true || (!row1.is_range_start()\n            || !self.it.peek().map_or(false, |row2| row2.is_range_end()))",
+          "diff": "diff/000025.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 26,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 561,
+          "column": 12,
+          "end_line": 562,
+          "end_column": 73,
+          "byte_start": 18560,
+          "byte_end": 18655,
+          "original": "!row1.is_range_start()\n            || !self.it.peek().map_or(false, |row2| row2.is_range_end())",
+          "replacement": "false && (!row1.is_range_start()\n            || !self.it.peek().map_or(false, |row2| row2.is_range_end()))",
+          "diff": "diff/000026.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 13.583836333,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18169,
+                "head_bytes": 18169,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 69337,
+                "head_bytes": 69337,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1617,
+                "head_bytes": 1617,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 13.306220709,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20243,
+                "head_bytes": 20243,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 71411,
+                "head_bytes": 71411,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1617,
+                "head_bytes": 1617,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 12.173550541000001,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21048,
+                "head_bytes": 21048,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 76006,
+                "head_bytes": 76006,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 11.812395792,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.8406585,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21036,
+                "head_bytes": 21036,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 75994,
+                "head_bytes": 75994,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 9.569443459,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.268533458,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20238,
+                "head_bytes": 20238,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 75196,
+                "head_bytes": 75196,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.420891875,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 22320,
+                "head_bytes": 22320,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 77278,
+                "head_bytes": 77278,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 21.323805,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21084,
+                "head_bytes": 21084,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 76042,
+                "head_bytes": 76042,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 20.941418084,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 17968,
+                "head_bytes": 17968,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 72322,
+                "head_bytes": 72322,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.477263958,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20723,
+                "head_bytes": 20723,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 75681,
+                "head_bytes": 75681,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.193281834,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20567,
+                "head_bytes": 20567,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 75525,
+                "head_bytes": 75525,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 8.735539333,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21084,
+                "head_bytes": 21084,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 76042,
+                "head_bytes": 76042,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.8000735,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 9.05796725,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.729714958,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 17968,
+                "head_bytes": 17968,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 72322,
+                "head_bytes": 72322,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 17,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.217878625,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000017.log",
+            "stdout": "logs/000017.stdout.log",
+            "stderr": "logs/000017.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20880,
+                "head_bytes": 20880,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 75838,
+                "head_bytes": 75838,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 18,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 9.222906584,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000018.log",
+            "stdout": "logs/000018.stdout.log",
+            "stderr": "logs/000018.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 19,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 8.508101375,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000019.log",
+            "stdout": "logs/000019.stdout.log",
+            "stderr": "logs/000019.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19581,
+                "head_bytes": 19581,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74539,
+                "head_bytes": 74539,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 20,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.525283541,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000020.log",
+            "stdout": "logs/000020.stdout.log",
+            "stderr": "logs/000020.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 21,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.562748666,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000021.log",
+            "stdout": "logs/000021.stdout.log",
+            "stderr": "logs/000021.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 22,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.561778584,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000022.log",
+            "stdout": "logs/000022.stdout.log",
+            "stderr": "logs/000022.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 23,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.269989083,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000023.log",
+            "stdout": "logs/000023.stdout.log",
+            "stderr": "logs/000023.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19908,
+                "head_bytes": 19908,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74866,
+                "head_bytes": 74866,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 24,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 8.95424325,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000024.log",
+            "stdout": "logs/000024.stdout.log",
+            "stderr": "logs/000024.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18700,
+                "head_bytes": 18700,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73762,
+                "head_bytes": 73762,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1296,
+                "head_bytes": 1296,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 25,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.464239542,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000025.log",
+            "stdout": "logs/000025.stdout.log",
+            "stderr": "logs/000025.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19152,
+                "head_bytes": 19152,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74110,
+                "head_bytes": 74110,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 26,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 9.170660334,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000026.log",
+            "stdout": "logs/000026.stdout.log",
+            "stderr": "logs/000026.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19153,
+                "head_bytes": 19153,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74111,
+                "head_bytes": 74111,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1400,
+                "head_bytes": 1400,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "4dce551dc794b18f54aadbe93d5f2a288bad0305959b13dd7633a14849966d4a",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "416dc938fe9b2559fdb1f324e8bcbae22c979ad2e931e9272a4dbf765c2fffb9",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "66804e408f7f478fb7abb04507c36dba5a07359e3290960cfe76f3347e16bdad",
+        "summary.txt": "b0510f5b3d022477e7cd1f8f58bd22f387896cfe2086c652a471eae6f23cd735",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "8262f925115852c8e5136677590d028c22872dbc5628e9bc7f95eef82f190cad",
+        "run.json": "d2ddd3118387074b19066eb24b6850c2a64d0427c2e80c0c8eed799bd7b5e565",
+        "diff/000003.diff": "b3ffed1fb5ae0ddc38e9c6fed11ca85dfa5441704a2968d4b19d494970cbe58a",
+        "diff/000015.diff": "c335a58c211bf973a2b64af5df550296190cc766ec7cb7cdcce019797f2a60e4",
+        "diff/000023.diff": "f4ac27240aa067dbad32eaa2e5995140632531285b9d0b059e1bc101fb60a429",
+        "diff/000019.diff": "ca2ed4706e25fd881c3bd6954aa4b3761d8219c1a1aa0f3be7af58af60c84c3e",
+        "diff/000018.diff": "87404184fd43ad5156aaa4b9d37ab4a5928a6034dc93ec503865083aa8bf2817",
+        "diff/000022.diff": "a1d6d449c39cc2f93320a19b1cdf696c5e26979fb8bf76ea4befd10cee5272ff",
+        "diff/000014.diff": "87dd1ae4e9d14524c010021801561d31dd1d70c937b282722657fa33cc97a1f7",
+        "diff/000002.diff": "4d7d0ee6e49b7a432b616c1014abb6ca0071ab9ec0b0eac8981e299720ac190a",
+        "diff/000025.diff": "c49ba6116904350dda9fa30b56f8078e33e8334d8af46b8e4ba8ea459787887d",
+        "diff/000009.diff": "51dfe5c28fa357b4f344a909a86835dfae29d391f383420dc15678703384b2f7",
+        "diff/000005.diff": "b8132b2ade053acfea894e75c78c6fbd3b2325f505030734e4b428ea6409fbd1",
+        "diff/000013.diff": "110ea94248c7513915c1f2fa12d81d4c23aecead5482fab7bbb44f3be49885f8",
+        "diff/000012.diff": "974b9b09c15493134b849deb05d0833a50cbbc65d608920701d954f55e801041",
+        "diff/000004.diff": "05e1b49b1f0c56a044d2c6c6854a3e4d2896aeccaeb9793e7913561b5de6a43b",
+        "diff/000008.diff": "72540a958f38325d0b4426b5cedd1fd778aa5f981b75ee7c7b6d22d9d9305e14",
+        "diff/000024.diff": "13980c3346588572f11cf12eae42f4f929803e6f5feba2b7a33b8a6e58a16cfb",
+        "diff/000011.diff": "0ae819b17358f07a8937a4ac07d0d592bab1a788631d4af7b4aebe5f5d22d988",
+        "diff/000007.diff": "23077d209eedb7351e319f7a0cb888914f1741911b5f3234e366f0700f71346e",
+        "diff/000006.diff": "e2ae5116c31ee6e40c8d40a9d59086575a164826940ba3ec3ceee906ad80a5cb",
+        "diff/000010.diff": "00f4c8e2fd060a7fa7047b7ba8601b113277e89f24b9dec0a63add7d7db76f24",
+        "diff/000026.diff": "18f3a88808aca41934273751f3d00d545988d1a36ee3943814b190647f1ec02f",
+        "diff/000017.diff": "3b98db9c46c6243b4d7668c6f4bb49cfa2c24d994e4b965a61b3528d2cdbf04a",
+        "diff/000001.diff": "37c706184ef84fc2a5dc4a0507d991628b9b5193f16e74c6bcfacd7677ee18b7",
+        "diff/000021.diff": "fef0ec09ae78a6d0df437113060159d551d24e931cb70f4c6e6f70f8d6bb8a3b",
+        "diff/000020.diff": "a593a84ec1dc59aff4feafefb918c95bc432dbf33556b067376c61dc11d9b3e3",
+        "diff/000016.diff": "41f14f7f8ded73fc67303c63d478f24a22957b930226b6b3fa29d19d3401ff35",
+        "logs/000025.stdout.log": "3e518a0eed5e7ae525eecd4106c64fcb4555c7a084a56cbfd759d7cdd9723168",
+        "logs/000012.stdout.log": "96b16751fcefae6db6a490d89e2fb22e78271eb76c440086e48a03c1b46f0047",
+        "logs/000013.log": "5a5451133e48aeebbd68ce12e1f27b4fed9ec9bb655ae0ee9448979c3ba559e5",
+        "logs/000007.log": "2810a3f8e75ab4026658d3040d0db4305cad7cdb1a06bddca039f8239a052909",
+        "logs/000021.stderr.log": "305a6b89a23f420d3b3bbc8375632e639f874cf01030b924abe9f2c7d6ea64ae",
+        "logs/000016.stderr.log": "80c2f94ecd49d0bc1a3a01217259305c2b9012bdea1b6b2a52c48b69a462b05c",
+        "logs/000006.log": "104de6e39468bf69af6ed676a3e0c29778fbe46045fa9b09781888c837048e19",
+        "logs/000012.log": "372cea8cf80c9bb35bac29fc72ee0c044bda873dc7f0a6603903f6b72615b636",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.log": "8929ac95c71e45ff67a1371c7f5a0686488d031d9791161a190ff46d932e1ff4",
+        "logs/000010.log": "37a2faf547fcdd8aad33c4233a59eefd6df459b7698d1fd86e9cc105ea54e400",
+        "logs/000007.stderr.log": "aff7d38db8159e1800790689f475a8b8e7018e74524b53c1eb5feead098f7a45",
+        "logs/000011.log": "76229513b02a8eaa97dea619b989388c11c3bdf9b7ef5a8c6a9328ef87ca0ced",
+        "logs/000005.log": "5e0606e710ae6b54203cfd06c3fae95de551c14b0ee827d84ced5feabe782fb0",
+        "logs/000003.stdout.log": "da69290b38ab16d643c5b013f0544512055eac3f6e529f71ba5e4053ca8d6bed",
+        "logs/000001.log": "9a6f118006cadf2b47247ca9ab77419c65238e17abe4954e7569e0a16dad74b8",
+        "logs/000015.log": "87f3590d2e1ea3e359ae5dbc0f02031f0bf8a2fa29f4f10b781935acb62457d9",
+        "logs/000006.stdout.log": "60945bcec4249165543fd7f54acc81c46a866ce3548b091d6e4e51f3db9172d4",
+        "logs/000014.log": "be76a0b49a13e711003e60f553283ac0b41c22feffd3b4a2f0befce3a6d71830",
+        "logs/000002.stderr.log": "92a5771c733ec26bfac80b38610cc859ffd4e6633092cfac9f3dfaed0d46b3eb",
+        "logs/000013.stderr.log": "0e2e543a41692e1fecc913f08faa955e7ad56cdf3c114c4f5910143a2f66f0dc",
+        "logs/000024.stderr.log": "d6e0950c34d499f6b1d55c4893cad091d4bc67354b1da9db23a9474593300c33",
+        "logs/000016.log": "f62e353151340f94dfb66a3cebb8d2196efc6c71c424318b99d111e3ef1dad99",
+        "logs/000002.log": "e0879678a9f897bd985711b512b46ce6fb9311d1992e1bb8fdfc78eee5d7fc63",
+        "logs/000017.stdout.log": "b9e7d4f5b6c34926a0294afabf474f9ca4c0a7b8dd97fd482bcf1396e82dcb83",
+        "logs/000020.stdout.log": "00dac12eae3264f3c93558a5bcbe09315ec23aab182885b16a045b82a260a504",
+        "logs/000003.log": "5457a3537dd892f7495fa750f06f2cd81a32649999316fc0e19578b3385eef05",
+        "logs/000017.log": "66f7f713cd6b4020bda2c0aabc2a128b6a01ce261c452175bba1f0db6c395e11",
+        "logs/baseline.stderr.log": "fbf9af44d509142e0fc95115a12a02f76fe0aaf0d8e216b0d7997ddab3085e2d",
+        "logs/000008.stderr.log": "ae881547bf3e09e812e3beda44b0775fc6e09358b4b2c1a0080cbc1a37f1966d",
+        "logs/000010.stdout.log": "c6bcc3af20e0a6e09962894075b8252a1c5b4acec71ea242b7a402ebc24e4ab1",
+        "logs/discovery.log": "1bcac1b353aff08c16396d7aeea716479fcbd5f270311fa4221c9bd964fbb5fa",
+        "logs/000014.stderr.log": "b66722b80d08f3b1cf1c7765e8431aaf7400e53bdedac824e9f6929bb8a49a0a",
+        "logs/000023.stderr.log": "88d5eadc1856fb965ab139e4797d92ad738abf7c42f9c58e2901252b5ab6379b",
+        "logs/000005.stderr.log": "cf36ae0660b5a301a1acede567b51c33b0f20bf9170aadc65b732596aba33570",
+        "logs/000001.stdout.log": "ece06007b072cc4a6bb719941603c3be9a127f0ee0acd8f2a5487ee9b4165d1c",
+        "logs/000019.stderr.log": "a972aad4fedabb262cf67b80d688760793537e0ee7d29f6a94855ac19839a018",
+        "logs/000004.stdout.log": "415b42a8e454f14ab2d4788832965ad185d19b465aeac8ee0cf1dc890c95154b",
+        "logs/000018.stdout.log": "08538312e23ef950acd0de815eb4eef516b56b29b1247b9298c7559a7378aa1c",
+        "logs/000009.stdout.log": "6f899483554761d9c23a7fc4af9493dc3b2b172208b434e91d80d77de3e718c2",
+        "logs/000026.stderr.log": "da06b5b8e43459763946019b402665bb71e94a9efad7ba08116384510a602f5e",
+        "logs/000011.stderr.log": "2325af93d4c755c01445787369b3a098fc9681b8299446733cc13621a29f0ea3",
+        "logs/000022.stdout.log": "56d89fb75c8b7dda439f255b8c082115ab19b836b689eb9023edbd98a0a172d1",
+        "logs/000015.stdout.log": "8d7124ed18218d9adfb5838cf437bd8697ea7149487cd4a7207cb004487b0b69",
+        "logs/discovery.stdout.log": "eb84634ba6fa04937d806a3a7efacc8c4914a0ccfde89630fa97fe2aa479374f",
+        "logs/000003.stderr.log": "aca240c7d51413f5dd4fbbb32749cdb12369e6357ee579f68870c9aea0416c67",
+        "logs/baseline.log": "a1f6b2b6b20e98ec2a77b1f67760c6547d332d3a3e2c16efb8be89d4bd2a9497",
+        "logs/000007.stdout.log": "b36b943e4bf14a7d156bcb7c0375c323d1a05d81fa358f09d7d876ae84351237",
+        "logs/000016.stdout.log": "a9aa34b1ec7e0d588df45a98f54516d3427b734132fbcfb3180db8aa052e088a",
+        "logs/000021.stdout.log": "6a252c14ebfdd1268df2e832e8ab28d34f583abaeacb5ebc6d6cd78d8d2fe46c",
+        "logs/000012.stderr.log": "384415d65bc6f2e3fc1dbb6ba00aed7f02e6fe8be6e0e6fd04b357a5ed745170",
+        "logs/000025.stderr.log": "384415d65bc6f2e3fc1dbb6ba00aed7f02e6fe8be6e0e6fd04b357a5ed745170",
+        "logs/000020.stderr.log": "614267b71dd02bdd94372ebbe945453919d3aafc0bc9505a21a1fb4f0f8c221f",
+        "logs/000017.stderr.log": "bfb9b22bb358b2172c0d4318035ff8fa202119b00e97e727518e54ee7bca2314",
+        "logs/000024.stdout.log": "d533a6e7c3a5904eda9f46ad01960668df3eb644534edc726c51807e521fe39a",
+        "logs/000013.stdout.log": "68e8908392a4b5bf859ac6eecd41c97ee9bfa3b4ccbe3e18173c039409ad91b3",
+        "logs/000002.stdout.log": "c5aabfed7c8762014f59d9d33e0a9f8c392b826dbd3ec959679ba84d7cf5a613",
+        "logs/000006.stderr.log": "cf750e73b913de97d9ffee2c42afdd4e8b1a04c37bd48efab8724af01c3f1784",
+        "logs/000001.stderr.log": "99de6f2f90cc71b6668c171ad0ed75db5743a445364e368c1976cdcc19c7a4d1",
+        "logs/000005.stdout.log": "266b5850988d97790099476acae7cd44e64a6e66a0b31fa59669ec7a59064104",
+        "logs/000026.log": "d019e64148f31a236d8e29534673cce23adc8dcbe34fe97680e22e65a26944b3",
+        "logs/000019.stdout.log": "08b91b0def7f59db7bbe62e66ae4672cbf40feaf2ecb10420379d194f1e5ab8e",
+        "logs/000008.stdout.log": "74833cb13dacc1d67a988c90f5a6ec47aa7aec9d3f255604f4a7f02a21709ba2",
+        "logs/baseline.stdout.log": "97ee32b60fd9a3eea8cdc3918d300fd01ed05cd1698186a528f95cf963c27c4e",
+        "logs/000025.log": "217dd806fac451b56f8de9d8712e2b5a89cb290defeef48cae19e5f25c78f3cc",
+        "logs/000019.log": "8b075235492f67a1dfb2a9d2d6772c5bccc2f4c0e0bc775a7006b2acb14aff16",
+        "logs/000018.log": "fb97b8dc96bfc29cab9a0964f04bbc47f160430e24cbaf78e3f63e00881a8d8d",
+        "logs/000024.log": "3f1edf5a05ed6308527df7000b6b575466bef2a41ae6a1c9e66837235ed38a76",
+        "logs/000023.stdout.log": "7a408c6f926dd9e37d0ca60ece403914f2704f8554128a696549b613e589c9cf",
+        "logs/000014.stdout.log": "4651d1b13a898842119802a8f06785c059cc81111c366335b0376ae709ed019e",
+        "logs/000010.stderr.log": "63110e668c22537405798a6ab949eee8a46cd6d5c8ab0b663172b849b34a5c02",
+        "logs/000009.stderr.log": "4124fa9b50c64220c47074e1d59d2af7f50a3230f285089543a89888d7bf863e",
+        "logs/000008.log": "90c1126911f77a3df127e0612ea56ec486f73148723fa9334cc60789443910df",
+        "logs/000020.log": "f2d0685365adb08bd6828dcd53d2e91a646deb20abfcfa1905ecb9c1dc25bfe0",
+        "logs/000021.log": "813f2af3b71dcfeb3982aa15df24591fc58ab077bd2ee7e562c77b547c18282a",
+        "logs/000015.stderr.log": "8fb15729a45bcc76233cde1e44ec55badcc27aed858c078fbb4ea9d6e8fa8e9b",
+        "logs/000009.log": "796497227d35264fd8eb0274c2c73115772aa9352ae91652a6891a9405375538",
+        "logs/000022.stderr.log": "9cdcf4272f71ea97fd25a1436ac3b01b303286d549a7fcba179fd8a5e1126c7f",
+        "logs/000011.stdout.log": "b8dd98b4d31eb9b5af5200088fe55450f33bd4e347c44562976e84720ae92d53",
+        "logs/000026.stdout.log": "2f9686b94ae1ae2c2f219c03b1b3a2aa2f171f5ccccc0fb7481ff1db65d8d3cd",
+        "logs/000004.stderr.log": "9eaf8b6b504f63d491bd66ed82db17f1475dd73fd9cd3a2a6ba4e33e136a6ece",
+        "logs/000023.log": "c4eb701377f70d0ed9ef3e3f4d64ab24b0fa7398559d9c18abee5de9d9a777e0",
+        "logs/000022.log": "bc684770ba6fab1f736ba6c3cc8db6b1508723280dc5fe417de0ab7534ce0ad9",
+        "logs/000018.stderr.log": "21396eafb5c5531f5bc36473d1f73640ebd402ba364731734e3d3c63bfe7d5a2"
+      }
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-rust-branches-audit/stronger-reports/run-1792722088-W7HoyF",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 20,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-rust-branches-audit/stronger",
+        "effective_config": {
+          "module_root": "/tmp/mutie-rust-branches-audit/stronger",
+          "config_file": null,
+          "lang": "rust",
+          "rust_build_cache": "worker",
+          "rust_packages": [
+            "ucd-parse"
+          ],
+          "jobs": 2,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [],
+          "timeout": 60,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 120,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-rust-branches-audit/stronger-reports",
+          "verbose": false,
+          "list": false,
+          "rerun": {
+            "source_run": "/tmp/mutie-rust-branches-audit/original-reports/run-1792721915-G9MR0H",
+            "selection": "all",
+            "source_ids": [
+              4,
+              6,
+              10,
+              14
+            ]
+          },
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792722088,
+        "finished_at_unix_seconds": 1792722120,
+        "duration_seconds": 32.141633209,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 4,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "compilation_command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--no-run"
+        ],
+        "rust_scope": {
+          "package": "workspace",
+          "workspace": {
+            "members": [
+              {
+                "name": "ucd-generate",
+                "directory": "",
+                "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+                "targets": [
+                  {
+                    "kind": "bin",
+                    "name": "ucd-generate",
+                    "source": "src/main.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-parse",
+                "directory": "ucd-parse",
+                "manifest_fingerprint": "sha256:922755173593f4e780adda8d13902d1c743bc5ae116f1a996573d7b6104e723b",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_parse",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-trie",
+                "directory": "ucd-trie",
+                "manifest_fingerprint": "sha256:2a1e058a5a78bbf3fa423776660c74589f2a9ea5cf907ccbeb3f98859d1de02a",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_trie",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              },
+              {
+                "name": "ucd-util",
+                "directory": "ucd-util",
+                "manifest_fingerprint": "sha256:19f5ab790bec138dcbb238fa8039e98451ebb22446eb492424d9c7d4946a4a30",
+                "targets": [
+                  {
+                    "kind": "lib",
+                    "name": "ucd_util",
+                    "source": "src/lib.rs",
+                    "edition": "2021"
+                  }
+                ]
+              }
+            ],
+            "selected": [
+              "ucd-parse"
+            ]
+          },
+          "targets": [],
+          "manifest_fingerprint": "sha256:7b291891cf8f49ee83c2f10c43c2a003ddd60563a9da552808d07f8b0cc08854",
+          "lockfile_fingerprint": "sha256:328f77bd3f6755aa7b9bda481565826d987f4a0265fdeaee35b6c869593cb11e",
+          "default_features": true,
+          "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+          "profile": "test",
+          "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+          "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+          "discovery_exclusions": [
+            "ucd-parse/src/age.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/arabic_shaping.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/arabic_shaping.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/bidi_mirroring_glyph.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/bidi_mirroring_glyph.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/case_folding.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/case_folding.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/common.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/core_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/derived_normalization_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/east_asian_width.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/emoji_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/error.rs: branch forcing excludes if-let/let-chain bindings",
+            "ucd-parse/src/error.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/extracted/derived_bidi_class.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_binary_properties.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_combining_class.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_decomposition_type.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_east_asian_width.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_general_category.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_joining_group.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_joining_type.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_line_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_name.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_numeric_type.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_numeric_values.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/extracted/derived_numeric_values.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/grapheme_cluster_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/jamo_short_name.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/jamo_short_name.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/lib.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/line_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/name_aliases.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/name_aliases.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/prop_list.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/property_aliases.rs: branch forcing excludes if-let/let-chain bindings",
+            "ucd-parse/src/property_aliases.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/property_aliases.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/property_value_aliases.rs: branch forcing excludes if-let/let-chain bindings",
+            "ucd-parse/src/property_value_aliases.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/property_value_aliases.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/script_extensions.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/scripts.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/sentence_break.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/special_casing.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/special_casing.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/unicode_data.rs: branch forcing excludes if-let/let-chain bindings",
+            "ucd-parse/src/unicode_data.rs: conditional, test-only, or remapped source",
+            "ucd-parse/src/unicode_data.rs: macro tokens/expansions (including include!)",
+            "ucd-parse/src/word_break.rs: conditional, test-only, or remapped source"
+          ]
+        },
+        "node_scope": null,
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "cargo",
+          "test",
+          "--locked",
+          "--tests",
+          "--no-fail-fast",
+          "--message-format=json",
+          "--workspace"
+        ],
+        "discovery_command": [
+          "cargo",
+          "metadata",
+          "--format-version",
+          "1",
+          "--no-deps",
+          "--locked"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 2,
+        "workers": 2,
+        "baseline_timeout_seconds": 120,
+        "mutation_timeout_seconds": 60.0,
+        "planned_mutations": 4,
+        "rerun": {
+          "source_run": "/tmp/mutie-rust-branches-audit/original-reports/run-1792721915-G9MR0H",
+          "source_checkpoint": 64,
+          "source_status": "completed",
+          "selection": "all",
+          "source_ids": [
+            4,
+            6,
+            10,
+            14
+          ],
+          "mutations": [
+            {
+              "id": 1,
+              "source_id": 4
+            },
+            {
+              "id": 2,
+              "source_id": 6
+            },
+            {
+              "id": 3,
+              "source_id": 10
+            },
+            {
+              "id": 4,
+              "source_id": 14
+            }
+          ]
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.014843959,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.01429425,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.027189333,
+            "reflink_files": 109,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.045695374999999996,
+            "reflink_files": 218,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 2,
+            "completed": 2,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.065944292,
+            "reflink_files": 218,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 145,
+          "column": 12,
+          "end_line": 145,
+          "end_column": 33,
+          "byte_start": 5533,
+          "byte_end": 5554,
+          "original": "!capget(7).is_empty()",
+          "replacement": "false && (!capget(7).is_empty())",
+          "diff": "diff/000001.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 2,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 157,
+          "column": 12,
+          "end_line": 157,
+          "end_column": 33,
+          "byte_start": 5932,
+          "byte_end": 5953,
+          "original": "!capget(8).is_empty()",
+          "replacement": "false && (!capget(8).is_empty())",
+          "diff": "diff/000002.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 3,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 175,
+          "column": 12,
+          "end_line": 175,
+          "end_column": 34,
+          "byte_start": 6590,
+          "byte_end": 6612,
+          "original": "!capget(13).is_empty()",
+          "replacement": "false && (!capget(13).is_empty())",
+          "diff": "diff/000003.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        },
+        {
+          "id": 4,
+          "file": "ucd-parse/src/unicode_data.rs",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:0aae4305f29a259ffc1943ad491b6c4fa187df1e5c81e804dc6aedbc6d5a727f",
+          "line": 181,
+          "column": 12,
+          "end_line": 181,
+          "end_column": 34,
+          "byte_start": 6824,
+          "byte_end": 6846,
+          "original": "!capget(15).is_empty()",
+          "replacement": "false && (!capget(15).is_empty())",
+          "diff": "diff/000004.diff",
+          "test_packages": [
+            "--tests"
+          ]
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 12.422452542,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18443,
+                "head_bytes": 18443,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 73487,
+                "head_bytes": 73487,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1810,
+                "head_bytes": 1810,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 12.708106584,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 19175,
+                "head_bytes": 19175,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 74927,
+                "head_bytes": 74927,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1810,
+                "head_bytes": 1810,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 11.250232625,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 21281,
+                "head_bytes": 21281,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 80823,
+                "head_bytes": 80823,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1593,
+                "head_bytes": 1593,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 2,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 10.84760325,
+          "exit_code": 101,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 20549,
+                "head_bytes": 20549,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 79383,
+                "head_bytes": 79383,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 1593,
+                "head_bytes": 1593,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "d6230e321119de1ef6219061bf23355e79e770f760856c87d80e236515109a76",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "d74487a8bb1071b94677110b05b2d7d0ec93f003c2ab43a6c8e1cc887fd7a04f",
+        "summary.txt": "3741c5dd80ed5a1cef8ffa956a356725c2895bf067a2b6634fcb861ad8ec68a1",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "1bc76399d45c99d6a03e30bb4edd0e6b1c0f5e53f57f2c624214ea26b7b1ab80",
+        "run.json": "cba5fc49beb62b268e3eb994ebf32a95901ae5f28dfcafb921b66288291fbd59",
+        "diff/000003.diff": "00f4c8e2fd060a7fa7047b7ba8601b113277e89f24b9dec0a63add7d7db76f24",
+        "diff/000002.diff": "e2ae5116c31ee6e40c8d40a9d59086575a164826940ba3ec3ceee906ad80a5cb",
+        "diff/000004.diff": "87dd1ae4e9d14524c010021801561d31dd1d70c937b282722657fa33cc97a1f7",
+        "diff/000001.diff": "05e1b49b1f0c56a044d2c6c6854a3e4d2896aeccaeb9793e7913561b5de6a43b",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.log": "cf9a448c0feb0c9b1f5deaa0e41fc9570c01c99a9b7505e89c2d1f4d992b6c9f",
+        "logs/000003.stdout.log": "6e0c6e6ebdb51007d1f8bcf65e9d743ca823999b7f262db95644ea419154295a",
+        "logs/000001.log": "260786d325e3128308b4d2521d02fa3a434f48418396ba76ac0d581e7e3bee9c",
+        "logs/000002.stderr.log": "0fe9672148e9ffbed58275b2abb3d55bca046fc0de3a904b4d6f3df1c8844d31",
+        "logs/000002.log": "ac33e4e3884dbfaa0fa4828a0ce0763ef4cf22c60794ebd3cc16f0c9b17a3a8d",
+        "logs/000003.log": "c1b9d4235a74a031ad2cbd314f0f56dafb849947ae49b23ae26c724528a21446",
+        "logs/baseline.stderr.log": "ec5901e4e251d621284fb7812cdf662e0383f17f0d739843fe81581608994796",
+        "logs/discovery.log": "f55bf12ad51edaa7cb6e9d445e0ca5d33dd27d2431fe848e6c4f4fe9a0658481",
+        "logs/000001.stdout.log": "1e57a5b5b1a2e36a0c9fb4ab4f33146c51ea15bb95ed82113b92455357e4a5bb",
+        "logs/000004.stdout.log": "b1e0bacaa2aed657dc3339c576e246e5adc42f7053e3ae276b757006c52d4e97",
+        "logs/discovery.stdout.log": "893cba74f0a73c53e065872c3ffa1eb0e6678342a0297ae6e6eda8a11ada8773",
+        "logs/000003.stderr.log": "dcc9f0daa6a7b510378e63a746a389c5ab15b1bb1a8da05408391dae218a9a9d",
+        "logs/baseline.log": "c2b88e14b07b4a6ad6e29154bf2a124c589e7ab97695f725ea47a5bb15562d16",
+        "logs/000002.stdout.log": "3e5486573e0d15626e17308857c290a808c5f0c9d59bf000a5d9497112fb2da8",
+        "logs/000001.stderr.log": "dede2ac69701cce97784adb5a7b8c47aad5740e33875d6e1f9be6383586c0743",
+        "logs/baseline.stdout.log": "00f9f1c55ec33074e0d2e052038132538e527ee77a8df7dbad05b1b7ff342bac",
+        "logs/000004.stderr.log": "2ee3c238e855f528f654d06c1cd9de66860a147f02ff2db41272a26e9a0b300a"
+      }
+    }
+  },
+  "cli_sha256": "ef9729ce4c1e76679d2988be4eb37e9cd9796029b6267ef249def35b571765f3",
+  "stronger_test_sha256": "516dd54d9dc07b40e8c8dddf3fc03aa1632fee4e73e2294c63171c874907d3f8",
+  "preservation_verified": true,
+  "prior_report_files_preserved": 225,
+  "validation": {
+    "default_passed": 323,
+    "default_ignored": 147,
+    "native_compile_run_cases": 10,
+    "scored_workflows_passed": 1,
+    "fmt": "passed",
+    "clippy": "passed"
+  },
+  "preservation_manifest": "/tmp/mutie-rust-branches-audit/preservation.json",
+  "preservation_manifest_sha256": "66d39ad393a317a8a5645a304e8a0bc1acd1d84c61efae4b15cc706396868100"
+}

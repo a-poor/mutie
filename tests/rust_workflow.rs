@@ -17,6 +17,8 @@ use serde_json::Value;
 mod arithmetic;
 #[path = "support/rust_boundaries.rs"]
 mod boundaries;
+#[path = "support/rust_branches.rs"]
+mod branches;
 #[path = "support/rust_cache.rs"]
 mod cache;
 #[path = "support/rust_compilation.rs"]

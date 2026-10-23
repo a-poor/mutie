@@ -343,6 +343,21 @@ impl LoadedReport {
                     "saved Rust arithmetic mutation is outside supported source scope"
                 );
             }
+            if run.language() == crate::cli::Lang::Rust
+                && matches!(
+                    mutation.operator,
+                    Operator::BranchForceTrue | Operator::BranchForceFalse
+                )
+            {
+                ensure!(
+                    crate::rust::discovery::valid_branch_replacement(
+                        mutation.operator,
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("rs"),
+                    "saved Rust branch mutation is outside supported source scope"
+                );
+            }
             if run.language() == crate::cli::Lang::Python {
                 ensure!(
                     crate::python::project::mutation_operator(
