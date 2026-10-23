@@ -348,6 +348,106 @@ def test_data(tmp_path):
             namespace['compare'](failing_left, right)
         self.assertEqual(trace, ['left'])
 
+    def test_logical_binary_scope_and_coordinates(self):
+        source = ('label = "π and or"\n'
+                  'def both(a,b): return a and b\n'
+                  'def either(a,b): return (a)or(b)\n'
+                  'def multiline(a,b): return (a # and in comment\n'
+                  ' or b)\n'
+                  'def excluded(a,b,c): return a and b and c, a or b or c, a & b, a | b\n'
+                  'def nested(a,b,c): return (a and b) or c\n'
+                  'annotation: list[1 and 2]\n'
+                  'def bounded[T: (1 or 2)](x:T) -> list[1 and 2]: return x\n'
+                  'def formatted(a,b): return f"{a and b}"\n')
+        for newline in ('\n','\r\n'):
+            text = source.replace('\n',newline)
+            self.write('sample/__init__.py',text)
+            sites = scope.inspect(self.root)['mutations']
+            self.assertEqual([m['original'] for m in sites], ['and','or','or','and','or','and'])
+            raw = text.encode()
+            for site in sites:
+                self.assertEqual(raw[site['start']:site['end']].decode(),site['original'])
+                compile(raw[:site['start']] + site['replacement'].encode() + raw[site['end']:], 'mutated', 'exec')
+        self.write('tests/test_sample.py','def test_logical(): assert 1 and 2\n')
+        self.assertEqual(scope.inspect(self.root)['mutations'],sites)
+
+    def test_logical_grouping_and_stateful_short_circuit_match_ast_swap(self):
+        import ast
+        expressions = [
+            'a() and b()', 'a() or b()',
+            'a() and b() or c()', 'a() or b() and c()',
+            '(a() or b()) and c()', 'a() and (b() or c())',
+            '(a() and b()) or c()', 'a() or (b() and c())',
+            'a() and b() or c() and d()',
+            '(a() or b()) and (c() or d())',
+            'a() or b() and c() or d()',
+            '(a() and b()) and c()', 'a() or (b() or c())',
+        ]
+        contexts = ['return EXPR', 'return [EXPR]',
+                    "if EXPR: return 'yes'\n return 'no'", 'return not (EXPR)']
+        checked = 0
+        for expression in expressions:
+            for context in contexts:
+                source = 'def value(a,b,c,d):\n ' + context.replace('EXPR',expression) + '\n'
+                self.write('sample/__init__.py',source)
+                sites = [m for m in scope.inspect(self.root)['mutations'] if m['original'] in ('and','or')]
+                for site in sites:
+                    expected = ast.parse(source)
+                    candidates = []
+                    for node in ast.walk(expected):
+                        if isinstance(node,ast.BoolOp) and len(node.values) == 2:
+                            left,right = node.values
+                            if left.end_lineno == site['line'] == right.lineno and left.end_col_offset <= site['column']-1 < right.col_offset:
+                                candidates.append(node)
+                    self.assertEqual(len(candidates),1)
+                    node = candidates[0]
+                    node.op = ast.Or() if isinstance(node.op,ast.And) else ast.And()
+                    changed = source[:site['start']] + site['replacement'] + source[site['end']:]
+                    for mask in range(16):
+                        for mode in ('stable','toggle','raise_second','raise_right'):
+                            def execute(code):
+                                trace = []
+                                class Value:
+                                    def __init__(self,name,truth): self.name,self.truth,self.calls = name,truth,0
+                                    def __bool__(self):
+                                        self.calls += 1
+                                        trace.append(('bool',self.name,self.calls))
+                                        if mode == 'raise_second' and self.calls == 2: raise ValueError('second truthiness')
+                                        return self.truth if mode != 'toggle' or self.calls % 2 else not self.truth
+                                def operand(name,index):
+                                    value = Value(name,bool(mask & (1 << index)))
+                                    def get():
+                                        trace.append(('operand',name))
+                                        if mode == 'raise_right' and name == 'b': raise ValueError('right operand')
+                                        return value
+                                    return get
+                                namespace = {}
+                                exec(code,namespace)
+                                try:
+                                    result = namespace['value'](*(operand(n,i) for i,n in enumerate('abcd')))
+                                    if isinstance(result,list): result = [('raw',v.name) if isinstance(v,Value) else v for v in result]
+                                    elif isinstance(result,Value): result = ('raw',result.name)
+                                except ValueError as error: result = ('error',str(error))
+                                return result,trace
+                            self.assertEqual(execute(changed),execute(compile(expected,'expected','exec')), (expression,context,site,mask,mode))
+                            checked += 1
+        self.assertGreater(checked,4000)
+
+    def test_logical_raw_values_and_truthiness_failures(self):
+        for original,replacement in [('and','or'),('or','and')]:
+            source = f'def value(a,b): return a {original} b\n'
+            self.write('sample/__init__.py',source)
+            site, = scope.inspect(self.root)['mutations']
+            namespace = {}
+            exec(source[:site['start']] + site['replacement'] + source[site['end']:],namespace)
+            for left in ([], [1], 0, 7, '', 'value', None):
+                right = object()
+                expected = (left or right) if replacement == 'or' else (left and right)
+                self.assertIs(namespace['value'](left,right),expected)
+            class Bad:
+                def __bool__(self): raise RuntimeError('truthiness')
+            with self.assertRaisesRegex(RuntimeError,'truthiness'): namespace['value'](Bad(),object())
+
     def test_inversion_native_dispatch_order_nan_and_raw_results(self):
         import math
         pairs = [('==','!='), ('!=','=='), ('<','>='), ('<=','>'), ('>','<='), ('>=','<')]

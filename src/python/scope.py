@@ -143,7 +143,7 @@ def validate_fixture_request(tree):
 
 
 def operator_sites(tree, text, data, annotation_nodes, relative):
-    """Replace only the native token; never desugar or duplicate operands."""
+    """Discover native token edits and grouped unary-not removal."""
     # AST rows use physical newlines, not Unicode string line separators.
     lines = [line.decode("utf-8") for line in data.splitlines(keepends=True)]
     offsets = [0]
@@ -151,14 +151,15 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
         offsets.append(offsets[-1] + len(line.encode("utf-8")))
     tokens = []
     for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
-        if token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/"}:
+        if ((token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/"})
+                or (token.type == tokenize.NAME and token.string in {"and", "or"})):
             row, column = token.start
             start = offsets[row - 1] + len(lines[row - 1][:column].encode("utf-8"))
             tokens.append((start, token.string, row))
     replacements = {"<": "<=", "<=": "<", ">": ">=", ">=": ">",
-                    "+": "-", "-": "+", "*": "/", "/": "*"}
+                    "+": "-", "-": "+", "*": "/", "/": "*", "and": "or", "or": "and"}
     inversions = {"==": "!=", "!=": "==", "<": ">=", "<=": ">", ">": "<=", ">=": "<"}
-    operators = {ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
+    operators = {ast.And: "and", ast.Or: "or", ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
                  ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/"}
     for node in ast.walk(tree):
         if node in annotation_nodes:
@@ -179,6 +180,8 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
             left, right, op = node.left, node.comparators[0], node.ops[0]
         elif isinstance(node, ast.BinOp):
             left, right, op = node.left, node.right, node.op
+        elif isinstance(node, ast.BoolOp) and len(node.values) == 2:
+            left, right, op = *node.values, node.op
         else:
             continue
         if type(op) not in operators:

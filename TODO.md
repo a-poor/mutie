@@ -103,8 +103,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    custom comparison/raw-value controls, scored fixtures and an unchanged
    betting-math-kit median survivor killed in a separate 200-test copy. See
    [acceptance](benchmarks/python-inversions.md). Four simulation survivors remain
-   explicitly open. Rust and JS/TS expression rows are covered; Python logical
-   swaps and remainder remain.
+   explicitly open.
+   Seventh slice completed: Python binary logical swaps, stateful truthiness/raw
+   value/grouping controls, scored fixtures and two unchanged Route Mini diagnostic
+   survivors killed in a separate stronger copy. See [acceptance](benchmarks/python-logical.md).
+   Flat three-or-more-operand Boolean chains remain excluded; nested binary nodes
+   are supported. Python remainder is the last unfilled expression-operator row.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

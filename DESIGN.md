@@ -2236,3 +2236,22 @@ and nested spans. Readers match the same operator/recipe; focused reruns still
 rediscover AST-authorized source sites. Validator bytes change execution identity.
 No version bump or classification relaxation accompanies the extension.
 See [acceptance](benchmarks/python-inversions.md).
+
+
+## Python binary logical swaps
+
+The AST scope admits `BoolOp` nodes with exactly two values and replaces their
+single native `and`/`or` keyword. Existing parentheses and operand bytes remain
+untouched. Flat three-or-more-value nodes are deliberately excluded: mutating one
+join must not silently regroup such a chain or synthesize a fold with different
+truthiness calls. Nested binary nodes remain independent candidates.
+
+In the binary scope, a swapped node can merge with a neighboring same-operator
+node in Python's AST. Pinned native controls compare the actual source edit with
+the intended AST operator change, including operand and truthiness call traces,
+raw object identity, stateful `__bool__`, exceptions, value/list/condition/negated
+contexts and mixed nested expressions. This establishes native execution grouping
+without introducing helpers, extra Boolean conversion or duplicate evaluations.
+Exact keyword pairs are shared by discovery and saved-report readers; fresh
+source and validator identity continue to bind reruns. Newly evaluated operand
+failures retain existing classification. See [acceptance](benchmarks/python-logical.md).

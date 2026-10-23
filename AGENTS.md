@@ -598,3 +598,16 @@ source/execution identity on reruns. Unchanged Tomli-W and betting-math-kit repo
 retain native errors and unavailable scores. Two separate-copy median tests kill
 simulation ID 8; IDs 13–16 remain open. Preserve all original inputs and 260 report
 files, and keep the deferred startup failures distinct from completed checks.
+
+
+`benchmarks/python-logical.md` records Python binary `and ↔ or` swaps. Admit only
+BoolOp nodes with two operands; flat longer chains stay excluded, while nested
+binary nodes remain eligible. Preserve native keyword edits, grouping execution,
+short-circuit traces and raw values. Stateful truthiness controls compare source
+edits with the intended AST swap across value/condition contexts. Saved reports
+require exact keyword pairs and fresh source/recipe identity. Unchanged Route Mini
+has four selected sites across three original reports: two diagnostic survivors
+and two constructor errors. Separate-copy tests kill both survivors with 72 tests;
+preserve all 25 original inputs and 145 earlier report files. Combined accounting
+is not a full score, and constructor errors are not reclassified. Python's remaining
+unfilled expression row is modulo; flat logical chains remain a separate scope gap.

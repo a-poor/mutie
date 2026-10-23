@@ -41,7 +41,7 @@ requires adapter evidence, including exact-runner observer checks where used.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial execution of six expression operators, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison inversion/boundaries, `not` removal and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison inversion/boundaries, binary logical swaps, `not` removal and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -413,7 +413,7 @@ comparisons and a faster runtime tree traversal with unchanged content hashes
 and validation frequency. It does not expand the supported scope.
 
 Scope: one flat or `src/` package with audited `pyproject.toml`, root or `tests/` `test_*.py`,
-boolean flips, single-comparison inversion/boundaries, `not` removal and binary arithmetic, full tests and one worker. The dedicated venv must match the pinned
+boolean flips, single-comparison inversion/boundaries, binary logical swaps, `not` removal and binary arithmetic, full tests and one worker. The dedicated venv must match the pinned
 dependency set. The validator admits a small standard-library/API set, rejects
 configuration that could change collection, and verifies original/snapshot
 inputs. Initial Scrubify acceptance adapted its layout/metadata; the
@@ -600,3 +600,12 @@ preserve native rich-comparison dispatch, operand order and raw results. Parenth
 bitwise inversion stay excluded. Nested/overlapping candidates remain independently
 identified. Saved recipes are exact and focused reruns require fresh source and
 execution identity. Native exceptions and lifecycle errors retain existing policy.
+
+
+[Python binary logical swaps](benchmarks/python-logical.md) add native `and ↔ or`
+keyword edits in two-operand Boolean AST nodes. Nested binary nodes are eligible;
+flat three-or-more-operand chains remain excluded. Native controls compare results
+and complete operand/truthiness traces with the intended AST swap across value and
+condition contexts, including stateful truthiness and exceptions. Raw values and
+short-circuiting stay native. Route Mini's unchanged suite misses two lost diagnostic
+messages; separate-copy tests kill both. Constructor runtime errors remain errors.

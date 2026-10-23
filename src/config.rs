@@ -284,33 +284,16 @@ impl RunConfig {
                 "{runner} currently supports only --jobs 1"
             );
             ensure!(
-                config
-                    .operators
-                    .iter()
-                    .all(|op| *op == Operator::BooleanFlip
-                        || (config.lang == Lang::Python
-                            && matches!(
-                                *op,
-                                Operator::ComparisonBoundary
-                                    | Operator::ComparisonInvert
-                                    | Operator::NegationRemove
-                                    | Operator::ArithmeticReplace
-                            ))
-                        || (config.lang != Lang::Python
-                            && matches!(
-                                *op,
-                                Operator::ComparisonInvert
-                                    | Operator::ComparisonBoundary
-                                    | Operator::LogicalSwap
-                                    | Operator::NegationRemove
-                                    | Operator::ArithmeticReplace
-                            ))),
-                "{runner} supports only boolean_flip{}",
-                if config.lang == Lang::Python {
-                    ", comparison_invert, comparison_boundary, negation_remove, and arithmetic_replace"
-                } else {
-                    ", comparison_invert, comparison_boundary, logical_swap, negation_remove, and arithmetic_replace"
-                }
+                config.operators.iter().all(|op| matches!(
+                    op,
+                    Operator::BooleanFlip
+                        | Operator::ComparisonInvert
+                        | Operator::ComparisonBoundary
+                        | Operator::LogicalSwap
+                        | Operator::NegationRemove
+                        | Operator::ArithmeticReplace
+                )),
+                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, and arithmetic_replace"
             );
         }
         if config.lang == Lang::Rust {
