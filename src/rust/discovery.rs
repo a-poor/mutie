@@ -53,12 +53,23 @@ pub fn discover_packages(
     for entry in entries {
         walker.file(entry, true)?;
     }
-    walker
-        .mutations
-        .sort_by(|a, b| (&a.file.path, a.range.start).cmp(&(&b.file.path, b.range.start)));
-    walker
-        .mutations
-        .dedup_by(|a, b| a.file.path == b.file.path && a.range == b.range);
+    walker.mutations.sort_by(|a, b| {
+        (
+            &a.file.path,
+            a.range.start,
+            a.operator,
+            std::cmp::Reverse(a.range.end),
+        )
+            .cmp(&(
+                &b.file.path,
+                b.range.start,
+                b.operator,
+                std::cmp::Reverse(b.range.end),
+            ))
+    });
+    walker.mutations.dedup_by(|a, b| {
+        a.file.path == b.file.path && a.range == b.range && a.operator == b.operator
+    });
     Ok(Discovery {
         mutations: walker.mutations,
         exclusions: walker.exclusions.into_iter().collect(),
@@ -219,6 +230,11 @@ impl Walker<'_> {
                     if original == "true" { "false" } else { "true" },
                 );
             }
+            "unary_expression" if in_body && self.scope.matches(&file.path) => {
+                if let Some(replacement) = negation_replacement(node, &file.source) {
+                    self.push(file, node, Operator::NegationRemove, replacement);
+                }
+            }
             "let_chain" => {
                 self.exclude(
                     &file.path,
@@ -230,6 +246,18 @@ impl Walker<'_> {
                     if matches!(&file.source[operator.byte_range()], "&&" | "||") {
                         let replacement = logical_replacement(node, &file.source);
                         self.push(file, node, Operator::LogicalSwap, replacement);
+                    }
+                    let inverse = match &file.source[operator.byte_range()] {
+                        "==" => Some("!="),
+                        "!=" => Some("=="),
+                        "<" => Some(">="),
+                        "<=" => Some(">"),
+                        ">" => Some("<="),
+                        ">=" => Some("<"),
+                        _ => None,
+                    };
+                    if let Some(replacement) = inverse {
+                        self.push(file, operator, Operator::ComparisonInvert, replacement);
                     }
                     let replacement = match &file.source[operator.byte_range()] {
                         "<" => Some("<="),
@@ -313,6 +341,43 @@ impl Walker<'_> {
             end_column: end.column + 1,
         });
     }
+}
+
+// A tuple value forces the operand into the same value context as Not, even
+// beneath a borrow (`&!x`). Plain `(x)` could instead borrow the original place.
+// Projecting its only field adds no trait call, clone, cast or named binding.
+fn negation_replacement(node: Node<'_>, source: &str) -> Option<String> {
+    let bang = node.child(0)?;
+    (node.kind() == "unary_expression" && bang.kind() == "!")
+        .then(|| format!("({},).0", &source[bang.end_byte()..node.end_byte()]))
+}
+
+pub fn valid_negation_replacement(original: &str, replacement: &str) -> bool {
+    let prefix = "fn __mutie() { let _ = ";
+    let source = format!("{prefix}{original}; }}");
+    let mut parser = Parser::new();
+    if parser
+        .set_language(&tree_sitter_rust::LANGUAGE.into())
+        .is_err()
+    {
+        return false;
+    }
+    let Some(tree) = parser.parse(&source, None) else {
+        return false;
+    };
+    if tree.root_node().has_error() {
+        return false;
+    }
+    let value = tree
+        .root_node()
+        .named_child(0)
+        .and_then(|function| function.child_by_field_name("body"))
+        .and_then(|body| body.named_child(0))
+        .and_then(|statement| statement.child_by_field_name("value"));
+    value.is_some_and(|value| {
+        value.byte_range() == (prefix.len()..prefix.len() + original.len())
+            && negation_replacement(value, &source).as_deref() == Some(replacement)
+    })
 }
 
 /// Preserve the parsed operands when swapping operators with different precedence.
@@ -786,6 +851,7 @@ fn main() {
             found
                 .mutations
                 .iter()
+                .filter(|m| m.operator == Operator::ComparisonBoundary)
                 .map(Mutation::original)
                 .collect::<Vec<_>>(),
             ["<=", "<", ">"]
@@ -804,3 +870,7 @@ fn main() {
 #[cfg(test)]
 #[path = "arithmetic_tests.rs"]
 mod arithmetic_tests;
+
+#[cfg(test)]
+#[path = "inversion_tests.rs"]
+mod inversion_tests;

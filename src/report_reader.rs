@@ -306,6 +306,33 @@ impl LoadedReport {
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
             if run.language() == crate::cli::Lang::Rust
+                && matches!(
+                    mutation.operator,
+                    Operator::ComparisonInvert | Operator::NegationRemove
+                )
+            {
+                let valid = if mutation.operator == Operator::ComparisonInvert {
+                    matches!(
+                        (mutation.original.as_str(), mutation.replacement.as_str()),
+                        ("==", "!=")
+                            | ("!=", "==")
+                            | ("<", ">=")
+                            | ("<=", ">")
+                            | (">", "<=")
+                            | (">=", "<")
+                    )
+                } else {
+                    crate::rust::discovery::valid_negation_replacement(
+                        &mutation.original,
+                        &mutation.replacement,
+                    )
+                };
+                ensure!(
+                    valid && mutation.file.extension().and_then(|s| s.to_str()) == Some("rs"),
+                    "saved Rust comparison/negation mutation is outside supported source scope"
+                );
+            }
+            if run.language() == crate::cli::Lang::Rust
                 && mutation.operator == Operator::ArithmeticReplace
             {
                 ensure!(
@@ -1053,6 +1080,46 @@ mod tests {
             format!("{:#}", LoadedReport::load(temp.path()).unwrap_err())
                 .contains("matched and needing review")
         );
+    }
+
+    #[test]
+    fn rust_comparison_and_negation_saved_recipes_require_exact_edits() {
+        let temp = fixture();
+        update(temp.path(), "run.json", |v| {
+            v["effective_config"] = serde_json::json!({"lang":"rust"});
+        });
+        for (operator, original, replacement) in [
+            ("comparison_invert", "==", "!="),
+            ("comparison_invert", "!=", "=="),
+            ("comparison_invert", "<", ">="),
+            ("comparison_invert", "<=", ">"),
+            ("comparison_invert", ">", "<="),
+            ("comparison_invert", ">=", "<"),
+            ("negation_remove", "!/*keep*/x", "(/*keep*/x,).0"),
+        ] {
+            update(temp.path(), "mutants.json", |v| {
+                let m = &mut v["mutations"][1];
+                m["operator"] = operator.into();
+                m["original"] = original.into();
+                m["replacement"] = replacement.into();
+                m["file"] = "src/main.rs".into();
+                m["byte_end"] = original.len().into();
+                m["end_column"] = (original.len() + 1).into();
+            });
+            LoadedReport::load(temp.path()).unwrap();
+            update(temp.path(), "mutants.json", |v| {
+                v["mutations"][1]["replacement"] = "x".into();
+            });
+            assert!(
+                format!("{:#}", LoadedReport::load(temp.path()).unwrap_err())
+                    .contains("saved Rust comparison/negation mutation")
+            );
+            update(temp.path(), "mutants.json", |v| {
+                v["mutations"][1]["replacement"] = replacement.into();
+                v["mutations"][1]["file"] = "main.go".into();
+            });
+            assert!(LoadedReport::load(temp.path()).is_err());
+        }
     }
 
     #[test]

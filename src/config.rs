@@ -319,11 +319,13 @@ impl RunConfig {
                 config.operators.iter().all(|op| matches!(
                     op,
                     Operator::BooleanFlip
+                        | Operator::ComparisonInvert
+                        | Operator::NegationRemove
                         | Operator::ComparisonBoundary
                         | Operator::LogicalSwap
                         | Operator::ArithmeticReplace
                 )),
-                "Rust currently supports only boolean_flip, comparison_boundary, logical_swap, and arithmetic_replace"
+                "Rust currently supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, and arithmetic_replace"
             );
         }
         for (name, timeout) in [
@@ -493,7 +495,7 @@ mod tests {
         assert_eq!(resolve(temp.path(), &[])?.lang, Lang::Rust);
         for args in [
             &["--test-scope", "affected"][..],
-            &["--operator", "comparison_invert"][..],
+            &["--operator", "call_remove"][..],
         ] {
             assert!(resolve(temp.path(), args).is_err());
         }
@@ -506,15 +508,17 @@ mod tests {
                 temp.path(),
                 &[
                     "--operator",
-                    "boolean_flip,comparison_boundary,logical_swap,arithmetic_replace"
+                    "boolean_flip,comparison_invert,comparison_boundary,logical_swap,negation_remove,arithmetic_replace"
                 ]
             )?
             .operators,
             [
                 Operator::ArithmeticReplace,
+                Operator::ComparisonInvert,
                 Operator::ComparisonBoundary,
                 Operator::LogicalSwap,
-                Operator::BooleanFlip
+                Operator::BooleanFlip,
+                Operator::NegationRemove
             ]
         );
         assert!(!temp.path().join("module/.mutie").exists());

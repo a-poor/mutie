@@ -80,8 +80,8 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
   dependencies, inherited metadata, default features and unit/integration tests.
   Executes `cargo test --locked --tests --no-fail-fast`, adding `--workspace` for
   workspaces. Member selection narrows mutations, not tests. No affected-test selection.
-- Mutation coverage: `boolean_flip`, `comparison_boundary`, `logical_swap`,
-  `arithmetic_replace` (binary `+ ↔ -`, `* ↔ /`, `% → *`).
+- Mutation coverage: `boolean_flip`, `comparison_invert`, `comparison_boundary`,
+  `logical_swap`, `negation_remove`, `arithmetic_replace` (binary `+ ↔ -`, `* ↔ /`, `% → *`).
   Discovery follows supported source modules and excludes test-only, generated,
   macro-token and other unsupported contexts described in the
   [scope contract](DESIGN.md#initial-rust-support-contract).
@@ -89,6 +89,11 @@ Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
   Unary/compound assignments and existing constant/macro/test exclusions remain.
   [Arithmetic acceptance](benchmarks/rust-arithmetic.md) records semantic controls,
   scored panic/build-failure distinctions and separate-copy real-project reruns.
+- Comparison inversion retains native borrowing and overloaded dispatch; `!`
+  removal covers Boolean/integer/custom `Not` with value-context preservation.
+  [Inversion/negation acceptance](benchmarks/rust-inversions.md) records native
+  controls, type-change build failures and unchanged UCD Parse formatting findings
+  killed in a separate copy. Rust's expression rows are now covered within scope.
 - Workflow: shared status/report/browser, focused reruns, dismissals, scores and
   policies are validated. Fresh artifacts are the default; dependency reuse is
   opt-in and worker-local, with local package targets rebuilt every time.

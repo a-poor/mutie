@@ -96,6 +96,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    and unchanged UCD Generate findings killed in a separate stronger copy. See
    [acceptance](benchmarks/rust-arithmetic.md). Rust comparison inversion/negation
    removal and Python expression gaps remain.
+   Fifth slice completed: Rust comparison inversion and Boolean/integer/custom
+   Not removal, native borrowing/value controls and unchanged UCD Parse display
+   findings killed by separate-copy tests. See [acceptance](benchmarks/rust-inversions.md).
+   Rust and JS/TS expression rows are covered; Python comparison inversion,
+   logical swaps, negation removal and remainder remain.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

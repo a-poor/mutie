@@ -13,7 +13,14 @@ fn rust_comparison_boundaries_find_missing_equality_and_rerun_with_stronger_test
     assert!(String::from_utf8_lossy(&filtered.stdout).contains("Found 0 mutations"));
     assert!(!fixture.temp.path().join("reports").exists());
 
-    let output = fixture.run(&["--jobs", "2", "--min-score", "100"]);
+    let output = fixture.run(&[
+        "--operator",
+        "comparison_boundary",
+        "--jobs",
+        "2",
+        "--min-score",
+        "100",
+    ]);
     assert_eq!(output.status.code(), Some(3), "{output:?}");
     let (directory, run, inventory, outcomes) = report(&output);
     assert_eq!(run["status"], "completed");

@@ -214,7 +214,8 @@ provide build evidence, not stable structured libtest result events.
 
 #### Source eligibility and Rust operators
 
-Rust supports `boolean_flip` (`true` ↔ `false`), `logical_swap` (`&&` ↔ `||`), `arithmetic_replace`
+Rust supports `boolean_flip` (`true` ↔ `false`), `comparison_invert`,
+`negation_remove`, `logical_swap` (`&&` ↔ `||`), `arithmetic_replace`
 (binary `+ ↔ -`, `* ↔ /`, `% → *`), and `comparison_boundary`
 (`<` ↔ `<=`, `>` ↔ `>=`) in ordinary function/method bodies, including closures
 and match guards. The first slice began with boolean flips; the boundary operator
@@ -2195,3 +2196,23 @@ source identity checks. Compilation errors, runtime panics and aborts continue
 through the existing Cargo evidence classifier, without arithmetic exceptions.
 [Acceptance](benchmarks/rust-arithmetic.md) records native move/borrow/numeric
 controls, scored fixtures, unchanged UCD Generate and stronger-test reruns.
+
+
+### Rust comparison inversion and Not removal
+
+`comparison_invert` uses token edits for `== ↔ !=`, `< ↔ >=`, `<= ↔ >`,
+preserving native implicit borrowing and exact overloaded method dispatch.
+Unordered float cases need not be logical complements. Both inversion and boundary
+candidates survive at a shared token span: ordering/deduplication includes operator
+identity. Outer-before-inner order of existing logical edits is retained.
+
+`negation_remove` replaces a complete unary `!operand` with `(operand,).0`, retaining
+operand trivia. Tuple construction forces value evaluation; projection passes the
+value on without an extra trait call, clone, cast or named binding. Plain `(operand)`
+could become a borrow of the original place beneath `&!operand`, accidentally
+changing move/drop behavior. This rule covers Boolean/integer/custom Not; removing
+custom Not effects and changing its output type are intentional. Compile failures
+stay build failures. Never types and macro punctuation are not unary expressions.
+Saved readers parse the original and reconstruct exactly; reruns still rediscover
+source identity. [Acceptance](benchmarks/rust-inversions.md) records controls and
+unchanged public-project findings with separate stronger tests.

@@ -573,3 +573,15 @@ classification, and unsafe-invariant aborts remain errors. UCD Generate contribu
 two killed Hangul remainder sites and two hyphen-index survivors killed in a
 separate stronger copy. Preserve the failed 16-site exploratory report (one abort,
 two unfinished), the original 140-test inputs, and the distinct 141-test rerun.
+
+
+`benchmarks/rust-inversions.md` records Rust comparison inversion and Not removal.
+Keep exact comparison token pairs and native borrowing/trait dispatch; NaN ordering
+inversions are not Boolean complements. Negation uses `(operand,).0` to preserve
+value evaluation beneath borrows; Boolean, integer and custom Not are eligible,
+with output-type changes classified by Cargo. Never types/macro bangs are excluded.
+Readers reconstruct the parsed unary recipe; deduplication includes operator so
+inversion and boundary edits at one span coexist. Preserve outer-before-inner
+logical order. Unchanged UCD Parse has 13 selected sites (11 kills, two survivors);
+separate display/round-trip tests kill both. Original 140-test inputs/reports remain
+separate from the stronger 142-test copy. No classifier or deadline was relaxed.

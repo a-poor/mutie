@@ -23,6 +23,8 @@ mod cache;
 mod compilation;
 #[path = "support/rust_dismissals.rs"]
 mod dismissals;
+#[path = "support/rust_inversions.rs"]
+mod inversions;
 #[path = "support/rust_library.rs"]
 mod library;
 #[path = "support/rust_logical.rs"]

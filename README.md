@@ -5,11 +5,13 @@ A CLI for performing mutation testing.
 Mutie supports Go modules, scoped Rust packages/workspaces, pinned Vitest packages, and a scoped Node test runner. It runs a
 passing baseline, finds small source mutations with Tree-sitter, and by default
 runs the full test suite for each mutation in an isolated temporary workspace.
-Rust currently supports `boolean_flip`, `comparison_boundary`, `logical_swap`, and `arithmetic_replace` in the
+Rust currently supports `boolean_flip`, `comparison_invert`, `comparison_boundary`,
+`logical_swap`, `negation_remove`, and `arithmetic_replace` in the
 [initial Cargo scope](DESIGN.md#initial-rust-support-contract).
 Go and Rust support focused reruns and dismissal review. The
 [initial Rust milestone is accepted](benchmarks/rust-milestone-acceptance.md)
-for this binary-package scope; general Cargo/workspace support remains outside it.
+for its original binary-package scope; ordinary package/workspace support is
+now covered by the [current Rust scope](SUPPORT.md#rust--cargo).
 
 See [DESIGN.md](DESIGN.md) for the MVP scope, architecture, and roadmap, and
 [TODO.md](TODO.md) for implementation progress. Features described as planned are
@@ -395,6 +397,15 @@ comparisons in function/method bodies, including closures and match guards.
 `comparison_boundary` swaps `<` ↔ `<=` and `>` ↔ `>=` by editing only the operator
 token. It leaves operand expressions intact and supports generic/overloaded
 comparisons. It does not change `==`, `!=`, shifts, ranges, or generic brackets.
+`comparison_invert` edits `== ↔ !=`, `< ↔ >=`, and `<= ↔ >` tokens, retaining
+implicit comparison borrowing and native `PartialEq`/`PartialOrd` method dispatch.
+Ordering inversions are not Boolean complements for unordered floating-point values.
+`negation_remove` covers Boolean, integer bitwise and custom `Not` uses of `!`.
+It replaces `!operand` with `(operand,).0`, preserving a single evaluation in value
+context even beneath a borrow such as `&!x`. It removes the `Not` call and its
+effects; output-type mismatches remain build failures. Nested `!!x` has two
+independent candidates. Never types, macro bangs and unary minus are excluded.
+See [semantic controls and unchanged-project findings](benchmarks/rust-inversions.md).
 `logical_swap` exchanges `&&` and `||`, preserving operand grouping and comments
 with parentheses where required. Operands retain their order and appear once;
 the changed operator intentionally changes short-circuit evaluation. Let-chain
@@ -493,7 +504,8 @@ ui = "auto"
 
 The configuration example above is for Go. Use `lang = "rust"` (or automatic
 detection) and Rust file globs for a Cargo package. Rust accepts only
-`test_scope = "full"` and the `boolean_flip`, `comparison_boundary`, `logical_swap`, and `arithmetic_replace` operators.
+`test_scope = "full"` and the `boolean_flip`, `comparison_invert`, `comparison_boundary`,
+`logical_swap`, `negation_remove`, and `arithmetic_replace` operators.
 `rust_packages = []` selects all Rust workspace members for mutation; a list of
 package names narrows mutations while tests still cover all members.
 `rust_build_cache = "fresh"` (default) or `"worker"` applies only to Rust;
@@ -544,11 +556,11 @@ Support differs by language and applies within each runner's validated scope:
 | --- | --- | --- | --- | --- |
 | Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | Yes | Yes | Yes |
 | Modulo replacement: `% → *` | Yes | Yes | No | Yes |
-| Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | No | No | Yes |
+| Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | Yes | No | Yes |
 | Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | Yes |
 | Logical swap: `&& ↔ \|\|` | Yes | Yes | No | Yes |
 | Boolean literals: `true ↔ false` (Python: `True ↔ False`) | Yes | Yes | Yes | Yes |
-| Remove negation: `!x → x` | Yes | No | No | Yes |
+| Remove negation: `!x → x` | Yes | Yes | No | Yes |
 | Force an `if` condition true or false (two operators) | Yes | No | No | No |
 | Remove a standalone function call | Yes | No | No | No |
 | Skip a conditional loop | Yes | No | No | No |
@@ -604,8 +616,8 @@ have additional eligibility and evaluation rules described below.
 See [proposed operator expansion](DESIGN.md#proposed-operator-expansion) for ideas
 that are not yet implemented.
 
-All ten Go operators run by default; Rust runs `boolean_flip`,
-`comparison_boundary`, `logical_swap`, and `arithmetic_replace`. Python runs `boolean_flip`,
+All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
+`comparison_boundary`, `logical_swap`, `negation_remove`, and `arithmetic_replace`. Python runs `boolean_flip`,
 `comparison_boundary`, and `arithmetic_replace`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`, and
 `negation_remove`, and `arithmetic_replace`.
