@@ -284,18 +284,29 @@ impl RunConfig {
                 "{runner} currently supports only --jobs 1"
             );
             ensure!(
-                config.operators.iter().all(|op| matches!(
-                    op,
-                    Operator::BooleanFlip
-                        | Operator::ComparisonInvert
-                        | Operator::ComparisonBoundary
-                        | Operator::LogicalSwap
-                        | Operator::NegationRemove
-                        | Operator::ArithmeticReplace
-                        | Operator::BranchForceTrue
-                        | Operator::BranchForceFalse
-                )),
-                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, and branch_force_false"
+                config
+                    .operators
+                    .iter()
+                    .all(
+                        |op| (config.lang != Lang::Python && *op == Operator::LoopSkip)
+                            || matches!(
+                                op,
+                                Operator::BooleanFlip
+                                    | Operator::ComparisonInvert
+                                    | Operator::ComparisonBoundary
+                                    | Operator::LogicalSwap
+                                    | Operator::NegationRemove
+                                    | Operator::ArithmeticReplace
+                                    | Operator::BranchForceTrue
+                                    | Operator::BranchForceFalse
+                            )
+                    ),
+                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, branch_force_false{}",
+                if config.lang == Lang::Python {
+                    ""
+                } else {
+                    ", and loop_skip"
+                }
             );
         }
         if config.lang == Lang::Rust {

@@ -663,3 +663,16 @@ saved recipes, fresh discovery and execution identity stay enforced. See
 `benchmarks/python-branches.md` for native controls, scored fixture/rerun checks
 and unchanged-project evidence. Original scores and inputs remain separate from
 stronger-test results.
+
+
+`benchmarks/javascript-loops.md` records scoped JS/TS `loop_skip` across Vitest,
+Node and Bun. Ordinary `while` and explicitly conditional `for` conditions use
+`(false && (ORIGINAL))`; a `for` initializer still runs once. Preserve initializer
+exceptions and lexical bindings while skipping condition/body/update effects.
+Boolean literals, conditionless loops, iterator loops and do-while are excluded.
+Saved edits reconstruct the exact expression and keep fresh source identity;
+Bun's discovery recipe changes require fresh original reports. All six runner/
+syntax workflows preserve lifecycle errors as errors. Unchanged OpenClaw's single
+selected Telegram loop survives; a separate-copy chunk-content assertion kills
+it with a 63-test baseline. Preserve all 63 original inputs, historical reports
+and the original filtered 0% score; focused evidence is not a full-project score.

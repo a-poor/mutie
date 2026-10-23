@@ -563,7 +563,7 @@ Support differs by language and applies within each runner's validated scope:
 | Remove negation: `!x → x` (Python: `not x → x`) | Yes | Yes | Yes | Yes |
 | Force an `if` condition true or false (two operators) | Yes | Yes | Yes | Yes |
 | Remove a standalone function call | Yes | No | No | No |
-| Skip a conditional loop | Yes | No | No | No |
+| Skip a conditional loop | Yes | No | No | Yes |
 | Replace numeric or string literals | No | No | No | No |
 | Remove arbitrary statements or code blocks | No | No | No | No |
 
@@ -609,6 +609,15 @@ are independent candidates. Flat chains of three or more operands (`a and b and 
 are excluded at that chain node; eligible nested binary expressions remain eligible.
 Bitwise operators, annotations and tests are excluded. See
 [semantic controls and unchanged Route Mini diagnostic findings](benchmarks/python-logical.md).
+
+JS/TS `loop_skip` replaces the condition of an ordinary `while` or conditional
+`for` with `(false && (original))`. A `for` initializer still runs once, including
+its effects and exceptions; condition evaluation, body and update are skipped.
+Lexical scope, labels and code after the loop stay intact. Literal Boolean
+conditions belong to boolean flipping. Conditionless `for`, `for…in`, `for…of`,
+`for await…of`, and `do…while` are excluded. TypeScript syntax remains subject to
+each runner's existing scope, without added type checking. See
+[semantic controls and unchanged-project finding](benchmarks/javascript-loops.md).
 
 Python `branch_force_true`/`branch_force_false` wrap ordinary `if`/`elif`
 conditions as `(True or (condition))` / `(False and (condition))`. Condition
@@ -675,7 +684,7 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
 `arithmetic_replace`, `branch_force_true`, and `branch_force_false`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
-`negation_remove`, `arithmetic_replace`, `branch_force_true`, and `branch_force_false`.
+`negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`, and `loop_skip`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 

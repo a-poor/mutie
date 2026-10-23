@@ -112,6 +112,30 @@ fn branch_replacement(
     Some(format!("({guard} {})", &source[condition.byte_range()]))
 }
 
+// Retain a conditional loop's initializer and lexical scope, but skip its
+// condition, body and update. Do-while and conditionless/iterator loops differ.
+fn loop_replacement(condition: tree_sitter::Node<'_>, source: &str) -> Option<String> {
+    if matches!(condition.kind(), ";" | "empty_statement") {
+        return None;
+    }
+    let mut inner = condition;
+    while inner.kind() == "parenthesized_expression" {
+        let mut cursor = inner.walk();
+        let children: Vec<_> = inner
+            .named_children(&mut cursor)
+            .filter(|n| n.kind() != "comment")
+            .collect();
+        if children.len() != 1 {
+            return None;
+        }
+        inner = children[0];
+    }
+    if matches!(inner.kind(), "true" | "false") {
+        return None;
+    }
+    Some(format!("(false && ({}))", &source[condition.byte_range()]))
+}
+
 /// Validate full-expression edits by reconstructing the same parsed recipe.
 /// A different grouping or arbitrary replacement must not enter saved reruns.
 pub fn valid_replacement(
@@ -122,6 +146,32 @@ pub fn valid_replacement(
 ) -> bool {
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
+    }
+    if operator == Operator::LoopSkip {
+        let prefix = "for (;";
+        let source = format!("{prefix}{original};) {{}}");
+        let mut parser = Parser::new();
+        let language = if typescript {
+            tree_sitter_typescript::LANGUAGE_TYPESCRIPT
+        } else {
+            tree_sitter_javascript::LANGUAGE
+        };
+        if parser.set_language(&language.into()).is_err() {
+            return false;
+        }
+        let Ok(tree) = parse(&mut parser, &source) else {
+            return false;
+        };
+        let Some(condition) = tree
+            .root_node()
+            .named_child(0)
+            .filter(|n| n.kind() == "for_statement")
+            .and_then(|n| n.child_by_field_name("condition"))
+        else {
+            return false;
+        };
+        return condition.byte_range() == (prefix.len()..prefix.len() + original.len())
+            && loop_replacement(condition, &source).as_deref() == Some(changed);
     }
     if matches!(
         operator,
@@ -387,6 +437,21 @@ fn discover_with_ambient(
                         });
                     }
                 }
+            }
+            if matches!(kind, "while_statement" | "for_statement")
+                && let Some(condition) = node.child_by_field_name("condition")
+                && let Some(replacement) = loop_replacement(condition, &file.source)
+            {
+                mutations.push(Mutation {
+                    file: file.clone(),
+                    operator: Operator::LoopSkip,
+                    range: condition.byte_range(),
+                    replacement: replacement.into(),
+                    line: condition.start_position().row + 1,
+                    column: condition.start_position().column + 1,
+                    end_line: condition.end_position().row + 1,
+                    end_column: condition.end_position().column + 1,
+                });
             }
             if kind == "if_statement"
                 && let Some(condition) = node.child_by_field_name("condition")
@@ -939,3 +1004,7 @@ mod arithmetic_tests;
 #[cfg(test)]
 #[path = "javascript/branch_tests.rs"]
 mod branch_tests;
+
+#[cfg(test)]
+#[path = "javascript/loop_tests.rs"]
+mod loop_tests;
