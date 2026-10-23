@@ -32,6 +32,8 @@ fn unsupported_scored_options_fail_before_runtime_launch() {
         vec!["--test-scope", "affected"],
         vec!["--clear-max-capture-bytes"],
         vec!["--operator", "call_remove"],
+        vec!["--operator", "branch_force_true"],
+        vec!["--operator", "branch_force_false"],
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg(root.path())

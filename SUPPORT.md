@@ -619,3 +619,15 @@ claimed. Multiplication errors remain errors, and `%=`/annotations/tests remain
 excluded. Unchanged betting-math-kit contributes an odd-trial median survivor;
 a separate public-API regression test kills it. Preserve original scores, inputs
 and historical reports; selected arithmetic accounting is not a full project score.
+
+
+[JS/TS branch forcing](benchmarks/javascript-branches.md) adds
+`branch_force_true`/`branch_force_false` across Vitest, Node and Bun. Only
+nonliteral `if` conditions are eligible. The short-circuit recipe deliberately
+skips condition evaluation, preserves original condition bytes/references and
+leaves bodies unchanged. Literal Boolean conditions, loops, ternaries and types
+remain outside these operators. Saved readers regenerate exact recipes; source
+and execution identity checks and lifecycle classification remain intact.
+Unchanged Bragkit has 16 selected sites (nine kills, seven survivors); a separate
+63-test copy kills all seven with exact achievement-type bonus and closed-issue
+count assertions. Preserve original inputs, 56.25% selected score and prior reports.

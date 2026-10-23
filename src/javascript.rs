@@ -79,6 +79,39 @@ fn expression_replacement(
     None
 }
 
+// The condition includes its required parentheses. Keep its source references,
+// but skip evaluation entirely, matching the Go branch-forcing contract.
+fn branch_replacement(
+    operator: Operator,
+    condition: tree_sitter::Node<'_>,
+    source: &str,
+) -> Option<String> {
+    let guard = match operator {
+        Operator::BranchForceTrue => "true ||",
+        Operator::BranchForceFalse => "false &&",
+        _ => return None,
+    };
+    if condition.kind() != "parenthesized_expression" {
+        return None;
+    }
+    let mut inner = condition;
+    while inner.kind() == "parenthesized_expression" {
+        let mut cursor = inner.walk();
+        let children: Vec<_> = inner
+            .named_children(&mut cursor)
+            .filter(|n| n.kind() != "comment")
+            .collect();
+        if children.len() != 1 {
+            return None;
+        }
+        inner = children[0];
+    }
+    if matches!(inner.kind(), "true" | "false") {
+        return None;
+    }
+    Some(format!("({guard} {})", &source[condition.byte_range()]))
+}
+
 /// Validate full-expression edits by reconstructing the same parsed recipe.
 /// A different grouping or arbitrary replacement must not enter saved reruns.
 pub fn valid_replacement(
@@ -89,6 +122,35 @@ pub fn valid_replacement(
 ) -> bool {
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
+    }
+    if matches!(
+        operator,
+        Operator::BranchForceTrue | Operator::BranchForceFalse
+    ) {
+        let prefix = "if ";
+        let source = format!("{prefix}{original} {{}} ");
+        let mut parser = Parser::new();
+        let language = if typescript {
+            tree_sitter_typescript::LANGUAGE_TYPESCRIPT
+        } else {
+            tree_sitter_javascript::LANGUAGE
+        };
+        if parser.set_language(&language.into()).is_err() {
+            return false;
+        }
+        let Ok(tree) = parse(&mut parser, &source) else {
+            return false;
+        };
+        let Some(condition) = tree
+            .root_node()
+            .named_child(0)
+            .filter(|n| n.kind() == "if_statement")
+            .and_then(|n| n.child_by_field_name("condition"))
+        else {
+            return false;
+        };
+        return condition.byte_range() == (prefix.len()..prefix.len() + original.len())
+            && branch_replacement(operator, condition, &source).as_deref() == Some(changed);
     }
     if !matches!(
         operator,
@@ -322,6 +384,25 @@ fn discover_with_ambient(
                             column: token.start_position().column + 1,
                             end_line: token.end_position().row + 1,
                             end_column: token.end_position().column + 1,
+                        });
+                    }
+                }
+            }
+            if kind == "if_statement"
+                && let Some(condition) = node.child_by_field_name("condition")
+            {
+                for operator in [Operator::BranchForceTrue, Operator::BranchForceFalse] {
+                    if let Some(replacement) = branch_replacement(operator, condition, &file.source)
+                    {
+                        mutations.push(Mutation {
+                            file: file.clone(),
+                            operator,
+                            range: condition.byte_range(),
+                            replacement: replacement.into(),
+                            line: condition.start_position().row + 1,
+                            column: condition.start_position().column + 1,
+                            end_line: condition.end_position().row + 1,
+                            end_column: condition.end_position().column + 1,
                         });
                     }
                 }
@@ -586,10 +667,29 @@ mod tests {
         }
     }
     #[test]
-    fn fixture_has_six_stable_edits_and_exact_byte_ranges() {
+    fn fixture_has_ten_stable_edits_and_exact_byte_ranges() {
         let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/vitest");
         let found = find(&root).unwrap();
-        assert_eq!(found.mutations.len(), 6);
+        assert_eq!(found.mutations.len(), 10);
+        assert_eq!(
+            found
+                .mutations
+                .iter()
+                .filter(|m| m.operator == Operator::BooleanFlip)
+                .count(),
+            6
+        );
+        assert_eq!(
+            found
+                .mutations
+                .iter()
+                .filter(|m| matches!(
+                    m.operator,
+                    Operator::BranchForceTrue | Operator::BranchForceFalse
+                ))
+                .count(),
+            4
+        );
         assert_eq!(
             found
                 .mutations
@@ -835,3 +935,7 @@ mod logical_tests;
 #[cfg(test)]
 #[path = "javascript/arithmetic_tests.rs"]
 mod arithmetic_tests;
+
+#[cfg(test)]
+#[path = "javascript/branch_tests.rs"]
+mod branch_tests;

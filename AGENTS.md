@@ -626,3 +626,16 @@ survivor among 25 selected simulation arithmetic sites (four kills, 18 survivors
 three errors). A separate 199-test copy kills it through `simulate_bankroll`'s
 odd-trial median contract. Preserve the failed/unscored original report, 20 inputs
 and 6,280 historical report files; the focused kill is not a full project score.
+
+
+`benchmarks/javascript-branches.md` records JS/TS `if` branch forcing across
+Vitest, Node and Bun. Conditions become `(true || ORIGINAL)` or
+`(false && ORIGINAL)` with ORIGINAL retaining its parentheses. Intentionally skip
+condition side effects, exceptions, await/yield and getters; leave branch bodies
+unchanged. Exclude syntactic Boolean literals behind parentheses/comments, loops,
+ternaries and types. Saved reports must reconstruct the exact condition recipe;
+source identity and Bun recipe drift checks remain mandatory. Unchanged Bragkit's
+16 selected branches have nine kills/seven survivors; separate-copy exact bonus
+and closed-issue-count tests kill all seven. Preserve 57 original inputs, the
+original 56.25% filtered score and 295 historical report files. Do not generalize
+native TypeScript acceptance to type-checking builds or change lifecycle attribution.

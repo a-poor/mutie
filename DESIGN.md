@@ -2277,3 +2277,25 @@ execution recipe, so historical reports require fresh original runs.
 [Acceptance](benchmarks/python-modulo.md) records native controls, scored fixture
 and formatting/custom-dispatch errors, and unchanged betting-math-kit's odd-trial
 median finding with a separate-copy stronger test through its public API.
+
+
+## JS/TS branch forcing
+
+The shared discovery visits `if_statement` conditions and emits independent
+`branch_force_true`/`branch_force_false` candidates. The original condition span
+includes its required parentheses; replacements are `(true || ORIGINAL)` and
+`(false && ORIGINAL)`. This intentionally skips all condition evaluation, matching
+the Go contract, while retaining source references and condition grouping/trivia.
+Bodies and dangling-else relationships are untouched. Nested `else if` conditions
+remain independent; syntactic Boolean literals behind parentheses/comments are
+excluded to avoid duplicating Boolean flips. No constant folding/type inference
+is attempted. Ternaries and loops remain outside branch forcing.
+
+Saved JS/TS readers reconstruct an `if` statement from the original condition,
+require its exact span and regenerate the exact branch recipe. They reject bare
+constants, extra statements, opposite guards and arbitrary replacements. Source
+rediscovery remains required. Bun's source-bound recipe changes with shared
+discovery; its original acceptance must be fresh. No execution observer or failure
+classifier changes. TypeScript narrowing does not guarantee the forced branch is
+safe; existing adapters classify native failures under their normal body/lifecycle
+rules. See [acceptance](benchmarks/javascript-branches.md).

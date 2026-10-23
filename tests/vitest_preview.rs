@@ -237,14 +237,14 @@ fn lists_filters_and_preserves_source_without_executing_vitest() {
     );
     let stdout = String::from_utf8(result.stdout).unwrap();
     assert!(stdout.contains("preview only"));
-    assert!(stdout.contains("6 mutations"));
+    assert!(stdout.contains("10 mutations"));
     assert_eq!(
         stdout,
         String::from_utf8(preview(&dir, &[]).stdout).unwrap()
     );
     let filtered = preview(&dir, &["--include", "src/*.ts"]);
     assert!(filtered.status.success());
-    assert!(String::from_utf8_lossy(&filtered.stdout).contains("3 mutations"));
+    assert!(String::from_utf8_lossy(&filtered.stdout).contains("5 mutations"));
     assert_eq!(fs::read(dir.path().join("src/flags.ts")).unwrap(), original);
     assert!(!dir.path().join(".mutie").exists());
 }

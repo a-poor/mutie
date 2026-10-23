@@ -284,16 +284,26 @@ impl RunConfig {
                 "{runner} currently supports only --jobs 1"
             );
             ensure!(
-                config.operators.iter().all(|op| matches!(
-                    op,
-                    Operator::BooleanFlip
-                        | Operator::ComparisonInvert
-                        | Operator::ComparisonBoundary
-                        | Operator::LogicalSwap
-                        | Operator::NegationRemove
-                        | Operator::ArithmeticReplace
-                )),
-                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, and arithmetic_replace"
+                config
+                    .operators
+                    .iter()
+                    .all(|op| (config.lang != Lang::Python
+                        && matches!(op, Operator::BranchForceTrue | Operator::BranchForceFalse))
+                        || matches!(
+                            op,
+                            Operator::BooleanFlip
+                                | Operator::ComparisonInvert
+                                | Operator::ComparisonBoundary
+                                | Operator::LogicalSwap
+                                | Operator::NegationRemove
+                                | Operator::ArithmeticReplace
+                        )),
+                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace{}",
+                if config.lang == Lang::Python {
+                    ""
+                } else {
+                    ", branch_force_true, branch_force_false"
+                }
             );
         }
         if config.lang == Lang::Rust {

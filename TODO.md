@@ -118,6 +118,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block
    removal and record concrete exclusions. Measure invalid-candidate noise.
+   First slice completed: JS/TS `if` branch forcing across Vitest, Node and Bun,
+   with skipped-condition semantic controls, independent JS/TS workflows and seven
+   unchanged Bragkit survivors killed by separate-copy exact bonus/count tests.
+   See [acceptance](benchmarks/javascript-branches.md). Rust/Python branch forcing,
+   loops and call removal remain.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

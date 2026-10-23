@@ -1,0 +1,1719 @@
+{
+  "project": {
+    "project": "/tmp/mutie-node-ts-bragkit",
+    "commit": "458d31127f1d3a6f3fd28afd2d7a4741ebc648a7",
+    "inputs": {
+      ".claude/agents/achievement-curator.md": "482a1643a6ccd256d2e2cc22566064058707832133472d1ca6b2fdbed7af1d72",
+      ".claude/commands/brag-collect.md": "7d2e79b84e0df3c6ab8a7d0250ff37017d12781312e83bf30d2d3c69c5607326",
+      ".claude/commands/brag-compensation.md": "3085664b4f9ea87c0aeebf893f1c0c294a4216b7c0bc4db09e544d0a2ef64f1f",
+      ".claude/commands/brag-dashboard.md": "8f8ecbfa2bc7dce8f0f77f69653f69bc16011c3c06fcdf5285811a0e4da2cd9b",
+      ".claude/commands/brag-quarterly.md": "c64a3325fa07d857fdcb7fd84c82a0b692528775e53500a82919c3a9ec63e503",
+      ".claude/commands/brag-report.md": "0d4394c607763f82299134f0aba3f1286f72d3da3f781bac8d6676d746aba707",
+      ".claude/skills/bragkit/SKILL.md": "47f41f1aa67af50ccb0fd491b0f900d49d59c2d60f74fffcdd174ce67ec043b1",
+      ".claude/skills/create-collector/SKILL.md": "0c6fb7a1e4dcb69398266bbce0253b0ee13c746627407845275a8a8660d05176",
+      ".github/workflows/ci.yml": "4a08552a0e4175417d8129e151016e44e0603a0ca9151e69c779940923d6b8ee",
+      ".gitignore": "f48917d430ecbd88a87dc172badf624b12bcad95fa24867c8a40643215213f72",
+      "AGENTS.md": "a6bab39ff523008a9f19932702ee5b141941d7ec97ad0b2d811427afd3c59b51",
+      "BACKLOG.md": "b124be96727f6816d8060337fe4d50659c3d4bea5dd93ffb33a25ea8f4835e8e",
+      "CLAUDE.md": "8435d8a70c32845d580fb528e0c9b65b020fd00bc0f6649b7b5e5ec1bc5e9b12",
+      "LICENSE": "ff9b8d39b1d94486a322c9899ac8596749208a27cf8e28780df9d02c2621924c",
+      "README.md": "bf1243d6c38bad7f0f29470e7910081c5b8cdab4dc8021a4a879b0373dafce05",
+      "bin/brag.ts": "cd6c3e20bb033c11d1f1166506315ef92b8e3e5fc4168cead34e03f70fcd24a3",
+      "data/market-bands.sample.json": "2f9efbdbaa378dcaf485a056ee007b8e7e42053b89f38f33c47984f4f098ff07",
+      "docs/dashboard.png": "4253e9f5d04b845f63bbdaaf52e7b89bf4da487afa3b9b7b46651b6f72c3f522",
+      "package-lock.json": "6c4969adca064ab98b1cfa147ccc9498511d1377621046efd3656da0efa4eefe",
+      "package.json": "cd379cd2c66e983240d26a528d7180b98e1710fcab20cb026ec7781280e5ab1f",
+      "scripts/pack-smoke.ts": "35c79de7daacfab01a459b6963b36219a90fe596a2d28dd5b5088ae22b71dfde",
+      "scripts/smoke.ts": "b148660b4d756e9d68a8f122dee2da041c19d0c882c40cf47f191f232e4b375a",
+      "src/achievement.ts": "89b8ec21b0138dc8c2ffccd0cbfb2bf2d90acbe16d36304b52c3bdaa0e0d95ea",
+      "src/atlassian.ts": "7a093599d3c46d227b6099df58aee68b13e222493a09971a7ba283480a7437e9",
+      "src/cli.ts": "a4cab11c3067e77df1ecd7fc4e82b02d5b9a689dc2854a6366d1f923ac40f9de",
+      "src/collectors/confluence.ts": "2a76f3f8c060ccc960f0ed5ab7acda335cf49727abb375960b61dbc0e476fcde",
+      "src/collectors/github.ts": "6a3154f9621441c3e695eec74a307a14b610ae588e1c7b07b7ead32a1720c1b4",
+      "src/collectors/jira.ts": "ac6fe46e57e133f2e63a172739abdd8cc0b42495873bc96b9be60307afe078c6",
+      "src/collectors/registry.ts": "fa7ea0ea06f96650fb9b5a3e489d7b3237f8460bd60f49d24f63c657d44a55d9",
+      "src/collectors/slack.ts": "d4c0fee42f152bbac9d96d6ad9642ee4dafc2e56fe6b2d04aad9c8472b200c9e",
+      "src/config.ts": "5062f4621899b1fbb27c4b28c627cec520dd3afea554f40b27e05894ef968b75",
+      "src/dates.ts": "39e1ab2baf8c2804b784f176d2d5ef53a20959e743d840df2b6ce0c910b9dd10",
+      "src/index.ts": "8f63d8dea9bf87c9dc2c1ee7a72bcbbd33d0959dbbde31435c4101306da6d8ee",
+      "src/reports/csv.ts": "7c6c52e5ab93359db1cc7385fbc62ca33254ac840cc2419dc4ffb735ae72f77e",
+      "src/reports/impact.ts": "57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+      "src/reports/markdown.ts": "c4934254b9f6d73f86df675940eab4981deb83ed4082ea7c71744bff98832754",
+      "src/reports/pdf.ts": "42e087c8e61f40af117e5adcdf5c3c4612295359b52e9283d46dfba702824fc1",
+      "src/reports/salary.ts": "f0e5cac6dbfec8dceb446d36444003059a99f79cf6d0530726d28770c300a15d",
+      "src/reports/trends.ts": "a2849ee225f5310dfc20a8b3c2346ff0421aa14ce2d4b34ddb220ecbd0866d44",
+      "src/store.ts": "06a5c32aff72a2cb5c03e4d2d8c6f88e456b7eab3f22a8cf599d277c5ecf0866",
+      "src/tagging.ts": "8a336b3234e50274f90057b916f3450cd8fa9865baa461f7da8a07a6373b0072",
+      "test/atlassian.test.ts": "232c53c4031b4f6dc2cf7aa90033bc204299ff43ec70c88f5be00d6c4bfcbd1a",
+      "test/config.test.ts": "2f45a8cfe97031a41073b6a6ea67ba25f35c2e7bb06b85cd80239de52b14ae54",
+      "test/csv.test.ts": "70163590cc93b4cbb853ad413ef2dcfcae3e122a4d1dd94c125ee91c12de3b99",
+      "test/dates.test.ts": "aa01428230c8b42bb3140fa107bdef53e94f9211f724b9da7f027b88ed5a1e67",
+      "test/impact.test.ts": "74f7816f21225b0fe0d4110796068e275491c02fbf1c30cd31983ff198bf7800",
+      "test/reports.test.ts": "ef50a618ad7de5ce2c3ee55ce6dd511824a8728e2b8ca32efa16602deed48d64",
+      "test/slack.test.ts": "a8e99e846e7027cf8bd91bae59c221f3bd0f2bd0ebb46fc6194eda476cc8b76c",
+      "test/store.test.ts": "de58358f855c1ba033a67ea487b9f39085033b96f4aa784a83061ae626a10d35",
+      "test/tagging.test.ts": "cc3461925ae52e37bc5e2485fe87e306ff55b9a645ebb55c449fa67a6f1ca281",
+      "test/trends.test.ts": "5afeb8c3e74e22907c69d561f76b260c4d49a1c34476aba7348f8e38058a3b2d",
+      "tsconfig.build.json": "3e135d828248006e96b5620aa3a3d20b3890b663d6f1be7d570ab316a31c35c2",
+      "tsconfig.json": "9b7f62a18b508ce209be7a7c8eec6e316f98165e28d7130e97af402f65e47f55",
+      "web/index.html": "72ed97868bafc569f3d085e9ea6f6389324849e48fbeb3cd028e3e8e868e3ed8",
+      "web/main.js": "fcfe4acbdaa5f14ade6dd7196a624e24cbeddc10e1c71a8255b9309794b183a9",
+      "web/public/achievements.sample.json": "fa0bee80751a83cd70b8e8ccf79de003143ea8a3837384b4afd9e46a669b9ee7",
+      "web/vite.config.js": "5cd31c06019e3f099fc85d5e3a132d06af5a9e79aaa5c806d08d1d264af0d544"
+    }
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-js-branches-audit/original-reports/run-1792719379-EU02h8",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 41,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-node-ts-bragkit",
+        "effective_config": {
+          "module_root": "/tmp/mutie-node-ts-bragkit",
+          "config_file": null,
+          "lang": "node",
+          "rust_build_cache": "fresh",
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [
+            "src/reports/impact.ts"
+          ],
+          "exclude": [],
+          "operators": [
+            "branch_force_true",
+            "branch_force_false"
+          ],
+          "timeout": 20,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 30,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-js-branches-audit/original-reports",
+          "verbose": false,
+          "list": false,
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792719379,
+        "finished_at_unix_seconds": 1792719404,
+        "duration_seconds": 24.843374208,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "filtered",
+          "killed": 9,
+          "missed": 7,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 56.25,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "node",
+          "--test",
+          "--test-concurrency=1"
+        ],
+        "node_scope": {
+          "package": "bragkit",
+          "node": "24.22.0",
+          "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+          "manifest_fingerprint": "sha256:cd379cd2c66e983240d26a528d7180b98e1710fcab20cb026ec7781280e5ab1f",
+          "recipe_fingerprint": "sha256:3495fb3c8e102a1b7bf2d3d45be26b3f0f57e84da23414dc038123580f412307",
+          "typescript": {
+            "test_pattern": "native-default",
+            "tsconfig_fingerprint": "sha256:9b7f62a18b508ce209be7a7c8eec6e316f98165e28d7130e97af402f65e47f55"
+          },
+          "default_discovery": true,
+          "development_fingerprints": {
+            "development_installation_recipe": "sha256:a635d4c32feaec6cf56c0b033a6d9946d0c6d2ca32b36ff3573fc860f962c298",
+            "package-lock.json": "sha256:6c4969adca064ab98b1cfa147ccc9498511d1377621046efd3656da0efa4eefe"
+          }
+        },
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "node",
+          "--test",
+          "--test-concurrency=1"
+        ],
+        "discovery_command": [
+          "mutie",
+          "--lang",
+          "node",
+          "--list"
+        ],
+        "include": [
+          "src/reports/impact.ts"
+        ],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 30,
+        "mutation_timeout_seconds": 20.0,
+        "planned_mutations": 16,
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.009716458,
+            "reflink_files": 57,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.041073625,
+            "reflink_files": 57,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0659495,
+            "reflink_files": 57,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.036241083,
+            "reflink_files": 57,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 15,
+            "completed": 15,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.37453337600000003,
+            "reflink_files": 855,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 9,
+        "missed": 7,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 39,
+          "column": 6,
+          "end_line": 39,
+          "end_column": 35,
+          "byte_start": 1200,
+          "byte_end": 1229,
+          "original": "(a.type === \"kudos_received\")",
+          "replacement": "(true || (a.type === \"kudos_received\"))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 39,
+          "column": 6,
+          "end_line": 39,
+          "end_column": 35,
+          "byte_start": 1200,
+          "byte_end": 1229,
+          "original": "(a.type === \"kudos_received\")",
+          "replacement": "(false && (a.type === \"kudos_received\"))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 40,
+          "column": 6,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1248,
+          "byte_end": 1275,
+          "original": "(a.type === \"blog_created\")",
+          "replacement": "(true || (a.type === \"blog_created\"))",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 40,
+          "column": 6,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1248,
+          "byte_end": 1275,
+          "original": "(a.type === \"blog_created\")",
+          "replacement": "(false && (a.type === \"blog_created\"))",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 41,
+          "column": 6,
+          "end_line": 41,
+          "end_column": 30,
+          "byte_start": 1294,
+          "byte_end": 1318,
+          "original": "(a.type === \"pr_merged\")",
+          "replacement": "(true || (a.type === \"pr_merged\"))",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 41,
+          "column": 6,
+          "end_line": 41,
+          "end_column": 30,
+          "byte_start": 1294,
+          "byte_end": 1318,
+          "original": "(a.type === \"pr_merged\")",
+          "replacement": "(false && (a.type === \"pr_merged\"))",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 54,
+          "column": 8,
+          "end_line": 54,
+          "end_column": 32,
+          "byte_start": 1820,
+          "byte_end": 1844,
+          "original": "(a.type === \"pr_merged\")",
+          "replacement": "(true || (a.type === \"pr_merged\"))",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 54,
+          "column": 8,
+          "end_line": 54,
+          "end_column": 32,
+          "byte_start": 1820,
+          "byte_end": 1844,
+          "original": "(a.type === \"pr_merged\")",
+          "replacement": "(false && (a.type === \"pr_merged\"))",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 55,
+          "column": 8,
+          "end_line": 55,
+          "end_column": 35,
+          "byte_start": 1867,
+          "byte_end": 1894,
+          "original": "(a.type === \"issue_closed\")",
+          "replacement": "(true || (a.type === \"issue_closed\"))",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 55,
+          "column": 8,
+          "end_line": 55,
+          "end_column": 35,
+          "byte_start": 1867,
+          "byte_end": 1894,
+          "original": "(a.type === \"issue_closed\")",
+          "replacement": "(false && (a.type === \"issue_closed\"))",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 56,
+          "column": 8,
+          "end_line": 56,
+          "end_column": 37,
+          "byte_start": 1920,
+          "byte_end": 1949,
+          "original": "(a.type === \"issue_resolved\")",
+          "replacement": "(true || (a.type === \"issue_resolved\"))",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 56,
+          "column": 8,
+          "end_line": 56,
+          "end_column": 37,
+          "byte_start": 1920,
+          "byte_end": 1949,
+          "original": "(a.type === \"issue_resolved\")",
+          "replacement": "(false && (a.type === \"issue_resolved\"))",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 57,
+          "column": 8,
+          "end_line": 57,
+          "end_column": 64,
+          "byte_start": 1977,
+          "byte_end": 2033,
+          "original": "(a.type === \"page_created\" || a.type === \"blog_created\")",
+          "replacement": "(true || (a.type === \"page_created\" || a.type === \"blog_created\"))",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 57,
+          "column": 8,
+          "end_line": 57,
+          "end_column": 64,
+          "byte_start": 1977,
+          "byte_end": 2033,
+          "original": "(a.type === \"page_created\" || a.type === \"blog_created\")",
+          "replacement": "(false && (a.type === \"page_created\" || a.type === \"blog_created\"))",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 58,
+          "column": 8,
+          "end_line": 58,
+          "end_column": 37,
+          "byte_start": 2059,
+          "byte_end": 2088,
+          "original": "(a.type === \"kudos_received\")",
+          "replacement": "(true || (a.type === \"kudos_received\"))",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 58,
+          "column": 8,
+          "end_line": 58,
+          "end_column": 37,
+          "byte_start": 2059,
+          "byte_end": 2088,
+          "original": "(a.type === \"kudos_received\")",
+          "replacement": "(false && (a.type === \"kudos_received\"))",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.814861291,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.821712167,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 410,
+                "head_bytes": 410,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 410,
+                "head_bytes": 410,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.818852291,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.815908084,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.940834,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.007212834,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.905611583,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.995513959,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 274,
+                "head_bytes": 274,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 274,
+                "head_bytes": 274,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.1335745,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 0.884597,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 85,
+                "head_bytes": 85,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.9433655,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 274,
+                "head_bytes": 274,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 274,
+                "head_bytes": 274,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.942348125,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.043003375,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.010330708,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 275,
+                "head_bytes": 275,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 275,
+                "head_bytes": 275,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.9570635,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.931338791,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 276,
+                "head_bytes": 276,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "a4dde5c1ca820fbc054885d64afac9768975d26588ebf653ab21c6056187c37c",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "9b19a17ef571702a1a936add96fcdd097476744dd0728cd21eeefe727865e252",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "ccfc6788d095a95eb01bfc4394ae2bd4932afc4963ac8705242c878523c6438c",
+        "summary.txt": "54764cf6ee5d8118b93fcd30b67e1042bb15f8cc56be4f0c9b0b1fc02c344259",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "00e02e9de74799b56718f8f6145114a717506722c2d6c9eb00fea6d69ac88f17",
+        "run.json": "7192cfa4d5ac1c360d646107f96ff20c2c3de1364ebec95f12de5ee4b1aa403f",
+        "diff/000003.diff": "d5fcc238188d203b73f7422f4808991d701892722ba98f110b70f11739b69c60",
+        "diff/000015.diff": "3f3db92b74e977591d57ebc8c08a5f1b75ac9ab138b1d83b8af1d7507d74c0ad",
+        "diff/000014.diff": "74f84fa69e4430a6919bff7552d3801d9d220ab508910c6471f1acf39738cf1a",
+        "diff/000002.diff": "f2a0ca30231196846244e21f04d98ad6fbbb8cd94527e03b881f061294eff0bc",
+        "diff/000009.diff": "51e1fd3f7c3b7385a9ad2e4f2baeacfbfddf05b9dd2d1cd2e078376d3b638548",
+        "diff/000005.diff": "b298ab5df751acae06ee3fd6202fe59d9ffc7b55b47def5a66c83de58899b27f",
+        "diff/000013.diff": "a5cb173b9a7ec322b88d114137c6e1d8464c8f925656a3766da976ba41a9e7a0",
+        "diff/000012.diff": "96f6a707d511dc14e61c4d20ebd0cddecb2aa1e252454f0b837f027093a0a405",
+        "diff/000004.diff": "accfba37f9519268890f85f89841a83514a770c38d60f07778a44e488868642a",
+        "diff/000008.diff": "a74083236dd1ea379547f6be60c7c4927543326347544b7ad70233794f728c59",
+        "diff/000011.diff": "9f805aae312b7f12b91883eee06a1c1343c650708cc4e1f645c2e09399e61ff1",
+        "diff/000007.diff": "b3dee3588cecd8cdf3fe7397a24ab15a5f5b62b500c44ee5a24f1271d75f6d10",
+        "diff/000006.diff": "a2ece947c2a59027a25e050c4870ce5ca78960b986e69886c1d47e9c507e54c5",
+        "diff/000010.diff": "d86d3a423c26b4a6de5c5b8e42256a8c40ddd7637d94b33409d51b4ed66652bd",
+        "diff/000001.diff": "2be9d4461f688dfe9f960762fc579194a8add8c2ae201607deb50d17c98b7578",
+        "diff/000016.diff": "649a700afce61b7b58e85c73de4abd18ea3cf2f0bd8217e1094b93cc0423eaf5",
+        "logs/000012.stdout.log": "de4a8b7ed541c13296bb7e21371bb7b1ce7907ce883f46d3aa3ede86a84feb4c",
+        "logs/000013.log": "4bc6a3514b2d9d78a6d701a0a2d157abe4f2ccd70f6af40af4a266717f632bae",
+        "logs/000007.log": "2a64307d77e4232b2e917d338be0bd490085ba5b49faac7eee27261c628e254c",
+        "logs/000016.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.log": "bc54575d7b0a55bf54410e59450368ec965644413f27e569eb529b9c3364c26d",
+        "logs/000012.log": "de4a8b7ed541c13296bb7e21371bb7b1ce7907ce883f46d3aa3ede86a84feb4c",
+        "logs/000004.log": "591082aea31a26167f6a90a4848e08e9b44415ff05b331601f54bf4b1fde6838",
+        "logs/000010.log": "6822a09a717234be31264d743cc3ee50ad81536c33e1e70e6d0d734ba5a7d0a8",
+        "logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000011.log": "19b8dab579f4171ff967745fab6f5bd7e682fb21de81f45a25b92a98f9b2c15e",
+        "logs/000005.log": "41754fdaba48a843888033e5454dfae4bf3d3e9732a888445c47f4e6a1eb500e",
+        "logs/000003.stdout.log": "782c08cea8d111ffcf4c59fe2bc6a3d77019871cba213211a3758d7184405eb1",
+        "logs/000001.log": "263f81132d19bd48536a7b9547caacc43ef8f4f294b809baa35e919571a3dcf0",
+        "logs/000015.log": "66c182c5392f0111451f1e9faf758fcd20d8ea36d9a43bb7876104af0d726359",
+        "logs/000006.stdout.log": "bc54575d7b0a55bf54410e59450368ec965644413f27e569eb529b9c3364c26d",
+        "logs/000014.log": "342a901d456a1eabc5b4d95efa5869aafb2c2f0730570a74a69b684a2f8fde9d",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000013.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000016.log": "a8843e9ef0f32756c94309857a7bf905cdaec5198e695394c015caa973da9586",
+        "logs/000002.log": "c99dac60876156f193bb71da10b2d57b47c697f1619a0d50fc0e551421c1b016",
+        "logs/000003.log": "782c08cea8d111ffcf4c59fe2bc6a3d77019871cba213211a3758d7184405eb1",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000010.stdout.log": "6822a09a717234be31264d743cc3ee50ad81536c33e1e70e6d0d734ba5a7d0a8",
+        "logs/000014.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "263f81132d19bd48536a7b9547caacc43ef8f4f294b809baa35e919571a3dcf0",
+        "logs/000004.stdout.log": "591082aea31a26167f6a90a4848e08e9b44415ff05b331601f54bf4b1fde6838",
+        "logs/000009.stdout.log": "20829a7965d9e094eb677a4010b739df3296e6a1fe08d004e8ae20d0b0073f60",
+        "logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000015.stdout.log": "66c182c5392f0111451f1e9faf758fcd20d8ea36d9a43bb7876104af0d726359",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.log": "0f3efba302d62425882ba53bc5890dbcdc4dbf791f72e5592b3ad553dd7ce245",
+        "logs/000007.stdout.log": "2a64307d77e4232b2e917d338be0bd490085ba5b49faac7eee27261c628e254c",
+        "logs/000016.stdout.log": "a8843e9ef0f32756c94309857a7bf905cdaec5198e695394c015caa973da9586",
+        "logs/000012.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000013.stdout.log": "4bc6a3514b2d9d78a6d701a0a2d157abe4f2ccd70f6af40af4a266717f632bae",
+        "logs/000002.stdout.log": "c99dac60876156f193bb71da10b2d57b47c697f1619a0d50fc0e551421c1b016",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "41754fdaba48a843888033e5454dfae4bf3d3e9732a888445c47f4e6a1eb500e",
+        "logs/000008.stdout.log": "5958de3931f22a980a0f917f9ec26d3b18d38d0842c402e607cf87026dcf6163",
+        "logs/baseline.stdout.log": "0f3efba302d62425882ba53bc5890dbcdc4dbf791f72e5592b3ad553dd7ce245",
+        "logs/000014.stdout.log": "342a901d456a1eabc5b4d95efa5869aafb2c2f0730570a74a69b684a2f8fde9d",
+        "logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.log": "5958de3931f22a980a0f917f9ec26d3b18d38d0842c402e607cf87026dcf6163",
+        "logs/000015.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.log": "20829a7965d9e094eb677a4010b739df3296e6a1fe08d004e8ae20d0b0073f60",
+        "logs/000011.stdout.log": "19b8dab579f4171ff967745fab6f5bd7e682fb21de81f45a25b92a98f9b2c15e",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-js-branches-audit/stronger-reports/run-1792719441-oKAJug",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 23,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-js-branches-audit/stronger",
+        "effective_config": {
+          "module_root": "/tmp/mutie-js-branches-audit/stronger",
+          "config_file": null,
+          "lang": "node",
+          "rust_build_cache": "fresh",
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [],
+          "timeout": 20,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 30,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-js-branches-audit/stronger-reports",
+          "verbose": false,
+          "list": false,
+          "rerun": {
+            "source_run": "/tmp/mutie-js-branches-audit/original-reports/run-1792719379-EU02h8",
+            "selection": "missed"
+          },
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792719441,
+        "finished_at_unix_seconds": 1792719454,
+        "duration_seconds": 13.735967583,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 7,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "node",
+          "--test",
+          "--test-concurrency=1"
+        ],
+        "node_scope": {
+          "package": "bragkit",
+          "node": "24.22.0",
+          "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+          "manifest_fingerprint": "sha256:cd379cd2c66e983240d26a528d7180b98e1710fcab20cb026ec7781280e5ab1f",
+          "recipe_fingerprint": "sha256:3495fb3c8e102a1b7bf2d3d45be26b3f0f57e84da23414dc038123580f412307",
+          "typescript": {
+            "test_pattern": "native-default",
+            "tsconfig_fingerprint": "sha256:9b7f62a18b508ce209be7a7c8eec6e316f98165e28d7130e97af402f65e47f55"
+          },
+          "default_discovery": true,
+          "development_fingerprints": {
+            "development_installation_recipe": "sha256:a635d4c32feaec6cf56c0b033a6d9946d0c6d2ca32b36ff3573fc860f962c298",
+            "package-lock.json": "sha256:6c4969adca064ab98b1cfa147ccc9498511d1377621046efd3656da0efa4eefe"
+          }
+        },
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "node",
+          "--test",
+          "--test-concurrency=1"
+        ],
+        "discovery_command": [
+          "mutie",
+          "--lang",
+          "node",
+          "--list"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 30,
+        "mutation_timeout_seconds": 20.0,
+        "planned_mutations": 7,
+        "rerun": {
+          "source_run": "/tmp/mutie-js-branches-audit/original-reports/run-1792719379-EU02h8",
+          "source_checkpoint": 41,
+          "source_status": "completed",
+          "selection": "missed",
+          "mutations": [
+            {
+              "id": 1,
+              "source_id": 1
+            },
+            {
+              "id": 2,
+              "source_id": 3
+            },
+            {
+              "id": 3,
+              "source_id": 4
+            },
+            {
+              "id": 4,
+              "source_id": 5
+            },
+            {
+              "id": 5,
+              "source_id": 6
+            },
+            {
+              "id": 6,
+              "source_id": 9
+            },
+            {
+              "id": 7,
+              "source_id": 10
+            }
+          ]
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.010236125,
+            "reflink_files": 58,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.009599916,
+            "reflink_files": 58,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.023600292,
+            "reflink_files": 58,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.009636791,
+            "reflink_files": 58,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 6,
+            "completed": 6,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.157766627,
+            "reflink_files": 348,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 7,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 39,
+          "column": 6,
+          "end_line": 39,
+          "end_column": 35,
+          "byte_start": 1200,
+          "byte_end": 1229,
+          "original": "(a.type === \"kudos_received\")",
+          "replacement": "(true || (a.type === \"kudos_received\"))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 40,
+          "column": 6,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1248,
+          "byte_end": 1275,
+          "original": "(a.type === \"blog_created\")",
+          "replacement": "(true || (a.type === \"blog_created\"))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 40,
+          "column": 6,
+          "end_line": 40,
+          "end_column": 33,
+          "byte_start": 1248,
+          "byte_end": 1275,
+          "original": "(a.type === \"blog_created\")",
+          "replacement": "(false && (a.type === \"blog_created\"))",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 41,
+          "column": 6,
+          "end_line": 41,
+          "end_column": 30,
+          "byte_start": 1294,
+          "byte_end": 1318,
+          "original": "(a.type === \"pr_merged\")",
+          "replacement": "(true || (a.type === \"pr_merged\"))",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 41,
+          "column": 6,
+          "end_line": 41,
+          "end_column": 30,
+          "byte_start": 1294,
+          "byte_end": 1318,
+          "original": "(a.type === \"pr_merged\")",
+          "replacement": "(false && (a.type === \"pr_merged\"))",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_true",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 55,
+          "column": 8,
+          "end_line": 55,
+          "end_column": 35,
+          "byte_start": 1867,
+          "byte_end": 1894,
+          "original": "(a.type === \"issue_closed\")",
+          "replacement": "(true || (a.type === \"issue_closed\"))",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/reports/impact.ts",
+          "operator": "branch_force_false",
+          "source_fingerprint": "sha256:57d527c2e85a11a47515dcd86861164eba31a7c3e7940dad388054f50875e57e",
+          "line": 55,
+          "column": 8,
+          "end_line": 55,
+          "end_column": 35,
+          "byte_start": 1867,
+          "byte_end": 1894,
+          "original": "(a.type === \"issue_closed\")",
+          "replacement": "(false && (a.type === \"issue_closed\"))",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.011892209,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.96957475,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 0.96185425,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.008659,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 299,
+                "head_bytes": 299,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 299,
+                "head_bytes": 299,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.199919,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 300,
+                "head_bytes": 300,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.239266,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 283,
+                "head_bytes": 283,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 283,
+                "head_bytes": 283,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.045353875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 284,
+                "head_bytes": 284,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 284,
+                "head_bytes": 284,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "93e0ff0b5f1c210ed8589e73d8bf3607cb5709eb124edf9310a60279696e6389",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "f031c780afa64cf251ca104a72535b38f03a7c1136b9b5f30d1e51065475eb73",
+        "summary.txt": "b458dd3b36999c7aab314a9545f816f54cdb291aa32eb41770e9882d870a77f3",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "839b0b14b7920e383a22bb8a540233865f8f80abb819a7a0e92f0102f4899ad2",
+        "run.json": "4af518dc4fe3acec50767a32ea7ae8652f132e290875f5150fe863a2e1062d17",
+        "diff/000003.diff": "accfba37f9519268890f85f89841a83514a770c38d60f07778a44e488868642a",
+        "diff/000002.diff": "d5fcc238188d203b73f7422f4808991d701892722ba98f110b70f11739b69c60",
+        "diff/000005.diff": "a2ece947c2a59027a25e050c4870ce5ca78960b986e69886c1d47e9c507e54c5",
+        "diff/000004.diff": "b298ab5df751acae06ee3fd6202fe59d9ffc7b55b47def5a66c83de58899b27f",
+        "diff/000007.diff": "d86d3a423c26b4a6de5c5b8e42256a8c40ddd7637d94b33409d51b4ed66652bd",
+        "diff/000006.diff": "51e1fd3f7c3b7385a9ad2e4f2baeacfbfddf05b9dd2d1cd2e078376d3b638548",
+        "diff/000001.diff": "2be9d4461f688dfe9f960762fc579194a8add8c2ae201607deb50d17c98b7578",
+        "logs/000007.log": "20301eeb615e3de5b3588f8bcd1a6230056e1999bf9898de6b55ff796e5918bc",
+        "logs/000006.log": "9a068034f554606ef3f943a87adde5f72b29ee8d1c7a230153991fe2f94f7467",
+        "logs/000004.log": "c7de61113a77ca723ae76e162abae8d1450291148e24a79dea5e4d6fea3dd68c",
+        "logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.log": "4fb2b87a89565078b950213334a4a68a18e5425e13c48604fa406b4036f6ef10",
+        "logs/000003.stdout.log": "3b22bf40300b7964b21ffb9d3c600c68833ba41e1a888427fa514668deb00493",
+        "logs/000001.log": "272eb9ddb8fa50e8a33c28f7e878ea2224c94e886b9b3a7f377f706fdd33ac6b",
+        "logs/000006.stdout.log": "9a068034f554606ef3f943a87adde5f72b29ee8d1c7a230153991fe2f94f7467",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.log": "430795b6b96d48e75bead82f40db65871fcb2ab594e6a7e597425abb7a78aa2d",
+        "logs/000003.log": "3b22bf40300b7964b21ffb9d3c600c68833ba41e1a888427fa514668deb00493",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "272eb9ddb8fa50e8a33c28f7e878ea2224c94e886b9b3a7f377f706fdd33ac6b",
+        "logs/000004.stdout.log": "c7de61113a77ca723ae76e162abae8d1450291148e24a79dea5e4d6fea3dd68c",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.log": "9ec237d2facbddc63ac6d41555f1932cb480401ca78addf2c240f28cbbcdfbb2",
+        "logs/000007.stdout.log": "20301eeb615e3de5b3588f8bcd1a6230056e1999bf9898de6b55ff796e5918bc",
+        "logs/000002.stdout.log": "430795b6b96d48e75bead82f40db65871fcb2ab594e6a7e597425abb7a78aa2d",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "4fb2b87a89565078b950213334a4a68a18e5425e13c48604fa406b4036f6ef10",
+        "logs/baseline.stdout.log": "9ec237d2facbddc63ac6d41555f1932cb480401ca78addf2c240f28cbbcdfbb2",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "cli_sha256": "ab24ebc9141620fc8812f505e13165e448dbbd7e52ff8125ad32d5093a954df8",
+  "stronger_test_sha256": "0d023619b5b480d2cb7c8352a20273c5cd1d5d59a3db08ac630ea6fe7004094c",
+  "preservation_verified": true,
+  "prior_report_files_preserved": 295,
+  "validation": {
+    "default_passed": 322,
+    "default_ignored": 145,
+    "shared_js_tests_passed": 20,
+    "scored_runner_syntax_workflows_passed": 6,
+    "fmt": "passed",
+    "clippy": "passed",
+    "earlier_failures": "default Bun 1.4.3 rejected; Vitest baseline timeouts retained; no deadline/assertion or host security changes"
+  },
+  "preservation_manifest": "/tmp/mutie-js-branches-audit/preservation.json",
+  "preservation_manifest_sha256": "a871f3629846e7ee1f21fda3ad5d00cd497eebdacb2f80b2ba3e325136f9db01"
+}

@@ -561,7 +561,7 @@ Support differs by language and applies within each runner's validated scope:
 | Logical swap: `&& ↔ \|\|` (Python: binary `and ↔ or`) | Yes | Yes | Yes | Yes |
 | Boolean literals: `true ↔ false` (Python: `True ↔ False`) | Yes | Yes | Yes | Yes |
 | Remove negation: `!x → x` (Python: `not x → x`) | Yes | Yes | Yes | Yes |
-| Force an `if` condition true or false (two operators) | Yes | No | No | No |
+| Force an `if` condition true or false (two operators) | Yes | No | No | Yes |
 | Remove a standalone function call | Yes | No | No | No |
 | Skip a conditional loop | Yes | No | No | No |
 | Replace numeric or string literals | No | No | No | No |
@@ -610,6 +610,17 @@ are excluded at that chain node; eligible nested binary expressions remain eligi
 Bitwise operators, annotations and tests are excluded. See
 [semantic controls and unchanged Route Mini diagnostic findings](benchmarks/python-logical.md).
 
+JS/TS `branch_force_true` and `branch_force_false` force nonliteral `if`
+conditions, including nested `else if` branches. The condition is deliberately
+**not evaluated**: calls, assignments, getters, exceptions, `await` and `yield`
+inside it are skipped. The original parenthesized condition is retained behind
+`true ||` or `false &&`; the branch bodies are unchanged. Literal `true`/`false`
+conditions (including parentheses/comments) stay with `boolean_flip`. This does
+not mutate ternaries, loop conditions or TypeScript types. Native TypeScript runs
+remain untypechecked; forcing a branch can invalidate a narrowing assumption and
+cause an ordinary runtime failure. See
+[semantic controls and unchanged-project validation](benchmarks/javascript-branches.md).
+
 Python binary arithmetic supports `+ ↔ -`, `* ↔ /` and `% → *`, preserving native
 grouping and operand evaluation. Unary signs, augmented-assignment operators, floor
 division, powers and annotations are excluded. Operand types are not
@@ -640,8 +651,8 @@ that are not yet implemented.
 All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, and `arithmetic_replace`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`, and `arithmetic_replace`. Vitest, Node and Bun run
-`boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`, and
-`negation_remove`, and `arithmetic_replace`.
+`boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
+`negation_remove`, `arithmetic_replace`, `branch_force_true`, and `branch_force_false`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 
