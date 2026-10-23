@@ -442,8 +442,9 @@ Combined inventory accounting is not a full original or stronger-suite score.
 
 `benchmarks/python-arithmetic.md` validates Python binary `+ ↔ -` and `* ↔ /`
 under `arithmetic_replace`. Preserve native grouping/evaluation and exact token
-pairs; annotations, unary/augmented operators, floor division, modulo and powers
-remain excluded. This is not numeric type inference: unsupported operands and
+pairs; annotations, unary/augmented operators, floor division and powers
+remain excluded. Modulo was added later in `benchmarks/python-modulo.md`.
+This is not numeric type inference: unsupported operands and
 zero division stay errors. Unchanged betting-math-kit's 30-site Kelly selection
 has 21 kills, eight survivors and one string-operand error; a separate 201-test
 copy kills all eight survivors. Preserve prior inputs/reports and recipe drift
@@ -609,5 +610,19 @@ require exact keyword pairs and fresh source/recipe identity. Unchanged Route Mi
 has four selected sites across three original reports: two diagnostic survivors
 and two constructor errors. Separate-copy tests kill both survivors with 72 tests;
 preserve all 25 original inputs and 145 earlier report files. Combined accounting
-is not a full score, and constructor errors are not reclassified. Python's remaining
-unfilled expression row is modulo; flat logical chains remain a separate scope gap.
+is not a full score, and constructor errors are not reclassified. Python's
+modulo row was still unfilled at that milestone; the subsequent acceptance below
+closes it. Flat logical chains remain a separate scope gap.
+
+
+`benchmarks/python-modulo.md` supersedes Python's earlier modulo exclusion.
+Binary `% → *` uses `arithmetic_replace` and native token replacement. Preserve
+AST grouping, evaluation, reflected/subclass dispatch and raw values. This includes
+formatting operands: integer repetition may succeed; incompatible multiplication
+remains an error. No numeric inference or classifier relaxation. `%=` assignments,
+annotations, tests, floor division and powers remain excluded. Exact saved pairs,
+source hashes and recipe checks apply. Unchanged betting-math-kit has one modulo
+survivor among 25 selected simulation arithmetic sites (four kills, 18 survivors,
+three errors). A separate 199-test copy kills it through `simulate_bankroll`'s
+odd-trial median contract. Preserve the failed/unscored original report, 20 inputs
+and 6,280 historical report files; the focused kill is not a full project score.

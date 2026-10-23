@@ -1,0 +1,1591 @@
+{
+  "project": {
+    "project": "/tmp/mutie-python-betting-math-original",
+    "commit": "0bd3c25e93df8974f432310835768d77a5e45d3e",
+    "inputs": {
+      ".github/workflows/ci.yml": "7e2afbad7f4b3658bd741c94edd1c335bb3c135fc855a24b8a28be8f7aa8f93b",
+      ".gitignore": "cc32a3dc414d2d8b1000a97b9b8c07544b713d7c107cf20400d9802bc20add7a",
+      "LICENSE": "081eee4a2ed902a4feac7da778e8d94d0ef986deef0d39911919033d6cbc7f38",
+      "README.md": "b8a14250e39c99fdf3af1936d4e4aa9724c9c7b77310f617774e793e03a9e9b2",
+      "pyproject.toml": "c3cf781527818a566f4e6a6c34d04b0d1a716042b50dce3bab5e1c0a59574742",
+      "src/betting_math_kit/__init__.py": "4e67b69be2570d642c827035e507387cbb511b3c00506929dd99071113a1af3d",
+      "src/betting_math_kit/devig.py": "7f7c33c96fb4fc2034de3decfa3d1594f0944df08fabca735b15740290f20e81",
+      "src/betting_math_kit/exceptions.py": "078611ca38e50a30edbe191c07e6ced1e84f3d6500835fd36a94a905437c1005",
+      "src/betting_math_kit/kelly.py": "ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+      "src/betting_math_kit/metrics.py": "1a101c16aaec89de51cda91440e32b869bd27eddeef2871715635b666eb8a4c1",
+      "src/betting_math_kit/odds.py": "c0a611f1d4f3c793179e9f26ddcfd2f996e792e993b0d6fb0f74efe0c08308f7",
+      "src/betting_math_kit/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/betting_math_kit/simulation.py": "5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+      "src/betting_math_kit/types.py": "f65da1b1a58bab3ff20d0885e2b0fdbfc17fa87ffd4147ec956c51be17cf4e06",
+      "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/test_devig.py": "1afef90c916c602e990322f9951e1b09b44cba068fda6de922a56331feee5692",
+      "tests/test_kelly.py": "53136da2288e1b4eb10a657d1db3031e51851185f2866e2bc18e50b4b8c7350c",
+      "tests/test_metrics.py": "d68a9da48979cfae701384b61732b66c05d2acc18d48b0b3495eb8582d68d3a8",
+      "tests/test_odds.py": "a6d0c9ccb3d27a3adf93a4ab4732c7089292437fc7576505dd5573b366cac736",
+      "tests/test_simulation.py": "cc6a619cc592d804a1503584dcdb8d647b610af671d5503705f9aa12285b09f6"
+    }
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-python-modulo-audit/original-reports/run-1792718674-gN4NIn",
+      "status": "failed",
+      "score": {
+        "scope": "filtered",
+        "killed": 4,
+        "missed": 18,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 3,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "test_count": 198,
+      "duration_seconds": 137.77268575,
+      "summary": {
+        "killed": 4,
+        "missed": 18,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 3
+      },
+      "selection": {
+        "module_root": "/tmp/mutie-python-betting-math-original",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "continue_on_error": 30,
+        "test_scope": "full",
+        "include": [
+          "src/betting_math_kit/simulation.py"
+        ],
+        "exclude": [],
+        "operators": [
+          "arithmetic_replace"
+        ],
+        "timeout": 30,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 60,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-modulo-audit/original-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 97,
+          "column": 14,
+          "end_line": 97,
+          "end_column": 15,
+          "byte_start": 2834,
+          "byte_end": 2835,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 97,
+          "column": 23,
+          "end_line": 97,
+          "end_column": 24,
+          "byte_start": 2843,
+          "byte_end": 2844,
+          "original": "*",
+          "replacement": "/",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 97,
+          "column": 28,
+          "end_line": 97,
+          "end_column": 29,
+          "byte_start": 2848,
+          "byte_end": 2849,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 99,
+          "column": 17,
+          "end_line": 99,
+          "end_column": 18,
+          "byte_start": 2897,
+          "byte_end": 2898,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 99,
+          "column": 24,
+          "end_line": 99,
+          "end_column": 25,
+          "byte_start": 2904,
+          "byte_end": 2905,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 100,
+          "column": 16,
+          "end_line": 100,
+          "end_column": 17,
+          "byte_start": 2924,
+          "byte_end": 2925,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 101,
+          "column": 28,
+          "end_line": 101,
+          "end_column": 29,
+          "byte_start": 2956,
+          "byte_end": 2957,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 101,
+          "column": 37,
+          "end_line": 101,
+          "end_column": 38,
+          "byte_start": 2965,
+          "byte_end": 2966,
+          "original": "*",
+          "replacement": "/",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 101,
+          "column": 56,
+          "end_line": 101,
+          "end_column": 57,
+          "byte_start": 2984,
+          "byte_end": 2985,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 111,
+          "column": 10,
+          "end_line": 111,
+          "end_column": 11,
+          "byte_start": 3210,
+          "byte_end": 3211,
+          "original": "%",
+          "replacement": "*",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 113,
+          "column": 19,
+          "end_line": 113,
+          "end_column": 20,
+          "byte_start": 3260,
+          "byte_end": 3261,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 113,
+          "column": 24,
+          "end_line": 113,
+          "end_column": 25,
+          "byte_start": 3265,
+          "byte_end": 3266,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 113,
+          "column": 34,
+          "end_line": 113,
+          "end_column": 35,
+          "byte_start": 3275,
+          "byte_end": 3276,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 176,
+          "column": 24,
+          "end_line": 176,
+          "end_column": 25,
+          "byte_start": 5127,
+          "byte_end": 5128,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 177,
+          "column": 29,
+          "end_line": 177,
+          "end_column": 30,
+          "byte_start": 5170,
+          "byte_end": 5171,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 181,
+          "column": 29,
+          "end_line": 181,
+          "end_column": 30,
+          "byte_start": 5363,
+          "byte_end": 5364,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        },
+        {
+          "id": 17,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 196,
+          "column": 30,
+          "end_line": 196,
+          "end_column": 31,
+          "byte_start": 5707,
+          "byte_end": 5708,
+          "original": "*",
+          "replacement": "/",
+          "diff": "diff/000017.diff",
+          "test_packages": []
+        },
+        {
+          "id": 18,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 198,
+          "column": 29,
+          "end_line": 198,
+          "end_column": 30,
+          "byte_start": 5780,
+          "byte_end": 5781,
+          "original": "*",
+          "replacement": "/",
+          "diff": "diff/000018.diff",
+          "test_packages": []
+        },
+        {
+          "id": 19,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 217,
+          "column": 30,
+          "end_line": 217,
+          "end_column": 31,
+          "byte_start": 6241,
+          "byte_end": 6242,
+          "original": "-",
+          "replacement": "+",
+          "diff": "diff/000019.diff",
+          "test_packages": []
+        },
+        {
+          "id": 20,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 217,
+          "column": 36,
+          "end_line": 217,
+          "end_column": 37,
+          "byte_start": 6247,
+          "byte_end": 6248,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000020.diff",
+          "test_packages": []
+        },
+        {
+          "id": 21,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 220,
+          "column": 48,
+          "end_line": 220,
+          "end_column": 49,
+          "byte_start": 6405,
+          "byte_end": 6406,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000021.diff",
+          "test_packages": []
+        },
+        {
+          "id": 22,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 220,
+          "column": 60,
+          "end_line": 220,
+          "end_column": 61,
+          "byte_start": 6417,
+          "byte_end": 6418,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000022.diff",
+          "test_packages": []
+        },
+        {
+          "id": 23,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 231,
+          "column": 30,
+          "end_line": 231,
+          "end_column": 31,
+          "byte_start": 6769,
+          "byte_end": 6770,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000023.diff",
+          "test_packages": []
+        },
+        {
+          "id": 24,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 233,
+          "column": 32,
+          "end_line": 233,
+          "end_column": 33,
+          "byte_start": 6850,
+          "byte_end": 6851,
+          "original": "/",
+          "replacement": "*",
+          "diff": "diff/000024.diff",
+          "test_packages": []
+        },
+        {
+          "id": 25,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 348,
+          "column": 30,
+          "end_line": 348,
+          "end_column": 31,
+          "byte_start": 10102,
+          "byte_end": 10103,
+          "original": "+",
+          "replacement": "-",
+          "diff": "diff/000025.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:97:14: \"/\" -> \"*\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.416085583,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 24577,
+                "head_bytes": 24577,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 24576,
+                "head_bytes": 24576,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.877902417,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1537,
+                "head_bytes": 1537,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1536,
+                "head_bytes": 1536,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:97:28: \"-\" -> \"+\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.8281965420000001,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3816,
+                "head_bytes": 3816,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 3815,
+                "head_bytes": 3815,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.793283041,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.284981083,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 4.264125916,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 5.710401707,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:101:37: \"*\" -> \"/\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.930415332,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 16848,
+                "head_bytes": 16848,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 16847,
+                "head_bytes": 16847,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.392230917,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.877701333,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.751124292,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.714744875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2328,
+                "head_bytes": 2328,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2327,
+                "head_bytes": 2327,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 4.35935475,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.7099761249999998,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.715143042,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1293,
+                "head_bytes": 1293,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1292,
+                "head_bytes": 1292,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.798295625,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 17,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.776693709,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000017.log",
+            "stdout": "logs/000017.stdout.log",
+            "stderr": "logs/000017.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 18,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.747938416,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000018.log",
+            "stdout": "logs/000018.stdout.log",
+            "stderr": "logs/000018.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 19,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.7344711670000001,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000019.log",
+            "stdout": "logs/000019.stdout.log",
+            "stderr": "logs/000019.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 20,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.111175834,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000020.log",
+            "stdout": "logs/000020.stdout.log",
+            "stderr": "logs/000020.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 21,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.844472792,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000021.log",
+            "stdout": "logs/000021.stdout.log",
+            "stderr": "logs/000021.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 22,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.8667845010000002,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000022.log",
+            "stdout": "logs/000022.stdout.log",
+            "stderr": "logs/000022.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 23,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.864463417,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000023.log",
+            "stdout": "logs/000023.stdout.log",
+            "stderr": "logs/000023.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1657,
+                "head_bytes": 1657,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1656,
+                "head_bytes": 1656,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 24,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 2.202604167,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000024.log",
+            "stdout": "logs/000024.stdout.log",
+            "stderr": "logs/000024.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 25,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.7425413330000001,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000025.log",
+            "stdout": "logs/000025.stdout.log",
+            "stderr": "logs/000025.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "ac0b97a1b42cfd0e5541837dba0ccb0377e76c3e17d63a18942cb053c8efe2dd",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "1807ad48b8da9affe9320187b5449ae7b5b3d33448883174db364dcd49b73909",
+        "errors.txt": "142ce3f9030a070789829dac81b412713d4bb0ca32fb23916209fb54a97d7cf9",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "30d02a484368d13eda1d942196eb5c758e1967511df4575e0bfc61b0356c579c",
+        "summary.txt": "08971d439b805bd9e3097038a793332df225731bdc31af23257132c9a3b139fd",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "72b7557366c3f4cfa4f5f6413502b8538ef19a5aad58c40ef36601f3b5b22a73",
+        "run.json": "c04af6dca3e059d3f91041a750edb36c9e84471485ea996f00268743a714c9e3",
+        "diff/000003.diff": "f2f08ffe2e651b92de34f4db079453adcc891b3820e23baa70d8f407fb843032",
+        "diff/000015.diff": "2be15277c9c9a6afa7f994b098ba58d897164a52b6338c4f81f8710f3322c7dc",
+        "diff/000023.diff": "b6f4146f75e6153a2392b2e2442cb75acf0af80992f44eda533d1941363e71c4",
+        "diff/000019.diff": "3c4e6849fa1ab47be048f0d88574f6e125cdb89154444ce0d9b0aed080fa0ac7",
+        "diff/000018.diff": "98f25637189cd075051bc3b2fbcaab7604c9f01372b169ac365af26ae7d9fdeb",
+        "diff/000022.diff": "d9adbe69514c834a29135133843f34b10091280de6de94b26f863a618781a21a",
+        "diff/000014.diff": "2384f6bbd5550d4d8cb5a1c4398f9e501e805f754452284238e19df6308869b9",
+        "diff/000002.diff": "e94fe4b4046a349339161622b0703c527e2c5ab9e7cdc6953c2af9e7c15ef847",
+        "diff/000025.diff": "6746ddc4925e445a579e44cfd9f7a6c27f46dd685a0e4f374c7162c6d7a4b572",
+        "diff/000009.diff": "74e922c41b013ebbf8ddeff49bb7f9f172ecd230b937b355cf73b7421f88fe4f",
+        "diff/000005.diff": "083c28527ea89583c152225283bf21099fabfadd21f9ec1a2e9050ab5e9e7a01",
+        "diff/000013.diff": "9d1243178d257d6c991a9e917c37dd68abc679e52016bab6ee065a5a4638abb4",
+        "diff/000012.diff": "8f22dcd78a0bad53d43625d8a0d2c2923acb3d913c80aaee861f992ae0e7201a",
+        "diff/000004.diff": "84c9df9fe173c5998985b50eb218adf6e7f5f3d93f5e30f05141fef7dc9702af",
+        "diff/000008.diff": "145f567a3c736e32a864b3cd31cfe332ada2b0d39a0b19d7ad4b3a8e74a04314",
+        "diff/000024.diff": "a47924551f2d34867d2244c8e6c405af810a0096e441ca4b692e2af5e78949bf",
+        "diff/000011.diff": "a5dcf697bd2d19d7eeeefe9cd060858dd22c3a435b96f5ea488bbd736ebb3621",
+        "diff/000007.diff": "3affc96acab214248ea24561accef54d8f9f6d909b422f87747ef30530f23f80",
+        "diff/000006.diff": "c0b7758191b5c7af163928c53257dc798e884a78b598c8ef9cdb06aaadff72f9",
+        "diff/000010.diff": "1be611078cb547c6e77410c3da10f64d99bb30128dd3059b52534f968bf978a4",
+        "diff/000017.diff": "80493aba635dc94c3359b25540af5b6114d781ed6cfb571ce16eb69777d4420c",
+        "diff/000001.diff": "b6c3ebc45ddaa76402ef8359a9ecc3370cb3e4e1f6a1210d06f7625d88cd8aec",
+        "diff/000021.diff": "a5a5ada0c96a1e540b22602b8e3b07e198593cd4546fb7f7a2ece63d8bad1d6d",
+        "diff/000020.diff": "c073d976af15c893e026788fdc930aaff326585db1e3f7db8316460429b53c6d",
+        "diff/000016.diff": "714f5f88e1b5f45c13415af88f8ec7e798016f1674ab0a8e402ed2dd9f8c4094",
+        "logs/000025.stdout.log": "32527d4e1bf407c2320efc0c0a9a7566822b0517eacb65f80d62d9621f3e32ae",
+        "logs/000012.stdout.log": "3241c0e6fa665bcadcb35619e5b8abc340ab1461afad542b497f25fedaa35478",
+        "logs/000013.log": "638ed362283d1ec6e1c8c9339528ed02237b51944f6871925aa0b907c5399b72",
+        "logs/000007.log": "a212cb2a3f956c1b35ddb164aedf15f537d8cc0d4990b7dea5b052a8a5c6dbe8",
+        "logs/000021.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000016.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000006.log": "bf14df386e0d4af7505bb56ccce394b1d63901b840e11bce758c4521e45a431f",
+        "logs/000012.log": "8ff92dcd16f0f08b80454319b90dd6c80f88e06845e327ba84284f1d5624267f",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.log": "c1e21aaffc37d541f7248303946432482062017f35389d797133e68ea0c9cf5e",
+        "logs/000010.log": "2c90f0261c7f8f6276bc1315104c3727092fb9539b84943b7dae3c062d86e2eb",
+        "logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000011.log": "862c84f078b2b0ef70ce8074a48abb5480093e0159954cc8107b8790845e3447",
+        "logs/000005.log": "0c12c5bb0981d272d64cc6f59d70f18e62d6e69256ce2882fabdbb23e3050ec8",
+        "logs/000003.stdout.log": "8e70ff96b881e3864e7f8c9ba202fb1682496508c0a416ec45a5ef305d577f31",
+        "logs/000001.log": "54a324377c5a536a9787c3bd967a0e39be76fa2280cfd6c4545edad3150a94ed",
+        "logs/000015.log": "bca69229f5874d131eb9ced37f17e1de1dd2b1704b3e4c7d447117472be89781",
+        "logs/000006.stdout.log": "22223fde71f096764264e49ee16cf8fc163de80d9eeb098e0aedfb58791f9eb0",
+        "logs/000014.log": "15f4524485c242bc6f8df649c32510b0fb43cd00107db162354ce981489c332d",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000013.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000024.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000016.log": "862c84f078b2b0ef70ce8074a48abb5480093e0159954cc8107b8790845e3447",
+        "logs/000002.log": "9f15309266d9d49a69a62fcaa9ca299ede227577016a57abaf7965a2c13ca7e9",
+        "logs/000017.stdout.log": "4ef049382c38b4c72f1f6cef7c9a672f6f2dcf9bd1c7a44767dc314c78aa4694",
+        "logs/000020.stdout.log": "bba9472aa1c362ac3cf808cb41276bc165376d5e1ad455a9a52e73be0c2cf331",
+        "logs/000003.log": "699e21f489a8d5b15eccecc3fda7155dd63ebcb44854a13d351708069e005e46",
+        "logs/000017.log": "862c84f078b2b0ef70ce8074a48abb5480093e0159954cc8107b8790845e3447",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000010.stdout.log": "aee003359385c0691e0a704a3a2ef8c1f04dc2eafc88dcbbe78b9f3c4023a8ab",
+        "logs/discovery.log": "47946d225c5567121e68d9580e633b174e61fc58c77c3e9d9216fc4d5d227616",
+        "logs/000014.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000023.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "407970765e995c2e7d9e551606e961536aaa43c8331d5fb989143b6a05639de0",
+        "logs/000019.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000004.stdout.log": "8ab917c0f2225422b19097fd7c30b510e1e7f728276cdf6d8ddd59c83b8e2d64",
+        "logs/000018.stdout.log": "82f11dd1cf5b5ae67be1f6b85ba3d1d2b4288a7bbdd51fb06e33047f10b0eebd",
+        "logs/000009.stdout.log": "dd3b007f2587a687313f900a01317a8696606fdadf07a3fc5926242388e69b1c",
+        "logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000022.stdout.log": "923f6ebf85b9c75a79a82c1692b09e54a80e90d1863d6446fea96b54de1cbba6",
+        "logs/000015.stdout.log": "936c7614fde936c31d9e34b02cb9867928272273eebd30142a2bfe91475d9493",
+        "logs/discovery.stdout.log": "c2ecf55716cd08ff0ebba990a8a0450985646105b52170c642b184f4770a8446",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.log": "cc01bae7e3d076e740f28cd22506f8dd340ac6075f71384a2de6dca0fd0c0eeb",
+        "logs/000007.stdout.log": "e41072715e47321df5de4b7bad49857fb46fcd70bcef2c6729eadf8ee6e2a0cd",
+        "logs/000016.stdout.log": "4ef049382c38b4c72f1f6cef7c9a672f6f2dcf9bd1c7a44767dc314c78aa4694",
+        "logs/000021.stdout.log": "76f9805c330cbf30822ff8b94381659bd9e3c889380e00837aabd8b71c3dc448",
+        "logs/000012.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000025.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000020.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000017.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000024.stdout.log": "d880a5ed57a4af4d5ca34f251e4e86f32581688f0f8060c79d9a35e19b8ead37",
+        "logs/000013.stdout.log": "8c4b49d21a5e2dfeb1fa8cdd5580586ae50698d8121f9797a3cd232f42915a62",
+        "logs/000002.stdout.log": "17b60c2980a967c96100fe1a3d1977a9426c2ddae304d45e7dfe2f9e5ee09b0c",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "443e093272b8a9d1983ddc855d8168ccdcfa007111c5ddc75d3694041f5ab725",
+        "logs/000019.stdout.log": "17f03606cac04932cc22bdfc6fcc1b8b53b1ff3ce16ad4253c77d61770460d98",
+        "logs/000008.stdout.log": "657ab100b68822834b1bd22c608754ebd76fd3c2eb66ea9231aa0119bf604586",
+        "logs/baseline.stdout.log": "82f11dd1cf5b5ae67be1f6b85ba3d1d2b4288a7bbdd51fb06e33047f10b0eebd",
+        "logs/000025.log": "116f765a6deeeb14e11bb466825d878cbb66cebb7a5e0a4642020e65bbeab367",
+        "logs/000019.log": "61d7b540fac79694dbb611306310804ccdb96d58191824d6d70926a329c897ca",
+        "logs/000018.log": "cc01bae7e3d076e740f28cd22506f8dd340ac6075f71384a2de6dca0fd0c0eeb",
+        "logs/000024.log": "e5666ab38bf64ec5af445711bbfda6ace261cf5fd08f494f20bb69b983e548de",
+        "logs/000023.stdout.log": "616bd4871d58b1465c757e85f389e4844bf71861605741d9177b719a6d66c9aa",
+        "logs/000014.stdout.log": "eb9ddd647f7b4b3d53822b3759dbdb47322dde2df326cb9bff0a6d2cf5e36ee9",
+        "logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000008.log": "8bb879f775b999164689b580a323cac83cba37c1edae6396412dbaddc0d8ef05",
+        "logs/000020.log": "1c5532770a510c2a1fd7d5bc6f5d72ef323fe6907fbb2cca98567bb9ecb3e060",
+        "logs/000021.log": "2c136d7a27654bd2fbbce2de838d00a6f22c4124cc39f798f90328f8690e5a99",
+        "logs/000015.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000009.log": "4aeebf3a8619ba1d1edf1744c398d90a94935c20562dbd8b22713850007281c8",
+        "logs/000022.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000011.stdout.log": "4ef049382c38b4c72f1f6cef7c9a672f6f2dcf9bd1c7a44767dc314c78aa4694",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000023.log": "413102080fffe3ac8dced689c392e8000e909c35943c15302522c1c95f3bb08c",
+        "logs/000022.log": "6f42d7df13f616ad0775cc6242781418c828f06116265ad84fc53e7a3f069dfe",
+        "logs/000018.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-python-modulo-audit/stronger-reports/run-1792718828-W0s8DF",
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "test_count": 199,
+      "duration_seconds": 12.786317792,
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "selection": {
+        "module_root": "/tmp/mutie-python-modulo-audit/stronger",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [],
+        "timeout": 30,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 60,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-modulo-audit/stronger-reports",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-python-modulo-audit/original-reports/run-1792718674-gN4NIn",
+          "selection": "all",
+          "source_ids": [
+            10
+          ]
+        },
+        "ui": "plain"
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "arithmetic_replace",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 111,
+          "column": 10,
+          "end_line": 111,
+          "end_column": 11,
+          "byte_start": 3210,
+          "byte_end": 3211,
+          "original": "%",
+          "replacement": "*",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.7748121669999999,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1500,
+                "head_bytes": 1500,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1499,
+                "head_bytes": 1499,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "665913b177fce20449f86bae9054584549a1b34a7a3e80c21078978f5ac11693",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "c0c102d67fdb050af5e4ef2527cc59959ea91012aa94982fe0dcdf55f3127214",
+        "summary.txt": "099d4a9724b6f893ca63d86176c14ac561472a7f92ba7b6cb8df7576d7d6b980",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "6b3875c570ba5aa6dd3b0c3b4c5bd045e126751ae00372892d3cfe459e81cb6d",
+        "run.json": "fa425163dea6b360d0e4c1e0c5bfd30a6d58dc0256615e7bb99dca3e6d6b1d2e",
+        "diff/000001.diff": "1be611078cb547c6e77410c3da10f64d99bb30128dd3059b52534f968bf978a4",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "7508a60ebebe8620236f05604dc6c3f0712def836c0a4f9707180094767f94fa",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.log": "fc86d1d6a32c80faddefc35a78ffdbac6edd5d62d33b88ac8cd773d7afda5354",
+        "logs/000001.stdout.log": "a8012cb2c0c6c097abde0cc064e197c55130d1b55b2d6bf48d2f4ae363d770ac",
+        "logs/discovery.stdout.log": "43644b6f5ceef4557ff903ee7754a28e28669a6db3e4fc51bbf445e062467817",
+        "logs/baseline.log": "376b7d38d296264c843c7d80f70e8ab97968859eaa528817c5fe2819ac6c5abc",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "8a1b343313ceb81ab20d6de3a81c9a189084585e700d7e3c9e2b6fd603c873ab"
+      }
+    }
+  },
+  "recipe_fingerprint": "sha256:2d28465997843068793be8180c996f9e2051b3b82998e4f899fe2655be8f040d",
+  "cli_sha256": "417976c739dd80a86c6d81bca685c0f9aa24d90a7479618785e8b1d877d14bd5",
+  "stronger_test_sha256": "756f96679e92c646ef43685973839807039b1ef458f5b7f8385cb209115b14cd",
+  "preservation_verified": true,
+  "prior_report_files_preserved": 6280,
+  "preservation_manifest": "/tmp/mutie-python-modulo-audit/preservation.json",
+  "preservation_manifest_sha256": "f6f081e3ce483476edf6faa4f2f82521d65b570ce93ceb7cf9fe20191bd239bb"
+}

@@ -555,7 +555,7 @@ Support differs by language and applies within each runner's validated scope:
 | Mutation | Go | Rust | Python | JS/TS (Vitest, Node, Bun) |
 | --- | --- | --- | --- | --- |
 | Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | Yes | Yes | Yes |
-| Modulo replacement: `% → *` | Yes | Yes | No | Yes |
+| Modulo replacement: `% → *` | Yes | Yes | Yes | Yes |
 | Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | Yes | Yes | Yes |
 | Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | Yes |
 | Logical swap: `&& ↔ \|\|` (Python: binary `and ↔ or`) | Yes | Yes | Yes | Yes |
@@ -610,12 +610,16 @@ are excluded at that chain node; eligible nested binary expressions remain eligi
 Bitwise operators, annotations and tests are excluded. See
 [semantic controls and unchanged Route Mini diagnostic findings](benchmarks/python-logical.md).
 
-Python binary arithmetic supports `+ ↔ -` and `* ↔ /`, preserving native
+Python binary arithmetic supports `+ ↔ -`, `* ↔ /` and `% → *`, preserving native
 grouping and operand evaluation. Unary signs, augmented-assignment operators, floor
-division, modulo, powers and annotations are excluded. Operand types are not
+division, powers and annotations are excluded. Operand types are not
 inferred: unsupported operations and division by zero remain errors. See
 [semantic controls and unchanged-project validation](benchmarks/python-arithmetic.md)
 and the [complete 194-candidate review](benchmarks/python-arithmetic-full.md).
+Modulo replacement also includes string/bytes formatting and custom `%` dispatch:
+the replacement uses native multiplication, including sequence repetition or
+TypeError as appropriate. It does not infer numeric types. See
+[modulo controls and the unchanged-project finding](benchmarks/python-modulo.md).
 Python comparison boundaries exclude chained comparisons such as `0 < x < 10`.
 
 For larger Python inventories, `--continue-on-error MAX_ERRORS` can continue

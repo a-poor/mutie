@@ -514,8 +514,9 @@ boundaries are retained individually; combined accounting is not a full score.
 
 `benchmarks/python-arithmetic.md` validates Python binary `+ ↔ -` and `* ↔ /`
 under `arithmetic_replace`. Preserve native grouping/evaluation and exact token
-pairs; annotations, unary/augmented operators, floor division, modulo and powers
-remain excluded. This is not numeric type inference: unsupported operands and
+pairs; annotations, unary/augmented operators, floor division and powers
+remain excluded. Modulo was added later in `benchmarks/python-modulo.md`.
+This is not numeric type inference: unsupported operands and
 zero division stay errors. Unchanged betting-math-kit's 30-site Kelly selection
 has 21 kills, eight survivors and one string-operand error; a separate 201-test
 copy kills all eight survivors. Preserve prior inputs/reports and recipe drift
@@ -609,3 +610,12 @@ and complete operand/truthiness traces with the intended AST swap across value a
 condition contexts, including stateful truthiness and exceptions. Raw values and
 short-circuiting stay native. Route Mini's unchanged suite misses two lost diagnostic
 messages; separate-copy tests kill both. Constructor runtime errors remain errors.
+
+
+[Python modulo replacement](benchmarks/python-modulo.md) adds binary `% → *`
+under `arithmetic_replace`. Native numeric, custom/reflected dispatch and
+string/bytes-formatting operands are eligible; no numeric type inference is
+claimed. Multiplication errors remain errors, and `%=`/annotations/tests remain
+excluded. Unchanged betting-math-kit contributes an odd-trial median survivor;
+a separate public-API regression test kills it. Preserve original scores, inputs
+and historical reports; selected arithmetic accounting is not a full project score.

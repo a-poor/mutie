@@ -73,7 +73,7 @@ Split implementation goals by language/runner when acceptance becomes too large.
    cache cleanup, and unchanged UCD Generate findings with three stronger-test kills.
    Workspace build scripts/proc-macro members, external paths and custom dev/test
    profiles remain explicit limits.
-4. [ ] **Expression-operator parity.** Add missing arithmetic/modulo, comparison
+4. [x] **Scoped expression-operator parity.** Add missing arithmetic/modulo, comparison
    inversion/boundaries, logical swaps and negation removal by language. Preserve
    evaluation/grouping, short-circuit and overloaded/coercion semantics; retain
    compilation/runtime error distinctions. Require discovery/identity regressions,
@@ -108,7 +108,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    value/grouping controls, scored fixtures and two unchanged Route Mini diagnostic
    survivors killed in a separate stronger copy. See [acceptance](benchmarks/python-logical.md).
    Flat three-or-more-operand Boolean chains remain excluded; nested binary nodes
-   are supported. Python remainder is the last unfilled expression-operator row.
+   are supported.
+   Eighth slice completed: Python `% → *`, with native dispatch/formatting/error
+   controls, scored fixtures and an unchanged betting-math-kit odd-trial median
+   survivor killed through its public API in a separate 199-test copy. See
+   [acceptance](benchmarks/python-modulo.md). All expression rows now have scoped
+   support; documented exclusions (including flat Python logical chains) remain.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

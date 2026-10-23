@@ -24,7 +24,9 @@ pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Ope
         ("==", "!=") | ("!=", "==") | ("<", ">=") | ("<=", ">") | (">", "<=") | (">=", "<") => {
             Operator::ComparisonInvert
         }
-        ("+", "-") | ("-", "+") | ("*", "/") | ("/", "*") => Operator::ArithmeticReplace,
+        ("+", "-") | ("-", "+") | ("*", "/") | ("/", "*") | ("%", "*") => {
+            Operator::ArithmeticReplace
+        }
         _ => {
             let operand = original.strip_prefix("not")?;
             if !operand.starts_with([
@@ -350,7 +352,8 @@ mod tests {
 
     #[test]
     fn arithmetic_spans_require_exact_pairs_and_operator_identity() -> Result<()> {
-        for (original, replacement) in [("+", "-"), ("-", "+"), ("*", "/"), ("/", "*")] {
+        for (original, replacement) in [("+", "-"), ("-", "+"), ("*", "/"), ("/", "*"), ("%", "*")]
+        {
             let root = tempfile::tempdir()?;
             fs::create_dir(root.path().join("sample"))?;
             let source = format!("label = 'π'; result = a {original} b\n");

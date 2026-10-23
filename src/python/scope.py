@@ -151,16 +151,16 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
         offsets.append(offsets[-1] + len(line.encode("utf-8")))
     tokens = []
     for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
-        if ((token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/"})
+        if ((token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%"})
                 or (token.type == tokenize.NAME and token.string in {"and", "or"})):
             row, column = token.start
             start = offsets[row - 1] + len(lines[row - 1][:column].encode("utf-8"))
             tokens.append((start, token.string, row))
     replacements = {"<": "<=", "<=": "<", ">": ">=", ">=": ">",
-                    "+": "-", "-": "+", "*": "/", "/": "*", "and": "or", "or": "and"}
+                    "+": "-", "-": "+", "*": "/", "/": "*", "%": "*", "and": "or", "or": "and"}
     inversions = {"==": "!=", "!=": "==", "<": ">=", "<=": ">", ">": "<=", ">=": "<"}
     operators = {ast.And: "and", ast.Or: "or", ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
-                 ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/"}
+                 ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/", ast.Mod: "%"}
     for node in ast.walk(tree):
         if node in annotation_nodes:
             continue

@@ -2255,3 +2255,25 @@ without introducing helpers, extra Boolean conversion or duplicate evaluations.
 Exact keyword pairs are shared by discovery and saved-report readers; fresh
 source and validator identity continue to bind reruns. Newly evaluated operand
 failures retain existing classification. See [acceptance](benchmarks/python-logical.md).
+
+
+## Python modulo replacement
+
+Binary `% → *` joins `arithmetic_replace` through the existing AST/operator-token
+path. Equal precedence and left associativity preserve operand/parent grouping;
+no wrapper or coercion is added. Original operand bytes, comments, UTF-8 and CRLF
+coordinates remain intact. `%=` assignments, annotations, tests, floor division
+and powers remain excluded. Percent characters in strings and f-string format
+specifiers are not operator tokens; expressions inside f-strings are eligible.
+
+This is syntactic support, including string/bytes formatting and overloaded
+operators. A numeric formatting RHS can become repetition; other operands can
+raise TypeError. Native reflected/subclass dispatch, NotImplemented fallback,
+raw results and operand exceptions are preserved. The existing classifier handles
+these outcomes without converting runtime errors to kills. Exact saved token
+pairs and source identity are required; discovery/validation bytes change the
+execution recipe, so historical reports require fresh original runs.
+
+[Acceptance](benchmarks/python-modulo.md) records native controls, scored fixture
+and formatting/custom-dispatch errors, and unchanged betting-math-kit's odd-trial
+median finding with a separate-copy stronger test through its public API.

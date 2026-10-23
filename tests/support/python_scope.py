@@ -570,13 +570,13 @@ def test_data(tmp_path):
             text = source.replace('\n', newline)
             self.write('sample/__init__.py', text)
             sites = scope.inspect(self.root)['mutations']
-            self.assertEqual([m['original'] for m in sites], ['+', '*', '/', '-', '-', '+'])
+            self.assertEqual([m['original'] for m in sites], ['+', '*', '/', '-', '-', '%', '+'])
             for site in sites:
                 raw = text.encode()
                 self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
                 changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
                 expected = ast.parse(text)
-                mapping = {ast.Add: ast.Sub, ast.Sub: ast.Add, ast.Mult: ast.Div, ast.Div: ast.Mult}
+                mapping = {ast.Add: ast.Sub, ast.Sub: ast.Add, ast.Mult: ast.Div, ast.Div: ast.Mult, ast.Mod: ast.Mult}
                 # Only the native operator class changes; all grouping and operands remain.
                 matched = []
                 for node in ast.walk(expected):
@@ -633,6 +633,91 @@ def test_data(tmp_path):
                     namespace['calculate'](Left, Right)
                 with self.assertRaises(TypeError):
                     namespace['calculate'](lambda: 'a', lambda: 'b')
+
+    def test_modulo_grouping_coordinates_and_exclusions(self):
+        import ast
+        source = ('label = "π % text"\n'
+                  'def f(a,b,c): return a % b * c, a * (b % c), a % (b % c), a ** b % c, -a % b\n'
+                  'def multiline(a,b): return (a # % trivia\n % b)\n'
+                  'def augmented(a,b):\n a %= b\n return a // b\n'
+                  'annotation: list[1 % 2]\n'
+                  'def bound[T: (1 % 2)](a: list[1 % 2]) -> list[1 % 2]: return a\n'
+                  'def formatted(a,b): return f"{a % b}"\n'
+                  'def string(a): return "%s" % a\n')
+        for newline in ('\n', '\r\n'):
+            text = source.replace('\n', newline)
+            self.write('sample/__init__.py', text)
+            self.write('tests/test_sample.py', 'def test_modulo(): assert 3 % 2 == 1\n')
+            sites = [m for m in scope.inspect(self.root)['mutations'] if m['original'] == '%']
+            self.assertEqual(len(sites), 9)
+            raw = text.encode()
+            for site in sites:
+                self.assertEqual(raw[site['start']:site['end']], b'%')
+                self.assertEqual(site['replacement'], '*')
+                changed = raw[:site['start']] + b'*' + raw[site['end']:]
+                expected = ast.parse(text)
+                matched = []
+                for node in ast.walk(expected):
+                    if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Mod):
+                        lines = raw.splitlines(keepends=True)
+                        low = sum(map(len, lines[:node.left.end_lineno-1])) + node.left.end_col_offset
+                        high = sum(map(len, lines[:node.right.lineno-1])) + node.right.col_offset
+                        if low <= site['start'] < high:
+                            node.op = ast.Mult()
+                            matched.append(node)
+                self.assertEqual(len(matched), 1)
+                self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+
+    def test_modulo_native_values_formatting_dispatch_and_errors(self):
+        import math
+        source = 'def calculate(left,right): return left() % right()\n'
+        self.write('sample/__init__.py', source)
+        site, = scope.inspect(self.root)['mutations']
+        namespace = {}
+        exec(source[:site['start']] + site['replacement'] + source[site['end']:], namespace)
+        calculate = namespace['calculate']
+        for left, right in [(8,3), (-8,3), (8,-3), (-8,-3), (8.5,2.0), (True,3),
+                            (2**100,7), (3,0), (-0.0,2), (math.inf,2), (math.nan,2),
+                            ('%s',3), (b'%d',2), ([1],3)]:
+            trace = []
+            def lhs(): trace.append('left'); return left
+            def rhs(): trace.append('right'); return right
+            result = calculate(lhs,rhs)
+            expected = left * right
+            if isinstance(expected,float) and math.isnan(expected): self.assertTrue(math.isnan(result))
+            else: self.assertEqual(result,expected)
+            if isinstance(result,float) and result == 0: self.assertEqual(math.copysign(1,result), math.copysign(1,expected))
+            self.assertEqual(type(result),type(expected))
+            self.assertEqual(trace,['left','right'])
+        # Formatting is deliberately syntactic: a numeric RHS repeats a string;
+        # mapping/tuple/string RHS incompatibility remains a native TypeError.
+        for left,right in [('%s','text'), ('%(x)s',{'x':'text'}), ('%s',(1,))]:
+            with self.assertRaises(TypeError): calculate(lambda:left,lambda:right)
+        trace = []
+        marker = object()
+        class Left:
+            def __mod__(self, other): raise AssertionError('old dispatch')
+            def __mul__(self, other): trace.append('mul'); return NotImplemented
+        class Right:
+            def __rmul__(self, other): trace.append('rmul'); return marker
+        def lhs(): trace.append('left'); return Left()
+        def rhs(): trace.append('right'); return Right()
+        self.assertIs(calculate(lhs,rhs),marker)
+        self.assertEqual(trace,['left','right','mul','rmul'])
+        class Child(Left):
+            def __rmul__(self, other): trace.append('subclass'); return marker
+        trace.clear()
+        self.assertIs(calculate(Left,Child),marker)
+        self.assertEqual(trace,['subclass'])
+        class Failing:
+            def __mul__(self,other): raise ValueError('dispatch')
+        with self.assertRaisesRegex(ValueError,'dispatch'): calculate(Failing,Right)
+        for position in ('left','right'):
+            trace.clear()
+            def bad(): trace.append(position); raise RuntimeError('operand')
+            with self.assertRaisesRegex(RuntimeError,'operand'):
+                calculate(bad if position == 'left' else lhs, bad if position == 'right' else rhs)
+            self.assertEqual(trace, ['left'] if position == 'left' else ['left','right'])
 
     def test_conftest_helpers_are_audited_and_imports_are_bounded(self):
         self.write('tests/__init__.py', '"""Local tests."""\n')
