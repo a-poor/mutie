@@ -25,6 +25,92 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def branch_sites(self, source):
+        self.write('sample/__init__.py', source)
+        return [m for m in scope.inspect(self.root)['mutations']
+                if m['replacement'].startswith(('(True or (', '(False and ('))]
+
+    def test_branch_coordinates_grouping_and_elif(self):
+        import ast
+        source = ('label = "π"\n'
+                  'def choose(a,b,c):\n'
+                  ' if (a # retained comment\n'
+                  '     or b and c): return a\n'
+                  ' elif b: return b\n'
+                  ' else: return c\n')
+        for newline in ('\n', '\r\n'):
+            raw = source.replace('\n', newline).encode()
+            sites = self.branch_sites(raw.decode())
+            self.assertEqual(len(sites), 4)
+            for site in sites:
+                self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+                changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+                expected = ast.parse(raw)
+                node, = [n for n in ast.walk(expected) if isinstance(n, ast.If)
+                         and n.test.lineno == site['line']]
+                force = site['replacement'].startswith('(True or')
+                node.test = ast.BoolOp(op=ast.Or() if force else ast.And(),
+                                      values=[ast.Constant(force), node.test])
+                self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+
+    def test_branch_assignment_and_context_exclusions(self):
+        source = ('def choose(a):\n'
+                  ' if (True): pass\n'
+                  ' if False: pass\n'
+                  ' if (x := a()): pass\n'
+                  ' if a and (x := a()): pass\n'
+                  ' if (lambda: (x := a()))(): pass\n'
+                  ' if [x := v for v in a]: pass\n'
+                  ' while a: break\n'
+                  ' assert a\n'
+                  ' return a if a else [x for x in a if x]\n')
+        self.assertEqual(self.branch_sites(source), [])
+        self.assertEqual(len(self.branch_sites('if 0: pass\nif None: pass\nif "": pass\n')), 6)
+        self.write('tests/test_sample.py', 'def test_nested():\n if 1: assert 1\n')
+        self.assertEqual(len(self.branch_sites('if 0: pass\n')), 2)
+
+    def test_branches_skip_effects_and_truthiness_preserve_body_values(self):
+        class BoolBomb:
+            def __bool__(self): raise RuntimeError('truthiness')
+        class LenBomb:
+            def __len__(self): raise RuntimeError('length')
+        for expression in ('a', 'call()', 'a and call()', 'a or call()',
+                           'a.missing', '1 / 0', 'a < call()'):
+            source = 'def choose(a,call,yes,no):\n if ' + expression + ': return yes\n return no\n'
+            for site in self.branch_sites(source):
+                data = source.encode()
+                namespace = {}
+                exec(data[:site['start']] + site['replacement'].encode() + data[site['end']:], namespace)
+                for value in (BoolBomb(), LenBomb(), [], [1], None):
+                    calls = []
+                    def call():
+                        calls.append(1)
+                        raise RuntimeError('condition called')
+                    yes, no = object(), object()
+                    result = namespace['choose'](value, call, yes, no)
+                    self.assertIs(result, yes if site['replacement'].startswith('(True or') else no)
+                    self.assertEqual(calls, [])
+        source = 'def choose(first,second):\n if first(): return 1\n elif second(): return 2\n return 3\n'
+        for site in self.branch_sites(source)[2:]:
+            data = source.encode(); namespace = {}; calls = []
+            exec(data[:site['start']] + site['replacement'].encode() + data[site['end']:], namespace)
+            def first(): calls.append('first'); return False
+            def second(): raise RuntimeError('skipped elif')
+            self.assertEqual(namespace['choose'](first, second), 2 if site['replacement'].startswith('(True or') else 3)
+            self.assertEqual(calls, ['first'])
+
+    def test_branch_generator_kind_and_body_exception_are_preserved(self):
+        source = 'def choose():\n if (yield 1): raise ValueError("body")\n return 3\n'
+        for site in self.branch_sites(source):
+            data = source.encode(); namespace = {}
+            exec(data[:site['start']] + site['replacement'].encode() + data[site['end']:], namespace)
+            generator = namespace['choose']()
+            if site['replacement'].startswith('(True or'):
+                with self.assertRaisesRegex(ValueError, 'body'): next(generator)
+            else:
+                with self.assertRaises(StopIteration) as raised: next(generator)
+                self.assertEqual(raised.exception.value, 3)
+
     def test_audited_dependency_requires_declaration_and_narrow_imports(self):
         manifest = '[project]\nname="sample"\ndependencies=["webencodings >=0.4"]\n'
         self.write('pyproject.toml', manifest)

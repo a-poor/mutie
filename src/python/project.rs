@@ -17,6 +17,16 @@ use crate::{
 
 /// Exact source recipes; AST admission and fresh discovery establish syntax/context.
 pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Operator> {
+    if !original.trim().is_empty() && !matches!(original, "True" | "False") {
+        for (operator, guard) in [
+            (Operator::BranchForceTrue, "True or"),
+            (Operator::BranchForceFalse, "False and"),
+        ] {
+            if replacement == format!("({guard} ({original}))") {
+                return Some(operator);
+            }
+        }
+    }
     Some(match (original, replacement) {
         ("and", "or") | ("or", "and") => Operator::LogicalSwap,
         ("True", "False") | ("False", "True") => Operator::BooleanFlip,
@@ -241,6 +251,31 @@ impl Project {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn branch_recipes_are_exact() {
+        for original in ["value", "a or b", "a # comment\n or b", "π()"] {
+            assert_eq!(
+                mutation_operator(original, &format!("(True or ({original}))")),
+                Some(Operator::BranchForceTrue)
+            );
+            assert_eq!(
+                mutation_operator(original, &format!("(False and ({original}))")),
+                Some(Operator::BranchForceFalse)
+            );
+            assert_eq!(
+                mutation_operator(original, &format!("(True and ({original}))")),
+                None
+            );
+            assert_eq!(mutation_operator(original, "True"), None);
+        }
+        for original in ["", " ", "True", "False"] {
+            assert_eq!(
+                mutation_operator(original, &format!("(True or ({original}))")),
+                None
+            );
+        }
+    }
 
     #[test]
     fn logical_spans_require_exact_pairs_and_source_identity() -> Result<()> {

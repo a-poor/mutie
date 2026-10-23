@@ -2317,3 +2317,15 @@ require normal source rediscovery. No macro-token/constant/type scope broadening
 or exception reclassification. [Acceptance](benchmarks/rust-branches.md) records
 native ownership/drop/borrowing controls and four unchanged UCD Parse field-loss
 survivors killed in a separate 142-test workspace copy. Seven survivors remain open.
+
+
+Scoped Python branch forcing is supported for ordinary `if`/`elif` conditions.
+The exact `(True or (condition))` / `(False and (condition))` recipes skip all
+condition effects and truthiness. Literal Boolean conditions and every condition
+subtree containing `:=` are excluded; ternaries, loops, comprehension guards,
+annotations and tests do not gain branch candidates. Other operators inside those
+expressions retain their own eligibility. Runtime errors remain errors; exact
+saved recipes, fresh discovery and execution identity stay enforced. See
+`benchmarks/python-branches.md` for native controls, scored fixture/rerun checks
+and unchanged-project evidence. Original scores and inputs remain separate from
+stronger-test results.

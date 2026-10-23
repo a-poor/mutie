@@ -121,13 +121,16 @@ Split implementation goals by language/runner when acceptance becomes too large.
    First slice completed: JS/TS `if` branch forcing across Vitest, Node and Bun,
    with skipped-condition semantic controls, independent JS/TS workflows and seven
    unchanged Bragkit survivors killed by separate-copy exact bonus/count tests.
-   See [acceptance](benchmarks/javascript-branches.md). Rust/Python branch forcing,
+   See [acceptance](benchmarks/javascript-branches.md). Subsequent branch slices are recorded below;
    loops and call removal remain.
    Second slice completed: Rust ordinary Boolean `if` forcing, skipped-effect and
    ownership/borrowing/drop controls, explicit binding-condition exclusions and
    four unchanged UCD Parse field-loss survivors killed in a separate copy. See
-   [acceptance](benchmarks/rust-branches.md). Python branch forcing remains next
-   within this parity slice; seven reviewed-file Rust survivors remain open.
+   [acceptance](benchmarks/rust-branches.md). Seven reviewed-file Rust survivors remain open.
+   Third slice completed: Python if/elif forcing with skipped-condition/truthiness
+   controls, conservative assignment-expression exclusions, scored fixture and
+   unchanged-project stronger-test acceptance. See [acceptance](benchmarks/python-branches.md).
+   Conditional loop skipping and standalone-call removal remain in this parity slice.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

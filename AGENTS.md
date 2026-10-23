@@ -651,3 +651,15 @@ reconstruct exact recipes and require fresh source identities. Unchanged UCD Par
 has 26 selected workspace candidates (15 kills, 11 survivors); a separate 142-test
 copy kills field-loss IDs 4/6/10/14. Preserve 108 original inputs, 225 historical
 report files, original 57.69% score and seven open survivors; no equivalence claims.
+
+
+Scoped Python branch forcing is supported for ordinary `if`/`elif` conditions.
+The exact `(True or (condition))` / `(False and (condition))` recipes skip all
+condition effects and truthiness. Literal Boolean conditions and every condition
+subtree containing `:=` are excluded; ternaries, loops, comprehension guards,
+annotations and tests do not gain branch candidates. Other operators inside those
+expressions retain their own eligibility. Runtime errors remain errors; exact
+saved recipes, fresh discovery and execution identity stay enforced. See
+`benchmarks/python-branches.md` for native controls, scored fixture/rerun checks
+and unchanged-project evidence. Original scores and inputs remain separate from
+stronger-test results.

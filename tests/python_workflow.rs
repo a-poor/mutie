@@ -32,8 +32,6 @@ fn unsupported_scored_options_fail_before_runtime_launch() {
         vec!["--test-scope", "affected"],
         vec!["--clear-max-capture-bytes"],
         vec!["--operator", "call_remove"],
-        vec!["--operator", "branch_force_true"],
-        vec!["--operator", "branch_force_false"],
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg(root.path())
@@ -1789,4 +1787,154 @@ fn modulo_dispatch_and_formatting_errors_are_not_kills() {
             source
         );
     }
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; branches, saved operator identity and stronger reruns"]
+fn branches_preserve_native_semantics_and_rerun() {
+    let root = tempfile::tempdir().unwrap();
+    for name in [
+        "pyproject.toml",
+        "sample/__init__.py",
+        "tests/test_sample.py",
+    ] {
+        let target = root.path().join(name);
+        fs::create_dir_all(target.parent().unwrap()).unwrap();
+        fs::copy(
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("tests/fixtures/python-branches")
+                .join(name),
+            target,
+        )
+        .unwrap();
+    }
+    let source = fs::read(root.path().join("sample/__init__.py")).unwrap();
+    let reports = tempfile::tempdir().unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--operator", "branch_force_true,branch_force_false"],
+        "15",
+    );
+    assert!(output.status.success(), "{output:?}");
+    let (original, run, outcomes) = saved(&output);
+    assert_eq!(
+        run["python_scope"]["test_nodes"].as_array().unwrap().len(),
+        3
+    );
+    assert_eq!(
+        outcomes["summary"],
+        serde_json::json!({"killed":3,"missed":1,"errors":0,"timeout":0,"build_failed":0})
+    );
+    let inventory: serde_json::Value =
+        serde_json::from_slice(&fs::read(original.join("mutants.json")).unwrap()).unwrap();
+    assert!(
+        inventory["mutations"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|m| matches!(
+                m["operator"].as_str(),
+                Some("branch_force_true" | "branch_force_false")
+            ))
+    );
+    let old_outcomes = fs::read(original.join("outcomes.json")).unwrap();
+    fs::write(
+        root.path().join("tests/test_stronger.py"),
+        "from sample import weak\ndef test_empty(): assert weak([]) == 4\n",
+    )
+    .unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--rerun", original.to_str().unwrap(), "--id", "3"],
+        "15",
+    );
+    assert!(output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(
+        run["python_scope"]["test_nodes"].as_array().unwrap().len(),
+        4
+    );
+    assert_eq!(outcomes["summary"]["killed"], 1);
+    assert_eq!(outcomes["summary"]["errors"], 0);
+    assert_eq!(
+        fs::read(root.path().join("sample/__init__.py")).unwrap(),
+        source
+    );
+    assert_eq!(
+        fs::read(original.join("outcomes.json")).unwrap(),
+        old_outcomes
+    );
+    // An operator/token mismatch in a saved report must be rejected before execution.
+    let mut corrupt = inventory.clone();
+    corrupt["mutations"][0]["operator"] = serde_json::json!("boolean_flip");
+    fs::write(
+        original.join("mutants.json"),
+        serde_json::to_vec(&corrupt).unwrap(),
+    )
+    .unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--rerun", original.to_str().unwrap(), "--id", "1"],
+        "15",
+    );
+    assert!(!output.status.success());
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("saved Python mutation"),
+        "{output:?}"
+    );
+    let mut corrupt = inventory.clone();
+    corrupt["mutations"][0]["replacement"] = serde_json::json!("/");
+    fs::write(
+        original.join("mutants.json"),
+        serde_json::to_vec(&corrupt).unwrap(),
+    )
+    .unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--rerun", original.to_str().unwrap(), "--id", "1"],
+        "15",
+    );
+    assert!(!output.status.success());
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("saved Python mutation"),
+        "{output:?}"
+    );
+    fs::write(
+        original.join("mutants.json"),
+        serde_json::to_vec(&inventory).unwrap(),
+    )
+    .unwrap();
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON; forced-branch runtime failures remain errors"]
+fn branch_runtime_errors_are_not_kills() {
+    let root = fixture();
+    let source = "def choose(value):\n if value: return value.missing\n return 2\n";
+    fs::write(root.path().join("sample/__init__.py"), source).unwrap();
+    fs::write(
+        root.path().join("tests/test_sample.py"),
+        "from sample import choose\ndef test_empty(): assert choose(None) == 2\n",
+    )
+    .unwrap();
+    let reports = tempfile::tempdir().unwrap();
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--operator", "branch_force_true"],
+        "15",
+    );
+    assert!(!output.status.success(), "{output:?}");
+    let (_, run, outcomes) = saved(&output);
+    assert_eq!(run["status"], "failed");
+    assert_eq!(outcomes["summary"]["errors"], 1);
+    assert_eq!(outcomes["summary"]["killed"], 0);
+    assert_eq!(
+        fs::read_to_string(root.path().join("sample/__init__.py")).unwrap(),
+        source
+    );
 }

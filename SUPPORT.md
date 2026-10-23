@@ -641,3 +641,15 @@ saved recipes and source rediscovery. Unchanged UCD Parse contributes 26 selecte
 workspace candidates (15 kills, 11 survivors); separate-copy parser field assertions
 kill four survivors with 142 tests. Seven remain open. Preserve original inputs,
 reports and the filtered 57.69% score; the focused score is separate evidence.
+
+
+Scoped Python branch forcing is supported for ordinary `if`/`elif` conditions.
+The exact `(True or (condition))` / `(False and (condition))` recipes skip all
+condition effects and truthiness. Literal Boolean conditions and every condition
+subtree containing `:=` are excluded; ternaries, loops, comprehension guards,
+annotations and tests do not gain branch candidates. Other operators inside those
+expressions retain their own eligibility. Runtime errors remain errors; exact
+saved recipes, fresh discovery and execution identity stay enforced. See
+`benchmarks/python-branches.md` for native controls, scored fixture/rerun checks
+and unchanged-project evidence. Original scores and inputs remain separate from
+stronger-test results.
