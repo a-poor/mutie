@@ -1,0 +1,3318 @@
+{
+  "projects": {
+    "preservation": {
+      "project": "/tmp/mutie-python-tomli-w-original",
+      "commit": "1210bb6f5708a4dc084cc3deb4a3a3e3939f4d6d",
+      "inputs": {
+        ".bumpversion.cfg": "b37459fae68d29b29a5c0636c009eee4179ecbef88db05a44a73047e6dc53d7e",
+        ".flake8": "c3e8c454be40f11cc753d4fa9ba45b4708e5c0ae6fb37f77117589628a01ca44",
+        ".github/workflows/tests.yaml": "64ddc95a5e05ced4c58fc967a7d948f063319cbf935f47e8671121a1ab252c5f",
+        ".gitignore": "e62bacdc3f37a112b685b4795ae8f7a7b3461d4d14d261ee1f551f9c60aa149e",
+        ".pre-commit-config.yaml": "bdb87339232c7f035efb96ccc264a5af0cc2953f3d3f22ec69e6b01d2fc39111",
+        "CHANGELOG.md": "87ede3a7aa62a38fefe1edfa6fad7e0a351dea85127d709e29f7744a0fa764d9",
+        "LICENSE": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe",
+        "README.md": "aeba06af25ac4ee4c1cda057e386e21a508a0ead6f5f504901db489988f1bee9",
+        "benchmark/README.md": "8f468a3146dce978352788916f376bbe478fe6c841151821aa74087c76a4e4cb",
+        "benchmark/data.toml": "d84b9befee2916b5b546fc5d160fb57df0dbce68f4f89059f57c28b75653a122",
+        "benchmark/requirements.txt": "9c5db92b1586f33c1922b3bb97ce9e56c2185696180f7c487ff181ecfbb891f3",
+        "benchmark/run.py": "ef14149f9f3e75bcc17b3105751fefded8b41e352604d259e0d282675acf09eb",
+        "pyproject.toml": "74257ce5195be63358c349ed3a35165c579a221b27449aa9c3ce318481306665",
+        "src/tomli_w/__init__.py": "b85ea5a4b65f3f974a6a0327ece2d7d5702256eff8847315b8fba162afa3f410",
+        "src/tomli_w/_writer.py": "0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+        "src/tomli_w/py.typed": "f0f8f2675695a10a5156fb7bd66bafbaae6a13e8d315990af862c792175e6e67",
+        "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tests/data/extras/valid/apostrophes-in-literal-string.toml": "9a1bbf74ff1602827d4fc7dcdbe1f66aaad1106c982aab19ab688d7ecd29980f",
+        "tests/data/extras/valid/array/array-subtables.toml": "4d2b32644bc4f806fa08c34fb30b4461a8d6dd50bcb085eecfe1c61e12a5b247",
+        "tests/data/extras/valid/array/open-parent-table.toml": "3371d3a9a2ab2d28756ab62ed12223aff9976cdc3e57f0f53bf36a17867f929e",
+        "tests/data/extras/valid/burntsushi-repo/array-empty.toml": "769faa42a690b02ad1b573277f0d793a4a38a7ecf30b9db67bf9836fe2b7778c",
+        "tests/data/extras/valid/burntsushi-repo/array-hetergeneous.toml": "361ae2e8470b47b12b336eb61eedd09abb20e216fbeb582b46d16a2831adda4d",
+        "tests/data/extras/valid/burntsushi-repo/array-nested-inline-table.toml": "cc3f4efb9a6bbab28f0d7d82d727434d56eebdcd188fca0767987975c6a89fbc",
+        "tests/data/extras/valid/burntsushi-repo/array-nested.toml": "a5941a01a2ba2fa179a3885039a5f81ca6c9876b2e8bea7b880563238be9f004",
+        "tests/data/extras/valid/burntsushi-repo/array-nospaces.toml": "01fba63551b1051f7e117c9551c488b293bd3cd4745cbeec6b3709c32f2a3a64",
+        "tests/data/extras/valid/burntsushi-repo/array-string-quote-comma-2.toml": "b7d8c070b621d603821d7e3e6512252d03ea5392698b26f2c990e613a8b8b230",
+        "tests/data/extras/valid/burntsushi-repo/array-string-quote-comma.toml": "07eca9c750f5b9b2daf654917a9e06288153650dc1e6fe53a5b8b53d9fed100d",
+        "tests/data/extras/valid/burntsushi-repo/array-string-with-comma.toml": "79e88f8e84eb485e41846b55e140df38a6681e2084fd2dfce66fb3afdfa2eb43",
+        "tests/data/extras/valid/burntsushi-repo/array-table-array-string-backslash.toml": "0eb1a8313770fac8238c0cc689162d7a8195502b9dd7b78eb66c20150989d08b",
+        "tests/data/extras/valid/burntsushi-repo/array.toml": "3262ad90b686aa95df9cfa89b888c4cf1d4bf3cca1d3ffd47ff85f5326050b42",
+        "tests/data/extras/valid/burntsushi-repo/arrays-hetergeneous.toml": "361ae2e8470b47b12b336eb61eedd09abb20e216fbeb582b46d16a2831adda4d",
+        "tests/data/extras/valid/burntsushi-repo/arrays-nested.toml": "a5941a01a2ba2fa179a3885039a5f81ca6c9876b2e8bea7b880563238be9f004",
+        "tests/data/extras/valid/burntsushi-repo/arrays.toml": "3262ad90b686aa95df9cfa89b888c4cf1d4bf3cca1d3ffd47ff85f5326050b42",
+        "tests/data/extras/valid/burntsushi-repo/bool.toml": "3c06ad4dce7430326f5f867105b2e9382def90cccb3ecb69f657c0b88974ab04",
+        "tests/data/extras/valid/burntsushi-repo/comment-at-eof.toml": "268429ab95bc7c9f74b4753d19f211f3e6848de506094518278a429837ff9eab",
+        "tests/data/extras/valid/burntsushi-repo/comment-at-eof2.toml": "268429ab95bc7c9f74b4753d19f211f3e6848de506094518278a429837ff9eab",
+        "tests/data/extras/valid/burntsushi-repo/comment-everywhere.toml": "8636108c34f50d45244b142d342234b7535e01fba2db2d2ffed3430223009cea",
+        "tests/data/extras/valid/burntsushi-repo/comment-tricky.toml": "311f6b950c07ace7266ddf801c7fd773a11051bdc248c8233a1f34395eaf28db",
+        "tests/data/extras/valid/burntsushi-repo/comments-at-eof.toml": "268429ab95bc7c9f74b4753d19f211f3e6848de506094518278a429837ff9eab",
+        "tests/data/extras/valid/burntsushi-repo/comments-at-eof2.toml": "353cfa24e85f59951dec19a042da2cdce88f9a2dde5b2d85d6ce7c682de383e7",
+        "tests/data/extras/valid/burntsushi-repo/comments-everywhere.toml": "8636108c34f50d45244b142d342234b7535e01fba2db2d2ffed3430223009cea",
+        "tests/data/extras/valid/burntsushi-repo/datetime-local-date.toml": "5471b628d274584dbe3e5f4543b2fc335bc0b0971d3d0b3c0d64788ca08c845f",
+        "tests/data/extras/valid/burntsushi-repo/datetime-local-time.toml": "eb36b742b66b75b5b004c665db2783c3995166c2fdb879988368c1d6c71e3901",
+        "tests/data/extras/valid/burntsushi-repo/datetime-local.toml": "44dd5653663b0b7ffc1d556dcfe79344c22526b83f53d52f76a68fd20b42d0c6",
+        "tests/data/extras/valid/burntsushi-repo/datetime-timezone.toml": "bf867be5d89334f1263a4f78ab9460ab31a8f89bfd8853a9f57cf0f1e7744ea4",
+        "tests/data/extras/valid/burntsushi-repo/datetime.toml": "c124c2ed53ea17d2befb89e614df8308646832a1887133e0be1618989629e8e3",
+        "tests/data/extras/valid/burntsushi-repo/double-quote-escape.toml": "96679a4db8ad06efec64d17338d79ebeb2a42e25934484adf6cba946f1aec3a9",
+        "tests/data/extras/valid/burntsushi-repo/empty-file.toml": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tests/data/extras/valid/burntsushi-repo/empty.toml": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tests/data/extras/valid/burntsushi-repo/escaped-escape.toml": "93742db99c068ddfbeda97ac76b58ff04f6c2e476d16f4641deebfed7f69c594",
+        "tests/data/extras/valid/burntsushi-repo/example.toml": "6f02b2a52ea63c70b629e41e06a8eb1eb4aab359ab966a7a397b248e13849c9c",
+        "tests/data/extras/valid/burntsushi-repo/exponent-part-float.toml": "4b3b3ae34cc1ab1bb7578b947649b8a69fd7fa8d91336c72faa0c41d81257b93",
+        "tests/data/extras/valid/burntsushi-repo/float-exponent.toml": "086fc7725154823d82e4e9869767a649cf186b2d1a43a3478d78f0cb57b80787",
+        "tests/data/extras/valid/burntsushi-repo/float-inf-and-nan.toml": "0208aa44a773a36cc76cb3453027195bc887fd9fc9ab8d3ebfaf674268864973",
+        "tests/data/extras/valid/burntsushi-repo/float-long.toml": "4d23f706f2a0d241840f6ea78657820c9c7b904c0c3c16828f8cc2574d7c8761",
+        "tests/data/extras/valid/burntsushi-repo/float-underscore.toml": "7461933ebed792cc13db18a56c3b52907350d24a8ae2ab31a33d5ae2b07eaa21",
+        "tests/data/extras/valid/burntsushi-repo/float.toml": "18a23f860c2da35f5e415e18aa6dfa7ad165e03dfbcb6a9c524f4bac23d8aa35",
+        "tests/data/extras/valid/burntsushi-repo/implicit-and-explicit-after.toml": "0599b16822764cdb1c3d3cf53f71186b97afc9f60f8d58358a4a89fe4d9477c3",
+        "tests/data/extras/valid/burntsushi-repo/implicit-and-explicit-before.toml": "33435dddb68144b652ca5f5e0c4c53e4f7b3ca0166f9b944eda55f8d76ed2871",
+        "tests/data/extras/valid/burntsushi-repo/implicit-groups.toml": "248b3e8272ec43ce4af872981acde10628eeae73537ed6763a1f4245f5a9610c",
+        "tests/data/extras/valid/burntsushi-repo/inline-table-array.toml": "207606ccf4124a15be375811eb6e894bf91934003de07a71ba1db2e247884110",
+        "tests/data/extras/valid/burntsushi-repo/inline-table-empty.toml": "bd05dad58e1df7a49e4783016a4f50620b25d173364f3b4a207e5e1d0cc5257c",
+        "tests/data/extras/valid/burntsushi-repo/inline-table-end-in-bool.toml": "a0625a981677c5371b7e13db88845aab6d49ce301eafc4b80ae7e361cb2fe292",
+        "tests/data/extras/valid/burntsushi-repo/inline-table-multiline.toml": "79879ca0a0f5c20b9fbc38f8e2252f27c7d74b30b966dc82c494460635ee9633",
+        "tests/data/extras/valid/burntsushi-repo/inline-table-nest.toml": "2ac671982ca07fbe9fc6174a7fffa6dd4332920dd7c9aa73a4d1edcd8fab55ec",
+        "tests/data/extras/valid/burntsushi-repo/inline-table.toml": "7b6a818fa5b936492d627acf53e5fe9b518f18d57592bdb3898e9511c4381ad1",
+        "tests/data/extras/valid/burntsushi-repo/integer-literals.toml": "20605f6474b43c1c366c13e1091fbbe71310bb096f476028b3517ea3ebc5bd74",
+        "tests/data/extras/valid/burntsushi-repo/integer-long.toml": "309f94be7ff5fd6f6dedbd257a1e6c171cb71aa74409ff3f8babda951f89d687",
+        "tests/data/extras/valid/burntsushi-repo/integer-underscore.toml": "80afe6bfcfea9946822d8a05fd7b52761f5d0140a7c3d33fa66fdf35f82df760",
+        "tests/data/extras/valid/burntsushi-repo/integer.toml": "a03303c9f885cfad8cef5efb96c1d5aa4a873dd037c938645e1563b18b45e2ea",
+        "tests/data/extras/valid/burntsushi-repo/key-alphanum.toml": "b32252aa9cd68f5489c8614a33805e465e39b4069566632049c57b48bc41202b",
+        "tests/data/extras/valid/burntsushi-repo/key-case-sensitive.toml": "460b8863ee8dacd4d4eb8dbfe583736c90dcf5120d387e79908a4b96c9377801",
+        "tests/data/extras/valid/burntsushi-repo/key-dotted.toml": "2776dc46c05c22c29e2d19644728feea06282d478d301f5718d1f481075cb3f3",
+        "tests/data/extras/valid/burntsushi-repo/key-empty.toml": "04adfae3dbb041788ab0e958c21c96aadf7e94d7b78b246260a6049d57b8e85c",
+        "tests/data/extras/valid/burntsushi-repo/key-equals-nospace.toml": "24cab0d01b67b184d0a737de3a5b5d47b8b69b36203273296d5ef763f7fdcf68",
+        "tests/data/extras/valid/burntsushi-repo/key-escapes.toml": "806aa9319063c50112de83a80dce77a32efa3964b2f93653209018b9590cb892",
+        "tests/data/extras/valid/burntsushi-repo/key-numeric.toml": "c8095a3ca44202e720e0174003cfe99c6efa1ed20e1363e27992bcc2e62f0b32",
+        "tests/data/extras/valid/burntsushi-repo/key-quoted-dots.toml": "3df66ce119e97fee2ec09075f78c523973e799bcdc012df65969453f5c28576b",
+        "tests/data/extras/valid/burntsushi-repo/key-space.toml": "9e9459b8cfebc404cf93d77c2d4082cadcd57165a2f9ce9cb35d1d12dc94a8c0",
+        "tests/data/extras/valid/burntsushi-repo/key-special-chars.toml": "7bab94e231d8612a57519c55210d39c18dc2adbd910ad85a22d56843665c0a36",
+        "tests/data/extras/valid/burntsushi-repo/key-special-word.toml": "fae155bc552573181a14cfe7cb877947bffd714ce5cf5f1ca87ce18486dbccc6",
+        "tests/data/extras/valid/burntsushi-repo/keys-with-dots.toml": "64bae7d93f5cc229098a8253eee72f20d33b5794e03f027ec079cd927e583c99",
+        "tests/data/extras/valid/burntsushi-repo/long-float.toml": "4d23f706f2a0d241840f6ea78657820c9c7b904c0c3c16828f8cc2574d7c8761",
+        "tests/data/extras/valid/burntsushi-repo/long-integer.toml": "309f94be7ff5fd6f6dedbd257a1e6c171cb71aa74409ff3f8babda951f89d687",
+        "tests/data/extras/valid/burntsushi-repo/multiline-string-accidental-whitespace.toml": "9f0ed556a81d532651ce7b7bc9e1ad5a5c6ad244215ebc9e26c61277e4c70822",
+        "tests/data/extras/valid/burntsushi-repo/multiline-string-quotes.toml": "34bd4d7a146f924e2f3149e1646ef3492a4bf158e62d731a30b5f6e0a0616a3e",
+        "tests/data/extras/valid/burntsushi-repo/multiline-string.toml": "7d6650009eb31a03d5b40b20712ef0157e9b787d9c966e66c38873a34e3b861c",
+        "tests/data/extras/valid/burntsushi-repo/nested-inline-table-array.toml": "cc3f4efb9a6bbab28f0d7d82d727434d56eebdcd188fca0767987975c6a89fbc",
+        "tests/data/extras/valid/burntsushi-repo/newline-crlf.toml": "ddbf70ad8278ea9f5fffa47822de961d6e89dc2c76416445d2b119c2b51a43cc",
+        "tests/data/extras/valid/burntsushi-repo/newline-lf.toml": "407a2fef6ee342ebdcd6d4d1de58109754ffda7beb7e0373ad6e9dcbd0f710f1",
+        "tests/data/extras/valid/burntsushi-repo/raw-multiline-string.toml": "c724151024ccde432e0ec0d4ba60a5320d77841008116324c39516b8cbb94f4d",
+        "tests/data/extras/valid/burntsushi-repo/raw-string.toml": "16510e05d477a0856ebaf38cacd0e9e18f02ab63ac7bd1a2eabbaa47a54d0e49",
+        "tests/data/extras/valid/burntsushi-repo/right-curly-brace-after-boolean.toml": "a0625a981677c5371b7e13db88845aab6d49ce301eafc4b80ae7e361cb2fe292",
+        "tests/data/extras/valid/burntsushi-repo/spec-example-1-compact.toml": "12cf81f5dc95bfc4258b3b66f9edd47a621008e79703098399de7ffcbe190d8d",
+        "tests/data/extras/valid/burntsushi-repo/spec-example-1.toml": "0c28a7ade3417f12805477e1924364e4b210e7877dd2b6486aa8dcf63cf13cea",
+        "tests/data/extras/valid/burntsushi-repo/string-double-quote-escape.toml": "96679a4db8ad06efec64d17338d79ebeb2a42e25934484adf6cba946f1aec3a9",
+        "tests/data/extras/valid/burntsushi-repo/string-empty.toml": "251e9e4052ede79f6b2462e71f73e0b7c9f5927484f6f77f0cd8b3c839b0c13b",
+        "tests/data/extras/valid/burntsushi-repo/string-escape-tricky.toml": "d86372b6e5f4dfa7305b0c2c2995779625523c64084d5ef55f3ebecb4b1540a4",
+        "tests/data/extras/valid/burntsushi-repo/string-escaped-escape.toml": "93742db99c068ddfbeda97ac76b58ff04f6c2e476d16f4641deebfed7f69c594",
+        "tests/data/extras/valid/burntsushi-repo/string-escapes.toml": "d1a728671509f713d1ec59137d3d42d1936ab593c615108a1af94d86401307ca",
+        "tests/data/extras/valid/burntsushi-repo/string-nl.toml": "65b65b3ee73ac23b06e2d1e35e4bbd2f71dd0e23860ea86914be305067e2b3ad",
+        "tests/data/extras/valid/burntsushi-repo/string-simple.toml": "ae74db09acea3be2ccae7f854f7b6f7c874ace9d4d87bf2f437b059a7d38a464",
+        "tests/data/extras/valid/burntsushi-repo/string-unicode-escape.toml": "6aeb3c18c895cb74231b64005bdb3931d71b447393f95a7d11d0d088c2ccb913",
+        "tests/data/extras/valid/burntsushi-repo/string-unicode-literal.toml": "bffc6c3d4757de31d0cbfd7b8dc591edd2910fe8a4e1c46bbee422dddc841003",
+        "tests/data/extras/valid/burntsushi-repo/string-with-pound.toml": "1aee397830d9ad2a93d41ee9c435acdbfef3758d1bb7c48bca7424fbbec89466",
+        "tests/data/extras/valid/burntsushi-repo/table-array-implicit.toml": "66bcb030899a95e9a25ec44b7c9291b02f80ecbc324061cf1cd93223a2919f21",
+        "tests/data/extras/valid/burntsushi-repo/table-array-many.toml": "8d8ea546f954a81ca149a02147ae5f4bf075151cfcd530e62dcf05a04d843ffb",
+        "tests/data/extras/valid/burntsushi-repo/table-array-nest.toml": "71b9c753bf773f232ac71cb2469a54ee0110ff137829045421edd7c5a64d6b6a",
+        "tests/data/extras/valid/burntsushi-repo/table-array-one.toml": "4c478aea2dd7dfcfda682503b49e610f0fa4ce85a3b3cd0bc9041d4959e3626a",
+        "tests/data/extras/valid/burntsushi-repo/table-array-table-array.toml": "ce01984b4f0df7d5867408a6240a38c277c0f9e431ccb59cd0cd0957aaca2320",
+        "tests/data/extras/valid/burntsushi-repo/table-empty.toml": "24d4941e67d5965d270eaebdb9816b994311e0f2f0e79ef6bb626f362c52842e",
+        "tests/data/extras/valid/burntsushi-repo/table-no-eol.toml": "8ff8509cb7c09733f110a407c90188dfc85d1d5a6d7320fdb5403e36d670c9b8",
+        "tests/data/extras/valid/burntsushi-repo/table-sub-empty.toml": "ae92e90a806ffefcbf8cda83cb82acf7448f75efa50dcfb5e2384632d36471b3",
+        "tests/data/extras/valid/burntsushi-repo/table-whitespace.toml": "2f15dafb263d2771671db299f6202b4b78d293aec1ded7641ec7eb1cb024b52c",
+        "tests/data/extras/valid/burntsushi-repo/table-with-literal-string.toml": "5a1b4d8408497edf3946478ec564d4af5e8f3a8bce6f582fc4a654d939166c85",
+        "tests/data/extras/valid/burntsushi-repo/table-with-pound.toml": "a1f86c2e3789cc89500ec1d5eac2ec0bdb94bf445fddc3cab558b5228f3aba56",
+        "tests/data/extras/valid/burntsushi-repo/table-with-single-quotes.toml": "7e90e6c90f6a1315f7a41dd2fc5b16e6df9704d748bb237ba77ed449c09f14f4",
+        "tests/data/extras/valid/burntsushi-repo/table-without-super.toml": "8be897787477613204ff91a0eb60da1a244b94ab5bf7da4bf32c0400685930b6",
+        "tests/data/extras/valid/burntsushi-repo/underscored-float.toml": "9c4c4981f88145488340399ebf7a5014d85bba8a5c7e7588001626ef1775eeb2",
+        "tests/data/extras/valid/burntsushi-repo/underscored-integer.toml": "840c52b72d3f5b6ede8ecfb1b5843f788639739aa88fe767586d2eede1879296",
+        "tests/data/extras/valid/burntsushi-repo/unicode-escape.toml": "6aeb3c18c895cb74231b64005bdb3931d71b447393f95a7d11d0d088c2ccb913",
+        "tests/data/extras/valid/burntsushi-repo/unicode-literal.toml": "bffc6c3d4757de31d0cbfd7b8dc591edd2910fe8a4e1c46bbee422dddc841003",
+        "tests/data/extras/valid/empty-inline-table.toml": "399ce86c63f419a6bfca2dcb08b953e0009d039316901da36c006eb278cf2c29",
+        "tests/data/extras/valid/five-quotes.toml": "1b5e9313c501bcc077b11491d0a3e9b4237bb370ab80c52fb41df84f349e7aac",
+        "tests/data/extras/valid/multiline-basic-str/ends-in-whitespace-escape.toml": "737dd6766012017ae17d5157491bdfaee48954256e589e9809f61ab11342a86e",
+        "tests/data/extras/valid/no-newlines.toml": "46e8fd088c062573e18be4af8b01583cf1d3b1cfaa18aa0e19028e29459a71d9",
+        "tests/data/toml-lang-compliance/LICENSE": "e8cd63ddae2b05e377bf8b1de9ee808d088342083a0b920fdb751cf0f0e9c32f",
+        "tests/data/toml-lang-compliance/README.md": "b0eece298dbd5397db9b0807a535dedfd1a587f93e02bf64d5acdf715558d66f",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-1.toml": "b5d7a4d6151f65f5f2c4fcf725dd06d5a9f1f21bafb6d26a434a20ce40fe0f09",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-2.toml": "f0b1dc1fd4738eeff5e189866d8309eb57e66edee830bdcb61416841faaa40b7",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-3.toml": "5c4c19050101a389eee27108249a4161778c901f2261149c406f129ad6a70c12",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-4.toml": "b6afb36ab4241a90132b627f163b7d997a231ecbdb60b5affeb776ccabe937f3",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-5.toml": "d393df5ceeba9d80d84eee4ffefc2ac44d5ab21401dd68b6c47d16d9bef1104c",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-7.toml": "b5a40dbbd94d23301d1cd07436a8b37064fbbb7f834e1077eac51a076fef03a6",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-8.toml": "166edaeccc28491e2b48b30a2a8e9f406a8a4f0ebfb1b3da2d3a0c47558bef5f",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-mixed-number-types.toml": "af9f88bf43849248a8b1541d38a24ba7ca18e2cd07f89cc7e9f0fe4e7d1b1c30",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-more-mixed-types.toml": "cef8e6e37e4473c452f913f5e753594c44e2d1992c74aa23e473957e9e6abab3",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-of-tables-1.toml": "1af23832a96878b6ce5b8059b6f7a73f36e4c642725548df872a7ed438fc7db5",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-of-tables-2.toml": "e0ef0bb3f9e67d8182b20bce9584741712634144bb40b0cc7eb1c97c91b2e057",
+        "tests/data/toml-lang-compliance/valid/array/spec-array-of-tables-3.toml": "57997b3b1e223ab342f2288ddc0913152c1e68a27f3e8e3768d3e85be10075c2",
+        "tests/data/toml-lang-compliance/valid/boolean/spec-boolean-1.toml": "6427c4ea9cc55b914e0fca247914ed2197efa487fb6aea8e9d6aad5a0adc0abd",
+        "tests/data/toml-lang-compliance/valid/boolean/spec-boolean-2.toml": "c5fe7c7669c3fa06503c7819b6904f500cfcaf2de9833bf42c088e5e298b4b1c",
+        "tests/data/toml-lang-compliance/valid/comment/spec-comment-mid-array.toml": "aa4dc08c9446630395bff1c05da229c2c0e1b7b06223059b59cffe91edf2fea4",
+        "tests/data/toml-lang-compliance/valid/comment/spec-comment-mid-string.toml": "647b7868148825bea997af00729fbff45238d18a244e0c07b58d38a247db804f",
+        "tests/data/toml-lang-compliance/valid/comment/spec-comment-tab.toml": "4bc89faa89c96d42b1c282076e7c122ca7f5ce3891acdcdca273aee3606cbf0b",
+        "tests/data/toml-lang-compliance/valid/comment/spec-comment.toml": "268429ab95bc7c9f74b4753d19f211f3e6848de506094518278a429837ff9eab",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-local-1.toml": "344e15eb16805d18cd3710188b529441b811efabe5323e4aabb65d69239fe07d",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-1.toml": "4b9a3b02c7e387b3d7d47b1e9ef570fec8c9a7f8a9fa3df6ccaa111c9cee5561",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-2.toml": "c0855203794c6d3e6b1f6840a456ba81905e8b4f30b9813869ab0b32a79c9008",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-3.toml": "d69dfabb5f7d58394ac6c42b5f3a65d4151f505224600a18229aeb5ee209b55f",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-4.toml": "b021483599c5a894f774a06a69b07e4c6062fb902fb4d6148feeb8943ae4937a",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-5.toml": "de0b96f6f04b77065e22923bb1f68c07a21164b8e513114f320caf7eab91374d",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-6.toml": "01369e6dc0299fdd93165ae3aabb7581b450922c317cf2f9cbe95f3c7e6bc11b",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-local-1.toml": "0e5fef208d151b5dd8764d602db77364a44838c27bc5724dadb27f28b6ecc37b",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-date-time-local-2.toml": "b3d29677425c0a93c3fd8620b69bc4b63c9ebfb1b65c1c4383430a511f2852db",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-time-1.toml": "a10d13f49bcf603db7f24c909beced56555f57f5b564353e48d07b5d1b794172",
+        "tests/data/toml-lang-compliance/valid/date-time/spec-time-2.toml": "3d405f0454c6d53dd32565fc83e41cf4935f2b9d6830d986e95c35bb41666644",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-1.toml": "2b73e35ba166edecad9944db8603ae82da48afbebcc86368f686b632624a5854",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-10.toml": "09beb4d96ac138cdb27fdc5f320c3d6d361564f95ef8767fb488f350191ff705",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-11.toml": "55a4ddce132fadf2d779c1b91f5ab6daeed75c87e259aab048620f236b0e6ad3",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-12.toml": "e842cb07facde51a7b4468c9fac7262e0b687a38d3cf69716d485207f453d585",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-13.toml": "22531f10f287a81f64af9a010ce62276c98734bfaddaab22ee3fd7ab2c05b092",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-14.toml": "8ca400455282bce66e678f4c8bb1d3ab854cf9f283dbe7b9ce7feaec6786799c",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-15.toml": "6fc845fe3c6a60aa3bf4a2b465dfc8e71da8cac19babd7715919f17e709603bc",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-2.toml": "f726c66b3ccd2b5b940846cdefb0f0d89f63ea064a458ce70af4c463a14cc9b0",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-3.toml": "80ac694b941d7371d934e56401a5d840fd232853d8afaa77588c839b880ad8e1",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-4.toml": "0c05f09310e7da0e65ad04d05c53b9d88954e5dad3fbdd230628b939d894b817",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-5.toml": "e985c279ebe0f241e56e81d3da896ce15feec523457a382edb43f794d2e0643e",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-6.toml": "62f9e6489f48158eac0aa5300d362c48c6b4d054df8af4feef2e78e3883a08de",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-7.toml": "5f1ad9196931d4184bcf90f05eabde233d1983a4025a721472636dca6754876c",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-8.toml": "732ef3b1c888a4d9196c92b79361c0669c8ee295d6723519699670e34c305721",
+        "tests/data/toml-lang-compliance/valid/float/spec-float-9.toml": "58adbb09a17e017b94ec15e0a015e54e64c91d98812142b34c15366991ed3704",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-1.toml": "4e58e49e9354e0826c3480f6934d9f25bfa880e30eada26b22a4a81a0a01db98",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-2.toml": "8eab297203569c640ae711be2f9ce82c9cdee7b5ba99bb16adfbea99bd3c6349",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-3.toml": "9edb89599256d1ba8278ebf56a5c362aed75e38b3ae9373224df80ef5396fd71",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-3a.toml": "10b3d27d524876e3255ef97d9e5c872da1dc8444795e581e5f09e49dfe7874ba",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-3b.toml": "dcf6bfdc7835164c3e0d7b486f0d0aec77052c1591dd7677328300fee1dbdf16",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-4.toml": "e7c2d65adafff14f72ce1da9bd94fb36e97a8e99d3220f56f13c0369645ce031",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-5.toml": "655d3d1795ded261c4570407a333109a64ddbe2d0ee09cc5391a1220030584f9",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-6.toml": "6fb17eb4641cd4b0229f9e3b1034cc45d322e363f237d38c3c3c38f80db751d0",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-7.toml": "41a0535b796bfad039cd1b24f6a81f0e66c55b9718842311b06fc335c26faa1c",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-bin1.toml": "d4465d06a337c1e7ae20eb797de9b9d6321f478b593b5fbe9aedfba060b68a56",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-hex1.toml": "8cddad53d4e3ffcbf396084699dc73a7cc7817fafe063cfeb8d608567e176772",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-hex2.toml": "f2baeec6a9b17996234bbe276d58505781094e3b25044402a3da487bd1088b85",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-hex3.toml": "cc93d5ddd3ffc6b04c6526b8a2d82b90ab02fecf4b77653c515efa7ce400d833",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-max.toml": "ff6eacdb97336f9dbb6be68b17bf4f6883040ea1d594fca8e86145c35dba5a8c",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-min.toml": "1b213ae2d67ccf313c642264b2b9b09dfaf570f8801581a3488ab7b44d398ba4",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-oct1.toml": "7d680153b66e87b792b12b50b5d042e07618ae9e150abd6057302d2e373e2796",
+        "tests/data/toml-lang-compliance/valid/integer/spec-int-oct2.toml": "0dca664dd6bb495a72c55704a3be824125b6dc3d002d2055520e85af51d87596",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-case-sensitive.toml": "0bd1f09431ebc29f3a5ecab6549fd3f6ec4e3c9f99082ed5aa2585c8c436a198",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-dotted-keys-1.toml": "ae8f65701106c80a518a152748b8f822e0aa7fa676b673f4c55e74c0b45c41b1",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-dotted-keys-2.toml": "a72ff4272cd343f2980019b317c4fc317a88be53757b42684ad0bec33dd0b346",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-dotted-keys-3.toml": "0069bce393d4bb3ebb0e7a3903872b8d39bdaf6b7c41f357dd4c613513a463fa",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-empty-key-name-1.toml": "17f5c32a566615800dedef0682b92e66747cedd6c92081093b81bca25b9e0c3b",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-empty-key-name-2.toml": "e40df0c8ae7afc4fdac1d887d089d6e5d8450cea09532e66ab707a575464ef95",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-1.toml": "741abfd64789245546f14caac4f2129cd86ad9f7dcb27307e37f0081ade02f40",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-2.toml": "928a6f6c967a1188eea45da012f8a328c994ed0268395b69711be1db138bf754",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-3.toml": "8d8da6514fe2599ec97da2d79fc44f837f31ffed05ae90480f44696da51f021d",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-4.toml": "d58ab54ed6ab9d337a98d6644bb266466ef746142d7ec5675dc68c48cfecfc0e",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-5.toml": "3cfba7ceb4466fff3d9118a5179fb51b48048b08566af4e591ba7fc37a4bcb34",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-6.toml": "5d096258f371f82bfa1ce20efe000711ab8ee1d62ac9d52540c6a5a8b11df8f4",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-7.toml": "2fc9df6b7480f78ef24c2b5297f54128fe442b590726c610c62cc958508d1774",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-8.toml": "d080afe102edc3b4acd0988b33034fb0c2c27b69aa68a15b6d7ab138567f4aae",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-key-value-pair-9.toml": "f7a92a97a8a67c4c9662307c38c861a2577cd742998b1b1bd7a549f1f9d2e942",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-newline-1.toml": "9e871da91ce6a83b1673c6775167e3b1078dad022e11b06e342bb5a2fc51bc91",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-newline-2.toml": "9e871da91ce6a83b1673c6775167e3b1078dad022e11b06e342bb5a2fc51bc91",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-newline-3.toml": "d73283d119bbed2e3ea4b7c9648d6955e30f41f2355f69b7438fb65c2ea6bde3",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-quoted-basic-keys-1.toml": "c6233028e4be3539db59bb7b9026b577fcccc6ef1c3bf50230e7889e495d7e6e",
+        "tests/data/toml-lang-compliance/valid/key-value/spec-quoted-literal-keys-1.toml": "fb7acd985c19a76ed2e8d99d15ede94a5fc6c94c0cbb33c933c7f70573836fdd",
+        "tests/data/toml-lang-compliance/valid/qa/qa-array-inline-1000.toml": "0109da541276ae819406553169cd9076239a1077af0012c76e39cf321d549f18",
+        "tests/data/toml-lang-compliance/valid/qa/qa-array-inline-nested-1000.toml": "1ec5c95f1f1f45da5f4015632a42afbbc652fe4127e93525dff674f14c50aa82",
+        "tests/data/toml-lang-compliance/valid/qa/qa-key-literal-40kb.toml": "57444d69734604bcac1af98f966ebaf350de2008b864f26f77cd880adce72d06",
+        "tests/data/toml-lang-compliance/valid/qa/qa-key-string-40kb.toml": "a6e3bd97ef5911e4dcb08df3608eefb5c59e97d52f18a652a06fd56dffd9e496",
+        "tests/data/toml-lang-compliance/valid/qa/qa-scalar-literal-40kb.toml": "040ffee97fba9b4663bec2d0a03b79a0530875fdc7e6f1c0847d153301cb0c95",
+        "tests/data/toml-lang-compliance/valid/qa/qa-scalar-literal-multiline-40kb.toml": "6544565cc3d70393f1746b0fdcdd74f4a18f632cb47dc3662fd138ecbf8bbde5",
+        "tests/data/toml-lang-compliance/valid/qa/qa-scalar-string-40kb.toml": "9cbe8e80115b5514d46d6a0cc4515c2a71e28914cce896730111cecf62cba3e6",
+        "tests/data/toml-lang-compliance/valid/qa/qa-scalar-string-multiline-40kb.toml": "f35462924583d0e8eafcfad18c3d998a2716fed19d7d4798136213f8642d57ba",
+        "tests/data/toml-lang-compliance/valid/qa/qa-table-inline-1000.toml": "f74cbdceed4c0586729ee69ff930a59f09d89656515623892c168fe93fa68cf9",
+        "tests/data/toml-lang-compliance/valid/qa/qa-table-inline-nested-1000.toml": "1d3b5b86145662af39332820651b7427be91b0801bf6481701ff4d969f0c4393",
+        "tests/data/toml-lang-compliance/valid/spec-readme-example.toml": "6f6a3e6fbd49dc206a48bedd1e32d98306658cfaf5dd0e1ca9e0c125a027583f",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-1.toml": "5654273d24a496fbc89bcda3f1519650ed46836b8280d8f9c155c12fc8864ff9",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-2.toml": "218781f2f70415a3614166afc6fc465493594e9d7b11c3a32986be4695842bc0",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-3.toml": "0a9b2264778b9cc8c04cec7d98f04c9e951643b144e890a658652a588b1e3470",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-4.toml": "948a90f6c27a8022a002404f09647b84ac5fb58c468d3af5a51acafa7ec2d9f1",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-5.toml": "fe6eeed1a5c3285e4a7a11fbeb36bd545da7035c44e78a62b064f0b2663828b6",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-6.toml": "5499c7d99d8340131c9743a7b63531aa2e39557b7021e81d5460995768681e6e",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-7.toml": "bf39e97127cd8e5ff3568034e515626078f69559a007fa029b0c74e3290df7c8",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-8.toml": "5457630313a4c14c8b514b30909e972c08fa29de71617e2bea37e9f751866cb8",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-multiline-9.toml": "5691c73ac37d4ae79f0f1200cf3fa619108452f4413bda3c146b7b6692c3fb02",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-tab-multiline.toml": "97b34fe86ea05c46a1ba9d20f0815b2f53f9ec588934965027ce71cce1f05305",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic-tab.toml": "e33c4e7784862d3b18494ef4389526f594ac519c6f3fc3835d0bf55ddb708197",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-basic.toml": "db01b3f25bd7b9631d5495ea76f0cd18f95cd2775a80d445d11cfa8cf42d029b",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-1.toml": "093e441e60c3a5856a1b01087f25778fef1d03b15aca3cc67fb4ea90b6bb6739",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-2.toml": "cbe0575d9e14b95d9d1140397389bd2bc48851b459ac7e36db97868b512ce9d7",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-3.toml": "a8d07cfdc966e8771d0f631aca2b9519e3f4444cfc09b37616a400f39d2b2421",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-4.toml": "fb66105e8988c2c25f0a9e654b64891a90ca76ea6a061b8b7ac6165f8245b381",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-5.toml": "2a13583e223f4736fe4d792a7de06a2c8773173a689738540392e9cd2b52cccb",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-6.toml": "c5cec537ed309b1796ff057905b94ee0aed43539f1e63d049de654831c24d3e6",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-7.toml": "fcb71cca95fd6ae80df3549b48d5022dcfde8d23c5c5400b45d251913117530c",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-8.toml": "c36941cea744b14b9c539f2669a8cfeada3528970e56dd8b7269b242bc52601d",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-escape-9.toml": "fa8921f1571ac49181be6e5eb508061ea796b1bd42512bed123a0910207bd1ba",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-1.toml": "89f575de59dab9a52c9fe5a0638531bb23f9fea9273658fb3da351b516a8d12e",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-2.toml": "c2ef734c9904eb01275b3da06c93e3b3f0480482c51eae5bb5b23bf70543eebd",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-3.toml": "b9e17dab69ac83a27f74e938b24c351dd60f575f9d8e3c7e9e5bc29a5a52da47",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-4.toml": "ac4683df11db3afad80bc1b31cef2dadcdd9d7041be9ef14457facb75166cb1d",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-multiline-1.toml": "4a8c24376973dfa9e899a2a18e4db2e820e1d139fef461f284f774b6e33a1674",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-multiline-2.toml": "3e72eb893e89cf58b9f56aca055d42eef65fb54ebc97ffbb0cb829feaa33bcc9",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-multiline-3.toml": "1ecdb00eabbdbdddaa2ae4092b46dac7b373f6b284864e3a56f58796b05bd7c3",
+        "tests/data/toml-lang-compliance/valid/string/spec-string-literal-multiline-4.toml": "7b03c08a688147b309c41fbaefc238d8764799f984e6ff83d7c759fac4021ec3",
+        "tests/data/toml-lang-compliance/valid/table/spec-extend-dotted-object-1.toml": "e7cc3c298b3f7c34eb3bee51f6f4d031a48d8db93fe789edc686aecd7c6af7b0",
+        "tests/data/toml-lang-compliance/valid/table/spec-extend-dotted-object-2.toml": "cb42c34805d475d91f0253cb32de5ba21096b2deb70f438cf107a3f18704b176",
+        "tests/data/toml-lang-compliance/valid/table/spec-extend-dotted-object-3.toml": "840c9c7415af248928a3a84c32d09774d43f1bfe9f766338aa51892051ac0f24",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-1.toml": "ec0c019cf77d0d18b1ede197f013757ea0a2101d36c85ab989abf616d9d96b03",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-2.toml": "266125c4822a9b709f3fa2a9621700881dfb53143e1a4e9eb2a7b2050816afd1",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-3.toml": "bca9b037f29c83537dd19dc78fbb06afd217297dc753e80b6f684dc304c2bc10",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-4.toml": "7267eb89789e4164d1f9de7c32f5dd386c1f739cf9f668a3d09178315ccd9410",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-5.toml": "d4cb8a382122b30685f304c0c44d726e6531dc26b3523d9f09f970ffde3bdc0d",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-6.toml": "f7176bb098705522bd16354c49545d5f07d81f9079cdc042f1ad338f7637789c",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-7.toml": "8be897787477613204ff91a0eb60da1a244b94ab5bf7da4bf32c0400685930b6",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-8.toml": "6e3ed25f4baa56d989e3796a8825357ddd3d2fdaf182ec96e0ff34af8995f6d9",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-inline-1.toml": "c25bdb7eacb22d4f33e6a2dbcf32d1637f3046b8efc93f063b3ca187bbcffc39",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-inline-2.toml": "0335f89feed53876162e9b82b0aaa141e795e5a08e6126ad8edf8716c50c0bc7",
+        "tests/data/toml-lang-compliance/valid/table/spec-table-inline-3.toml": "46261f78558b8a4a9066f2c005309a272eab785ea528b559586b5b07e549d633",
+        "tests/data/toml-lang-compliance/valid/table/spec-table.toml": "8ff8509cb7c09733f110a407c90188dfc85d1d5a6d7320fdb5403e36d670c9b8",
+        "tests/requirements.txt": "7b21fcf760d65eefce486b7b528a021cd0089ea7ff8a56ca0d9fa0cf478e287a",
+        "tests/test_for_profiler.py": "5fae76d30ae230dac19e7bf890a8d3aeff2646ae951f95cade04fc75f9df08e3",
+        "tests/test_invalid.py": "3520166b6381c1e70a2059fb436d3c8dacd755b99658ab1921be8e4f10547226",
+        "tests/test_style.py": "7276cd08bcb0d70868a2724df9c73704bdc631808eaece3644ab0648eac06b0f",
+        "tests/test_types.py": "ff7588f2096fb949580e52fa3e8e84ae4d82d436ae10afdd49a182116bb45a24",
+        "tests/test_valid.py": "5539887f31154febcdb6b6f464b4daea0f2cf6f23bd9786913731acad7caba13",
+        "tests/test_write_file.py": "5bc86ac3aa269befc2c71a429897f357a560e6c139d927a8bb4918f65023a10e"
+      }
+    },
+    "betting-preservation": {
+      "project": "/tmp/mutie-python-betting-math-original",
+      "commit": "0bd3c25e93df8974f432310835768d77a5e45d3e",
+      "inputs": {
+        ".github/workflows/ci.yml": "7e2afbad7f4b3658bd741c94edd1c335bb3c135fc855a24b8a28be8f7aa8f93b",
+        ".gitignore": "cc32a3dc414d2d8b1000a97b9b8c07544b713d7c107cf20400d9802bc20add7a",
+        "LICENSE": "081eee4a2ed902a4feac7da778e8d94d0ef986deef0d39911919033d6cbc7f38",
+        "README.md": "b8a14250e39c99fdf3af1936d4e4aa9724c9c7b77310f617774e793e03a9e9b2",
+        "pyproject.toml": "c3cf781527818a566f4e6a6c34d04b0d1a716042b50dce3bab5e1c0a59574742",
+        "src/betting_math_kit/__init__.py": "4e67b69be2570d642c827035e507387cbb511b3c00506929dd99071113a1af3d",
+        "src/betting_math_kit/devig.py": "7f7c33c96fb4fc2034de3decfa3d1594f0944df08fabca735b15740290f20e81",
+        "src/betting_math_kit/exceptions.py": "078611ca38e50a30edbe191c07e6ced1e84f3d6500835fd36a94a905437c1005",
+        "src/betting_math_kit/kelly.py": "ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+        "src/betting_math_kit/metrics.py": "1a101c16aaec89de51cda91440e32b869bd27eddeef2871715635b666eb8a4c1",
+        "src/betting_math_kit/odds.py": "c0a611f1d4f3c793179e9f26ddcfd2f996e792e993b0d6fb0f74efe0c08308f7",
+        "src/betting_math_kit/py.typed": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "src/betting_math_kit/simulation.py": "5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+        "src/betting_math_kit/types.py": "f65da1b1a58bab3ff20d0885e2b0fdbfc17fa87ffd4147ec956c51be17cf4e06",
+        "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tests/test_devig.py": "1afef90c916c602e990322f9951e1b09b44cba068fda6de922a56331feee5692",
+        "tests/test_kelly.py": "53136da2288e1b4eb10a657d1db3031e51851185f2866e2bc18e50b4b8c7350c",
+        "tests/test_metrics.py": "d68a9da48979cfae701384b61732b66c05d2acc18d48b0b3495eb8582d68d3a8",
+        "tests/test_odds.py": "a6d0c9ccb3d27a3adf93a4ab4732c7089292437fc7576505dd5573b366cac736",
+        "tests/test_simulation.py": "cc6a619cc592d804a1503584dcdb8d647b610af671d5503705f9aa12285b09f6"
+      }
+    }
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-python-inversions-audit/original-reports/run-1792714479-GFkAf7",
+      "status": "failed",
+      "duration_seconds": 19.125521458,
+      "test_count": 271,
+      "selection": {
+        "module_root": "/tmp/mutie-python-tomli-w-original",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "comparison_invert",
+          "negation_remove"
+        ],
+        "timeout": 20,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 30,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-inversions-audit/original-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 6,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 35,
+          "column": 19,
+          "end_line": 35,
+          "end_column": 20,
+          "byte_start": 985,
+          "byte_end": 986,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 76,
+          "column": 28,
+          "end_line": 76,
+          "end_column": 80,
+          "byte_start": 2181,
+          "byte_end": 2233,
+          "original": "not all(is_suitable_inline_table(t, ctx) for t in v)",
+          "replacement": "( all(is_suitable_inline_table(t, ctx) for t in v))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 81,
+          "column": 44,
+          "end_line": 81,
+          "end_column": 54,
+          "byte_start": 2380,
+          "byte_end": 2390,
+          "original": "not tables",
+          "replacement": "( tables)",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 141,
+          "column": 8,
+          "end_line": 141,
+          "end_column": 15,
+          "byte_start": 4296,
+          "byte_end": 4303,
+          "original": "not obj",
+          "replacement": "( obj)",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 157,
+          "column": 8,
+          "end_line": 157,
+          "end_column": 15,
+          "byte_start": 4709,
+          "byte_end": 4716,
+          "original": "not obj",
+          "replacement": "( obj)",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 205,
+          "column": 42,
+          "end_line": 205,
+          "end_column": 44,
+          "byte_start": 6103,
+          "byte_end": 6105,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 229,
+          "column": 33,
+          "end_line": 229,
+          "end_column": 35,
+          "byte_start": 6898,
+          "byte_end": 6900,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/tomli_w/_writer.py:35:19: \"<\" -> \">=\": Python run contains an unsupported phase failure",
+          "duration_seconds": 3.115651334,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 387638,
+                "head_bytes": 387638,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 387637,
+                "head_bytes": 387637,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 3,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 4,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 5,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 6,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 7,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        }
+      ]
+    },
+    "complete-reports": {
+      "path": "/tmp/mutie-python-inversions-audit/complete-reports/run-1792714516-IhiZTe",
+      "status": "failed",
+      "duration_seconds": 62.001095208,
+      "test_count": 271,
+      "selection": {
+        "module_root": "/tmp/mutie-python-tomli-w-original",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "continue_on_error": 7,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [
+          "comparison_invert",
+          "negation_remove"
+        ],
+        "timeout": 20,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 30,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-inversions-audit/complete-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "score": {
+        "scope": "filtered",
+        "killed": 6,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "summary": {
+        "killed": 6,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 35,
+          "column": 19,
+          "end_line": 35,
+          "end_column": 20,
+          "byte_start": 985,
+          "byte_end": 986,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 76,
+          "column": 28,
+          "end_line": 76,
+          "end_column": 80,
+          "byte_start": 2181,
+          "byte_end": 2233,
+          "original": "not all(is_suitable_inline_table(t, ctx) for t in v)",
+          "replacement": "( all(is_suitable_inline_table(t, ctx) for t in v))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 81,
+          "column": 44,
+          "end_line": 81,
+          "end_column": 54,
+          "byte_start": 2380,
+          "byte_end": 2390,
+          "original": "not tables",
+          "replacement": "( tables)",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 141,
+          "column": 8,
+          "end_line": 141,
+          "end_column": 15,
+          "byte_start": 4296,
+          "byte_end": 4303,
+          "original": "not obj",
+          "replacement": "( obj)",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "negation_remove",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 157,
+          "column": 8,
+          "end_line": 157,
+          "end_column": 15,
+          "byte_start": 4709,
+          "byte_end": 4716,
+          "original": "not obj",
+          "replacement": "( obj)",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 205,
+          "column": 42,
+          "end_line": 205,
+          "end_column": 44,
+          "byte_start": 6103,
+          "byte_end": 6105,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/tomli_w/_writer.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:0eb41af08d358e254a6678edbda79396bb4a64437aca06f06c580e1fb42cdbfa",
+          "line": 229,
+          "column": 33,
+          "end_line": 229,
+          "end_column": 35,
+          "byte_start": 6898,
+          "byte_end": 6900,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/tomli_w/_writer.py:35:19: \"<\" -> \">=\": Python run contains an unsupported phase failure",
+          "duration_seconds": 4.916288,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 387638,
+                "head_bytes": 387638,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 387637,
+                "head_bytes": 387637,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.29041,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 7467,
+                "head_bytes": 7467,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 7466,
+                "head_bytes": 7466,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 5.137888875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 26032,
+                "head_bytes": 26032,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 26031,
+                "head_bytes": 26031,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.75530875,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 28284,
+                "head_bytes": 28284,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 28283,
+                "head_bytes": 28283,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.741893584,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 65168,
+                "head_bytes": 65168,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 65167,
+                "head_bytes": 65167,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.230578334,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 3146,
+                "head_bytes": 3146,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 3145,
+                "head_bytes": 3145,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.964586834,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4501,
+                "head_bytes": 4501,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4500,
+                "head_bytes": 4500,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "betting-reports": {
+      "path": "/tmp/mutie-python-inversions-audit/betting-reports/run-1792714613-GfOqHh",
+      "status": "failed",
+      "duration_seconds": 110.139270875,
+      "test_count": 198,
+      "selection": {
+        "module_root": "/tmp/mutie-python-betting-math-original",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "continue_on_error": 100,
+        "test_scope": "full",
+        "include": [
+          "src/betting_math_kit/kelly.py"
+        ],
+        "exclude": [],
+        "operators": [
+          "comparison_invert",
+          "negation_remove"
+        ],
+        "timeout": 20,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 30,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-inversions-audit/betting-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "score": {
+        "scope": "filtered",
+        "killed": 14,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 5,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "summary": {
+        "killed": 14,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 5
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 95,
+          "column": 13,
+          "end_line": 95,
+          "end_column": 14,
+          "byte_start": 2868,
+          "byte_end": 2869,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 95,
+          "column": 27,
+          "end_line": 95,
+          "end_column": 28,
+          "byte_start": 2882,
+          "byte_end": 2883,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 97,
+          "column": 21,
+          "end_line": 97,
+          "end_column": 23,
+          "byte_start": 2993,
+          "byte_end": 2995,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 99,
+          "column": 42,
+          "end_line": 99,
+          "end_column": 44,
+          "byte_start": 3124,
+          "byte_end": 3126,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 135,
+          "column": 13,
+          "end_line": 135,
+          "end_column": 15,
+          "byte_start": 4221,
+          "byte_end": 4223,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 135,
+          "column": 28,
+          "end_line": 135,
+          "end_column": 30,
+          "byte_start": 4236,
+          "byte_end": 4238,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 140,
+          "column": 10,
+          "end_line": 140,
+          "end_column": 12,
+          "byte_start": 4368,
+          "byte_end": 4370,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 171,
+          "column": 18,
+          "end_line": 171,
+          "end_column": 20,
+          "byte_start": 5237,
+          "byte_end": 5239,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 171,
+          "column": 39,
+          "end_line": 171,
+          "end_column": 41,
+          "byte_start": 5258,
+          "byte_end": 5260,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 171,
+          "column": 60,
+          "end_line": 171,
+          "end_column": 62,
+          "byte_start": 5279,
+          "byte_end": 5281,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 247,
+          "column": 11,
+          "end_line": 247,
+          "end_column": 13,
+          "byte_start": 7879,
+          "byte_end": 7881,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 264,
+          "column": 44,
+          "end_line": 264,
+          "end_column": 45,
+          "byte_start": 8357,
+          "byte_end": 8358,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 266,
+          "column": 16,
+          "end_line": 266,
+          "end_column": 17,
+          "byte_start": 8455,
+          "byte_end": 8456,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 272,
+          "column": 12,
+          "end_line": 272,
+          "end_column": 13,
+          "byte_start": 8603,
+          "byte_end": 8604,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 276,
+          "column": 12,
+          "end_line": 276,
+          "end_column": 13,
+          "byte_start": 8670,
+          "byte_end": 8671,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 344,
+          "column": 17,
+          "end_line": 344,
+          "end_column": 19,
+          "byte_start": 10775,
+          "byte_end": 10777,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        },
+        {
+          "id": 17,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 358,
+          "column": 24,
+          "end_line": 358,
+          "end_column": 25,
+          "byte_start": 11246,
+          "byte_end": 11247,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000017.diff",
+          "test_packages": []
+        },
+        {
+          "id": 18,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 364,
+          "column": 23,
+          "end_line": 364,
+          "end_column": 24,
+          "byte_start": 11406,
+          "byte_end": 11407,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000018.diff",
+          "test_packages": []
+        },
+        {
+          "id": 19,
+          "file": "src/betting_math_kit/kelly.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:ed9c8c8a50da1267d2e7fae31fb53636205fc1a9f3b28d95a9128e403063b4e3",
+          "line": 364,
+          "column": 57,
+          "end_line": 364,
+          "end_column": 58,
+          "byte_start": 11440,
+          "byte_end": 11441,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000019.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/kelly.py:95:13: \"<\" -> \">=\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.174984458,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 29803,
+                "head_bytes": 29803,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 29802,
+                "head_bytes": 29802,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/kelly.py:95:27: \">\" -> \"<=\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.269741792,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 30298,
+                "head_bytes": 30298,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 30297,
+                "head_bytes": 30297,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/kelly.py:97:21: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.408173917,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 30008,
+                "head_bytes": 30008,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 30007,
+                "head_bytes": 30007,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/kelly.py:99:42: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.9992045,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 18823,
+                "head_bytes": 18823,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 18822,
+                "head_bytes": 18822,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.978489916,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4497,
+                "head_bytes": 4497,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4496,
+                "head_bytes": 4496,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.965695583,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4932,
+                "head_bytes": 4932,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4931,
+                "head_bytes": 4931,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.016449625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4497,
+                "head_bytes": 4497,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4496,
+                "head_bytes": 4496,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.186045792,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1451,
+                "head_bytes": 1451,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1450,
+                "head_bytes": 1450,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.9459512920000002,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1939,
+                "head_bytes": 1939,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1938,
+                "head_bytes": 1938,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.087215999,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1451,
+                "head_bytes": 1451,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1450,
+                "head_bytes": 1450,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.910225834,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4352,
+                "head_bytes": 4352,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4351,
+                "head_bytes": 4351,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.147703124,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2267,
+                "head_bytes": 2267,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2266,
+                "head_bytes": 2266,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.13859775,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2267,
+                "head_bytes": 2267,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2266,
+                "head_bytes": 2266,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.872251251,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2469,
+                "head_bytes": 2469,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2468,
+                "head_bytes": 2468,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.984476124,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1940,
+                "head_bytes": 1940,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1939,
+                "head_bytes": 1939,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/kelly.py:344:17: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.237712375,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 11404,
+                "head_bytes": 11404,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 11403,
+                "head_bytes": 11403,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 17,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 2.044035541,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000017.log",
+            "stdout": "logs/000017.stdout.log",
+            "stderr": "logs/000017.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1662,
+                "head_bytes": 1662,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1661,
+                "head_bytes": 1661,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 18,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.978732209,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000018.log",
+            "stdout": "logs/000018.stdout.log",
+            "stderr": "logs/000018.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1452,
+                "head_bytes": 1452,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1451,
+                "head_bytes": 1451,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 19,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.87171375,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000019.log",
+            "stdout": "logs/000019.stdout.log",
+            "stderr": "logs/000019.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1452,
+                "head_bytes": 1452,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1451,
+                "head_bytes": 1451,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "simulation-reports": {
+      "path": "/tmp/mutie-python-inversions-audit/simulation-reports/run-1792714894-W9nkjO",
+      "status": "failed",
+      "duration_seconds": 99.756088459,
+      "test_count": 198,
+      "selection": {
+        "module_root": "/tmp/mutie-python-betting-math-original",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "continue_on_error": 100,
+        "test_scope": "full",
+        "include": [
+          "src/betting_math_kit/simulation.py"
+        ],
+        "exclude": [],
+        "operators": [
+          "comparison_invert",
+          "negation_remove"
+        ],
+        "timeout": 20,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 30,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-inversions-audit/simulation-reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "score": {
+        "scope": "filtered",
+        "killed": 5,
+        "missed": 5,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 8,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "summary": {
+        "killed": 5,
+        "missed": 5,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 8
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 76,
+          "column": 13,
+          "end_line": 76,
+          "end_column": 15,
+          "byte_start": 2077,
+          "byte_end": 2079,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 78,
+          "column": 21,
+          "end_line": 78,
+          "end_column": 23,
+          "byte_start": 2190,
+          "byte_end": 2192,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 80,
+          "column": 17,
+          "end_line": 80,
+          "end_column": 19,
+          "byte_start": 2294,
+          "byte_end": 2296,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 82,
+          "column": 42,
+          "end_line": 82,
+          "end_column": 44,
+          "byte_start": 2407,
+          "byte_end": 2409,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 93,
+          "column": 10,
+          "end_line": 93,
+          "end_column": 12,
+          "byte_start": 2751,
+          "byte_end": 2753,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 95,
+          "column": 10,
+          "end_line": 95,
+          "end_column": 12,
+          "byte_start": 2785,
+          "byte_end": 2787,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 108,
+          "column": 10,
+          "end_line": 108,
+          "end_column": 12,
+          "byte_start": 3159,
+          "byte_end": 3161,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 111,
+          "column": 14,
+          "end_line": 111,
+          "end_column": 16,
+          "byte_start": 3214,
+          "byte_end": 3216,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 171,
+          "column": 15,
+          "end_line": 171,
+          "end_column": 16,
+          "byte_start": 4947,
+          "byte_end": 4948,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 173,
+          "column": 17,
+          "end_line": 173,
+          "end_column": 18,
+          "byte_start": 5031,
+          "byte_end": 5032,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 197,
+          "column": 29,
+          "end_line": 197,
+          "end_column": 30,
+          "byte_start": 5740,
+          "byte_end": 5741,
+          "original": "<",
+          "replacement": ">=",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 202,
+          "column": 19,
+          "end_line": 202,
+          "end_column": 21,
+          "byte_start": 5856,
+          "byte_end": 5858,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 207,
+          "column": 19,
+          "end_line": 207,
+          "end_column": 20,
+          "byte_start": 5971,
+          "byte_end": 5972,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 217,
+          "column": 51,
+          "end_line": 217,
+          "end_column": 52,
+          "byte_start": 6262,
+          "byte_end": 6263,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 219,
+          "column": 19,
+          "end_line": 219,
+          "end_column": 20,
+          "byte_start": 6336,
+          "byte_end": 6337,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 219,
+          "column": 36,
+          "end_line": 219,
+          "end_column": 37,
+          "byte_start": 6353,
+          "byte_end": 6354,
+          "original": ">",
+          "replacement": "<=",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        },
+        {
+          "id": 17,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 339,
+          "column": 13,
+          "end_line": 339,
+          "end_column": 15,
+          "byte_start": 9714,
+          "byte_end": 9716,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000017.diff",
+          "test_packages": []
+        },
+        {
+          "id": 18,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 341,
+          "column": 21,
+          "end_line": 341,
+          "end_column": 23,
+          "byte_start": 9827,
+          "byte_end": 9829,
+          "original": "<=",
+          "replacement": ">",
+          "diff": "diff/000018.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:76:13: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 3.377674,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 23341,
+                "head_bytes": 23341,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 23340,
+                "head_bytes": 23340,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:78:21: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.669135625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 23729,
+                "head_bytes": 23729,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 23728,
+                "head_bytes": 23728,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:80:17: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 2.747141167,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 24477,
+                "head_bytes": 24477,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 24476,
+                "head_bytes": 24476,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:82:42: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.883899,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 25639,
+                "head_bytes": 25639,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 25638,
+                "head_bytes": 25638,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.829811291,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1471,
+                "head_bytes": 1471,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1470,
+                "head_bytes": 1470,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.8109185,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1535,
+                "head_bytes": 1535,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1534,
+                "head_bytes": 1534,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 7,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.829820458,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000007.log",
+            "stdout": "logs/000007.stdout.log",
+            "stderr": "logs/000007.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2217,
+                "head_bytes": 2217,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2216,
+                "head_bytes": 2216,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 8,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.8344755,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000008.log",
+            "stdout": "logs/000008.stdout.log",
+            "stderr": "logs/000008.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 9,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:171:15: \"<\" -> \">=\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.71234175,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000009.log",
+            "stdout": "logs/000009.stdout.log",
+            "stderr": "logs/000009.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 42421,
+                "head_bytes": 42421,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 42420,
+                "head_bytes": 42420,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 10,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:173:17: \"<\" -> \">=\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.7655999580000001,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000010.log",
+            "stdout": "logs/000010.stdout.log",
+            "stderr": "logs/000010.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 44495,
+                "head_bytes": 44495,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 44494,
+                "head_bytes": 44494,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 11,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.823692376,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000011.log",
+            "stdout": "logs/000011.stdout.log",
+            "stderr": "logs/000011.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1293,
+                "head_bytes": 1293,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1292,
+                "head_bytes": 1292,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 12,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.727741833,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000012.log",
+            "stdout": "logs/000012.stdout.log",
+            "stderr": "logs/000012.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1910,
+                "head_bytes": 1910,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1909,
+                "head_bytes": 1909,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 13,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.978652126,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000013.log",
+            "stdout": "logs/000013.stdout.log",
+            "stderr": "logs/000013.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 14,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.841118917,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000014.log",
+            "stdout": "logs/000014.stdout.log",
+            "stderr": "logs/000014.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 15,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.7855352500000001,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000015.log",
+            "stdout": "logs/000015.stdout.log",
+            "stderr": "logs/000015.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 16,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.824516166,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000016.log",
+            "stdout": "logs/000016.stdout.log",
+            "stderr": "logs/000016.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 261,
+                "head_bytes": 261,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 260,
+                "head_bytes": 260,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 17,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:339:13: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.9007168330000002,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000017.log",
+            "stdout": "logs/000017.stdout.log",
+            "stderr": "logs/000017.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 9743,
+                "head_bytes": 9743,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 9742,
+                "head_bytes": 9742,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 18,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running src/betting_math_kit/simulation.py:341:21: \"<=\" -> \">\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.898686334,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000018.log",
+            "stdout": "logs/000018.stdout.log",
+            "stderr": "logs/000018.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 7842,
+                "head_bytes": 7842,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 7841,
+                "head_bytes": 7841,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-python-inversions-audit/stronger-reports/run-1792715024-XCocKz",
+      "status": "completed",
+      "duration_seconds": 13.573334125,
+      "test_count": 200,
+      "selection": {
+        "module_root": "/tmp/mutie-python-inversions-audit/stronger",
+        "config_file": null,
+        "lang": "python",
+        "python": "/tmp/mutie-pytest-audit-env/bin/python",
+        "rust_build_cache": "fresh",
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [],
+        "exclude": [],
+        "operators": [],
+        "timeout": 20,
+        "max_log_bytes": null,
+        "max_capture_bytes": 4194304,
+        "baseline_timeout": 30,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "/tmp/mutie-python-inversions-audit/stronger-reports",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "/tmp/mutie-python-inversions-audit/simulation-reports/run-1792714894-W9nkjO",
+          "selection": "all",
+          "source_ids": [
+            8
+          ]
+        },
+        "ui": "plain"
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/betting_math_kit/simulation.py",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:5d982ad7fde2e7b0583fc8728613bc560d94ded3cefd99e8e535852aca6245ed",
+          "line": 111,
+          "column": 14,
+          "end_line": 111,
+          "end_column": 16,
+          "byte_start": 3214,
+          "byte_end": 3216,
+          "original": "==",
+          "replacement": "!=",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.5595763329999999,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1294,
+                "head_bytes": 1294,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1293,
+                "head_bytes": 1293,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "original_report_sha256": {
+    "original-reports/run-1792714479-GFkAf7/outcomes.json": "3178b0e9ff23ea071135b5078a06d64bfbe1c99049e1ef1e9cebe4b22b6abe5e",
+    "original-reports/run-1792714479-GFkAf7/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/errors.txt": "fe498e9277677f9eaf7424ce88263475883d71deb902791159b62f4f6b875588",
+    "original-reports/run-1792714479-GFkAf7/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/mutants.json": "8ef5e7d693519da9961f9d44fb7935d29971f8be21df56ebfff888bb35bb986e",
+    "original-reports/run-1792714479-GFkAf7/summary.txt": "3dffdad75777dd1694f4de1a1aab92a25728006a455e175079b07126f17643c8",
+    "original-reports/run-1792714479-GFkAf7/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/run.json": "42b4d9e88151b631e651a15873553b70a2c256c04fe33b310d0cbe72fdb80527",
+    "original-reports/run-1792714479-GFkAf7/diff/000003.diff": "16550a0e2311573002a134ce30df9555cd3ccab6cf4ed58d0e199500ede840c8",
+    "original-reports/run-1792714479-GFkAf7/diff/000002.diff": "831beb5aa932e95fc061f60d75b76dccd4b4fc5070a43e66c3a0030661b00504",
+    "original-reports/run-1792714479-GFkAf7/diff/000005.diff": "c0b369da64a94ab55937f87ce18f4a1799e15bcc055440840b08eaadfbb189bf",
+    "original-reports/run-1792714479-GFkAf7/diff/000004.diff": "0d1e22ef191deb7f92cae2eed20c937ae47c9c387b63830aa7a65f864a912b35",
+    "original-reports/run-1792714479-GFkAf7/diff/000007.diff": "2b98d167f787dd63bf36471232d357d87002628cf6afc8ae4fdf702a1fc0bf3d",
+    "original-reports/run-1792714479-GFkAf7/diff/000006.diff": "8874fba52003bdbe4f308cb5385eb53de6880727c7bdf38fc22b6d9dd33a8e64",
+    "original-reports/run-1792714479-GFkAf7/diff/000001.diff": "18a673fcde849450d7ddec971bc4cf42413cb88f00bace48793e9962e3f928fd",
+    "original-reports/run-1792714479-GFkAf7/logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/logs/000001.log": "ad20d71fdb14fbcc836c347c2a51ce88bd6f0c5933209bad00eb2d8b17fd7483",
+    "original-reports/run-1792714479-GFkAf7/logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/logs/discovery.log": "d28986c3ee1c2f3832960613b9ee23e0701647d2b1c9e791c4daead817d3aff1",
+    "original-reports/run-1792714479-GFkAf7/logs/000001.stdout.log": "41fa5e4f803d9d18df81500de9a6c53aa45651c72e883f530edc76bb3ce68d6a",
+    "original-reports/run-1792714479-GFkAf7/logs/discovery.stdout.log": "7d9d76aba6c2671dbc8b01c08c3f77ad43104b79680768c0dbb0f107455a4654",
+    "original-reports/run-1792714479-GFkAf7/logs/baseline.log": "54ec2f1bf87e990a4a39cee63ded092eeeaa061c9d495d6df6a54f03a43a1929",
+    "original-reports/run-1792714479-GFkAf7/logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original-reports/run-1792714479-GFkAf7/logs/baseline.stdout.log": "e0057bb2b095c51e5cd60798dde1999a7aa907834115af465a6a0b7204fc2ff5",
+    "complete-reports/run-1792714516-IhiZTe/outcomes.json": "41a017328844f84b0ee79f68b440171396d19a6201d1258adfaca70ffd003cb5",
+    "complete-reports/run-1792714516-IhiZTe/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/errors.txt": "fe498e9277677f9eaf7424ce88263475883d71deb902791159b62f4f6b875588",
+    "complete-reports/run-1792714516-IhiZTe/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/mutants.json": "8ef5e7d693519da9961f9d44fb7935d29971f8be21df56ebfff888bb35bb986e",
+    "complete-reports/run-1792714516-IhiZTe/summary.txt": "2e5f1b780965011a04cbbc7a9d45c2c33c6f5f6fde1cc5e6ef11ca6d095698a1",
+    "complete-reports/run-1792714516-IhiZTe/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/killed.txt": "926e904d624845e67ca0480e5aaaeaff19fab018bd56206425b3df3015bbb56d",
+    "complete-reports/run-1792714516-IhiZTe/run.json": "5b736d7a98b1911cfa5f5b1e1fc3d4e67fc99842e278930015c851ada685d0ab",
+    "complete-reports/run-1792714516-IhiZTe/diff/000003.diff": "16550a0e2311573002a134ce30df9555cd3ccab6cf4ed58d0e199500ede840c8",
+    "complete-reports/run-1792714516-IhiZTe/diff/000002.diff": "831beb5aa932e95fc061f60d75b76dccd4b4fc5070a43e66c3a0030661b00504",
+    "complete-reports/run-1792714516-IhiZTe/diff/000005.diff": "c0b369da64a94ab55937f87ce18f4a1799e15bcc055440840b08eaadfbb189bf",
+    "complete-reports/run-1792714516-IhiZTe/diff/000004.diff": "0d1e22ef191deb7f92cae2eed20c937ae47c9c387b63830aa7a65f864a912b35",
+    "complete-reports/run-1792714516-IhiZTe/diff/000007.diff": "2b98d167f787dd63bf36471232d357d87002628cf6afc8ae4fdf702a1fc0bf3d",
+    "complete-reports/run-1792714516-IhiZTe/diff/000006.diff": "8874fba52003bdbe4f308cb5385eb53de6880727c7bdf38fc22b6d9dd33a8e64",
+    "complete-reports/run-1792714516-IhiZTe/diff/000001.diff": "18a673fcde849450d7ddec971bc4cf42413cb88f00bace48793e9962e3f928fd",
+    "complete-reports/run-1792714516-IhiZTe/logs/000007.log": "4469fa0ec51a4066bf5c7f9cda3ec0bae3998abdf6bc8173449cc083f9bbe135",
+    "complete-reports/run-1792714516-IhiZTe/logs/000006.log": "c4120670e0add650ca57684333842d26f6b95059b616223a461c730d9010ddd0",
+    "complete-reports/run-1792714516-IhiZTe/logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/000004.log": "4a097219321d08a0c2a1617c3587b0a04a9ab736eaba969cff0e58dff61a1b75",
+    "complete-reports/run-1792714516-IhiZTe/logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/000005.log": "fe07d767cb017e804604b21e2fd098151de952a1709285eabefd48fb74b8be29",
+    "complete-reports/run-1792714516-IhiZTe/logs/000003.stdout.log": "4f492cc1c63a212e13c8716e81381ceddcc069c5fd210843a473c80351011cbb",
+    "complete-reports/run-1792714516-IhiZTe/logs/000001.log": "cde9845ead7175cf8f468a48cd075fb4df049334537f95876a9eaee16e61d3ed",
+    "complete-reports/run-1792714516-IhiZTe/logs/000006.stdout.log": "15020e1ab8a2fff1992b70666e32595ef78372f3b60485958ec0a2406620c929",
+    "complete-reports/run-1792714516-IhiZTe/logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/000002.log": "caa01b3d5deacd06082c6a69de3c4977cb7bbcf5b754b382b0fc07f4131921b0",
+    "complete-reports/run-1792714516-IhiZTe/logs/000003.log": "669a9e42c0c99179cbdb987518001508f575041b1c9d0f6b2358d45a61cc4a06",
+    "complete-reports/run-1792714516-IhiZTe/logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/discovery.log": "b611bcfe3eed1c4c07808da2217abe5040971d47c76b17000dde055698c22fed",
+    "complete-reports/run-1792714516-IhiZTe/logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/000001.stdout.log": "f7ffaca8751b44ea2e206651b0c46024489386e2a6dc8f6eb613fc478f5cd797",
+    "complete-reports/run-1792714516-IhiZTe/logs/000004.stdout.log": "af04d890f78ebd8155b91eaaaae708a02b66e8a137fd2fee4ba6a13b73553cea",
+    "complete-reports/run-1792714516-IhiZTe/logs/discovery.stdout.log": "d7761a0efced0d8bb0e76e3e2c99d8afe60c005b922092ad06688f69ad9cf803",
+    "complete-reports/run-1792714516-IhiZTe/logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/baseline.log": "a74e7cbd0a458ef43d9600c52cfacb4cff0e5a3cfea6c0d9234fef2b50b1bc65",
+    "complete-reports/run-1792714516-IhiZTe/logs/000007.stdout.log": "90849c60f65d09649c99b7c002e8d2e5f79ada1fd0351289048e9ebd92626982",
+    "complete-reports/run-1792714516-IhiZTe/logs/000002.stdout.log": "99169ae282670ce0f5535acb0d2dc2adf79a24ab3912aa0a1156c71630ee96a5",
+    "complete-reports/run-1792714516-IhiZTe/logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "complete-reports/run-1792714516-IhiZTe/logs/000005.stdout.log": "f545b40522df7deaa31fcf1028160b5db71878deda86b0447a8551935326d5a9",
+    "complete-reports/run-1792714516-IhiZTe/logs/baseline.stdout.log": "9b7e72c6c5f7bae4faba6dc73fdf6d1c913aa44253904dcb422be64014d88f1c",
+    "complete-reports/run-1792714516-IhiZTe/logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/outcomes.json": "0f882fa22fd9e3c45a1d33302dadcebde2344188125e1fcc4b30afd00bf16355",
+    "betting-reports/run-1792714613-GfOqHh/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/errors.txt": "951147e304df07c2381d96fa819a06d558992aee0e93a595a62d8e793383ae82",
+    "betting-reports/run-1792714613-GfOqHh/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/mutants.json": "2d052a8a3afdea15858a3ecccacd1e35e5425cfc0aa27440a7a2eb07be869c11",
+    "betting-reports/run-1792714613-GfOqHh/summary.txt": "71c9d229b251c0bfb3b079fdf75c74085052ddc1aacab738ad4816807d94bb7f",
+    "betting-reports/run-1792714613-GfOqHh/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/killed.txt": "d36a0e05d58ca67791359a2a8dfef9a84068e7d4801bb83b60db86a6645f5336",
+    "betting-reports/run-1792714613-GfOqHh/run.json": "6f9464ffd3f86d1d6ea48d5e8fb5756264bb1d98b35b1f1ddb9fdcb8e11cdb9c",
+    "betting-reports/run-1792714613-GfOqHh/diff/000003.diff": "2d2090ae6ca6911d47abb40fee262cd9c5e76f97b1416bedb5030feabbde1ad2",
+    "betting-reports/run-1792714613-GfOqHh/diff/000015.diff": "a50fab199e728b993437240f8e2ca49a0597dae8e2635cd8f9eadda29c978395",
+    "betting-reports/run-1792714613-GfOqHh/diff/000019.diff": "db09687cae4c7c82d6212d07b0343b39582f42bb8eeb64f45c3b85cff711033f",
+    "betting-reports/run-1792714613-GfOqHh/diff/000018.diff": "1cfc8996bc44dbcff0094680914d12500e242a974e4403996c425a93644a7025",
+    "betting-reports/run-1792714613-GfOqHh/diff/000014.diff": "0f9080961fd6e845f01ebb34a70f5090614667349713fe434ad14ac387231195",
+    "betting-reports/run-1792714613-GfOqHh/diff/000002.diff": "f058c1271611d3b6c902f27684467f2eec6a98bc4538f70474925eaa63722215",
+    "betting-reports/run-1792714613-GfOqHh/diff/000009.diff": "f15ea757ab397173cad4a84d965112f67a7cd925cabf64ea6e64fdc3b18bb5a1",
+    "betting-reports/run-1792714613-GfOqHh/diff/000005.diff": "8baf376ed925f1edc6094510fad3d8107717564b0f1de7290339f431ea70f69e",
+    "betting-reports/run-1792714613-GfOqHh/diff/000013.diff": "119a470002bef3353b8970f772d5acc5ba9c49232923c778dcd2408580eb5b8b",
+    "betting-reports/run-1792714613-GfOqHh/diff/000012.diff": "d9429c18a2caa2e721c039b179b65f2b606185f589e94898a653cb921fc541aa",
+    "betting-reports/run-1792714613-GfOqHh/diff/000004.diff": "cf47f4f3895bbf2214500fd587660596175bae6eddda9ce740caea77598b604b",
+    "betting-reports/run-1792714613-GfOqHh/diff/000008.diff": "eb3bc49c9fcc01904131c3cc14a8509fad2ff2dc7e9ae8aadee571298548bc99",
+    "betting-reports/run-1792714613-GfOqHh/diff/000011.diff": "786c497fc27243cd369fc0a3f02650b089cd52cdbb1bd5a6a0aa93dab3711690",
+    "betting-reports/run-1792714613-GfOqHh/diff/000007.diff": "3685a60085ad2147860fb8223fd770476e9e4fc608295e30862d72008e7ae231",
+    "betting-reports/run-1792714613-GfOqHh/diff/000006.diff": "571a369390998e394f26cea17b72073bf17be98ffdc731ed0b36282517d683dc",
+    "betting-reports/run-1792714613-GfOqHh/diff/000010.diff": "5dfd4ebfdaad9b5e6beff9165f43ae25f2e8fc9a16e7bdf378543a0691b30c39",
+    "betting-reports/run-1792714613-GfOqHh/diff/000017.diff": "d441321dac614dcb830f310275f0022cccffb1ea103cfc2e03652240171394c0",
+    "betting-reports/run-1792714613-GfOqHh/diff/000001.diff": "00765849491c350085d40c3885fe382cbd203965327f524a30045fe54abae494",
+    "betting-reports/run-1792714613-GfOqHh/diff/000016.diff": "d9b8e2bad65329d28a8c8ed3f3f5840ccf9ef13c4ed3aef5325122d331c909a2",
+    "betting-reports/run-1792714613-GfOqHh/logs/000012.stdout.log": "02e51170e4b450ec128653f1a694d6b1cdde18bae815f12537b4016fd72fe548",
+    "betting-reports/run-1792714613-GfOqHh/logs/000013.log": "bf2933dccb6ef96c2dc29db7dad2c0447ef9eb2fa97e663d3808ad91c93e7bb8",
+    "betting-reports/run-1792714613-GfOqHh/logs/000007.log": "8c7c8df3728c275c4983f21349de0c4e15b187c8eac6fd5db57941bb851750d3",
+    "betting-reports/run-1792714613-GfOqHh/logs/000016.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000006.log": "5f3414b0a9e4448fdf64aa44b63f164dd507ba61aeb1b2888c9974b3012dea64",
+    "betting-reports/run-1792714613-GfOqHh/logs/000012.log": "fe0d89078542649f61384dd57b22c599ea646ba90854d21e9568f2feda7c4d7b",
+    "betting-reports/run-1792714613-GfOqHh/logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000004.log": "d684c062ed43fc34ffeedd790b7e8d8b223ba12af4ded67fe623cc50899cf094",
+    "betting-reports/run-1792714613-GfOqHh/logs/000010.log": "ddbabcd8d2b6ef5b7484980f9be9ad909dea58ef7dccc6908552928f0fed688d",
+    "betting-reports/run-1792714613-GfOqHh/logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000011.log": "2c421357f1602b5ea43e80aeda57b49ed91ee8722539fa0763cd51d45b9bfc3f",
+    "betting-reports/run-1792714613-GfOqHh/logs/000005.log": "83da94b529bc34f922e47eff3f928849c9e9bf38c1c3e1e5220898bb903e4f3e",
+    "betting-reports/run-1792714613-GfOqHh/logs/000003.stdout.log": "b8619ce8bac980d944c18ed50d8849aa536155d8604b727ffe29f09328467558",
+    "betting-reports/run-1792714613-GfOqHh/logs/000001.log": "27eaafe91a707f0b79c83469073a9356e12b858f6a14345bc9f2df2f5f71616a",
+    "betting-reports/run-1792714613-GfOqHh/logs/000015.log": "d834a2b92ef01ea20b53d89a32388bfb84e9590289e8cd0e63a8f2cdef7271ee",
+    "betting-reports/run-1792714613-GfOqHh/logs/000006.stdout.log": "5943d4dfed1b7222dc689c73b5ae37db3ab18c24eb3bb803d1860efd59628f15",
+    "betting-reports/run-1792714613-GfOqHh/logs/000014.log": "10b801ff6fae720111af32ee2264a20996b510300a0b747b363aa768396c773a",
+    "betting-reports/run-1792714613-GfOqHh/logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000013.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000016.log": "0930ba7cfa6ac6b25b36d2bf9d1a63ca856b9e78e0cb331ff4f851b6341f3a4c",
+    "betting-reports/run-1792714613-GfOqHh/logs/000002.log": "dd7b3911bed6bab5e32f4538db0052cb046826e7c1de38da677e8e920ccc2583",
+    "betting-reports/run-1792714613-GfOqHh/logs/000017.stdout.log": "3060188b4985a8579cfd8a6e7c3da36194b6824f2ea51dae35e1929280d33e9c",
+    "betting-reports/run-1792714613-GfOqHh/logs/000003.log": "77d74216a98967951b7a1cd39a879e4d7fc2eecbea536b219b9607cbf48fcc58",
+    "betting-reports/run-1792714613-GfOqHh/logs/000017.log": "fd15ff96a7e6636348eee5048904b3949ce4fcfd9da99cbe057d38113200db8c",
+    "betting-reports/run-1792714613-GfOqHh/logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000010.stdout.log": "39dc214519414ec2e766415384d1c521f15d4ec772cab8291b4a719891c01908",
+    "betting-reports/run-1792714613-GfOqHh/logs/discovery.log": "1d80eb1807474ed1c954528696f610f3bbf8453f1c45664c67cd8e7e63e2006b",
+    "betting-reports/run-1792714613-GfOqHh/logs/000014.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000001.stdout.log": "42e0ab981cabdd9793c3a3bcc04e032e736d354e687c23b026f48778a2adc7fa",
+    "betting-reports/run-1792714613-GfOqHh/logs/000019.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000004.stdout.log": "0cf870a71d8055f9d1bbdf48fadec07eb00325489cfd2580be8b56773bada812",
+    "betting-reports/run-1792714613-GfOqHh/logs/000018.stdout.log": "fc63277a9b8f3885d9a2c032dc0eb6ddb8d396d2b30fc9b9afa481861ce544ef",
+    "betting-reports/run-1792714613-GfOqHh/logs/000009.stdout.log": "49b7b78492fdeffdf3334052b756e0ab594e9c98e3186e8638209ab31b3319f8",
+    "betting-reports/run-1792714613-GfOqHh/logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000015.stdout.log": "907b9aa3911459bf2d56ac9b583de0dc7653324c393742f3826039e02016f970",
+    "betting-reports/run-1792714613-GfOqHh/logs/discovery.stdout.log": "d66dd1da9f5a38942592a8dbc8a32f4138f479127fe42fc51a2112d2e8a3a094",
+    "betting-reports/run-1792714613-GfOqHh/logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/baseline.log": "9bcddc92f7042c732c9aae001ed7458b3ebfcfa1065c30316b61d9d6cbc3a49d",
+    "betting-reports/run-1792714613-GfOqHh/logs/000007.stdout.log": "d58eb9a8e010f095240ef461a21ff6479ff4e7c27fc287b91bac8002a5344240",
+    "betting-reports/run-1792714613-GfOqHh/logs/000016.stdout.log": "24dad4836eec860c4a122bc7a5d9caa6cacadbaaa079c51cde4251cf986dbf38",
+    "betting-reports/run-1792714613-GfOqHh/logs/000012.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000017.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000013.stdout.log": "1ae54b2869f12873cf0d03fe193965542d6cce8ae7a7a24c02baee6826fbd71f",
+    "betting-reports/run-1792714613-GfOqHh/logs/000002.stdout.log": "caca377f0343f30c95e1bd1fd2f4da84266e2ad3a14fc1081ac6f3fe26c34c43",
+    "betting-reports/run-1792714613-GfOqHh/logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000005.stdout.log": "5aa879ef3d07efe70be30e9494ca9627f7a14b5d558319836269199d6fa38a5a",
+    "betting-reports/run-1792714613-GfOqHh/logs/000019.stdout.log": "3214f25154efa2510907e971b19456f0b441e9bbacc4787ac85b664e5352d097",
+    "betting-reports/run-1792714613-GfOqHh/logs/000008.stdout.log": "1d75d934a519ec1b8404a5a1446f2d6cc8960a27da417f21a5ce7c127037a884",
+    "betting-reports/run-1792714613-GfOqHh/logs/baseline.stdout.log": "5f16af80f72175662d8d65b448b4b1a571edf6141c7d1bc26c8c4a7c0f4f6941",
+    "betting-reports/run-1792714613-GfOqHh/logs/000019.log": "192b21891cda0fca9022a93e642c614c5b0f6e700656ffb6d95cab7b8c6405f3",
+    "betting-reports/run-1792714613-GfOqHh/logs/000018.log": "4229be776fa3dfbcab5adf50aff13b4655a2d3c231273619c6ad7938013217c5",
+    "betting-reports/run-1792714613-GfOqHh/logs/000014.stdout.log": "72b5b56bf153eb846fd0beebffc5ee8cbac658f2c5a56b45ee67d45cdd1eefbb",
+    "betting-reports/run-1792714613-GfOqHh/logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000008.log": "176a9c021f5e67bde7a81959496a79f76187a19dd807b8bbfce80ddf9d320f84",
+    "betting-reports/run-1792714613-GfOqHh/logs/000015.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000009.log": "a6d99f898f0379842c96cabe07ee96e0f1079a2eef8845c9f00ef536a3fa71e3",
+    "betting-reports/run-1792714613-GfOqHh/logs/000011.stdout.log": "020a6bbc23855af86a35b3d889599ee5cec6c2cf3d0f7c7d0e15119a9ce72b47",
+    "betting-reports/run-1792714613-GfOqHh/logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "betting-reports/run-1792714613-GfOqHh/logs/000018.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/outcomes.json": "0929ec00326b528bf80831afd2f028efe6af69b2037b473dcdd56c35c4aa3830",
+    "simulation-reports/run-1792714894-W9nkjO/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/missed.txt": "158ad29e133b46fdccb8d1937ff11490121a1d4af998675de8618b78409adec7",
+    "simulation-reports/run-1792714894-W9nkjO/errors.txt": "6da038110941ab782041fe0c8e9106ff01d83f4d84a333b14e4e4503c76c3eb7",
+    "simulation-reports/run-1792714894-W9nkjO/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/mutants.json": "98de5a45894a4af3996ed6b2a2f7d851539646fede654d102493014c630fd0fc",
+    "simulation-reports/run-1792714894-W9nkjO/summary.txt": "6ebebc86a299470e8e11101ed4c5f09647af7ed6a9c1b352119c31f32ca1f758",
+    "simulation-reports/run-1792714894-W9nkjO/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/killed.txt": "bddffb28f0206806a2f6c6aa4899e8d92bfb29d97bae9484aa115974da72de35",
+    "simulation-reports/run-1792714894-W9nkjO/run.json": "66db34322aad8e833ee2b23d6c1f7c54faa50440d261a3d6413b3d050e5e7e4e",
+    "simulation-reports/run-1792714890-iozNsn/outcomes.json": "9c7993e98de4f729dcd4d392a8800cb37c68ef5167cdb0274a02ef053d04cfde",
+    "simulation-reports/run-1792714890-iozNsn/build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714890-iozNsn/missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714890-iozNsn/errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714890-iozNsn/timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714890-iozNsn/mutants.json": "b560c729b6956c2cab33291aff71f0109156c7ba302248f7aa022e11f38fc047",
+    "simulation-reports/run-1792714890-iozNsn/summary.txt": "093bb06dbd58574ca16cfb1f3ade0c3ae5e6f9d03ef409e32081dfbe0f7aab61",
+    "simulation-reports/run-1792714890-iozNsn/.mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714890-iozNsn/killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714890-iozNsn/run.json": "0b4d1799de0d2569bd7fb3590d59315649756633e92010c8b4f4e5a7f980d137",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000003.diff": "760004a15e4aea063d31895a27cbdd5ae4c7568f5df9b194873580f1c113603d",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000015.diff": "d03c469f353696f100d839dff0ea75af93de1843beb3996f5abae0bca06dbd07",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000018.diff": "b917839833d7a0ad4bbb68e79e0c10d91187bd37089c363c5cda08f49902723f",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000014.diff": "68ce8851364c122b269b602b35e14126bd081ef46bd15e34e685b31030c4b712",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000002.diff": "9d2771a69e676fb6d3b8286522eb795ac050bdfbb70f93df1dbf4aa602f998b6",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000009.diff": "780e097fc57f96c1d501ecab3304e2a50041b31544e1113d7426e30f57d1face",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000005.diff": "833c056aa9032258bd5e2db6b37ce53887b0da1a80273ca6d3f4f79d7cd432a4",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000013.diff": "8138aa9a9bd4a523e6ad6e99aaba7eacb828effe04e3e09be49830b89340e823",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000012.diff": "e6749cc126102d229aa92f7d1773d6693fd50870f27a234b2d9076a5a2c5ce07",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000004.diff": "baf7bf2e0e3e5e27c45b87fb1a3319ba2a8b80ba70cefde1dd8df32d4a45e2a7",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000008.diff": "d63c1692cb8e249b66d9093a14afca7d152e090865fd2ee20d03d661d53c0755",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000011.diff": "3e217db7a311b4ebb2e9dcc4dc173217e853e0dc84e9c89352feee2a76ba87f7",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000007.diff": "b24df73d1f346345725951f1de98ed4e28722d7958f61cd6fe57f0f61e2c3d97",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000006.diff": "d29a88a5f61c11e5bba02baf2a5482b6291842926715730900bfbc709aa3aa57",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000010.diff": "be2e1a87762381ce978ec0a597b502e793859928d5fa3433d123cd58107133ce",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000017.diff": "5ca90471d3690ad229bc6fa063b882bb0bc47695195fa8118341b015a90afe2e",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000001.diff": "16bba052f9f9325d6477d5d5ded2cd32e97f744f1bd67acdaf6d0bedecd0828a",
+    "simulation-reports/run-1792714894-W9nkjO/diff/000016.diff": "68ab676ecc2982b7f536d1e59a36feaaffa6a748d2c786012bcc35b2718fe9cd",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000012.stdout.log": "64d36fbf8e894ca3a7807f3a52080523653e49711994d1fd40ad80b1fdf030c7",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000013.log": "133f95384ac78b792e3784c52adbcdd15bfc5a8c5edacd5bd0d2a415d6e0e883",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000007.log": "81af120985f34c95fa39c8926e82f9e653966e610393f75f7bd07de173a0ff84",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000016.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000006.log": "fc7026c824baf1b6dcbf1f8704851390d332a498e0cb963bf66b899a439101c3",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000012.log": "09418065666459608ca7b6fa4aed5f35c1c3a35134b0d478b0de1730f295daeb",
+    "simulation-reports/run-1792714894-W9nkjO/logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000004.log": "cc6ee0d436eea748a94154c3bcf47f48e394c35b8103eaa60b96c9b25da571fc",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000010.log": "f007b024e59d4de5c546184433892ec41ce91e01753f9af1043b72b467ab39d3",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000007.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000011.log": "f3a4f8b982e7c8bd09280a1128ea8de38fcd2ed984bc47e8d10059f7bb8dce51",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000005.log": "d602d773013220afb4297317fd7d3e55a5922a61cac65984c37976a539983502",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000003.stdout.log": "548d620f212b3835058fef00e86f9553f2436d9a8aac4af4affe11505eb3a7cd",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000001.log": "f5d89dd533ca6ee70bc2b0833ee2c4605422f412b4975c4e71e58705b1d75fe8",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000015.log": "116f765a6deeeb14e11bb466825d878cbb66cebb7a5e0a4642020e65bbeab367",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000006.stdout.log": "66dcdb64b8c479386abf3269ae13fac262cf8f66260dac88fa1669c3e7a4a142",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000014.log": "cc01bae7e3d076e740f28cd22506f8dd340ac6075f71384a2de6dca0fd0c0eeb",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000013.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000016.log": "cc01bae7e3d076e740f28cd22506f8dd340ac6075f71384a2de6dca0fd0c0eeb",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000002.log": "e46244d6e15091965b92df0860cbc092e25e02937ef5833e41e8f8e63b67f9b6",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000017.stdout.log": "50306ced51f50ddecc0c72ef15806b77d8a4f57dffdd1bef8fe581f933e72243",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000003.log": "2cb5e0066eb8a1a946ac56b9102eeef7367f8371fed5b2da512a2cb9d4bd1277",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000017.log": "852ea6f5312aa4c5ac6ed10c07c4f365f05bec7f027baef2a0c9a6cb1312a765",
+    "simulation-reports/run-1792714894-W9nkjO/logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000008.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000010.stdout.log": "3e1dcc4f564e3ddcdeec10f31d399263171ac9da4f2303b4c1227cfce51dda9d",
+    "simulation-reports/run-1792714894-W9nkjO/logs/discovery.log": "9ba475f70bba5115251d52b539c359e08d30433aaee74edb0f5eb171e7f9a853",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000014.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000001.stdout.log": "c1ec8141117a6920e40c9bd82e3e9170fea3e93e95284bbfc3b2a4e3e8fe892c",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000004.stdout.log": "24c463ad973017f5364a4355403972bce0f2637238b468fb05d6071f6eb91111",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000018.stdout.log": "a7b4a9421a5e26e4d61df7e33aede23195772bd84f90ac030a200fa1ef5c8af0",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000009.stdout.log": "df8e24cd4be8ec3efa18a46cfa4bf1d4d9877c03a94149bc214563a128a4a56d",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000011.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000015.stdout.log": "32527d4e1bf407c2320efc0c0a9a7566822b0517eacb65f80d62d9621f3e32ae",
+    "simulation-reports/run-1792714894-W9nkjO/logs/discovery.stdout.log": "9f8f8596ee00c58b7a06f9bf71226d797af1b62ade0f0d0e055dfdb72fabd4b9",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/baseline.log": "1c5532770a510c2a1fd7d5bc6f5d72ef323fe6907fbb2cca98567bb9ecb3e060",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000007.stdout.log": "a6754951208ddd7a6e2efea0e70073ca99e474fa5caf50d487555415b06b52b4",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000016.stdout.log": "82f11dd1cf5b5ae67be1f6b85ba3d1d2b4288a7bbdd51fb06e33047f10b0eebd",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000012.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000017.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000013.stdout.log": "f4d02abf81e1d69cd6140cfdf02247f214098b01e50791748fcda757ac14b038",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000002.stdout.log": "ec32459196046e1b9dff788e26ef65a37003f7aaaf4924631a24ec140ee7d7bd",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000005.stdout.log": "173921d069f6d69765f4a24d2febbc2f6e042e2e7675bf7302b5f51180a9d34e",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000008.stdout.log": "82f11dd1cf5b5ae67be1f6b85ba3d1d2b4288a7bbdd51fb06e33047f10b0eebd",
+    "simulation-reports/run-1792714894-W9nkjO/logs/baseline.stdout.log": "bba9472aa1c362ac3cf808cb41276bc165376d5e1ad455a9a52e73be0c2cf331",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000018.log": "f94dd86ee53f33309a238dc47a63bd614402ff7bef3bde3b12a326bbfa3a2125",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000014.stdout.log": "82f11dd1cf5b5ae67be1f6b85ba3d1d2b4288a7bbdd51fb06e33047f10b0eebd",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000010.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000009.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000008.log": "cc01bae7e3d076e740f28cd22506f8dd340ac6075f71384a2de6dca0fd0c0eeb",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000015.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000009.log": "e47cd5a590b7f21f7763f75229676f5a90f15395c2714c14c9f4b19f26d7ca77",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000011.stdout.log": "140fb252907c7ab1c5ef8e4044a8580bcc763b486dbb292ca5943b1158ef122f",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "simulation-reports/run-1792714894-W9nkjO/logs/000018.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stronger_test_sha256": "e4277d99e5223e947cfdb8cd4c5068df5846ae2ce6b2f36b8c6bdfc8272cacbd",
+  "preservation_verified": true,
+  "open_simulation_survivor_ids": [
+    13,
+    14,
+    15,
+    16
+  ],
+  "scope_sha256": "699aa1487b715e2a590e1f97299bedab59cd88ec0e14980ce57adb948782b5b3",
+  "startup_sample_sha256": "41da03537f1da96a14f5380e98a3e6374310674f1804ac44f2c0cc7d4777e488"
+}

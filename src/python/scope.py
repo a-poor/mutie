@@ -151,16 +151,29 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
         offsets.append(offsets[-1] + len(line.encode("utf-8")))
     tokens = []
     for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
-        if token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "+", "-", "*", "/"}:
+        if token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/"}:
             row, column = token.start
             start = offsets[row - 1] + len(lines[row - 1][:column].encode("utf-8"))
             tokens.append((start, token.string, row))
     replacements = {"<": "<=", "<=": "<", ">": ">=", ">=": ">",
                     "+": "-", "-": "+", "*": "/", "/": "*"}
-    operators = {ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
+    inversions = {"==": "!=", "!=": "==", "<": ">=", "<=": ">", ">": "<=", ">=": "<"}
+    operators = {ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
                  ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/"}
     for node in ast.walk(tree):
         if node in annotation_nodes:
+            continue
+        if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
+            start = offsets[node.lineno - 1] + node.col_offset
+            end = offsets[node.end_lineno - 1] + node.end_col_offset
+            original = data[start:end].decode()
+            require(original.startswith("not"), "Python negation span mismatch")
+            # Keep operand parentheses/trivia, and isolate the original low-precedence
+            # operand from its parent. No bool conversion or duplicate evaluation.
+            yield dict(file=relative, start=start, end=end, line=node.lineno,
+                       column=node.col_offset + 1, end_line=node.end_lineno,
+                       end_column=node.end_col_offset + 1, original=original,
+                       replacement="(" + original[3:] + ")")
             continue
         if isinstance(node, ast.Compare) and len(node.ops) == 1:
             left, right, op = node.left, node.comparators[0], node.ops[0]
@@ -179,9 +192,10 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
         end = start + len(original)
         require(data[start:end].decode() == original, "Python operator span mismatch")
         column = start - offsets[row - 1] + 1
-        yield dict(file=relative, start=start, end=end, line=row, column=column,
-                   end_line=row, end_column=column + len(original), original=original,
-                   replacement=replacements[original])
+        for replacement in ([replacements[original]] if original in replacements else []) + ([inversions[original]] if original in inversions else []):
+            yield dict(file=relative, start=start, end=end, line=row, column=column,
+                       end_line=row, end_column=column + len(original), original=original,
+                       replacement=replacement)
 
 
 def inspect(root):
@@ -821,7 +835,7 @@ def inspect(root):
                 expected_failure_calls=expected_failure_calls, application_dependencies=application_dependencies,
                 data_files=sorted(f for f in files if Path(f).suffix not in {".py", ".pyc"}),
                 directories=sorted(directories),
-                mutations=sorted(mutations, key=lambda m: (m["file"], m["start"])))
+                mutations=sorted(mutations, key=lambda m: (m["file"], m["start"], -m["end"], m["replacement"])))
 
 
 if __name__ == "__main__":

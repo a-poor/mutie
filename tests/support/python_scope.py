@@ -266,7 +266,7 @@ def test_data(tmp_path):
                   'def other(a,b): return a == b or a is b or a in b\n'
                   'annotation: list[1 < 2]\n')
         self.write('sample/__init__.py', source)
-        sites = scope.inspect(self.root)['mutations']
+        sites = [m for m in scope.inspect(self.root)['mutations'] if (m['original'], m['replacement']) in {('<','<='), ('<=','<'), ('>','>='), ('>=','>')}]
         self.assertEqual([m['original'] for m in sites], ['<', '<=', '>', '>=', '<='])
         for site in sites:
             raw = source.encode()
@@ -286,7 +286,7 @@ def test_data(tmp_path):
                 self.assertEqual(namespace[name](left, right), site['replacement'] in ('<=', '>='))
                 self.assertEqual(trace, ['left', 'right'])
         self.write('tests/test_sample.py', 'def test_boundary(): assert 1 < 2\n')
-        self.assertEqual(scope.inspect(self.root)['mutations'], sites)
+        self.assertEqual([m for m in scope.inspect(self.root)['mutations'] if (m['original'], m['replacement']) in {('<','<='), ('<=','<'), ('>','>='), ('>=','>')}], sites)
 
     def test_comparison_utf8_nested_and_string_tokens(self):
         source = ('label = "π"; result = (1) < (2)\n'
@@ -294,7 +294,7 @@ def test_data(tmp_path):
                   'formatted = f"value {1 <= 2}"\n'
                   'unequal = 1 != 2\n')
         self.write('sample/__init__.py', source)
-        sites = scope.inspect(self.root)['mutations']
+        sites = [m for m in scope.inspect(self.root)['mutations'] if (m['original'], m['replacement']) in {('<','<='), ('<=','<'), ('>','>='), ('>=','>')}]
         self.assertEqual([m['original'] for m in sites], ['<', '<', '>=', '>', '<='])
         for site in sites:
             raw = source.encode()
@@ -306,7 +306,7 @@ def test_data(tmp_path):
         for newline in ('\n', '\r\n'):
             source = 'label = "π\u2028x"; value = 1 < 2' + newline + 'other = 3 >= 4' + newline
             self.write('sample/__init__.py', source)
-            sites = scope.inspect(self.root)['mutations']
+            sites = [m for m in scope.inspect(self.root)['mutations'] if (m['original'], m['replacement']) in {('<','<='), ('<=','<'), ('>','>='), ('>=','>')}]
             self.assertEqual([m['line'] for m in sites], [1, 2])
             for site in sites:
                 self.assertEqual(source.encode()[site['start']:site['end']].decode(), site['original'])
@@ -315,12 +315,12 @@ def test_data(tmp_path):
         self.write('sample/__init__.py',
                    'def bounded[T: (1 < 2)](value: T) -> T: return value\n'
                    'def defaulted[T = (1 <= 2)](value: T) -> T: return value\n')
-        self.assertEqual(scope.inspect(self.root)['mutations'], [])
+        self.assertEqual([m for m in scope.inspect(self.root)['mutations'] if (m['original'], m['replacement']) in {('<','<='), ('<=','<'), ('>','>='), ('>=','>')}], [])
 
     def test_comparison_native_custom_dispatch_and_exception_order(self):
         source = 'def compare(left, right): return left() < right()\n'
         self.write('sample/__init__.py', source)
-        site = scope.inspect(self.root)['mutations'][0]
+        site = [m for m in scope.inspect(self.root)['mutations'] if (m['original'], m['replacement']) in {('<','<='), ('<=','<'), ('>','>='), ('>=','>')}][0]
         changed = source[:site['start']] + site['replacement'] + source[site['end']:]
         namespace = {}
         exec(changed, namespace)
@@ -347,6 +347,114 @@ def test_data(tmp_path):
         with self.assertRaisesRegex(ValueError, 'operand'):
             namespace['compare'](failing_left, right)
         self.assertEqual(trace, ['left'])
+
+    def test_inversion_native_dispatch_order_nan_and_raw_results(self):
+        import math
+        pairs = [('==','!='), ('!=','=='), ('<','>='), ('<=','>'), ('>','<='), ('>=','<')]
+        methods = {'==':'__eq__', '!=':'__ne__', '<':'__lt__', '<=':'__le__', '>':'__gt__', '>=':'__ge__'}
+        for original, replacement in pairs:
+            source = f'def compare(left,right): return left() {original} right()\n'
+            self.write('sample/__init__.py', source)
+            sites = scope.inspect(self.root)['mutations']
+            site, = [m for m in sites if m['replacement'] == replacement]
+            namespace = {}
+            exec(source[:site['start']] + replacement + source[site['end']:], namespace)
+            trace = []
+            marker = object()
+            def method(self, other):
+                trace.append(replacement)
+                return marker
+            def wrong(self, other): raise AssertionError('old operator invoked')
+            Operand = type('Operand', (), {methods[original]:wrong, methods[replacement]:method})
+            def left(): trace.append('left'); return Operand()
+            def right(): trace.append('right'); return Operand()
+            self.assertIs(namespace['compare'](left,right), marker)
+            self.assertEqual(trace, ['left','right',replacement])
+            trace.clear()
+            def fail(): trace.append('left'); raise RuntimeError('operand')
+            with self.assertRaisesRegex(RuntimeError, 'operand'): namespace['compare'](fail,right)
+            self.assertEqual(trace, ['left'])
+            if original not in ('==','!='):
+                self.assertIs(namespace['compare'](lambda:math.nan,lambda:1), False)
+            self.assertEqual(namespace['compare'](lambda:-0.0,lambda:0.0), eval('0.0 ' + replacement + ' 0.0'))
+        # NotImplemented and subclass priority remain native reflected dispatch.
+        self.write('sample/__init__.py', 'def compare(a,b): return a < b\n')
+        site, = [m for m in scope.inspect(self.root)['mutations'] if m['replacement'] == '>=']
+        namespace = {}
+        source = 'def compare(a,b): return a < b\n'
+        exec(source[:site['start']] + site['replacement'] + source[site['end']:], namespace)
+        class Left:
+            def __ge__(self, other): return NotImplemented
+        class Right:
+            def __le__(self, other): return 'reflected'
+        self.assertEqual(namespace['compare'](Left(),Right()), 'reflected')
+        class Parent:
+            def __ge__(self, other): raise AssertionError('subclass should take priority')
+        class Child(Parent):
+            def __le__(self, other): return 'subclass'
+        self.assertEqual(namespace['compare'](Parent(),Child()), 'subclass')
+
+
+    def test_negation_ast_grouping_trivia_nested_and_exclusions(self):
+        import ast
+        source = ('label = "π not"\n'
+                  'def f(a,b):\n'
+                  ' not(a())\n'
+                  ' return not (a() # comment\n'
+                  '             < b())\n'
+                  'def nested(a): return not not a\n'
+                  'def mixed(a,b): return (not a) == b\n'
+                  'def chain(a,b,c): return a < b < c\n'
+                  'def excluded(a,b): return ~a, a is not b, a not in b\n'
+                  'annotation: list[not 1]\n'
+                  'def bound[T: (not 1)](x:T): return x\n'
+                  'def formatted(a): return f"{not a}"\n')
+        for newline in ('\n','\r\n'):
+            text = source.replace('\n',newline)
+            self.write('sample/__init__.py',text)
+            sites = scope.inspect(self.root)['mutations']
+            negations = [m for m in sites if m['original'].startswith('not')]
+            self.assertEqual(len(negations),6)
+            for site in negations:
+                raw = text.encode()
+                self.assertEqual(raw[site['start']:site['end']].decode(),site['original'])
+                changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+                class Remove(ast.NodeTransformer):
+                    def visit_UnaryOp(self,node):
+                        if (node.lineno,node.col_offset + 1) == (site['line'],site['column']):
+                            return node.operand
+                        return self.generic_visit(node)
+                expected = Remove().visit(ast.parse(text))
+                self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+            self.assertFalse(any(m['line'] in (8,9,10,11) for m in sites))
+
+    def test_negation_keyword_boundaries(self):
+        import ast
+        for expression in ('not[1]', 'not{1}', 'not"text"', 'not~1', 'not-1', 'not+1', 'not...', 'not# comment\n 1', 'not\x0c 1', 'not\\\n 1'):
+            source = 'def value(): return (' + expression + ')\n'
+            self.write('sample/__init__.py', source)
+            site, = scope.inspect(self.root)['mutations']
+            raw = source.encode()
+            changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+            expected = ast.parse(source)
+            expected.body[0].body[0].value = expected.body[0].body[0].value.operand
+            self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+
+    def test_negation_removal_raw_value_and_no_truthiness(self):
+        source = 'def negate(operand): return not operand()\n'
+        self.write('sample/__init__.py',source)
+        site, = scope.inspect(self.root)['mutations']
+        namespace = {}
+        exec(source[:site['start']] + site['replacement'] + source[site['end']:],namespace)
+        class Value:
+            def __bool__(self): raise RuntimeError('truthiness must be removed')
+        for value in (Value(), [], [1], 0, 8, None):
+            trace = []
+            def operand(): trace.append('operand'); return value
+            self.assertIs(namespace['negate'](operand),value)
+            self.assertEqual(trace,['operand'])
+        def fail(): raise ValueError('operand')
+        with self.assertRaisesRegex(ValueError,'operand'): namespace['negate'](fail)
 
     def test_arithmetic_tokens_exclusions_and_grouping(self):
         import ast

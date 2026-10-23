@@ -235,8 +235,8 @@ metadata. All 38 mutations are accounted for across four runs; three selected
 survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
 
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
-Boolean flips, binary arithmetic and single-comparison boundaries (`<` ↔ `<=`, `>` ↔ `>=`)
-are supported, with full tests and one worker. Chained comparisons and annotations
+Boolean flips, binary arithmetic, single-comparison inversion/boundaries and
+`not` removal are supported, with full tests and one worker. Chained comparisons and annotations
 are excluded. See [comparison semantics and validation](benchmarks/python-comparison-boundaries.md). Other application
 dependencies, general conftest hooks/user plugins, async/thread-starting suites and
 multi-package layouts remain excluded. Completed assertion bodies can be kills;
@@ -556,11 +556,11 @@ Support differs by language and applies within each runner's validated scope:
 | --- | --- | --- | --- | --- |
 | Arithmetic: `+ ↔ -`, `* ↔ /` | Yes | Yes | Yes | Yes |
 | Modulo replacement: `% → *` | Yes | Yes | No | Yes |
-| Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | Yes | No | Yes |
+| Comparison inversion: `== ↔ !=`, `< ↔ >=`, `<= ↔ >` | Yes | Yes | Yes | Yes |
 | Comparison boundaries: `< ↔ <=`, `> ↔ >=` | Yes | Yes | Yes | Yes |
 | Logical swap: `&& ↔ \|\|` | Yes | Yes | No | Yes |
 | Boolean literals: `true ↔ false` (Python: `True ↔ False`) | Yes | Yes | Yes | Yes |
-| Remove negation: `!x → x` | Yes | Yes | No | Yes |
+| Remove negation: `!x → x` (Python: `not x → x`) | Yes | Yes | Yes | Yes |
 | Force an `if` condition true or false (two operators) | Yes | No | No | No |
 | Remove a standalone function call | Yes | No | No | No |
 | Skip a conditional loop | Yes | No | No | No |
@@ -593,6 +593,15 @@ NaN or a BigInt exception. No numeric type inference or exception reclassificati
 is added. Unary signs, updates, augmented assignments, powers and types remain
 excluded. See [semantic controls and unchanged Bragkit findings](benchmarks/javascript-arithmetic.md).
 
+Python comparison inversion replaces `== ↔ !=`, `< ↔ >=`, and `<= ↔ >` tokens
+in single comparisons. Native rich-comparison/reflected dispatch and raw results
+are preserved; ordering inversions need not complement NaN results. `not` removal
+parenthesizes the original operand, returning its raw value without truthiness
+conversion and evaluating it once. Nested `not` expressions are separate sites.
+Chained comparisons, `is`/`in` operators, bitwise `~`, annotations and tests remain
+excluded. Runtime exceptions remain errors. See
+[semantic controls and unchanged-project validation](benchmarks/python-inversions.md).
+
 Python binary arithmetic supports `+ ↔ -` and `* ↔ /`, preserving native
 grouping and operand evaluation. Unary signs, augmented-assignment operators, floor
 division, modulo, powers and annotations are excluded. Operand types are not
@@ -618,7 +627,7 @@ that are not yet implemented.
 
 All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, and `arithmetic_replace`. Python runs `boolean_flip`,
-`comparison_boundary`, and `arithmetic_replace`. Vitest, Node and Bun run
+`comparison_invert`, `comparison_boundary`, `negation_remove`, and `arithmetic_replace`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`, and
 `negation_remove`, and `arithmetic_replace`.
 Use repeatable or comma-separated

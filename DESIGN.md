@@ -2216,3 +2216,23 @@ stay build failures. Never types and macro punctuation are not unary expressions
 Saved readers parse the original and reconstruct exactly; reruns still rediscover
 source identity. [Acceptance](benchmarks/rust-inversions.md) records controls and
 unchanged public-project findings with separate stronger tests.
+
+
+## Python comparison inversion and negation removal
+
+The scope AST admits single `==`, `!=`, `<`, `<=`, `>`, `>=` comparisons, with
+exact native token replacements; inversion and boundary candidates can share a
+span. Chained comparisons and identity/membership operators are excluded. Rich
+comparison/reflected dispatch, non-Boolean comparison returns and unordered floats
+retain Python semantics. Inversion is not implemented as `not` of the old result.
+
+A unary `not` candidate replaces its complete AST span with `(` plus original
+bytes after the keyword plus `)`. This retains operand trivia/grouping, including
+multiline and adjacent punctuation, and evaluates the operand once without a new
+truthiness call. Nested candidates overlap independently. Rust-side admission
+checks exact recipes, source bytes, UTF-8 byte coordinates and strict ordered keys
+(file/start/reverse-end/replacement), rejecting duplicates while allowing shared
+and nested spans. Readers match the same operator/recipe; focused reruns still
+rediscover AST-authorized source sites. Validator bytes change execution identity.
+No version bump or classification relaxation accompanies the extension.
+See [acceptance](benchmarks/python-inversions.md).

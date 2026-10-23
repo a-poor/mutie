@@ -585,3 +585,16 @@ inversion and boundary edits at one span coexist. Preserve outer-before-inner
 logical order. Unchanged UCD Parse has 13 selected sites (11 kills, two survivors);
 separate display/round-trip tests kill both. Original 140-test inputs/reports remain
 separate from the stronger 142-test copy. No classifier or deadline was relaxed.
+
+
+`benchmarks/python-inversions.md` records scoped Python comparison inversion and
+`not` removal. Preserve native rich-comparison/reflected dispatch and raw values;
+ordering inversion is not Boolean negation for NaN/custom comparisons. Negation
+uses the complete AST span and parenthesized original operand bytes, removing
+truthiness without duplication. Chains, identity/membership, bitwise `~`, tests
+and annotations stay excluded. Validate exact recipes and multiline coordinates;
+allow independent nested/shared spans while rejecting duplicates. Keep fresh
+source/execution identity on reruns. Unchanged Tomli-W and betting-math-kit reports
+retain native errors and unavailable scores. Two separate-copy median tests kill
+simulation ID 8; IDs 13–16 remain open. Preserve all original inputs and 260 report
+files, and keep the deferred startup failures distinct from completed checks.

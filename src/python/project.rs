@@ -15,6 +15,30 @@ use crate::{
     mutation::{Mutation, Operator, Scope, SourceFile},
 };
 
+/// Exact source recipes; AST admission and fresh discovery establish syntax/context.
+pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Operator> {
+    Some(match (original, replacement) {
+        ("True", "False") | ("False", "True") => Operator::BooleanFlip,
+        ("<", "<=") | ("<=", "<") | (">", ">=") | (">=", ">") => Operator::ComparisonBoundary,
+        ("==", "!=") | ("!=", "==") | ("<", ">=") | ("<=", ">") | (">", "<=") | (">=", "<") => {
+            Operator::ComparisonInvert
+        }
+        ("+", "-") | ("-", "+") | ("*", "/") | ("/", "*") => Operator::ArithmeticReplace,
+        _ => {
+            let operand = original.strip_prefix("not")?;
+            if !operand.starts_with([
+                ' ', '\t', '\r', '\n', '\x0c', '\\', '(', '[', '{', '"', '\'', '~', '+', '-', '.',
+                '#',
+            ]) || operand.trim().is_empty()
+                || replacement != format!("({operand})")
+            {
+                return None;
+            }
+            Operator::NegationRemove
+        }
+    })
+}
+
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 struct Site {
@@ -147,35 +171,29 @@ impl Project {
             );
         }
         let mut found = Vec::new();
-        let mut previous: Option<(&str, usize)> = None;
+        let mut previous: Option<(&str, usize, std::cmp::Reverse<usize>, &str)> = None;
         for site in &self.document.mutations {
             let source = sources
                 .get(&site.file)
                 .context("Python mutation outside admitted source")?;
             let range = site.start..site.end;
+            let operator = mutation_operator(&site.original, &site.replacement)
+                .context("invalid Python mutation recipe")?;
             ensure!(
-                source.source.get(range.clone()) == Some(site.original.as_str())
-                    && matches!(
-                        (site.original.as_str(), site.replacement.as_str()),
-                        ("True", "False")
-                            | ("False", "True")
-                            | ("<", "<=")
-                            | ("<=", "<")
-                            | (">", ">=")
-                            | (">=", ">")
-                            | ("+", "-")
-                            | ("-", "+")
-                            | ("*", "/")
-                            | ("/", "*")
-                    ),
+                source.source.get(range.clone()) == Some(site.original.as_str()),
                 "invalid Python mutation span"
             );
-            ensure!(
-                previous.is_none_or(|(file, end)| file < site.file.as_str()
-                    || (file == site.file && end <= site.start)),
-                "unordered/overlapping Python mutations"
+            let key = (
+                site.file.as_str(),
+                site.start,
+                std::cmp::Reverse(site.end),
+                site.replacement.as_str(),
             );
-            previous = Some((&site.file, site.end));
+            ensure!(
+                previous.is_none_or(|prior| prior < key),
+                "unordered/duplicate Python mutations"
+            );
+            previous = Some(key);
             let prefix = &source.source.as_bytes()[..site.start];
             let line = prefix.iter().filter(|b| **b == b'\n').count() + 1;
             let column = prefix.len()
@@ -184,23 +202,25 @@ impl Project {
                     .rposition(|b| *b == b'\n')
                     .map_or(0, |p| p + 1)
                 + 1;
+            let end_prefix = &source.source.as_bytes()[..site.end];
+            let end_line = end_prefix.iter().filter(|b| **b == b'\n').count() + 1;
+            let end_column = end_prefix.len()
+                - end_prefix
+                    .iter()
+                    .rposition(|b| *b == b'\n')
+                    .map_or(0, |p| p + 1)
+                + 1;
             ensure!(
                 site.line == line
-                    && site.end_line == line
+                    && site.end_line == end_line
                     && site.column == column
-                    && site.end_column == column + site.original.len(),
+                    && site.end_column == end_column,
                 "Python source coordinates mismatch"
             );
             if scope.matches(&source.path) {
                 found.push(Mutation {
                     file: source.clone(),
-                    operator: if matches!(site.original.as_str(), "True" | "False") {
-                        Operator::BooleanFlip
-                    } else if matches!(site.original.as_str(), "+" | "-" | "*" | "/") {
-                        Operator::ArithmeticReplace
-                    } else {
-                        Operator::ComparisonBoundary
-                    },
+                    operator,
                     range,
                     replacement: Cow::Owned(site.replacement.clone()),
                     line,
@@ -218,6 +238,80 @@ impl Project {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn inversion_and_negation_recipes_are_exact() {
+        for (original, replacement) in [
+            ("==", "!="),
+            ("!=", "=="),
+            ("<", ">="),
+            ("<=", ">"),
+            (">", "<="),
+            (">=", "<"),
+        ] {
+            assert_eq!(
+                mutation_operator(original, replacement),
+                Some(Operator::ComparisonInvert)
+            );
+        }
+        for original in [
+            "not x",
+            "not(x)",
+            "not not x",
+            "not (x # comment\n)",
+            "not\x0c x",
+            "not[1]",
+            "not\"text\"",
+            "not~1",
+            "not# comment\n x",
+        ] {
+            assert_eq!(
+                mutation_operator(original, &format!("({})", &original[3..])),
+                Some(Operator::NegationRemove)
+            );
+            assert_eq!(mutation_operator(original, "x"), None);
+        }
+        for (original, replacement) in [
+            ("notable", "(able)"),
+            ("not", "()"),
+            ("not ", "( )"),
+            ("<", "=="),
+            ("is", "is not"),
+            ("~x", "x"),
+        ] {
+            assert_eq!(mutation_operator(original, replacement), None);
+        }
+    }
+
+    #[test]
+    fn nested_and_shared_spans_preserve_coordinates_and_reject_duplicates() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("sample"))?;
+        let source = "not (\n x < y)";
+        fs::write(root.path().join("sample/__init__.py"), source)?;
+        let start = source.find('<').unwrap();
+        let document = serde_json::from_value(json!({
+            "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source))},
+            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"], "conftests":[],
+            "mutations":[
+                {"file":"sample/__init__.py","start":0,"end":source.len(), "line":1,"column":1,"end_line":2,"end_column":8, "original":source,"replacement":"( (\n x < y))"},
+                {"file":"sample/__init__.py","start":start,"end":start+1, "line":2,"column":4,"end_line":2,"end_column":5, "original":"<","replacement":"<="},
+                {"file":"sample/__init__.py","start":start,"end":start+1, "line":2,"column":4,"end_line":2,"end_column":5, "original":"<","replacement":">="}
+            ],
+        }))?;
+        let mut project = Project {
+            root: root.path().to_owned(),
+            document,
+        };
+        let scope = Scope::new(&[], &[])?;
+        assert_eq!(project.discover(&scope)?.len(), 3);
+        project.document.mutations[2].replacement = "<=".into();
+        assert!(project.discover(&scope).is_err());
+        project.document.mutations[2].replacement = ">=".into();
+        project.document.mutations[0].end_column += 1;
+        assert!(project.discover(&scope).is_err());
+        Ok(())
+    }
 
     #[test]
     fn arithmetic_spans_require_exact_pairs_and_operator_identity() -> Result<()> {
@@ -273,7 +367,7 @@ mod tests {
         let mutations = project.discover(&scope)?;
         assert_eq!(mutations[0].operator, Operator::ComparisonBoundary);
         assert_eq!(mutations[0].replacement, "<");
-        project.document.mutations[0].replacement = ">".into();
+        project.document.mutations[0].replacement = "==".into();
         assert!(project.discover(&scope).is_err());
         project.document.mutations[0].replacement = "<".into();
         project.document.mutations[0].column += 1;

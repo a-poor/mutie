@@ -99,8 +99,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Fifth slice completed: Rust comparison inversion and Boolean/integer/custom
    Not removal, native borrowing/value controls and unchanged UCD Parse display
    findings killed by separate-copy tests. See [acceptance](benchmarks/rust-inversions.md).
-   Rust and JS/TS expression rows are covered; Python comparison inversion,
-   logical swaps, negation removal and remainder remain.
+   Sixth slice completed: Python comparison inversion and `not` removal, with
+   custom comparison/raw-value controls, scored fixtures and an unchanged
+   betting-math-kit median survivor killed in a separate 200-test copy. See
+   [acceptance](benchmarks/python-inversions.md). Four simulation survivors remain
+   explicitly open. Rust and JS/TS expression rows are covered; Python logical
+   swaps and remainder remain.
 5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block

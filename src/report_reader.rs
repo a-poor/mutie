@@ -345,23 +345,11 @@ impl LoadedReport {
             }
             if run.language() == crate::cli::Lang::Python {
                 ensure!(
-                    matches!(
-                        (
-                            mutation.operator,
-                            mutation.original.as_str(),
-                            mutation.replacement.as_str()
-                        ),
-                        (Operator::BooleanFlip, "True", "False")
-                            | (Operator::BooleanFlip, "False", "True")
-                            | (Operator::ComparisonBoundary, "<", "<=")
-                            | (Operator::ComparisonBoundary, "<=", "<")
-                            | (Operator::ComparisonBoundary, ">", ">=")
-                            | (Operator::ComparisonBoundary, ">=", ">")
-                            | (Operator::ArithmeticReplace, "+", "-")
-                            | (Operator::ArithmeticReplace, "-", "+")
-                            | (Operator::ArithmeticReplace, "*", "/")
-                            | (Operator::ArithmeticReplace, "/", "*")
-                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
+                    crate::python::project::mutation_operator(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) == Some(mutation.operator)
+                        && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
                         && !mutation.file.starts_with("tests")
                         && run
                             .python_scope
