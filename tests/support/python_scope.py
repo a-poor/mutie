@@ -25,10 +25,73 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def loop_sites(self, source):
+        self.write('sample/__init__.py', source)
+        return [m for m in scope.inspect(self.root)['mutations'] if m.get('loop_skip')]
+
+    def test_loop_exclusions_and_nested_inventory(self):
+        source = ('def f(a):\n'
+                  ' while True: break\n while (False): pass\n'
+                  ' while (x := a()): pass\n'
+                  ' while (lambda: (x := a()))(): pass\n'
+                  ' while [x := v for v in a]: pass\n'
+                  ' for v in a: pass\n'
+                  ' while a:\n  while a.other: break\n  break\n')
+        sites = self.loop_sites(source)
+        self.assertEqual([m['original'] for m in sites], ['a', 'a.other'])
+        self.write('tests/test_sample.py', 'def test_loop():\n while 1: break\n')
+        self.assertEqual(len(self.loop_sites(source)), 2)
+
+    def test_loop_coordinates_and_native_ast(self):
+        import ast
+        source = 'label = "π"\ndef f(a,b):\n while (a # comment\n        or b): break\n else: return 7\n'
+        for newline in ('\n', '\r\n'):
+            raw = source.replace('\n', newline).encode()
+            site, = self.loop_sites(raw.decode())
+            self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+            changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+            expected = ast.parse(raw)
+            node, = [n for n in ast.walk(expected) if isinstance(n, ast.While)]
+            node.test = ast.BoolOp(op=ast.And(), values=[ast.Constant(False), node.test])
+            self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+
+    def test_loop_skips_truthiness_and_effects_runs_else(self):
+        class BoolBomb:
+            def __bool__(self): raise RuntimeError('truthiness')
+        class LenBomb:
+            def __len__(self): raise RuntimeError('length')
+        for expression in ('a', 'call()', 'a and call()', 'a or call()',
+                           'a.missing', '1 / 0', 'a < call()'):
+            source = ('def f(a,call,trace,value):\n trace.append("before")\n while '
+                      + expression + ':\n  trace.append("body")\n  break\n'
+                      ' else: trace.append("else")\n trace.append("after")\n return value\n')
+            site, = self.loop_sites(source)
+            raw = source.encode()
+            changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+            namespace = {}
+            exec(compile(changed, '<control>', 'exec'), namespace)
+            for value in (BoolBomb(), LenBomb(), [], [1], None):
+                trace = []
+                def call(): raise AssertionError('condition called')
+                self.assertIs(namespace['f'](value, call, trace, value), value)
+                self.assertEqual(trace, ['before', 'else', 'after'])
+
+    def test_loop_retains_generator_and_else_exception(self):
+        import inspect
+        source = 'def f():\n while (yield 1):\n  yield 2\n else: raise ValueError("else")\n'
+        site, = self.loop_sites(source)
+        raw = source.encode()
+        changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
+        namespace = {}
+        exec(compile(changed, '<control>', 'exec'), namespace)
+        self.assertTrue(inspect.isgeneratorfunction(namespace['f']))
+        with self.assertRaisesRegex(ValueError, 'else'):
+            next(namespace['f']())
+
     def branch_sites(self, source):
         self.write('sample/__init__.py', source)
         return [m for m in scope.inspect(self.root)['mutations']
-                if m['replacement'].startswith(('(True or (', '(False and ('))]
+                if not m.get('loop_skip') and m['replacement'].startswith(('(True or (', '(False and ('))]
 
     def test_branch_coordinates_grouping_and_elif(self):
         import ast

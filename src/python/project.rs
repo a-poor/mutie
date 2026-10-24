@@ -64,6 +64,8 @@ struct Site {
     end_column: usize,
     original: String,
     replacement: String,
+    #[serde(default)]
+    loop_skip: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -190,8 +192,15 @@ impl Project {
                 .get(&site.file)
                 .context("Python mutation outside admitted source")?;
             let range = site.start..site.end;
-            let operator = mutation_operator(&site.original, &site.replacement)
+            let mut operator = mutation_operator(&site.original, &site.replacement)
                 .context("invalid Python mutation recipe")?;
+            if site.loop_skip {
+                ensure!(
+                    operator == Operator::BranchForceFalse,
+                    "invalid Python loop recipe"
+                );
+                operator = Operator::LoopSkip;
+            }
             ensure!(
                 source.source.get(range.clone()) == Some(site.original.as_str()),
                 "invalid Python mutation span"
@@ -275,6 +284,39 @@ mod tests {
                 None
             );
         }
+    }
+
+    #[test]
+    fn loop_sites_require_false_guard_and_preserve_source() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("sample"))?;
+        let source = "while value: break\n";
+        fs::write(root.path().join("sample/__init__.py"), source)?;
+        let document = serde_json::from_value(json!({
+            "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source.as_bytes()))},
+            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"], "conftests":[],
+            "mutations":[{"file":"sample/__init__.py","start":6,"end":11,
+                "line":1,"column":7,"end_line":1,"end_column":12,
+                "original":"value","replacement":"(False and (value))", "loop_skip":true}]
+        }))?;
+        let mut project = Project {
+            root: root.path().to_owned(),
+            document,
+        };
+        let scope = Scope::new(&[], &[])?;
+        let mutations = project.discover(&scope)?;
+        assert_eq!(mutations[0].operator, Operator::LoopSkip);
+        for invalid in ["(True or (value))", "False", "(False and value)"] {
+            project.document.mutations[0].replacement = invalid.into();
+            assert!(project.discover(&scope).is_err());
+        }
+        mutations[0].apply(root.path())?;
+        assert_eq!(
+            fs::read_to_string(root.path().join("sample/__init__.py"))?,
+            "while (False and (value)): break\n"
+        );
+        assert!(mutations[0].apply(root.path()).is_err());
+        Ok(())
     }
 
     #[test]

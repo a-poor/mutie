@@ -2354,3 +2354,14 @@ Marathon has two selected TUI-loop survivors; a separate-copy bounded PTY test
 kills the event-loop survivor by requiring document rendering before quit. The
 search-scrolling survivor remains open. Preserve all original inputs, internal
 symlink targets and original report scores; focused evidence is not a full score.
+
+
+`benchmarks/python-loops.md` records Python `loop_skip` for ordinary `while`.
+Preserve exact `(False and (ORIGINAL))` edits, skipped condition/truthiness/body
+execution and native zero-iteration `while…else` behavior. Exclude literal Boolean
+conditions, every assignment-expression condition subtree, iterator for, annotations
+and tests. Discovery explicitly distinguishes loop context from false branches;
+saved recipes and fresh source/operator identity remain mandatory. Runtime/phase
+failures remain errors. Unchanged Binary Tree Library's AVL deletion-height
+survivor is killed by a separate-copy test; preserve original inputs/reports and
+keep combined inventory accounting distinct from a full score.

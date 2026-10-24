@@ -164,7 +164,7 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
     for node in ast.walk(tree):
         if node in annotation_nodes:
             continue
-        if isinstance(node, ast.If):
+        if isinstance(node, (ast.If, ast.While)):
             condition = node.test
             # Parentheses do not survive in AST spans. Literal Boolean conditions
             # belong to boolean_flip. Binding expressions are excluded rather than
@@ -175,11 +175,12 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
             start = offsets[condition.lineno - 1] + condition.col_offset
             end = offsets[condition.end_lineno - 1] + condition.end_col_offset
             original = data[start:end].decode()
-            for guard in ("True or", "False and"):
+            for guard in (("False and",) if isinstance(node, ast.While) else ("True or", "False and")):
                 yield dict(file=relative, start=start, end=end, line=condition.lineno,
                            column=condition.col_offset + 1, end_line=condition.end_lineno,
                            end_column=condition.end_col_offset + 1, original=original,
-                           replacement="(" + guard + " (" + original + "))")
+                           replacement="(" + guard + " (" + original + "))",
+                           loop_skip=isinstance(node, ast.While))
             continue
         if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
             start = offsets[node.lineno - 1] + node.col_offset

@@ -1,0 +1,1753 @@
+{
+  "project": {
+    "project": "/tmp/mutie-python-sample-trees-original",
+    "commit": "68d688fb4fe9c867c77a9d54f4fdb46a58dea34e",
+    "inputs": {
+      ".flake8": "6e70a1b4ced48c922bdef80ad69e808df79589f776622b49a19ea7beef1bb4fd",
+      ".github/workflows/linting.yml": "ec36f4651dc045a18ddd80a336ed1cbe0567a51fbbbeca5d01ff7acaffd67128",
+      ".github/workflows/testing.yml": "dec7e4591f0c715bb8c2328b8a156f8a6a822a662337efce4a07fa01c676ad08",
+      ".gitignore": "623b4492747a17b9d5b4881b62cfbcd6c1ce80f35ac4bec546b4ee48faf7abb4",
+      ".mypy.ini": "cfb08d4e2574f2c939183fb60b77c334b50eb1e8b1a1f5d6bde147d5a080250c",
+      ".pydocstyle": "10095abae4fd298522ab9665aed55d6b71859d3f07b642fa80cbd8866197694c",
+      ".readthedocs.yaml": "58e00448f3c564d3fbe045772edfe1ad5f6f94f6d5dda330046801587721f2c2",
+      "LICENSE": "23f82be2ab88fda96efc1d11000338278f5901fd83bba36fdb25db348039723e",
+      "README.rst": "06f5c03b6cf4e31dbdaf82da51abed745e98c055336168eafb971034f802b7e8",
+      "docs/Makefile": "e33bf74d59130029ba24168a813112dd923d7044d780ce942db6645d93f56acf",
+      "docs/make.bat": "2f82394fbb835088f01b231127ecbd1684fad6cc48c82b9a62e2722edf1cfa70",
+      "docs/requirements.txt": "ea1ef6bd3f3506be79dd2ce2626e0b7b7e0a6fa17c9c196d560221a7dc092c62",
+      "docs/source/avl_tree.rst": "e08f54741427ad521c878e9591f73a7debf06016c0e3d290b38519e52c5ba209",
+      "docs/source/binary_search_tree.rst": "60badcc7dc24d0526deaf97490b2cb98ab82622861a49ba21168c337a10b5b1c",
+      "docs/source/conf.py": "de6fd521ebee66ca133e60dea111a90c6ee10de510c90c3d21940bee09a3c0a4",
+      "docs/source/index.rst": "91b67fe8acb7b972d82b43d1f8ce7f7b4e9f53eff41f6a42af66e5bcec1524dc",
+      "docs/source/readme.rst": "ffcbdf9ebf3eeca021b86a2e5a7b40ddaed3651a0125588002e9e9d3d971889a",
+      "docs/source/traversal.rst": "0f60be81f1c5a4570c5ce0677081416d801533904880b402d3f9897ac61b79cd",
+      "docs/source/trees.rst": "8433b0400805e4c84c8337bedcdc59b94afd81ef1602795f6f13589651ac775c",
+      "pyproject.toml": "21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+      "pytest.ini": "e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+      "requirements.txt": "b6ed97d5c653565ea7e0e6d4de9532f180b5fab9041d805cf2d7d3ae6f0cccc2",
+      "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/conftest.py": "b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801",
+      "tests/test_avl_tree.py": "269aa81687a1b0d0eb6d3f139a5ce5decc6295034b686a795721b867c7b7e9fa",
+      "tests/test_binary_search_tree.py": "1c11cad8c4ad37dc7451b6469f7a1410022c9e445e0b0ffee152b01ddad13699",
+      "tests/test_traversal.py": "be610417e2e28207bab2bc5c2ee44539b2ecbd681c1d9f104f3d014c9ede4979",
+      "trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trees/binary_trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "trees/binary_trees/avl_tree.py": "2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+      "trees/binary_trees/binary_search_tree.py": "ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+      "trees/binary_trees/traversal.py": "5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+      "trees/tree_exceptions.py": "70a23fbe4c547b10c61dec95949cc6314ac71c9c59e5053870be19938250d8e1"
+    },
+    "prior_reports": {
+      "/tmp/mutie-rust-inversion-audit/original-reports/run-1792713767-N9PQmS/outcomes.json": "4555a7d9267d2e5c3599537b49a88335afa0cb5f072d119fe4e8e83f77252ef5",
+      "/tmp/mutie-rust-inversion-audit/stronger-reports/run-1792713896-hLv8ZH/outcomes.json": "6160fce6968adb45f930b4f7ccf4cc1eba1678c20beb0f6f8e45b10429de1946",
+      "/tmp/mutie-js-comparisons-audit/slow-vitest-ts-reports/run-1792694342-bFUSiD/outcomes.json": "99783893b2c1eab0d29d730ba03bc2603dd30dcf3a0226bf736336a387ae4258",
+      "/tmp/mutie-js-comparisons-audit/final-stronger/run-1792694212-qEvYH5/outcomes.json": "a897ed49f862473e2d6fe9aadf3b6b6f7ce3d293a47b6662cc4c917c9df10b37",
+      "/tmp/mutie-js-comparisons-audit/final-original/run-1792694141-1MNrdT/outcomes.json": "cf5ebc05e785b5c1e5a797134ece8ba71aa3cb8d241d46a2944deb19b86a36fe",
+      "/tmp/mutie-js-comparisons-audit/pp-is-reports/run-1792693837-TwfQNe/outcomes.json": "f9d79423087f36dbbbca58ff90950b12cca94aa6a0c3bf03f9421344c10359ef",
+      "/tmp/mutie-js-comparisons-audit/pp-is-stronger-reports/run-1792693875-63Cncs/outcomes.json": "c09dd582d4ee70b5ffdbcd43926286e8bb396cdb4aab4614854f1526cb82f101",
+      "/tmp/mutie-python-tomli-w-acceptance/reports/run-1792632332-l3HydE/outcomes.json": "6a01cda24add3a4d2f84981cd9d6261ebaef66e4c852a7088b602455fc06bba9",
+      "/tmp/mutie-python-tomli-w-acceptance/reports/run-1792632088-VH47H6/outcomes.json": "8ec7fc4aa1ba907de30781cbcdc9647046f24fb6a1eaec19e20e49e9ec2d1548",
+      "/tmp/mutie-python-tomli-w-acceptance/reports/run-1792632104-cOzape/outcomes.json": "7c3e761719051cbec5fe2297f7ca51cc60fa60e866e21326e8e797911ef41536",
+      "/tmp/mutie-python-scrubify-reports/run-1792525001-74NIpJ/outcomes.json": "4ec8ff018c0232d779043045ed843a4433b2ab41802c80259764359a4a4d9e88",
+      "/tmp/mutie-python-scrubify-reports/run-1792524950-SeRYbK/outcomes.json": "705cf898622bee41ea3f0daea753ad5dc4cf68e97057d9a712efba92dd4ad7cd",
+      "/tmp/mutie-js-arithmetic-audit/original-reports/run-1792697053-AlWWOg/outcomes.json": "a1588ae197cc4c6d83e396ae33af55996f50f50468f82e4db0a4a88124a3a727",
+      "/tmp/mutie-js-arithmetic-audit/stronger-reports/run-1792697111-Q9D6bo/outcomes.json": "8602dd7d444f17a707df99f90749fb9b6dd3475cce736f8d40378d9958bf463c",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513288-rj2zVi/outcomes.json": "7899eec8e63cf725db8f3f30ebeee1e35bba456b601d62f65bd0bd345ee366f2",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513263-Smyeeq/outcomes.json": "a13d8e13668d9b25529e1b8eba6cdf3290352a4a776309f6ed6953d8d86c3432",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513290-dbUH81/outcomes.json": "655eb38141cc0a9d39954de1b5ee0cb6fd47180438353c6e0dbed4e3381f96b2",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513217-nDGP9g/outcomes.json": "2824b92571ec6d159134b77cae37338aa48649780b528fcff470cc1c3dedc994",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513239-FDoEUB/outcomes.json": "a21d38a7da5d7da96bcbe8500ba77cdc44bd48f02ce21c13ebf4686a98a1e422",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792512911-xoeZN0/outcomes.json": "1dcaa7bdb8a1063736c23e547ddfb70e36d96f53e3e6b29109b10e5e32b56d0e",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513237-Juwaxl/outcomes.json": "70dc7fb53778bc935f397fff44e89772c09bdc021201c5622ae10573527354bb",
+      "/tmp/mutie-bun-overhead-profile/reports/run-1792513286-gmlo66/outcomes.json": "100b835026966c519f3898e0327e6b266a61c892cfdc71d6088bcb0e1d2102c5",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650685-g1hoxT/outcomes.json": "efff13dc78d2f4e637770ef62bd386a9c303fa53d54858156bf2b1a8f9f9e6b6",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650720-4PSOMp/outcomes.json": "809c2633b3f824856eccd22b610b1e272108203ce537fd323cb96c7de657cee9",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650694-BRqAXO/outcomes.json": "ccd9e870391991548e554032a0bed4593d98308eec262d8cb8ad66d6f2337673",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650677-leAhyQ/outcomes.json": "8dbfb03d0837bcaa9e94e23ba62d960f841c8b165a65cd579ac6c1c051e45ad8",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650703-VaosSd/outcomes.json": "3c94b4dcf35f52a35b18941fa9bfd8ccda04d0ab03d7fd65717eef2b881dde71",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650711-Vevz7S/outcomes.json": "c61048b8f7f8d9e948c3eebf97b5c9b00bfcdb33e4cc0ee43bdb96de6cbbab78",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650755-Aj3jd4/outcomes.json": "36d34c39ecf251a6ebbbccb9b0f08ee2ed6407fdd3bfce19c06ac9c94c5daa30",
+      "/tmp/mutie-python-dependency-acceptance/reports/run-1792650640-ktccJf/outcomes.json": "782a67871c04962fb107b0d9a7e8d3e149155005881650c406b5a149433b3741",
+      "/tmp/mutie-rust-branches-audit/original-reports/run-1792721915-G9MR0H/outcomes.json": "4dce551dc794b18f54aadbe93d5f2a288bad0305959b13dd7633a14849966d4a",
+      "/tmp/mutie-rust-branches-audit/stronger-reports/run-1792722088-W7HoyF/outcomes.json": "d6230e321119de1ef6219061bf23355e79e770f760856c87d80e236515109a76",
+      "/tmp/mutie-python-native-src-final/reports/run-1792528888-yVydq6/outcomes.json": "baa147facd122941b480a3d41e96a021bcb8739dec6eb83611eb04b8fee643bc",
+      "/tmp/mutie-python-native-src-final/reports/run-1792528929-ppR4IA/outcomes.json": "b39e9ef95b5327b7a1f76e1eea9252af58f91442d9a529a171795f608e9e188e",
+      "/tmp/mutie-bun-scored-composer/run-1792446597-E5hSYj/outcomes.json": "6e21411a49635f3d53d0cd576c6e2a32b99d82a84df73dbf58670c089c31c065",
+      "/tmp/mutie-python-dependency-final/reports/run-1792650981-v6q7jB/outcomes.json": "e93dc86c968570f31a8ad8aed14c96f80fd435f04a36fb10933e7c0776320547",
+      "/tmp/mutie-python-dependency-final/reports/run-1792650998-KBP3Jc/outcomes.json": "d20b14ccff12c821a7c76c12fcf10e383a634e33039c647eb0897d7f447d2de2",
+      "/tmp/mutie-python-dependency-final/reports/run-1792651101-Qa9sOl/outcomes.json": "023ae0b623ea15105f4475423221a70e2fb2a4ea50e160d47bd1e88505478b29",
+      "/tmp/mutie-python-dependency-final/reports/run-1792651023-EWOH38/outcomes.json": "f935bc47f98cfecde14b00b95a2320dec6f174f28ecdc766cfdf356ddb72b2c2",
+      "/tmp/mutie-python-dependency-final/reports/run-1792651006-OorITe/outcomes.json": "8cb184d4bc9089e50800e5b030de4e41414e828b53cac2ead5b22b2a5f0db079",
+      "/tmp/mutie-python-dependency-final/reports/run-1792650989-fOfs9g/outcomes.json": "115f65720b1dab4e0aefe0ba0210e54255ada62f8bfe8933c4d7df875281f4f6",
+      "/tmp/mutie-python-dependency-final/reports/run-1792650945-3f0xyi/outcomes.json": "0d4bd8e5a75aec5511d4e7a95563033a77264e509955901accad24d6ef1daaab",
+      "/tmp/mutie-python-dependency-final/reports/run-1792651015-YFVB75/outcomes.json": "09e26695646638e39f2e8caa0a41911822d365912254ace7e48a127b231af4d6",
+      "/tmp/mutie-python-tomli-w-final/reports/run-1792632821-s3OO74/outcomes.json": "ff78c62fdf085b707f9ce420f234fa0a91492adac240b374c75f25126cc44933",
+      "/tmp/mutie-python-tomli-w-final/reports/run-1792632837-I5WbIo/outcomes.json": "9a095d7abad7681fe8aa167d31d2d348168ee4a73271974aa701efe5e2969453",
+      "/tmp/mutie-python-tomli-w-final/reports/run-1792633034-RocZRj/outcomes.json": "cef5fb23f783bf3438b4bf8221b4364996bff9cedb0e2e9dd881e2545ce5e4be",
+      "/tmp/mutie-python-logical-audit/pending-4-reports/run-1792715656-xtLcyF/outcomes.json": "079f092108f06a2e87c50f877dc1f7d7ecb8c2b8ddafef3a07746e3148f69f1c",
+      "/tmp/mutie-python-logical-audit/final-pending-3-reports/run-1792715946-GIDwOC/outcomes.json": "ec52eff65851810697b772978e52b0ec38c0018f24e76923b887ebd36ea0effd",
+      "/tmp/mutie-python-logical-audit/final-stronger-reports/run-1792715990-BaS8aN/outcomes.json": "ba59ad1e1a43e177955ff8963b4eac1c648006eaa66b5e0c8b467a358ecdeb43",
+      "/tmp/mutie-python-logical-audit/final-original-reports/run-1792715914-7qQQHi/outcomes.json": "e1b64abf9d1856414d01c9eb85f77caef5af203e115055a9ec25f5f8d0dfffd4",
+      "/tmp/mutie-python-logical-audit/pending-3-reports/run-1792715656-LQ1ESB/outcomes.json": "6252e969b4104351c7c53c9f53a28a8fbb6040e762374c76a0cc6f61633b593f",
+      "/tmp/mutie-python-logical-audit/original-reports/run-1792715593-mpx0iP/outcomes.json": "4835d6b95710e8988ceb7220c7caa310ad7f3989446af859486f7f58293b5d5d",
+      "/tmp/mutie-python-logical-audit/stronger-reports/run-1792715775-FWeFa7/outcomes.json": "5800d8b285d47ee6d2b02ed25611377b915e1c580b92e538c670ee630f84e0e6",
+      "/tmp/mutie-python-logical-audit/final-pending-4-reports/run-1792715946-qqRK2Z/outcomes.json": "8f7fa71d952e27280246d9a72c540698e44347ced811070f9409a0438f37def4",
+      "/tmp/mutie-route-mini-acceptance/reports/run-1792546785-eVSqKy/outcomes.json": "207aa86d57e73551a40f2aaa3a6ef4f38772a36c0f5084a407d6da47343afbe2",
+      "/tmp/mutie-route-mini-acceptance/reports/run-1792547061-CP7cqW/outcomes.json": "d618414a100dc8b2b7e851bf0eed59f79b6d5ab7e276842f7cd343531eb7a96b",
+      "/tmp/mutie-route-mini-acceptance/reports/run-1792546832-YPQ3EY/outcomes.json": "3b095c2920c27b8f730a1d6e2c3416802a0093e850a038883a6a50f08bcc18c8",
+      "/tmp/mutie-route-mini-acceptance/reports/run-1792546918-huABJn/outcomes.json": "fca38258b65f44199541d3b875b003e9160eba469c955b258e92683171d81523",
+      "/tmp/mutie-route-mini-acceptance/reports/run-1792547079-aGyVAg/outcomes.json": "d09041b84e4d681508708327a7972a10279bc1623124a7ecc6b06dbf8c0b3bb1",
+      "/tmp/mutie-route-mini-acceptance/reports/run-1792546962-9SniyP/outcomes.json": "5af92275d80029e882fb3ad266fb2e0e0a7244388039ca0de46d5fe0062f798a",
+      "/tmp/mutie-python-cycler-unchanged-probe-reports/run-1792530246-GPR87z/outcomes.json": "6fb62b65c1095e1350e68a5bc4cde86531b39c1258f844c50b1c8dbcae1fb173",
+      "/tmp/mutie-python-cycler-unchanged-probe-reports/run-1792530175-X9UlJm/outcomes.json": "ea17558c231edf1ed5d81362b119457a7cd23d543b991ebcd8cf80e3829c1003",
+      "/tmp/mutie-python-cycler-unchanged-probe-reports/run-1792530117-vbiJwB/outcomes.json": "4bae2a4b2f5d3265c9ace930c71f76bc0dd7dd93a87c64b15325453d06a3558e",
+      "/tmp/mutie-route-mini-all-boundaries/reports/run-1792614397-YfK1yn/outcomes.json": "8b6b15df189bd82d9eb3f000913b923e6b7566aab7d4a07ee084351fcc3fe043",
+      "/tmp/mutie-route-mini-all-boundaries/reports/run-1792614361-cLdZte/outcomes.json": "69e30f025d88337c63658094eb066bb3e78088c9b0fd5e212863d186bc867351",
+      "/tmp/mutie-route-mini-all-boundaries/reports/run-1792614453-x6WKkw/outcomes.json": "24a6129c820971e3c3bc20301975c66546579f2ae264ad1b600d3d3b04cb45cf",
+      "/tmp/mutie-python-arithmetic-acceptance/reports/run-1792618546-fVe1ek/outcomes.json": "8a9e46c530fe1a69e3d52c4ab5d3ece839a8d48068e3ec60124f3543f62c3d9e",
+      "/tmp/mutie-python-arithmetic-acceptance/reports/run-1792618232-iPca41/outcomes.json": "1e978e479b108d9858e91d870e2d665c983781028a9b166e4329ec6b45305540",
+      "/tmp/mutie-bun-pp-is-reports/run-1792510303-PhDeK6/outcomes.json": "4644a445d6e01c2459b2980c8a2d7fd1ae5bbfda78ce79cc6110b047b1e23eed",
+      "/tmp/mutie-bun-pp-is-unchanged-reruns/run-1792512335-ssQ1xU/outcomes.json": "86fc494d27d14572b9b5d67815250a84f1563e96e15d6f847c4379ef193097a9",
+      "/tmp/mutie-js-loops-audit/original-reports/run-1792723736-esGj8A/outcomes.json": "7b716dd21425fde9f9cb5837992523886ad897518eaea647c6f1db42ad00a500",
+      "/tmp/mutie-js-loops-audit/stronger-reports/run-1792723800-0p3iN7/outcomes.json": "1ead191deffb67757a8a4d944e876fca3edb7811bf25522cc58253a9ef6efa69",
+      "/tmp/mutie-trees-explore-reports/run-1792544067-JPTyuz/outcomes.json": "228769365ee8ac45a4d5e262702f2d5dd4b584cb9cabc97a17b82336f379359f",
+      "/tmp/mutie-python-modulo-audit/original-reports/run-1792718674-gN4NIn/outcomes.json": "ac0b97a1b42cfd0e5541837dba0ccb0377e76c3e17d63a18942cb053c8efe2dd",
+      "/tmp/mutie-python-modulo-audit/stronger-reports/run-1792718828-W0s8DF/outcomes.json": "665913b177fce20449f86bae9054584549a1b34a7a3e80c21078978f5ac11693",
+      "/tmp/mutie-python-caseconverter-reports/run-1792524329-YvfTaD/outcomes.json": "205a7e4132c5c6b32951753eb5d5c6a07188f675fa59ff0804bf95644cb85323",
+      "/tmp/mutie-python-caseconverter-reports/run-1792524423-Gkb4E0/outcomes.json": "3b0391defc66a04eef59255e4d0c29095ca6e9da98e422abb8a295574a290e94",
+      "/tmp/mutie-python-feedback-comparison/after-2/reports/run-1792526876-1Qmvld/outcomes.json": "8a8a28c15e166b46ab3cefe1a16848735a9eefb942c97b86a68234da128c15b8",
+      "/tmp/mutie-python-feedback-comparison/after-2/reports/run-1792526913-FOQBZW/outcomes.json": "2b48a4b088f687593e36ed7d4717d4c918b7af50c9114c402d6e03ea00fdd659",
+      "/tmp/mutie-python-feedback-comparison/after-3/reports/run-1792527101-miK6vb/outcomes.json": "7737780cba7deb662e410ccabfa0faea1d2cbf91111d88bb8f4b53b1068cca81",
+      "/tmp/mutie-python-feedback-comparison/after-3/reports/run-1792527165-smNJAO/outcomes.json": "5989e5d7a689e5381f8b009e73372c652bfd1cae0455a78618afb53438a7cdad",
+      "/tmp/mutie-python-feedback-comparison/before-3/reports/run-1792527020-zV8UUr/outcomes.json": "afb3e3cce2975a6ea77b94301c2efd079f9c60297008562694d3f74bbdeef8ee",
+      "/tmp/mutie-python-feedback-comparison/before-3/reports/run-1792527070-FKmNhP/outcomes.json": "2f5e7d12a80478367c92e6a2b536f076427d8be5b59ff35d7b59675ed7b56e7a",
+      "/tmp/mutie-python-feedback-comparison/before-2/reports/run-1792526942-FjO7IV/outcomes.json": "5b1884de1e25382ed84b4aeefc8a35a9d273bee59cf0ba365d2d549a25fa6664",
+      "/tmp/mutie-python-feedback-comparison/before-2/reports/run-1792526987-v4qVNZ/outcomes.json": "bace83ea86a7650f7ea6fb71f7f5c8e1bb5e1335057e39fc01fed949b0c1a732",
+      "/tmp/mutie-python-feedback-comparison/after-1/reports/run-1792526848-mmfH2l/outcomes.json": "8e34234bc12c55fc263e729b85b7c54416100fac499fa7c788f301ba0bab1cab",
+      "/tmp/mutie-python-feedback-comparison/after-1/reports/run-1792526804-c7R5AT/outcomes.json": "6186d5a7b75cad4f7c9018b64b15fcf03e39db26985f16e72ea436ef7fcc01fb",
+      "/tmp/mutie-python-feedback-comparison/before-1/reports/run-1792526751-m5X9mb/outcomes.json": "125f1a9c42702d8aed7d653bcbaef5b4e87aa0c3ffdf09fe651f9646e415a01f",
+      "/tmp/mutie-python-feedback-comparison/before-1/reports/run-1792526712-0yEGbq/outcomes.json": "af71576e887b29d7467ac16ab03d25e3d023d1b959783b5839c34cb998411fbb",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-bun-ts/reports/run-1792686594-m0JVmR/outcomes.json": "7560aaff024d5fa54e667df1a326230137c23d99b4dc48e945cc1b927862d7d9",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-bun-ts/reports/run-1792686608-QVnom3/outcomes.json": "f1cb93bf866729ef5f3120919f359d4a68d9646c5c93189f5c2b939b338136c7",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-bun-ts/drift-reports/run-1792686731-cYTQ5Q/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-ts/reports/run-1792686420-aqIMYV/outcomes.json": "fef1bc485eb5763e9369912d9533bccbe918b972b1b79ca832495357e1b3564d",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-ts/reports/run-1792686414-DGiKt3/outcomes.json": "b2f10980e4743065cc918ab5c6f5e619a84c438f5020c39bf22f51d9cdc3af56",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-ts/drift-reports/run-1792686713-3wB6zw/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-node-ts/reports/run-1792686454-uVaFq9/outcomes.json": "318a3e37e2960328cb5203d7588ab0a3e842c7380d7722e329de0718df3e95b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-node-ts/reports/run-1792686460-KCyKBH/outcomes.json": "878e7f84c4f12b592d27dabda80f0ab7c9ee01d5d6a6448350c9dc08cbd69a71",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-node-ts/drift-reports/run-1792686718-IG3lWv/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-bun-ts/reports/run-1792686434-vrG49m/outcomes.json": "58ed9ebb401d33603ee396bb28ef728ebe6665bc4debcbe0aa4eb5a6ea0aaddd",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-bun-ts/reports/run-1792686439-bySufY/outcomes.json": "f2c0a725b418bead4d9ae82e73099d2839612a47f6bcaf2a8d3fe6a5c143f97e",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-bun-ts/drift-reports/run-1792686716-YFrALR/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-bun-js/reports/run-1792686519-xuhZYu/outcomes.json": "0eadf6da899a54e99200caebce6185cfcf61c381e961a2e93d020f623bc6ebd7",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-bun-js/reports/run-1792686530-yXKMKv/outcomes.json": "bf42fe961d139c5672175bdb53b4eee502cc7b186fbf42debd2b7ff085df6f25",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-bun-js/drift-reports/run-1792686724-uqVby3/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-node-js/reports/run-1792686560-DjQdKP/outcomes.json": "841fe950b784584766658d9a89d91150ab5df3109b61fe0a847ecea86feee3ea",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-node-js/reports/run-1792686569-RaUFvD/outcomes.json": "dad08bb5bf03d8ccf5fbcf4b5068404653fd96b13ea46e9daef5c2dc721c920f",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-node-js/drift-reports/run-1792686728-I87nwk/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-bun-ts/reports/run-1792686480-ob3vli/outcomes.json": "b772e745d7f23909abb61633783bff8301d930596d969a3922bc0627f1e84f01",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-bun-ts/reports/run-1792686474-9moETB/outcomes.json": "8f280944c1246523407c5fa305d8f7407c378435f13ed84c6bf07b9bc1d74089",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-bun-ts/drift-reports/run-1792686721-PHlBMc/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-node-js/reports/run-1792686495-KowqvO/outcomes.json": "ca6a454a26982d099eab69e4c5249ddb46a3b6135e6629a8017817455e3959a2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-node-js/reports/run-1792686486-WqYoGH/outcomes.json": "49cab46e4fdebd935cb6a077f1a6d349cd5a982a7fea13a96ae35ff9bb041652",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-node-js/drift-reports/run-1792686722-qR2efa/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-node-js/reports/run-1792686450-5VJtid/outcomes.json": "0bfe3628bb0f025e7f21b26d9725a83bdaa14509589386f9aafd1756b781a50b",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-node-js/reports/run-1792686444-ed26JR/outcomes.json": "c8cd9d06eb5f3b360e9195c10fcce2ae40a6167c0978b6f4110736e3b34a0570",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-node-js/drift-reports/run-1792686717-QgATKf/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-bun-js/reports/run-1792686424-WqaE4a/outcomes.json": "f0db8f5f017daeb62277f19188f5633b528f043771778175de1126dadfe12db9",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-bun-js/reports/run-1792686430-sJlvb0/outcomes.json": "c3fa46feb32195a5f414e19f962db615b303bfc80690a22825f43058156f3560",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-bun-js/drift-reports/run-1792686715-zRXkC7/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-bun-js/reports/run-1792686583-hOuLVX/outcomes.json": "cc35fa5f62d116a0b5b1625bb88f6ec28a1c8f506258a7a4b38f435ed74f52a7",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-bun-js/reports/run-1792686589-mMfP3a/outcomes.json": "0f53c2c2b0e3af16287d52798ba7fd23741fac393173fa8d4276ad84f94de6dd",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-bun-js/drift-reports/run-1792686729-p41ZVN/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-js/reports/run-1792686410-ABIndp/outcomes.json": "f23c91808b243ca3c8cd6aff3d87ec6829b4149f2d576d34db8f3bcec3557ff2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-js/reports/run-1792686406-z1O59H/outcomes.json": "fa7908f7552361b652dfdab2587dfa021344f54e7c0439828cc0096c430700fd",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-js/drift-reports/run-1792686712-O9wVXV/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/npm-node-js/drift-reports/run-1792686658-4SOdxa/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-node-ts/reports/run-1792686573-7b6gMh/outcomes.json": "9a0dc60ac3e8576bd638a17cb29a33176d4983ad5bf61ca3ba2c36388e9128e9",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-node-ts/reports/run-1792686579-pWhf1R/outcomes.json": "46d23aaad56e043c1331606f1e88e8a423784e62c704ee72ae96b914da1492c1",
+      "/tmp/mutie-package-managers-audit/development-matrix1/bun-node-ts/drift-reports/run-1792686729-KCU5Xx/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-bun-ts/reports/run-1792686551-UDeKcd/outcomes.json": "73a3359be0c05d75d5bc2fa983cc9e053a693b4d774c00beec090f0c3417fc90",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-bun-ts/reports/run-1792686539-PtunaP/outcomes.json": "9c8cf94bac6e86c517355efffdadeaa34bc1d1c1c9e5f4588bec15a0abc84432",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-bun-ts/drift-reports/run-1792686726-KlOa2r/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-bun-js/reports/run-1792686469-cqy6Ra/outcomes.json": "1479584da57aa96ac5fc41a63246bbbdd955faea666a6db9c70fa04237772119",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-bun-js/reports/run-1792686464-uaUdhV/outcomes.json": "a5b69172d6db8b5d2b252f241e1a82d9bc8b2797f04ca78b8c8aac0cb07feede",
+      "/tmp/mutie-package-managers-audit/development-matrix1/pnpm-bun-js/drift-reports/run-1792686719-Dscqay/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-node-ts/reports/run-1792686512-MlaspY/outcomes.json": "6bdec275988e26b4b344919419cce5326dfc4b4c4969bfacd9656d2542f2e328",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-node-ts/reports/run-1792686501-capUOV/outcomes.json": "9e7a5bff2f4ca2836752b0e2b01a5584f89997b2dba00a2c9c392174acf976ea",
+      "/tmp/mutie-package-managers-audit/development-matrix1/yarn-node-ts/drift-reports/run-1792686723-7ighRv/outcomes.json": "b43e6e7592c765bea877888c0480892fe71bb2d8a1dc4a220b43edfb37ba14b2",
+      "/tmp/mutie-package-managers-audit/development-attempt1/npm-node-js/reports/run-1792686394-X719Ph/outcomes.json": "240bb6466aff315f6df8ccca5e22cd3d98426789018c7c196bf337500c727876",
+      "/tmp/mutie-package-managers-audit/development-attempt1/npm-node-js/reports/run-1792686390-EHEUAf/outcomes.json": "6837e0e3d72c3a4d8262bc9c7e713030975d8da23f921da393a2b544235ad517",
+      "/tmp/mutie-package-managers-audit/bragkit-stronger-reports/run-1792686751-EoHJMG/outcomes.json": "3740bdd57925120d3c2d515438df43dd928629b7dbfb3505e684936b31486b26",
+      "/tmp/mutie-package-managers-audit/bragkit-reports/run-1792686504-WOiZgT/outcomes.json": "51a06f50f26ea36a712143674efdbe61b03a7c42deae2fe3885d4fcb25860917",
+      "/tmp/mutie-python-unittest-pluralizer-final/reports/run-1792532110-dWNswn/outcomes.json": "8d9bc90519b122b1fe6623f4d00aaa89c6d0ef321fe25501eeb887f89ee02505",
+      "/tmp/mutie-python-unittest-pluralizer-final/reports/run-1792532155-KwGFXb/outcomes.json": "8f972151146db1effca11d466464b5b664bbc66d68af2bdfcd7fd67cf20a8a2c",
+      "/tmp/mutie-python-unittest-pluralizer-final/reports/run-1792532195-AVCrB1/outcomes.json": "c03b99feea8027f4ecafb256bf10764e1575a2fadea6628f4ba58d8e18f89a7e",
+      "/tmp/mutie-python-unittest-pluralizer-final/reports/run-1792532175-f0F19P/outcomes.json": "5925ad5851d671f08f7d5983c653d183ee91b592e41983ac8835328e85bf0b11",
+      "/tmp/mutie-python-inversions-audit/complete-reports/run-1792714516-IhiZTe/outcomes.json": "41a017328844f84b0ee79f68b440171396d19a6201d1258adfaca70ffd003cb5",
+      "/tmp/mutie-python-inversions-audit/betting-reports/run-1792714613-GfOqHh/outcomes.json": "0f882fa22fd9e3c45a1d33302dadcebde2344188125e1fcc4b30afd00bf16355",
+      "/tmp/mutie-python-inversions-audit/simulation-reports/run-1792714894-W9nkjO/outcomes.json": "0929ec00326b528bf80831afd2f028efe6af69b2037b473dcdd56c35c4aa3830",
+      "/tmp/mutie-python-inversions-audit/simulation-reports/run-1792714890-iozNsn/outcomes.json": "9c7993e98de4f729dcd4d392a8800cb37c68ef5167cdb0274a02ef053d04cfde",
+      "/tmp/mutie-python-inversions-audit/original-reports/run-1792714479-GFkAf7/outcomes.json": "3178b0e9ff23ea071135b5078a06d64bfbe1c99049e1ef1e9cebe4b22b6abe5e",
+      "/tmp/mutie-python-inversions-audit/stronger-reports/run-1792715024-XCocKz/outcomes.json": "121c7cad68308cd616170d37aa736e9cbea465504beaea456bb23c17e1aae126",
+      "/tmp/mutie-bun-pp-is-unchanged-reports/run-1792512057-C3SM2O/outcomes.json": "2fed9e1c44b879d5b39b0d6768784d561df56c7aebc9a6d1008408dc0da7e221",
+      "/tmp/mutie-bun-composer-review-final/run-1792515100-bzEcdX/outcomes.json": "689ae5c37ebc6994e2169afd0ddfe85fe5f39a6e15431d0a31cc9286371dd2e8",
+      "/tmp/mutie-js-branches-audit/original-reports/run-1792719379-EU02h8/outcomes.json": "a4dde5c1ca820fbc054885d64afac9768975d26588ebf653ab21c6056187c37c",
+      "/tmp/mutie-js-branches-audit/stronger-reports/run-1792719441-oKAJug/outcomes.json": "93e0ff0b5f1c210ed8589e73d8bf3607cb5709eb124edf9310a60279696e6389",
+      "/tmp/mutie-js-branches-audit/vitest-probe-reports/run-1792719557-n4oW3N/outcomes.json": "8a05b06c821cdd00e9a6e6f248cb3c4c78ecfe59eb2afd23e831324ae4524c5a",
+      "/tmp/mutie-betting-math-full/reports/run-1792617204-4S11eQ/outcomes.json": "f3daeb934963aaead461b74f37f60c199fb7b2a0a85d4451c8ce7c31610b77de",
+      "/tmp/mutie-betting-math-full/reports/run-1792617000-XCLfi8/outcomes.json": "895e4dad7680110c89e3454f5938bca897a0b39036a9551be4eb1952216dbc80",
+      "/tmp/mutie-betting-math-full/reports/run-1792616972-KWezqW/outcomes.json": "c67ea23379bb2ef79272dd93c9d34f52b52f68ccd8afae75132ab8f7192708e0",
+      "/tmp/mutie-betting-math-full/reports/run-1792616773-EGMRLY/outcomes.json": "12ff9a41146d3e30635d9bbcc728b51b12e963454b376a3f097c3b0fd3d2129d",
+      "/tmp/mutie-betting-math-full/reports/run-1792616622-XvJBMI/outcomes.json": "d034fa8f3771f139f5064cab471bbe4de23afe9f53b4462921ed845bad71e042",
+      "/tmp/mutie-betting-math-full/reports/run-1792616753-RNUdPF/outcomes.json": "895aecf0a82c10041e49f4a0b06e2970a4f4ec0974e29f2b2771cb7c2e1ad739",
+      "/tmp/mutie-betting-math-full/reports/run-1792617389-MxBgWo/outcomes.json": "efe9ceeca07558f10e21c96b2e42efd95521fb0196909bf0f9a88e9259b18c4b",
+      "/tmp/mutie-betting-math-full/reports/run-1792616726-87FyzK/outcomes.json": "2af85e356bf0be086e24546a15c096a51ea8137f12a74a9a978bc3705cdd789d",
+      "/tmp/mutie-python-cycler-reports/run-1792524816-6HuAzj/outcomes.json": "febdef5276e3c6778479cea921d8f95de1cfae5b0d9d7bd445a505b6fdfc0b15",
+      "/tmp/mutie-python-native-src-acceptance/reports/run-1792528520-u95rDk/outcomes.json": "580eeab406cdf6fcedeeb7643ce3616ab52a96cd269cbb090f2f17708b39b39b",
+      "/tmp/mutie-python-native-src-acceptance/reports/run-1792528487-acpiAK/outcomes.json": "e81e375bf710d7e6285d11ca68b3ac9f65ac7b5826b82662c4bca1c801a320df",
+      "/tmp/mutie-route-mini-boundaries-final/reports/run-1792607453-LEVEu5/outcomes.json": "28996390232e5070dd82c53f0e94f988cca248c5063b013c02caa1b2738468d5",
+      "/tmp/mutie-route-mini-boundaries-final/reports/run-1792607428-oJ26B8/outcomes.json": "a8950b35bcddbbed2c51c3bbd0908ebcb122cf79dd13b971e485fa1cc22504eb",
+      "/tmp/mutie-python-tomli-w-review/run/reports/run-1792649176-eMbCAt/outcomes.json": "0d9e7dc10e2c33432dd6a901988824c78d9d6e077af2f6a1e85c533884334fa5",
+      "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530524-laxgGQ/outcomes.json": "70d1c031bb6f5c4a78e7734c9c3b9cf7f7309aa2c207bbe3446f8f1cd68305c1",
+      "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530621-rx169i/outcomes.json": "7c1a956be1db95e673b52e23eb59686fc73f112c6569e6b0cad1cbb85c046c2f",
+      "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530563-mwi8DT/outcomes.json": "16f7c12b12ff1e01978b81921dd4f20e9ee7f6d5a1ca170359fdb73c435bbdc5",
+      "/tmp/mutie-python-cycler-unchanged-verified/reports/run-1792530661-TZUjnv/outcomes.json": "5f7c0afe0f213443404b9ae3fd8e8d6089af1a5370ea88bf571c147d04dd5ac3",
+      "/tmp/mutie-cycler-boundaries/reports/run-1792613995-dJfJFp/outcomes.json": "5e1caf944d09eee32d0e34317af39bcdb6adacb09900a1caa486ea4fc58f8965",
+      "/tmp/mutie-rust-workspace-audit/fresh-reports/run-1792691043-DY6MNW/outcomes.json": "cb10a52ae4a7de6374335dc6be73f96b8b7c0297fb0245325177c66013feb690",
+      "/tmp/mutie-rust-workspace-audit/original-reports/run-1792690796-nVwpGg/outcomes.json": "8b7f9db750492d4944d22461151635a392542d889954b5f38250e21529494200",
+      "/tmp/mutie-rust-workspace-audit/stronger-reports/run-1792691042-Y8sDHG/outcomes.json": "9a14392d97fcf23b2806a3d0ee36533dfbf96b0b7767b98eb4e0ed7d102b7d50",
+      "/tmp/mutie-rust-workspace-audit/boolean-reports/run-1792690940-xrJrHW/outcomes.json": "53abcab96e4b6d798e0ae866e098fcc19935b727b413a76e4d0071cb24a6607a",
+      "/tmp/mutie-bun-composer-review-reruns/run-1792515066-fFuwkb/outcomes.json": "53995087edccf34fbb02d24b1c30183380703c2785265f36bee41b88dbbc903d",
+      "/tmp/mutie-python-cycler-unchanged-final/reports/run-1792530405-Y0cPwK/outcomes.json": "a79349b878a560ee44624429a63cefdbcb926a1a18f16a9b4193f85f39b92730",
+      "/tmp/mutie-python-cycler-unchanged-final/reports/run-1792530379-KbDIcx/outcomes.json": "c36e02449a0411ad0538492025ba0b1d6234b1084c0704583b276b7fa00d1f4c",
+      "/tmp/mutie-python-cycler-unchanged-final/reports/run-1792530346-awK0JZ/outcomes.json": "d5e0f7ae3eb9a0be47251fb0eeae08422cfacd69d6a5b443bdc42a2bc3985161",
+      "/tmp/mutie-python-cycler-unchanged-final/reports/run-1792530320-EUnqpn/outcomes.json": "187fed00508a723de7cf12704fbd14389a4142ba9e02829b6411e69be71413b2",
+      "/tmp/mutie-rust-loops-audit/original-reports/run-1792727129-RrxnLf/outcomes.json": "782fa10a5733f8de908688a4367c519a125ea8587f767e2da559a4c1eefa5bed",
+      "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792727327-U5zoa0/outcomes.json": "79b14b5294101cb45394addbd54301a32b6c070bedca29b1480977eae620ec63",
+      "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792727265-bSagLo/outcomes.json": "17e08e943d3ee8242665ce19e357a160fbc3e3f319f0efda536f3121ee79b1ec",
+      "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792727589-r9A8Ha/outcomes.json": "914dbd22cdf2481b9bbaa8719a950dcedb0e68fc6bfb742740ec9cb29a490747",
+      "/tmp/mutie-rust-loops-audit/stronger-reports/run-1792728016-3E3O6G/outcomes.json": "cb3355539d17b447c5dcf5f305b76393f2f9b3846421d22dbf45cd16cf20b5fc",
+      "/tmp/mutie-python-candidate-continuation/reports/run-1792624993-5sqdED/outcomes.json": "f3b8a9a78f5a877c30082aa020c92a99a819b46eadfab65260c399036646c6c6",
+      "/tmp/mutie-python-candidate-continuation/reports/run-1792625838-injAyq/outcomes.json": "6ee4b2a2d6c30efd857421cf68385fae9e73dc96b685638633a7d992f6640c28",
+      "/tmp/mutie-betting-math-final/reports/run-1792616246-k6AD9C/outcomes.json": "7869a91f27d512cea1f842360ca08ced5e3104d6b44536300af07a6e63c45bfb",
+      "/tmp/mutie-betting-math-final/reports/run-1792616218-mm0JhY/outcomes.json": "b2b7a73a97b5954bfee430510df11991078d77f02e5dd96ecf899c953991d9c9",
+      "/tmp/mutie-betting-math-final/reports/run-1792616355-FmLKNX/outcomes.json": "70b5f6e30e0ce589f00f4f64d3438f5cd5a07a110e4384df907b2d6859f0ef86",
+      "/tmp/mutie-betting-math-final/reports/run-1792616263-N8G8jt/outcomes.json": "81e06ef9ff6152e4525529c8709fca28af06ef8fdc66568bc78c37a3808dd854",
+      "/tmp/mutie-betting-math-final/reports/run-1792616233-L73fEe/outcomes.json": "1b8c23f079351fe66240aa02cc51eccd11b222be635d51e22d689a76488e2101",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514128-v4vM7D/outcomes.json": "37b6b06c7cac6ca533403c36543bcdb42c76799aea593a0c87620dd3fc2c26b1",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514169-aulCYE/outcomes.json": "bf0e9b28bfda553f504e87f07e5b8a565ab5576707672117ddbec841a38e61c2",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514149-AsgOLZ/outcomes.json": "70666c455405a768a73fd39ab27b4725d6a2f5da0d1236db1ffef5030e92b4fb",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514171-EVPo7U/outcomes.json": "9f03d274322fee86e26831153a56df169dc122bfb220352bb985426b7ab92aee",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514180-df7vl1/outcomes.json": "6e598d069279293fc6292d0ac5f52b9d8dcac562d81d2a7032367e0387b30fea",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514176-VnW1Av/outcomes.json": "e28296bb6f8d32f1533859ea990133efaf802340f6465b37d7d3c2876007e5a0",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514178-7MjfHH/outcomes.json": "2272e8c484b6083890e3d322c93e74a00a3ae1ab6773caca9d9ddce7b2af12bf",
+      "/tmp/mutie-bun-dev-sha2-profile/reports/run-1792514174-BChuar/outcomes.json": "944129f18d9f4ea3735666479963e81868efade1e213de9f0c53f1026a636994",
+      "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532414-ctt8qX/outcomes.json": "11dc681e661d3826c8550b31b5a413ff6fc7432855b9b1f2b2c23b5c9c98479d",
+      "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532459-87DVNz/outcomes.json": "87fe913f098795024bddfb09516f19d33e9b00e5dd72aa859dcad5aa7df81a70",
+      "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532478-mRS4E4/outcomes.json": "d62d911142ab619808cd0d5e5dabf3e1580d48dfd0319c5f5a1d4dcdf1aa914a",
+      "/tmp/mutie-python-unittest-pluralizer-acceptance/reports/run-1792532501-kYbzDW/outcomes.json": "c5466d9100ef8dd4e2888dfdc7e68ec7e45b1dcb39aa0c92f97c1cd05ff3e5b4",
+      "/tmp/mutie-betting-math-acceptance/reports/run-1792616132-FDOO9Y/outcomes.json": "00830fdbc1f26c55dbb15b1d5094725c369727b3766f102998ca41a7f9658b29",
+      "/tmp/mutie-node-default-bragkit-reports/run-1792378982-Pejwx3/outcomes.json": "2e7225ec9824918a80308afe9007eaab5c375d0582427033e486601c106d2d69",
+      "/tmp/mutie-bun-pp-is-reruns/run-1792510571-dXqSBc/outcomes.json": "45e94623bad8d72233132b928c6f78321fcd751bd256600e75c9f0a2130d5b0e",
+      "/tmp/mutie-route-mini-review-accepted/reports/run-1792603353-Etfl8w/outcomes.json": "552b0bf37771f5784aead4f57a0a3f9fa7a1f188e137449d8fac3a5e0689a8fe",
+      "/tmp/mutie-route-mini-boundaries/reports/run-1792606595-gv9Jin/outcomes.json": "92086f7faf8f66c2158ae9659a0f9e02481875fafbd00dabb32d4ab67cfd58d9",
+      "/tmp/mutie-route-mini-boundaries/reports/run-1792606624-ba7dNe/outcomes.json": "ab74267370e0f827a8963a4d16ae6ff3ead8bc255ae7d8994109438b92316740",
+      "/tmp/mutie-bun-scored-composer-rerun/run-1792446764-VhMM43/outcomes.json": "3814736ced73d7b29be1876a53811cce5d8ede1e1af4cc706781c9d2cdbe2f13",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621035-hiLxn4/outcomes.json": "e9408666ae5c21369b90747752a52001aeed4dc15ec3a386bd1f69f5617d4e1d",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620854-NPDMG6/outcomes.json": "e4f1b226f778989adafeec5ff1ef078d1a47dcd4bd26b55d5a19c907f28e2374",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620746-iApInR/outcomes.json": "990e9357d2edf163244d803962688c77688e9dac01c4eeac7990bf8e2e247d58",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620460-Oy8meS/outcomes.json": "6790b2c0354056f28f477e04bf40de14423198a3c34df8aaea8f89f2e69bd857",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620945-EFeO4W/outcomes.json": "9dd49c319d7e711da5b7a8bef7e83477ab08c1c4041b70ac194e3298819f85d6",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620637-D7R6ZY/outcomes.json": "9d99832aaf7674568de1f51402e883f7a3aacaced2b32d78904c6e4a9303695e",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621279-lMtxoB/outcomes.json": "e5fc4dd1d66ea531d2d89005bb58bd9a79cee5d400270a5286e055623a162b87",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620875-93jiNJ/outcomes.json": "dfd05f3a4b2554c990b111c56d362a8bd2e10d6ef7d1144bc259d7fa1308af55",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620933-9EYILx/outcomes.json": "89a7141aa896ce5fb7324a0a3e77bcd6a0b6abd4a96c7299a8cc303bb430ab4d",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621395-UsgHFG/outcomes.json": "8577a7b1822850460b1a4ba8ae7c0beae36a724e1e52f08a89943e645224137c",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620779-wOrUe7/outcomes.json": "f405ebd541f1e4b9bcdb47a2537032cf7cd419d2d16c30cfa6705054c03e3e7f",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620423-YWbwxQ/outcomes.json": "05f896fb2011417d271bd318d7bc1b2fdca98b37d93667c76f6e741a8e92b9f1",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621190-8w0eOL/outcomes.json": "8d5f7ec17ac638fa9e197591fecad24e46bd3791ea7f67f55b7a2efe79d8fae4",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620655-w8OkAd/outcomes.json": "e43934279dc2aeb2381987e6837fa970f8d322657d0612aac19c22b627bab7e7",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620404-ssKqvi/outcomes.json": "eb63734e5e6aa18857c59a7312b73eaac1615fac5b1bdfba826f07b1de9ba4f8",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620388-zhyvvT/outcomes.json": "0eb2bcfa2a730154ecef52d821f6fe3ca4644b98ca30f04a67d743a852ae8b9f",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621383-13nQ6u/outcomes.json": "bd7fac12afa7b6b4ae0d297d8827ba9c08091af50fbfac407849815a81c06279",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621047-DSZKJv/outcomes.json": "ea48c57fa69990d9cb8daca4135a7e51a5f6e044a865301cde73dad4553906b8",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620725-1bHN3q/outcomes.json": "c0cafb52f9f9f4647b1580ec746d5b82913c3b4bf98f08e0605e76ea8f6611b6",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621072-bEKtLT/outcomes.json": "41063479f4061e4cf6599bc2cab27efafe7904130413a71ddc0eb904f33acf3b",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621263-pwR1RM/outcomes.json": "6d2ca49662e22e200e56d4a88254b516c31525f3447cd16495bee7961f69a700",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620621-NGTIK9/outcomes.json": "9c762915e2bdec14604e76ebd6460cfcb0de274ce9e29acd8ca9a96113d7a038",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621136-io5Lfx/outcomes.json": "05b514e9d831985e4720f64e0a25545a8b2097d35362a8165532c8e7e2c619f4",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621422-kfY3cD/outcomes.json": "6e93d3b89336fd667f6cf082e183078087b766b658a2535b3a1ef8861aa3f44a",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620993-rIVj8e/outcomes.json": "90efd6672dd2856a0f3b49d1dfd8ea8d87021e5ad0f2880a541c25fbadeea2a1",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620359-pkMAOI/outcomes.json": "96fd964377ae07d0b589eba108f7ae7250f3404cc1a37269ea8613a772293e2f",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620446-Tr2PgY/outcomes.json": "9b37cd0326ddfdb50c2eb7796c89ca4ad2a9e17b0d645fa122af41205da31fe1",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620374-Wf9mJj/outcomes.json": "d4e064160c3a7863d89a47fdde7c72caef3601a63939b64b0955d0c4f181298a",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620475-jbUPSt/outcomes.json": "03bea633115cc8e9a2ba85463c8fa53006a347e36a6b7e2354056e4def97cb25",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621307-xVVSEg/outcomes.json": "07c17e9cc6879dad8606af24e551c8415ed8914f108448f93db9aaf010092527",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620921-zcZP3I/outcomes.json": "2c5669d11cfff9436158422b2241652427e1d6409254d709ab1d14378d692333",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620514-Q0q9B1/outcomes.json": "2d01e7b909f170f6c8d572196d31423303c4bd9c9e2486106f44d4a848ec2f96",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621092-CXBKAM/outcomes.json": "01bbb3629a6803c30c9b7acce37f75bef638f87ce16df1295b5dd90996d1320f",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621153-mKgzRw/outcomes.json": "c2cd609ac2d06de71552c070e14957a02dba1fef02fa22290fdc3eb76cc58ce8",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792621059-SvZXdx/outcomes.json": "476fb92dcc9b4803baa68d9b79faf1407a2f7db5cf147e8dc05326af74ca54f3",
+      "/tmp/mutie-python-arithmetic-full/reports/run-1792620554-FWtT8h/outcomes.json": "a81d0cf12a4ee9f2ced275b6ed69337baabc73b95859044cba00c0f2e7cc12ad",
+      "/tmp/mutie-bun-composer-review-original/run-1792515009-1wXKfi/outcomes.json": "361c2d045b36137661a3e694d609f24259f7b7e6592bb5a9981b2d5b911903ec",
+      "/tmp/mutie-python-branches-audit/original-reports/run-1792723035-noFPOX/outcomes.json": "8d2a8e88100410efdcced2b1785996b94676e4b10e0173ea4f88ef536e8bd793",
+      "/tmp/mutie-python-branches-audit/stronger-reports/run-1792723208-wyv7Dr/outcomes.json": "d04fe52eb0e52efd70cced4fc3d25c61b282e8d557aff6a6913a6e4d22c61cbb",
+      "/tmp/mutie-rust-arithmetic-audit/focused-original-reports/run-1792711412-IMCpOM/outcomes.json": "1cb4252e8ff4291596cb6f48be664bea3f65087d46ba5e28b643d3868d84e120",
+      "/tmp/mutie-rust-arithmetic-audit/original-reports/run-1792711188-Ujbtmw/outcomes.json": "a8a361aa3f8b675e28ca5b4118f00122aeb03412cf04fc1812a46cdc2174286a",
+      "/tmp/mutie-rust-arithmetic-audit/stronger-reports/run-1792711467-9EYkOr/outcomes.json": "cd636172bda96048a267497fe7cf7469ab1f26772ef09748989c94bfb231d0c4",
+      "/tmp/mutie-node-sri-stronger-reports/run-1792366717-zE7QPj/outcomes.json": "b236dd37016dfa94c6816f0778d8c2ad01495d420eae0e9ebc2c1566227b4ac0",
+      "/tmp/mutie-python-unittest-pluralizer-validation/reports/run-1792532056-7SI2cT/outcomes.json": "9fa0ce7dec718eec6c3620106313ed7d499aaf0af7e671ac700121d63621bbc0",
+      "/tmp/mutie-python-unittest-pluralizer-validation/reports/run-1792532034-yGj3nw/outcomes.json": "f5389a7706ede74135f826b54dfc05993a76d977ef34b7a9586aa4984d2f35d1",
+      "/tmp/mutie-python-unittest-pluralizer-validation/reports/run-1792532010-V9a0qt/outcomes.json": "7deec8d1c33ca10b470b563ebc64dd03e806d86a3096b6803da93fde16c274f5",
+      "/tmp/mutie-python-unittest-pluralizer-validation/reports/run-1792531964-rms7PB/outcomes.json": "2880cd53086e83e0689ab9f0265727b8494683172cc28116818e3ae8c94c6452",
+      "/tmp/mutie-bun-overhead-sha2-experiment/reports/run-1792513469-PQ6NEI/outcomes.json": "4873cf97bd585423facdf31a6446cfa7a295e6a5344f9b4918e232e339b884cd",
+      "/tmp/mutie-bun-overhead-sha2-experiment/reports/run-1792513464-4TMs4B/outcomes.json": "351e26a2342cfb857f4ac97c261c3c2d9a0351e9573973c5b93ed9626f6f5727",
+      "/tmp/mutie-bun-overhead-sha2-experiment/reports/run-1792513467-t4tTXm/outcomes.json": "45f3a58c0910c56f300eca22c4dedaa05b806125f935d91d18a9ea1ad0dd21a6",
+      "/tmp/mutie-bun-shared-js/run-1792446398-0eY5i3/outcomes.json": "adb4007ef9d8529cae05ea8ffd1029acf16b26734f9752b6e077844152b68d41",
+      "/tmp/mutie-js-logical-audit/exploratory-reports/run-1792696400-nzPoyQ/outcomes.json": "ff76addfc2bf406a10f56a5674f40d69c49ae154d704b0fee41fadc261dcdfe5",
+      "/tmp/mutie-js-logical-audit/stronger-reports/run-1792696501-yyOCbT/outcomes.json": "4bc00feff79045a56cc13e6fbf3570350b0bc1bcf769ec7823624c4da43c2f3e",
+      "/tmp/mutie-route-mini-review-final/reports/run-1792603474-AVnULD/outcomes.json": "381eef891a8b4723420deb07590df46a19d3bf41a1aeac74726178c4335220d8",
+      "/tmp/mutie-route-mini-review-final/reports/run-1792603428-nlGVQt/outcomes.json": "d045e7a0bfb73fdd3ae7449004d161487e4c030755d78c06d675af757eb08407",
+      "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544271-EgpUQH/outcomes.json": "e92b69ad0a127badd295887e61758e786e7353447d843b12dfdb9b011f7bbf76",
+      "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544316-8UD24m/outcomes.json": "92147d0ed4b936d32c5f1318a00b19391b85a8d9f17f81259ae35cff45021ded",
+      "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544222-7XL13a/outcomes.json": "4ab26b2d3d165c12d4209c352b6a598c262f9ea83ec51cc89d2e80fcc6b02007",
+      "/tmp/mutie-conftest-trees-acceptance/reports/run-1792544145-C31xXU/outcomes.json": "d5cf94945d5dd864162fc2c78926701ef603adc3b319733dc10fee1d63b40d1e"
+    }
+  },
+  "runs": {
+    "final-original": {
+      "path": "/tmp/mutie-python-loops-audit/final-original/run-1792769878-6ONauv",
+      "status": "failed",
+      "score": {
+        "scope": "filtered",
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 9,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "test_count": 7,
+      "duration_seconds": 8.922889875,
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 94,
+          "column": 15,
+          "end_line": 94,
+          "end_column": 22,
+          "byte_start": 2305,
+          "byte_end": 2312,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 122,
+          "column": 15,
+          "end_line": 122,
+          "end_column": 22,
+          "byte_start": 3157,
+          "byte_end": 3164,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 198,
+          "column": 15,
+          "end_line": 198,
+          "end_column": 32,
+          "byte_start": 6020,
+          "byte_end": 6037,
+          "original": "current_node.left",
+          "replacement": "(False and (current_node.left))",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 285,
+          "column": 15,
+          "end_line": 285,
+          "end_column": 21,
+          "byte_start": 8820,
+          "byte_end": 8826,
+          "original": "parent",
+          "replacement": "(False and (parent))",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 346,
+          "column": 15,
+          "end_line": 346,
+          "end_column": 26,
+          "byte_start": 11472,
+          "byte_end": 11483,
+          "original": "fixing_node",
+          "replacement": "(False and (fixing_node))",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 94,
+          "column": 15,
+          "end_line": 94,
+          "end_column": 22,
+          "byte_start": 2343,
+          "byte_end": 2350,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 122,
+          "column": 15,
+          "end_line": 122,
+          "end_column": 22,
+          "byte_start": 3158,
+          "byte_end": 3165,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 200,
+          "column": 15,
+          "end_line": 200,
+          "end_column": 32,
+          "byte_start": 5858,
+          "byte_end": 5875,
+          "original": "current_node.left",
+          "replacement": "(False and (current_node.left))",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "trees/binary_trees/traversal.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "line": 235,
+          "column": 11,
+          "end_line": 235,
+          "end_column": 25,
+          "byte_start": 7663,
+          "byte_end": 7677,
+          "original": "len(queue) > 0",
+          "replacement": "(False and (len(queue) > 0))",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "trees/binary_trees/traversal.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "line": 361,
+          "column": 11,
+          "end_line": 361,
+          "end_column": 25,
+          "byte_start": 11535,
+          "byte_end": 11549,
+          "original": "len(stack) > 0",
+          "replacement": "(False and (len(stack) > 0))",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running trees/binary_trees/avl_tree.py:94:15: \"current\" -> \"(False and (current))\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.328702,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4256,
+                "head_bytes": 4256,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4255,
+                "head_bytes": 4255,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 3,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 4,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 5,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 6,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 7,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 8,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 9,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 10,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "6ea10982485ebc262a3ea40da9d36654e025bfd0e7208e01efd5ce6d349ba885",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "a0a5e46bbc0405649f194ddb84d10834811602a302df61b6a4dae1a4205de339",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "b12243fd729e21683e7dd9974be89bc34259505ea3080c1da0882a3dad95a10f",
+        "summary.txt": "fc157ce896748dd04b8573d66520b1e0f240c8d480e751b4983212ea8668678d",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run.json": "d31cad5fcbd2416643d2c6df2e5e96b2f18dce5c43f075eed13e67bb213c8fa5",
+        "diff/000003.diff": "056fc111410a003f2a439986b89f6204651b4bfe046dafa535c8b2b0e086754f",
+        "diff/000002.diff": "33ebc3108ed71c54d88bf5a60900c6d0bd14a2901cd7ef59101624d435f0d71b",
+        "diff/000009.diff": "150f7e9c1543bc23fb9021567bc24773a6f6c348c67e3b571494eea157a31e8a",
+        "diff/000005.diff": "8ee8dd605fd9cf12f0f3c298a9bd79ba8525e8360762bcfbecd81d904269f5ec",
+        "diff/000004.diff": "f332bcd509528eed7009604de76e993c19f5c9349cfaee4867b299809fe83e3a",
+        "diff/000008.diff": "c0a7a425013287efafcad134a1c7cf8e601fd789e0ac6452c26eaa829472cebe",
+        "diff/000007.diff": "7041c5f942da6405f8a4d75a87f039ceb33453841104dd6f9ebb90df49489a06",
+        "diff/000006.diff": "f2108e8b226c09cdef1183cee6d6d2bd443fcd0cdb4ec3f979e5449886ccd091",
+        "diff/000010.diff": "61a17ba5ca46a257c926eb4b0fdbb548272076a39bb39a422df9d9851976f8f8",
+        "diff/000001.diff": "6b69aa90da612c359b84960d302d6e29dab4d047e0adc7292caed98df571068e",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "fce90ba7efa404c4ee64e8fb8f5c88070a70180a3bca63f40be8206eac11ec8a",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.log": "6aa164e66f628b20ff911b5c766981c6d0b440fe969ac5ce23732355da4bd076",
+        "logs/000001.stdout.log": "5e3a8831ffd59860c0d423eed77889c6485d41476ac721d7ab40fc8bdd483a58",
+        "logs/discovery.stdout.log": "d5869c9df542fa6e2ee16de24f15843b8dc5fc9662cd5b9dcd8d380cc849cbd3",
+        "logs/baseline.log": "1e1b847afd322351574c29d1fb1bb73c538fe66506c133c73437e02f110f6f51",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "15be9e29acfb9af509f76be546e214ba2e874086568562b11118d8a499c56aad"
+      }
+    },
+    "final-survivor": {
+      "path": "/tmp/mutie-python-loops-audit/final-survivor/run-1792769905-NpWj2v",
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 0.0,
+        "unavailable_reason": null
+      },
+      "test_count": 7,
+      "duration_seconds": 11.30881675,
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 346,
+          "column": 15,
+          "end_line": 346,
+          "end_column": 26,
+          "byte_start": 11472,
+          "byte_end": 11483,
+          "original": "fixing_node",
+          "replacement": "(False and (fixing_node))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.361081832,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "7bbac7428a58c688059cbb031af81ef34cc3edb102620edb24faaf59ea3db584",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "00a1f51e0754e419f1ce0103bb777081a894cae63f68560c3bbc82e572eaf1b0",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "fde962cbde0dc861d9a06dce3c6f5dbe5eb40c50e893286df1ab953f275754c0",
+        "summary.txt": "f1babd720af988843b0d077e8f609e6156ba24219c8bd4c0fb0f661d7965c9b0",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run.json": "57726edb116f37b470cd5328100db5830821ba4fd641b39a6af878b72f75c874",
+        "diff/000001.diff": "8ee8dd605fd9cf12f0f3c298a9bd79ba8525e8360762bcfbecd81d904269f5ec",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "672020163c9570067b0ce0074183c7872a8d315ff7b4787bae2b934309bf957e",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.log": "4432c80cec8455dee62ecd6ef49fa0791fdd70d7e23eec47d14d29a5e77904be",
+        "logs/000001.stdout.log": "33ceaa0d737d4006ec8ba3fe8bdb5c94696ba33d8c2c6ca14092b20570b1c688",
+        "logs/discovery.stdout.log": "ea1d9aa6d1402bf24c1e774aa3a25bff088e5d8dbc46fd9740b7d75ef5d6c083",
+        "logs/baseline.log": "3bb85cdbb05a6fda7f2018da8ba9fa05b7dbfca369e8d7e86a9401974f10ec77",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "ca12bf5ea55b044bc10bb2aa85a86e00af21c4d9016b261b92fd477b542d30a9"
+      }
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-python-loops-audit/stronger-reports/run-1792769917-LyxviB",
+      "status": "completed",
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "test_count": 8,
+      "duration_seconds": 12.916235958,
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 346,
+          "column": 15,
+          "end_line": 346,
+          "end_column": 26,
+          "byte_start": 11472,
+          "byte_end": 11483,
+          "original": "fixing_node",
+          "replacement": "(False and (fixing_node))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.530821833,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1190,
+                "head_bytes": 1190,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1189,
+                "head_bytes": 1189,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "0f0be4130ec4b0070beeedb04073ecb7b0d009c01c6c594b3fda565359c519de",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "fde962cbde0dc861d9a06dce3c6f5dbe5eb40c50e893286df1ab953f275754c0",
+        "summary.txt": "633e4acd021ba97fb2c09077db511dbcd4c1aa39ba603ac168041eef3447bd4c",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "00a1f51e0754e419f1ce0103bb777081a894cae63f68560c3bbc82e572eaf1b0",
+        "run.json": "eaf51d7e626fc919fd5b89f7a6bed7af835d791ea5b94949662810a4b1e24a7d",
+        "diff/000001.diff": "8ee8dd605fd9cf12f0f3c298a9bd79ba8525e8360762bcfbecd81d904269f5ec",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.log": "9c3c6a64db842dfd81d8a8c204c8471f283e86fd61923f51d8c25119bc91e6a2",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.log": "9a71f7250aaef4bac6c5c729f2761995f1209713928a117ef64e4e0fb0cc2de5",
+        "logs/000001.stdout.log": "b2fcb02be30d2acca3d51709b925ab67f68b47a2ba1df69466aaf440a2ec3aaf",
+        "logs/discovery.stdout.log": "eee1b7dcba720af368d4573f7f5bf43cca41303b823416ccd29e7c55fc08a9bf",
+        "logs/baseline.log": "f7a6377dff73adc8416888da8819d0ee5bfb49b401b332e1c4adf23992e00a6d",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "82469cff4e1df5f2929bd2a6f5a9056a2e1a28f7c4cf9d7c208922ea0c54d799"
+      }
+    }
+  },
+  "preliminary_inventory_review": [
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-reports/run-1792769754-s631zQ",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 94,
+          "column": 15,
+          "end_line": 94,
+          "end_column": 22,
+          "byte_start": 2305,
+          "byte_end": 2312,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 122,
+          "column": 15,
+          "end_line": 122,
+          "end_column": 22,
+          "byte_start": 3157,
+          "byte_end": 3164,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 198,
+          "column": 15,
+          "end_line": 198,
+          "end_column": 32,
+          "byte_start": 6020,
+          "byte_end": 6037,
+          "original": "current_node.left",
+          "replacement": "(False and (current_node.left))",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 285,
+          "column": 15,
+          "end_line": 285,
+          "end_column": 21,
+          "byte_start": 8820,
+          "byte_end": 8826,
+          "original": "parent",
+          "replacement": "(False and (parent))",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 346,
+          "column": 15,
+          "end_line": 346,
+          "end_column": 26,
+          "byte_start": 11472,
+          "byte_end": 11483,
+          "original": "fixing_node",
+          "replacement": "(False and (fixing_node))",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 94,
+          "column": 15,
+          "end_line": 94,
+          "end_column": 22,
+          "byte_start": 2343,
+          "byte_end": 2350,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 122,
+          "column": 15,
+          "end_line": 122,
+          "end_column": 22,
+          "byte_start": 3158,
+          "byte_end": 3165,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 200,
+          "column": 15,
+          "end_line": 200,
+          "end_column": 32,
+          "byte_start": 5858,
+          "byte_end": 5875,
+          "original": "current_node.left",
+          "replacement": "(False and (current_node.left))",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "trees/binary_trees/traversal.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "line": 235,
+          "column": 11,
+          "end_line": 235,
+          "end_column": 25,
+          "byte_start": 7663,
+          "byte_end": 7677,
+          "original": "len(queue) > 0",
+          "replacement": "(False and (len(queue) > 0))",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "trees/binary_trees/traversal.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "line": 361,
+          "column": 11,
+          "end_line": 361,
+          "end_column": 25,
+          "byte_start": 11535,
+          "byte_end": 11549,
+          "original": "len(stack) > 0",
+          "replacement": "(False and (len(stack) > 0))",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running trees/binary_trees/avl_tree.py:94:15: \"current\" -> \"(False and (current))\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.366278667,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4256,
+                "head_bytes": 4256,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4255,
+                "head_bytes": 4255,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 3,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 4,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 5,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 6,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 7,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 8,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 9,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        },
+        {
+          "id": 10,
+          "state": "pending",
+          "worker": null,
+          "outcome": null,
+          "error": null,
+          "duration_seconds": null,
+          "exit_code": null,
+          "logs": null
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769795-KusM7k",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 122,
+          "column": 15,
+          "end_line": 122,
+          "end_column": 22,
+          "byte_start": 3157,
+          "byte_end": 3164,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running trees/binary_trees/avl_tree.py:122:15: \"current\" -> \"(False and (current))\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.733800208,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5062,
+                "head_bytes": 5062,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5061,
+                "head_bytes": 5061,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769809-d4dpT8",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 198,
+          "column": 15,
+          "end_line": 198,
+          "end_column": 32,
+          "byte_start": 6020,
+          "byte_end": 6037,
+          "original": "current_node.left",
+          "replacement": "(False and (current_node.left))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.39187075,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2513,
+                "head_bytes": 2513,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2512,
+                "head_bytes": 2512,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769821-f5ALpM",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 285,
+          "column": 15,
+          "end_line": 285,
+          "end_column": 21,
+          "byte_start": 8820,
+          "byte_end": 8826,
+          "original": "parent",
+          "replacement": "(False and (parent))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.3542547090000001,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1667,
+                "head_bytes": 1667,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1666,
+                "head_bytes": 1666,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769832-tTzo80",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 0,
+        "missed": 1,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 346,
+          "column": 15,
+          "end_line": 346,
+          "end_column": 26,
+          "byte_start": 11472,
+          "byte_end": 11483,
+          "original": "fixing_node",
+          "replacement": "(False and (fixing_node))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 1.993163,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 99,
+                "head_bytes": 99,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 98,
+                "head_bytes": 98,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769845-2TK68Q",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 94,
+          "column": 15,
+          "end_line": 94,
+          "end_column": 22,
+          "byte_start": 2343,
+          "byte_end": 2350,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running trees/binary_trees/binary_search_tree.py:94:15: \"current\" -> \"(False and (current))\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.3063125,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4413,
+                "head_bytes": 4413,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4412,
+                "head_bytes": 4412,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769854-Fg8McU",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 122,
+          "column": 15,
+          "end_line": 122,
+          "end_column": 22,
+          "byte_start": 3158,
+          "byte_end": 3165,
+          "original": "current",
+          "replacement": "(False and (current))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "error",
+          "error": "running trees/binary_trees/binary_search_tree.py:122:15: \"current\" -> \"(False and (current))\": Python run contains an unsupported phase failure",
+          "duration_seconds": 1.226665792,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 5264,
+                "head_bytes": 5264,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 5263,
+                "head_bytes": 5263,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769863-6NOdEf",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/binary_search_tree.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+          "line": 200,
+          "column": 15,
+          "end_line": 200,
+          "end_column": 32,
+          "byte_start": 5858,
+          "byte_end": 5875,
+          "original": "current_node.left",
+          "replacement": "(False and (current_node.left))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.293313751,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 2625,
+                "head_bytes": 2625,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 2624,
+                "head_bytes": 2624,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769872-Nx71QW",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/traversal.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "line": 235,
+          "column": 11,
+          "end_line": 235,
+          "end_column": 25,
+          "byte_start": 7663,
+          "byte_end": 7677,
+          "original": "len(queue) > 0",
+          "replacement": "(False and (len(queue) > 0))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.345138501,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1405,
+                "head_bytes": 1405,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1404,
+                "head_bytes": 1404,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": "/tmp/mutie-python-loops-audit/original-focused/run-1792769881-qGKFq0",
+      "recipe": "sha256:9565122cc2c36ebbbad5d5e375bafa9aced7c9e771e8a6dd4a672e7662c9e90c",
+      "summary": {
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/traversal.py",
+          "operator": "loop_skip",
+          "source_fingerprint": "sha256:5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+          "line": 361,
+          "column": 11,
+          "end_line": 361,
+          "end_column": 25,
+          "byte_start": 11535,
+          "byte_end": 11549,
+          "original": "len(stack) > 0",
+          "replacement": "(False and (len(stack) > 0))",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 1.242920958,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 4784,
+                "head_bytes": 4784,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 4783,
+                "head_bytes": 4783,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "stronger_test_sha256": "98ccd2e1247932dbb914f6ae97d38af7c57196fb767d6046a5e78ad41d041d76"
+}

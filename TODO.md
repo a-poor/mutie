@@ -137,8 +137,11 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Fifth slice completed: Rust ordinary Boolean `while` skipping, with native
    ownership/borrowing/drop controls and explicit binding-condition exclusions.
    A separate-copy terminal test kills an unchanged Marathon event-loop survivor.
-   See [acceptance](benchmarks/rust-loops.md). Python conditional-loop skipping
-   and standalone-call removal remain; Marathon's search-scrolling survivor is open.
+   See [acceptance](benchmarks/rust-loops.md). Marathon's search-scrolling survivor is open.
+   Sixth slice completed: Python ordinary `while` skipping, truthiness/else controls,
+   assignment-expression exclusions, fixture and unchanged Binary Tree Library
+   deletion-height finding with a separate-copy stronger-test rerun.
+   See [acceptance](benchmarks/python-loops.md). Standalone-call removal remains.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

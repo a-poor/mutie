@@ -372,8 +372,11 @@ impl LoadedReport {
                     crate::python::project::mutation_operator(
                         &mutation.original,
                         &mutation.replacement
-                    ) == Some(mutation.operator)
-                        && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
+                    ) == Some(if mutation.operator == Operator::LoopSkip {
+                        Operator::BranchForceFalse
+                    } else {
+                        mutation.operator
+                    }) && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
                         && !mutation.file.starts_with("tests")
                         && run
                             .python_scope

@@ -563,7 +563,7 @@ Support differs by language and applies within each runner's validated scope:
 | Remove negation: `!x → x` (Python: `not x → x`) | Yes | Yes | Yes | Yes |
 | Force an `if` condition true or false (two operators) | Yes | Yes | Yes | Yes |
 | Remove a standalone function call | Yes | No | No | No |
-| Skip a conditional loop | Yes | Yes | No | Yes |
+| Skip a conditional loop | Yes | Yes | Yes | Yes |
 | Replace numeric or string literals | No | No | No | No |
 | Remove arbitrary statements or code blocks | No | No | No | No |
 
@@ -609,6 +609,14 @@ are independent candidates. Flat chains of three or more operands (`a and b and 
 are excluded at that chain node; eligible nested binary expressions remain eligible.
 Bitwise operators, annotations and tests are excluded. See
 [semantic controls and unchanged Route Mini diagnostic findings](benchmarks/python-logical.md).
+
+Python `loop_skip` wraps an ordinary `while` condition as
+`(False and (original))`, skipping all condition effects, truthiness and body
+execution. Native zero-iteration semantics apply: `while…else` still runs.
+Literal Boolean conditions and conditions containing assignment expressions
+(`:=`) are excluded, as are iterator `for` loops, annotations and tests.
+Retained syntax preserves generator classification; subsequent runtime failures
+remain errors. See [controls and unchanged-project finding](benchmarks/python-loops.md).
 
 Rust `loop_skip` wraps an ordinary Boolean `while` condition as
 `false && (original)`, skipping condition evaluation and the body. Values and
@@ -690,7 +698,7 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, and `loop_skip`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
-`arithmetic_replace`, `branch_force_true`, and `branch_force_false`. Vitest, Node and Bun run
+`arithmetic_replace`, `branch_force_true`, `branch_force_false`, and `loop_skip`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`, and `loop_skip`.
 Use repeatable or comma-separated
