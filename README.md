@@ -562,7 +562,7 @@ Support differs by language and applies within each runner's validated scope:
 | Boolean literals: `true ↔ false` (Python: `True ↔ False`) | Yes | Yes | Yes | Yes |
 | Remove negation: `!x → x` (Python: `not x → x`) | Yes | Yes | Yes | Yes |
 | Force an `if` condition true or false (two operators) | Yes | Yes | Yes | Yes |
-| Remove a standalone function call | Yes | No | No | No |
+| Remove a standalone function call | Yes | No | No | Yes |
 | Skip a conditional loop | Yes | Yes | Yes | Yes |
 | Replace numeric or string literals | No | No | No | No |
 | Remove arbitrary statements or code blocks | No | No | No | No |
@@ -609,6 +609,15 @@ are independent candidates. Flat chains of three or more operands (`a and b and 
 are excluded at that chain node; eligible nested binary expressions remain eligible.
 Bitwise operators, annotations and tests are excluded. See
 [semantic controls and unchanged Route Mini diagnostic findings](benchmarks/python-logical.md).
+
+JS/TS `call_remove` replaces a complete ordinary call statement with `;`.
+It skips receiver/property/argument evaluation and the call itself. Parenthesized,
+method, computed and optional calls are supported; surrounding branches, labels
+and statement boundaries remain intact. Calls used as values, `new`, direct
+`super()`, dynamic import, tagged templates, and call subtrees containing `await`
+or `yield` are excluded. Unawaited ordinary calls may return promises: no static
+return-type inference is attempted, and lifecycle failures remain errors. See
+[controls and unchanged-project finding](benchmarks/javascript-calls.md).
 
 Python `loop_skip` wraps an ordinary `while` condition as
 `(False and (original))`, skipping all condition effects, truthiness and body
@@ -700,7 +709,8 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
 `arithmetic_replace`, `branch_force_true`, `branch_force_false`, and `loop_skip`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
-`negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`, and `loop_skip`.
+`negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
+`loop_skip`, and `call_remove`.
 Use repeatable or comma-separated
 `--operator` values to select a subset for a fresh run, a listing, or a rerun:
 
@@ -756,7 +766,7 @@ The [fzf loop sample](benchmarks/fzf-v0.65.2-loops.md) matched all 16 outcomes
 between full and affected tests with no build failures. Added tests killed two
 survivors covering partial tail chunks and display-width trimming.
 
-`call_remove` deletes an entire standalone function or method call, including
+Go `call_remove` deletes an entire standalone function or method call, including
 multiline and parenthesized calls, from a block or case body. Arguments are also
 removed, so their side effects no longer execute. It excludes calls used as
 values (including `_ = call()`), `go`/`defer` calls, labeled calls, and calls in

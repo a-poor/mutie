@@ -1,0 +1,890 @@
+{
+  "project": {
+    "project": "/tmp/mutie-js-calls-original",
+    "commit": "e323faa446f03b5438fa9edc58781b4ef8dd52df",
+    "inputs": {
+      ".env.example": "cbbcd3492495502aeea47f82e16276637a543c6ef8102e5d6add63bd05403a16",
+      ".github/workflows/ci.yml": "9a7908c325408e4046d5ea5de40e89a5f99fc3e3b3b3f6c2e491b355b54688d0",
+      ".gitignore": "9d49a287c5970402827d3d321dfa1eb558633f45fc837e7e54a2450930e08629",
+      "README.ja.md": "2456ab41f2e783a13de6c4e8df13ef7711ac375ea5c5184e723517aa24e15c9e",
+      "README.md": "1b5197ab05575c96ed97d9652149ed1d1d745fb3609be026469498757cea6f18",
+      "config/default.example.json": "ab2b7296a56e21a4dd45e6e00c12f2b04af6d1e2890184162c2dec17382bb10f",
+      "examples/bunshin/README.md": "3dbf92160f8b53a811a735fc47594a4796c22ffc599407c20d16f654b2b7d70f",
+      "examples/bunshin/cron/jobs.example.json": "f1b38b23b56497381e53b071f06e007baad6bbacd9e4577bc8b157a379b961a1",
+      "examples/bunshin/data/people/contact.example.md": "c4fc53b5af7355661da1aa97716e632ee744632157c32bbcb0152015be80056f",
+      "examples/bunshin/data/projects/project.example.md": "a5caba559abebeae61856a512a350d2d0838820fe9c683248964360d6db5edd2",
+      "examples/bunshin/rules/architecture.md": "1f138fff582c094920ac93391e089d232627d006a691d3461fe42f599b7f70d5",
+      "examples/bunshin/rules/safety.md": "0a0e426226906a36760f8b8940026920f0a25f6b87b436356ee1ff2be85d5ddd",
+      "examples/bunshin/workspace/AGENTS.md": "9ae62cb5371ac3670a4090ef1ca59a64386ac326c05ba256ccb7b344d6cd1371",
+      "examples/bunshin/workspace/GROUP_MEMORY.example.md": "feb2d4f93093eaff402b86fc4a2b54d56766f197266c4830c7b8e62d396c61d9",
+      "examples/bunshin/workspace/HEARTBEAT.md": "2c1ad2e526fc516af42eea8d1c572bb857fa462439b93e1e5ec4eaefccdbe34c",
+      "examples/bunshin/workspace/IDENTITY.example.md": "9f4bb37c5dacd2816ea6564bf713d82e960b0c0148ffd172b13d74cca62bf0b5",
+      "examples/bunshin/workspace/MEMORY.example.md": "5bda4254703f84134d3d9f7048cb5d8f93c0575d8ecb8f158942a67575822147",
+      "examples/bunshin/workspace/SOUL.md": "9451909b804bbe8b5e71297c8d6a98bc52fc50e13a82f461d7664fe827b97d83",
+      "examples/bunshin/workspace/TOOLS.example.md": "cfcceca9cf98f465470f2f72a6f48ea9f391dbe92809c5fd86dba916c185e67e",
+      "examples/bunshin/workspace/USER.example.md": "3b599ccae0625b1a2466a2c2b27691f7be53c4254486a35dc97320e1f527908c",
+      "examples/dev-assistant/README.md": "59c7800f92aa0278e4e8550ea2ad5357abc1d5e79860a3c356371e3db55a967e",
+      "examples/dev-assistant/cron/jobs.example.json": "1a501d348ff70fc1d3d513cb29176d51442a973e107831c7cf9b77b24cbe7315",
+      "examples/dev-assistant/rules/safety.md": "7e6565735295aee7a60c2753d80d2b5c5228c96e6e2ebb9f563eb12365de88b1",
+      "examples/dev-assistant/workspace/AGENTS.md": "c2c01dcdbbc36587f3dbfad9a4f16dc67bfe393c6807694271187bd9f3c8a422",
+      "examples/dev-assistant/workspace/GROUP_MEMORY.example.md": "23dd2f30dc81410779daab5fa6a9e3f3042a51515eea142dcae1c742c0d1be81",
+      "examples/dev-assistant/workspace/HEARTBEAT.md": "2c1ad2e526fc516af42eea8d1c572bb857fa462439b93e1e5ec4eaefccdbe34c",
+      "examples/dev-assistant/workspace/IDENTITY.example.md": "38449ea585cfeb58cfc36829ab248b563ad670a21d459d43367682bb13a4796f",
+      "examples/dev-assistant/workspace/MEMORY.example.md": "4ff382e1fe66d63e1a7bcbb03f8c5021db8c4e3d348d271a0c892a28a80637d0",
+      "examples/dev-assistant/workspace/SOUL.md": "4986aa269bc8324c117b6c27e9fbba856073fb716becb51d78626948e4bdbecc",
+      "examples/dev-assistant/workspace/TOOLS.example.md": "0d8eb351060b671ed86e1dc0b8a5cb0a510bae663500e31e7da09f9ccd2e6aed",
+      "examples/dev-assistant/workspace/USER.example.md": "3cd6ae1e0fbe918346776406289bf31d3662c3b36e9e395a7291654684ec739f",
+      "examples/jobs.example.json": "59fd1a92a247b9a0501c54b8ca017adb094aef5d8d6e6e4436271adfb8c9d9a1",
+      "examples/jobs.example.md": "4eb3775d49d60b37bb66a5c1eaff257987e1ee9b8714c2b150d3fcbc67639f01",
+      "package.json": "74f4e82c8f1e93b7206c8ac5c3fce6160c90c39ea4e602d42370b2e53f2f4ef3",
+      "src/agent-runner.js": "b007b75d1c67a419b6ee6a023a438d2966d761291ccbdfdbcf4b6feb44fecaa5",
+      "src/channel-adapters/telegram.js": "51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+      "src/channel-receivers/telegram-poller.js": "11cbc1747d809f2ada0031ce46c3037e8ac0d4ee34a8450420d0e66fa07ddf7d",
+      "src/cron-scheduler.js": "572cdc80ccedf990924a48b2bd063bb1efcaf101f4990b99e231e25b157396b0",
+      "src/delivery-queue.js": "83cb1ff28ab12febd17249f6827c65b20d2158c2c3a14f4d6692e1f18a4ef117",
+      "src/index.js": "7257382e664c933cbc67fe79a45a752288b70c4e24efe9301a384e8b727ff6d3",
+      "src/memory-manager.js": "08f3c7c43ad147011eff7cfbb1fb965586f2ba7f5a21d23ab0797e92fcfb7dd9",
+      "src/session-manager.js": "4d69a93ac265b525c2116dec0233387c654798f8faf84c6cac3c1a9a700c2f61",
+      "src/utils/logger.js": "759bed7d2152e1217bb1d963b64a67822d3d3a10ec53cdd770ed1a56038e0e55",
+      "src/utils/session-key.js": "b500f00f177cbac7511aa3796653a093452f21a936ebf6a9ed7e4c4eb98e14fd",
+      "src/utils/storage.js": "8730f8cfe0bf2bf1313730d95f85940f2e4a0d8d636e27632596ccf23c7039e3",
+      "src/workspace-loader.js": "5fe0e6384f0c372d2379a5727afa88ea1ea985ee530fec029979d8208265a39b",
+      "test/agent-runner.test.js": "cd978e8fc88e44e4fa046cd6d36681c41bef0d277c5ebb3d71e1af5aef13214d",
+      "test/cron-scheduler.test.js": "7fae9de80ba0a697968a9ec241ee4824392ba9b725e93a7584dc119e0611758c",
+      "test/delivery-queue.test.js": "95fbcd1d4e3f031648ed1932249f86383ac9382187b329cfff5f9ea399fd107f",
+      "test/memory-manager.test.js": "4dd58a0776eeda251d2fbf62978935c0ea50e3907b5f71392191f67d6614166d",
+      "test/session-manager.test.js": "5c8fce751afa9a53a47b1568cfbbe05b8da401fcb59ece13671d9f4d5740a8cc",
+      "test/telegram-poller.test.js": "a7827ee60b31337b57ab2fd08e48a165f4fd97751d62a49dc2452c0e26a16ec2",
+      "test/workspace-loader.test.js": "485e43b3a17641339077690debb4d76351ca5b12118de48cbb1b259a2eb326ba",
+      "workspace/AGENTS.md": "f2525c10258c5e461faeaa00471458edc490e5281956d497cf3ec6800c37ef05",
+      "workspace/BOOTSTRAP.md": "14c3022e5bf14f909b60333b17608de4b85f57dcdb0da6017720c3773bd80daf",
+      "workspace/GROUP_MEMORY.example.md": "feb2d4f93093eaff402b86fc4a2b54d56766f197266c4830c7b8e62d396c61d9",
+      "workspace/HEARTBEAT.md": "2c1ad2e526fc516af42eea8d1c572bb857fa462439b93e1e5ec4eaefccdbe34c",
+      "workspace/IDENTITY.md": "e0707c98c45d8651eac0b5cb97f8801a1b087aae6817d2179e25b1e84c1cd0e4",
+      "workspace/MEMORY.example.md": "ee953f58cf77d6d53f4eb47f8a18430d1d03feee36d4b058b8e1b081dc7bc2a0",
+      "workspace/SOUL.md": "0316ca9673a6684332d48219665b33db5a00fb27b9081cbefd9795a85a435e65",
+      "workspace/TOOLS.md": "2ef07f210966932f6b60dd524e5d1d7fcb296407c78edd2cb1b028ce619b2f18",
+      "workspace/USER.example.md": "17e98cc8f9c192deec50c2472968ee4b4197536c38d7d5183030373e6f1e4190",
+      "workspace/memory/.gitkeep": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "runs": {
+    "original-reports": {
+      "path": "/tmp/mutie-js-calls-audit/original-reports/run-1792952031-g3gOeO",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 21,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-js-calls-original",
+        "effective_config": {
+          "module_root": "/tmp/mutie-js-calls-original",
+          "config_file": null,
+          "lang": "node",
+          "rust_build_cache": "fresh",
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [
+            "src/channel-adapters/telegram.js"
+          ],
+          "exclude": [],
+          "operators": [
+            "call_remove"
+          ],
+          "timeout": 20,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 30,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-js-calls-audit/original-reports",
+          "verbose": false,
+          "list": false,
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792952031,
+        "finished_at_unix_seconds": 1792952060,
+        "duration_seconds": 28.152700458,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "filtered",
+          "killed": 0,
+          "missed": 6,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 0.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "test/*.test.js"
+        ],
+        "node_scope": {
+          "package": "openclaw-cc",
+          "node": "24.22.0",
+          "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+          "manifest_fingerprint": "sha256:74f4e82c8f1e93b7206c8ac5c3fce6160c90c39ea4e602d42370b2e53f2f4ef3",
+          "recipe_fingerprint": "sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56"
+        },
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "test/*.test.js"
+        ],
+        "discovery_command": [
+          "mutie",
+          "--lang",
+          "node",
+          "--list"
+        ],
+        "include": [
+          "src/channel-adapters/telegram.js"
+        ],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 30,
+        "mutation_timeout_seconds": 20.0,
+        "planned_mutations": 6,
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.010801459,
+            "reflink_files": 63,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.051065917,
+            "reflink_files": 63,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.022534166,
+            "reflink_files": 63,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0117375,
+            "reflink_files": 63,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 5,
+            "completed": 5,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.09377845900000001,
+            "reflink_files": 315,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 0,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 54,
+          "column": 7,
+          "end_line": 54,
+          "end_column": 30,
+          "byte_start": 1487,
+          "byte_end": 1510,
+          "original": "chunks.push(remaining);",
+          "replacement": ";",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 71,
+          "column": 5,
+          "end_line": 71,
+          "end_column": 46,
+          "byte_start": 1967,
+          "byte_end": 2008,
+          "original": "chunks.push(remaining.slice(0, splitAt));",
+          "replacement": ";",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 118,
+          "column": 5,
+          "end_line": 118,
+          "end_column": 31,
+          "byte_start": 3215,
+          "byte_end": 3241,
+          "original": "results.push(data.result);",
+          "replacement": ";",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 119,
+          "column": 5,
+          "end_line": 119,
+          "end_column": 80,
+          "byte_start": 3246,
+          "byte_end": 3321,
+          "original": "logger.debug(MODULE, \"chunk sent\", { chatId, topicId, len: chunk.length });",
+          "replacement": ";",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 144,
+          "column": 5,
+          "end_line": 144,
+          "end_column": 70,
+          "byte_start": 3886,
+          "byte_end": 3951,
+          "original": "logger.warn(MODULE, \"ACK reaction failed\", { err: err.message });",
+          "replacement": ";",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 168,
+          "column": 5,
+          "end_line": 168,
+          "end_column": 77,
+          "byte_start": 4474,
+          "byte_end": 4546,
+          "original": "logger.warn(MODULE, \"Remove ACK reaction failed\", { err: err.message });",
+          "replacement": ";",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.881384459,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.630633291,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 3,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.550149083,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000003.log",
+            "stdout": "logs/000003.stdout.log",
+            "stderr": "logs/000003.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 4,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.545301625,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000004.log",
+            "stdout": "logs/000004.stdout.log",
+            "stderr": "logs/000004.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1007,
+                "head_bytes": 1007,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1007,
+                "head_bytes": 1007,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 5,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.598879833,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000005.log",
+            "stdout": "logs/000005.stdout.log",
+            "stderr": "logs/000005.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 6,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "missed",
+          "error": null,
+          "duration_seconds": 3.701085209,
+          "exit_code": 0,
+          "logs": {
+            "text": "logs/000006.log",
+            "stdout": "logs/000006.stdout.log",
+            "stderr": "logs/000006.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1009,
+                "head_bytes": 1009,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "5335ee81dd3369c53092f0ff3a58c3f65e8f9ca703ea888ef43b96c8ea8d82e1",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "4b0036f404fbd70eec7a41807074abb213537218af1482767e229392c0598cf2",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "15a611c705269aae3cad019edcabb68638da15d2215d7ccb2202296540ebd43d",
+        "summary.txt": "e0488debcde05c525924847bb330112044b28adde22db12939a5e7ea55815e84",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "run.json": "61a7280777bb63a53f3aa1449b37b9d81f5816d6cc8f283b5c55c65b0330c9bd",
+        "diff/000003.diff": "5b632489def3dcb09edf8637f52673f4990d477a60c69036cd37546cd8cc5f01",
+        "diff/000002.diff": "f0ce2d27e2718eaf2bf8d37745382fc32602c25c542c76ee34ae7fcbb5971ef7",
+        "diff/000005.diff": "f44b5e6a19d65e61d780567ad0f40dbc99404c2a7c5009434968fcf8cb13382f",
+        "diff/000004.diff": "24a30ea8fdac679cfd34ab22de9e030ecb7103c90433431ca7a3fc944615ef41",
+        "diff/000006.diff": "3eb2e3e513f5f513e0db772e374a1e8d9362c9032193e6bbe670fb9c90e9a371",
+        "diff/000001.diff": "e9612f7f3672521be9ea0e6da87e1d530119f44a8d79646a0ebbb7ac6e975375",
+        "logs/000006.log": "aab346a1977830764f3f85dcbc8dd61ce0804e9c92348efe007a55a4212a093a",
+        "logs/000004.log": "f89b0ce25aad0a4058b5f33301db0639d3151c13215592caec4767eb1a3e90f7",
+        "logs/000005.log": "08456c1ee4fb73debe37884f56437ebc35a214cb011e7c67ca00aef3abad81da",
+        "logs/000003.stdout.log": "149c441d7eadf74547b8fcf2b97c53c021400cfc4a7d022effbbad320f65820e",
+        "logs/000001.log": "4d5da5811fb4ae316c2c4220a888a24abd39db812890683cb510661a7ee86985",
+        "logs/000006.stdout.log": "aab346a1977830764f3f85dcbc8dd61ce0804e9c92348efe007a55a4212a093a",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.log": "e7dbc237277130d9ecf5296f6bbe48fcfe98812107aa0973809ce0867342834a",
+        "logs/000003.log": "149c441d7eadf74547b8fcf2b97c53c021400cfc4a7d022effbbad320f65820e",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "4d5da5811fb4ae316c2c4220a888a24abd39db812890683cb510661a7ee86985",
+        "logs/000004.stdout.log": "f89b0ce25aad0a4058b5f33301db0639d3151c13215592caec4767eb1a3e90f7",
+        "logs/000003.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.log": "816fb6b5e1c21de7a3cd554b2214f419442cfc34bb9842a5b4eff4d48aa9da32",
+        "logs/000002.stdout.log": "e7dbc237277130d9ecf5296f6bbe48fcfe98812107aa0973809ce0867342834a",
+        "logs/000006.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000005.stdout.log": "08456c1ee4fb73debe37884f56437ebc35a214cb011e7c67ca00aef3abad81da",
+        "logs/baseline.stdout.log": "816fb6b5e1c21de7a3cd554b2214f419442cfc34bb9842a5b4eff4d48aa9da32",
+        "logs/000004.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "stronger-reports": {
+      "path": "/tmp/mutie-js-calls-audit/stronger-reports/run-1792952068-VZHvRX",
+      "run": {
+        "schema_version": 1,
+        "checkpoint": 13,
+        "mutie_version": "0.1.0",
+        "operator_catalog_version": 1,
+        "module_root": "/tmp/mutie-js-calls-audit/stronger",
+        "effective_config": {
+          "module_root": "/tmp/mutie-js-calls-audit/stronger",
+          "config_file": null,
+          "lang": "node",
+          "rust_build_cache": "fresh",
+          "jobs": 1,
+          "test_scope": "full",
+          "include": [],
+          "exclude": [],
+          "operators": [],
+          "timeout": 20,
+          "max_log_bytes": null,
+          "max_capture_bytes": null,
+          "baseline_timeout": 30,
+          "fail_on_missed": false,
+          "min_score": null,
+          "output_dir": "/tmp/mutie-js-calls-audit/stronger-reports",
+          "verbose": false,
+          "list": false,
+          "rerun": {
+            "source_run": "/tmp/mutie-js-calls-audit/original-reports/run-1792952031-g3gOeO",
+            "selection": "missed",
+            "source_ids": [
+              1,
+              2
+            ]
+          },
+          "ui": "plain"
+        },
+        "started_at_unix_seconds": 1792952068,
+        "finished_at_unix_seconds": 1792952080,
+        "duration_seconds": 12.341651125,
+        "status": "completed",
+        "phase": "mutations",
+        "error": null,
+        "policy": {
+          "status": "disabled"
+        },
+        "score": {
+          "scope": "rerun",
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "score_policy": {
+          "status": "disabled"
+        },
+        "baseline_command": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "test/*.test.js"
+        ],
+        "node_scope": {
+          "package": "openclaw-cc",
+          "node": "24.22.0",
+          "node_executable": "/path/to/home/.vite-plus/js_runtime/node/24.22.0/bin/node",
+          "manifest_fingerprint": "sha256:74f4e82c8f1e93b7206c8ac5c3fce6160c90c39ea4e602d42370b2e53f2f4ef3",
+          "recipe_fingerprint": "sha256:e354cef7579504dfc39c4ebf64699b796407459d29f955ca5abc0f51cf7cbe56"
+        },
+        "bun_scope": null,
+        "mutation_command_prefix": [
+          "node",
+          "--test",
+          "--test-concurrency=1",
+          "test/*.test.js"
+        ],
+        "discovery_command": [
+          "mutie",
+          "--lang",
+          "node",
+          "--list"
+        ],
+        "include": [],
+        "exclude": [],
+        "requested_workers": 1,
+        "workers": 1,
+        "baseline_timeout_seconds": 30,
+        "mutation_timeout_seconds": 20.0,
+        "planned_mutations": 2,
+        "rerun": {
+          "source_run": "/tmp/mutie-js-calls-audit/original-reports/run-1792952031-g3gOeO",
+          "source_checkpoint": 21,
+          "source_status": "completed",
+          "selection": "missed",
+          "source_ids": [
+            1,
+            2
+          ],
+          "mutations": [
+            {
+              "id": 1,
+              "source_id": 1
+            },
+            {
+              "id": 2,
+              "source_id": 2
+            }
+          ]
+        },
+        "workspace_metrics": {
+          "temporary_root": "/tmp",
+          "snapshot": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.010862875,
+            "reflink_files": 64,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "baseline_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.010722958,
+            "reflink_files": 64,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "discovery_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.0394165,
+            "reflink_files": 64,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_setup": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.013711083,
+            "reflink_files": 64,
+            "copied_files": 0,
+            "copied_bytes": 0
+          },
+          "worker_reset": {
+            "operations": 1,
+            "completed": 1,
+            "failed": 0,
+            "interrupted": 0,
+            "duration_seconds": 0.040379959,
+            "reflink_files": 64,
+            "copied_files": 0,
+            "copied_bytes": 0
+          }
+        }
+      },
+      "summary": {
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "inventory": [
+        {
+          "id": 1,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 54,
+          "column": 7,
+          "end_line": 54,
+          "end_column": 30,
+          "byte_start": 1487,
+          "byte_end": 1510,
+          "original": "chunks.push(remaining);",
+          "replacement": ";",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/channel-adapters/telegram.js",
+          "operator": "call_remove",
+          "source_fingerprint": "sha256:51bbbd89f2416aff27e8be1ce5a218593ec6267d55c3f6a3851f20372dad4b63",
+          "line": 71,
+          "column": 5,
+          "end_line": 71,
+          "end_column": 46,
+          "byte_start": 1967,
+          "byte_end": 2008,
+          "original": "chunks.push(remaining.slice(0, splitAt));",
+          "replacement": ";",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        }
+      ],
+      "outcomes": [
+        {
+          "id": 1,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.6887005840000002,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000001.log",
+            "stdout": "logs/000001.stdout.log",
+            "stderr": "logs/000001.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1279,
+                "head_bytes": 1279,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1279,
+                "head_bytes": 1279,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "state": "completed",
+          "worker": 1,
+          "outcome": "killed",
+          "error": null,
+          "duration_seconds": 3.864672625,
+          "exit_code": 1,
+          "logs": {
+            "text": "logs/000002.log",
+            "stdout": "logs/000002.stdout.log",
+            "stderr": "logs/000002.stderr.log",
+            "retention": {
+              "text": {
+                "total_bytes": 1279,
+                "head_bytes": 1279,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stdout": {
+                "total_bytes": 1279,
+                "head_bytes": 1279,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              },
+              "stderr": {
+                "total_bytes": 0,
+                "head_bytes": 0,
+                "tail_bytes": 0,
+                "omitted_bytes": 0
+              }
+            }
+          }
+        }
+      ],
+      "sha256": {
+        "outcomes.json": "0319d4118a1924cf91672fc9738128c12e9660b2feebaebdbfa493aa3586185f",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "b65c1af4d2fcfd58cc8e4921b07d681015de7bc478bdf7a040067cdf87b3fa81",
+        "summary.txt": "531a1c9aab45af38974142eaedf2075080824f7897b46a99313ef62e97d2deea",
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "c9b33237e3d474ba03435887420034ae5bf9355bb1665e30f611461978905850",
+        "run.json": "99348789932d95ace98317973621e7ddeb000528b4ebf6f4fe9f3c5b0ce7673c",
+        "diff/000002.diff": "f0ce2d27e2718eaf2bf8d37745382fc32602c25c542c76ee34ae7fcbb5971ef7",
+        "diff/000001.diff": "e9612f7f3672521be9ea0e6da87e1d530119f44a8d79646a0ebbb7ac6e975375",
+        "logs/000001.log": "4910cedd07bb062ab370ba7930dcf9bcefe060d7fce9cec25f6d840f50d27a58",
+        "logs/000002.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000002.log": "ac0c70469da35901bff56191999e1250fd78c1c683094dbf46bf25221631d6a8",
+        "logs/baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/000001.stdout.log": "4910cedd07bb062ab370ba7930dcf9bcefe060d7fce9cec25f6d840f50d27a58",
+        "logs/baseline.log": "67309af6f295da6853698587f942b7ffb2d179cf9bce13fcb15c2b7acff33162",
+        "logs/000002.stdout.log": "ac0c70469da35901bff56191999e1250fd78c1c683094dbf46bf25221631d6a8",
+        "logs/000001.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/baseline.stdout.log": "67309af6f295da6853698587f942b7ffb2d179cf9bce13fcb15c2b7acff33162"
+      }
+    }
+  },
+  "cli_sha256": "93de6a15df252290bc1e0950a12069bfcad3df318c396b0aa664e12ecdb45bde",
+  "stronger_test_sha256": "6c7aa6681b6930c63f5e1769dcf4eb7675da11163e7a4119eef3dfe068ad9f89",
+  "preservation_verified": true,
+  "diagnostics": {
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-terminal.sample.txt": "97f2d7aa2cfad3175c479b59104bee22ef46e7a5fcd16687a4cc916253da3f64",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-terminal-unsandboxed.log": "980364d641a92f7623279dd934f33bfad31020fe9a9567e0cbb5952faef979ac",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-terminal-retry.log": "ce5eefb528e469b049f2047d9ee7214aeda2d96341134dacb604e1c17763718b",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-native.log": "13f21d775fc583c35896eec6eb33f614a7d5c02a5bab81632ed2e9c7c8b739c5",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-suite-final.log": "da1477ba20696fcd48a9353b9f607999817d9bdc2eb4893a60f1df3cbbb48f8c",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-remaining.log": "9165ea3891064344c38823a5fcda8a7f31851fc35bd9d91c8431a865aa6c6fb2",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-fixtures.log": "2a40080b054a17b92175f2fff0e802283c9a561b6bed36838cbf8e5ed28ff76e",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-suite-retry.log": "d5cc9ba069236a975a79ccffc4c0b0d45ac1290cd27bc58c34bfe2e528e305ed",
+    "/tmp/mutie-js-calls-audit/diagnostics/mutie-js-calls-clippy-final.log": "d6735f739b40c0e20685b72a3f0b888d993e2b1d1fa73983be66febadf85d9ab"
+  },
+  "prior_report_files_preserved": 468,
+  "preservation_manifest": "/tmp/mutie-js-calls-audit/preservation.json",
+  "preservation_manifest_sha256": "cb833ad16ebb29a53f227e79424861a21b3e58760392eaf3991dcb1bb9f2d63e"
+}

@@ -285,6 +285,7 @@ impl RunConfig {
             );
             ensure!(
                 config.operators.iter().all(|op| (*op == Operator::LoopSkip)
+                    || (config.lang != Lang::Python && *op == Operator::CallRemove)
                     || matches!(
                         op,
                         Operator::BooleanFlip
@@ -296,7 +297,12 @@ impl RunConfig {
                             | Operator::BranchForceTrue
                             | Operator::BranchForceFalse
                     )),
-                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, branch_force_false, and loop_skip"
+                "{runner} supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, branch_force_false, and loop_skip{}",
+                if config.lang == Lang::Python {
+                    ""
+                } else {
+                    ", call_remove"
+                }
             );
         }
         if config.lang == Lang::Rust {

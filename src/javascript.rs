@@ -136,6 +136,53 @@ fn loop_replacement(condition: tree_sitter::Node<'_>, source: &str) -> Option<St
     Some(format!("(false && ({}))", &source[condition.byte_range()]))
 }
 
+/// Only a complete ordinary call statement can be replaced with an empty statement.
+/// Keep the semicolon so ASI, dangling else and directive boundaries cannot move.
+fn removable_call(statement: tree_sitter::Node<'_>) -> bool {
+    if statement.kind() != "expression_statement" {
+        return false;
+    }
+    let mut cursor = statement.walk();
+    let children: Vec<_> = statement
+        .named_children(&mut cursor)
+        .filter(|n| n.kind() != "comment")
+        .collect();
+    if children.len() != 1 {
+        return false;
+    }
+    let mut expression = children[0];
+    while expression.kind() == "parenthesized_expression" {
+        let mut cursor = expression.walk();
+        let children: Vec<_> = expression
+            .named_children(&mut cursor)
+            .filter(|n| n.kind() != "comment")
+            .collect();
+        if children.len() != 1 {
+            return false;
+        }
+        expression = children[0];
+    }
+    if expression.kind() != "call_expression"
+        || !expression
+            .child_by_field_name("arguments")
+            .is_some_and(|n| n.kind() == "arguments")
+        || expression
+            .child_by_field_name("function")
+            .is_some_and(|n| matches!(n.kind(), "super" | "import"))
+    {
+        return false;
+    }
+    let mut pending = vec![expression];
+    while let Some(node) = pending.pop() {
+        if matches!(node.kind(), "await_expression" | "yield_expression") {
+            return false;
+        }
+        let mut cursor = node.walk();
+        pending.extend(node.named_children(&mut cursor));
+    }
+    true
+}
+
 /// Validate full-expression edits by reconstructing the same parsed recipe.
 /// A different grouping or arbitrary replacement must not enter saved reruns.
 pub fn valid_replacement(
@@ -146,6 +193,28 @@ pub fn valid_replacement(
 ) -> bool {
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
+    }
+    if operator == Operator::CallRemove {
+        if changed != ";" {
+            return false;
+        }
+        let mut parser = Parser::new();
+        let language = if typescript {
+            tree_sitter_typescript::LANGUAGE_TYPESCRIPT
+        } else {
+            tree_sitter_javascript::LANGUAGE
+        };
+        if parser.set_language(&language.into()).is_err() {
+            return false;
+        }
+        let Ok(tree) = parse(&mut parser, original) else {
+            return false;
+        };
+        let mut cursor = tree.root_node().walk();
+        let children: Vec<_> = tree.root_node().named_children(&mut cursor).collect();
+        return children.len() == 1
+            && children[0].byte_range() == (0..original.len())
+            && removable_call(children[0]);
     }
     if operator == Operator::LoopSkip {
         let prefix = "for (;";
@@ -437,6 +506,18 @@ fn discover_with_ambient(
                         });
                     }
                 }
+            }
+            if removable_call(node) {
+                mutations.push(Mutation {
+                    file: file.clone(),
+                    operator: Operator::CallRemove,
+                    range: node.byte_range(),
+                    replacement: ";".into(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    end_line: node.end_position().row + 1,
+                    end_column: node.end_position().column + 1,
+                });
             }
             if matches!(kind, "while_statement" | "for_statement")
                 && let Some(condition) = node.child_by_field_name("condition")
@@ -1008,3 +1089,7 @@ mod branch_tests;
 #[cfg(test)]
 #[path = "javascript/loop_tests.rs"]
 mod loop_tests;
+
+#[cfg(test)]
+#[path = "javascript/call_tests.rs"]
+mod call_tests;

@@ -539,10 +539,8 @@ fn rejects_unsupported_scope_before_invoking_node() {
         &["--test-scope", "affected"],
         "Node supports only full test scope",
     );
-    check(
-        &["--operator", "call_remove"],
-        "Node supports only boolean_flip",
-    );
+    // Call removal is admitted and reaches runtime discovery, unlike invalid scope.
+    check(&["--operator", "call_remove"], "could not start node");
     fs::write(temp.path().join("package.json"), r#"{"workspaces":["*"]}"#).unwrap();
     check(&[], "enclosing workspace is unsupported");
     fs::remove_file(temp.path().join("package.json")).unwrap();

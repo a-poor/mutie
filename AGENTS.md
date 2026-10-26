@@ -699,3 +699,15 @@ saved recipes and fresh source/operator identity remain mandatory. Runtime/phase
 failures remain errors. Unchanged Binary Tree Library's AVL deletion-height
 survivor is killed by a separate-copy test; preserve original inputs/reports and
 keep combined inventory accounting distinct from a full score.
+
+
+`benchmarks/javascript-calls.md` records scoped JS/TS `call_remove` across Vitest,
+Node and Bun. Replace complete ordinary call statements with `;`, skipping receiver,
+property, argument and invocation effects while preserving statement boundaries.
+Exclude value-used calls, constructors, direct super/import, tagged templates and
+call subtrees with await/yield. No return-type inference; unawaited promise returns
+retain strict lifecycle classification. Saved recipes require exact parsed statement
+spans and fresh source identity; Bun recipe changes require fresh reports.
+Unchanged OpenClaw has six selected survivors; separate-copy chunk-content tests
+kill IDs 1/2, with four other survivors open. Preserve original inputs/reports and
+filtered scores; focused evidence is not a full stronger-project score.
