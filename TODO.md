@@ -164,6 +164,9 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Publication preparation: a concise README, detailed `docs/` reference, dual
    MIT/Apache-2.0 licensing, upstream notices and sanitized benchmark records are
    in place. These changes do not complete platform or distribution qualification.
+   Linux CI now covers formatting, Clippy, ordinary tests, package verification,
+   real Go workflows and selected Rust package/workspace workflows on pinned
+   toolchains. macOS and the native JS/TS/Python adapter matrix remain pending.
 
 Start compatibility/project sampling alongside the first goal so it informs the
 configuration contract. Build the release matrix incrementally rather than

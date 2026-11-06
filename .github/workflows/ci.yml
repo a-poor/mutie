@@ -1,0 +1,89 @@
+name: Linux CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "1"
+  RUST_TOOLCHAIN: 1.99.1
+
+jobs:
+  checks:
+    name: Format, lint and tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Rust
+        run: |
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal --component rustfmt,clippy
+          rustup default "$RUST_TOOLCHAIN"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-checks-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-checks-
+      - name: Check formatting
+        run: cargo fmt --check
+      - name: Clippy
+        run: cargo clippy --locked --all-targets -- -D warnings
+      - name: Unit and integration tests
+        run: cargo test --locked -- --test-threads=2
+      - name: Verify crate packaging
+        run: cargo package --locked
+
+  adapters:
+    name: Real ${{ matrix.adapter }} workflow
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [Go, Rust]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Rust
+        run: |
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          rustup default "$RUST_TOOLCHAIN"
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-${{ matrix.adapter }}-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-${{ matrix.adapter }}-
+      - name: Set up Go
+        if: matrix.adapter == 'Go'
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: 1.27.2
+          cache: false
+      - name: Go mutation workflows and affected-package selection
+        if: matrix.adapter == 'Go'
+        run: cargo test --locked --test go_workflow --test affected_packages -- --ignored --test-threads=1
+      - name: Rust package workflow
+        if: matrix.adapter == 'Rust'
+        run: cargo test --locked --test rust_workflow rust_fixture_runs_lists_filters_and_saves_results_without_touching_inputs -- --ignored --exact
+      - name: Rust workspace workflow
+        if: matrix.adapter == 'Rust'
+        run: cargo test --locked --test rust_workflow workspace::full_workspace_tests_catch_selected_member_changes_and_preserve_identity -- --ignored --exact

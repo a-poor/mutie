@@ -1,5 +1,9 @@
 # mutie
 
+[![Linux CI](https://github.com/a-poor/mutie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/a-poor/mutie/actions/workflows/ci.yml)
+[![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)](#license)
+[![Status: experimental](https://img.shields.io/badge/status-experimental-orange)](#status)
+
 `mutie` is a mutation testing tool that finds gaps in your tests by making small
 changes to your code and checking whether the tests catch them.
 

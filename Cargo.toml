@@ -3,6 +3,11 @@ name = "mutie"
 version = "0.1.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
+description = "Mutation testing for Go, Rust, Python, and JavaScript/TypeScript"
+repository = "https://github.com/a-poor/mutie"
+readme = "README.md"
+keywords = ["mutation-testing", "testing", "cli"]
+categories = ["development-tools::testing", "command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0.104"

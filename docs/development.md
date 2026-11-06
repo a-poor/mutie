@@ -2,6 +2,23 @@
 
 [Documentation index](README.md) · [Project overview](../README.md)
 
+## Linux CI
+
+[Linux CI](https://github.com/a-poor/mutie/actions/workflows/ci.yml) runs on pushes
+to `main`, pull requests and manual dispatches. It uses Ubuntu 24.04, Rust 1.99.1
+and Go 1.27.2. Separate jobs run:
+
+- Rustfmt, Clippy with warnings denied, the normal test suite and crate packaging.
+- Real Go mutation workflows, including affected-package selection and stronger-test reruns.
+- Selected real Rust package and workspace workflows, including reports, source preservation and reruns.
+
+The normal suite runs with two test threads; the Go adapter tests run serially.
+Individual test deadlines stay unchanged. Native Node, Bun, Vitest and Python
+workflows, the rest of the ignored Rust probes, and macOS CI remain opt-in work.
+The CI badge reports this Linux suite, not complete release qualification.
+
+## Local checks
+
 ```sh
 cargo test
 cargo fmt --check
