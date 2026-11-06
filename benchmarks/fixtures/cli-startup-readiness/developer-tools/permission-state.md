@@ -1,17 +1,15 @@
 # Temporary Developer Tools experiment
 
-The user reported that Codex was absent from Developer Tools, then added and
-enabled it before the enabled workload on 2026-10-21. This state is user-reported;
-UI automation is unavailable. The enabled phase ran with ordinary sandboxed
-command execution. No test deadlines or assertions were changed for this phase.
+This comparison exercised enabled and disabled Developer Tools permission states
+on macOS. The enabled phase used ordinary sandboxed command execution. Permission
+state was reported manually and was not independently verified; no test deadline
+or assertion changed.
 
 Three full suites passed 278 tests each (93 ignored each); ten focused rounds
 passed all 110 tests. CLI and selected test source hashes matched before/after.
 
-Removal of the added Codex entry was requested immediately after completion.
-The user instead confirmed disabling it and authorized the comparison. The entry
-remains present: the original absent-entry configuration was not exactly restored.
-No independent UI verification or restart confirmation is available.
+The second phase disabled the permission. It did not establish exact restoration
+of the pre-experiment state, and no independent restart verification was recorded.
 
 The `restored` directory names the disabled-permission comparison, not a verified
 restoration of the absent entry. All three full suites passed 278 tests each

@@ -157,7 +157,15 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
 - `tests/dismissals.rs` checks persistence, invalidation, metadata edits, and
   preservation of execution outcomes and saved reports; it also exercises
   dismissal-based and minimum-score CI policies, configuration, and focused runs.
-- `README.md` documents current behavior, `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress. Keep these synchronized with verified changes; planned features are not necessarily implemented.
+- `README.md` is the short project overview and getting-started guide. Detailed usage,
+  runners, operators, reports and development instructions live in `docs/`.
+  `DESIGN.md` records architecture and plans, and `TODO.md` tracks progress.
+  Keep these synchronized with verified changes; planned features are not necessarily implemented.
+- Mutie's original code is dual-licensed MIT OR Apache-2.0. Retained upstream
+  excerpts keep their own licenses; update `THIRD_PARTY_NOTICES.md` and
+  `licenses/third-party/` when adding such material. Sanitize published benchmark
+  paths and host metadata as described in `docs/benchmarks.md`; historical hashes
+  still refer to the original audit bytes, not the sanitized publication copies.
 - `SUPPORT.md` tracks support levels, scope and validation evidence for each
   language/test runner. Update it when support changes; Bun JS/TS are independently Validated within
   their scope; Python/pytest is Validated within its pinned serial flat/src-package scope.

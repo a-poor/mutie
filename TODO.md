@@ -161,6 +161,9 @@ Split implementation goals by language/runner when acceptance becomes too large.
    on quickstarts, compatibility/errors and release notes; choose distribution
    channels and compatibility policy. Review unresolved failures explicitly;
    focused green tests are not a substitute for release acceptance.
+   Publication preparation: a concise README, detailed `docs/` reference, dual
+   MIT/Apache-2.0 licensing, upstream notices and sanitized benchmark records are
+   in place. These changes do not complete platform or distribution qualification.
 
 Start compatibility/project sampling alongside the first goal so it informs the
 configuration contract. Build the release matrix incrementally rather than

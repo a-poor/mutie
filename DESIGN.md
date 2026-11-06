@@ -1290,7 +1290,7 @@ recognizing a language.
 
 #### Proposed operator expansion
 
-The [current support matrix](README.md#mutation-operators) distinguishes implemented
+The [current support matrix](README.md#status) distinguishes implemented
 operators by language. The following are proposals, not support commitments or an
 automatic sequence of work:
 
