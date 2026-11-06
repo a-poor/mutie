@@ -1,9 +1,17 @@
 # mutie
 
-Mutie finds gaps in your tests by making small changes to your code and checking
-whether the tests catch them. It runs each mutation in a temporary copy of your
-project, then saves the results so you can investigate survivors and rerun them
-after improving your tests.
+`mutie` is a mutation testing tool that finds gaps in your tests by making small
+changes to your code and checking whether the tests catch them.
+
+It's written in Rust, with [Tree-sitter](https://tree-sitter.github.io/tree-sitter/)
+to locate mutations in Go, Rust and JS/TS, and
+[reflink-copy](https://docs.rs/reflink-copy/latest/reflink_copy/) for copy-on-write
+workspace clones on supported filesystems, falling back to ordinary copies elsewhere.
+[Ratatui](https://ratatui.rs/) powers the live terminal view and report browser.
+
+Each mutation runs in a temporary copy of your project. You can inspect saved
+diffs and test logs, rerun survivors after improving your tests, and set mutation
+score thresholds for CI.
 
 > **Early development:** Mutie works on real projects, but compatibility is still
 > limited and breaking changes are expected. Check the [supported scope](SUPPORT.md)
