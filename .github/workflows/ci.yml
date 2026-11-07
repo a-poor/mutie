@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        adapter: [Go, Rust]
+        adapter: [Go, Rust, Node, Bun, Vitest, Python]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -78,6 +78,37 @@ jobs:
         with:
           go-version: 1.27.2
           cache: false
+      - name: Set up Node
+        if: matrix.adapter == 'Node' || matrix.adapter == 'Vitest'
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.22.0
+          package-manager-cache: false
+      - name: Set up Bun
+        if: matrix.adapter == 'Bun'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3.11
+      - name: Set up Python
+        if: matrix.adapter == 'Python'
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: 3.14.7
+      - name: Prepare isolated Vitest fixture
+        if: matrix.adapter == 'Vitest'
+        run: |
+          npm install --global --prefix "$RUNNER_TEMP/mutie-tools" --ignore-scripts --no-audit --no-fund pnpm@11.10.0
+          export PATH="$RUNNER_TEMP/mutie-tools/bin:$PATH"
+          echo "$RUNNER_TEMP/mutie-tools/bin" >> "$GITHUB_PATH"
+          cp -R tests/fixtures/vitest "$RUNNER_TEMP/mutie-vitest"
+          pnpm --dir "$RUNNER_TEMP/mutie-vitest" install --frozen-lockfile --ignore-scripts
+          echo "MUTIE_VITEST_FIXTURE=$RUNNER_TEMP/mutie-vitest" >> "$GITHUB_ENV"
+      - name: Prepare isolated pytest environment
+        if: matrix.adapter == 'Python'
+        run: |
+          python -m venv "$RUNNER_TEMP/mutie-python"
+          "$RUNNER_TEMP/mutie-python/bin/python" -m pip install --disable-pip-version-check --only-binary=:all: -r benchmarks/fixtures/pytest-audit/requirements.txt
+          echo "MUTIE_PYTHON=$RUNNER_TEMP/mutie-python/bin/python" >> "$GITHUB_ENV"
       - name: Go mutation workflows and affected-package selection
         if: matrix.adapter == 'Go'
         run: cargo test --locked --test go_workflow --test affected_packages -- --ignored --test-threads=1
@@ -87,3 +118,27 @@ jobs:
       - name: Rust workspace workflow
         if: matrix.adapter == 'Rust'
         run: cargo test --locked --test rust_workflow workspace::full_workspace_tests_catch_selected_member_changes_and_preserve_identity -- --ignored --exact
+      - name: Node JS/TS reports, reruns, review and lifecycle failures
+        if: matrix.adapter == 'Node'
+        run: cargo test --locked --test node_workflow -- --ignored --test-threads=1
+      - name: Node timeout, cancellation, capture and isolation
+        if: matrix.adapter == 'Node'
+        run: cargo test --locked --bin mutie 'node::tests::' -- --ignored --test-threads=1
+      - name: Bun JS/TS reports, reruns, review and cleanup
+        if: matrix.adapter == 'Bun'
+        run: cargo test --locked --test bun_workflow -- --ignored --test-threads=1
+      - name: Bun native outcomes and resource limits
+        if: matrix.adapter == 'Bun'
+        run: cargo test --locked --bin mutie bun::tests::real_ -- --ignored --test-threads=1 --skip real_composer_baseline_and_stronger_finding
+      - name: Vitest JS/TS reports, reruns, review and lifecycle failures
+        if: matrix.adapter == 'Vitest'
+        run: cargo test --locked --test vitest_workflow -- --ignored --test-threads=1
+      - name: Vitest native outcomes, lifecycle and cleanup
+        if: matrix.adapter == 'Vitest'
+        run: cargo test --locked --bin mutie 'vitest::execution::' -- --ignored --test-threads=1 --skip real_feedback_phase_profile
+      - name: Python reports, reruns, review, operators and cleanup
+        if: matrix.adapter == 'Python'
+        run: cargo test --locked --test python_workflow -- --ignored --test-threads=1
+      - name: Python native lifecycle, capture and descendant cleanup
+        if: matrix.adapter == 'Python'
+        run: cargo test --locked --bin mutie python::tests::native_ -- --ignored --test-threads=1

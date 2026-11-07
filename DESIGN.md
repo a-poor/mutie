@@ -45,6 +45,13 @@ bind focused reruns. [Workspace acceptance](benchmarks/rust-workspaces.md) super
 historical workspace exclusions below; build scripts, proc macros, external paths
 and custom dev/test profiles remain outside this scope.
 
+Linux CI explicitly opts into native runner workflows on pinned toolchains,
+with separate Go, Rust, Node, Bun, Vitest and Python jobs. Installed Vitest/Python
+fixtures stay outside the checkout. Lifecycle errors, cancellation and resource
+limits retain their existing classification and deadlines; enabling CI does not
+broaden accepted runtime versions or project scopes. See the
+[CI coverage and exclusions](docs/development.md#linux-ci).
+
 ## Goal
 
 Mutie is a Rust CLI for finding gaps in tests by making small changes to source
