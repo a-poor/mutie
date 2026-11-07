@@ -52,6 +52,14 @@ limits retain their existing classification and deadlines; enabling CI does not
 broaden accepted runtime versions or project scopes. See the
 [CI coverage and exclusions](docs/development.md#linux-ci).
 
+The native CI checks exposed two Python identity regressions. Optional false loop
+markers must stay omitted when serializing discovery evidence, matching the native
+validator. Root dismissal metadata and its lock are excluded from both scope and
+executed copies, so review changes cannot alter execution identity or become
+untracked test inputs. Nested data files remain fingerprinted; metadata paths must
+be regular files, not directories or symlinks. Existing drift checks stay strict,
+and the changed recipe requires fresh Python reports for focused reruns.
+
 ## Goal
 
 Mutie is a Rust CLI for finding gaps in tests by making small changes to source

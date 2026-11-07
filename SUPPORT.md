@@ -48,6 +48,13 @@ record evidence for each syntax separately; JavaScript validation must not
 silently promote TypeScript, JSX or TSX support. Bun pins 1.3.11+af24e281e;
 Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
 
+[Linux CI](docs/development.md#linux-ci) exercises native Go, Rust, Node, Bun,
+Vitest and Python fixtures on Ubuntu 24.04. JS/TS checks retain independent syntax
+coverage; Python workflow, operator and lifecycle checks run in separate jobs.
+This adds continuous fixture coverage without expanding runtime/project admission
+or replacing the real-project evidence below. macOS CI and the full installer
+matrix remain release-qualification gaps.
+
 ## Go — go test
 
 **Level: Established within the single-module scope.**

@@ -231,6 +231,12 @@ def inspect(root):
             relative = path.relative_to(root).as_posix()
             if path.parent == root and path.name in (".git", ".mutie"):
                 continue
+            if path.parent == root and path.name in ("mutie.dismissals.toml", ".mutie.dismissals.lock"):
+                require(path.is_file() and not path.is_symlink(),
+                        "Python review metadata must be a regular file")
+                # Mutie owns these files and omits them from executed copies.
+                # Review decisions must not become application data identities.
+                continue
             if path.name == ".git" and path.parent != root:
                 require(path.is_file() and not path.is_symlink()
                         and re.fullmatch(r"gitdir: [^\r\n]+\n?", path.read_text()),

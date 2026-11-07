@@ -180,6 +180,12 @@ in release with matching outcomes. Development and test builds now optimize the
 
 ## Python / pytest
 
+Mutie's root `mutie.dismissals.toml` and `.mutie.dismissals.lock` are review metadata,
+excluded from Python execution copies and application-data identity. Nested files
+with those names remain ordinary tracked inputs. Reviewing findings therefore
+does not invalidate a stronger-test rerun. Reports from before this fix still open,
+but the changed execution recipe requires a fresh run before rerunning them.
+
 Python/pytest is Validated within its pinned serial scope on macOS arm64.
 [Scoped dependency acceptance](../benchmarks/python-dependencies-tinycss2.md) adds
 one explicitly declared dependency: the byte-verified pure-Python `webencodings`

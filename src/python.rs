@@ -335,7 +335,13 @@ async fn execute_mode(
     timings.finish("execution_identity");
     let cancel = cancellation.clone();
     let workspace = tokio::task::spawn_blocking(move || {
-        crate::workspace::Workspace::create(&source, &[], &cancel)
+        // Match scope.py: review metadata is not a project input. Omit it from
+        // execution too, so tests cannot observe metadata ignored by identity.
+        let excluded = [
+            source.join("mutie.dismissals.toml"),
+            source.join(".mutie.dismissals.lock"),
+        ];
+        crate::workspace::Workspace::create(&source, &excluded, &cancel)
     })
     .await??;
     #[cfg(test)]

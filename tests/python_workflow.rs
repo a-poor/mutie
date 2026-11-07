@@ -97,6 +97,34 @@ fn discovery_and_isolated_baseline_preserve_inputs() {
 
 #[test]
 #[ignore = "requires MUTIE_PYTHON with pinned CPython/pytest"]
+fn review_metadata_is_excluded_from_execution_but_nested_data_is_preserved() {
+    let root = fixture();
+    for name in ["mutie.dismissals.toml", ".mutie.dismissals.lock"] {
+        fs::write(root.path().join(name), "owned review metadata").unwrap();
+    }
+    fs::create_dir(root.path().join("tests/data")).unwrap();
+    fs::write(
+        root.path().join("tests/data/mutie.dismissals.toml"),
+        "ordinary fixture",
+    )
+    .unwrap();
+    fs::write(
+        root.path().join("tests/test_metadata.py"),
+        "from pathlib import Path\ndef test_metadata():\n root = Path(__file__).parent.parent\n assert not (root / 'mutie.dismissals.toml').exists()\n assert not (root / '.mutie.dismissals.lock').exists()\n assert (root / 'tests/data/mutie.dismissals.toml').read_text() == 'ordinary fixture'\n",
+    )
+    .unwrap();
+    let output = run("python-check", root.path(), &[]);
+    assert!(output.status.success(), "{output:?}");
+    for name in ["mutie.dismissals.toml", ".mutie.dismissals.lock"] {
+        assert_eq!(
+            fs::read_to_string(root.path().join(name)).unwrap(),
+            "owned review metadata"
+        );
+    }
+}
+
+#[test]
+#[ignore = "requires MUTIE_PYTHON with pinned CPython/pytest"]
 fn scope_failure_precedes_project_imports() {
     let root = fixture();
     let marker = root.path().join("imported");

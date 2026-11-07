@@ -64,7 +64,7 @@ struct Site {
     end_column: usize,
     original: String,
     replacement: String,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     loop_skip: bool,
 }
 
@@ -284,6 +284,21 @@ mod tests {
                 None
             );
         }
+    }
+
+    #[test]
+    fn optional_loop_flag_preserves_discovery_json() -> Result<()> {
+        let mut value = json!({
+            "file":"sample/__init__.py", "start":6, "end":10,
+            "line":1, "column":7, "end_line":1, "end_column":11,
+            "original":"True", "replacement":"False"
+        });
+        let site: Site = serde_json::from_value(value.clone())?;
+        assert_eq!(serde_json::to_value(site)?, value);
+        value["loop_skip"] = true.into();
+        let site: Site = serde_json::from_value(value.clone())?;
+        assert_eq!(serde_json::to_value(site)?, value);
+        Ok(())
     }
 
     #[test]

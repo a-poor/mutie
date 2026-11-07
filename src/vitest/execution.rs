@@ -626,7 +626,11 @@ mod tests {
             assert!(incomplete.classify().is_err());
         }
         fs::write(&cli, original_cli)?;
-        let found = discovery::discover(&root, &Scope::new(&[], &[])?, &cancellation)?;
+        let mut found = discovery::discover(&root, &Scope::new(&[], &[])?, &cancellation)?;
+        // This outcome matrix follows the original three Boolean sites per syntax.
+        found
+            .mutations
+            .retain(|mutation| mutation.operator == crate::mutation::Operator::BooleanFlip);
         assert_eq!(found.mutations.len(), 6);
         for (index, mutation) in found.mutations.into_iter().enumerate() {
             let expected = if index % 3 == 2 {

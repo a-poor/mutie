@@ -350,6 +350,30 @@ def test_toml():
                 with self.assertRaises(ValueError):
                     scope.inspect(self.root)
 
+    def test_review_metadata_is_not_application_data(self):
+        before = scope.inspect(self.root)
+        for name in ('mutie.dismissals.toml', '.mutie.dismissals.lock'):
+            self.write(name, 'owned review metadata')
+            self.assertEqual(scope.inspect(self.root), before)
+            self.write(name, 'changed review metadata')
+            self.assertEqual(scope.inspect(self.root), before)
+            (self.root / name).unlink()
+            (self.root / name).mkdir()
+            self.write(name + '/test_hidden.py', 'def test_hidden(): pass')
+            with self.assertRaisesRegex(ValueError, 'review metadata'):
+                scope.inspect(self.root)
+            (self.root / name / 'test_hidden.py').unlink()
+            (self.root / name).rmdir()
+            (self.root / name).symlink_to(self.root / 'pyproject.toml')
+            with self.assertRaisesRegex(ValueError, 'review metadata'):
+                scope.inspect(self.root)
+            (self.root / name).unlink()
+        self.write('tests/data/mutie.dismissals.toml', 'ordinary fixture')
+        inspected = scope.inspect(self.root)
+        self.assertIn('tests/data/mutie.dismissals.toml', inspected['data_files'])
+        self.write('tests/data/mutie.dismissals.toml', 'changed fixture')
+        self.assertNotEqual(scope.inspect(self.root)['files'], inspected['files'])
+
     def test_input_paths_and_binary_temporary_output_have_narrow_entry_points(self):
         source = '''from pathlib import Path
 import os
