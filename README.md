@@ -1,6 +1,7 @@
 # mutie
 
 [![Linux CI](https://github.com/a-poor/mutie/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/a-poor/mutie/actions/workflows/ci.yml)
+[![crates.io](https://img.shields.io/crates/v/mutie.svg)](https://crates.io/crates/mutie)
 [![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)](#license)
 [![Status: experimental](https://img.shields.io/badge/status-experimental-orange)](#status)
 
@@ -23,13 +24,13 @@ score thresholds for CI.
 
 ## Installation
 
-Build from source with a current stable Rust toolchain:
+Install from crates.io with a current stable Rust toolchain:
 
 ```sh
-git clone https://github.com/a-poor/mutie.git
-cd mutie
-cargo install --path . --locked
+cargo install mutie --locked
 ```
+
+To build a source checkout, use `cargo install --path . --locked`.
 
 You'll also need your project's toolchain and dependencies installed. Go requires
 1.24 or later; the JS/TS and Python runners currently require specific versions.
