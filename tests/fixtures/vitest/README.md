@@ -55,11 +55,11 @@ they do not validate saved reports, CLI focused reruns or score policies.
 With the pinned dependencies prepared outside the repository:
 
 ```sh
-cargo run -- /path/to/prepared-fixture --lang vitest --ui plain
-MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --test vitest_workflow -- --ignored
+cargo run -- /path/to/prepared-fixture --lang vitest --operator boolean_flip --ui plain
+MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --test vitest_workflow -- --ignored --test-threads=1
 ```
 
-The full fixture produces six mutations: four killed and two missed. The opt-in
+The Boolean selection produces six mutations: four killed and two missed. The opt-in
 CLI test adds a stronger JavaScript test, verifies three kills in a filtered fresh
 scan, checks saved identity/logs and exercises zero-exit infrastructure failures.
 Only serial full-suite execution is supported. Focused reruns now validate saved

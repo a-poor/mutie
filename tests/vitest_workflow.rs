@@ -41,9 +41,12 @@ fn worker_runner(root: &Path) -> PathBuf {
 
 fn run(root: &Path, reports: &Path, args: &[&str]) -> Output {
     let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
+    // Saved IDs and score expectations in these workflows use the Boolean fixture.
     command.arg(root).args([
         "--lang",
         "vitest",
+        "--operator",
+        "boolean_flip",
         "--ui",
         "plain",
         "--timeout",
