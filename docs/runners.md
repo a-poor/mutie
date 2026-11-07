@@ -30,7 +30,7 @@ linker are outside this acceptance. Vite+ may manage installation, but `vp test`
 uses a different bundled runner and is explicitly unsupported. See the
 [package-manager audit and validation](../benchmarks/package-managers.md).
 
-Run `mutie PATH --lang vitest --ui plain` against a prepared, pinned ESM
+Configure `[js]` with `runner = "vitest"`, then run `mutie run PATH --ui plain` against a prepared, pinned ESM
 package to discover supported expression mutations, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
 Vite/Vitest config is accepted without executing it; coverage remains disabled.
@@ -49,26 +49,26 @@ failures: successful lifecycle work can accompany a genuine kill, while lifecycl
 and mixed failures are errors. Pending async assertions from setup and post-body
 assertion-count failures remain conservatively rejected.
 Worker evidence requires the audited Vitest runner bytes; expected-failure tests
-(`test.fails`) are unsupported. See the [lifecycle evidence](../benchmarks/vitest-lifecycle-attribution.md). Dismissal review, `--fail-on-missed`, and `--min-score` are
+(`test.fails`) are unsupported. See the [lifecycle evidence](../benchmarks/vitest-lifecycle-attribution.md). Dismissal review, `fail_on_missed`, and `min_score` config policies are
 available within this scope; see [review/policy validation](../benchmarks/vitest-dismissals.md).
-Use `mutie PATH --lang vitest --rerun-missed RUN_DIR` after improving tests;
-`--rerun RUN_DIR --id ID` selects individual saved mutations. Reruns require
+Use `mutie rerun RUN_DIR PATH --missed` after improving tests;
+`mutie rerun RUN_DIR PATH --id ID` selects individual saved mutations. Reruns require
 unchanged source identity and pinned package/runner/config identity; see
 [rerun validation](../benchmarks/vitest-focused-reruns.md).
 
-`mutie vitest-list PATH --include 'src/**/*.ts'` remains a read-only preview;
-`mutie vitest-check PATH` checks an isolated baseline with a deadline and bounded
-output. These two diagnostic commands do not apply `mutie.toml` or save reports;
-the scored run does. See [CLI validation](../benchmarks/vitest-shared-runs.md) and the
+`mutie list PATH` is a read-only preview; configure `include`/`exclude` and
+`operators` under `[js]`. `mutie check PATH` checks the same isolated baseline used
+by a run. Both commands apply `mutie.toml` and do not save reports. See [CLI validation](../benchmarks/vitest-shared-runs.md) and the
 [execution boundary](../benchmarks/vitest-execution.md) for pinned dependencies,
 setup and conservative failure attribution.
 
 ## Scoped Node test runner
 
 ```sh
-mutie PATH --lang node --ui plain
-mutie PATH --lang node --list
-mutie PATH --lang node --rerun-missed RUN_DIR
+mutie init PATH --lang js --runner node
+mutie run PATH --ui plain
+mutie list PATH
+mutie rerun RUN_DIR PATH --missed
 ```
 
 The initial scope is one dependency-free ESM package using audited Node **24.22.0**
@@ -141,7 +141,7 @@ survivors with tests for CLI defaults, collector behavior and browser fallback.
 The Bun runner’s [initial audit](../benchmarks/bun-initial-scope.md)
 records JS/TS fixtures and real-project probes. A
 [bounded observer prototype](../benchmarks/bun-body-attribution.md) now distinguishes
-body failures from unsafe outcomes in paired probes. `mutie bun-check PATH` now
+body failures from unsafe outcomes in paired probes. `mutie check PATH` with `[js].runner = "bun"` now
 checks a baseline in a fresh copy using pinned Bun 1.3.11+af24e281e. This diagnostic
 accepts dependency-free ESM packages with `scripts.test: "bun test"`, `.js`/`.ts`
 source under `src/`, and `.test.js`/`.test.ts` tests under `test/` or `tests/`.
@@ -151,11 +151,10 @@ imports remain unsupported. Declared development installations are retained and
 fingerprinted, including owned links within `node_modules`. Examples/release scripts may be present but cannot be imported
 by audited source/tests. The unchanged 272-test Composer baseline and stronger-test
 finding now pass through this executor; see [acceptance](../benchmarks/bun-composer-execution.md).
-`mutie bun-list PATH [--include GLOB] [--exclude GLOB] [--json]` previews runtime
-supported expression mutations without launching Bun. `bun-check --json` emits baseline execution
-identity; see [discovery and identity](../benchmarks/bun-discovery-identity.md).
-`mutie PATH --lang bun` now runs serial, full-suite expression mutations with saved
-reports and focused reruns (`--rerun RUN_DIR --id ID` or `--rerun-missed RUN_DIR`).
+`mutie list PATH --json` previews runtime
+supported expression mutations without launching Bun. `mutie check PATH --json` emits baseline status and duration; see [discovery and identity](../benchmarks/bun-discovery-identity.md).
+`mutie run PATH` with the Bun runner configured now runs serial, full-suite expression mutations with saved
+reports and focused reruns (`mutie rerun RUN_DIR PATH --id ID` or `mutie rerun RUN_DIR PATH --missed`).
 JavaScript and TypeScript are independently Validated within this scope. Raw captures have a mandatory
 4 MiB default budget; Unix per-file limits bound evidence, not total disk usage.
 Reruns allow stronger tests but reject runtime bytes, package/config or observer
@@ -173,7 +172,7 @@ fingerprinted but cannot be imported by audited runtime files. Hidden packaging
 tests and CommonJS runtime files remain rejected.
 
 For real Bun mutation runs, prefer `cargo build --release` and
-`target/release/mutie PATH --lang bun`. The [execution profile](../benchmarks/bun-feedback-profile.md)
+`target/release/mutie run PATH`. The [execution profile](../benchmarks/bun-feedback-profile.md)
 measured a 22-candidate run at 306.65s in fully unoptimized debug versus 19.76s
 in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
@@ -213,8 +212,8 @@ blank-query survivor killed by stronger tests, timings and preserved inputs/repo
 The [feedback profile](../benchmarks/python-feedback-profile.md) measures repeated
 full and focused runs and optimizes runtime traversal while retaining content checks.
 The [scope and baseline integration](../benchmarks/python-baseline-integration.md)
-adds `python-list` and `python-check` for one dependency-free package with
-audited `test_*.py` files at the root or under `tests/`, and a pinned virtual environment supplied through `--python`.
+records the initial listing and baseline checks for one dependency-free package with
+audited `test_*.py` files at the root or under `tests/`, and a pinned virtual environment configured with `[python].executable`.
 Both flat `package/` and native `src/package/` layouts are supported. The
 [native src acceptance](../benchmarks/python-src-layout.md) runs Scrubify with its
 original layout, source, tests and manifest, then kills a survivor with stronger
@@ -225,7 +224,7 @@ The [unchanged Cycler validation](../benchmarks/python-cycler-unchanged.md) cove
 second, larger 28-test suite, root tests, literal version metadata and inert
 documentation/CI files. Its original mixed-failure error stays unscored; one
 additional test assertion in a separate copy makes that mutation a body-failure kill.
-Explicit `--lang python --python /path/to/venv/bin/python` also supports
+The `[python]` section with `executable = "/path/to/venv/bin/python"` also supports
 [scored runs, saved reports, focused reruns and review](../benchmarks/python-shared-runs.md).
 [Scoped unittest acceptance](../benchmarks/python-unittest-pluralizer.md) adds direct
 synchronous `unittest.TestCase` classes through pytest, with separate setup,
@@ -260,11 +259,11 @@ with the additional [hash-pinned wheel](../benchmarks/fixtures/python-dependency
 Mutie never resolves or installs dependencies; undeclared additions are rejected:
 
 ```sh
-mutie python-list /path/to/project --python /path/to/venv/bin/python
-mutie python-check /path/to/project --python /path/to/venv/bin/python
-mutie /path/to/project --lang python --python /path/to/venv/bin/python
-mutie /path/to/project --lang python --python /path/to/venv/bin/python \
-  --rerun-missed /path/to/saved/run
+mutie init /path/to/project --lang python --python /path/to/venv/bin/python
+mutie list /path/to/project
+mutie check /path/to/project
+mutie run /path/to/project
+mutie rerun /path/to/saved/run /path/to/project --missed
 ```
 
 ## Rust support
@@ -277,8 +276,8 @@ Mutie remains the binary-only real-project control.
 Try the [small fixture](../tests/fixtures/rust/README.md):
 
 ```sh
-cargo run -- tests/fixtures/rust --list
-cargo run -- tests/fixtures/rust --jobs 2 --timeout 30
+cargo run -- list tests/fixtures/rust
+cargo run -- run tests/fixtures/rust --jobs 2 --timeout 30
 cargo run -- report /path/to/saved/run
 ```
 
@@ -307,9 +306,9 @@ Mutie self-run; tests still run in full. The [library fixture](../tests/fixtures
 extends discovery to all production roots and exercises fresh/cached execution
 and stronger-test reruns. [Workspace acceptance](../benchmarks/rust-workspaces.md)
 adds virtual/root-package workspaces, inherited metadata and internal path dependencies.
-Run from the workspace root; repeat `--rust-package NAME` to select mutation members,
-or set `rust_packages = ["core", "cli"]` in `mutie.toml`. Omit selection (or use
-`--clear-rust-packages`) to mutate all members. Both baseline and mutations run
+Run from the workspace root; set `packages = ["core", "cli"]` under `[rust]`
+in `mutie.toml` to select mutation members. Omit selection (or use `packages = []`)
+to mutate all members. Both baseline and mutations run
 all workspace members' unit/integration tests with `--workspace`, regardless of
 `default-members`. Member selection produces a filtered score, and source globs
 are workspace-relative. Saved reports and browser commands retain the selection.
@@ -322,14 +321,14 @@ baseline and mutation gets fresh owned target/build directories. The input `targ
 caller-selected build directories and source files are preserved; the Cargo
 registry/download cache remains available. Fresh builds can be expensive.
 
-Opt into per-worker dependency reuse with `--rust-build-cache worker` (or
-`rust_build_cache = "worker"` in a Rust project's `mutie.toml`). The baseline
+Opt into per-worker dependency reuse with `build_cache = "worker"` under `[rust]`
+in `mutie.toml`. The baseline
 still builds fresh. Each worker retains its own dependency artifacts for that
 run, but runs `cargo clean --locked --package PACKAGE` before every mutation's
 compilation (all local packages in a workspace). This forces local binaries, unit tests and integration tests
 to rebuild even when source timestamps move backwards. Caches are never shared
 between workers or runs and are removed when the run ends. Use
-`--rust-build-cache fresh` to select the default behavior explicitly. Saved
+`build_cache = "fresh"` to select the default behavior explicitly. Saved
 settings and text summaries identify the mode; focused reruns use the current
 mode. On the six-mutation Mutie sample, warm compilation took 22–46 seconds
 versus 66–73 seconds for the same mutations with fresh artifacts. Whole-run
@@ -407,10 +406,15 @@ and [library scope](../benchmarks/rust-library-scope.md) for detail.
 
 The first self-testing sample uses two literals in Mutie's score code:
 
-```sh
-cargo run -- . --include src/score.rs --operator boolean_flip \
-  --jobs 1 --timeout 600 --baseline-timeout 300
+```toml
+[rust]
+include = ["src/score.rs"]
+operators = ["boolean_flip"]
+timeout = 600
+baseline_timeout = 300
 ```
+
+Run it with `cargo run -- run . --jobs 1`.
 
 See [the validation record](../benchmarks/rust-first-slice.md) for measured costs and
 results. Fresh builds and the full test suite make self-testing a minutes-long run.

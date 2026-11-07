@@ -699,7 +699,11 @@ mod tests {
     fn writer_lock_protects_even_a_finalized_report_until_drop() {
         let module = tempfile::tempdir().unwrap();
         fs::write(module.path().join("go.mod"), "module example.com/test\n").unwrap();
-        let cli = Cli::parse_from([std::ffi::OsStr::new("mutie"), module.path().as_os_str()]);
+        let cli = Cli::parse_from([
+            std::ffi::OsStr::new("mutie"),
+            std::ffi::OsStr::new("run"),
+            module.path().as_os_str(),
+        ]);
         let config = RunConfig::resolve(cli).unwrap();
         let mut report = SavedReport::create(&config).unwrap();
         let now = SystemTime::now()

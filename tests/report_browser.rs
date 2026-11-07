@@ -1,17 +1,19 @@
 #![cfg(unix)]
 
 //! Exercise the standalone browser with a real terminal and no Go on PATH.
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::json;
 use std::{
     fs::{self, File},
     io::{self, Read, Write},
     mem::MaybeUninit,
-    os::{
-        fd::{AsRawFd, FromRawFd},
-        unix::process::CommandExt,
-    },
+    os::fd::{AsRawFd, FromRawFd},
     path::{Path, PathBuf},
-    process::{Child, Command, ExitStatus, Stdio},
+    process::{ExitStatus, Stdio},
     sync::Mutex,
     thread,
     time::{Duration, Instant},
@@ -405,7 +407,10 @@ fn browser_filters_inspects_and_exports_preserving_the_shell_and_report() {
     let output = String::from_utf8_lossy(&session.output);
     let restored = output.rfind("\x1b[?1049l").unwrap();
     let printed = &output[restored..];
-    assert!(printed.contains("mutie '/missing/a project'\\''s checkout' --rerun '"));
+    assert!(
+        printed.contains("mutie rerun ")
+            && printed.contains(" '/missing/a project'\\''s checkout' --lang go")
+    );
     assert!(printed.contains("--id 1,2"));
 }
 
@@ -430,7 +435,7 @@ fn current_row_command_uses_the_module_override() {
     assert!(session.finish().success());
     session.assert_restored();
     let output = String::from_utf8_lossy(&session.output);
-    assert!(output.contains("mutie '/moved/$checkout' --rerun '"));
+    assert!(output.contains("mutie rerun ") && output.contains(" '/moved/$checkout' --lang go"));
     assert!(output.contains("--id 2"));
 }
 

@@ -11,7 +11,8 @@ the scored run's kill/survivor controls. The integration test adds a stronger
 test and reruns the survivor, while checking original source/report preservation.
 
 ```sh
-mutie tests/fixtures/python --lang python --python /path/to/venv/bin/python
+mutie init tests/fixtures/python --lang python --python /path/to/venv/bin/python
+mutie run tests/fixtures/python
 ```
 
 `python-list` and `python-check` remain read-only discovery/baseline commands

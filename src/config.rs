@@ -1,3 +1,11 @@
+use crate::{
+    cli::{Invocation, JsRunner, Lang, Language, RustBuildCache, TestScope, UiMode},
+    mutation::Operator,
+    rerun::{RerunFilter, RerunMode, RerunRequest},
+    score::{MinimumScore, ScoreScope},
+};
+use anyhow::{Context, Result, ensure};
+use serde::{Deserialize, Serialize};
 use std::{
     fs,
     io::ErrorKind,
@@ -6,39 +14,118 @@ use std::{
     time::{Duration, Instant},
 };
 
-use anyhow::{Context, Result, ensure};
-use serde::{Deserialize, Serialize};
-
-use crate::{
-    cli::{Cli, Lang, RustBuildCache, TestScope, UiMode},
-    mutation::Operator,
-    rerun::{RerunFilter, RerunMode, RerunRequest},
-    score::{MinimumScore, ScoreScope},
-};
-
-/// Parsed file values have no defaults; only explicitly supplied CLI values
-/// replace them. Invocation-only options such as `list` are not file settings.
-#[derive(Default, Deserialize)]
-#[serde(deny_unknown_fields)]
-struct RepositoryConfig {
-    lang: Option<Lang>,
-    python: Option<PathBuf>,
-    rust_build_cache: Option<RustBuildCache>,
-    rust_packages: Option<Vec<String>>,
+// Each table has an explicit schema. Unknown keys (including UI options and
+// settings belonging to another runner) fail even in unselected sections.
+macro_rules! settings_table {
+    ($name:ident { $($extra:ident : $ty:ty),* $(,)? }) => {
+        #[derive(Default, Deserialize)]
+        #[serde(deny_unknown_fields)]
+        struct $name {
+            jobs: Option<NonZeroUsize>,
+            timeout: Option<NonZeroU64>,
+            baseline_timeout: Option<NonZeroU64>,
+            max_log_bytes: Option<NonZeroUsize>,
+            max_capture_bytes: Option<NonZeroUsize>,
+            test_scope: Option<TestScope>,
+            include: Option<Vec<String>>,
+            exclude: Option<Vec<String>>,
+            operators: Option<Vec<Operator>>,
+            fail_on_missed: Option<bool>,
+            min_score: Option<MinimumScore>,
+            output_dir: Option<PathBuf>,
+            $( $extra: Option<$ty>, )*
+        }
+        impl $name {
+            fn settings(&self) -> Settings {
+                Settings {
+                    jobs: self.jobs.clone(),
+                    timeout: self.timeout.clone(),
+                    baseline_timeout: self.baseline_timeout.clone(),
+                    max_log_bytes: self.max_log_bytes.clone(),
+                    max_capture_bytes: self.max_capture_bytes.clone(),
+                    test_scope: self.test_scope.clone(),
+                    include: self.include.clone(),
+                    exclude: self.exclude.clone(),
+                    operators: self.operators.clone(),
+                    fail_on_missed: self.fail_on_missed.clone(),
+                    min_score: self.min_score.clone(),
+                    output_dir: self.output_dir.clone(),
+                }
+            }
+        }
+    };
+}
+#[derive(Default)]
+struct Settings {
     jobs: Option<NonZeroUsize>,
+    timeout: Option<NonZeroU64>,
+    baseline_timeout: Option<NonZeroU64>,
+    max_log_bytes: Option<NonZeroUsize>,
+    max_capture_bytes: Option<NonZeroUsize>,
     test_scope: Option<TestScope>,
     include: Option<Vec<String>>,
     exclude: Option<Vec<String>>,
     operators: Option<Vec<Operator>>,
-    timeout: Option<NonZeroU64>,
-    max_log_bytes: Option<NonZeroUsize>,
-    max_capture_bytes: Option<NonZeroUsize>,
-    baseline_timeout: Option<NonZeroU64>,
     fail_on_missed: Option<bool>,
     min_score: Option<MinimumScore>,
     output_dir: Option<PathBuf>,
-    verbose: Option<bool>,
-    ui: Option<UiMode>,
+}
+impl Settings {
+    fn inherit(self, defaults: Self) -> Self {
+        Self {
+            jobs: self.jobs.or(defaults.jobs),
+            timeout: self.timeout.or(defaults.timeout),
+            baseline_timeout: self.baseline_timeout.or(defaults.baseline_timeout),
+            max_log_bytes: self.max_log_bytes.or(defaults.max_log_bytes),
+            max_capture_bytes: self.max_capture_bytes.or(defaults.max_capture_bytes),
+            test_scope: self.test_scope.or(defaults.test_scope),
+            include: self.include.or(defaults.include),
+            exclude: self.exclude.or(defaults.exclude),
+            operators: self.operators.or(defaults.operators),
+            fail_on_missed: self.fail_on_missed.or(defaults.fail_on_missed),
+            min_score: self.min_score.or(defaults.min_score),
+            output_dir: self.output_dir.or(defaults.output_dir),
+        }
+    }
+}
+settings_table!(RepositoryConfig {
+    go: GoConfig,
+    rust: RustConfig,
+    js: JsConfig,
+    python: PythonConfig
+});
+settings_table!(GoConfig {
+    enabled: bool,
+    path: PathBuf
+});
+settings_table!(RustConfig { enabled: bool, path: PathBuf, packages: Vec<String>, build_cache: RustBuildCache });
+settings_table!(JsConfig {
+    enabled: bool,
+    path: PathBuf,
+    runner: JsRunner
+});
+settings_table!(PythonConfig {
+    enabled: bool,
+    path: PathBuf,
+    executable: PathBuf,
+    continue_on_error: NonZeroUsize
+});
+
+impl RepositoryConfig {
+    fn languages(&self) -> Vec<Language> {
+        [
+            (Language::Go, self.go.as_ref().map(|v| v.enabled)),
+            (Language::Rust, self.rust.as_ref().map(|v| v.enabled)),
+            (Language::Js, self.js.as_ref().map(|v| v.enabled)),
+            (Language::Python, self.python.as_ref().map(|v| v.enabled)),
+        ]
+        .into_iter()
+        .filter_map(|(lang, enabled)| enabled.filter(|v| v.unwrap_or(true)).map(|_| lang))
+        .collect()
+    }
+    fn has_languages(&self) -> bool {
+        self.go.is_some() || self.rust.is_some() || self.js.is_some() || self.python.is_some()
+    }
 }
 
 /// The resolved settings used by both execution and saved reports. Paths are
@@ -71,197 +158,253 @@ pub struct RunConfig {
     pub output_dir: PathBuf,
     pub verbose: bool,
     pub list: bool,
+    #[serde(skip)]
+    pub check: bool,
+    #[serde(skip)]
+    pub json: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rerun: Option<RerunRequest>,
     pub ui: UiMode,
 }
 
 impl RunConfig {
-    pub fn resolve(cli: Cli) -> Result<Self> {
+    pub fn resolve(cli: impl Into<Invocation>) -> Result<Self> {
         Self::resolve_from(
-            cli,
+            cli.into(),
             &std::env::current_dir().context("reading working directory")?,
         )
     }
 
-    fn resolve_from(cli: Cli, invocation: &Path) -> Result<Self> {
-        let root = invocation
-            .join(&cli.path)
-            .canonicalize()
-            .with_context(|| format!("opening {}", cli.path.display()))?;
-        let path = root.join("mutie.toml");
-        let (file, config_file) = match fs::symlink_metadata(&path) {
-            Ok(_) => {
-                let source = fs::read_to_string(&path)
-                    .with_context(|| format!("reading configuration {}", path.display()))?;
+    fn resolve_from(cli: Invocation, invocation: &Path) -> Result<Self> {
+        let requested_root = invocation.join(&cli.project.path);
+        let explicit_config = cli.project.config.is_some();
+        let path = cli
+            .project
+            .config
+            .as_ref()
+            .map(|p| invocation.join(p))
+            .unwrap_or_else(|| requested_root.join("mutie.toml"));
+        let (file, config_file, base) = match fs::read_to_string(&path) {
+            Ok(source) => {
                 let file = toml::from_str::<RepositoryConfig>(&source)
-                    .with_context(|| format!("parsing configuration {}", path.display()))?;
-                (file, Some(path))
+                    .with_context(|| format!("parsing configuration {}; use [go], [rust], [js] or [python] for project settings", path.display()))?;
+                // Resolve the directory, not the file's symlink: paths belong to the
+                // location from which this configuration was selected.
+                let base = path
+                    .parent()
+                    .context("configuration has no parent")?
+                    .canonicalize()?;
+                let config_file =
+                    base.join(path.file_name().context("configuration has no filename")?);
+                (file, Some(config_file), base)
             }
-            Err(error) if error.kind() == ErrorKind::NotFound => {
-                (RepositoryConfig::default(), None)
+            Err(error)
+                if error.kind() == ErrorKind::NotFound
+                    && !explicit_config
+                    && fs::symlink_metadata(&path)
+                        .is_err_and(|e| e.kind() == ErrorKind::NotFound) =>
+            {
+                (
+                    RepositoryConfig::default(),
+                    None,
+                    requested_root
+                        .canonicalize()
+                        .context("opening project directory")?,
+                )
             }
             Err(error) => {
                 return Err(error)
-                    .with_context(|| format!("opening configuration {}", path.display()));
+                    .with_context(|| format!("reading configuration {}", path.display()));
             }
         };
-        let lang = crate::language::resolve(&root, cli.lang.or(file.lang).unwrap_or(Lang::Auto))?;
-        ensure!(
-            lang == Lang::Python || cli.continue_on_error.is_none(),
-            "--continue-on-error is only supported for Python"
-        );
-        let rust_build_cache = cli.rust_build_cache.or(file.rust_build_cache);
-        ensure!(
-            lang == Lang::Rust || rust_build_cache.is_none(),
-            "--rust-build-cache / rust_build_cache is only supported for Rust"
-        );
-        let rust_selection_explicit = cli.clear_rust_packages
-            || !cli.rust_packages.is_empty()
-            || file.rust_packages.is_some();
-        let mut rust_packages = if cli.clear_rust_packages {
-            Vec::new()
-        } else if !cli.rust_packages.is_empty() {
-            cli.rust_packages
+        let saved = cli
+            .rerun
+            .as_ref()
+            .map(|p| crate::report_reader::LoadedReport::load(&invocation.join(p)))
+            .transpose()?;
+        let languages = file.languages();
+        let selected = if file.has_languages() {
+            ensure!(
+                !languages.is_empty(),
+                "all configured languages are disabled"
+            );
+            if let Some(lang) = cli.project.lang {
+                ensure!(
+                    languages.contains(&lang),
+                    "[{}] is missing or disabled",
+                    lang.name()
+                );
+                lang
+            } else {
+                ensure!(
+                    languages.len() == 1,
+                    "multiple languages are enabled; select one with --lang {} (one project per invocation)",
+                    languages
+                        .iter()
+                        .map(|v| v.name())
+                        .collect::<Vec<_>>()
+                        .join("|")
+                );
+                languages[0]
+            }
+        } else if let Some(lang) = cli.project.lang {
+            lang
+        } else if let Some(saved) = &saved {
+            Language::of(saved.run.language())
         } else {
-            file.rust_packages.unwrap_or_default()
+            Language::of(crate::init::infer(&base, None)?)
         };
-        ensure!(
-            lang == Lang::Rust || !rust_selection_explicit,
-            "--rust-package / rust_packages is only supported for Rust"
-        );
-        rust_packages.sort();
-        rust_packages.dedup();
-        let output_dir = match cli.output_dir {
-            Some(path) => nonempty_path(invocation, path)?,
-            None => nonempty_path(&root, file.output_dir.unwrap_or_else(|| ".mutie".into()))?,
+        let (settings, project_path) = match selected {
+            Language::Go => file.go.as_ref().map(|v| (v.settings(), v.path.clone())),
+            Language::Rust => file.rust.as_ref().map(|v| (v.settings(), v.path.clone())),
+            Language::Js => file.js.as_ref().map(|v| (v.settings(), v.path.clone())),
+            Language::Python => file.python.as_ref().map(|v| (v.settings(), v.path.clone())),
+        }
+        .unwrap_or_default();
+        let settings = settings.inherit(file.settings());
+        let root = nonempty_path(&base, project_path.unwrap_or_else(|| ".".into()))?
+            .canonicalize()
+            .context("opening configured project path")?;
+        let lang = match selected {
+            Language::Go => Lang::Go,
+            Language::Rust => Lang::Rust,
+            Language::Python => Lang::Python,
+            Language::Js => match file.js.as_ref().and_then(|v| v.runner) {
+                Some(runner) => runner.lang(),
+                None => saved
+                    .as_ref()
+                    .filter(|s| Language::of(s.run.language()) == Language::Js)
+                    .map(|s| s.run.language())
+                    .map(Ok)
+                    .unwrap_or_else(|| crate::init::infer(&root, Some(Language::Js)))?,
+            },
         };
-        let output_dir = resolve_output_path(&output_dir)?;
+        crate::language::resolve(&root, lang)?;
+        let output_dir = resolve_output_path(&match settings.output_dir {
+            Some(path) => nonempty_path(&base, path)?,
+            None => root.join(".mutie"),
+        })?;
         ensure!(
             !root.starts_with(&output_dir),
             "the report directory must not be the module root or one of its ancestors"
         );
-        let selection = if cli.rerun_missed.is_some() {
-            RerunMode::Missed
-        } else {
-            RerunMode::All
-        };
-        let mut operators = if cli.clear_operators {
-            Vec::new()
-        } else if !cli.operators.is_empty() {
-            cli.operators
-        } else {
-            file.operators.unwrap_or_default()
-        };
+        let mut operators = settings.operators.unwrap_or_default();
         operators.sort_unstable();
         operators.dedup();
         let rerun = cli
             .rerun
-            .or(cli.rerun_missed)
             .map(|path| {
                 ensure!(
                     !path.as_os_str().is_empty(),
                     "saved run path must not be empty"
                 );
-                let path = invocation
-                    .join(&path)
+                let source_run = invocation
+                    .join(path)
                     .canonicalize()
-                    .with_context(|| format!("opening saved run {}", path.display()))?;
+                    .context("opening saved run directory")?;
                 ensure!(
-                    path.is_dir(),
-                    "saved run {} is not a directory",
-                    path.display()
-                );
-                ensure!(
-                    !root.starts_with(&path),
+                    !root.starts_with(&source_run),
                     "the saved run directory must not be the module root or one of its ancestors"
                 );
                 ensure!(
-                    !output_dir.starts_with(&path),
+                    !output_dir.starts_with(&source_run),
                     "the output directory must not be inside the saved run being rerun"
                 );
                 Ok(RerunRequest {
-                    source_run: path,
+                    source_run,
                     filter: RerunFilter::new(
-                        selection,
+                        if cli.missed {
+                            RerunMode::Missed
+                        } else {
+                            RerunMode::All
+                        },
                         cli.ids.into_iter().map(NonZeroUsize::get).collect(),
                         operators.clone(),
                     ),
                 })
             })
             .transpose()?;
-        let mut config = Self {
-            module_root: root.clone(),
-            config_file,
-            lang,
-            python: cli
-                .python
-                .map(|p| invocation.join(p))
-                .or_else(|| file.python.map(|p| root.join(p))),
-            rust_build_cache: rust_build_cache.unwrap_or_default(),
-            rust_packages,
-            continue_on_error: cli.continue_on_error,
-            jobs: cli
-                .jobs
-                .or(file.jobs)
-                .unwrap_or(NonZeroUsize::new(1).unwrap()),
-            test_scope: cli.test_scope.or(file.test_scope).unwrap_or_default(),
-            include: merge_patterns(cli.include, cli.clear_include, file.include),
-            exclude: merge_patterns(cli.exclude, cli.clear_exclude, file.exclude),
-            operators,
-            max_log_bytes: if cli.clear_max_log_bytes {
-                None
-            } else {
-                cli.max_log_bytes.or(file.max_log_bytes)
-            },
-            max_capture_bytes: if cli.clear_max_capture_bytes {
-                None
-            } else {
-                cli.max_capture_bytes.or(file.max_capture_bytes)
-            },
-            timeout: if cli.clear_timeout {
-                None
-            } else {
-                cli.timeout.or(file.timeout)
-            },
-            baseline_timeout: cli
-                .baseline_timeout
-                .or(file.baseline_timeout)
-                .unwrap_or(NonZeroU64::new(300).unwrap()),
-            fail_on_missed: !cli.no_fail_on_missed
-                && (cli.fail_on_missed || file.fail_on_missed.unwrap_or(false)),
-            min_score: if cli.clear_min_score {
-                None
-            } else {
-                cli.min_score.or(file.min_score)
-            },
-            output_dir,
-            verbose: if cli.no_verbose {
-                false
-            } else {
-                cli.verbose || file.verbose.unwrap_or(false)
-            },
-            list: cli.list,
-            rerun,
-            ui: cli.ui.or(file.ui).unwrap_or_default(),
+        let mut rust_packages = if lang == Lang::Rust {
+            file.rust
+                .as_ref()
+                .and_then(|v| v.packages.clone())
+                .unwrap_or_else(|| {
+                    saved
+                        .as_ref()
+                        .and_then(|s| s.run.rust_scope.as_ref())
+                        .and_then(|s| s.workspace.as_ref())
+                        .map(|s| s.selected.clone())
+                        .unwrap_or_default()
+                })
+        } else {
+            Vec::new()
+        };
+        rust_packages.sort();
+        rust_packages.dedup();
+        let python = if lang == Lang::Python {
+            file.python
+                .as_ref()
+                .and_then(|v| v.executable.clone())
+                .map(|p| nonempty_path(&base, p))
+                .transpose()?
+                .or_else(|| {
+                    saved
+                        .as_ref()
+                        .and_then(|s| s.run.python_scope.as_ref())
+                        .map(|s| s.executable().to_owned())
+                })
+        } else {
+            None
         };
         ensure!(
-            config.lang == Lang::Python || config.python.is_none(),
-            "--python is only supported for Python"
+            cli.metadata_only || lang != Lang::Python || python.is_some(),
+            "Python requires [python].executable pointing to its pinned virtual-environment launcher"
         );
-        ensure!(
-            config.lang != Lang::Python || config.python.is_some(),
-            "Python requires --python /path/to/pinned-venv/bin/python"
-        );
-        if matches!(config.lang, Lang::Bun | Lang::Python) {
-            ensure!(
-                !cli.clear_max_capture_bytes,
-                "Bun/Python require bounded raw captures"
-            );
-            config.max_capture_bytes = config
-                .max_capture_bytes
-                .or(NonZeroUsize::new(4 * 1024 * 1024));
-        }
+        let config = Self {
+            module_root: root,
+            config_file,
+            lang,
+            python,
+            rust_build_cache: file
+                .rust
+                .as_ref()
+                .and_then(|v| v.build_cache)
+                .filter(|_| lang == Lang::Rust)
+                .unwrap_or_default(),
+            rust_packages,
+            continue_on_error: file
+                .python
+                .as_ref()
+                .and_then(|v| v.continue_on_error)
+                .filter(|_| lang == Lang::Python),
+            jobs: cli
+                .jobs
+                .or(settings.jobs)
+                .unwrap_or(NonZeroUsize::new(1).unwrap()),
+            timeout: cli.timeout.or(settings.timeout),
+            baseline_timeout: settings
+                .baseline_timeout
+                .unwrap_or(NonZeroU64::new(300).unwrap()),
+            max_log_bytes: settings.max_log_bytes,
+            max_capture_bytes: settings.max_capture_bytes.or_else(|| {
+                matches!(lang, Lang::Bun | Lang::Python)
+                    .then(|| NonZeroUsize::new(4 * 1024 * 1024).unwrap())
+            }),
+            test_scope: settings.test_scope.unwrap_or_default(),
+            include: settings.include.unwrap_or_default(),
+            exclude: settings.exclude.unwrap_or_default(),
+            operators,
+            fail_on_missed: settings.fail_on_missed.unwrap_or(false),
+            min_score: settings.min_score,
+            output_dir,
+            verbose: cli.presentation.verbose,
+            ui: cli.presentation.ui,
+            list: cli.list,
+            check: cli.check,
+            json: cli.json,
+            rerun,
+        };
+        crate::mutation::Scope::new(&config.include, &config.exclude)?;
         if matches!(
             config.lang,
             Lang::Vitest | Lang::Node | Lang::Bun | Lang::Python
@@ -281,7 +424,7 @@ impl RunConfig {
             );
             ensure!(
                 config.jobs.get() == 1,
-                "{runner} currently supports only --jobs 1"
+                "{runner} currently supports only jobs = 1"
             );
             ensure!(
                 config.operators.iter().all(|op| (*op == Operator::LoopSkip)
@@ -308,7 +451,7 @@ impl RunConfig {
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
-                "--test-scope affected is only supported for Go"
+                "test_scope = affected is only supported for Go"
             );
             ensure!(
                 config.operators.iter().all(|op| matches!(
@@ -350,14 +493,6 @@ impl RunConfig {
                 || !self.operators.is_empty()
                 || !self.rust_packages.is_empty(),
         )
-    }
-}
-
-fn merge_patterns(cli: Vec<String>, clear: bool, configured: Option<Vec<String>>) -> Vec<String> {
-    if clear || !cli.is_empty() {
-        cli
-    } else {
-        configured.unwrap_or_default()
     }
 }
 
@@ -403,575 +538,247 @@ pub(crate) fn resolve_output_path(path: &Path) -> Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use clap::Parser;
-
+    use crate::cli::{PresentationArgs, ProjectArgs};
+    fn fixture(config: &str) -> tempfile::TempDir {
+        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize().unwrap()).unwrap();
+        fs::write(temp.path().join("go.mod"), "module example.test\n").unwrap();
+        fs::write(temp.path().join("mutie.toml"), config).unwrap();
+        temp
+    }
+    fn invocation(path: &Path, lang: Option<Language>) -> Invocation {
+        Invocation::project(ProjectArgs {
+            path: path.to_owned(),
+            lang,
+            config: None,
+        })
+    }
+    fn resolve(root: &Path) -> Result<RunConfig> {
+        RunConfig::resolve(invocation(root, None))
+    }
     #[test]
-    fn rust_member_selection_overrides_config_and_can_be_cleared() -> Result<()> {
-        let temp = project()?;
-        assert!(resolve(temp.path(), &["--rust-package", "core"]).is_err());
-        fs::remove_file(temp.path().join("module/go.mod"))?;
-        fs::write(
-            temp.path().join("module/Cargo.toml"),
-            "[workspace]\nmembers=[]",
-        )?;
-        fs::write(
-            temp.path().join("module/mutie.toml"),
-            "rust_packages = ['core']",
-        )?;
-        assert_eq!(resolve(temp.path(), &[])?.rust_packages, ["core"]);
-        assert_eq!(
-            resolve(temp.path(), &[])?.score_scope(),
-            ScoreScope::Filtered
+    fn defaults_language_settings_and_invocation_overrides_are_distinct() -> Result<()> {
+        let root = fixture(
+            "jobs=4\ntimeout=30\ninclude=['global/**']\n[go]\njobs=2\ninclude=['local/**']\noperators=['boolean_flip','boolean_flip']\n",
         );
-        assert_eq!(
-            resolve(
-                temp.path(),
-                &["--rust-package", "cli", "--rust-package", "cli"]
-            )?
-            .rust_packages,
-            ["cli"]
-        );
-        assert!(
-            resolve(temp.path(), &["--clear-rust-packages"])?
-                .rust_packages
-                .is_empty()
-        );
+        let config = resolve(root.path())?;
+        assert_eq!(config.jobs.get(), 2);
+        assert_eq!(config.timeout.unwrap().get(), 30);
+        assert_eq!(config.include, ["local/**"]);
+        assert_eq!(config.operators, [Operator::BooleanFlip]);
+        assert_eq!(config.score_scope(), ScoreScope::Filtered);
+        let mut cli = invocation(root.path(), None);
+        cli.jobs = NonZeroUsize::new(3);
+        cli.timeout = NonZeroU64::new(7);
+        cli.presentation = PresentationArgs {
+            ui: UiMode::Plain,
+            verbose: true,
+        };
+        let config = RunConfig::resolve(cli)?;
+        assert_eq!(config.jobs.get(), 3);
+        assert_eq!(config.timeout.unwrap().get(), 7);
+        assert_eq!(config.ui, UiMode::Plain);
+        assert!(config.verbose);
+        assert!(!root.path().join(".mutie").exists());
         Ok(())
     }
-
     #[test]
-    fn rust_build_cache_is_opt_in_configurable_and_rejected_for_go() -> Result<()> {
-        let temp = project()?;
-        for mode in ["fresh", "worker"] {
-            assert!(resolve(temp.path(), &["--rust-build-cache", mode]).is_err());
-        }
-        fs::remove_file(temp.path().join("module/go.mod"))?;
-        fs::write(
-            temp.path().join("module/Cargo.toml"),
-            "[package]\nname='sample'\nversion='0.0.0'",
-        )?;
-        assert_eq!(
-            resolve(temp.path(), &[])?.rust_build_cache,
-            RustBuildCache::Fresh
-        );
-        fs::write(
-            temp.path().join("module/mutie.toml"),
-            "rust_build_cache = 'worker'",
-        )?;
-        assert_eq!(
-            resolve(temp.path(), &[])?.rust_build_cache,
-            RustBuildCache::Worker
-        );
-        assert_eq!(
-            resolve(temp.path(), &["--rust-build-cache", "fresh"])?.rust_build_cache,
-            RustBuildCache::Fresh
-        );
-        fs::write(
-            temp.path().join("module/mutie.toml"),
-            "rust_build_cache = 'shared'",
-        )?;
-        assert!(resolve(temp.path(), &[]).is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn detects_rust_and_rejects_ambiguous_or_language_specific_options() -> Result<()> {
-        let temp = project()?;
-        fs::write(
-            temp.path().join("module/Cargo.toml"),
-            "[package]\nname = 'sample'\nversion = '0.0.0'\n",
-        )?;
+    fn section_presence_enabled_switch_and_explicit_selection() -> Result<()> {
+        let root = fixture("[go]\n[rust]\npath='missing'\n");
         assert!(
-            resolve(temp.path(), &[])
+            resolve(root.path())
                 .unwrap_err()
                 .to_string()
-                .contains("both go.mod and Cargo.toml")
-        );
-        assert_eq!(resolve(temp.path(), &["--lang", "rust"])?.lang, Lang::Rust);
-        assert_eq!(resolve(temp.path(), &["--lang", "go"])?.lang, Lang::Go);
-        fs::remove_file(temp.path().join("module/go.mod"))?;
-        assert_eq!(resolve(temp.path(), &[])?.lang, Lang::Rust);
-        for args in [
-            &["--test-scope", "affected"][..],
-            &["--operator", "call_remove"][..],
-        ] {
-            assert!(resolve(temp.path(), args).is_err());
-        }
-        assert_eq!(
-            resolve(temp.path(), &["--operator", "boolean_flip"])?.operators,
-            [Operator::BooleanFlip]
+                .contains("multiple languages")
         );
         assert_eq!(
-            resolve(
-                temp.path(),
-                &[
-                    "--operator",
-                    "boolean_flip,comparison_invert,comparison_boundary,logical_swap,negation_remove,arithmetic_replace"
-                ]
-            )?
-            .operators,
-            [
-                Operator::ArithmeticReplace,
-                Operator::ComparisonInvert,
-                Operator::ComparisonBoundary,
-                Operator::LogicalSwap,
-                Operator::BooleanFlip,
-                Operator::NegationRemove
-            ]
+            RunConfig::resolve(invocation(root.path(), Some(Language::Go)))?.lang,
+            Lang::Go
         );
-        assert!(!temp.path().join("module/.mutie").exists());
-        Ok(())
-    }
-
-    fn project() -> Result<tempfile::TempDir> {
-        let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
-        fs::create_dir(temp.path().join("module"))?;
+        assert!(RunConfig::resolve(invocation(root.path(), Some(Language::Js))).is_err());
         fs::write(
-            temp.path().join("module/go.mod"),
-            "module example.com/test\n",
+            root.path().join("mutie.toml"),
+            "[go]\n[rust]\nenabled=false\npath='missing'\n",
         )?;
-        Ok(temp)
-    }
-
-    fn resolve(base: &Path, args: &[&str]) -> Result<RunConfig> {
-        RunConfig::resolve_from(
-            Cli::try_parse_from(["mutie", "module"].into_iter().chain(args.iter().copied()))?,
-            base,
-        )
-    }
-
-    #[test]
-    fn defaults_work_without_a_file_and_do_not_inherit_parent_config() -> Result<()> {
-        let temp = project()?;
-        fs::write(temp.path().join("mutie.toml"), "unknown = true")?;
-        let config = resolve(temp.path(), &[])?;
-        assert_eq!(config.lang, Lang::Go);
-        assert_eq!(config.jobs.get(), 1);
-        assert_eq!(config.baseline_timeout.get(), 300);
-        assert_eq!(config.timeout, None);
-        assert!(config.include.is_empty() && config.exclude.is_empty());
-        assert!(config.operators.is_empty());
-        assert!(!config.verbose && !config.list);
-        assert_eq!(config.ui, UiMode::Auto);
-        assert_eq!(config.test_scope, TestScope::Full);
-        assert!(config.config_file.is_none());
-        assert_eq!(config.output_dir, temp.path().join("module/.mutie"));
-        assert!(!config.output_dir.exists());
-        fs::write(temp.path().join("module/mutie.toml"), "")?;
-        let empty = resolve(temp.path(), &[])?;
-        assert_eq!(empty.jobs, config.jobs);
-        assert_eq!(empty.output_dir, config.output_dir);
-        assert_eq!(
-            empty.config_file,
-            Some(temp.path().join("module/mutie.toml"))
-        );
-        Ok(())
-    }
-
-    #[test]
-    fn ui_preference_merges_explicit_overrides_and_rejects_unknown_modes() -> Result<()> {
-        let temp = project()?;
-        fs::write(temp.path().join("module/mutie.toml"), "ui = 'interactive'")?;
-        assert_eq!(resolve(temp.path(), &[])?.ui, UiMode::Interactive);
-        assert_eq!(resolve(temp.path(), &["--ui", "plain"])?.ui, UiMode::Plain);
-        assert_eq!(resolve(temp.path(), &["--ui", "auto"])?.ui, UiMode::Auto);
-        assert!(resolve(temp.path(), &["--ui", "unknown"]).is_err());
-        fs::write(temp.path().join("module/mutie.toml"), "ui = 'unknown'")?;
-        assert!(resolve(temp.path(), &["--ui", "plain"]).is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn test_scope_merges_config_and_explicit_full_override() -> Result<()> {
-        let temp = project()?;
-        let file = temp.path().join("module/mutie.toml");
-        fs::write(&file, "test_scope = 'affected'")?;
-        assert_eq!(resolve(temp.path(), &[])?.test_scope, TestScope::Affected);
-        assert_eq!(
-            resolve(temp.path(), &["--test-scope", "full"])?.test_scope,
-            TestScope::Full
-        );
-        assert!(resolve(temp.path(), &["--test-scope", "unknown"]).is_err());
-        fs::write(&file, "test_scope = 'unknown'")?;
-        assert!(resolve(temp.path(), &[]).is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn minimum_score_config_overrides_and_validation() -> Result<()> {
-        let temp = project()?;
-        assert_eq!(resolve(temp.path(), &[])?.min_score, None);
-        let file = temp.path().join("module/mutie.toml");
-        for value in ["0", "80", "66.67", "100.0"] {
-            fs::write(&file, format!("min_score = {value}"))?;
-            assert_eq!(
-                resolve(temp.path(), &[])?.min_score,
-                Some(value.parse().unwrap())
-            );
-            assert_eq!(
-                resolve(temp.path(), &["--min-score", "50.01"])?.min_score,
-                Some("50.01".parse().unwrap())
-            );
-            assert_eq!(
-                resolve(temp.path(), &["--clear-min-score"])?.min_score,
-                None
-            );
-        }
-        for value in ["-1", "101", "nan", "inf", "1.001", "'80'", "true"] {
-            fs::write(&file, format!("min_score = {value}"))?;
-            assert!(resolve(temp.path(), &[]).is_err(), "{value}");
-        }
-        fs::write(&file, "")?;
-        for value in ["-1", "101", "NaN", "inf", "1.001"] {
-            assert!(
-                resolve(temp.path(), &["--min-score", value]).is_err(),
-                "{value}"
-            );
-        }
-        assert!(resolve(temp.path(), &["--min-score", "80", "--clear-min-score"]).is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn findings_policy_defaults_and_explicit_overrides() -> Result<()> {
-        let temp = project()?;
-        assert!(!resolve(temp.path(), &[])?.fail_on_missed);
-        let file = temp.path().join("module/mutie.toml");
-        fs::write(&file, "fail_on_missed = true")?;
-        assert!(resolve(temp.path(), &[])?.fail_on_missed);
-        assert!(!resolve(temp.path(), &["--no-fail-on-missed"])?.fail_on_missed);
-        fs::write(&file, "fail_on_missed = false")?;
-        assert!(resolve(temp.path(), &["--fail-on-missed"])?.fail_on_missed);
-        Ok(())
-    }
-
-    #[test]
-    fn explicit_cli_values_replace_repository_values_including_defaults() -> Result<()> {
-        let temp = project()?;
-        fs::write(
-            temp.path().join("module/mutie.toml"),
-            r#"
-lang = "go"
-jobs = 4
-include = ["internal/**"]
-exclude = ["legacy/**"]
-timeout = 17
-baseline_timeout = 90
-output_dir = "reports"
-verbose = true
-"#,
-        )?;
-        let from_file = resolve(temp.path(), &[])?;
-        assert_eq!(from_file.jobs.get(), 4);
-        assert_eq!(from_file.include, ["internal/**"]);
-        assert_eq!(from_file.exclude, ["legacy/**"]);
-        assert_eq!(from_file.timeout.unwrap().get(), 17);
-        assert_eq!(from_file.baseline_timeout.get(), 90);
-        assert!(from_file.verbose);
-        assert_eq!(from_file.output_dir, temp.path().join("module/reports"));
-        let overrides = resolve(
-            temp.path(),
-            &[
-                "--lang",
-                "auto",
-                "--jobs",
-                "1",
-                "--include",
-                "a.go",
-                "--include",
-                "b.go",
-                "--exclude",
-                "b.go",
-                "--timeout",
-                "10",
-                "--baseline-timeout",
-                "300",
-                "--output-dir",
-                "reports",
-                "--no-verbose",
-            ],
-        )?;
-        assert_eq!(overrides.lang, Lang::Go);
-        assert_eq!(overrides.jobs.get(), 1);
-        assert_eq!(overrides.include, ["a.go", "b.go"]);
-        assert_eq!(overrides.exclude, ["b.go"]);
-        assert_eq!(overrides.timeout.unwrap().get(), 10);
-        assert_eq!(overrides.baseline_timeout.get(), 300);
-        assert_eq!(overrides.output_dir, temp.path().join("reports"));
-        assert!(!overrides.verbose);
-        let cleared = resolve(
-            temp.path(),
-            &[
-                "--clear-include",
-                "--clear-exclude",
-                "--clear-timeout",
-                "--no-verbose",
-                "--list",
-            ],
-        )?;
-        assert!(cleared.include.is_empty() && cleared.exclude.is_empty());
-        assert_eq!(cleared.timeout, None);
-        assert!(!cleared.verbose);
-        assert!(cleared.list);
-        assert!(!cleared.output_dir.exists());
-        fs::write(
-            temp.path().join("module/mutie.toml"),
-            "lang = 'rust'\nverbose = false",
-        )?;
-        assert!(resolve(temp.path(), &[]).is_err());
-        assert!(resolve(temp.path(), &["--lang", "go", "--verbose"])?.verbose);
-        Ok(())
-    }
-
-    #[test]
-    fn rejects_bad_files_values_and_conflicting_overrides() -> Result<()> {
-        let temp = project()?;
-        for contents in [
-            "unknown = 1",
-            "[nested]\njobs = 1",
-            "jobs = 0",
-            "jobs = -1",
-            "jobs = 1.5",
-            "jobs = '2'",
-            "timeout = 0",
-            "max_log_bytes = 0",
-            "max_log_bytes = -1",
-            "max_log_bytes = '1KiB'",
-            "baseline_timeout = 0",
-            "lang = 'unknown-runner'",
-            "include = '*.go'",
-            "exclude = [1]",
-            "verbose = 'yes'",
-            "fail_on_missed = 'yes'",
-            "list = true",
-            "rerun_missed = 'previous-run'",
-            "rerun = 'previous-run'",
-            "ids = [1]",
-            "operators = ['unknown']",
-            "operators = 'boolean_flip'",
-            "operators = [1]",
-            "jobs =",
-            "jobs = 1\njobs = 2",
-        ] {
-            fs::write(temp.path().join("module/mutie.toml"), contents)?;
-            let error = resolve(temp.path(), &[]).unwrap_err();
-            assert!(
-                format!("{error:#}").contains("mutie.toml"),
-                "{contents}: {error:#}"
-            );
-        }
-        fs::remove_file(temp.path().join("module/mutie.toml"))?;
-        fs::create_dir(temp.path().join("module/mutie.toml"))?;
+        assert_eq!(resolve(root.path())?.lang, Lang::Go);
+        assert!(RunConfig::resolve(invocation(root.path(), Some(Language::Rust))).is_err());
+        fs::write(root.path().join("mutie.toml"), "[go]\nenabled=false\n")?;
         assert!(
-            format!("{:#}", resolve(temp.path(), &[]).unwrap_err())
-                .contains("reading configuration")
+            resolve(root.path())
+                .unwrap_err()
+                .to_string()
+                .contains("disabled")
         );
-        for args in [
-            vec!["--include", "a.go", "--clear-include"],
-            vec!["--exclude", "a.go", "--clear-exclude"],
-            vec!["--timeout", "1", "--clear-timeout"],
-            vec!["--max-log-bytes", "1", "--clear-max-log-bytes"],
-            vec!["--max-log-bytes", "0"],
-            vec!["--verbose", "--no-verbose"],
-            vec!["--fail-on-missed", "--no-fail-on-missed"],
-            vec!["--operator", "call_remove", "--clear-operators"],
-            vec!["--list", "--output-dir", "reports"],
-            vec!["--jobs", "0"],
-            vec!["--timeout", "0"],
-            vec!["--baseline-timeout", "0"],
-        ] {
-            assert!(Cli::try_parse_from(["mutie"].into_iter().chain(args)).is_err());
-        }
         Ok(())
     }
-
     #[test]
-    fn rerun_ids_require_a_source_and_filters_resolve_to_normalized_settings() -> Result<()> {
-        use crate::mutation::Operator;
-
-        for args in [
-            vec!["--id", "1"],
-            vec!["--operator", "unknown"],
-            vec!["--rerun", "a", "--rerun-missed", "b"],
-            vec!["--rerun", "a", "--id", "0"],
-            vec!["--rerun", "a", "--id", "-1"],
-            vec!["--rerun", "a", "--id", "1,nope"],
-            vec!["--rerun", "a", "--id", "1,"],
-            vec!["--rerun", "a", "--operator", "unknown"],
-        ] {
-            assert!(
-                Cli::try_parse_from(["mutie"].into_iter().chain(args.clone())).is_err(),
-                "{args:?}"
-            );
-        }
-        let temp = project()?;
-        let source = temp.path().join("previous");
-        fs::create_dir(&source)?;
-        for (arg, selection) in [
-            ("--rerun", RerunMode::All),
-            ("--rerun-missed", RerunMode::Missed),
-        ] {
-            let config = resolve(
-                temp.path(),
-                &[
-                    arg,
-                    "previous",
-                    "--id",
-                    "3,1",
-                    "--id",
-                    "3",
-                    "--operator",
-                    "boolean_flip,arithmetic_replace",
-                    "--operator",
-                    "boolean_flip",
-                ],
-            )?;
-            let rerun = config.rerun.context("missing rerun request")?;
-            assert_eq!(rerun.source_run, source);
-            assert_eq!(rerun.filter.selection, selection);
-            assert_eq!(rerun.filter.source_ids, [1, 3]);
-            assert_eq!(
-                rerun.filter.operators,
-                [Operator::ArithmeticReplace, Operator::BooleanFlip]
-            );
-            assert!(!config.output_dir.exists());
-        }
-        Ok(())
-    }
-
-    #[test]
-    fn operator_selection_merges_normalizes_and_clears_for_fresh_runs_and_reruns() -> Result<()> {
-        let temp = project()?;
-        let file = temp.path().join("module/mutie.toml");
-        fs::create_dir(temp.path().join("previous"))?;
+    fn alternate_config_anchors_project_output_and_python_paths() -> Result<()> {
+        let root = fixture("");
+        fs::create_dir(root.path().join("config"))?;
+        fs::create_dir(root.path().join("backend"))?;
+        fs::write(root.path().join("backend/go.mod"), "module example.test\n")?;
+        let path = root.path().join("config/ci.toml");
+        fs::write(&path, "output_dir='../reports'\n[go]\npath='../backend'\n")?;
+        let mut cli = invocation(Path::new("."), None);
+        cli.project.config = Some(path.clone());
+        let config = RunConfig::resolve_from(cli, root.path())?;
+        assert_eq!(config.module_root, root.path().join("backend"));
+        assert_eq!(config.output_dir, root.path().join("reports"));
+        assert_eq!(config.config_file, Some(path.clone()));
+        fs::write(root.path().join("backend/pyproject.toml"), "")?;
         fs::write(
-            &file,
-            "operators = ['call_remove', 'boolean_flip', 'call_remove']",
+            &path,
+            "[python]\npath='../backend'\nexecutable='../venv/bin/python'\n",
         )?;
-        for source in [vec![], vec!["--rerun", "previous"]] {
-            for (extra, expected) in [
-                (vec![], vec![Operator::BooleanFlip, Operator::CallRemove]),
-                (vec!["--clear-operators"], vec![]),
-                (
-                    vec![
-                        "--operator",
-                        "arithmetic_replace,call_remove",
-                        "--operator",
-                        "call_remove",
-                    ],
-                    vec![Operator::ArithmeticReplace, Operator::CallRemove],
-                ),
-            ] {
-                let args: Vec<_> = source.iter().chain(&extra).copied().collect();
-                let config = resolve(temp.path(), &args)?;
-                assert_eq!(config.operators, expected);
-                if let Some(rerun) = config.rerun {
-                    assert_eq!(rerun.filter.operators, expected);
-                }
-            }
-        }
-        fs::write(&file, "operators = []")?;
-        assert!(resolve(temp.path(), &[])?.operators.is_empty());
-        fs::write(&file, "operators = ['unknown']")?;
-        assert!(resolve(temp.path(), &["--clear-operators"]).is_err());
+        let mut cli = invocation(Path::new("."), None);
+        cli.project.config = Some(path);
+        let config = RunConfig::resolve_from(cli, root.path())?;
+        // Preserve the venv launcher rather than following its symlink.
+        assert_eq!(
+            config.python,
+            Some(root.path().join("config/../venv/bin/python"))
+        );
         Ok(())
     }
-
     #[test]
-    fn log_limit_defaults_to_unlimited_and_merges_explicit_overrides() -> Result<()> {
-        let temp = project()?;
-        assert_eq!(resolve(temp.path(), &[])?.max_log_bytes, None);
-        let file = temp.path().join("module/mutie.toml");
-        fs::write(&file, "max_log_bytes = 1024")?;
-        assert_eq!(
-            resolve(temp.path(), &[])?.max_log_bytes.unwrap().get(),
-            1024
-        );
-        assert_eq!(
-            resolve(temp.path(), &["--max-log-bytes", "1"])?
-                .max_log_bytes
-                .unwrap()
-                .get(),
-            1
-        );
-        assert_eq!(
-            resolve(temp.path(), &["--clear-max-log-bytes"])?.max_log_bytes,
-            None
-        );
-        fs::write(file, "max_log_bytes = 0")?;
-        assert!(resolve(temp.path(), &["--clear-max-log-bytes"]).is_err());
-        Ok(())
-    }
-
-    #[test]
-    fn capture_limit_is_independent_and_merges_explicit_overrides() -> Result<()> {
-        let temp = project()?;
-        assert_eq!(resolve(temp.path(), &[])?.max_capture_bytes, None);
-        let file = temp.path().join("module/mutie.toml");
-        fs::write(&file, "max_capture_bytes = 4096\nmax_log_bytes = 64")?;
-        for (args, expected) in [
-            (vec![], Some(4096)),
-            (vec!["--max-capture-bytes", "1"], Some(1)),
-            (vec!["--clear-max-capture-bytes"], None),
+    fn strict_schemas_reject_old_ui_and_foreign_runner_settings() {
+        for source in [
+            "lang='go'",
+            "python='/python'",
+            "rust_packages=[]",
+            "ui='plain'",
+            "verbose=true",
+            "[go]\nui='plain'",
+            "[go]\nbuild_cache='worker'",
+            "[js]\nrunner='jest'",
+            "[js]\nexecutable='node'",
+            "[go]\n[rust]\nenabled=false\ntypo=true",
+            "jobs=0",
+            "timeout=0",
+            "jobs='4'",
+            "[go]\noperators=['unknown']",
+            "[go]\ninclude=['[']",
+            "[go]\npath=''",
+            "output_dir=''",
+            "output_dir='.'",
         ] {
-            let config = resolve(temp.path(), &args)?;
-            assert_eq!(config.max_capture_bytes.map(NonZeroUsize::get), expected);
-            assert_eq!(config.max_log_bytes.unwrap().get(), 64);
+            let root = fixture(source);
+            assert!(resolve(root.path()).is_err(), "{source}");
+            assert!(!root.path().join(".mutie").exists());
         }
-        for value in ["0", "-1", "'1KiB'"] {
-            fs::write(&file, format!("max_capture_bytes = {value}"))?;
-            assert!(resolve(temp.path(), &["--clear-max-capture-bytes"]).is_err());
-        }
-        Ok(())
     }
-
     #[test]
-    fn output_validation_has_no_side_effects_and_normalizes_paths() -> Result<()> {
-        let temp = project()?;
-        fs::write(temp.path().join("sentinel"), "keep me")?;
-        for path in [
-            "",
-            ".",
-            "module",
-            "module/missing/..",
-            "sentinel",
-            "sentinel/reports",
-        ] {
-            assert!(
-                resolve(temp.path(), &["--output-dir", path]).is_err(),
-                "{path}"
-            );
-        }
-        assert_eq!(fs::read_to_string(temp.path().join("sentinel"))?, "keep me");
-        assert!(!temp.path().join("module/missing").exists());
-        let config = resolve(
-            temp.path(),
-            &["--output-dir", "module/missing/../reports/new"],
-        )?;
-        assert_eq!(config.output_dir, temp.path().join("module/reports/new"));
-        assert!(!config.output_dir.exists());
-        assert!(resolve(temp.path(), &["--timeout", "18446744073709551615"]).is_err());
+    fn explicit_missing_config_fails_and_parent_configs_are_not_searched() -> Result<()> {
+        let root = fixture("invalid = true");
+        fs::create_dir(root.path().join("child"))?;
+        fs::write(root.path().join("child/go.mod"), "module example.test\n")?;
+        assert_eq!(resolve(&root.path().join("child"))?.lang, Lang::Go);
+        let mut cli = invocation(&root.path().join("child"), None);
+        cli.project.config = Some(root.path().join("absent"));
+        assert!(RunConfig::resolve(cli).is_err());
         Ok(())
     }
-
     #[cfg(unix)]
     #[test]
-    fn resolves_symlinks_before_parent_components_and_rejects_dangling_links() -> Result<()> {
-        use std::os::unix::fs::symlink;
-        let temp = project()?;
-        fs::create_dir_all(temp.path().join("other/nested"))?;
-        symlink(temp.path().join("other/nested"), temp.path().join("link"))?;
-        let config = resolve(temp.path(), &["--output-dir", "link/../reports"])?;
-        assert_eq!(config.output_dir, temp.path().join("other/reports"));
-        symlink(temp.path().join("module"), temp.path().join("root-link"))?;
-        assert!(resolve(temp.path(), &["--output-dir", "root-link"]).is_err());
-        symlink(temp.path().join("missing"), temp.path().join("dangling"))?;
-        assert!(resolve(temp.path(), &["--output-dir", "dangling"]).is_err());
-        symlink(
-            temp.path().join("missing.toml"),
-            temp.path().join("module/mutie.toml"),
+    fn dangling_config_symlinks_are_errors_not_missing_defaults() -> Result<()> {
+        let root = fixture("");
+        fs::remove_file(root.path().join("mutie.toml"))?;
+        std::os::unix::fs::symlink("absent.toml", root.path().join("mutie.toml"))?;
+        assert!(resolve(root.path()).is_err());
+        Ok(())
+    }
+
+    #[test]
+    fn js_runner_and_serial_limits_are_separate_from_language() -> Result<()> {
+        let root = fixture("[js]\nrunner='bun'\n");
+        fs::write(
+            root.path().join("package.json"),
+            r#"{"scripts":{"test":"node --test"}}"#,
         )?;
-        assert!(resolve(temp.path(), &[]).is_err());
+        assert_eq!(resolve(root.path())?.lang, Lang::Bun);
+        fs::write(
+            root.path().join("mutie.toml"),
+            "jobs=4\n[js]\njobs=1\nrunner='node'\n",
+        )?;
+        assert_eq!(resolve(root.path())?.lang, Lang::Node);
+        fs::write(
+            root.path().join("mutie.toml"),
+            "jobs=4\n[js]\nrunner='vitest'\n",
+        )?;
+        assert!(
+            resolve(root.path())
+                .unwrap_err()
+                .to_string()
+                .contains("jobs = 1")
+        );
+        fs::write(root.path().join("mutie.toml"), "[js]\n")?;
+        assert_eq!(resolve(root.path())?.lang, Lang::Node);
+        Ok(())
+    }
+    #[test]
+    fn rust_and_python_settings_stay_in_their_own_sections() -> Result<()> {
+        let root = fixture(
+            "[rust]\npackages=['core','core']\nbuild_cache='worker'\n[python]\nenabled=false\nexecutable='venv/bin/python'\ncontinue_on_error=2\n",
+        );
+        fs::write(root.path().join("Cargo.toml"), "[workspace]\nmembers=[]\n")?;
+        let config = resolve(root.path())?;
+        assert_eq!(config.rust_packages, ["core"]);
+        assert_eq!(config.rust_build_cache, RustBuildCache::Worker);
+        assert!(config.python.is_none());
+        assert!(config.continue_on_error.is_none());
+        fs::write(
+            root.path().join("mutie.toml"),
+            "[rust]\noperators=['call_remove']\n",
+        )?;
+        assert!(resolve(root.path()).is_err());
+        fs::write(
+            root.path().join("mutie.toml"),
+            "[rust]\ntest_scope='affected'\n",
+        )?;
+        assert!(resolve(root.path()).is_err());
+        fs::write(root.path().join("mutie.toml"), "[python]\n")?;
+        fs::write(root.path().join("pyproject.toml"), "")?;
+        assert!(
+            resolve(root.path())
+                .unwrap_err()
+                .to_string()
+                .contains("executable")
+        );
+        Ok(())
+    }
+    #[test]
+    fn empty_language_selections_replace_global_defaults() -> Result<()> {
+        let root = fixture(
+            "include=['src/**']\nexclude=['generated/**']\noperators=['boolean_flip']\n[go]\ninclude=[]\nexclude=[]\noperators=[]\n",
+        );
+        let config = resolve(root.path())?;
+        assert!(
+            config.include.is_empty() && config.exclude.is_empty() && config.operators.is_empty()
+        );
+        assert_eq!(config.score_scope(), ScoreScope::AllDiscovered);
+        Ok(())
+    }
+    #[test]
+    fn automatic_detection_rejects_ambiguity() -> Result<()> {
+        let root = fixture("");
+        fs::write(root.path().join("Cargo.toml"), "")?;
+        assert!(
+            resolve(root.path())
+                .unwrap_err()
+                .to_string()
+                .contains("ambiguous")
+        );
+        assert_eq!(
+            RunConfig::resolve(invocation(root.path(), Some(Language::Rust)))?.lang,
+            Lang::Rust
+        );
+        Ok(())
+    }
+    #[cfg(unix)]
+    #[test]
+    fn output_symlinks_cannot_point_to_the_project_or_its_ancestor() -> Result<()> {
+        let root = fixture("output_dir='alias'\n[go]\n");
+        std::os::unix::fs::symlink(root.path(), root.path().join("alias"))?;
+        assert!(resolve(root.path()).is_err());
         Ok(())
     }
 }

@@ -81,6 +81,12 @@ impl SavedRun {
         }
     }
 
+    pub fn config_file(&self) -> Option<&Path> {
+        self.effective_config
+            .as_ref()
+            .and_then(|v| v.config_file.as_deref())
+    }
+
     pub fn language(&self) -> crate::cli::Lang {
         self.effective_config
             .as_ref()
@@ -92,6 +98,7 @@ impl SavedRun {
 /// Only the saved configuration needed to verify score scope and policy.
 #[derive(Debug, Deserialize)]
 struct ScoreConfig {
+    config_file: Option<PathBuf>,
     lang: Option<crate::cli::Lang>,
     #[serde(default)]
     include: Vec<String>,

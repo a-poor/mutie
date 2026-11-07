@@ -1,5 +1,11 @@
 # Target support
 
+Current source uses `mutie run`, `mutie list`, `mutie check` and `mutie rerun`
+with language sections in `mutie.toml`; see [usage](docs/usage.md). Historical
+CLI spellings below identify acceptance evidence, not the current interface.
+This redesign does not expand runner scopes or add mixed-language execution.
+
+
 This is the support ledger for Mutie's language and test-runner targets. It tracks
 verified behavior, scope limits, evidence and the work needed to advance each
 target. Last reviewed: 2026-11-06. [README.md](README.md) documents usage;

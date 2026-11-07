@@ -2,11 +2,16 @@
 //! spawning Rust mutation runs when Mutie tests its own source.
 #![cfg(unix)]
 
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use std::{
     collections::BTreeMap,
     fs,
     path::{Path, PathBuf},
-    process::{Child, Command, Output},
+    process::Output,
     thread,
     time::{Duration, Instant},
 };
@@ -616,7 +621,7 @@ fn rust_mutation_cancellation_preserves_partial_results_and_cleans_processes() {
         .unwrap();
         fs::write(
             fixture.root.join("tests/cli.rs"),
-            r##"use std::{fs, path::PathBuf, process::Command};
+            r##"use std::{fs, path::PathBuf, };
 
 unsafe extern "C" { fn getpgrp() -> i32; }
 

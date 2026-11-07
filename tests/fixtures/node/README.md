@@ -1,6 +1,6 @@
 # Node fixture
 
-Dependency-free ESM JavaScript package for the initial `--lang node` scope.
+Dependency-free ESM JavaScript package for the `[js]` / `runner = "node"` scope.
 Use audited Node 24.22.0 on PATH. `node --test test/*.test.js` passes three tests;
 Mutie's three boolean flips produce two kills and one survivor. Adding an
 assertion for `fallback(false) === true` kills that survivor on a focused rerun.

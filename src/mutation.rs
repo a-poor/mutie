@@ -368,6 +368,14 @@ fn unparenthesized(mut node: Node<'_>) -> Node<'_> {
     node
 }
 
+/// Stable discovery fields shared by all CLI list commands.
+pub fn preview_json(id: usize, mutation: &Mutation) -> serde_json::Value {
+    serde_json::json!({"id":id, "operator":mutation.operator, "file":mutation.file.path,
+        "source_fingerprint":mutation.file.fingerprint, "line":mutation.line, "column":mutation.column,
+        "byte_start":mutation.range.start, "byte_end":mutation.range.end,
+        "original":mutation.original(), "replacement":mutation.replacement})
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

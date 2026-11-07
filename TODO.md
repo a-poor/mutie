@@ -4,6 +4,16 @@ Track implementation here; keep design decisions and rationale in
 [DESIGN.md](DESIGN.md) and current usage in [README.md](README.md). Update this
 checklist as work lands, checking items off after appropriate verification.
 
+## CLI and configuration redesign (2026-11-07)
+
+- [x] Explicit run/list/check/rerun commands, grouped language settings,
+  invocation-only presentation, new init output, report command export and docs.
+  Verified with 328 ordinary tests, 51 real workflow tests (Go 6, Rust 2, Node 8,
+  Bun 5, Vitest 5, Python 25), direct baseline JSON probes, Rustfmt and Clippy.
+  Go native tests required execution outside the macOS filesystem sandbox.
+- [ ] Multi-project orchestration and multiple same-language targets remain separate
+  work. Until then multiple enabled sections require explicit language selection.
+
 ## Public release scope and goal sequence (2026-10-22)
 
 This is the current release direction and supersedes historical “next runner”

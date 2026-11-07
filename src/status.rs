@@ -32,7 +32,7 @@ use crate::{
 pub fn select(config: &RunConfig) -> Result<bool> {
     select_mode(
         config.ui,
-        config.list,
+        config.list || config.check || config.json,
         io::stdin().is_terminal(),
         io::stdout().is_terminal(),
         std::env::var_os("CI").is_some(),

@@ -11,6 +11,27 @@ JavaScript/TypeScript runners (Vitest, Node and Bun) and Python/pytest. New runn
 support requires its own scope and validation evidence even when language parsing
 or shared reporting can be reused. The ledger is not an implementation ordering.
 
+## CLI/config contract (2026-11-07)
+
+Bare `mutie` prints help. Execution is explicit: `run`, `list`, `check` and `rerun`.
+Root-level runner-specific preview commands are removed. All commands resolve
+`mutie.toml` or an explicit `--config FILE`; presentation stays on the CLI.
+Top-level execution defaults are overridden by `[go]`, `[rust]`, `[js]` or `[python]`,
+then the limited CLI jobs/timeout overrides. Sections enable languages unless
+`enabled = false`; multiple enabled languages require `--lang` and still execute
+one project. JS/TS share `[js]` with a separate Vitest/Node/Bun runner selector.
+Paths belong to the config file; source globs belong to the selected project.
+Language-specific keys have strict schemas. Init writes this format without
+running tests or installing dependencies. See [current config](docs/usage.md).
+
+`check` runs the ordinary isolated baseline without mutation scheduling or a saved
+report. `list` preserves static/isolated discovery semantics for each adapter and
+honors config source/operator filters. Baseline JSON describes success and command
+time; list JSON includes the selected mutations. Reports retain their existing
+schema and execution identities. Reruns use saved runner/launcher/member defaults
+when absent from current config and still verify fresh source and execution scope.
+Historical command examples below and in benchmarks predate this breaking CLI.
+
 ## Public release direction (2026-10-22)
 
 The [release scope and ordered goals](TODO.md#public-release-scope-and-goal-sequence-2026-10-22)
@@ -667,57 +688,12 @@ for four actionable CLI gaps and four unbuildable removals on `godotenv` v1.5.1.
 
 ## Repository configuration
 
-Mutie reads optional `mutie.toml` at the selected Go module root; parent-directory
-inheritance and workspace configuration are deferred. Missing or empty files
-retain the default workflow.
-
-Precedence is built-in defaults, then repository config, then explicitly supplied
-CLI arguments. The CLI parser preserves optional scalar arguments; `config.rs`
-produces a resolved run configuration consumed by execution and reporting. Unknown
-keys, malformed TOML, and incorrect types are rejected before merging. The merged
-settings are validated before creating reports or invoking Go, including globs,
-supported language, positive worker counts/timeouts, representable deadlines, and
-output paths. `run.json` records every resolved setting in `effective_config`,
-including absolute module/output paths and the optional config file path.
-
-Supported configuration syntax (all keys are optional):
-
-```toml
-lang = "go"
-jobs = 2
-include = ["**/*.go"]
-exclude = ["internal/legacy/**"]
-operators = [] # all; or a list of named operators
-timeout = 30
-baseline_timeout = 300
-output_dir = ".mutie"
-verbose = false
-ui = "auto"
-```
-
-Timeout values are positive integer seconds. File-selection globs are always
-relative to the project root. Paths supplied in the repository config are relative
-to that root; paths supplied through CLI arguments are relative to the invocation
-directory. Absolute paths are supported. Output resolution follows existing
-symlinks and normalizes `.`/`..` in order without creating directories; the module
-root, its ancestors, files, and dangling symlinks are invalid output destinations.
-Paths are not shell-expanded.
-
-Explicit CLI lists replace their configured counterparts. `--clear-include` and
-`--clear-exclude` remove the respective configured patterns. `--operator` replaces
-configured `operators`; `--clear-operators` selects all operators. `--clear-timeout`
-restores the automatic timeout and `--no-verbose` disables configured verbosity.
-Reset flags conflict with their corresponding value flags. Automatic language
-selection currently resolves to Go; a missing mutation timeout remains `null` in
-effective settings, with the actual duration recorded after the baseline.
-
-`--list` is invocation-only. It uses the resolved settings and excludes both
-`.mutie` and the selected report directory without creating reports. An explicit
-CLI `--output-dir` conflicts with `--list`; a configured output directory does
-not. `ui` selects `auto`, `interactive`, or `plain`, with an explicit `--ui`
-override; `--list` always uses plain output. A separate environment
-configuration layer is unnecessary for the MVP, although child tools still use
-their normal language environment.
+The current schema and precedence are specified in [usage](docs/usage.md).
+Repository settings describe execution, source selection and CI policies;
+invocation settings describe the action, temporary worker/deadline overrides and
+presentation. `config.rs` resolves one selected project to the existing execution
+model; adapters and saved-report identities remain independent of config syntax.
+Multi-project scheduling and combined reporting are not implemented.
 
 ## Terminal experience
 

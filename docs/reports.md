@@ -40,7 +40,7 @@ mutation and elapsed time since assignment, including workspace preparation.
 show `testing` while an observed package is active. Quiet builds can remain
 `running`, and testing takes precedence when build and test events overlap.
 
-`--list` always uses plain output. The live view adapts to resizing and small
+`mutie list` always uses plain output. The live view adapts to resizing and small
 terminals, showing as many fixed worker rows as fit and up to three recent results,
 with newest completions at the bottom. An overflow row counts hidden workers and
 how many are active. Space for the results tail is reserved before results arrive
@@ -125,7 +125,7 @@ inline. Terminals smaller than 24 columns by 12 rows show a resize hint.
 
 Filters intersect. Marks persist across filters, and the header counts hidden
 marks. Rerun commands use **all marked saved IDs**, including hidden ones, or the
-current row when nothing is marked. They use `--rerun`, so pending/interrupted or
+current row when nothing is marked. They use `mutie rerun`, so pending/interrupted or
 previously killed mutations can also be selected. Commands are quoted for POSIX
 shells and are never executed by the browser. An actual rerun still checks source
 identity and requires a fresh baseline. Use `--module PATH` to change the module
@@ -164,28 +164,27 @@ and explains that the omitted output is absent from the report. These notices
 remain visible even when a log file is missing. Artifact paths must resolve inside
 the report directory. JSON metadata is
 limited to 64 MiB per file. Module directories named `report` or `dismiss` can
-still be run as `mutie ./report` or `mutie ./dismiss`.
+still be run as `mutie run ./report` or `mutie run ./dismiss`.
 
 ## Persistent dismissals
 
 Record a review decision for a mutation from a finalized saved run:
 
 ```sh
-cargo run -- dismiss --module /path/to/go/module add /path/to/saved/run \
+cargo run -- dismiss --path /path/to/go/module add /path/to/saved/run \
   --id 9 --reason 'accepted test gap' --note 'Boundary is validated by the caller.'
-cargo run -- dismiss --module /path/to/go/module list
-cargo run -- dismiss --module /path/to/go/module check
-cargo run -- dismiss --module /path/to/go/module update 1 --reason 'equivalent behavior'
-cargo run -- dismiss --module /path/to/go/module update 1 --clear-note
-cargo run -- dismiss --module /path/to/go/module remove 1
-cargo run -- dismiss --module /path/to/rust/package add /path/to/saved/run \
+cargo run -- dismiss --path /path/to/go/module list
+cargo run -- dismiss --path /path/to/go/module check
+cargo run -- dismiss --path /path/to/go/module update 1 --reason 'equivalent behavior'
+cargo run -- dismiss --path /path/to/go/module update 1 --clear-note
+cargo run -- dismiss --path /path/to/go/module remove 1
+cargo run -- dismiss --path /path/to/rust/package add /path/to/saved/run \
   --id 3 --reason 'accepted test gap'
-cargo run -- dismiss --module /path/to/rust/package check
+cargo run -- dismiss --path /path/to/rust/package check
 ```
 
-The project defaults to the current directory and must contain `go.mod` or
-`Cargo.toml`. Use `dismiss --lang go|rust` to select a language explicitly when
-both exist. Adding requires a saved report of the selected language.
+The project defaults to the current directory. Use `dismiss --lang go|rust|js|python`
+to select one enabled language when config contains several. Adding requires a saved report of the selected language.
 `add --id` selects a **saved-run mutation ID**; `update` and `remove` use the
 independent **dismissal ID** printed by `add` and `list`. Dismissal IDs are not
 reused after removal. Reasons are required nonblank text; notes are optional.
@@ -202,20 +201,20 @@ they reformat TOML and do not preserve hand-written comments. Malformed metadata
 unknown fields, incompatible versions, duplicate IDs, and duplicate additions
 are rejected without overwriting the file.
 
-`add`, `list`, `update`, and `remove` need neither language tools nor a valid
-`mutie.toml`; they use manifest detection or explicit `--lang`, without loading
-configuration or validating the full Cargo execution scope.
+`add`, `list`, `update`, and `remove` do not launch language tools or validate the
+full execution scope. They resolve the same config and selected project as other
+commands. Use `--path PATH`, `--config FILE`, and `--lang` for selection.
 Adding records the saved identity without checking current source; listing labels
 it unchecked. `check` uses current Go package discovery or validated Rust Cargo
 metadata/module discovery, plus the language, include/exclude patterns, discovery
-timeout and output limits from `mutie.toml`. Explicit `dismiss --lang` overrides
-the configured language. It runs in disposable workspaces,
+timeout and output limits from `mutie.toml`. Explicit `dismiss --lang` selects an enabled language. It runs in disposable workspaces,
 does not run tests, and creates no reports. With no dismissals, it skips discovery.
 Rust checks enforce the initial Cargo scope, exclude caller build artifacts,
 and discover identities from a pristine snapshot independently of Cargo side
 effects. Timeout, cancellation and capture failures clean up owned directories.
 
-New decisions record `language = "go"` or `"rust"`. Older decisions without a
+New decisions record the execution adapter (`go`, `rust`, `vitest`, `node`, `bun`,
+or `python`). Older decisions without a
 language retain their Go meaning; they are never silently applied to Rust.
 Language mismatches require review. Dismissals describe source judgments rather
 than Cargo execution scope: manifest/lockfile/toolchain changes do not invalidate
@@ -240,7 +239,7 @@ snapshot and matches it against discovery before applying rerun selection. Match
 decisions for selected mutations, with the new run's IDs, and unresolved entries
 are stored in `mutants.json`. Valid decisions outside a rerun selection are omitted,
 without being flagged as missing. Review issues do not fail execution or suppress
-mutations. Invalid metadata fails a run before invoking language tools; `--list`
+mutations. Invalid metadata fails a run before invoking language tools; `mutie list`
 remains a source-only operation and does not load dismissal metadata.
 
 `summary.txt` separates dismissed and undismissed missed counts and includes reasons,
@@ -249,7 +248,7 @@ lists remain unchanged. To see a newly added or edited decision in the browser,
 run Mutie again (a focused rerun is fine) and open the new report:
 
 ```sh
-cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9
+cargo run -- rerun /path/to/saved/run /path/to/go/module --id 9
 cargo run -- report /path/to/new/run
 ```
 
@@ -265,41 +264,24 @@ After improving tests, use a saved run directory to select just its completed
 `missed` mutations. This works for Go modules and supported Rust packages:
 
 ```sh
-cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run
-cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run --list
-cargo run -- /path/to/rust/package --rerun-missed /path/to/saved/run --list
-```
-
-Use `--rerun` to select mutations regardless of their previous outcome, and
-`--id` or `--operator` to narrow either rerun mode:
-
-```sh
-cargo run -- /path/to/go/module --rerun /path/to/saved/run --id 9,11
-cargo run -- /path/to/go/module --rerun /path/to/saved/run --operator arithmetic_replace,comparison_boundary --list
-cargo run -- /path/to/go/module --rerun-missed /path/to/saved/run --id 9,11 --operator arithmetic_replace
+mutie rerun /path/to/saved/run /path/to/project --missed
+mutie rerun /path/to/saved/run /path/to/project --missed --dry-run
+mutie rerun /path/to/saved/run /path/to/project --id 9,11
 ```
 
 IDs refer to the **source run's** inventory, not a fresh scan or an earlier run
-in a chain of reruns. They must be positive integers. Both filters accept repeated
-flags or comma-separated values; duplicate values select work only once.
-Multiple IDs or operators select any listed value within that filter. Combining
-IDs, operators, and missed-only selection takes their intersection. For example,
-`--rerun-missed RUN_DIR --id 9,11 --operator arithmetic_replace` selects only IDs
-9 or 11 that were missed arithmetic mutations. A valid ID excluded by another
-filter selects nothing; an unknown ID is an error even if other filters would
-exclude it. Operator names match the [saved operator catalog](#saved-reports).
-
-`--rerun` and `--rerun-missed` conflict. `--id` requires one of them;
-`--operator` also works for fresh scans. Configured `operators` apply to reruns,
-too; use `--clear-operators` to remove that restriction. With no filters,
-`--rerun` selects the entire saved inventory, including previously killed,
-timed-out, build-failed, error, pending, or interrupted mutations.
+in a chain. They are positive integers; `--id` accepts repetition or comma-separated
+values. Duplicate IDs select work once. `--missed` intersects with IDs and the
+configured `operators` list. Unknown IDs are errors even when another filter would
+exclude them. Set `operators = []` in config to allow all operators.
+With no filters, `mutie rerun` selects the full saved inventory, including killed,
+timed-out, build-failed, error, pending and interrupted mutations.
 
 `RUN_DIR` is relative to the invocation directory, or absolute. It must contain
 `run.json`, `mutants.json`, and `outcomes.json`; text lists, diffs, and logs are not
 selection inputs. Finalized failed or interrupted runs also work when their
-inventory is complete. `--rerun-missed` selects only completed missed outcomes;
-`--rerun` can retry unfinished work. Running, incomplete, inconsistent, or
+inventory is complete. `--missed` selects only completed missed outcomes;
+`mutie rerun` can retry unfinished work. Running, incomplete, inconsistent, or
 incompatible reports and invalid selectors are rejected before running tools or
 creating a new report.
 
@@ -329,7 +311,7 @@ The current module can be a moved or copied checkout. Current configuration,
 tests, test scope, worker count, and timeouts apply; old outcomes are never reused. Newly
 discovered mutations are not added to the saved selection. If the filters match
 nothing, execution saves a completed empty run after baseline and discovery.
-`--list` previews and validates the selection without running tests or writing a
+`--dry-run` previews and validates the selection without running tests or writing a
 report. Each preview row shows its new ID, source ID, operator, and source change;
 an empty preview prints an explicit message.
 
@@ -353,10 +335,10 @@ disk synchronization; report contents and formats are unchanged.
 
 By default, every test run saves a new directory under `<module>/.mutie/`. The CLI
 prints its location when the run starts and the summary path when it finishes. Earlier runs
-are preserved. Use `--output-dir DIR` to choose the parent directory instead;
-relative paths are resolved from your current working directory. The output
-directory cannot be the module root or an ancestor of it. `--list` writes no
-reports and cannot be combined with `--output-dir`.
+are preserved. Set `output_dir` in config to choose another parent directory;
+relative paths are resolved from the config file. The output
+directory cannot be the module root or an ancestor of it. `mutie list` writes no
+reports; it still honors the configured report-directory exclusion.
 
 Each run contains:
 
@@ -463,12 +445,13 @@ or discovery. Keep output directories separate from source files, and add `.muti
 ### Limiting saved logs
 
 Logs are unlimited by default. Set a positive byte limit per artifact with
-`--max-log-bytes`, or `max_log_bytes` in `mutie.toml`:
+`max_log_bytes` in `mutie.toml`:
 
-```sh
-cargo run -- /path/to/go/module --max-log-bytes 65536
-cargo run -- /path/to/go/module --clear-max-log-bytes
+```toml
+max_log_bytes = 65536
 ```
+
+Omit the setting for unlimited retained logs.
 
 The limit applies independently to each readable `.log`, raw stdout, and raw
 stderr artifact for baseline, discovery, and mutation commands. When output is
@@ -495,14 +478,14 @@ previews, **not temporary disk usage**. Parsing uses one Go output record at a
 time; an individual oversized record and the package graph still need memory.
 Interrupted commands save limited partial logs with the same metadata. Omitted
 output cannot be recovered from the report; rerun with a larger limit or
-`--clear-max-log-bytes` when more diagnostics are needed.
+an unset `max_log_bytes` config setting when more diagnostics are needed.
 
 ### Limiting command-output capture
 
-`--max-capture-bytes BYTES` (or `max_capture_bytes` in `mutie.toml`) sets a positive
+`max_capture_bytes` in `mutie.toml` sets a positive
 byte budget shared by raw stdout and stderr for **each Go or Cargo invocation**.
 It defaults to unlimited. This applies to baseline tests, discovery (including
-`--list` and configured `dismiss check`), and mutation tests. Each concurrent
+`mutie list` and configured `dismiss check`), and mutation tests. Each concurrent
 command has its own budget. Reruns use current settings, not the source
 report's budget.
 
@@ -512,10 +495,13 @@ baseline/mutation logs combine their phases, so combined raw byte counts can
 reach twice the budget (three times for cached mutations), plus phase separators.
 Cleanup, compilation and testing still share one timeout.
 
-```sh
-cargo run -- /path/to/go/module --max-capture-bytes 16777216 --max-log-bytes 65536
-cargo run -- /path/to/go/module --clear-max-capture-bytes
+```toml
+max_capture_bytes = 16777216
+max_log_bytes = 65536
 ```
+
+Omitting the capture limit restores the runner default. Bun/Python retain their
+bounded default; Go/Rust/Vitest/Node default to unlimited.
 
 With the limit enabled, Mutie drains both output pipes into temporary files and
 never writes more than the combined byte budget to those raw captures. Output
@@ -613,7 +599,7 @@ Command durations remain in `outcomes.json`.
 
 Measurements are saved at normal report checkpoints, with worker measurements
 collected when the worker job returns. They do not add report writes per copied file
-or operation. `--list` and `dismiss check` do not produce these reports or summaries.
+or operation. `mutie list` and `dismiss check` do not produce these reports or summaries.
 
 The canonical temporary parent directory is recorded in
 `workspace_metrics.temporary_root` and `summary.txt`. On Unix, set `TMPDIR` to an
@@ -621,7 +607,7 @@ existing, writable directory outside the source tree to choose workspace placeme
 
 ```sh
 mkdir -p /path/on/project-filesystem/mutie-tmp
-TMPDIR=/path/on/project-filesystem/mutie-tmp cargo run -- /path/to/go/module --jobs 2
+TMPDIR=/path/on/project-filesystem/mutie-tmp cargo run -- run /path/to/go/module --jobs 2
 ```
 
 For copy-on-write comparisons, use a directory on the project's reflink-capable

@@ -1,11 +1,16 @@
 #![cfg(unix)]
 
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
 use std::{
     fs,
     os::unix::fs::{PermissionsExt, symlink},
     path::{Path, PathBuf},
-    process::{Command, Output},
+    process::Output,
 };
 
 struct Fixture {
@@ -462,8 +467,6 @@ fn configured_policy_can_be_disabled_and_does_not_gate_listing_or_empty_runs() {
         0,
         0,
     );
-    let invalid = fixture.run(&["--fail-on-missed", "--no-fail-on-missed"]);
-    assert_eq!(invalid.status.code(), Some(2));
 }
 
 #[test]
@@ -515,7 +518,8 @@ fn crud_persists_reasons_notes_and_independent_ids_without_go() {
     );
     assert!(!fixture.root.join(".mutie").exists());
     let report = fixture.report();
-    fs::write(fixture.root.join("mutie.toml"), "[not valid configuration").unwrap();
+    // All commands now resolve the same grouped config before selecting a project.
+    fs::write(fixture.root.join("mutie.toml"), "[go]\n").unwrap();
     fixture.reset_calls();
     assert!(success(&fixture.dismiss(&["list"])).contains("0 dismissal(s)"));
     assert!(!fixture.root.join("mutie.dismissals.toml").exists());

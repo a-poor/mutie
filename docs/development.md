@@ -57,9 +57,12 @@ a survivor on an affected-package rerun.
 The opt-in affected-package fixture compares full/affected outcomes and verifies
 transitive and internal/external test imports, unrelated-package omission, and
 fresh selections after adding tests to a focused rerun.
-Configuration tests also cover defaults, explicit overrides, list clearing,
+Configuration tests use the public CLI directly and also cover root help,
+report-free baseline checks, multi-language selection, strict schemas, defaults, language-section inheritance, explicit runtime overrides,
 invalid settings, path resolution, listing without reports, and saved effective
-settings using a fake Go command.
+settings using a fake Go command. Adapter regression suites use `tests/support/invocation.rs`
+to materialize their execution settings in temporary external config files while
+preserving project bytes and source/report identity.
 Rerun tests cover saved-report validation, stale/missing/ambiguous targets, fresh
 baselines, ID/operator/outcome intersections, invalid selectors, selection
 previews, new ID mappings, empty selections, source report preservation, and

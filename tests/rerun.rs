@@ -1,11 +1,16 @@
 #![cfg(unix)]
 
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::{Value, json};
 use std::{
     fs,
     os::unix::fs::PermissionsExt,
     path::{Path, PathBuf},
-    process::{Command, Output},
+    process::Output,
 };
 
 struct Fixture {
@@ -276,12 +281,6 @@ fn focused_reruns_reject_invalid_selectors_and_preserve_validation_and_failure_m
         ],
         vec!["--rerun-missed", original.to_str().unwrap(), "--id", "1,99"],
         vec!["--rerun", original.to_str().unwrap(), "--operator", "typo"],
-        vec![
-            "--rerun",
-            original.to_str().unwrap(),
-            "--rerun-missed",
-            original.to_str().unwrap(),
-        ],
         vec!["--id", "1"],
     ] {
         fixture.reset_calls();

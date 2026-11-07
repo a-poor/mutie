@@ -290,7 +290,7 @@ impl Project {
                 if path.is_file() {
                     ensure!(
                         read_manifest(&path)?.get("workspace").is_none(),
-                        "package belongs to an enclosing workspace; run from its root with --rust-package NAME"
+                        "package belongs to an enclosing workspace; run from its root and select members with [rust].packages"
                     );
                 }
             }

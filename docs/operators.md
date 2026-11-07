@@ -150,19 +150,17 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
 `loop_skip`, and `call_remove`.
-Use repeatable or comma-separated
-`--operator` values to select a subset for a fresh run, a listing, or a rerun:
+Set `operators` under the language section in `mutie.toml` to select a subset
+for fresh runs, listings and reruns:
 
-```sh
-cargo run -- /path/to/go/module --operator call_remove --list
-cargo run -- /path/to/go/module --operator arithmetic_replace,call_remove --jobs 2
-cargo run -- /path/to/go/module --operator branch_force_true,branch_force_false --list
-cargo run -- /path/to/go/module --operator loop_skip --list
+```toml
+[go]
+operators = ["arithmetic_replace", "call_remove"]
 ```
 
-The `operators` list in `mutie.toml` sets the repository default. CLI values
-replace it; duplicates are removed, and unknown names are rejected. An empty
-configured list or `--clear-operators` allows all operators. Operator selection
+Then run `mutie list PATH` or `mutie run PATH --jobs 2`. Duplicates are removed;
+unknown or unsupported names are errors. Omit the list (or use `operators = []`)
+for all supported operators. Operator selection
 intersects with file scope and, for reruns, saved IDs and outcome selection.
 An empty selection completes normally. IDs are assigned after selection, and
 reports record the effective operator list.

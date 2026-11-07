@@ -1,7 +1,7 @@
 # Vitest scope fixture
 
 This fixture supports Mutie's read-only discovery preview and direct runner probes.
-`vitest-check` supports an isolated baseline; `--lang vitest` runs and saves
+`mutie check` supports an isolated baseline; `mutie run` runs and saves
 scored serial mutations.
 It separately exercises ESM JavaScript and TypeScript boolean value expressions.
 Pinned tools: Node 24.22.0, pnpm 11.10.0, Vitest 4.1.9 with Vite 8.3.4; macOS arm64 evidence.
@@ -32,8 +32,8 @@ config error and all-skipped execution. See
 After preparing the copied fixture, preview mutations from the Mutie checkout:
 
 ```sh
-cargo run -- vitest-list /path/to/prepared-fixture
-cargo run -- vitest-list /path/to/prepared-fixture --include 'src/**/*.ts'
+cargo run -- list /path/to/prepared-fixture
+cargo run -- list /path/to/prepared-fixture # set include = ["src/**/*.ts"] under [js]
 ```
 
 These commands list six and three mutations respectively. They query Node identity
@@ -42,7 +42,7 @@ but do not execute Vitest or package scripts, save reports, or read `mutie.toml`
 Check the isolated baseline and run the opt-in adapter acceptance probes:
 
 ```sh
-cargo run -- vitest-check /path/to/prepared-fixture --timeout 60
+cargo run -- check /path/to/prepared-fixture # baseline_timeout = 60 in config
 MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --bin mutie vitest::execution -- --ignored --test-threads=1
 ```
 
@@ -52,10 +52,17 @@ they do not validate saved reports, CLI focused reruns or score policies.
 
 ## Scored CLI workflow
 
-With the pinned dependencies prepared outside the repository:
+With the pinned dependencies prepared outside the repository, place this in the
+prepared fixture's `mutie.toml`:
+
+```toml
+[js]
+runner = "vitest"
+operators = ["boolean_flip"]
+```
 
 ```sh
-cargo run -- /path/to/prepared-fixture --lang vitest --operator boolean_flip --ui plain
+cargo run -- run /path/to/prepared-fixture --ui plain
 MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --test vitest_workflow -- --ignored --test-threads=1
 ```
 

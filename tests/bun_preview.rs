@@ -1,5 +1,10 @@
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
-use std::{fs, path::Path, process::Command};
+use std::{fs, path::Path};
 
 fn fixture(syntax: &str) -> tempfile::TempDir {
     let root = tempfile::tempdir().unwrap();

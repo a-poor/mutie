@@ -3,16 +3,21 @@
 //! A small PTY harness checks behavior that the in-memory renderer cannot:
 //! screen/scrollback preservation, cursor queries, redraws during a blocked
 //! command, real Ctrl-C and termios.
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use std::{
     fs::{self, File},
     io::{self, Read, Write},
     mem::MaybeUninit,
     os::{
         fd::{AsRawFd, FromRawFd},
-        unix::{fs::PermissionsExt, process::CommandExt},
+        unix::fs::PermissionsExt,
     },
     path::PathBuf,
-    process::{Child, Command, ExitStatus, Stdio},
+    process::{ExitStatus, Stdio},
     sync::Mutex,
     thread,
     time::{Duration, Instant},

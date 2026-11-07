@@ -123,6 +123,9 @@ async fn helper(
 pub async fn list(
     root: &Path,
     executable: &Path,
+    include: &[String],
+    exclude: &[String],
+    operators: &[crate::mutation::Operator],
     json: bool,
     cancellation: &Cancellation,
 ) -> Result<()> {
@@ -132,7 +135,8 @@ pub async fn list(
     let identity = helper(&executable, RUNTIME, &[], cancellation).await?;
     let project = project::Project::load(&root, &executable, cancellation).await?;
     let scope = project.value()?;
-    let found = project.discover(&crate::mutation::Scope::new(&[], &[])?)?;
+    let mut found = project.discover(&crate::mutation::Scope::new(include, exclude)?)?;
+    found.retain(|m| operators.is_empty() || operators.contains(&m.operator));
     ensure!(
         identity == helper(&executable, RUNTIME, &[], cancellation).await?,
         "Python runtime changed during discovery"
@@ -155,6 +159,7 @@ pub async fn list(
                 "kind": "python-discovery",
                 "identity": identity,
                 "scope": scope,
+                "mutations":found.iter().enumerate().map(|(i,m)| crate::mutation::preview_json(i+1,m)).collect::<Vec<_>>(),
             }))?
         );
     } else {
@@ -171,54 +176,18 @@ pub async fn list(
     Ok(())
 }
 
-pub async fn check(
-    root: &Path,
-    executable: &Path,
-    timeout: Duration,
-    capture_limit: NonZeroUsize,
-    json: bool,
-    cancellation: &Cancellation,
-) -> Result<()> {
-    let result = execute(root, executable, timeout, capture_limit, cancellation).await?;
-    let outcome = result.command.classify().with_context(|| {
-        format!(
-            "Python baseline failed:\n{}",
-            result.command.text.text().unwrap_or_default()
-        )
-    })?;
-    ensure!(
-        outcome == crate::report::Outcome::Missed,
-        "Python baseline did not pass ({outcome:?}):\n{}",
-        result.command.text.text()?
-    );
-    if json {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&serde_json::json!({
-                "kind":"python-baseline-check", "identity":result.identity,
-                "tests":result.nodes, "seconds":result.command.elapsed.as_secs_f64(),
-                "scope":result.project,
-            }))?
-        );
-    } else {
-        println!(
-            "Python baseline passed: {} tests ({:.2}s)",
-            result.nodes.len(),
-            result.command.elapsed.as_secs_f64()
-        );
-    }
-    Ok(())
-}
-
 struct Execution {
     #[cfg(test)]
     timings: Vec<(&'static str, f64)>,
     command: crate::command::CommandOutput,
     identity: ExecutionScope,
+    #[cfg(test)]
     project: Value,
+    #[cfg(test)]
     nodes: Vec<String>,
 }
 
+#[cfg(test)]
 async fn execute(
     root: &Path,
     executable: &Path,
@@ -553,7 +522,9 @@ async fn execute_mode(
                 tool: "Python",
             },
             identity: execution_identity,
+            #[cfg(test)]
             project: original,
+            #[cfg(test)]
             nodes,
         });
     }

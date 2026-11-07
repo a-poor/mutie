@@ -1,10 +1,15 @@
 //! Opt-in real Bun scored workflows; never recursively run during self-mutation.
 #![cfg(unix)]
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::{Command, Output},
+    process::Output,
 };
 fn fixture(syntax: &str) -> (tempfile::TempDir, PathBuf) {
     let temp = tempfile::tempdir().unwrap();
@@ -72,11 +77,7 @@ fn report(output: &Output) -> (PathBuf, Value, Value, Value) {
 #[test]
 fn unsupported_bun_options_fail_before_launching_runtime() {
     let (_temp, root) = fixture("js");
-    for args in [
-        vec!["--jobs", "2"],
-        vec!["--test-scope", "affected"],
-        vec!["--clear-max-capture-bytes"],
-    ] {
+    for args in [vec!["--jobs", "2"], vec!["--test-scope", "affected"]] {
         let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg(&root)
             .args(["--lang", "bun", "--list"])

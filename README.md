@@ -30,7 +30,8 @@ Install from crates.io with a current stable Rust toolchain:
 cargo install mutie --locked
 ```
 
-To build a source checkout, use `cargo install --path . --locked`.
+To build a source checkout, use `cargo install --path . --locked`. The examples
+below describe this source checkout; crates.io 0.1.0 still has the previous CLI.
 
 You'll also need your project's toolchain and dependencies installed. Go requires
 1.24 or later; the JS/TS and Python runners currently require specific versions.
@@ -43,8 +44,9 @@ Create a configuration, preview the mutations, then run them:
 
 ```sh
 mutie init /path/to/project
-mutie /path/to/project --list
-mutie /path/to/project
+mutie list /path/to/project
+mutie check /path/to/project
+mutie run /path/to/project
 ```
 
 Mutie first checks that the original tests pass. A **killed** mutation was caught
@@ -55,13 +57,16 @@ Open the saved run, improve your tests, and rerun its survivors:
 
 ```sh
 mutie report /path/to/project/.mutie/RUN
-mutie /path/to/project --rerun-missed /path/to/project/.mutie/RUN
+mutie rerun /path/to/project/.mutie/RUN /path/to/project --missed
 ```
 
 Start with a small source selection on larger projects. For example:
 
-```sh
-mutie /path/to/project --include 'src/score.rs' --operator comparison_boundary
+```toml
+# mutie.toml
+[rust]
+include = ["src/score.rs"]
+operators = ["comparison_boundary"]
 ```
 
 Source filters choose where to mutate; they don't narrow the test suite. Runs can

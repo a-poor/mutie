@@ -233,13 +233,14 @@ pub struct Coordinator {
     pub state: RunState,
     updates: watch::Sender<RunState>,
     interactive: bool,
+    silent: bool,
     verbose: bool,
     lang: crate::cli::Lang,
 }
 
 impl Coordinator {
     pub fn new(config: &RunConfig, interactive: bool) -> Result<(Self, watch::Receiver<RunState>)> {
-        let saved = if config.list {
+        let saved = if config.list || config.check {
             None
         } else {
             Some(SavedReport::create(config)?)
@@ -256,6 +257,7 @@ impl Coordinator {
                 state,
                 updates,
                 interactive,
+                silent: config.json,
                 verbose: config.verbose,
                 lang: config.lang,
             },
@@ -280,7 +282,7 @@ impl Coordinator {
     }
 
     pub fn line(&self, line: impl std::fmt::Display) {
-        if !self.interactive {
+        if !self.interactive && !self.silent {
             println!("{line}");
         }
     }
@@ -311,7 +313,7 @@ impl Coordinator {
                 }
             }
         }
-        if !self.interactive {
+        if !self.interactive && !self.silent {
             match event {
                 RunEvent::Phase(Phase::Baseline) => {
                     self.line(if self.lang == crate::cli::Lang::Vitest {
@@ -417,6 +419,7 @@ mod tests {
             mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
         let config = RunConfig::resolve(Cli::parse_from([
             std::ffi::OsStr::new("mutie"),
+            std::ffi::OsStr::new("run"),
             root.path().as_os_str(),
         ]))?;
         let (mut coordinator, updates) = Coordinator::new(&config, true)?;

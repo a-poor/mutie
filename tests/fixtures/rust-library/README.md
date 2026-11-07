@@ -1,7 +1,7 @@
 # Rust library scope fixture
 
 This independent package exercises experimental Rust library support. Use
-`cargo run -- tests/fixtures/rust-library --jobs 1` from the repository root to
+`cargo run -- run tests/fixtures/rust-library --jobs 1` from the repository root to
 produce one killed and one missed mutation. The opt-in tests in
 `tests/support/rust_library.rs` cover both layouts, fresh/cached runs and a
 stronger-test focused rerun. The `library_acceptance_*` checks additionally cover

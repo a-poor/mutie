@@ -1,12 +1,12 @@
 #![cfg(unix)]
 
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
-use std::{
-    fs,
-    os::unix::fs::PermissionsExt,
-    path::PathBuf,
-    process::{Command, Output},
-};
+use std::{fs, os::unix::fs::PermissionsExt, path::PathBuf, process::Output};
 
 struct Fixture {
     temp: tempfile::TempDir,
@@ -230,10 +230,11 @@ fn configured_capture_limits_can_be_overridden_or_cleared_independently_of_log_l
         );
         assert_eq!(run["effective_config"]["max_log_bytes"], 64);
     }
-    for args in [
-        vec!["--max-capture-bytes", "0"],
-        vec!["--max-capture-bytes", "4096", "--clear-max-capture-bytes"],
-    ] {
-        assert_eq!(fixture.run("stdout", &args).status.code(), Some(2));
-    }
+    assert_eq!(
+        fixture
+            .run("stdout", &["--max-capture-bytes", "0"])
+            .status
+            .code(),
+        Some(1)
+    );
 }

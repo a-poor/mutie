@@ -1,10 +1,14 @@
 //! Preview is read-only and does not require a real JavaScript runtime in default tests.
 #![cfg(unix)]
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use std::{
     fs,
     os::unix::fs::symlink,
     path::{Path, PathBuf},
-    process::Command,
     time::{Duration, Instant},
 };
 
@@ -236,7 +240,7 @@ fn lists_filters_and_preserves_source_without_executing_vitest() {
         String::from_utf8_lossy(&result.stderr)
     );
     let stdout = String::from_utf8(result.stdout).unwrap();
-    assert!(stdout.contains("preview only"));
+    assert!(stdout.contains("Vitest discovery"));
     assert!(stdout.contains("10 mutations"));
     assert_eq!(
         stdout,

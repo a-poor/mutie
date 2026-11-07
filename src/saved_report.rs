@@ -911,6 +911,7 @@ mod tests {
         fs::write(root.join("go.mod"), "module example.com/test\n")?;
         RunConfig::resolve(Cli::parse_from([
             std::ffi::OsStr::new("mutie"),
+            std::ffi::OsStr::new("run"),
             root.as_os_str(),
         ]))
     }

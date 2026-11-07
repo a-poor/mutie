@@ -1,8 +1,9 @@
-use std::{
-    fs,
-    path::Path,
-    process::{Command, Output},
-};
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
+use std::{fs, path::Path, process::Output};
 
 fn command(root: &Path, args: &[&str]) -> Output {
     Command::new(env!("CARGO_BIN_EXE_mutie"))
@@ -60,7 +61,7 @@ fn commands_work_without_go_checkout_or_config_and_require_explicit_rules() {
 fn live_run_is_preserved_then_finalized_report_can_be_previewed_and_deleted() {
     use std::{
         os::unix::fs::PermissionsExt,
-        process::{Child, Stdio},
+        process::Stdio,
         thread,
         time::{Duration, Instant},
     };

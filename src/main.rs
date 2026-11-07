@@ -48,127 +48,145 @@ use workspace_metrics::{WorkspaceKind, WorkspaceMeasurement};
 
 #[tokio::main]
 async fn main() -> Result<ExitCode> {
-    let mut cli = Cli::parse();
-    if let Some(command) = cli.command.take() {
-        let cancellation = Cancellation::default();
-        let _signals = cancellation
-            .listen()
-            .context("installing cancellation handlers")?;
-        let result = match command {
-            cli::Command::Init {
-                path,
-                lang,
-                python,
-                non_interactive,
-                dry_run,
-            } => tokio::task::spawn_blocking(move || {
-                init::run(&path, lang, python, non_interactive, dry_run)
-            })
-            .await
-            .context("project initialization panicked")?,
-            cli::Command::PythonList { path, python, json } => {
-                python::list(&path, &python, json, &cancellation).await
+    let Some(command) = Cli::parse().command else {
+        use clap::CommandFactory;
+        Cli::command().print_help()?;
+        println!();
+        return Ok(ExitCode::SUCCESS);
+    };
+    // Run/check/list/rerun share configuration and runner selection.
+    let command = match command {
+        cli::Command::Run(args) => {
+            return run(RunConfig::resolve(cli::Invocation::run(args))?).await;
+        }
+        cli::Command::Rerun(args) => {
+            let mut invocation = cli::Invocation::run(args.run);
+            invocation.rerun = Some(args.run_dir);
+            invocation.missed = args.missed;
+            invocation.ids = args.id;
+            invocation.list = args.dry_run;
+            return run(RunConfig::resolve(invocation)?).await;
+        }
+        cli::Command::Check(args) => {
+            let mut invocation = cli::Invocation::project(args.project);
+            invocation.check = true;
+            invocation.json = args.json;
+            return run(RunConfig::resolve(invocation)?).await;
+        }
+        cli::Command::List(args) => {
+            let mut invocation = cli::Invocation::project(args.project);
+            invocation.list = true;
+            invocation.json = args.json;
+            let config = RunConfig::resolve(invocation)?;
+            if matches!(config.lang, Lang::Go | Lang::Rust | Lang::Node) {
+                return run(config).await;
             }
-            cli::Command::PythonCheck {
-                path,
-                python,
-                timeout,
-                max_capture_bytes,
-                json,
-            } => {
-                python::check(
-                    &path,
-                    &python,
-                    Duration::from_secs(timeout.get()),
-                    max_capture_bytes,
-                    json,
-                    &cancellation,
-                )
-                .await
-            }
-            cli::Command::BunList {
-                path,
-                include,
-                exclude,
-                json,
-            } => bun::list(&path, &include, &exclude, json, &cancellation),
-            cli::Command::BunCheck {
-                json,
-                path,
-                timeout,
-                max_capture_bytes,
-            } => {
-                bun::check(
-                    &path,
-                    Duration::from_secs(timeout.get()),
-                    max_capture_bytes,
-                    json,
-                    &cancellation,
-                )
-                .await
-            }
-            cli::Command::VitestCheck {
-                path,
-                timeout,
-                max_capture_bytes,
-            } => {
-                vitest::check(
-                    &path,
-                    Duration::from_secs(timeout.get()),
-                    max_capture_bytes,
-                    &cancellation,
-                )
-                .await
-            }
-            cli::Command::VitestList {
-                path,
-                include,
-                exclude,
-            } => vitest::list(&path, &include, &exclude, &cancellation).await,
-            cli::Command::Runs { directory } => tokio::task::spawn_blocking(move || {
-                report_retention::run(&directory, None, false, &cancellation)
-            })
-            .await
-            .context("report listing panicked")?,
-            cli::Command::Prune {
-                directory,
-                keep_last,
-                older_than,
-                apply,
-            } => {
-                let policy = report_retention::Policy::new(keep_last, older_than)?;
-                tokio::task::spawn_blocking(move || {
-                    report_retention::run(&directory, Some(policy), apply, &cancellation)
-                })
-                .await
-                .context("report pruning panicked")?
-            }
-            cli::Command::Report { run_dir, module } => tokio::task::spawn_blocking(move || {
-                browser::run(&run_dir, module.as_deref(), &cancellation)
-            })
-            .await
-            .context("report browser panicked")?,
-            cli::Command::Dismiss {
-                module,
-                lang,
-                python,
-                action,
-            } => {
-                if matches!(action, cli::DismissAction::Check) {
-                    cli.path = module;
-                    cli.lang = lang;
-                    cli.python = python;
-                    cli.list = true;
-                    let config = RunConfig::resolve(cli)?;
-                    dismissals::check(&config, &cancellation).await
-                } else {
-                    dismissals::manage(&module, lang.unwrap_or(Lang::Auto), action)
+            let cancellation = Cancellation::default();
+            let _signals = cancellation.listen()?;
+            match config.lang {
+                Lang::Python => {
+                    python::list(
+                        &config.module_root,
+                        config
+                            .python
+                            .as_deref()
+                            .context("missing Python launcher")?,
+                        &config.include,
+                        &config.exclude,
+                        &config.operators,
+                        config.json,
+                        &cancellation,
+                    )
+                    .await?
                 }
+                Lang::Bun => bun::list(
+                    &config.module_root,
+                    &config.include,
+                    &config.exclude,
+                    &config.operators,
+                    config.json,
+                    &cancellation,
+                )?,
+                Lang::Vitest => {
+                    vitest::list(
+                        &config.module_root,
+                        &config.include,
+                        &config.exclude,
+                        &config.operators,
+                        config.json,
+                        &cancellation,
+                    )
+                    .await?
+                }
+                _ => unreachable!("shared discovery was dispatched above"),
             }
-        };
-        return result.map(|()| ExitCode::SUCCESS);
+            return Ok(ExitCode::SUCCESS);
+        }
+        command => command,
+    };
+    let cancellation = Cancellation::default();
+    let _signals = cancellation
+        .listen()
+        .context("installing cancellation handlers")?;
+    match command {
+        cli::Command::Init {
+            path,
+            lang,
+            runner,
+            python,
+            non_interactive,
+            dry_run,
+        } => tokio::task::spawn_blocking(move || {
+            init::run(&path, lang, runner, python, non_interactive, dry_run)
+        })
+        .await
+        .context("project initialization panicked")??,
+        cli::Command::Runs { directory } => tokio::task::spawn_blocking(move || {
+            report_retention::run(&directory, None, false, &cancellation)
+        })
+        .await
+        .context("report listing panicked")??,
+        cli::Command::Prune {
+            directory,
+            keep_last,
+            older_than,
+            apply,
+        } => {
+            let policy = report_retention::Policy::new(keep_last, older_than)?;
+            tokio::task::spawn_blocking(move || {
+                report_retention::run(&directory, Some(policy), apply, &cancellation)
+            })
+            .await
+            .context("report pruning panicked")??;
+        }
+        cli::Command::Report { run_dir, module } => tokio::task::spawn_blocking(move || {
+            browser::run(&run_dir, module.as_deref(), &cancellation)
+        })
+        .await
+        .context("report browser panicked")??,
+        cli::Command::Dismiss {
+            path,
+            lang,
+            config,
+            action,
+        } => {
+            let mut invocation = cli::Invocation::project(cli::ProjectArgs { path, lang, config });
+            invocation.list = true;
+            invocation.metadata_only = !matches!(action, cli::DismissAction::Check);
+            let config = RunConfig::resolve(invocation)?;
+            if matches!(action, cli::DismissAction::Check) {
+                dismissals::check(&config, &cancellation).await?;
+            } else {
+                dismissals::manage(&config.module_root, config.lang, action)?;
+            }
+        }
+        _ => unreachable!("execution commands were dispatched above"),
     }
-    let config = RunConfig::resolve(cli)?;
+    Ok(ExitCode::SUCCESS)
+}
+
+async fn run(config: RunConfig) -> Result<ExitCode> {
+    let preview = config.list || config.check;
     let scope = Scope::new(&config.include, &config.exclude)?;
     let rerun = config
         .rerun
@@ -212,9 +230,14 @@ async fn main() -> Result<ExitCode> {
         .await;
         (coordinator, result)
     });
-    let (coordinator, result) =
+    let (mut coordinator, result) =
         status::drive(engine, updates, &mut terminal, &cancellation).await?;
-    finish_run(coordinator, result)
+    if preview {
+        coordinator.finish(result)?;
+        Ok(ExitCode::SUCCESS)
+    } else {
+        finish_run(coordinator, result)
+    }
 }
 
 fn finish_run(mut coordinator: Coordinator, result: Result<()>) -> Result<ExitCode> {
@@ -443,7 +466,7 @@ async fn execute(
     } else {
         None
     };
-    let dismissal_store = if config.list {
+    let dismissal_store = if config.list || config.check {
         None
     } else {
         Some(dismissals::Store::load(&snapshot.path())?)
@@ -590,6 +613,16 @@ async fn execute(
                 "baseline tests failed; no mutations were run\n{}",
                 command::text(&baseline)?
             );
+        }
+        if config.check {
+            if config.json {
+                println!(
+                    "{}",
+                    serde_json::json!({"kind":"baseline-check", "language":config.lang,
+                    "passed":true, "seconds":baseline.elapsed.as_secs_f64()})
+                );
+            }
+            return Ok(());
         }
         timeout.get_or_insert_with(|| (baseline.elapsed * 5).max(Duration::from_secs(10)));
     }
@@ -770,6 +803,24 @@ async fn execute(
         })
         .collect::<Result<_>>()?;
     if config.list {
+        if config.json {
+            let mutations: Vec<_> = mutations
+                .iter()
+                .enumerate()
+                .map(|(index, mutation)| {
+                    let mut value = mutation::preview_json(index + 1, mutation);
+                    if let Some(provenance) = &rerun {
+                        value["source_id"] = provenance.mutations[index].source_id.into();
+                    }
+                    value
+                })
+                .collect();
+            println!(
+                "{}",
+                serde_json::json!({"kind":"discovery", "language":config.lang, "mutations":mutations})
+            );
+            return Ok(());
+        }
         for (index, mutation) in mutations.iter().enumerate() {
             cancellation.check()?;
             if let Some(provenance) = &rerun {
@@ -1184,12 +1235,14 @@ mod tests {
                 root.path().join("a.go"),
                 "package p\nvar a = true\nvar b = true\nvar c = true\n",
             )?;
+            fs::write(
+                root.path().join("mutie.toml"),
+                "fail_on_missed = true\nmin_score = 100\n[go]\n",
+            )?;
             let config = RunConfig::resolve(Cli::parse_from([
                 std::ffi::OsStr::new("mutie"),
+                std::ffi::OsStr::new("run"),
                 root.path().as_os_str(),
-                std::ffi::OsStr::new("--fail-on-missed"),
-                std::ffi::OsStr::new("--min-score"),
-                std::ffi::OsStr::new("100"),
             ]))?;
             let mutations =
                 mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;

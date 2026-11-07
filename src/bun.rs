@@ -51,15 +51,19 @@ pub fn list(
     root: &Path,
     include: &[String],
     exclude: &[String],
+    operators: &[crate::mutation::Operator],
     json: bool,
     cancellation: &Cancellation,
 ) -> Result<()> {
     let project = project::Project::load(root, cancellation)?;
-    let found = crate::javascript::discover_bun(
+    let mut found = crate::javascript::discover_bun(
         &project.root,
         &crate::mutation::Scope::new(include, exclude)?,
         cancellation,
     )?;
+    found
+        .mutations
+        .retain(|m| operators.is_empty() || operators.contains(&m.operator));
     // Validation and discovery read the same original inputs; fail if they changed.
     ensure!(
         project.files == project::Project::load(&project.root, cancellation)?.files,
@@ -107,8 +111,8 @@ pub fn list(
 
 struct Execution {
     command: CommandOutput,
+    #[cfg(test)]
     identity: identity::ExecutionIdentity,
-    input_fingerprint: String,
     #[cfg(test)]
     timings: Vec<(&'static str, f64)>,
 }
@@ -117,43 +121,6 @@ impl std::ops::Deref for Execution {
     fn deref(&self) -> &Self::Target {
         &self.command
     }
-}
-
-pub async fn check(
-    root: &Path,
-    timeout: Duration,
-    capture_limit: NonZeroUsize,
-    json: bool,
-    cancellation: &Cancellation,
-) -> Result<()> {
-    let output = execute(root, "bun", timeout, capture_limit, cancellation).await?;
-    let outcome = output.classify().with_context(|| {
-        format!(
-            "Bun baseline failed:\n{}",
-            output.text.text().unwrap_or_default()
-        )
-    })?;
-    ensure!(
-        outcome == Outcome::Missed,
-        "Bun baseline did not pass ({outcome:?}):\n{}",
-        output.text.text()?
-    );
-    if json {
-        println!(
-            "{}",
-            serde_json::to_string_pretty(&serde_json::json!({
-                "kind":"bun-baseline-check", "outcome":"passed", "identity":output.identity,
-            "input_fingerprint":output.input_fingerprint,
-                "command_seconds":output.raw.elapsed.as_secs_f64(),
-            }))?
-        );
-    } else {
-        println!(
-            "Bun baseline passed ({:.2}s command time); no mutations or saved report.",
-            output.raw.elapsed.as_secs_f64()
-        );
-    }
-    Ok(())
 }
 
 pub async fn execution_scope(
@@ -212,6 +179,7 @@ pub async fn test(
     Ok(result.command)
 }
 
+#[cfg(test)]
 async fn execute(
     root: &Path,
     program: &str,
@@ -412,8 +380,8 @@ async fn execute_expected(
             evidence: OutcomeEvidence::Validated(evidence),
             tool: "Bun",
         },
+        #[cfg(test)]
         identity: execution_identity,
-        input_fingerprint: fingerprint(&serde_json::to_vec(&project.files)?),
         #[cfg(test)]
         timings: timings.values,
     })

@@ -1,10 +1,15 @@
 //! Real pinned Vitest installations are opt-in; never recurse in self-mutation tests.
 #![cfg(unix)]
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::{Command, Output},
+    process::Output,
 };
 
 #[path = "support/vitest_dismissals.rs"]
@@ -309,11 +314,11 @@ fn unsupported_vitest_options_fail_before_execution() {
     let root = tempfile::tempdir().unwrap();
     fs::write(root.path().join("package.json"), "{}").unwrap();
     for (args, message) in [
-        (vec!["--jobs", "2"], "only --jobs 1"),
+        (vec!["--jobs", "2"], "only jobs = 1"),
         (vec!["--test-scope", "affected"], "only full test scope"),
         (
             vec!["--rust-build-cache", "worker"],
-            "only supported for Rust",
+            "unknown field `build_cache`",
         ),
     ] {
         let output = run(root.path(), &root.path().join("reports"), &args);

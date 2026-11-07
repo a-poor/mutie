@@ -31,7 +31,7 @@ fn config_round_trip_and_noninteractive_ambiguity() {
     );
     let config = fs::read_to_string(root.path().join("mutie.toml")).unwrap();
     let parsed: toml::Value = toml::from_str(&config).unwrap();
-    assert_eq!(parsed["lang"].as_str(), Some("go"));
+    assert!(parsed["go"].is_table());
     assert!(
         !invoke(root.path(), &["--lang", "go", "--non-interactive"])
             .status
@@ -94,7 +94,11 @@ fn fixture_manifests_generate_the_expected_adapters() {
         );
         let config: toml::Value =
             toml::from_str(&fs::read_to_string(root.path().join("mutie.toml")).unwrap()).unwrap();
-        assert_eq!(config["lang"].as_str(), Some(adapter));
+        if ["node", "bun", "vitest"].contains(&adapter) {
+            assert_eq!(config["js"]["runner"].as_str(), Some(adapter));
+        } else {
+            assert!(config[adapter].is_table());
+        }
     }
 }
 
@@ -121,7 +125,7 @@ fn python_launcher_symlink_is_preserved_and_not_executed() {
     );
     let config: toml::Value =
         toml::from_str(&fs::read_to_string(root.path().join("mutie.toml")).unwrap()).unwrap();
-    assert_eq!(config["python"].as_str(), launcher.to_str());
+    assert_eq!(config["python"]["executable"].as_str(), Some("python"));
 }
 
 #[test]
@@ -142,7 +146,7 @@ fn package_managers_do_not_change_runner_selection_and_vite_plus_is_explicit() {
         );
         let config: toml::Value =
             toml::from_str(&fs::read_to_string(root.path().join("mutie.toml")).unwrap()).unwrap();
-        assert_eq!(config["lang"].as_str(), Some("vitest"));
+        assert_eq!(config["js"]["runner"].as_str(), Some("vitest"));
     }
     let root = tempfile::tempdir().unwrap();
     fs::write(

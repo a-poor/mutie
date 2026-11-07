@@ -14,12 +14,27 @@ pub async fn list(
     root: &Path,
     include: &[String],
     exclude: &[String],
+    operators: &[crate::mutation::Operator],
+    json: bool,
     cancellation: &Cancellation,
 ) -> Result<()> {
     let project = project::Project::load(root, cancellation)?;
     let node = resolve_node(&project.root, cancellation).await?;
-    let found = discovery::discover(&project.root, &Scope::new(include, exclude)?, cancellation)?;
-    println!("Vitest discovery preview only; use --lang vitest for scored runs.");
+    let mut found =
+        discovery::discover(&project.root, &Scope::new(include, exclude)?, cancellation)?;
+    found
+        .mutations
+        .retain(|m| operators.is_empty() || operators.contains(&m.operator));
+    if json {
+        println!(
+            "{}",
+            serde_json::json!({"kind":"discovery", "language":"vitest", "mutations":
+            found.mutations.iter().enumerate().map(|(i,m)| crate::mutation::preview_json(i+1,m)).collect::<Vec<_>>(),
+            "exclusions":found.exclusions})
+        );
+        return Ok(());
+    }
+    println!("Vitest discovery; use mutie run for scored runs.");
     println!(
         "{}; Node v24.22.0; Vitest {}; Vite {}",
         project.name, project.vitest, project.vite
@@ -101,49 +116,6 @@ fn validate_node_identity(
     Ok(NodeTool {
         executable: executable.into(),
     })
-}
-
-pub async fn check(
-    root: &Path,
-    timeout: Duration,
-    capture_limit: NonZeroUsize,
-    cancellation: &Cancellation,
-) -> Result<()> {
-    let project = project::Project::load(root, cancellation)?;
-    let node = resolve_node(&project.root, cancellation).await?;
-    println!("Checking isolated Vitest baseline; no mutations or saved report.");
-    let output = execution::run(
-        &project,
-        &node,
-        None,
-        timeout,
-        Some(capture_limit),
-        cancellation,
-    )
-    .await?;
-    let counts = output
-        .evidence
-        .as_ref()
-        .ok()
-        .map(|evidence| evidence.counts());
-    let output = output.into_command(NonZeroUsize::new(64 * 1024));
-    let outcome = output.classify().with_context(|| {
-        format!(
-            "Vitest baseline failed:\n{}",
-            output.text.text().unwrap_or_default()
-        )
-    })?;
-    ensure!(
-        outcome == crate::report::Outcome::Missed,
-        "Vitest baseline did not pass ({outcome:?}):\n{}",
-        output.text.text()?
-    );
-    let (passed, _, skipped) = counts.context("passing baseline missing test counts")?;
-    println!(
-        "Vitest baseline passed: {passed} passed, {skipped} skipped/todo ({:.2}s command time).",
-        output.raw.elapsed.as_secs_f64()
-    );
-    Ok(())
 }
 
 /// Persist the fixed runner recipe independently of temporary workspace paths.

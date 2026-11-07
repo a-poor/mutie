@@ -1,4 +1,9 @@
-use std::{fs, path::Path, process::Command};
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
+use std::{fs, path::Path};
 
 fn python() -> String {
     std::env::var("MUTIE_PYTHON").expect("set MUTIE_PYTHON to the pinned venv launcher")
@@ -30,7 +35,6 @@ fn unsupported_scored_options_fail_before_runtime_launch() {
     for args in [
         vec!["--jobs", "2"],
         vec!["--test-scope", "affected"],
-        vec!["--clear-max-capture-bytes"],
         vec!["--operator", "call_remove"],
     ] {
         let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
@@ -77,9 +81,10 @@ fn discovery_and_isolated_baseline_preserve_inputs() {
             String::from_utf8_lossy(&output.stderr)
         );
         let value: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
-        assert_eq!(value["scope"]["mutations"].as_array().unwrap().len(), 2);
         if command == "python-check" {
-            assert_eq!(value["tests"].as_array().unwrap().len(), 2);
+            assert_eq!(value["passed"], true);
+        } else {
+            assert_eq!(value["mutations"].as_array().unwrap().len(), 2);
         }
         assert_eq!(
             source,
@@ -1359,7 +1364,7 @@ fn candidate_error_continuation_rejects_zero_and_unsupported_runners() {
             .output()
             .unwrap();
         assert!(!output.status.success());
-        assert!(String::from_utf8_lossy(&output.stderr).contains("continue-on-error"));
+        assert!(String::from_utf8_lossy(&output.stderr).contains("continue_on_error"));
         assert!(!root.path().join(".mutie").exists());
     }
 }

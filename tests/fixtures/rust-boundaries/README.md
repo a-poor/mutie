@@ -2,12 +2,14 @@
 
 This independent, dependency-free binary package exercises Rust's
 `comparison_boundary` operator alongside the original boolean-flip fixture.
-It is copied to a temporary directory by an ignored integration test:
+It is copied to a temporary directory by an ignored integration test. For manual
+runs, set `operators = ["comparison_boundary"]` under `[rust]` in the copy's
+`mutie.toml` before listing/running:
 
 ```sh
 cargo test --locked --test rust_workflow boundaries:: -- --ignored
-cargo run -- tests/fixtures/rust-boundaries --operator comparison_boundary --list
-cargo run -- tests/fixtures/rust-boundaries --jobs 2 --timeout 30
+cargo run -- list tests/fixtures/rust-boundaries
+cargo run -- run tests/fixtures/rust-boundaries --jobs 2 --timeout 30
 ```
 
 Its four unit tests and two CLI tests pass before mutation. Discovery produces
@@ -30,7 +32,7 @@ fn equality_is_included() {
 }
 ```
 
-Then `--rerun-missed RUN_DIR --operator comparison_boundary` selects source ID 4,
+Then `mutie rerun RUN_DIR PATH --missed`, with the same configured operator, selects source ID 4,
 assigns new ID 1, and kills it. The regression checks saved diffs/operator counts,
 the 80% → 100% score change, the failure of this exact test, preservation of source
 and old reports, strict report reading, and cleanup of owned build artifacts.

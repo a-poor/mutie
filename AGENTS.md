@@ -1,5 +1,21 @@
 # Repository Guidelines
 
+## Current CLI and configuration
+
+Bare `mutie` prints help. Use `mutie run`, `mutie list`, `mutie check` and
+`mutie rerun RUN [PATH]` (`--missed`, `--id`, `--dry-run`). Runner-specific
+`*-list`/`*-check` commands and root execution flags were removed in the
+2026-11-07 redesign. `mutie.toml` has top-level execution defaults and `[go]`,
+`[rust]`, `[js]`, `[python]` sections; `[js].runner` selects Vitest/Node/Bun.
+Section presence enables a language, `enabled = false` disables it, and multiple
+enabled languages require `--lang` (one project per invocation). Configured paths
+are relative to the config file; source globs are relative to the selected project.
+UI/verbosity are invocation-only. Source/operator/policy/runner settings are config
+fields; jobs/timeout retain CLI overrides. See `docs/usage.md` for migration.
+Historical command spellings below and in benchmarks describe retained evidence.
+Adapter test fixtures materialize settings in external config files through
+`tests/support/invocation.rs`; CLI/config contract tests invoke the binary directly.
+
 ## Project Structure & Module Organization
 
 Mutie is a Rust 2024 CLI for mutation testing, supporting Go modules, validated
@@ -392,8 +408,8 @@ copy; preserve historical scores and inputs.
 Use Rust/Cargo and Go 1.24+ on `PATH`. Real Go tests also require a writable Go build cache.
 
 - `cargo build` — compile the CLI.
-- `cargo run -- /path/to/go/module --list` — inspect mutations without running tests.
-- `cargo run -- tests/fixtures/go --jobs 2 --timeout 5` — exercise the bundled fixture.
+- `cargo run -- list /path/to/go/module` — inspect mutations without running tests.
+- `cargo run -- run tests/fixtures/go --jobs 2 --timeout 5` — exercise the bundled fixture.
 - `cargo test` — run unit and non-ignored integration tests.
 - `cargo test --test go_workflow -- --ignored` — run the opt-in, real-Go workflow test.
 - `cargo test --test rust_workflow -- --ignored --test-threads=1` — run real Cargo workflows.

@@ -1,10 +1,15 @@
 //! Opt-in native Node runs, excluded from recursive self-mutation tests.
 #![cfg(unix)]
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::{Command, Output},
+    process::Output,
 };
 fn fixture() -> (tempfile::TempDir, PathBuf) {
     let temp = tempfile::tempdir().unwrap();
@@ -534,7 +539,7 @@ fn rejects_unsupported_scope_before_invoking_node() {
             "{out:?}"
         );
     };
-    check(&["--jobs", "2"], "Node currently supports only --jobs 1");
+    check(&["--jobs", "2"], "Node currently supports only jobs = 1");
     check(
         &["--test-scope", "affected"],
         "Node supports only full test scope",

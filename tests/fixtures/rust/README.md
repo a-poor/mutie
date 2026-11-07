@@ -6,8 +6,8 @@ unit tests, and integration tests that launch `CARGO_BIN_EXE_<name>`.
 Mutie now runs this package end to end:
 
 ```sh
-cargo run -- tests/fixtures/rust --list
-cargo run -- tests/fixtures/rust --jobs 2 --timeout 30
+cargo run -- list tests/fixtures/rust
+cargo run -- run tests/fixtures/rust --jobs 2 --timeout 30
 ```
 
 The inventory has three mutations: two killed and one missed. The opt-in

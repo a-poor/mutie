@@ -1,10 +1,15 @@
 //! Opt-in scored loops controls for each independently supported JS/TS runner.
 #![cfg(unix)]
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
 use std::{
     fs,
     path::{Path, PathBuf},
-    process::{Command, Output},
+    process::Output,
 };
 
 fn run(root: &Path, reports: &Path, runner: &str, args: &[&str]) -> Output {

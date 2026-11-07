@@ -65,10 +65,8 @@ pub fn test_command(lang: Lang) -> Vec<&'static str> {
 
 pub fn discovery_command(lang: Lang, scope: TestScope) -> Vec<&'static str> {
     match lang {
-        Lang::Vitest => vec!["mutie", "vitest-list"],
-        Lang::Bun => vec!["mutie", "bun-list"],
-        Lang::Python => vec!["mutie", "python-list"],
-        Lang::Node => vec!["mutie", "--lang", "node", "--list"],
+        Lang::Vitest | Lang::Node | Lang::Bun => vec!["mutie", "list", "--lang", "js"],
+        Lang::Python => vec!["mutie", "list", "--lang", "python"],
         Lang::Rust => std::iter::once("cargo")
             .chain(rust::METADATA_ARGS.iter().copied())
             .collect(),

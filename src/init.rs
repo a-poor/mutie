@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::cli::Lang;
+use crate::cli::{JsRunner, Lang, Language};
 use anyhow::{Context, Result, bail, ensure};
 
 fn label(lang: Lang) -> &'static str {
@@ -55,13 +55,22 @@ fn detect(root: &Path) -> Result<Vec<Lang>> {
     Ok(choices)
 }
 
+/// Static runner inference shared by initialization and unconfigured invocations.
+pub fn infer(root: &Path, language: Option<Language>) -> Result<Lang> {
+    let choices: Vec<_> = detect(root)?
+        .into_iter()
+        .filter(|lang| language.is_none_or(|selected| Language::of(*lang) == selected))
+        .collect();
+    choose(&choices, false)
+}
+
 fn choose(choices: &[Lang], interactive: bool) -> Result<Lang> {
     if let [lang] = choices {
         return Ok(*lang);
     }
     ensure!(
         !choices.is_empty(),
-        "could not infer a supported test runner; choose --lang go|rust|python|vitest|node|bun at its project root (package managers do not identify test runners)"
+        "could not infer a supported test runner; run mutie init --lang go|rust|python|js at its project root (package managers do not identify test runners)"
     );
     let names = choices
         .iter()
@@ -70,7 +79,7 @@ fn choose(choices: &[Lang], interactive: bool) -> Result<Lang> {
         .join(", ");
     ensure!(
         interactive,
-        "ambiguous project tooling ({names}); pass --lang explicitly"
+        "ambiguous project tooling ({names}); select --lang, and set [js].runner for JavaScript"
     );
     eprintln!("Choose execution adapter: {names}");
     eprint!("Adapter: ");
@@ -81,7 +90,7 @@ fn choose(choices: &[Lang], interactive: bool) -> Result<Lang> {
         .iter()
         .copied()
         .find(|lang| label(*lang) == answer.trim())
-        .context("no matching adapter selected; rerun with --lang")
+        .context("no matching adapter selected; rerun init with --lang and --runner")
 }
 
 fn reject_vite_plus_test(package: &serde_json::Value) -> Result<()> {
@@ -100,7 +109,7 @@ fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
         Lang::Bun => "Bun 1.3.11+af24e281e",
         Lang::Vitest => "Node 24.22.0 / Vitest 4.1.9 / an audited package-manager installation",
         Lang::Rust => {
-            "host Cargo toolchain; ordinary packages/workspaces; --rust-package selects mutation members, tests cover the full workspace"
+            "host Cargo toolchain; ordinary packages/workspaces; [rust].packages selects mutation members, tests cover the full workspace"
         }
         _ => "Go 1.24+",
     };
@@ -151,36 +160,47 @@ fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
 }
 
 fn render(lang: Lang, python: Option<&Path>) -> Result<String> {
-    let mut table = toml::Table::new();
-    table.insert("lang".into(), label(lang).into());
+    let mut section = toml::Table::new();
+    if matches!(lang, Lang::Vitest | Lang::Node | Lang::Bun) {
+        section.insert("runner".into(), label(lang).into());
+    }
     if let Some(python) = python {
-        table.insert(
-            "python".into(),
+        section.insert(
+            "executable".into(),
             python
                 .to_str()
                 .context("Python launcher path must be UTF-8")?
                 .into(),
         );
     }
+    let mut table = toml::Table::new();
+    table.insert(
+        Language::of(lang).name().into(),
+        toml::Value::Table(section),
+    );
     let mut text = String::from(
-        "# Generated setup; project/runtime compatibility is checked when Mutie runs.\n# Precedence: defaults < this file < explicit CLI options.\n",
+        "# Mutie configuration. Run `mutie check` to validate the project.\n# jobs = 1\n# timeout = 30 # seconds per mutation; omit for an automatic timeout\n\n",
     );
     text.push_str(&toml::to_string(&table)?);
+    text.push_str("# path = \".\" # relative to this file\n# enabled = false # temporarily disable this language\n# include = [\"src/**\"]\n# exclude = []\n# operators = [] # all supported operators\n");
     if lang == Lang::Rust {
-        text.push_str("\n# Rust workspace mutation members; empty selects all. Tests cover every member.\n# rust_packages = []\n# rust_build_cache = \"fresh\"\n");
+        text.push_str("# packages = [] # all workspace members; tests always cover the full workspace\n# build_cache = \"fresh\" # or \"worker\"\n");
     }
-    text.push_str("\n# Source filters select mutations, not tests.\n# include = [\"src/**\"]\n# exclude = []\n# operators = [] # all operators supported by this adapter\n# jobs = 1\n# baseline_timeout = 300\n# ui = \"auto\"\n");
     Ok(text)
 }
 
 pub fn run(
     root: &Path,
-    requested: Option<Lang>,
+    requested: Option<Language>,
+    runner: Option<JsRunner>,
     python: Option<PathBuf>,
     non_interactive: bool,
     dry_run: bool,
 ) -> Result<()> {
-    let root = root.canonicalize().context("opening project root")?;
+    let supplied_root = std::env::current_dir()?.join(root);
+    let root = supplied_root
+        .canonicalize()
+        .context("opening project root")?;
     ensure!(root.is_dir(), "project root must be a directory");
     let destination = root.join("mutie.toml");
     if !dry_run && fs::symlink_metadata(&destination).is_ok() {
@@ -190,9 +210,25 @@ pub fn run(
         );
     }
     let interactive = !non_interactive && io::stdin().is_terminal() && io::stderr().is_terminal();
-    let lang = match requested {
-        Some(lang) if lang != Lang::Auto => lang,
-        _ => choose(&detect(&root)?, interactive)?,
+    ensure!(
+        runner.is_none() || requested.is_none_or(|lang| lang == Language::Js),
+        "--runner requires --lang js"
+    );
+    let lang = if let Some(runner) = runner {
+        runner.lang()
+    } else {
+        match requested {
+            Some(Language::Go) => Lang::Go,
+            Some(Language::Rust) => Lang::Rust,
+            Some(Language::Python) => Lang::Python,
+            requested => {
+                let choices: Vec<_> = detect(&root)?
+                    .into_iter()
+                    .filter(|lang| requested.is_none_or(|selected| Language::of(*lang) == selected))
+                    .collect();
+                choose(&choices, interactive)?
+            }
+        }
     };
     crate::language::resolve(&root, lang)?;
     tooling_notes(&root, lang)?;
@@ -225,7 +261,13 @@ pub fn run(
             input.display()
         );
         // Do not canonicalize the launcher: venv symlinks must retain their environment.
-        Some(input)
+        Some(
+            input
+                .strip_prefix(&supplied_root)
+                .or_else(|_| input.strip_prefix(&root))
+                .unwrap_or(&input)
+                .to_owned(),
+        )
     } else {
         None
     };
@@ -252,7 +294,7 @@ pub fn run(
         label(lang)
     );
     eprintln!(
-        "Next: run mutie with this project path and --list, then a baseline/run. Unsupported project settings and runtime versions will be reported by the adapter."
+        "Next: mutie list PATH, mutie check PATH, then mutie run PATH. Unsupported project settings and runtime versions will be reported by the adapter."
     );
     Ok(())
 }
@@ -276,11 +318,11 @@ mod tests {
     fn refuses_existing_config_and_dry_run_does_not_write() -> Result<()> {
         let root = tempfile::tempdir()?;
         fs::write(root.path().join("go.mod"), "module example.test\n")?;
-        run(root.path(), None, None, true, true)?;
+        run(root.path(), None, None, None, true, true)?;
         assert!(!root.path().join("mutie.toml").exists());
-        run(root.path(), None, None, true, false)?;
+        run(root.path(), None, None, None, true, false)?;
         let before = fs::read(root.path().join("mutie.toml"))?;
-        assert!(run(root.path(), None, None, true, false).is_err());
+        assert!(run(root.path(), None, None, None, true, false).is_err());
         assert_eq!(fs::read(root.path().join("mutie.toml"))?, before);
         Ok(())
     }
@@ -299,11 +341,19 @@ mod tests {
             fs::write(root.path().join("mutie.toml"), render(lang, None)?)?;
             let cli = crate::cli::Cli::try_parse_from([
                 "mutie",
+                "run",
                 root.path().to_str().unwrap(),
                 "--jobs",
                 "1",
             ])?;
-            assert_eq!(crate::config::RunConfig::resolve(cli)?.lang, lang);
+            assert_eq!(
+                crate::config::RunConfig::resolve(match cli.command.unwrap() {
+                    crate::cli::Command::Run(args) => crate::cli::Invocation::run(args),
+                    _ => unreachable!(),
+                })?
+                .lang,
+                lang
+            );
         }
         Ok(())
     }

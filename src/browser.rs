@@ -260,45 +260,21 @@ impl Browser {
         };
         let module = self.module.as_deref().or(self.report.run.module_root.as_deref())
             .context("No module path was recorded. Reopen with --module PATH to generate a rerun command.")?;
+        let project = if self.module.is_none() {
+            self.report
+                .run
+                .config_file()
+                .map(|path| quote_path(path).map(|quoted| format!("--config {quoted}")))
+                .transpose()?
+        } else {
+            None
+        }
+        .unwrap_or(quote_path(module)?);
         Ok(format!(
-            "mutie {}{} --rerun {} --id {}",
-            quote_path(module)?,
-            match self.report.run.language() {
-                crate::cli::Lang::Python => format!(
-                    " --lang python --python {}",
-                    quote_path(
-                        self.report
-                            .run
-                            .python_scope
-                            .as_ref()
-                            .context("Missing Python execution identity")?
-                            .executable()
-                    )?
-                ),
-                crate::cli::Lang::Rust => {
-                    let mut args = " --lang rust".to_owned();
-                    if let Some(workspace) = self
-                        .report
-                        .run
-                        .rust_scope
-                        .as_ref()
-                        .and_then(|scope| scope.workspace.as_ref())
-                    {
-                        for package in &workspace.selected {
-                            args.push_str(&format!(
-                                " --rust-package {}",
-                                quote_path(Path::new(package))?
-                            ));
-                        }
-                    }
-                    args
-                }
-                crate::cli::Lang::Vitest => " --lang vitest".to_owned(),
-                crate::cli::Lang::Node => " --lang node".to_owned(),
-                crate::cli::Lang::Bun => " --lang bun".to_owned(),
-                _ => String::new(),
-            },
+            "mutie rerun {} {} --lang {} --id {}",
             quote_path(&self.report.directory)?,
+            project,
+            crate::cli::Language::of(self.report.run.language()).name(),
             ids.iter()
                 .map(ToString::to_string)
                 .collect::<Vec<_>>()
@@ -1420,14 +1396,17 @@ mod tests {
     fn commands_quote_paths_and_export_without_executing() {
         let (_temp, mut app) = browser();
         let command = app.command().unwrap();
-        assert!(command.starts_with("mutie '/missing/a project'\\''s checkout' --rerun '"));
+        assert!(
+            command.starts_with("mutie rerun ")
+                && command.contains(" '/missing/a project'\\''s checkout' --lang go")
+        );
         app.module = Some(PathBuf::from("/new/$checkout `literal`"));
         key(&mut app, KeyCode::End);
         key(&mut app, KeyCode::Char('r'));
         assert!(
             app.detail
                 .join("\n")
-                .contains("mutie '/new/$checkout `literal`'")
+                .contains(" '/new/$checkout `literal`' --lang go")
         );
         assert!(app.detail.join("\n").contains("--id 4"));
         assert!(key(&mut app, KeyCode::Char('e')));
@@ -1488,13 +1467,14 @@ mod tests {
         );
         key(&mut app, KeyCode::Char(' '));
         key(&mut app, KeyCode::Char('r'));
-        assert!(app.detail.join("\n").contains(" --lang rust --rerun "));
+        assert!(app.detail.join("\n").contains(" --lang rust --id "));
         terminal.draw(|frame| app.render(frame)).unwrap();
-        assert!(text(terminal.backend().buffer()).contains("--lang rust --rerun"));
+        assert!(text(terminal.backend().buffer()).contains("mutie rerun"));
         assert!(key(&mut app, KeyCode::Char('e')));
         let command = app.export.unwrap();
         assert!(
-            command.starts_with("mutie '/moved/a project'\\''s checkout' --lang rust --rerun '")
+            command.starts_with("mutie rerun ")
+                && command.contains(" '/moved/a project'\\''s checkout' --lang rust --id ")
         );
         assert!(command.ends_with("--id 1"));
         let identity = run["rust_scope"].as_object_mut().unwrap();
@@ -1513,11 +1493,7 @@ mod tests {
             LoadedReport::load(temp.path()).unwrap(),
             Some("/checkout".into()),
         );
-        assert!(
-            app.command()
-                .unwrap()
-                .contains(" --lang rust --rust-package 'core' --rerun ")
-        );
+        assert!(app.command().unwrap().contains(" --lang rust --id "));
     }
 
     #[test]
@@ -1552,11 +1528,12 @@ mod tests {
         key(&mut app, KeyCode::Char('r'));
         let mut terminal = Terminal::new(TestBackend::new(120, 24)).unwrap();
         terminal.draw(|frame| app.render(frame)).unwrap();
-        assert!(text(terminal.backend().buffer()).contains("--lang vitest"));
+        assert!(text(terminal.backend().buffer()).contains("mutie rerun"));
         assert!(key(&mut app, KeyCode::Char('e')));
         let command = app.export.unwrap();
         assert!(
-            command.starts_with("mutie '/moved/a project'\\''s checkout' --lang vitest --rerun '")
+            command.starts_with("mutie rerun ")
+                && command.contains(" '/moved/a project'\\''s checkout' --lang js --id ")
         );
         assert!(command.ends_with("--id 1,4"));
     }

@@ -1,11 +1,16 @@
 #![cfg(unix)]
 
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use std::{
     collections::HashSet,
     fs,
-    os::unix::{fs::PermissionsExt, process::CommandExt},
+    os::unix::fs::PermissionsExt,
     path::{Path, PathBuf},
-    process::{Child, Command, Output, Stdio},
+    process::{Output, Stdio},
     thread,
     time::{Duration, Instant},
 };

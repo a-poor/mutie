@@ -6,12 +6,16 @@ mod shell_fixture;
 #[path = "support/startup_diagnostics.rs"]
 mod startup_diagnostics;
 
+#[path = "support/invocation.rs"]
+mod invocation;
+#[allow(unused_imports)]
+use invocation::{Child, Command};
+
 use serde_json::Value;
 use std::{
     fs,
-    os::unix::process::CommandExt,
     path::PathBuf,
-    process::{Child, Command, Output, Stdio},
+    process::{Output, Stdio},
     time::{Duration, Instant},
 };
 
