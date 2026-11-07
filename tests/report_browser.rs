@@ -157,6 +157,9 @@ impl Session {
             .current_dir(temp.path())
             .env("PATH", "")
             .env("TERM", "xterm-256color")
+            // Expected interruption errors can push shell output into scrollback.
+            // Exercise that case even when the parent has backtraces disabled.
+            .env("RUST_LIB_BACKTRACE", "1")
             .stdin(Stdio::from(slave.try_clone().unwrap()))
             .stdout(Stdio::from(slave.try_clone().unwrap()))
             .stderr(Stdio::from(slave.try_clone().unwrap()));
@@ -289,8 +292,19 @@ impl Session {
         ] {
             assert!(output.contains(sequence), "missing {sequence:?}");
         }
-        assert!(self.screen.screen().contents().contains("earlier output"));
-        assert!(self.screen.screen().contents().contains("$ mutie report"));
+        let mut screen = self.screen.screen().clone();
+        screen.set_scrollback(usize::MAX);
+        let scrollback = screen.scrollback();
+        for marker in ["earlier output", "$ mutie report"] {
+            assert!(
+                (0..=scrollback).any(|offset| {
+                    screen.set_scrollback(offset);
+                    screen.contents().contains(marker)
+                }),
+                "lost {marker:?} from screen and {scrollback} scrollback rows; screen:\n{}",
+                self.screen.screen().contents()
+            );
+        }
         assert_eq!(files(&self.temp.path().join("saved run")), self.original);
         assert!(!self.temp.path().join(".mutie").exists());
     }

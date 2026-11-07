@@ -192,6 +192,9 @@ fi
             .env("MODE", mode)
             .env("TMPDIR", &workspaces)
             .env("TERM", "xterm-256color")
+            // Viewport assertions expect ordinary short error diagnostics.
+            // Keep parent/panic backtraces available without scrolling the child UI.
+            .env("RUST_LIB_BACKTRACE", "0")
             .env_remove("CI")
             .stdin(Stdio::from(slave.try_clone().unwrap()))
             .stdout(Stdio::from(slave.try_clone().unwrap()))
