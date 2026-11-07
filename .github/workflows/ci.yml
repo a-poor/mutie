@@ -49,13 +49,24 @@ jobs:
         run: cargo package --locked
 
   adapters:
-    name: Real ${{ matrix.adapter }} workflow
+    name: Real ${{ matrix.adapter }} ${{ matrix.suite || 'workflow' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        adapter: [Go, Rust, Node, Bun, Vitest, Python]
+        include:
+          - adapter: Go
+          - adapter: Rust
+          - adapter: Node
+          - adapter: Bun
+          - adapter: Vitest
+          - adapter: Python
+            suite: workflows
+          - adapter: Python
+            suite: operators
+          - adapter: Python
+            suite: lifecycle
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -70,7 +81,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-${{ matrix.adapter }}-${{ hashFiles('Cargo.lock') }}
+          key: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-${{ matrix.adapter }}-${{ matrix.suite }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: ${{ runner.os }}-rust-${{ env.RUST_TOOLCHAIN }}-${{ matrix.adapter }}-
       - name: Set up Go
         if: matrix.adapter == 'Go'
@@ -136,9 +147,18 @@ jobs:
       - name: Vitest native outcomes, lifecycle and cleanup
         if: matrix.adapter == 'Vitest'
         run: cargo test --locked --bin mutie 'vitest::execution::' -- --ignored --test-threads=1 --skip real_feedback_phase_profile
-      - name: Python reports, reruns, review, operators and cleanup
-        if: matrix.adapter == 'Python'
-        run: cargo test --locked --test python_workflow -- --ignored --test-threads=1
+      # These complementary filters partition python_workflow; keep them in sync.
+      - name: Python reports, reruns, review and cleanup
+        if: matrix.suite == 'workflows'
+        run: >-
+          cargo test --locked --test python_workflow -- --ignored --test-threads=1
+          --skip arithmetic_ --skip branch --skip comparison_ --skip inversions_
+          --skip logical_ --skip loop --skip modulo_
+      - name: Python operator workflows and native semantics
+        if: matrix.suite == 'operators'
+        run: >-
+          cargo test --locked --test python_workflow -- --ignored --test-threads=1
+          arithmetic_ branch comparison_ inversions_ logical_ loop modulo_
       - name: Python native lifecycle, capture and descendant cleanup
-        if: matrix.adapter == 'Python'
+        if: matrix.suite == 'lifecycle'
         run: cargo test --locked --bin mutie python::tests::native_ -- --ignored --test-threads=1

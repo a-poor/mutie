@@ -21,7 +21,8 @@ and Go 1.27.2. Separate jobs run:
   layouts, review/policies, unittest/conftest attribution, resource limits and cleanup.
 
 The normal suite runs with two test threads; adapter tests run serially in separate
-jobs. Individual test deadlines stay unchanged. Vitest dependencies are installed
+jobs. Python splits its workflow, operator and native lifecycle tests across three
+jobs to bound feedback time. Individual test deadlines stay unchanged. Vitest dependencies are installed
 with scripts disabled in a temporary fixture copy; Python uses a dedicated temporary
 venv with the pinned audit requirements. Neither installation modifies the checkout.
 The native tests remain ignored by ordinary `cargo test` and are explicitly enabled
