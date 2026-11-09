@@ -451,9 +451,11 @@ impl RunConfig {
             );
         }
         ensure!(
-            matches!(config.lang, Lang::Node | Lang::Bun | Lang::Vitest)
-                || !config.operators.contains(&Operator::StringReplace),
-            "string_replace is currently supported only for JavaScript/TypeScript"
+            matches!(
+                config.lang,
+                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python
+            ) || !config.operators.contains(&Operator::StringReplace),
+            "string_replace is currently supported only for JavaScript/TypeScript and Python"
         );
         if config.lang == Lang::Rust {
             ensure!(
@@ -589,7 +591,7 @@ mod tests {
     }
 
     #[test]
-    fn string_replacement_is_limited_to_javascript_runners() -> Result<()> {
+    fn string_replacement_requires_a_supported_runner() -> Result<()> {
         for runner in ["node", "bun", "vitest"] {
             let root = fixture(&format!(
                 "[js]\nrunner='{runner}'\noperators=['string_replace']\n"
@@ -597,15 +599,15 @@ mod tests {
             fs::write(root.path().join("package.json"), "{}")?;
             assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
         }
-        for runner in ["go", "rust", "python"] {
-            let executable = if runner == "python" {
-                "executable='venv/bin/python'\n"
-            } else {
-                ""
-            };
-            let root = fixture(&format!(
-                "[{runner}]\n{executable}operators=['string_replace']\n"
-            ));
+        let root =
+            fixture("[python]\nexecutable='venv/bin/python'\noperators=['string_replace']\n");
+        fs::write(
+            root.path().join("pyproject.toml"),
+            "[project]\nname='fixture'\n",
+        )?;
+        assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
+        for runner in ["go", "rust"] {
+            let root = fixture(&format!("[{runner}]\noperators=['string_replace']\n"));
             fs::write(
                 root.path().join("pyproject.toml"),
                 "[project]\nname='fixture'\nversion='0.0.0'\n",

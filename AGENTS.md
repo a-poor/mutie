@@ -908,3 +908,19 @@ OpenClaw has 13 selected session-key candidates (two kills, 11 survivors), all
 65 original report files and the original 15.38% filtered score. Focused 100%
 is not a full stronger-project score. Other languages' strings, templates and
 broader recipes remain separate; remote Linux CI validation requires a push.
+
+`benchmarks/python-strings.md` records Python `string_replace`: ordinary runtime
+str literals change nonempty to empty or empty to "x". Native AST admission resolves
+escapes and implicit concatenation; `python/string.rs` independently validates
+literal forms, emptiness and exact recipes and joins execution identity. Preserve
+raw/triple-quoted behavior, Unicode/NUL/surrogate values and original spans.
+Exclude standalone strings/docstrings, annotations/types, patterns, bytes and
+formatted/template subtrees. LF/CRLF coordinates are supported; existing CR-only
+mismatches remain rejected. Native parsing supplies Unicode-name validation.
+Ninety-two native pairs, CLI inventories and scored review/error/timeout workflows
+pass. Unchanged Scrubify accounts for 34 candidates across two reports (eight
+kills, 25 survivors, one error); separate-copy public-API tests kill all 19
+implementation survivors. Preserve all nine original inputs, 170 report files,
+failed scores and source-identity mappings. Six export/version survivors and the
+mask IndexError remain open; focused 100% is not a full stronger-suite score.
+Rust/Go strings and templates remain separate; remote CI requires a push.

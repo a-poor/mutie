@@ -46,6 +46,21 @@ Saved recipes must match exactly and fresh discovery must admit the original
 context. Setup/lifecycle errors and timeouts stay outside kills. See
 [native controls and unchanged session-key findings](../benchmarks/javascript-strings.md).
 
+Python `string_replace` uses the same nonempty-to-empty / empty-to-`"x"` rule
+for ordinary `str` literals. Raw, Unicode-prefixed and triple-quoted forms are
+supported; adjacent literals form one candidate using their combined decoded
+value. Escaped NULs and surrogates are nonempty; a nonraw line continuation alone
+is empty. Parenthesized replacements preserve grouping and member access.
+
+Standalone string statements (including docstrings), annotations/type parameters,
+match patterns, bytes, f-strings and template strings (including their expressions)
+are excluded. Runtime mapping keys, lookups, defaults, arguments and match guards
+remain eligible. Native parsing audits values without executing project code;
+the Rust reader independently checks literal forms and exact replacement recipes.
+Fresh discovery validates saved source context. LF/CRLF source coordinates are
+supported; CR-only coordinates and parsing warnings remain rejected. Errors and
+timeouts never become kills. See [native controls and unchanged Scrubify findings](../benchmarks/python-strings.md).
+
 JS/TS `number_replace` makes one change per eligible runtime literal: zero becomes
 one, and nonzero becomes zero. Number and BigInt stay distinct (`0 → (1)`,
 `7n → (0n)`). A directly attached unary sign belongs to the same candidate:
@@ -305,7 +320,7 @@ All twelve Go operators run by default; Rust runs `boolean_flip`, `comparison_in
 `assignment_remove`, and `number_replace`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
 `arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`,
-`call_remove`, `assignment_remove`, and `number_replace`. Vitest, Node and Bun run
+`call_remove`, `assignment_remove`, `number_replace`, and `string_replace`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
 `loop_skip`, `call_remove`, `assignment_remove`, `number_replace`, and `string_replace`.

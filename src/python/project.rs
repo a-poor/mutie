@@ -17,6 +17,9 @@ use crate::{
 
 /// Exact source recipes; AST admission and fresh discovery establish syntax/context.
 pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Operator> {
+    if super::string::replacement(original) == Some(replacement) {
+        return Some(Operator::StringReplace);
+    }
     if super::number::replacement(original) == Some(replacement) {
         return Some(Operator::NumberReplace);
     }

@@ -5,6 +5,7 @@ mod number;
 mod profile;
 pub(crate) mod project;
 mod protocol;
+mod string;
 pub(crate) use identity::ExecutionScope;
 #[cfg(all(test, unix))]
 mod tests;

@@ -11,6 +11,8 @@ mod assignments;
 mod calls;
 #[path = "support/python_numbers.rs"]
 mod numbers;
+#[path = "support/python_strings.rs"]
+mod strings;
 
 fn python() -> String {
     std::env::var("MUTIE_PYTHON").expect("set MUTIE_PYTHON to the pinned venv launcher")
@@ -400,12 +402,20 @@ addopts = "-q"
     };
     let reports = tempfile::tempdir().unwrap();
     let source = fs::read(root.path().join(source_name)).unwrap();
+    // Keep this Boolean review contract independent of the root-layout
+    // fixture's newly eligible version string.
     // This verifies reports/review/layout, not deadlines. Interpreter startup
     // can exceed five seconds under validation load; keep timeout probes separate.
     let first = scored_with_timeout(
         root.path(),
         reports.path(),
-        &["--fail-on-missed", "--max-log-bytes", "32"],
+        &[
+            "--operator",
+            "boolean_flip",
+            "--fail-on-missed",
+            "--max-log-bytes",
+            "32",
+        ],
         "15",
     );
     assert_eq!(first.status.code(), Some(3), "{first:?}");
@@ -493,7 +503,13 @@ addopts = "-q"
     let reviewed = scored_with_timeout(
         root.path(),
         reports.path(),
-        &["--fail-on-missed", "--min-score", "100"],
+        &[
+            "--operator",
+            "boolean_flip",
+            "--fail-on-missed",
+            "--min-score",
+            "100",
+        ],
         "15",
     );
     assert_eq!(reviewed.status.code(), Some(3), "{reviewed:?}");

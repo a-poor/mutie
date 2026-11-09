@@ -1312,7 +1312,8 @@ automatic sequence of work:
   Additional numeric recipes need separate acceptance;
   bound candidate growth and avoid duplicate or unchanged replacements.
 - JS/TS now has [bounded quoted-string replacement](benchmarks/javascript-strings.md).
-  Other languages, templates and broader recipes need separate acceptance.
+  Python now has [ordinary str-literal acceptance](benchmarks/python-strings.md).
+  Rust/Go strings, templates and broader recipes need separate acceptance.
   Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values.
 - Extend call removal or add carefully scoped statement/block removal to test
@@ -2571,3 +2572,26 @@ selected session-key module has two kills and 11 survivors across 13 candidates.
 Five separate-copy public-API tests kill all 11; original inputs, reports and
 the 15.38% filtered score remain unchanged. Templates, other languages' strings
 and broader replacement sets require separate acceptance.
+
+### Python string literals
+
+The pinned native AST selects ordinary `str` constants and resolves their decoded
+value, including implicit concatenation. Nonempty becomes `("")`; empty becomes
+`("x")`. Raw/Unicode prefixes, triple quotes, escapes and line continuations
+preserve exact original spans. Standalone strings/docstrings, annotations/types,
+patterns, bytes and formatted/template string subtrees are excluded. Runtime
+mapping keys, lookups, defaults and guards remain eligible.
+
+`python/string.rs` independently validates literal token forms, concatenation
+trivia, emptiness and exact wire recipes. Native parsing supplies Unicode-name
+resolution; fresh discovery validates saved context. This reader joins the
+execution recipe fingerprint. LF/CRLF coordinates are checked; existing CR-only
+coordinate mismatches remain rejected. No source evaluation or classifier change
+is introduced.
+
+[Acceptance](benchmarks/python-strings.md) records 92 native pairs, independent
+CLI inventories, scored review/rerun/error/timeout controls and unchanged Scrubify.
+All 34 candidates are accounted for across two reports: eight kills, 25 survivors
+and one error, not a full score. Separate-copy public-API tests kill all 19
+implementation survivors; six export/version survivors and the mask error remain
+open. Original inputs, reports and scores stay unchanged.

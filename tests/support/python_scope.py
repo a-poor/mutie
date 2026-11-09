@@ -746,7 +746,7 @@ def test_data(tmp_path):
             text = source.replace('\n',newline)
             self.write('sample/__init__.py',text)
             sites = scope.inspect(self.root)['mutations']
-            self.assertEqual([m['original'] for m in sites], ['and','or','or','and','or','and'])
+            self.assertEqual([m['original'] for m in sites], ['"π and or"','and','or','or','and','or','and'])
             raw = text.encode()
             for site in sites:
                 self.assertEqual(raw[site['start']:site['end']].decode(),site['original'])
@@ -1172,8 +1172,8 @@ def test_data(tmp_path):
         self.write("sample/__init__.py", 'from typing import Literal\n'
                    'label = "π"; active: Literal[True] = False\n')
         result = scope.inspect(self.root)
-        self.assertEqual(len(result["mutations"]), 1)
-        mutation = result["mutations"][0]
+        self.assertEqual([m['original'] for m in result['mutations']], ['"π"', 'False'])
+        mutation = result["mutations"][1]
         data = (self.root / mutation["file"]).read_bytes()
         self.assertEqual(data[mutation["start"]:mutation["end"]], b"False")
 

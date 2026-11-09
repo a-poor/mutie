@@ -175,6 +175,15 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
     patterns = {part for node in ast.walk(tree)
                 if isinstance(node, (ast.pattern, ast.TypeAlias, ast.type_param))
                 for part in ast.walk(node)}
+    # Do not change documentation or formatted/template strings. Excluding all
+    # standalone string expressions also covers attribute/additional docstrings.
+    string_exclusions = {part for node in ast.walk(tree)
+                         if isinstance(node, (ast.JoinedStr, ast.TemplateStr))
+                         for part in ast.walk(node)}
+    string_exclusions.update(node.value for node in ast.walk(tree)
+                             if isinstance(node, ast.Expr)
+                             and isinstance(node.value, ast.Constant)
+                             and type(node.value.value) is str)
     tokens = []
     for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
         if ((token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%"})
@@ -196,6 +205,16 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
                          for part in ast.walk(node)}
     for node in ast.walk(tree):
         if node in annotation_nodes:
+            continue
+        if (isinstance(node, ast.Constant) and type(node.value) is str
+                and node not in patterns and node not in string_exclusions):
+            start, end = bounds(node)
+            # The AST combines adjacent literals and resolves their escapes.
+            # Emit one exact source span; never evaluate/import project code.
+            yield dict(file=relative, start=start, end=end, line=node.lineno,
+                       column=node.col_offset + 1, end_line=node.end_lineno,
+                       end_column=node.end_col_offset + 1, original=data[start:end].decode(),
+                       replacement='("")' if node.value else '("x")')
             continue
         literal = numeric(node)
         if literal is not None and node not in signed_children and node not in patterns:

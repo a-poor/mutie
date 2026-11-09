@@ -247,7 +247,13 @@ Split implementation goals by language/runner when acceptance becomes too large.
    session-key module has 13 candidates (two kills, 11 survivors); five
    separate-copy public-API tests kill all 11 survivors. See
    [acceptance](benchmarks/javascript-strings.md).
-   Python/Rust/Go strings, templates and broader literal recipes remain open.
+   Python string slice completed: ordinary/raw/triple-quoted strings, implicit
+   concatenation, value-aware emptiness, exact recipes and native/scored controls.
+   Unchanged Scrubify has 34 candidates across two runs (eight kills, 25 survivors,
+   one error); separate-copy public-API tests kill all 19 implementation survivors.
+   Six export/version survivors and the mask error remain open. See
+   [acceptance](benchmarks/python-strings.md).
+   Rust/Go strings, templates and broader literal recipes remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

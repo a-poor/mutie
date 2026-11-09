@@ -316,7 +316,10 @@ impl LoadedReport {
                 mutation.operator != Operator::StringReplace
                     || matches!(
                         run.language(),
-                        crate::cli::Lang::Node | crate::cli::Lang::Bun | crate::cli::Lang::Vitest
+                        crate::cli::Lang::Node
+                            | crate::cli::Lang::Bun
+                            | crate::cli::Lang::Vitest
+                            | crate::cli::Lang::Python
                     ),
                 "saved string mutation is outside supported language scope"
             );

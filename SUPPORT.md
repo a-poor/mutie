@@ -865,4 +865,24 @@ two kills and 11 survivors. Five tests in a separate copy kill all 11; its
 67-test baseline passes. All 63 original inputs and 65 original report files
 remain unchanged. The original 15.38% filtered score stays distinct from the
 focused 100%. This revisits an existing project and adds no runtime, dependency
-or layout support. Python/Rust/Go strings and templates remain unimplemented.
+or layout support. Rust/Go strings and templates remain unimplemented; Python's
+ordinary string scope is recorded below.
+
+### Python string literals
+
+[String acceptance](benchmarks/python-strings.md) adds `string_replace` for
+ordinary runtime `str` literals: nonempty to empty, empty to `"x"`. Raw/Unicode
+prefixes, triple quotes, decoded escapes and implicit concatenation are supported.
+Docstrings/standalone strings, annotations/types, patterns, bytes and all
+formatted/template string subtrees remain excluded. Exact wire recipes and fresh
+AST/source matching protect reruns; LF/CRLF coordinates remain the supported scope.
+
+Ninety-two native pairs and three scored/discovery workflows cover value/type,
+review, stronger reruns, errors, timeouts and source/report preservation.
+Unchanged Scrubify's six-test baseline yields 34 candidates across two runs:
+eight kills, 25 survivors and one error. Combined accounting is not a full score.
+Separate-copy tests produce a 32-test baseline and kill all 19 implementation
+survivors. Six export/version survivors and the mixed assertion/IndexError mask
+mutation remain open. All nine original inputs and 170 original report files are
+preserved. The focused 100% does not replace historical scores. This revisits an
+existing project without broadening runtime/dependency/layout support.
