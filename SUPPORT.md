@@ -594,6 +594,17 @@ failures to explicit assertion kills, while three error controls and the survivo
 retain their outcomes. No discovery/classification change or new coverage-gap
 claim follows; original failed reports remain unchanged and unscored.
 
+### Standalone-call removal
+
+[Python call-removal acceptance](benchmarks/python-calls.md) covers complete native
+call statements replaced with `pass`, skipped receiver/argument/unpacking effects,
+binding/suspension exclusions and preserved statement boundaries. Scored fixture
+checks cover review, stronger-test reruns, forged identities and runtime/cleanup
+errors. Unchanged Route Mini has seven selected routing calls: one kill, four
+survivors and two errors. Three separate-copy tests kill the exception-message
+and two telemetry survivors. The sleep survivor remains open; the original run
+remains failed/unscored. This adds no arbitrary statement/block removal.
+
 ### Audited pure-Python dependency
 
 [Dependency acceptance](benchmarks/python-dependencies-tinycss2.md) validates

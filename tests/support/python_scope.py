@@ -25,6 +25,129 @@ class ScopeTests(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
 
+    def call_sites(self, source):
+        self.write('sample/__init__.py', source)
+        return [m for m in scope.inspect(self.root)['mutations'] if m['replacement'] == 'pass']
+
+    def test_call_inventory_excludes_value_uses_annotations_and_tests(self):
+        source = ('module_call()\n'
+                  'def f(a):\n a()\n ((a.b()))\n a(c(), key=d())\n'
+                  ' (lambda x: x)(1)\n'
+                  ' if flag: first(); second()\n'
+                  ' value = used()\n annotated: annotation() = used()\n return used()\n'
+                  '@decorator()\ndef g(): return used()\n'
+                  'class C:\n field=used()\n def method(self): self.action()\n')
+        sites = self.call_sites(source)
+        self.assertEqual([m['original'] for m in sites], [
+            'module_call()', 'a()', '((a.b()))', 'a(c(), key=d())',
+            '(lambda x: x)(1)', 'first()', 'second()', 'self.action()'])
+        self.write('tests/test_sample.py', 'def test_call():\n exercise()\n')
+        self.assertEqual(self.call_sites(source), sites)
+
+    def test_call_coordinates_match_native_pass_replacement(self):
+        import ast
+        source = ('label="π"\ndef f(call):\n'
+                  ' ((call( # inside\n    "π"\n ))) # outside\n'
+                  ' if label: call(); call()\n'
+                  ' call(\\\n     2)\n'
+                  ' call("a\u2028b")\n')
+        for newline in ('\n', '\r\n'):
+            raw = source.replace('\n', newline).encode()
+            sites = self.call_sites(raw.decode())
+            self.assertEqual(len(sites), 5)
+            for site in sites:
+                self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+                changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+                expected = ast.parse(raw)
+                class Replace(ast.NodeTransformer):
+                    def visit_Expr(self, node):
+                        if (node.lineno, node.col_offset + 1) == (site['line'], site['column']):
+                            return ast.Pass()
+                        return self.generic_visit(node)
+                expected = Replace().visit(expected)
+                self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
+                self.assertIn(b'# outside', changed)
+
+    def test_call_removal_skips_receiver_descriptor_arguments_and_body(self):
+        source = 'def f(factory, arg, kw, trace):\n factory().method(arg(), key=kw())\n trace.append("after")\n'
+        site = self.call_sites(source)[0]
+        trace = []
+        class Receiver:
+            @property
+            def method(self):
+                trace.append('descriptor')
+                def invoke(value, key): trace.append(('body', value, key))
+                return invoke
+        def factory(): trace.append('receiver'); return Receiver()
+        def arg(): trace.append('arg'); return 3
+        def kw(): trace.append('kw'); return 4
+        original = {}; exec(source, original)
+        original['f'](factory, arg, kw, trace)
+        self.assertEqual(trace, ['receiver', 'descriptor', 'arg', 'kw', ('body', 3, 4), 'after'])
+        trace.clear()
+        raw = source.encode()
+        changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+        mutated = {}; exec(compile(changed, '<call-control>', 'exec'), mutated)
+        mutated['f'](factory, arg, kw, trace)
+        self.assertEqual(trace, ['after'])
+        # Even lookup and argument exceptions are skipped, without changing the
+        # behavior or classification of code that remains after the call.
+        mutated['f'](None, None, None, trace)
+        self.assertEqual(trace, ['after', 'after'])
+
+    def test_call_removal_skips_unpacking_and_ignores_return_truthiness(self):
+        source = 'def f(target, args, kwargs, value):\n target(*args(), **kwargs())\n return value\n'
+        site, = self.call_sites(source)
+        trace = []
+        class BoolBomb:
+            def __bool__(self): raise AssertionError('return value must not be coerced')
+        value = BoolBomb()
+        def args(): trace.append('args'); return [3]
+        def kwargs(): trace.append('kwargs'); return {'key': 4}
+        def target(*a, **kw): trace.append((a, kw)); return value
+        original = {}; exec(source, original)
+        self.assertIs(original['f'](target, args, kwargs, value), value)
+        self.assertEqual(trace, ['args', 'kwargs', ((3,), {'key': 4})])
+        raw = source.encode()
+        changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+        mutated = {}; exec(compile(changed, '<call-control>', 'exec'), mutated)
+        trace.clear()
+        self.assertIs(mutated['f'](target, args, kwargs, value), value)
+        self.assertEqual(trace, [])
+
+    def test_call_removal_excludes_bindings_suspension_and_retains_generator_kind(self):
+        import inspect
+        for call in ['sink(x := 1)', 'sink([x := y for y in values])',
+                     'sink(lambda: (x := 1))', 'sink((yield 1))', 'sink((yield from values))',
+                     '(lambda: (yield 1))()']:
+            source = 'def f(sink, values):\n ' + call + '\n'
+            self.assertEqual(self.call_sites(source), [], call)
+        source = 'def f(call):\n call()\n yield 7\n'
+        site, = self.call_sites(source)
+        raw = source.encode()
+        changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+        namespace = {}; exec(compile(changed, '<call-control>', 'exec'), namespace)
+        self.assertTrue(inspect.isgeneratorfunction(namespace['f']))
+        self.assertEqual(list(namespace['f'](None)), [7])
+        with self.assertRaisesRegex(ValueError, 'async'):
+            self.call_sites('async def f():\n await action()\n')
+
+    def test_call_pass_preserves_empty_suites_docstrings_and_surrounding_exceptions(self):
+        for source in ['def f(call): call()\n', 'def f(call):\n call()\n "not a docstring"\n']:
+            site, = self.call_sites(source)
+            raw = source.encode()
+            changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+            namespace = {}; exec(compile(changed, '<call-control>', 'exec'), namespace)
+            self.assertIsNone(namespace['f'](None))
+            self.assertIsNone(namespace['f'].__doc__)
+        source = 'def f(call):\n call(); raise ValueError("retained")\n'
+        site, = self.call_sites(source)
+        raw = source.encode()
+        changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+        namespace = {}; exec(compile(changed, '<call-control>', 'exec'), namespace)
+        with self.assertRaisesRegex(ValueError, 'retained'):
+            namespace['f'](None)
+
     def loop_sites(self, source):
         self.write('sample/__init__.py', source)
         return [m for m in scope.inspect(self.root)['mutations'] if m.get('loop_skip')]

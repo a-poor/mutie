@@ -2383,3 +2383,16 @@ identity. Shared execution/classification/report versions are unchanged.
 The UCD Parse full-workspace run finds two collection-population survivors;
 separate-copy tests kill both. Preserve original inputs, reports and filtered
 scores. Broader statement removal remains separate work.
+
+Python `call_remove` uses native `Expr(Call)` spans and exact `pass` replacements.
+This preserves empty suites, semicolon neighbors and docstring positions while
+skipping receiver/argument/unpacking/invocation effects. Value-used calls,
+annotations/tests and call subtrees with assignment expressions or suspension
+are excluded; no type inference separates constructors or callable objects.
+The saved reader checks the wire recipe; fresh AST/source/operator matching
+rejects forged non-call spans before execution. Runtime/lifecycle classification
+and all identity checks remain strict. Native discovery omits false loop markers
+so reserialization cannot misreport an unchanged branch-containing project as
+changed. [Acceptance](benchmarks/python-calls.md) records three useful Route Mini
+findings killed by separate-copy tests, with the original failed report, errors
+and remaining sleep survivor preserved.

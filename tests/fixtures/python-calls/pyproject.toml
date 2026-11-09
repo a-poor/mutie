@@ -1,0 +1,6 @@
+[project]
+name = "mutie-python-calls"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

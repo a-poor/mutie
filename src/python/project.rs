@@ -17,6 +17,12 @@ use crate::{
 
 /// Exact source recipes; AST admission and fresh discovery establish syntax/context.
 pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Operator> {
+    // The pinned AST helper admits only complete Expr(Call) spans. As for
+    // branch recipes, fresh AST/operator/source matching is required on rerun;
+    // this wire-format check is not a second Python parser.
+    if replacement == "pass" && !original.trim().is_empty() && original != "pass" {
+        return Some(Operator::CallRemove);
+    }
     if !original.trim().is_empty() && !matches!(original, "True" | "False") {
         for (operator, guard) in [
             (Operator::BranchForceTrue, "True or"),
@@ -260,6 +266,24 @@ impl Project {
 mod tests {
     use super::*;
     use serde_json::json;
+
+    #[test]
+    fn call_wire_recipe_requires_exact_pass() {
+        // Syntax admission belongs to the pinned AST helper; reruns rediscover
+        // the complete source identity before accepting this wire recipe.
+        for original in ["f()", "((receiver.method(π)))", "f(\n  value,\n)"] {
+            assert_eq!(
+                mutation_operator(original, "pass"),
+                Some(Operator::CallRemove)
+            );
+            for replacement in ["", "None", "pass;", " pass", "pass\n"] {
+                assert_eq!(mutation_operator(original, replacement), None);
+            }
+        }
+        for original in ["", " ", "pass"] {
+            assert_eq!(mutation_operator(original, "pass"), None);
+        }
+    }
 
     #[test]
     fn branch_recipes_are_exact() {

@@ -754,3 +754,17 @@ reparse the recipe and reruns must match source identity. Separate-copy tests ki
 two unchanged UCD Parse collection survivors; preserve original 60% filtered score
 and input/report hashes. Native semantic and scored fixture tests remain opt-in
 and are included in the Rust Linux CI job.
+
+`benchmarks/python-calls.md` records Python standalone-call removal. Replace only
+native Expr(Call) statement spans with exact `pass`; preserve empty suites,
+parentheses/separators and docstring positions. Skip all receiver/argument/body
+effects. Exclude value uses, annotations/tests and every call subtree containing
+named expressions, yield/yield-from or await. Rust validates the wire recipe;
+fresh AST/source/operator matching establishes syntax on rerun. Ordinary runtime
+and lifecycle failures remain errors. Optional false loop markers must also be
+omitted by the native helper to match Rust's reserialized discovery document.
+Three separate-copy tests kill Route Mini's exception-message/no-route/blocked
+telemetry survivors. Preserve the original failed/unscored report, its two errors,
+the unresolved sleep survivor and all input/report hashes. Python operator CI
+includes the new scored workflows; arbitrary statement/block removal remains out
+of scope.

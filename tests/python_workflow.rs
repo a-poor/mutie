@@ -5,6 +5,9 @@ use invocation::{Child, Command};
 
 use std::{fs, path::Path};
 
+#[path = "support/python_calls.rs"]
+mod calls;
+
 fn python() -> String {
     std::env::var("MUTIE_PYTHON").expect("set MUTIE_PYTHON to the pinned venv launcher")
 }
@@ -32,11 +35,7 @@ fn fixture() -> tempfile::TempDir {
 #[test]
 fn unsupported_scored_options_fail_before_runtime_launch() {
     let root = fixture();
-    for args in [
-        vec!["--jobs", "2"],
-        vec!["--test-scope", "affected"],
-        vec!["--operator", "call_remove"],
-    ] {
+    for args in [vec!["--jobs", "2"], vec!["--test-scope", "affected"]] {
         let output = Command::new(env!("CARGO_BIN_EXE_mutie"))
             .arg(root.path())
             .args(["--lang", "python", "--python", "/missing-python", "--list"])

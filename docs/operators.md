@@ -74,6 +74,17 @@ removes call statements only, not arbitrary statements or blocks. Saved reports
 require the exact parsed statement and `{}` recipe. See
 [native controls and unchanged UCD findings](../benchmarks/rust-calls.md).
 
+Python `call_remove` replaces a complete ordinary call statement with `pass`,
+including outer parentheses. It skips receiver/property lookup, argument and
+unpacking effects, and invocation. `pass` preserves empty suites, semicolon
+neighbors and docstring positions. Calls used as values, annotations and tests
+are excluded, as are call subtrees containing `:=`, `yield`, `yield from` or
+`await`, even inside nested closures. Ordinary constructors and callable objects
+have no separate static type restriction. Runtime and lifecycle failures remain
+errors. Saved recipes require exact `pass`; focused reruns also require fresh
+AST/source/operator identity. See
+[native controls and unchanged Route Mini findings](../benchmarks/python-calls.md).
+
 Python `loop_skip` wraps an ordinary `while` condition as
 `(False and (original))`, skipping all condition effects, truthiness and body
 execution. Native zero-iteration semantics apply: `while…else` still runs.
@@ -162,7 +173,7 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
-`arithmetic_replace`, `branch_force_true`, `branch_force_false`, and `loop_skip`. Vitest, Node and Bun run
+`arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
 `loop_skip`, and `call_remove`.

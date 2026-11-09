@@ -143,7 +143,7 @@ def validate_fixture_request(tree):
 
 
 def operator_sites(tree, text, data, annotation_nodes, relative):
-    """Discover native token edits, unary-not removal and skipped if conditions."""
+    """Discover native token edits and scoped expression/statement mutations."""
     # AST rows use physical newlines, not Unicode string line separators.
     lines = [line.decode("utf-8") for line in data.splitlines(keepends=True)]
     offsets = [0]
@@ -164,6 +164,20 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
     for node in ast.walk(tree):
         if node in annotation_nodes:
             continue
+        if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call):
+            # Removing bindings can alter symbol-table scope; removing yield can
+            # turn an enclosing generator into an ordinary function. Do not infer
+            # nested closure/generator boundaries or broaden async admission.
+            if any(isinstance(part, (ast.NamedExpr, ast.Yield, ast.YieldFrom, ast.Await))
+                   for part in ast.walk(node.value)):
+                continue
+            start = offsets[node.lineno - 1] + node.col_offset
+            end = offsets[node.end_lineno - 1] + node.end_col_offset
+            yield dict(file=relative, start=start, end=end, line=node.lineno,
+                       column=node.col_offset + 1, end_line=node.end_lineno,
+                       end_column=node.end_col_offset + 1,
+                       original=data[start:end].decode(), replacement="pass")
+            continue
         if isinstance(node, (ast.If, ast.While)):
             condition = node.test
             # Parentheses do not survive in AST spans. Literal Boolean conditions
@@ -180,7 +194,7 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
                            column=condition.col_offset + 1, end_line=condition.end_lineno,
                            end_column=condition.end_col_offset + 1, original=original,
                            replacement="(" + guard + " (" + original + "))",
-                           loop_skip=isinstance(node, ast.While))
+                           **({"loop_skip": True} if isinstance(node, ast.While) else {}))
             continue
         if isinstance(node, ast.UnaryOp) and isinstance(node.op, ast.Not):
             start = offsets[node.lineno - 1] + node.col_offset

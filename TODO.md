@@ -178,7 +178,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    recipes, native receiver/argument/ownership/drop controls, fresh/cached agreement
    and build-failure separation. Separate-copy tests kill two unchanged UCD Parse
    row/map collection survivors. See [acceptance](benchmarks/rust-calls.md).
-   Python call removal and evaluation of broader statement/block removal remain.
+   Ninth slice completed: Python standalone-call removal with native AST spans,
+   skipped-effects/binding/generator controls, strict runtime/lifecycle errors,
+   review and reruns. Separate-copy tests kill three unchanged Route Mini
+   exception/telemetry survivors. See [acceptance](benchmarks/python-calls.md).
+   Evaluate broader statement/block removal separately; no arbitrary removal is
+   implemented by these call operators.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.
