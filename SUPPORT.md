@@ -1,7 +1,8 @@
 # Target support
 
 Current source uses `mutie run`, `mutie list`, `mutie check` and `mutie rerun`
-with language sections in `mutie.toml`; see [usage](docs/usage.md). Historical
+from the current directory, with global `--path DIR` for another directory and
+language sections in `mutie.toml`; see [usage](docs/usage.md). Historical
 CLI spellings below identify acceptance evidence, not the current interface.
 This redesign does not expand runner scopes or add mixed-language execution.
 

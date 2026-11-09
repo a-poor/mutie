@@ -158,7 +158,7 @@ for fresh runs, listings and reruns:
 operators = ["arithmetic_replace", "call_remove"]
 ```
 
-Then run `mutie list PATH` or `mutie run PATH --jobs 2`. Duplicates are removed;
+Then run `mutie list` or `mutie run --jobs 2`. Duplicates are removed;
 unknown or unsupported names are errors. Omit the list (or use `operators = []`)
 for all supported operators. Operator selection
 intersects with file scope and, for reruns, saved IDs and outcome selection.

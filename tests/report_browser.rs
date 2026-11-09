@@ -1,19 +1,15 @@
 #![cfg(unix)]
 
 //! Exercise the standalone browser with a real terminal and no Go on PATH.
-#[path = "support/invocation.rs"]
-mod invocation;
-#[allow(unused_imports)]
-use invocation::{Child, Command};
-
 use serde_json::json;
 use std::{
     fs::{self, File},
     io::{self, Read, Write},
     mem::MaybeUninit,
     os::fd::{AsRawFd, FromRawFd},
+    os::unix::process::CommandExt,
     path::{Path, PathBuf},
-    process::{ExitStatus, Stdio},
+    process::{Child, Command, ExitStatus, Stdio},
     sync::Mutex,
     thread,
     time::{Duration, Instant},
@@ -154,9 +150,10 @@ impl Session {
             .unwrap();
         let mut command = Command::new(env!("CARGO_BIN_EXE_mutie"));
         command
+            .arg("--path")
+            .arg(temp.path())
             .arg("report")
-            .arg(&root)
-            .current_dir(temp.path())
+            .arg("saved run")
             .env("PATH", "")
             .env("TERM", "xterm-256color")
             // Expected interruption errors can push shell output into scrollback.
@@ -409,7 +406,7 @@ fn browser_filters_inspects_and_exports_preserving_the_shell_and_report() {
     let printed = &output[restored..];
     assert!(
         printed.contains("mutie rerun ")
-            && printed.contains(" '/missing/a project'\\''s checkout' --lang go")
+            && printed.contains(" --path '/missing/a project'\\''s checkout' --lang go")
     );
     assert!(printed.contains("--id 1,2"));
 }
@@ -435,7 +432,9 @@ fn current_row_command_uses_the_module_override() {
     assert!(session.finish().success());
     session.assert_restored();
     let output = String::from_utf8_lossy(&session.output);
-    assert!(output.contains("mutie rerun ") && output.contains(" '/moved/$checkout' --lang go"));
+    assert!(
+        output.contains("mutie rerun ") && output.contains(" --path '/moved/$checkout' --lang go")
+    );
     assert!(output.contains("--id 2"));
 }
 

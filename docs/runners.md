@@ -14,6 +14,7 @@
 | Python / pytest | CPython 3.14.7, pytest 9.0.2 | One flat or src package; narrowly audited dependencies and fixtures. |
 
 `mutie init` can identify supported tooling and write an initial configuration.
+Examples run from the project directory; use global `--path DIR` to work elsewhere.
 Discovery and a passing isolated baseline are still required. See the sections
 below for layout, dependency and test-runner restrictions.
 
@@ -30,7 +31,7 @@ linker are outside this acceptance. Vite+ may manage installation, but `vp test`
 uses a different bundled runner and is explicitly unsupported. See the
 [package-manager audit and validation](../benchmarks/package-managers.md).
 
-Configure `[js]` with `runner = "vitest"`, then run `mutie run PATH --ui plain` against a prepared, pinned ESM
+Configure `[js]` with `runner = "vitest"`, then run `mutie run --plain` against a prepared, pinned ESM
 package to discover supported expression mutations, run the full suite in isolated copies, and save
 scored outcomes. This initial path supports one worker. A static coverage-reporter-only
 Vite/Vitest config is accepted without executing it; coverage remains disabled.
@@ -51,13 +52,13 @@ assertion-count failures remain conservatively rejected.
 Worker evidence requires the audited Vitest runner bytes; expected-failure tests
 (`test.fails`) are unsupported. See the [lifecycle evidence](../benchmarks/vitest-lifecycle-attribution.md). Dismissal review, `fail_on_missed`, and `min_score` config policies are
 available within this scope; see [review/policy validation](../benchmarks/vitest-dismissals.md).
-Use `mutie rerun RUN_DIR PATH --missed` after improving tests;
-`mutie rerun RUN_DIR PATH --id ID` selects individual saved mutations. Reruns require
+Use `mutie rerun RUN_DIR --missed` after improving tests;
+`mutie rerun RUN_DIR --id ID` selects individual saved mutations. Reruns require
 unchanged source identity and pinned package/runner/config identity; see
 [rerun validation](../benchmarks/vitest-focused-reruns.md).
 
-`mutie list PATH` is a read-only preview; configure `include`/`exclude` and
-`operators` under `[js]`. `mutie check PATH` checks the same isolated baseline used
+`mutie list` is a read-only preview; configure `include`/`exclude` and
+`operators` under `[js]`. `mutie check` checks the same isolated baseline used
 by a run. Both commands apply `mutie.toml` and do not save reports. See [CLI validation](../benchmarks/vitest-shared-runs.md) and the
 [execution boundary](../benchmarks/vitest-execution.md) for pinned dependencies,
 setup and conservative failure attribution.
@@ -65,10 +66,10 @@ setup and conservative failure attribution.
 ## Scoped Node test runner
 
 ```sh
-mutie init PATH --lang js --runner node
-mutie run PATH --ui plain
-mutie list PATH
-mutie rerun RUN_DIR PATH --missed
+mutie init --lang js --runner node
+mutie run --plain
+mutie list
+mutie rerun RUN_DIR --missed
 ```
 
 The initial scope is one dependency-free ESM package using audited Node **24.22.0**
@@ -141,7 +142,7 @@ survivors with tests for CLI defaults, collector behavior and browser fallback.
 The Bun runner’s [initial audit](../benchmarks/bun-initial-scope.md)
 records JS/TS fixtures and real-project probes. A
 [bounded observer prototype](../benchmarks/bun-body-attribution.md) now distinguishes
-body failures from unsafe outcomes in paired probes. `mutie check PATH` with `[js].runner = "bun"` now
+body failures from unsafe outcomes in paired probes. `mutie check` with `[js].runner = "bun"` now
 checks a baseline in a fresh copy using pinned Bun 1.3.11+af24e281e. This diagnostic
 accepts dependency-free ESM packages with `scripts.test: "bun test"`, `.js`/`.ts`
 source under `src/`, and `.test.js`/`.test.ts` tests under `test/` or `tests/`.
@@ -151,10 +152,10 @@ imports remain unsupported. Declared development installations are retained and
 fingerprinted, including owned links within `node_modules`. Examples/release scripts may be present but cannot be imported
 by audited source/tests. The unchanged 272-test Composer baseline and stronger-test
 finding now pass through this executor; see [acceptance](../benchmarks/bun-composer-execution.md).
-`mutie list PATH --json` previews runtime
-supported expression mutations without launching Bun. `mutie check PATH --json` emits baseline status and duration; see [discovery and identity](../benchmarks/bun-discovery-identity.md).
-`mutie run PATH` with the Bun runner configured now runs serial, full-suite expression mutations with saved
-reports and focused reruns (`mutie rerun RUN_DIR PATH --id ID` or `mutie rerun RUN_DIR PATH --missed`).
+`mutie list --json` previews runtime
+supported expression mutations without launching Bun. `mutie check --json` emits baseline status and duration; see [discovery and identity](../benchmarks/bun-discovery-identity.md).
+`mutie run` with the Bun runner configured now runs serial, full-suite expression mutations with saved
+reports and focused reruns (`mutie rerun RUN_DIR --id ID` or `mutie rerun RUN_DIR --missed`).
 JavaScript and TypeScript are independently Validated within this scope. Raw captures have a mandatory
 4 MiB default budget; Unix per-file limits bound evidence, not total disk usage.
 Reruns allow stronger tests but reject runtime bytes, package/config or observer
@@ -172,7 +173,7 @@ fingerprinted but cannot be imported by audited runtime files. Hidden packaging
 tests and CommonJS runtime files remain rejected.
 
 For real Bun mutation runs, prefer `cargo build --release` and
-`target/release/mutie run PATH`. The [execution profile](../benchmarks/bun-feedback-profile.md)
+`target/release/mutie run`. The [execution profile](../benchmarks/bun-feedback-profile.md)
 measured a 22-candidate run at 306.65s in fully unoptimized debug versus 19.76s
 in release with matching outcomes. Development and test builds now optimize the
 `sha2` dependency to reduce fingerprinting overhead while retaining every byte check.
@@ -259,11 +260,11 @@ with the additional [hash-pinned wheel](../benchmarks/fixtures/python-dependency
 Mutie never resolves or installs dependencies; undeclared additions are rejected:
 
 ```sh
-mutie init /path/to/project --lang python --python /path/to/venv/bin/python
-mutie list /path/to/project
-mutie check /path/to/project
-mutie run /path/to/project
-mutie rerun /path/to/saved/run /path/to/project --missed
+mutie init --lang python --python /path/to/venv/bin/python
+mutie list
+mutie check
+mutie run
+mutie rerun /path/to/saved/run --missed
 ```
 
 ## Rust support

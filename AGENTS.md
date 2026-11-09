@@ -3,14 +3,18 @@
 ## Current CLI and configuration
 
 Bare `mutie` prints help. Use `mutie run`, `mutie list`, `mutie check` and
-`mutie rerun RUN [PATH]` (`--missed`, `--id`, `--dry-run`). Runner-specific
+`mutie rerun RUN` (`--missed`, `--id`, `--dry-run`). Commands use the current
+directory; global `--path DIR` changes the working directory for all relative
+command paths. Project directories are not positional arguments. Runner-specific
 `*-list`/`*-check` commands and root execution flags were removed in the
 2026-11-07 redesign. `mutie.toml` has top-level execution defaults and `[go]`,
 `[rust]`, `[js]`, `[python]` sections; `[js].runner` selects Vitest/Node/Bun.
 Section presence enables a language, `enabled = false` disables it, and multiple
 enabled languages require `--lang` (one project per invocation). Configured paths
 are relative to the config file; source globs are relative to the selected project.
-UI/verbosity are invocation-only. Source/operator/policy/runner settings are config
+Presentation/verbosity are invocation-only: automatic live output, `--plain`, or
+streaming `--json` for run/rerun. The two flags conflict; `--ui` was removed.
+Source/operator/policy/runner settings are config
 fields; jobs/timeout retain CLI overrides. See `docs/usage.md` for migration.
 Historical command spellings below and in benchmarks describe retained evidence.
 Adapter test fixtures materialize settings in external config files through
@@ -25,6 +29,9 @@ Rust packages and scoped Vitest packages, plus a validated scoped JavaScript/nat
 - `src/config.rs` loads repository settings and resolves explicit CLI overrides.
 - `src/coordinator.rs` feeds execution events to reports and run-state snapshots;
   `src/status.rs` renders the live Ratatui view and manages terminal cleanup.
+  `src/json_output.rs` writes flushed JSON records from the coordinator. Preserve
+  stdout purity, report/score agreement, failure exit codes and worker cleanup
+  after write errors; see `docs/output.md` and JSON controls in `tests/configuration.rs`.
 - `src/go.rs` integrates Go tooling; `mutation.rs` discovers mutations with Tree-sitter.
 - `src/language.rs` dispatches language commands; `command.rs` shares captures,
   classification and progress phases. `src/rust.rs` runs isolated Cargo commands;

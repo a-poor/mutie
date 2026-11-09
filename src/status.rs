@@ -6,15 +6,18 @@ use std::{
 
 use anyhow::{Context, Result, ensure};
 use crossterm::{
-    cursor::{MoveToColumn, MoveUp, Show},
-    execute, queue,
+    cursor::{MoveTo, Show},
+    execute,
     style::ResetColor,
-    terminal::{Clear, ClearType, DisableLineWrap, EnableLineWrap},
+    terminal::{
+        Clear, ClearType, DisableLineWrap, EnableLineWrap, EnterAlternateScreen,
+        LeaveAlternateScreen,
+    },
 };
 use ratatui::{
-    Frame, Terminal, TerminalOptions, Viewport,
-    backend::{Backend, ClearType as BackendClearType, CrosstermBackend},
-    layout::{Constraint, Layout, Rect, Size},
+    Frame, Terminal,
+    backend::CrosstermBackend,
+    layout::{Constraint, Layout},
     style::{Color, Style, Stylize},
     text::{Line, Span},
     widgets::Paragraph,
@@ -52,13 +55,6 @@ fn select_mode(
         return Ok(false);
     }
     let supported = stdin_tty && stdout_tty && !dumb;
-    if mode == UiMode::Interactive {
-        ensure!(
-            supported,
-            "interactive UI requires terminal stdin/stdout and TERM other than dumb; use --ui plain"
-        );
-        return Ok(true);
-    }
     Ok(supported && !ci)
 }
 
@@ -66,49 +62,52 @@ fn select_mode(
 static LIVE: AtomicBool = AtomicBool::new(false);
 
 pub struct LiveTerminal {
-    terminal: Terminal<CrosstermBackend<Vec<u8>>>,
-    size: Size,
-    height: u16,
-    area: Rect,
+    terminal: Terminal<CrosstermBackend<io::Stdout>>,
     restored: bool,
 }
 
 impl LiveTerminal {
-    pub fn start(workers: usize, cancellation: Cancellation) -> Result<Self> {
+    pub fn start(cancellation: Cancellation) -> Result<Self> {
         let previous_hook = std::panic::take_hook();
         std::panic::set_hook(Box::new(move |info| {
             cancellation.cancel();
             if LIVE.swap(false, Ordering::SeqCst) {
-                // A panic may interrupt a backend cursor-position query.
-                let _ = crossterm::terminal::disable_raw_mode();
                 let _ = restore_writer(&mut io::stdout());
             }
             previous_hook(info);
         }));
-        // No persistent raw mode, alternate screen, or input task: normal
-        // terminal signals remain available between backend cursor queries.
-        Self::initialize(workers)
-            .inspect_err(|_| {
-                let _ = crossterm::terminal::disable_raw_mode();
-                let _ = restore_writer(&mut io::stdout());
-            })
-            .context("initializing live terminal status")
+        Self::initialize().context("initializing live terminal status")
     }
 
-    fn initialize(workers: usize) -> Result<Self> {
-        let mut backend = CrosstermBackend::new(Vec::new());
-        let size = backend.size()?;
-        let height = 8 + workers.min((u16::MAX - 8) as usize) as u16;
-        let area = allocate_inline(&mut backend, size, height, true)?;
-        let terminal = fixed_terminal(backend, area)?;
-        LIVE.store(true, Ordering::SeqCst);
-        Ok(Self {
+    fn initialize() -> Result<Self> {
+        // This display does not read keys. Keep normal terminal input and
+        // signals, so Ctrl-C uses the existing cancellation/draining path.
+        let terminal = Terminal::new(CrosstermBackend::new(io::stdout()))?;
+        let size = terminal.size()?;
+        ensure!(
+            size.width > 0 && size.height > 0,
+            "terminal has no drawable area"
+        );
+        let mut session = Self {
             terminal,
-            size,
-            height,
-            area,
             restored: false,
-        })
+        };
+        // Arm cleanup before the first write, including partial setup failures.
+        LIVE.store(true, Ordering::SeqCst);
+        execute!(
+            session.terminal.backend_mut(),
+            EnterAlternateScreen,
+            DisableLineWrap
+        )?;
+        session.terminal.hide_cursor()?;
+        // Fresh buffers are already empty. Terminal::clear in the pinned
+        // Ratatui queries the cursor; the alternate screen needs no saved anchor.
+        execute!(
+            session.terminal.backend_mut(),
+            Clear(ClearType::All),
+            MoveTo(0, 0)
+        )?;
+        Ok(session)
     }
 
     fn draw(&mut self, state: &RunState, cancelling: bool) -> Result<()> {
@@ -116,23 +115,9 @@ impl LiveTerminal {
             LIVE.load(Ordering::SeqCst),
             "terminal session stopped after a panic"
         );
-        let size = self.terminal.size()?;
-        if size != self.size {
-            // Ratatui 0.30.1's resize clears the entire visible screen on a
-            // horizontal shrink, including content above an inline viewport.
-            // Rebuild fixed buffers instead; only clear the area we own.
-            self.area = allocate_inline(self.terminal.backend_mut(), size, self.height, false)?;
-            self.terminal = fixed_terminal(CrosstermBackend::new(Vec::new()), self.area)?;
-            self.size = size;
-        }
-        let now = Instant::now();
         self.terminal
-            .draw(|frame| render(frame, state, now, cancelling))
+            .draw(|frame| render(frame, state, Instant::now(), cancelling))
             .context("drawing live terminal status")?;
-        // Park at the start of our area between frames. The terminal tracks
-        // this anchor through resizing/reflow, unlike a saved absolute row.
-        self.terminal.set_cursor_position(self.area.as_position())?;
-        flush_frame(self.terminal.backend_mut(), self.area.y)?;
         Ok(())
     }
 
@@ -141,129 +126,11 @@ impl LiveTerminal {
             return Ok(());
         }
         self.restored = true;
-        LIVE.store(false, Ordering::SeqCst);
-        // Clear from the parked cursor, not a stale absolute row: the terminal
-        // may have resized since our last frame. No teardown query is needed.
-        // Attempt restoration even if clearing the inline area fails.
-        let cleared = execute!(
-            self.terminal.backend_mut(),
-            MoveToColumn(0),
-            Clear(ClearType::FromCursorDown)
-        )
-        .and_then(|()| flush_commands(self.terminal.backend_mut()));
-        let restored = restore_writer(&mut io::stdout());
-        cleared.and(restored).context("restoring terminal")
-    }
-}
-
-fn fixed_terminal(
-    backend: CrosstermBackend<Vec<u8>>,
-    area: Rect,
-) -> io::Result<Terminal<CrosstermBackend<Vec<u8>>>> {
-    Terminal::with_options(
-        backend,
-        TerminalOptions {
-            viewport: Viewport::Fixed(area),
-        },
-    )
-}
-
-// Setup/cleanup commands already use relative rows. Keep their allocation for reuse.
-fn flush_commands(backend: &mut CrosstermBackend<Vec<u8>>) -> io::Result<()> {
-    let commands = backend.writer_mut();
-    let mut stdout = io::stdout().lock();
-    let written = stdout.write_all(commands);
-    commands.clear();
-    written.and_then(|()| stdout.flush())
-}
-
-fn flush_frame(backend: &mut CrosstermBackend<Vec<u8>>, origin_row: u16) -> io::Result<()> {
-    let frame = relative_frame(backend.writer_mut(), origin_row)?;
-    backend.writer_mut().clear();
-    let mut stdout = io::stdout().lock();
-    stdout.write_all(&frame)?;
-    stdout.flush()
-}
-
-// A frame may reach the terminal after a resize, even if its size was checked
-// immediately before writing. Absolute rows would overwrite pulled-back history
-// and move our parked cursor above the UI. Translate the pinned Crossterm
-// backend's CUP sequences to motion relative to that terminal-maintained anchor.
-// This processes only our renderer's commands, never subprocess output.
-fn relative_frame(commands: &[u8], mut row: u16) -> io::Result<Vec<u8>> {
-    let mut frame = Vec::with_capacity(commands.len());
-    // A late wide frame must not wrap when the terminal has become narrower.
-    queue!(frame, DisableLineWrap)?;
-    let mut offset = 0;
-    while offset < commands.len() {
-        if let Some((column, next_row, length)) = cursor_move(&commands[offset..]) {
-            if next_row > row {
-                // Unlike MoveDown, LF scrolls at the bottom. This keeps history
-                // above the UI even when a late frame is taller than the screen.
-                frame.extend(std::iter::repeat_n(b'\n', usize::from(next_row - row)));
-            } else if next_row < row {
-                queue!(frame, MoveUp(row - next_row))?;
-            }
-            queue!(frame, MoveToColumn(column))?;
-            row = next_row;
-            offset += length;
-        } else {
-            frame.push(commands[offset]);
-            offset += 1;
+        if LIVE.swap(false, Ordering::SeqCst) {
+            restore_writer(self.terminal.backend_mut()).context("restoring terminal")?;
         }
+        Ok(())
     }
-    queue!(frame, EnableLineWrap)?;
-    Ok(frame)
-}
-
-// Crossterm 0.29 encodes MoveTo as ESC [ row ; column H (one-based u16s).
-fn cursor_move(bytes: &[u8]) -> Option<(u16, u16, usize)> {
-    if !bytes.starts_with(b"\x1b[") {
-        return None;
-    }
-    let end = bytes.iter().take(14).position(|byte| *byte == b'H')?;
-    let coordinates = std::str::from_utf8(&bytes[2..end]).ok()?;
-    let (row, column) = coordinates.split_once(';')?;
-    Some((
-        column.parse::<u16>().ok()?.checked_sub(1)?,
-        row.parse::<u16>().ok()?.checked_sub(1)?,
-        end + 1,
-    ))
-}
-
-/// Reserve an inline area using normal scrolling, preserving earlier output in
-/// scrollback. On resize the cursor is still parked at the previous area's start.
-fn allocate_inline(
-    backend: &mut CrosstermBackend<Vec<u8>>,
-    size: Size,
-    height: u16,
-    starting: bool,
-) -> Result<Rect> {
-    ensure!(
-        size.width > 0 && size.height > 0,
-        "terminal has no drawable area"
-    );
-    let cursor = backend.get_cursor_position()?;
-    let mut row = cursor.y.min(size.height - 1);
-    if starting && cursor.x > 0 {
-        // Preserve an existing partial line, too.
-        backend.append_lines(1)?;
-        row = row.saturating_add(1).min(size.height - 1);
-    }
-    // The terminal may resize after the query; retain its actual cursor row.
-    execute!(backend, MoveToColumn(0))?;
-    backend.clear_region(BackendClearType::AfterCursor)?;
-    let height = height.min(size.height);
-    // Clamp BEFORE appending lines: requesting more rows than the screen has
-    // otherwise needlessly scrolls old output away behind blank history.
-    backend.append_lines(height.saturating_sub(1))?;
-    let area = Rect::new(0, row.min(size.height - height), size.width, height);
-    if height > 1 {
-        execute!(backend, MoveUp(height - 1))?;
-    }
-    execute!(backend, MoveToColumn(0))?;
-    flush_commands(backend)?;
-    Ok(area)
 }
 
 impl Drop for LiveTerminal {
@@ -275,9 +142,10 @@ impl Drop for LiveTerminal {
 fn restore_writer(writer: &mut impl Write) -> io::Result<()> {
     let reset = execute!(writer, ResetColor);
     let wrap = execute!(writer, EnableLineWrap);
+    let leave = execute!(writer, LeaveAlternateScreen);
     let show = execute!(writer, Show);
     let flush = writer.flush();
-    reset.and(wrap).and(show).and(flush)
+    reset.and(wrap).and(leave).and(show).and(flush)
 }
 
 /// Refresh at most ten times per second, coalescing state snapshots. A display
@@ -441,26 +309,25 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
         return;
     }
     let [heading, body, footer] = Layout::vertical([
-        Constraint::Length(1),
-        Constraint::Min(0),
         Constraint::Length(3),
+        Constraint::Min(0),
+        Constraint::Length(1),
     ])
     .areas(area);
-    frame.render_widget(header, heading);
-    frame.render_widget(Paragraph::new(vec![progress, counts, hint]), footer);
-    let available = body.height as usize;
-    // Geometry depends on the worker count, never on which workers are busy or
-    // how many results have arrived. Reserve a tail even before the first result.
-    let tail_space = available.saturating_sub(2).min(3);
-    let worker_space = available.saturating_sub(tail_space);
+    frame.render_widget(Paragraph::new(vec![header, progress, counts]), heading);
+    frame.render_widget(hint, footer);
+    let available = usize::from(body.height);
+    // Reserve a result heading and at least one result on ordinary screens.
+    // Worker positions never depend on activity or on the number of results.
+    let worker_space = available.saturating_sub(2);
     let worker_slots = if state.workers > worker_space {
         worker_space.saturating_sub(1)
     } else {
         state.workers
     };
     let hidden_workers = state.workers.saturating_sub(worker_slots);
-    let active_rows = worker_slots + usize::from(hidden_workers > 0 && available > 0);
-    let recent_slots = available.saturating_sub(active_rows).min(3);
+    let worker_rows = worker_slots + usize::from(hidden_workers > 0 && worker_space > 0);
+    let recent_slots = available.saturating_sub(worker_rows + 1);
     let mut lines = Vec::new();
     for worker in 1..=worker_slots {
         let prefix = if area.width < 70 {
@@ -498,7 +365,7 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
             Span::raw(details),
         ]));
     }
-    if hidden_workers > 0 && available > 0 {
+    if hidden_workers > 0 && worker_space > 0 {
         let active = state
             .active
             .keys()
@@ -506,9 +373,7 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
             .count();
         lines.push(Line::from(format!("   + {hidden_workers} workers ({active} active)")).dim());
     }
-    if active_rows > 0 && available > active_rows + recent_slots {
-        lines.push(Line::default());
-    }
+    lines.push(Line::from(" Results · newest at bottom").bold());
     for result in state
         .recent
         .iter()
@@ -528,17 +393,21 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
             .unwrap_or_default();
         lines.push(Line::from(vec![
             Span::styled(format!("   {outcome:12} "), outcome_style(result.outcome)),
-            Span::raw(format!("{}{duration}", safe_text(&result.description))),
+            Span::raw(format!(
+                "#{:06}{duration} {}",
+                result.id,
+                safe_text(&result.description)
+            )),
         ]));
     }
-    if lines.is_empty() {
+    if state.recent.is_empty() && recent_slots > 0 {
         lines.push(
             Line::from(match state.phase {
                 crate::coordinator::Phase::Snapshot => "   Preparing isolated workspaces...",
                 crate::coordinator::Phase::Baseline => "   Running baseline tests...",
                 crate::coordinator::Phase::Discovery => "   Discovering eligible mutations...",
                 crate::coordinator::Phase::Inventory => "   Saving mutation inventory and diffs...",
-                crate::coordinator::Phase::Mutations => "   Preparing workers...",
+                crate::coordinator::Phase::Mutations => "   Waiting for completed mutations...",
             })
             .dim(),
         );
@@ -550,7 +419,7 @@ fn render(frame: &mut Frame, state: &RunState, now: Instant, cancelling: bool) {
 mod tests {
     use super::*;
     use crate::coordinator::{ActiveWorker, Phase, RecentResult, WorkerPhase};
-    use ratatui::{backend::TestBackend, buffer::Buffer, layout::Rect};
+    use ratatui::{TerminalOptions, Viewport, backend::TestBackend, buffer::Buffer, layout::Rect};
 
     fn text(buffer: &Buffer) -> String {
         buffer
@@ -595,6 +464,7 @@ mod tests {
             },
         );
         state.recent.push_back(RecentResult {
+            id: 1,
             description: "add.go:3:2: + -> -".into(),
             outcome: Some(Outcome::Killed),
             elapsed: Some(Duration::from_millis(200)),
@@ -616,17 +486,6 @@ mod tests {
                 expected
             );
         }
-        assert!(select_mode(
-            UiMode::Interactive,
-            false,
-            true,
-            true,
-            true,
-            false
-        )?);
-        assert!(select_mode(UiMode::Interactive, false, false, true, false, false).is_err());
-        assert!(select_mode(UiMode::Interactive, false, true, false, false, false).is_err());
-        assert!(select_mode(UiMode::Interactive, false, true, true, false, true).is_err());
         assert!(!select_mode(
             UiMode::Plain,
             false,
@@ -635,84 +494,7 @@ mod tests {
             false,
             false
         )?);
-        assert!(!select_mode(
-            UiMode::Interactive,
-            true,
-            false,
-            false,
-            false,
-            true
-        )?);
-        Ok(())
-    }
-
-    #[test]
-    fn relative_frames_match_backend_output_for_full_and_incremental_draws() -> Result<()> {
-        let mut state = state();
-        state.active.get_mut(&1).unwrap().description = "目录/e\u{301}😀.go:2:1: + -> -".into();
-        let area = Rect::new(0, 4, 88, 10);
-        let mut terminal = fixed_terminal(CrosstermBackend::new(Vec::new()), area)?;
-        let mut absolute = vt100::Parser::new(24, 88, 100);
-        let mut relative = vt100::Parser::new(24, 88, 100);
-        for parser in [&mut absolute, &mut relative] {
-            parser.process(b"earlier output\r\n$ mutie\x1b[5;1H");
-        }
-        for elapsed in [0, 1, 2] {
-            if elapsed == 2 {
-                state.active.clear();
-                state.recent.clear();
-            }
-            terminal.draw(|frame| {
-                render(
-                    frame,
-                    &state,
-                    state.started + Duration::from_secs(elapsed),
-                    false,
-                )
-            })?;
-            terminal.set_cursor_position(area.as_position())?;
-            let bytes = std::mem::take(terminal.backend_mut().writer_mut());
-            let translated = relative_frame(&bytes, area.y)?;
-            assert!((0..translated.len()).all(|i| cursor_move(&translated[i..]).is_none()));
-            absolute.process(&bytes);
-            relative.process(&translated);
-            assert_eq!(relative.screen().contents(), absolute.screen().contents());
-            assert_eq!(relative.screen().cursor_position(), (4, 0));
-            assert!(relative.screen().contents().contains("earlier output"));
-        }
-        Ok(())
-    }
-
-    #[test]
-    fn late_tall_wide_frames_scroll_history_and_restore_line_wrapping() -> Result<()> {
-        let state = state();
-        let area = Rect::new(0, 14, 88, 10);
-        let mut terminal = fixed_terminal(CrosstermBackend::new(Vec::new()), area)?;
-        terminal.draw(|frame| render(frame, &state, state.started, false))?;
-        terminal.set_cursor_position(area.as_position())?;
-        // The frame was prepared for 24 rows but is consumed after shrinking.
-        let mut parser = vt100::Parser::new(5, 20, 100);
-        parser.process(b"earlier output\r\n$ mutie\r\n");
-        parser.process(&relative_frame(
-            terminal.backend_mut().writer_mut(),
-            area.y,
-        )?);
-        assert_eq!(parser.screen().cursor_position(), (0, 0));
-        let mut history = parser.screen().clone();
-        history.set_scrollback(usize::MAX);
-        let rows = history.scrollback();
-        for marker in ["earlier output", "$ mutie"] {
-            assert!(
-                (0..=rows).any(|offset| {
-                    history.set_scrollback(offset);
-                    history.contents().contains(marker)
-                }),
-                "lost {marker}"
-            );
-        }
-        // Normal shell text wraps again after the protected frame ends.
-        parser.process(b"\x1b[5;20Hab");
-        assert_eq!(parser.screen().cursor_position(), (4, 1));
+        assert!(!select_mode(UiMode::Auto, true, false, false, false, true)?);
         Ok(())
     }
 
@@ -727,18 +509,18 @@ mod tests {
             text(buffer),
             concat!(
                 " | mutie mutations  2.0s\n",
-                " | worker 1 building  #000004 (2.0s) calc.go:8:3: + -> -\n",
-                " | worker 2 testing   #000005 (2.0s) ready.go:4:2: true -> false\n",
-                "\n",
-                "   killed       add.go:3:2: + -> - (0.2s)\n",
-                "\n\n",
                 " Mutations 3/8  |  Workers 2/2\n",
                 " 2 killed | 1 missed | 0 timeout | 0 build failed | 0 errors\n",
+                " | worker 1 building  #000004 (2.0s) calc.go:8:3: + -> -\n",
+                " | worker 2 testing   #000005 (2.0s) ready.go:4:2: true -> false\n",
+                " Results · newest at bottom\n",
+                "   killed       #000001 (0.2s) add.go:3:2: + -> -\n",
+                "\n\n",
                 " Ctrl-C to stop  |  Test output saved in report logs"
             )
         );
-        assert_eq!(buffer[(3, 4)].fg, Color::Green);
-        assert_eq!(buffer[(12, 8)].fg, Color::Red);
+        assert_eq!(buffer[(3, 6)].fg, Color::Green);
+        assert_eq!(buffer[(12, 2)].fg, Color::Red);
         Ok(())
     }
 
@@ -787,7 +569,7 @@ mod tests {
         }
         let mut terminal = Terminal::new(TestBackend::new(90, 14))?;
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
-        assert!(text(terminal.backend().buffer()).contains("workers (6 active)"));
+        assert!(text(terminal.backend().buffer()).contains("workers (5 active)"));
         assert!(!text(terminal.backend().buffer()).contains('\x1b'));
         for (width, height) in [(30, 6), (1, 1), (0, 0), (80, 24), (50, 3)] {
             terminal.backend_mut().resize(width, height);
@@ -830,7 +612,7 @@ mod tests {
                 },
             );
         }
-        let mut terminal = Terminal::new(TestBackend::new(48, 7))?;
+        let mut terminal = Terminal::new(TestBackend::new(48, 9))?;
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
         let narrow = text(terminal.backend().buffer());
         assert!(
@@ -839,15 +621,15 @@ mod tests {
         );
         assert!(narrow.contains("Ctrl-C to stop | Logs saved"));
         assert!(narrow.contains("w1 build #4 0.0s calc.go:8:3"));
-        assert!(narrow.contains("+ 5 workers (5 active)"));
+        assert!(narrow.contains("+ 4 workers (4 active)"));
         assert!(narrow.contains("killed"));
-        terminal.backend_mut().resize(100, 12);
+        terminal.backend_mut().resize(100, 10);
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
         let wide = text(terminal.backend().buffer());
-        assert!(wide.contains("worker 4 running   #000004"), "{wide}");
-        assert!(wide.contains("+ 2 workers (2 active)"));
-        assert!(!wide.contains("worker 5"));
-        terminal.backend_mut().resize(100, 14);
+        assert!(wide.contains("worker 3 running   #000003"), "{wide}");
+        assert!(wide.contains("+ 3 workers (3 active)"));
+        assert!(!wide.contains("worker 4"));
+        terminal.backend_mut().resize(100, 12);
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
         assert!(text(terminal.backend().buffer()).contains("worker 6 running"));
         Ok(())
@@ -865,7 +647,7 @@ mod tests {
                 .trim_end()
                 .to_owned()
         };
-        let second = row(terminal.backend().buffer(), 2);
+        let second = row(terminal.backend().buffer(), 4);
         let first = state.active.remove(&1).unwrap();
         for (name, outcome) in [
             ("second.go", Outcome::Missed),
@@ -874,6 +656,7 @@ mod tests {
             ("last.go", Outcome::Error),
         ] {
             state.recent.push_back(RecentResult {
+                id: 1,
                 description: name.into(),
                 outcome: Some(outcome),
                 elapsed: None,
@@ -881,13 +664,13 @@ mod tests {
         }
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
         let buffer = terminal.backend().buffer();
-        assert_eq!(row(buffer, 1), "   worker 1 idle");
-        assert_eq!(row(buffer, 2), second);
-        assert_eq!(row(buffer, 4), "   build failed third.go");
-        assert_eq!(row(buffer, 5), "   timeout      fourth.go");
-        assert_eq!(row(buffer, 6), "   error        last.go");
+        assert_eq!(row(buffer, 3), "   worker 1 idle");
+        assert_eq!(row(buffer, 4), second);
+        assert_eq!(row(buffer, 6), "   build failed #000001 third.go");
+        assert_eq!(row(buffer, 7), "   timeout      #000001 fourth.go");
+        assert_eq!(row(buffer, 8), "   error        #000001 last.go");
         assert_eq!(
-            buffer[(3, 4)].fg,
+            buffer[(3, 6)].fg,
             outcome_style(Some(Outcome::BuildFailed)).fg.unwrap()
         );
         state.active.insert(
@@ -901,14 +684,59 @@ mod tests {
         state.recent.clear();
         terminal.draw(|frame| render(frame, &state, state.started, false))?;
         let buffer = terminal.backend().buffer();
-        assert!(row(buffer, 1).contains("worker 1 preparing #000006"));
-        assert_eq!(row(buffer, 2), second);
-        assert_eq!(row(buffer, 4), "");
+        assert!(row(buffer, 3).contains("worker 1 preparing #000006"));
+        assert_eq!(row(buffer, 4), second);
+        assert_eq!(row(buffer, 6), "   Waiting for completed mutations...");
         Ok(())
     }
 
     #[test]
-    fn restoration_attempts_wrapping_and_cursor_even_if_reset_fails() {
+    fn results_use_remaining_height_and_follow_completions_after_resize() -> Result<()> {
+        let mut state = state();
+        state.recent.clear();
+        for id in 1..=20 {
+            state.recent.push_back(RecentResult {
+                id,
+                description: format!("目录/file{id}.go:1:1: true -> false"),
+                outcome: Some(Outcome::Missed),
+                elapsed: Some(Duration::from_secs(2)),
+            });
+        }
+        let mut terminal = Terminal::new(TestBackend::new(100, 24))?;
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let tall = text(terminal.backend().buffer());
+        assert_eq!(tall.matches("(2.0s)").count(), 17);
+        assert!(!tall.contains("#000003"));
+        assert!(tall.contains("file4.go"));
+        assert!(tall.contains("#000020 (2.0s)"));
+        assert!(tall.contains("file20.go"));
+        terminal.backend_mut().resize(100, 12);
+        terminal.draw(|frame| render(frame, &state, state.started, false))?;
+        let short = text(terminal.backend().buffer());
+        assert_eq!(short.matches("(2.0s)").count(), 5);
+        assert!(!short.contains("file15.go"));
+        assert!(short.contains("file16.go"));
+        assert!(short.contains("file20.go"));
+        state.recent.push_back(RecentResult {
+            id: 21,
+            description: "stopped.go:3:1".into(),
+            outcome: None,
+            elapsed: None,
+        });
+        terminal.draw(|frame| render(frame, &state, state.started, true))?;
+        let updated = text(terminal.backend().buffer());
+        assert!(!updated.contains("file16.go"));
+        assert!(updated.contains("interrupted  #000021 stopped.go"));
+        terminal.backend_mut().resize(100, 30);
+        terminal.draw(|frame| render(frame, &state, state.started, true))?;
+        let grown = text(terminal.backend().buffer());
+        assert!(grown.contains("file1.go"));
+        assert!(grown.contains("stopped.go"));
+        Ok(())
+    }
+
+    #[test]
+    fn restoration_attempts_alternate_screen_wrapping_and_cursor_even_if_reset_fails() {
         #[derive(Default)]
         struct Writer {
             first: bool,
@@ -932,6 +760,7 @@ mod tests {
         let mut writer = Writer::default();
         assert!(restore_writer(&mut writer).is_err());
         assert!(String::from_utf8_lossy(&writer.bytes).contains("\x1b[?7h"));
+        assert!(String::from_utf8_lossy(&writer.bytes).contains("\x1b[?1049l"));
         assert!(String::from_utf8_lossy(&writer.bytes).contains("\x1b[?25h"));
         assert!(writer.flushed);
     }

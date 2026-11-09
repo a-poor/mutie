@@ -7,12 +7,14 @@ use std::{
 };
 
 use anyhow::Result;
+use serde_json::json;
 use tokio::sync::watch;
 
 use crate::{
     cancellation::{Cancellation, Interrupted},
     command::CommandOutput,
     config::RunConfig,
+    json_output::JsonOutput,
     mutation::Mutation,
     report::{
         ExecutionState, MutationResult, Outcome, PolicyEvaluation, RunPlan, RunStatus, Summary,
@@ -116,10 +118,13 @@ pub struct ActiveWorker {
 
 #[derive(Clone, Debug)]
 pub struct RecentResult {
+    pub id: usize,
     pub description: String,
     pub outcome: Option<Outcome>,
     pub elapsed: Option<Duration>,
 }
+
+const RECENT_LIMIT: usize = 256;
 
 #[derive(Clone, Debug)]
 pub struct RunState {
@@ -162,7 +167,8 @@ impl RunState {
             }
             RunEvent::Plan(plan) => {
                 self.total = Some(plan.mutations.len());
-                self.workers = plan.workers;
+                // Keep configured worker slots stable before and after discovery.
+                self.workers = self.workers.max(plan.workers);
             }
             RunEvent::Started {
                 id,
@@ -198,12 +204,13 @@ impl RunState {
                     self.interrupted += 1;
                 }
                 self.recent.push_back(RecentResult {
+                    id: result.id,
                     description: result.mutation.description(),
                     outcome: result.outcome,
                     elapsed: result.output.as_ref().map(|o| o.elapsed),
                 });
                 // All results are persisted; only the recent display is bounded.
-                if self.recent.len() > 5 {
+                if self.recent.len() > RECENT_LIMIT {
                     self.recent.pop_front();
                 }
             }
@@ -234,6 +241,7 @@ pub struct Coordinator {
     updates: watch::Sender<RunState>,
     interactive: bool,
     silent: bool,
+    json: Option<JsonOutput>,
     verbose: bool,
     lang: crate::cli::Lang,
 }
@@ -245,11 +253,18 @@ impl Coordinator {
         } else {
             Some(SavedReport::create(config)?)
         };
-        if let Some(report) = &saved {
+        if !config.json
+            && let Some(report) = &saved
+        {
             println!("Saving report to {}", report.path().display());
         }
-        let state = RunState::default();
+        let state = RunState {
+            workers: config.jobs.get(),
+            ..RunState::default()
+        };
         let (updates, receiver) = watch::channel(state.clone());
+        let json =
+            (config.json && !config.list && !config.check).then(|| JsonOutput::new(state.started));
         Ok((
             Self {
                 saved,
@@ -258,6 +273,7 @@ impl Coordinator {
                 updates,
                 interactive,
                 silent: config.json,
+                json,
                 verbose: config.verbose,
                 lang: config.lang,
             },
@@ -267,6 +283,36 @@ impl Coordinator {
 
     pub fn report_path(&self) -> Option<PathBuf> {
         self.saved.as_ref().map(|r| r.path().to_owned())
+    }
+
+    pub fn is_json(&self) -> bool {
+        self.json.is_some()
+    }
+
+    pub fn started(&mut self, config: &RunConfig) -> Result<()> {
+        if !self.is_json() {
+            return Ok(());
+        }
+        let event = json!({"event":"run_started", "language":config.lang,
+            "project":config.module_root, "report":self.report_path(), "rerun":config.rerun});
+        if let Some(stream) = &mut self.json {
+            stream.emit(event)?;
+        }
+        Ok(())
+    }
+
+    pub fn exit_code(&self, failed: bool) -> u8 {
+        if failed {
+            1
+        } else if self.policy().is_some_and(PolicyEvaluation::failed)
+            || self
+                .score_policy()
+                .is_some_and(crate::score::ScorePolicy::failed)
+        {
+            3
+        } else {
+            0
+        }
     }
 
     pub fn policy(&self) -> Option<&PolicyEvaluation> {
@@ -311,6 +357,62 @@ impl Coordinator {
                 RunEvent::Workspace { .. } => {
                     report.workspace_metrics(&self.state.workspace_metrics)
                 }
+            }
+        }
+        if let Some(stream) = &mut self.json {
+            match &event {
+                RunEvent::Phase(phase) => {
+                    stream.emit(json!({"event":"phase", "phase":phase.name()}))?
+                }
+                RunEvent::Command { phase, output } => {
+                    let mut event = json!({"event":"command_finished", "phase":phase.name(),
+                        "duration_seconds":output.elapsed.as_secs_f64(), "exit_code":output.status.code(),
+                        "timed_out":output.timed_out, "interrupted":output.interrupted,
+                        "capture_error":output.capture_error});
+                    if self.verbose {
+                        event["output"] = crate::command::text(output)?.into();
+                    }
+                    stream.emit(event)?;
+                }
+                RunEvent::Plan(plan) => {
+                    stream.emit(
+                        json!({"event":"plan", "total":plan.mutations.len(), "workers":plan.workers,
+                        "timeout_seconds":plan.timeout.as_secs_f64()}),
+                    )?;
+                    for (index, mutation) in plan.mutations.iter().enumerate() {
+                        let mut event = crate::mutation::preview_json(index + 1, mutation);
+                        event["event"] = "mutation".into();
+                        if let Some(rerun) = plan.rerun {
+                            event["source_id"] = rerun.mutations[index].source_id.into();
+                        }
+                        stream.emit(event)?;
+                    }
+                }
+                RunEvent::Started { id, worker, .. } => {
+                    stream.emit(json!({"event":"mutation_started", "id":id, "worker":worker}))?
+                }
+                RunEvent::Progress(progress)
+                    if self
+                        .state
+                        .active
+                        .get(&progress.worker)
+                        .is_some_and(|active| active.id == progress.id) =>
+                {
+                    stream.emit(json!({"event":"mutation_phase", "id":progress.id,
+                    "worker":progress.worker, "phase":progress.phase.name()}))?
+                }
+                RunEvent::Finished { worker, result } => {
+                    let mut event = json!({"event":"mutation_finished", "id":result.id, "worker":worker,
+                        "state":result.state, "outcome":result.outcome, "error":result.error,
+                        "duration_seconds":result.output.as_ref().map(|o| o.elapsed.as_secs_f64())});
+                    if self.verbose
+                        && let Some(output) = &result.output
+                    {
+                        event["output"] = crate::command::text(output)?.into();
+                    }
+                    stream.emit(event)?;
+                }
+                _ => {}
             }
         }
         if !self.interactive && !self.silent {
@@ -392,6 +494,24 @@ impl Coordinator {
         }
         self.state.finish(result.as_ref().err());
         self.updates.send_replace(self.state.clone());
+        if self.is_json() {
+            let event = json!({"event":"summary", "status":self.state.status,
+                "total":self.state.total, "completed":self.state.summary.total(),
+                "interrupted":self.state.interrupted, "pending":self.state.pending(),
+                "outcomes":self.state.summary, "score":self.score().filter(|_| self.report_finished),
+                "policy":self.policy().filter(|_| self.report_finished), "score_policy":self.score_policy().filter(|_| self.report_finished),
+                "report":self.report_path(), "report_finalized":self.report_finished,
+                "exit_code":self.exit_code(result.is_err()),
+                "error":result.as_ref().err().map(|e| format!("{e:#}"))});
+            if let Err(error) = self.json.as_mut().unwrap().emit(event) {
+                result = Err(match result {
+                    Err(previous) => {
+                        previous.context(format!("writing final JSON summary: {error:#}"))
+                    }
+                    Ok(()) => error,
+                });
+            }
+        }
         result
     }
 }
@@ -417,11 +537,7 @@ mod tests {
         )?;
         let mutations =
             mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
-        let config = RunConfig::resolve(Cli::parse_from([
-            std::ffi::OsStr::new("mutie"),
-            std::ffi::OsStr::new("run"),
-            root.path().as_os_str(),
-        ]))?;
+        let config = RunConfig::resolve_from(Cli::parse_from(["mutie", "run"]), root.path())?;
         let (mut coordinator, updates) = Coordinator::new(&config, true)?;
         let cancellation = Cancellation::default();
         coordinator.emit(
@@ -612,7 +728,7 @@ mod tests {
         let mutations =
             mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
         let mut state = RunState::default();
-        for id in 1..=20 {
+        for id in 1..=RECENT_LIMIT + 20 {
             state.apply(&RunEvent::Started {
                 id,
                 worker: 1,
@@ -630,8 +746,10 @@ mod tests {
                 },
             });
         }
-        assert_eq!(state.summary.killed, 20);
-        assert_eq!(state.recent.len(), 5);
+        assert_eq!(state.summary.killed, RECENT_LIMIT + 20);
+        assert_eq!(state.recent.len(), RECENT_LIMIT);
+        assert_eq!(state.recent.front().unwrap().id, 21);
+        assert_eq!(state.recent.back().unwrap().id, RECENT_LIMIT + 20);
         assert!(state.active.is_empty());
         Ok(())
     }

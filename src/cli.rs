@@ -12,6 +12,9 @@ use serde::{Deserialize, Serialize};
     about = "Find gaps in tests by making small changes to your code"
 )]
 pub struct Cli {
+    /// Work from this directory instead of the current directory
+    #[arg(long, global = true, default_value = ".", value_name = "DIR")]
+    pub path: PathBuf,
     #[command(subcommand)]
     pub command: Option<Command>,
 }
@@ -62,9 +65,6 @@ impl JsRunner {
 
 #[derive(Clone, Debug, Args)]
 pub struct ProjectArgs {
-    /// Directory containing mutie.toml (or the project, without a config)
-    #[arg(default_value = ".", value_name = "PATH", conflicts_with = "config")]
-    pub path: PathBuf,
     /// Select one enabled language when the config contains several
     #[arg(long, value_enum)]
     pub lang: Option<Language>,
@@ -75,10 +75,13 @@ pub struct ProjectArgs {
 
 #[derive(Debug, Default, Args)]
 pub struct PresentationArgs {
-    /// Terminal status view
-    #[arg(long, value_enum, default_value = "auto")]
-    pub ui: UiMode,
-    /// Show captured test/build output in plain mode
+    /// Print line-oriented text instead of the live terminal view
+    #[arg(long, conflicts_with = "json")]
+    pub plain: bool,
+    /// Stream newline-delimited JSON events instead of human-readable output
+    #[arg(long)]
+    pub json: bool,
+    /// Include captured test/build output in text or JSON results
     #[arg(short, long)]
     pub verbose: bool,
 }
@@ -135,8 +138,6 @@ pub enum Command {
     Rerun(RerunArgs),
     /// Create mutie.toml from detected project tooling (does not run tests)
     Init {
-        #[arg(default_value = ".", value_name = "PATH")]
-        path: PathBuf,
         #[arg(long, value_enum)]
         lang: Option<Language>,
         /// JavaScript/TypeScript test runner
@@ -149,6 +150,9 @@ pub enum Command {
         non_interactive: bool,
         #[arg(long)]
         dry_run: bool,
+        /// Replace an existing mutie.toml with the generated configuration
+        #[arg(long)]
+        force: bool,
     },
     /// List saved runs, their status, age, and logical disk usage
     Runs {
@@ -169,15 +173,6 @@ pub enum Command {
     },
     /// Manage repository-owned mutation dismissals
     Dismiss {
-        /// Directory containing mutie.toml (or the project, without a config)
-        #[arg(
-            long,
-            global = true,
-            default_value = ".",
-            value_name = "PATH",
-            conflicts_with = "config"
-        )]
-        path: PathBuf,
         #[arg(long, global = true, value_enum)]
         lang: Option<Language>,
         #[arg(long, global = true, value_name = "FILE")]
@@ -229,6 +224,7 @@ impl Invocation {
         Self {
             jobs: args.jobs,
             timeout: args.timeout,
+            json: args.presentation.json,
             presentation: args.presentation,
             ..Self::project(args.project)
         }
@@ -273,12 +269,12 @@ pub enum DismissAction {
     Check,
 }
 
-#[derive(Copy, Clone, Default, PartialEq, Eq, Debug, ValueEnum, Deserialize, Serialize)]
+// Retained in saved effective settings; presentation is selected by CLI flags.
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug, Deserialize, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum UiMode {
     #[default]
     Auto,
-    Interactive,
     Plain,
 }
 
@@ -341,16 +337,32 @@ mod tests {
             vec!["mutie", "rerun"],
             vec!["mutie", "list", "--jobs", "2"],
             vec!["mutie", "check", "--ui", "interactive"],
+            vec!["mutie", "run", "--ui", "plain"],
+            vec!["mutie", "run", "--plain", "--json"],
+            vec!["mutie", "rerun", "saved", "--json", "--plain"],
+            vec!["mutie", "run", "repo"],
+            vec!["mutie", "list", "repo"],
+            vec!["mutie", "check", "repo"],
+            vec!["mutie", "init", "repo"],
+            vec!["mutie", "rerun", "saved", "repo"],
         ] {
             assert!(Cli::try_parse_from(&args).is_err(), "{args:?}");
         }
         for command in ["run", "list", "check"] {
             Cli::try_parse_from(["mutie", command, "--lang", "js", "--config", "ci.toml"]).unwrap();
         }
+        let Some(Command::Run(args)) = Cli::try_parse_from(["mutie", "run", "--json"])
+            .unwrap()
+            .command
+        else {
+            panic!("expected run");
+        };
+        assert!(Invocation::run(args).json);
         let cli = Cli::try_parse_from([
             "mutie",
             "rerun",
             "saved",
+            "--path",
             "repo",
             "--missed",
             "--id",
@@ -366,5 +378,31 @@ mod tests {
                 ..
             }))
         ));
+    }
+
+    #[test]
+    fn working_directory_is_global_including_nested_commands() {
+        assert_eq!(
+            Cli::try_parse_from(["mutie", "run"]).unwrap().path,
+            PathBuf::from(".")
+        );
+        for args in [
+            vec!["mutie", "--path", "repo", "run"],
+            vec!["mutie", "run", "--path", "repo"],
+            vec!["mutie", "list", "--path", "repo"],
+            vec!["mutie", "check", "--path", "repo", "--config", "ci.toml"],
+            vec!["mutie", "init", "--path", "repo"],
+            vec!["mutie", "rerun", "saved", "--path", "repo"],
+            vec!["mutie", "report", "saved", "--path", "repo"],
+            vec!["mutie", "runs", "--path", "repo"],
+            vec!["mutie", "prune", "--keep-last", "2", "--path", "repo"],
+            vec!["mutie", "dismiss", "list", "--path", "repo"],
+        ] {
+            assert_eq!(
+                Cli::try_parse_from(&args).unwrap().path,
+                PathBuf::from("repo"),
+                "{args:?}"
+            );
+        }
     }
 }

@@ -134,7 +134,7 @@ fi
         let mut slave = -1;
         let mut size = libc::winsize {
             ws_row: rows,
-            ws_col: columns,
+            ws_col: if mode == "no_area" { 0 } else { columns },
             ws_xpixel: 0,
             ws_ypixel: 0,
         };
@@ -184,8 +184,6 @@ fi
         command
             .arg(&root)
             .args([
-                "--ui",
-                ui,
                 "--jobs",
                 &workers.to_string(),
                 "--timeout",
@@ -204,6 +202,12 @@ fi
             .stdin(Stdio::from(slave.try_clone().unwrap()))
             .stdout(Stdio::from(slave.try_clone().unwrap()))
             .stderr(Stdio::from(slave.try_clone().unwrap()));
+        if ui == "plain" {
+            command.arg("--plain");
+        }
+        if ui == "json" {
+            command.arg("--json");
+        }
         if ci {
             command.env("CI", "true");
         }
@@ -330,41 +334,10 @@ fi
     }
 
     fn resize_screen(&mut self, rows: u16, columns: u16) {
-        // vt100 truncates rows on resize. Model a terminal that scrolls enough
-        // to keep its cursor visible on height shrink, preserving those rows
-        // in scrollback. Width changes still do not reflow; markers fit the
-        // narrowest width used in these tests.
-        let (row, col) = self.screen.screen().cursor_position();
-        let (old_rows, old_columns) = self.screen.screen().size();
-        if row >= rows {
-            self.screen
-                .process(format!("\x1b[{}S\x1b[{};{}H", row + 1 - rows, rows, col + 1).as_bytes());
-        } else if rows > old_rows {
-            // Model pulling scrollback back onto the screen when growing.
-            // Rebuild the text grid so pulled rows leave scrollback and the
-            // cursor moves with them. Color assertions use renderer tests.
-            let mut saved = self.screen.screen().clone();
-            saved.set_scrollback(usize::MAX);
-            let backlog = saved.scrollback();
-            let pulled = backlog.min(usize::from(rows - old_rows));
-            let mut lines = Vec::new();
-            for offset in (1..=backlog).rev() {
-                saved.set_scrollback(offset);
-                lines.push(saved.rows(0, old_columns).next().unwrap());
-            }
-            saved.set_scrollback(0);
-            lines.extend(saved.rows(0, old_columns));
-            lines.extend(std::iter::repeat_n(
-                String::new(),
-                usize::from(rows - old_rows) - pulled,
-            ));
-            self.screen = vt100::Parser::new(rows, old_columns, 10_000);
-            self.screen.process(lines.join("\r\n").as_bytes());
-            self.screen
-                .process(format!("\x1b[{};{}H", usize::from(row) + pulled + 1, col + 1).as_bytes());
-        }
+        // Keep both primary/alternate grids and their saved cursor intact.
+        // vt100 truncates bottom rows instead of reflowing them on shrink;
+        // tests with low primary-screen content avoid that emulator limitation.
         self.screen.screen_mut().set_size(rows, columns);
-        self.assert_history();
         let size = libc::winsize {
             ws_row: rows,
             ws_col: columns,
@@ -379,25 +352,7 @@ fi
     }
 
     fn wait_for_full_frame(&mut self, expected: &str) {
-        let deadline = Instant::now() + WAIT_LIMIT;
-        let mut width = 100;
-        loop {
-            // Resizing requests a complete frame, allowing text assertions
-            // without interpreting Ratatui's incremental cursor movements.
-            width = if width == 100 { 110 } else { 100 };
-            self.resize(24, width);
-            let start = self.output.len();
-            let time = Instant::now();
-            self.until(|_| time.elapsed() >= Duration::from_millis(150));
-            if String::from_utf8_lossy(&self.output[start..]).contains(expected) {
-                return;
-            }
-            assert!(
-                Instant::now() < deadline,
-                "missing {expected:?}: {}",
-                String::from_utf8_lossy(&self.output)
-            );
-        }
+        self.until(|s| s.screen.screen().contents().contains(expected));
     }
 
     fn finish(&mut self) -> ExitStatus {
@@ -435,12 +390,19 @@ fi
         assert_eq!(now.c_iflag, self.termios.c_iflag);
         assert_eq!(now.c_oflag, self.termios.c_oflag);
         let output = String::from_utf8_lossy(&self.output);
-        assert!(!output.contains("\x1b[?1049h"), "must stay inline");
+        assert_eq!(
+            self.cursor_queries, 0,
+            "full-screen setup must not query the cursor"
+        );
+        assert!(!self.screen.screen().alternate_screen());
         if interactive {
-            assert!(
-                !output.contains("\x1b[2J"),
-                "must not erase the whole screen"
-            );
+            let entered = output
+                .find("\x1b[?1049h")
+                .expect("alternate screen entered");
+            let left = output.find("\x1b[?1049l").expect("alternate screen left");
+            assert!(entered < left);
+            assert_eq!(output.matches("\x1b[?1049h").count(), 1);
+            assert_eq!(output.matches("\x1b[?1049l").count(), 1);
             assert!(!output.contains("\x1b[3J"), "must not erase scrollback");
             assert!(
                 !self.screen.screen().contents().contains("Ctrl-C to stop"),
@@ -449,12 +411,13 @@ fi
             let restored = output.rfind("\x1b[?25h").expect("cursor must be restored");
             let summary = output.find("Run ").expect("final summary");
             assert!(
-                restored < summary,
+                left < restored && restored < summary,
                 "summary must follow terminal restoration"
             );
         } else {
             assert!(!output.contains('\x1b'));
         }
+        assert!(!self.screen.screen().hide_cursor());
         assert!(output.contains("Report saved:"));
         self.assert_history();
         assert!(fs::read_dir(&self.workspaces).unwrap().next().is_none());
@@ -608,13 +571,20 @@ fn live_view_redraws_while_baseline_waits_and_restores_after_resize_and_success(
 
 #[test]
 fn width_shrink_preserves_preceding_output_and_prompt() {
-    let mut session = Session::start("live", "interactive", false);
+    let mut session = Session::start("live", "auto", false);
     session.until(|s| s.screen.screen().contents().contains("baseline"));
-    session.assert_history();
+    assert!(session.screen.screen().alternate_screen());
+    assert!(
+        !session
+            .screen
+            .screen()
+            .contents()
+            .contains("earlier output")
+    );
     session.resize(24, 80);
     let time = Instant::now();
     session.until(|_| time.elapsed() >= Duration::from_millis(250));
-    session.assert_history();
+    assert!(session.screen.screen().alternate_screen());
     fs::write(session.state.join("release"), "").unwrap();
     assert!(session.finish().success());
     session.assert_restored(true);
@@ -627,27 +597,12 @@ fn short_and_oversized_views_preserve_history_on_completion_and_cancellation() {
     for size in [(24, 100), (5, 28), (3, 18), (2, 14), (1, 512)] {
         for cancel in [false, true] {
             let mut session =
-                Session::start_with_terminal("live", "interactive", false, size, 64, PREAMBLE);
+                Session::start_with_terminal("live", "auto", false, size, 64, PREAMBLE);
             session.until(|s| s.state.join("baseline.ready").exists());
             let time = Instant::now();
             session.until(|_| time.elapsed() >= Duration::from_millis(150));
-            session.assert_history();
-            let mut screen = session.screen.screen().clone();
-            screen.set_scrollback(usize::MAX);
-            let first_query = session
-                .output
-                .windows(4)
-                .position(|w| w == b"\x1b[6n")
-                .unwrap();
-            let mut before_ui = vt100::Parser::new(size.0, size.1, 10_000);
-            before_ui.process(&session.output[..first_query]);
-            let (row, _) = before_ui.screen().cursor_position();
-            before_ui.screen_mut().set_scrollback(usize::MAX);
-            assert_eq!(
-                screen.scrollback(),
-                before_ui.screen().scrollback() + usize::from(row),
-                "oversized view must scroll only the pre-existing content at {size:?}"
-            );
+            assert!(session.screen.screen().alternate_screen(), "size {size:?}");
+            assert_eq!(session.cursor_queries, 0);
             if cancel {
                 session.master.write_all(&[3]).unwrap();
             } else {
@@ -664,14 +619,14 @@ fn resizing_preserves_scrollback_and_prompt_near_the_bottom() {
     for cancel in [false, true] {
         let preamble = format!("{}{PREAMBLE}", "\n".repeat(21));
         let mut session =
-            Session::start_with_terminal("live", "interactive", false, (24, 100), 2, &preamble);
+            Session::start_with_terminal("live", "auto", false, (24, 100), 2, &preamble);
         session.until(|s| s.screen.screen().contents().contains("baseline"));
-        session.assert_history();
-        for size in [(24, 80), (5, 28), (3, 18), (24, 100), (40, 120)] {
+        assert!(session.screen.screen().alternate_screen());
+        for size in [(24, 80), (40, 120), (24, 100)] {
             session.resize(size.0, size.1);
             let time = Instant::now();
             session.until(|_| time.elapsed() >= Duration::from_millis(150));
-            session.assert_history();
+            assert!(session.screen.screen().alternate_screen());
         }
         if cancel {
             session.master.write_all(&[3]).unwrap();
@@ -691,15 +646,15 @@ fn resizing_preserves_scrollback_and_prompt_near_the_bottom() {
 #[test]
 fn queued_frames_cannot_erase_history_after_resize() {
     for cancel in [false, true] {
-        let preamble = format!("{}{PREAMBLE}", "\n".repeat(21));
+        let preamble = PREAMBLE;
         let mut session =
-            Session::start_with_terminal("live", "interactive", false, (24, 100), 2, &preamble);
+            Session::start_with_terminal("live", "auto", false, (24, 100), 2, preamble);
         session.until(|s| s.screen.screen().contents().contains("baseline"));
         for (rows, columns) in [(40, 120), (5, 28), (24, 100)] {
             session.resize_with_queued_output(rows, columns);
             let start = Instant::now();
             session.until(|_| start.elapsed() >= Duration::from_millis(150));
-            session.assert_history();
+            assert!(session.screen.screen().alternate_screen());
         }
         if cancel {
             session.master.write_all(&[3]).unwrap();
@@ -713,21 +668,15 @@ fn queued_frames_cannot_erase_history_after_resize() {
 
 #[test]
 fn startup_preserves_a_partial_prompt_line() {
-    let mut session = Session::start_with_terminal(
-        "success",
-        "interactive",
-        false,
-        (24, 100),
-        2,
-        PREAMBLE.trim_end(),
-    );
+    let mut session =
+        Session::start_with_terminal("success", "auto", false, (24, 100), 2, PREAMBLE.trim_end());
     assert!(session.finish().success());
     session.assert_restored(true);
 }
 
 #[test]
 fn live_worker_phases_and_idle_rows_arrive_before_completion() {
-    let mut session = Session::start("phases", "interactive", false);
+    let mut session = Session::start("phases", "auto", false);
     session.until(|s| s.state.join("building.ready").exists());
     session.wait_for_full_frame("building");
     assert_eq!(session.report("outcomes.json")["summary"]["missed"], 0);
@@ -738,6 +687,27 @@ fn live_worker_phases_and_idle_rows_arrive_before_completion() {
     fs::write(session.state.join("testing.release"), "").unwrap();
     session.until(|s| s.report("outcomes.json")["summary"]["missed"] == 3);
     session.wait_for_full_frame("worker 1 idle");
+    session.until(|s| {
+        s.screen
+            .screen()
+            .contents()
+            .lines()
+            .filter(|line| line.trim_start().starts_with("missed "))
+            .count()
+            == 3
+    });
+    let contents = session.screen.screen().contents();
+    let rows: Vec<_> = contents.lines().collect();
+    assert!(rows[3].contains("worker 1 idle"));
+    assert!(rows[4].contains("worker 2"));
+    assert!(rows[5].contains("Results"));
+    for id in [1, 3, 4] {
+        assert!(
+            rows[6..9]
+                .iter()
+                .any(|line| line.contains(&format!("#{id:06}")))
+        );
+    }
     assert_eq!(
         session.report("outcomes.json")["mutations"][1]["state"],
         "running"
@@ -762,7 +732,7 @@ fn live_worker_phases_and_idle_rows_arrive_before_completion() {
 
 #[test]
 fn ctrl_c_drains_active_workers_saves_partial_results_and_restores_terminal() {
-    let mut session = Session::start("cancel", "interactive", true);
+    let mut session = Session::start("cancel", "auto", false);
     fs::write(session.state.join("release"), "").unwrap();
     session.until(|s| s.state.join("worker.ready").exists());
     session.master.write_all(&[3]).unwrap();
@@ -778,8 +748,8 @@ fn ctrl_c_drains_active_workers_saves_partial_results_and_restores_terminal() {
 #[test]
 fn empty_and_failed_runs_restore_terminal_and_ci_uses_plain_output() {
     for (mode, ui, ci, interactive, success) in [
-        ("empty", "interactive", false, true, true),
-        ("fail", "interactive", false, true, false),
+        ("empty", "auto", false, true, true),
+        ("fail", "auto", false, true, false),
         ("success", "auto", true, false, true),
         ("success", "plain", false, false, true),
     ] {
@@ -795,7 +765,7 @@ fn empty_and_failed_runs_restore_terminal_and_ci_uses_plain_output() {
 
 #[test]
 fn findings_failure_restores_terminal_and_preserves_completed_report() {
-    for (ui, ci, interactive) in [("interactive", false, true), ("auto", true, false)] {
+    for (ui, ci, interactive) in [("auto", false, true), ("auto", true, false)] {
         let mut session = Session::start("policy", ui, ci);
         assert_eq!(session.finish().code(), Some(3));
         session.assert_restored(interactive);
@@ -809,25 +779,29 @@ fn findings_failure_restores_terminal_and_preserves_completed_report() {
 }
 
 #[test]
-fn failed_terminal_setup_restores_input_and_auto_falls_back_to_plain() {
-    for ui in ["interactive", "auto"] {
-        let mut session = Session::start("no_cursor", ui, false);
-        assert_eq!(session.finish().success(), ui == "auto");
-        session.assert_restored(true);
-        let output = String::from_utf8_lossy(&session.output);
-        if ui == "auto" {
-            assert!(output.contains("using plain output"));
-            assert!(output.contains("Running baseline"));
-        } else {
-            assert!(!session.state.join("baseline.ready").exists());
-            assert_eq!(session.report("run.json")["status"], "failed");
-        }
-    }
+fn failed_terminal_setup_leaves_input_unchanged_and_falls_back_to_plain() {
+    let mut session = Session::start("no_area", "auto", false);
+    assert!(session.finish().success());
+    session.assert_restored(false);
+    let output = String::from_utf8_lossy(&session.output);
+    assert!(output.contains("using plain output"));
+    assert!(output.contains("terminal has no drawable area"));
+    assert!(output.contains("Running baseline"));
+}
+
+#[test]
+fn alternate_screen_does_not_require_cursor_query_responses() {
+    let mut session = Session::start("no_cursor", "auto", false);
+    assert!(session.finish().success());
+    session.assert_restored(true);
+    let output = String::from_utf8_lossy(&session.output);
+    assert_eq!(session.cursor_queries, 0);
+    assert!(!output.contains("using plain output"));
 }
 
 #[test]
 fn score_failure_restores_terminal_and_preserves_completed_report() {
-    for (ui, ci, interactive) in [("interactive", false, true), ("auto", true, false)] {
+    for (ui, ci, interactive) in [("auto", false, true), ("auto", true, false)] {
         let mut session = Session::start("score_policy", ui, ci);
         assert_eq!(session.finish().code(), Some(3));
         session.assert_restored(interactive);
@@ -840,4 +814,30 @@ fn score_failure_restores_terminal_and_preserves_completed_report() {
         assert!(output.contains("Minimum-score policy: failed"));
         assert!(output.contains("Mutation score: 0.00%"));
     }
+}
+
+#[test]
+fn json_on_a_terminal_emits_records_without_starting_the_live_view() {
+    let mut session = Session::start("success", "json", false);
+    assert!(session.finish().success());
+    let now = termios(&session.master);
+    assert_eq!(now.c_lflag, session.termios.c_lflag);
+    assert_eq!(now.c_iflag, session.termios.c_iflag);
+    assert_eq!(now.c_oflag, session.termios.c_oflag);
+    assert_eq!(session.cursor_queries, 0);
+    assert!(!session.output.contains(&0x1b));
+    let output = String::from_utf8_lossy(&session.output);
+    let records: Vec<serde_json::Value> = output
+        .lines()
+        .skip_while(|line| !line.starts_with('{'))
+        .map(|line| serde_json::from_str(line).unwrap())
+        .collect();
+    assert_eq!(records.first().unwrap()["event"], "run_started");
+    let summary = records.last().unwrap();
+    assert_eq!(summary["event"], "summary");
+    assert_eq!(
+        summary["outcomes"],
+        session.report("outcomes.json")["summary"]
+    );
+    assert!(fs::read_dir(&session.workspaces).unwrap().next().is_none());
 }

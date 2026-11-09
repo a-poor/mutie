@@ -269,7 +269,7 @@ impl Browser {
         } else {
             None
         }
-        .unwrap_or(quote_path(module)?);
+        .unwrap_or(format!("--path {}", quote_path(module)?));
         Ok(format!(
             "mutie rerun {} {} --lang {} --id {}",
             quote_path(&self.report.directory)?,
@@ -1398,7 +1398,7 @@ mod tests {
         let command = app.command().unwrap();
         assert!(
             command.starts_with("mutie rerun ")
-                && command.contains(" '/missing/a project'\\''s checkout' --lang go")
+                && command.contains(" --path '/missing/a project'\\''s checkout' --lang go")
         );
         app.module = Some(PathBuf::from("/new/$checkout `literal`"));
         key(&mut app, KeyCode::End);
@@ -1474,7 +1474,7 @@ mod tests {
         let command = app.export.unwrap();
         assert!(
             command.starts_with("mutie rerun ")
-                && command.contains(" '/moved/a project'\\''s checkout' --lang rust --id ")
+                && command.contains(" --path '/moved/a project'\\''s checkout' --lang rust --id ")
         );
         assert!(command.ends_with("--id 1"));
         let identity = run["rust_scope"].as_object_mut().unwrap();
@@ -1533,7 +1533,7 @@ mod tests {
         let command = app.export.unwrap();
         assert!(
             command.starts_with("mutie rerun ")
-                && command.contains(" '/moved/a project'\\''s checkout' --lang js --id ")
+                && command.contains(" --path '/moved/a project'\\''s checkout' --lang js --id ")
         );
         assert!(command.ends_with("--id 1,4"));
     }

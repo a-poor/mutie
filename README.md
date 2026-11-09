@@ -43,11 +43,17 @@ platforms; Windows is not supported yet.
 Create a configuration, preview the mutations, then run them:
 
 ```sh
-mutie init /path/to/project
-mutie list /path/to/project
-mutie check /path/to/project
-mutie run /path/to/project
+cd /path/to/project
+mutie init
+mutie list
+mutie check
+mutie run
 ```
+
+Commands use the current directory. From elsewhere, use
+`mutie --path /path/to/project run`. Project subdirectories and other paths belong
+in `mutie.toml`. Use `--plain` for text progress or `--json` for streaming JSON
+results; see [output modes](docs/output.md).
 
 Mutie first checks that the original tests pass. A **killed** mutation was caught
 by the tests; a **missed** mutation survived and may point to a missing assertion.
@@ -56,8 +62,8 @@ Some mutations don't change observable behavior, so a survivor needs review.
 Open the saved run, improve your tests, and rerun its survivors:
 
 ```sh
-mutie report /path/to/project/.mutie/RUN
-mutie rerun /path/to/project/.mutie/RUN /path/to/project --missed
+mutie report .mutie/RUN
+mutie rerun .mutie/RUN --missed
 ```
 
 Start with a small source selection on larger projects. For example:

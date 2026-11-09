@@ -62,7 +62,7 @@ operators = ["boolean_flip"]
 ```
 
 ```sh
-cargo run -- run /path/to/prepared-fixture --ui plain
+cargo run -- --path /path/to/prepared-fixture run --plain
 MUTIE_VITEST_FIXTURE=/path/to/prepared-fixture cargo test --test vitest_workflow -- --ignored --test-threads=1
 ```
 

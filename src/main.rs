@@ -12,6 +12,7 @@ mod go;
 mod identity;
 mod init;
 mod javascript;
+mod json_output;
 mod language;
 mod mutation;
 mod node;
@@ -38,7 +39,7 @@ use clap::Parser;
 use tokio::{sync::mpsc, task::JoinSet};
 
 use cancellation::{Cancellation, Interrupted};
-use cli::{Cli, Lang, TestScope, UiMode};
+use cli::{Cli, Lang, TestScope};
 use config::RunConfig;
 use coordinator::{Coordinator, Phase, RunEvent, WorkerPhase, WorkerProgress};
 use mutation::{Mutation, Scope};
@@ -48,12 +49,17 @@ use workspace_metrics::{WorkspaceKind, WorkspaceMeasurement};
 
 #[tokio::main]
 async fn main() -> Result<ExitCode> {
-    let Some(command) = Cli::parse().command else {
+    let cli = Cli::parse();
+    let Some(command) = cli.command else {
         use clap::CommandFactory;
         Cli::command().print_help()?;
         println!();
         return Ok(ExitCode::SUCCESS);
     };
+    // Apply the global directory once, before resolving any command paths or
+    // starting project work. Relative config, report and launcher paths follow it.
+    std::env::set_current_dir(&cli.path)
+        .with_context(|| format!("opening working directory {}", cli.path.display()))?;
     // Run/check/list/rerun share configuration and runner selection.
     let command = match command {
         cli::Command::Run(args) => {
@@ -130,14 +136,22 @@ async fn main() -> Result<ExitCode> {
         .context("installing cancellation handlers")?;
     match command {
         cli::Command::Init {
-            path,
             lang,
             runner,
             python,
             non_interactive,
             dry_run,
+            force,
         } => tokio::task::spawn_blocking(move || {
-            init::run(&path, lang, runner, python, non_interactive, dry_run)
+            init::run(
+                std::path::Path::new("."),
+                lang,
+                runner,
+                python,
+                non_interactive,
+                dry_run,
+                force,
+            )
         })
         .await
         .context("project initialization panicked")??,
@@ -165,12 +179,11 @@ async fn main() -> Result<ExitCode> {
         .await
         .context("report browser panicked")??,
         cli::Command::Dismiss {
-            path,
             lang,
             config,
             action,
         } => {
-            let mut invocation = cli::Invocation::project(cli::ProjectArgs { path, lang, config });
+            let mut invocation = cli::Invocation::project(cli::ProjectArgs { lang, config });
             invocation.list = true;
             invocation.metadata_only = !matches!(action, cli::DismissAction::Check);
             let config = RunConfig::resolve(invocation)?;
@@ -203,15 +216,12 @@ async fn run(config: RunConfig) -> Result<ExitCode> {
         .context("installing cancellation handlers")?;
     let (mut coordinator, updates) = Coordinator::new(&config, interactive)?;
     let mut terminal = if interactive {
-        match status::LiveTerminal::start(config.jobs.get(), cancellation.clone()) {
+        match status::LiveTerminal::start(cancellation.clone()) {
             Ok(terminal) => Some(terminal),
-            Err(error) if config.ui == UiMode::Auto => {
+            Err(error) => {
                 eprintln!("Live status unavailable: {error:#}; using plain output.");
                 coordinator.use_plain_output();
                 None
-            }
-            Err(error) => {
-                return finish_run(coordinator, Err(error));
             }
         }
     } else {
@@ -242,6 +252,10 @@ async fn run(config: RunConfig) -> Result<ExitCode> {
 
 fn finish_run(mut coordinator: Coordinator, result: Result<()>) -> Result<ExitCode> {
     let result = coordinator.finish(result);
+    if coordinator.is_json() {
+        result?;
+        return Ok(ExitCode::from(coordinator.exit_code(false)));
+    }
     status::print_summary(&coordinator);
     if coordinator.report_finished
         && let Some(score) = coordinator.score()
@@ -263,17 +277,7 @@ fn finish_run(mut coordinator: Coordinator, result: Result<()>) -> Result<ExitCo
     // Persistence and execution errors take precedence over findings. Returning
     // an ExitCode lets all terminal, report-lock, and runtime guards drop normally.
     result?;
-    Ok(
-        if coordinator.policy().is_some_and(PolicyEvaluation::failed)
-            || coordinator
-                .score_policy()
-                .is_some_and(score::ScorePolicy::failed)
-        {
-            ExitCode::from(3)
-        } else {
-            ExitCode::SUCCESS
-        },
-    )
+    Ok(ExitCode::from(coordinator.exit_code(false)))
 }
 
 async fn create_workspace(
@@ -316,6 +320,7 @@ async fn execute(
     coordinator: &mut Coordinator,
     cancellation: &Cancellation,
 ) -> Result<()> {
+    coordinator.started(config)?;
     let root = &config.module_root;
     let baseline_limit = Duration::from_secs(config.baseline_timeout.get());
     let mut rust_project = (config.lang == Lang::Rust)
@@ -1239,11 +1244,7 @@ mod tests {
                 root.path().join("mutie.toml"),
                 "fail_on_missed = true\nmin_score = 100\n[go]\n",
             )?;
-            let config = RunConfig::resolve(Cli::parse_from([
-                std::ffi::OsStr::new("mutie"),
-                std::ffi::OsStr::new("run"),
-                root.path().as_os_str(),
-            ]))?;
+            let config = RunConfig::resolve_from(Cli::parse_from(["mutie", "run"]), root.path())?;
             let mutations =
                 mutation::discover(root.path(), vec!["a.go".into()], &Scope::new(&[], &[])?)?;
             let (mut coordinator, _) = Coordinator::new(&config, true)?;

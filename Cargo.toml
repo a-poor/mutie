@@ -14,8 +14,8 @@ anyhow = "1.0.104"
 clap = { version = "4.6.7", features = ["derive"] }
 crossterm = "0.29.0"
 globset = "0.4.20"
-# Writer access batches each frame with its cursor anchor; keep the API pinned.
-ratatui = { version = "=0.30.1", default-features = false, features = ["crossterm_0_29", "unstable-backend-writer"] }
+# Keep rendering and terminal behavior aligned with the verified version.
+ratatui = { version = "=0.30.1", default-features = false, features = ["crossterm_0_29"] }
 reflink-copy = "0.1.30"
 roxmltree = "=0.21.1"
 serde = { version = "1.0.229", features = ["derive"] }

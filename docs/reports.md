@@ -4,32 +4,38 @@
 
 ## Live terminal status
 
-Interactive terminals get a live, inline Ratatui display inspired by the Vitest
-CLI. The status region updates in place up to ten times per second, including
-elapsed time and activity while commands run. It shows the current phase,
-completed/total mutations, outcome counts, stable numbered worker rows, and a
-results tail below the workers. For example, during mutation execution:
+Interactive terminals show a full-window Ratatui display on the alternate screen.
+Overall status stays at the top, numbered worker rows stay in place below it,
+and completed mutation results fill the remaining space. For example:
 
 ```text
  | mutie mutations  2.0s
- | worker 1 building  #000004 (2.0s) calc.go:8:3: + -> -
- | worker 2 testing   #000005 (2.0s) ready.go:4:2: true -> false
-
-   killed       add.go:3:2: + -> - (0.2s)
-
  Mutations 3/8  |  Workers 2/2
  2 killed | 1 missed | 0 timeout | 0 build failed | 0 errors
+ | worker 1 building  #000004 (2.0s) calc.go:8:3: + -> -
+ | worker 2 testing   #000005 (2.0s) ready.go:4:2: true -> false
+ Results · newest at bottom
+   killed       #000001 (0.2s) add.go:3:2: + -> -
+   missed       #000002 (0.3s) ready.go:7:2: true -> false
+   killed       #000003 (0.2s) calc.go:5:3: < -> <=
+
  Ctrl-C to stop  |  Test output saved in report logs
 ```
 
-Set `ui` in `mutie.toml` or override it with `--ui auto|interactive|plain`:
+The view refreshes up to ten times per second, including timers while commands
+run. Each result represents a mutation's test run, rather than an individual test
+case. It includes the outcome, report-local ID, command duration and source change.
+Worker timers include workspace preparation; result durations cover the command.
 
-- `auto` (default): use the live view when stdin and stdout are terminals,
-  `TERM` is not `dumb`, and the `CI` environment variable is absent. Fall back to
-  plain output if terminal initialization fails.
-- `interactive`: request the live view, including in CI. Requires terminal stdin
-  and stdout and a `TERM` other than `dumb`; unsupported terminals produce an error.
-- `plain`: print progress lines without terminal control sequences.
+Output is selected by CLI flags:
+
+- No flag: use the live view when stdin and stdout are terminals, `TERM` is not
+  `dumb`, and `CI` is absent. Fall back to plain text if initialization fails.
+- `--plain`: print progress lines without starting the live display.
+- `--json`: stream JSON events with a final summary, including in terminals.
+
+`--plain` and `--json` are mutually exclusive. Presentation is not configured in
+`mutie.toml`. See [output modes](output.md) for the JSON contract.
 
 Worker rows stay in numeric order, including `idle` workers. Busy rows show the
 mutation and elapsed time since assignment, including workspace preparation.
@@ -40,24 +46,25 @@ mutation and elapsed time since assignment, including workspace preparation.
 show `testing` while an observed package is active. Quiet builds can remain
 `running`, and testing takes precedence when build and test events overlap.
 
-`mutie list` always uses plain output. The live view adapts to resizing and small
-terminals, showing as many fixed worker rows as fit and up to three recent results,
-with newest completions at the bottom. An overflow row counts hidden workers and
-how many are active. Space for the results tail is reserved before results arrive
-so completions do not move the worker rows. Narrow terminals use shorter phase
-labels (`prep`, `run`, `build`, `test`), worker prefixes, and outcome totals
-(`kill`, `miss`, `time`, `build`, `err`; initials at smaller widths).
-All results remain in the saved report. The UI uses the normal terminal screen
-and allocates at most its height. Earlier output and the shell prompt remain on
-screen or in terminal scrollback as space is needed. Resizing and exit cleanup
-clear only the live status area. Input stays in normal mode between
-cursor-position queries. Ctrl-C uses the same cancellation and cleanup
-path as plain mode; SIGTERM also works on Unix. On completion or interruption,
-the status area is cleared, the cursor restored, and a final plain summary and
-report path are printed. Interrupted summaries include pending/interrupted counts.
+Worker rows are allocated from the configured job count, including before
+mutation discovery. Very brief phases may pass between redraws. `mutie list`
+uses plain text or `--json`, without opening the live view.
+
+The log follows completions automatically, with the newest entry last. It shows
+as many rows as fit and retains the latest 256 entries for resizing. All results
+remain in the saved report. Extra workers collapse into a count, including how
+many are active. Narrow terminals shorten labels; very short terminals prioritize
+overall status. There is no keyboard scrolling in the live view.
+
+The alternate screen preserves prior shell output and scrollback. Input stays in
+normal mode, without cursor-position queries. Ctrl-C uses the same cancellation
+and worker cleanup as plain mode; SIGTERM also works on Unix. Completion,
+interruption and errors restore the original screen and cursor before printing
+the final summary and report path. Interrupted summaries include pending and
+interrupted counts.
 
 Test output stays in saved logs while the live view is active, including with
-`--verbose`. Use `--ui plain --verbose` to print captured test output during a run.
+`--verbose`. Use `--plain --verbose` to print captured test output during a run.
 Use `mutie report RUN_DIR` to filter and inspect a finalized run.
 
 The MVP has been validated on `godotenv` v1.5.1 as well as the bundled fixture.
@@ -164,7 +171,7 @@ and explains that the omitted output is absent from the report. These notices
 remain visible even when a log file is missing. Artifact paths must resolve inside
 the report directory. JSON metadata is
 limited to 64 MiB per file. Module directories named `report` or `dismiss` can
-still be run as `mutie run ./report` or `mutie run ./dismiss`.
+still be run as `mutie --path ./report run` or `mutie --path ./dismiss run`.
 
 ## Persistent dismissals
 
@@ -203,7 +210,8 @@ are rejected without overwriting the file.
 
 `add`, `list`, `update`, and `remove` do not launch language tools or validate the
 full execution scope. They resolve the same config and selected project as other
-commands. Use `--path PATH`, `--config FILE`, and `--lang` for selection.
+commands. Global `--path DIR` selects the working directory; `--config FILE` and
+`--lang` select configuration and language.
 Adding records the saved identity without checking current source; listing labels
 it unchecked. `check` uses current Go package discovery or validated Rust Cargo
 metadata/module discovery, plus the language, include/exclude patterns, discovery
@@ -264,9 +272,9 @@ After improving tests, use a saved run directory to select just its completed
 `missed` mutations. This works for Go modules and supported Rust packages:
 
 ```sh
-mutie rerun /path/to/saved/run /path/to/project --missed
-mutie rerun /path/to/saved/run /path/to/project --missed --dry-run
-mutie rerun /path/to/saved/run /path/to/project --id 9,11
+mutie rerun /path/to/saved/run --missed
+mutie rerun /path/to/saved/run --missed --dry-run
+mutie rerun /path/to/saved/run --id 9,11
 ```
 
 IDs refer to the **source run's** inventory, not a fresh scan or an earlier run

@@ -175,15 +175,15 @@ impl RunConfig {
         )
     }
 
-    fn resolve_from(cli: Invocation, invocation: &Path) -> Result<Self> {
-        let requested_root = invocation.join(&cli.project.path);
+    pub(crate) fn resolve_from(cli: impl Into<Invocation>, invocation: &Path) -> Result<Self> {
+        let cli = cli.into();
         let explicit_config = cli.project.config.is_some();
         let path = cli
             .project
             .config
             .as_ref()
             .map(|p| invocation.join(p))
-            .unwrap_or_else(|| requested_root.join("mutie.toml"));
+            .unwrap_or_else(|| invocation.join("mutie.toml"));
         let (file, config_file, base) = match fs::read_to_string(&path) {
             Ok(source) => {
                 let file = toml::from_str::<RepositoryConfig>(&source)
@@ -207,7 +207,7 @@ impl RunConfig {
                 (
                     RepositoryConfig::default(),
                     None,
-                    requested_root
+                    invocation
                         .canonicalize()
                         .context("opening project directory")?,
                 )
@@ -398,7 +398,11 @@ impl RunConfig {
             min_score: settings.min_score,
             output_dir,
             verbose: cli.presentation.verbose,
-            ui: cli.presentation.ui,
+            ui: if cli.presentation.plain || cli.json {
+                UiMode::Plain
+            } else {
+                UiMode::Auto
+            },
             list: cli.list,
             check: cli.check,
             json: cli.json,
@@ -545,15 +549,11 @@ mod tests {
         fs::write(temp.path().join("mutie.toml"), config).unwrap();
         temp
     }
-    fn invocation(path: &Path, lang: Option<Language>) -> Invocation {
-        Invocation::project(ProjectArgs {
-            path: path.to_owned(),
-            lang,
-            config: None,
-        })
+    fn invocation(lang: Option<Language>) -> Invocation {
+        Invocation::project(ProjectArgs { lang, config: None })
     }
     fn resolve(root: &Path) -> Result<RunConfig> {
-        RunConfig::resolve(invocation(root, None))
+        RunConfig::resolve_from(invocation(None), root)
     }
     #[test]
     fn defaults_language_settings_and_invocation_overrides_are_distinct() -> Result<()> {
@@ -566,14 +566,15 @@ mod tests {
         assert_eq!(config.include, ["local/**"]);
         assert_eq!(config.operators, [Operator::BooleanFlip]);
         assert_eq!(config.score_scope(), ScoreScope::Filtered);
-        let mut cli = invocation(root.path(), None);
+        let mut cli = invocation(None);
         cli.jobs = NonZeroUsize::new(3);
         cli.timeout = NonZeroU64::new(7);
         cli.presentation = PresentationArgs {
-            ui: UiMode::Plain,
+            plain: true,
+            json: false,
             verbose: true,
         };
-        let config = RunConfig::resolve(cli)?;
+        let config = RunConfig::resolve_from(cli, root.path())?;
         assert_eq!(config.jobs.get(), 3);
         assert_eq!(config.timeout.unwrap().get(), 7);
         assert_eq!(config.ui, UiMode::Plain);
@@ -591,16 +592,16 @@ mod tests {
                 .contains("multiple languages")
         );
         assert_eq!(
-            RunConfig::resolve(invocation(root.path(), Some(Language::Go)))?.lang,
+            RunConfig::resolve_from(invocation(Some(Language::Go)), root.path())?.lang,
             Lang::Go
         );
-        assert!(RunConfig::resolve(invocation(root.path(), Some(Language::Js))).is_err());
+        assert!(RunConfig::resolve_from(invocation(Some(Language::Js)), root.path()).is_err());
         fs::write(
             root.path().join("mutie.toml"),
             "[go]\n[rust]\nenabled=false\npath='missing'\n",
         )?;
         assert_eq!(resolve(root.path())?.lang, Lang::Go);
-        assert!(RunConfig::resolve(invocation(root.path(), Some(Language::Rust))).is_err());
+        assert!(RunConfig::resolve_from(invocation(Some(Language::Rust)), root.path()).is_err());
         fs::write(root.path().join("mutie.toml"), "[go]\nenabled=false\n")?;
         assert!(
             resolve(root.path())
@@ -618,7 +619,7 @@ mod tests {
         fs::write(root.path().join("backend/go.mod"), "module example.test\n")?;
         let path = root.path().join("config/ci.toml");
         fs::write(&path, "output_dir='../reports'\n[go]\npath='../backend'\n")?;
-        let mut cli = invocation(Path::new("."), None);
+        let mut cli = invocation(None);
         cli.project.config = Some(path.clone());
         let config = RunConfig::resolve_from(cli, root.path())?;
         assert_eq!(config.module_root, root.path().join("backend"));
@@ -629,7 +630,7 @@ mod tests {
             &path,
             "[python]\npath='../backend'\nexecutable='../venv/bin/python'\n",
         )?;
-        let mut cli = invocation(Path::new("."), None);
+        let mut cli = invocation(None);
         cli.project.config = Some(path);
         let config = RunConfig::resolve_from(cli, root.path())?;
         // Preserve the venv launcher rather than following its symlink.
@@ -672,9 +673,9 @@ mod tests {
         fs::create_dir(root.path().join("child"))?;
         fs::write(root.path().join("child/go.mod"), "module example.test\n")?;
         assert_eq!(resolve(&root.path().join("child"))?.lang, Lang::Go);
-        let mut cli = invocation(&root.path().join("child"), None);
+        let mut cli = invocation(None);
         cli.project.config = Some(root.path().join("absent"));
-        assert!(RunConfig::resolve(cli).is_err());
+        assert!(RunConfig::resolve_from(cli, root.path()).is_err());
         Ok(())
     }
     #[cfg(unix)]
@@ -768,7 +769,7 @@ mod tests {
                 .contains("ambiguous")
         );
         assert_eq!(
-            RunConfig::resolve(invocation(root.path(), Some(Language::Rust)))?.lang,
+            RunConfig::resolve_from(invocation(Some(Language::Rust)), root.path())?.lang,
             Lang::Rust
         );
         Ok(())

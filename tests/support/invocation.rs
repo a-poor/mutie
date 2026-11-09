@@ -197,7 +197,13 @@ impl Command {
                     missed = arg == "--rerun-missed";
                     i += 1;
                 }
-                "--ui" | "--id" | "--timeout" => {
+                "--ui" => {
+                    if args[i] == "plain" {
+                        passed.push("--plain".into());
+                    }
+                    i += 1;
+                }
+                "--id" | "--timeout" => {
                     if action == "check" && arg == "--timeout" {
                         overrides.push(("baseline_timeout".into(), Some(args[i].clone())));
                     } else {
@@ -382,11 +388,9 @@ impl Command {
             .is_some_and(|s| toml::from_str::<toml::Table>(s).is_err())
         {
             // Malformed-config controls must still reach the real parser.
-            self.inner.arg(action);
+            self.inner.arg("--path").arg(&root).arg(action);
             if action == "dismiss" {
-                self.inner.arg("--path").arg(&root).args(dismiss);
-            } else {
-                self.inner.arg(&root);
+                self.inner.args(dismiss);
             }
             self.inner.args(passed);
             return Ok(());
@@ -417,9 +421,9 @@ impl Command {
         if action == "list" || action == "check" {
             let mut j = 0;
             while j < passed.len() {
-                if ["--ui", "--jobs", "-j", "--timeout"].contains(&passed[j].as_str()) {
+                if ["--jobs", "-j", "--timeout"].contains(&passed[j].as_str()) {
                     j += 2;
-                } else if passed[j] == "--verbose" {
+                } else if ["--verbose", "--plain"].contains(&passed[j].as_str()) {
                     j += 1;
                 } else {
                     self.inner.arg(&passed[j]);

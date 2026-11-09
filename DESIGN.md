@@ -14,15 +14,24 @@ or shared reporting can be reused. The ledger is not an implementation ordering.
 ## CLI/config contract (2026-11-07)
 
 Bare `mutie` prints help. Execution is explicit: `run`, `list`, `check` and `rerun`.
-Root-level runner-specific preview commands are removed. All commands resolve
-`mutie.toml` or an explicit `--config FILE`; presentation stays on the CLI.
+Root-level runner-specific preview commands are removed. Commands use the current
+working directory; global `--path DIR` changes it before resolving any relative
+config, saved-run or other command paths. Project directories are not positional
+arguments. Project commands resolve `./mutie.toml` or an explicit `--config FILE`;
+presentation stays on the CLI. Runs default to automatic terminal detection;
+`--plain` selects text and `--json` selects flushed JSON events on stdout. Those
+flags are mutually exclusive and replace `--ui`. JSON serialization follows the
+existing coordinator events and report finalization, preserving outcomes, policies
+and cleanup. Human diagnostics remain on stderr.
 Top-level execution defaults are overridden by `[go]`, `[rust]`, `[js]` or `[python]`,
 then the limited CLI jobs/timeout overrides. Sections enable languages unless
 `enabled = false`; multiple enabled languages require `--lang` and still execute
 one project. JS/TS share `[js]` with a separate Vitest/Node/Bun runner selector.
 Paths belong to the config file; source globs belong to the selected project.
 Language-specific keys have strict schemas. Init writes this format without
-running tests or installing dependencies. See [current config](docs/usage.md).
+running tests or installing dependencies. `init --force` atomically replaces an
+existing regular config file after successful generation; ordinary init refuses
+overwrites, and `--dry-run` never writes. See [current config](docs/usage.md).
 
 `check` runs the ordinary isolated baseline without mutation scheduling or a saved
 report. `list` preserves static/isolated discovery semantics for each adapter and
@@ -697,54 +706,42 @@ Multi-project scheduling and combined reporting are not implemented.
 
 ## Terminal experience
 
-Use [Ratatui](https://ratatui.rs/) for the default live status view when the
-terminal supports it. Take visual inspiration from the
-[Vitest default CLI reporter](https://vitest.dev/guide/reporters.html#default-reporter):
-a compact inline display with active work and a running summary. Redraw the status
-region in place as work progresses; appending log lines alone does not satisfy
-the interactive view. Keep Ratatui in the presentation layer, independent of the
-execution engine. Use plain output when output is redirected, in CI, or when the
-user explicitly disables the UI. The `ui` setting and matching `--ui` override
-select `auto`, `interactive`, or `plain`. Auto mode requires terminal stdin and
-stdout, a `TERM` other than `dumb`, and no `CI` environment variable; terminal
-initialization failure falls back to plain output. Forced interactive mode
-requires a compatible terminal even when running in CI.
+Use Ratatui 0.30.1 with Crossterm 0.29 for the live run view. It owns the
+alternate screen: overall phase, elapsed time, mutation progress and outcome
+counts at the top; fixed numbered worker rows below; a rolling completion log in
+the remaining space. Keep presentation independent of execution and reporting.
 
-The minimal view shows the current phase, elapsed time, completed/total mutations,
-outcome counts, active worker locations, and recent results. Update elapsed time
-and activity indicators while commands are running, even between completed
-mutations. Support small terminals and resizing. Cancellation is the only
-necessary control initially; pause/resume and changing the work queue
-interactively are later features. The implementation uses Ratatui 0.30.1 with
-Crossterm 0.29 and an application-managed inline area backed by a fixed Ratatui
-viewport. Rendering runs at most ten times per second,
-coalescing snapshots while keeping timers and activity indicators moving. Worker
-rows stay ordered by worker number, including idle workers, and expand to fit the
-terminal height. Hidden workers have an overflow count including the active count.
-A bounded results tail below the workers shows up to three completions, newest
-at the bottom. Its space is reserved independently of the number of results so
-worker rows remain stable. Compact layouts shorten labels and prioritize totals;
-text labels accompany semantic colors.
+No output flag selects the live view when stdin/stdout are terminals, `TERM` is
+not `dumb`, and `CI` is absent. Otherwise use plain output. `--plain` explicitly
+selects human-readable lines; `--json` selects flushed NDJSON. These flags are
+mutually exclusive and are not configuration-file settings. Failed live terminal
+initialization falls back to plain output.
 
-Allocate at most the terminal's height, using ordinary scrolling to preserve
-earlier output in scrollback. Park the hidden cursor at the status area's start
-between frames. On resize, query this terminal-maintained anchor and recreate
-the fixed viewport buffers, clearing only from the anchor downward. This avoids
-Ratatui 0.30.1's full-screen clear and origin reset on horizontal shrink. Exit
-cleanup also clears from the parked cursor, without a stale absolute row or a
-teardown cursor query. Frames and their cursor placement are buffered and emitted
-together; this uses the pinned backend's `unstable-backend-writer` feature.
+Refresh at most ten times per second, coalescing snapshots while timers and
+activity indicators continue between results. Worker slots are allocated from
+the configured job count and remain stable through discovery, assignment and idle
+time. Hidden workers have an overflow count including the active count. The
+completion log uses the remaining height, newest entries last, retaining 256
+entries in memory for resizing. All results are persisted independently. Each
+entry shows outcome, report-local mutation ID, command duration and description.
+These are mutation runs, not individual test cases. Narrow layouts shorten labels
+and prioritize totals; text labels accompany semantic colors. Keyboard scrolling,
+pause/resume and changing the queue are not implemented.
 
-Buffering alone does not prevent a frame prepared before resize from arriving
-after the terminal pulls history back onto the screen. The live writer translates
-the pinned Crossterm backend's absolute cursor moves to relative row movement
-from the parked cursor. Downward movement uses line feeds so a late frame taller
-than the screen scrolls history safely; wrapping is disabled during each frame
-so a late wide frame cannot unexpectedly advance rows. Wrapping is re-enabled at
-the frame's end and during error/panic cleanup. Inline allocation also uses
-relative movement after its cursor query. A PTY regression deliberately holds
-old-size output until after growth/shrink, covering completion and cancellation;
-emulator tests compare normal full/incremental frames with native backend output.
+The full-screen Ratatui viewport handles resize and redraw. Setup enters the
+alternate screen, disables wrapping and hides the cursor. Clear the new screen
+directly: the pinned `Terminal::clear` would query the cursor unnecessarily.
+Normal input mode keeps OS signals available without a separate input task.
+The RAII guard and panic hook restore wrapping, the original screen and the
+cursor, attempting every cleanup operation after errors or partial setup.
+Display errors request cancellation and drain workers before returning. Final
+summaries print only after terminal restoration. This replaces the earlier inline
+viewport, cursor-anchor queries and custom relative-frame translation.
+
+Renderer tests cover fixed rows, a log longer than three entries, follow-on
+completions, expansion/shrink, compact layouts, Unicode and semantic colors. PTY
+tests check alternate-screen entry/exit, shell history, queued old-size frames,
+real Ctrl-C, empty/failed runs, plain/JSON modes and initialization fallback.
 
 Worker assignment starts the elapsed timer and the `preparing` state. Launching
 the Go command switches to `running`. Live structured build output can switch to
@@ -823,8 +820,8 @@ run if Mutie itself is forcibly killed.
 Keep noisy test output in artifacts rather than interleaving it with screen
 updates. After completion, restore the terminal and print a durable plain summary
 and report path. Verbose captured output is printed only in plain mode. The live
-view leaves input in normal mode between cursor-position queries and uses the
-existing signal-driven cancellation path. A terminal write failure cancels and
+view leaves input in normal mode and uses the existing signal-driven
+cancellation path without querying the cursor. A terminal write failure cancels and
 drains execution before finalizing the report; terminal cleanup also runs on
 errors and panics. The separate saved-report browser supports selecting results,
 scrolling diffs/logs, intersecting filters, and generating focused rerun commands.
@@ -877,7 +874,7 @@ handlers responsive. It polls every 100 ms and redraws on input/resize. Ratatui'
 initialization enables raw mode and the alternate screen; a guard balances those
 modes, bracketed paste, colors, and cursor visibility. Cleanup attempts every
 operation even after an output error, and runs on normal exit, error, panic, and
-cancellation. This lifecycle is separate from the live inline status view.
+cancellation. This lifecycle is separate from the live run status view.
 
 Wide terminals show a list beside the detail pane; widths below 90 columns stack
 them. Below 24x12, a resize hint replaces the layout. Keyboard navigation, Unicode
@@ -1461,15 +1458,17 @@ events open to verify both labels before completion; unit tests cover interleave
 packages, stale progress after worker reuse, bounded line decoding, and
 cancellation/deadlines while progress delivery is blocked.
 
-Prompt-preservation regression tests seed a PTY with earlier output and a shell
-prompt and interpret the CLI's ANSI stream with `vt100`, including cursor-query
-replies and scrollback. They cover width shrink, height shrink/growth, completion,
-Ctrl-C, prompts near the screen bottom, and views taller than the screen. Height
-changes model scrolling to retain the cursor and bringing history back into view
-on growth. Width changes do not model emulator-specific reflow. Narrow 14×2 and
-wide 512×1 cases exercise small layouts separately because `vt100` cannot wrap
-text on a one-row grid. These are protocol regressions, not validation of every
-terminal emulator's resize behavior.
+The original inline prompt-preservation tests seeded a PTY with earlier output
+and a shell prompt, interpreting ANSI output with `vt100` and answering cursor
+queries. They modeled history scrolling on resize. The alternate-screen view now
+checks primary-screen restoration without cursor queries or custom history
+reconstruction. Coverage includes resizing, queued old-size frames, Ctrl-C,
+prompts near the screen bottom and excess worker rows. `vt100` truncates bottom
+rows on resize rather than reflowing them, so near-bottom prompt tests shrink
+width and grow height; separate tests exercise height shrink with primary-screen
+content near the top. Narrow 14×2 and wide 512×1 cases exercise small layouts
+separately because `vt100` cannot wrap text on a one-row grid. These are protocol
+regressions, not validation of every terminal emulator's resize behavior.
 
 Inspecting saved missed-result lists, diffs, and logs yielded concrete test gaps:
 

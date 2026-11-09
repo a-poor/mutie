@@ -32,7 +32,7 @@ fn equality_is_included() {
 }
 ```
 
-Then `mutie rerun RUN_DIR PATH --missed`, with the same configured operator, selects source ID 4,
+Then `mutie --path PATH rerun RUN_DIR --missed`, with the same configured operator, selects source ID 4,
 assigns new ID 1, and kills it. The regression checks saved diffs/operator counts,
 the 80% → 100% score change, the failure of this exact test, preservation of source
 and old reports, strict report reading, and cleanup of owned build artifacts.

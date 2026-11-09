@@ -196,6 +196,7 @@ pub fn run(
     python: Option<PathBuf>,
     non_interactive: bool,
     dry_run: bool,
+    force: bool,
 ) -> Result<()> {
     let supplied_root = std::env::current_dir()?.join(root);
     let root = supplied_root
@@ -203,9 +204,15 @@ pub fn run(
         .context("opening project root")?;
     ensure!(root.is_dir(), "project root must be a directory");
     let destination = root.join("mutie.toml");
-    if !dry_run && fs::symlink_metadata(&destination).is_ok() {
-        bail!(
-            "{} already exists; use --dry-run to preview settings and merge them manually",
+    if !dry_run && let Ok(metadata) = fs::symlink_metadata(&destination) {
+        ensure!(
+            force,
+            "{} already exists; use --force to replace it or --dry-run to preview settings",
+            destination.display()
+        );
+        ensure!(
+            metadata.file_type().is_file(),
+            "{} is not a regular file; refusing to replace it",
             destination.display()
         );
     }
@@ -274,6 +281,19 @@ pub fn run(
     let text = render(lang, python.as_deref())?;
     if dry_run {
         print!("{text}");
+    } else if force {
+        // Prepare the entire replacement before touching the old config. Rename
+        // replaces the directory entry without writing through links to other files.
+        let mut file = tempfile::NamedTempFile::new_in(&root)
+            .context("preparing replacement configuration")?;
+        file.write_all(text.as_bytes())
+            .context("writing configuration")?;
+        file.as_file()
+            .sync_all()
+            .context("flushing configuration")?;
+        file.persist(&destination)
+            .with_context(|| format!("saving {}", destination.display()))?;
+        eprintln!("Wrote {}", destination.display());
     } else {
         let mut file = fs::OpenOptions::new()
             .write(true)
@@ -294,7 +314,7 @@ pub fn run(
         label(lang)
     );
     eprintln!(
-        "Next: mutie list PATH, mutie check PATH, then mutie run PATH. Unsupported project settings and runtime versions will be reported by the adapter."
+        "Next, from this directory: mutie list, mutie check, then mutie run. Use --path DIR to work from another directory. Unsupported project settings and runtime versions will be reported by the adapter."
     );
     Ok(())
 }
@@ -318,11 +338,11 @@ mod tests {
     fn refuses_existing_config_and_dry_run_does_not_write() -> Result<()> {
         let root = tempfile::tempdir()?;
         fs::write(root.path().join("go.mod"), "module example.test\n")?;
-        run(root.path(), None, None, None, true, true)?;
+        run(root.path(), None, None, None, true, true, false)?;
         assert!(!root.path().join("mutie.toml").exists());
-        run(root.path(), None, None, None, true, false)?;
+        run(root.path(), None, None, None, true, false, false)?;
         let before = fs::read(root.path().join("mutie.toml"))?;
-        assert!(run(root.path(), None, None, None, true, false).is_err());
+        assert!(run(root.path(), None, None, None, true, false, false).is_err());
         assert_eq!(fs::read(root.path().join("mutie.toml"))?, before);
         Ok(())
     }
@@ -339,19 +359,9 @@ mod tests {
             let root = tempfile::tempdir()?;
             fs::write(root.path().join(manifest), "")?;
             fs::write(root.path().join("mutie.toml"), render(lang, None)?)?;
-            let cli = crate::cli::Cli::try_parse_from([
-                "mutie",
-                "run",
-                root.path().to_str().unwrap(),
-                "--jobs",
-                "1",
-            ])?;
+            let cli = crate::cli::Cli::try_parse_from(["mutie", "run", "--jobs", "1"])?;
             assert_eq!(
-                crate::config::RunConfig::resolve(match cli.command.unwrap() {
-                    crate::cli::Command::Run(args) => crate::cli::Invocation::run(args),
-                    _ => unreachable!(),
-                })?
-                .lang,
+                crate::config::RunConfig::resolve_from(cli, root.path())?.lang,
                 lang
             );
         }

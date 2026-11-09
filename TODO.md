@@ -11,6 +11,24 @@ checklist as work lands, checking items off after appropriate verification.
   Verified with 328 ordinary tests, 51 real workflow tests (Go 6, Rust 2, Node 8,
   Bun 5, Vitest 5, Python 25), direct baseline JSON probes, Rustfmt and Clippy.
   Go native tests required execution outside the macOS filesystem sandbox.
+- [x] Default to the current directory; replace positional project paths with
+  global `--path DIR`, including init, nested dismissals and exported reruns.
+  Relative command paths follow that directory; config paths remain file-relative.
+  Verified with 333 ordinary tests, Rustfmt, Clippy and a direct Rust workspace
+  init/list/check/run/stronger-test rerun (one kill/two survivors, then two kills;
+  production source and original saved report preserved).
+- [x] Add `init --force` to regenerate an existing config with atomic replacement.
+  Default overwrite protection and dry-run behavior remain; failed generation and
+  symlink targets preserve existing files. Verified with 12 init unit/integration
+  tests, Rustfmt and Clippy.
+- [x] Replace `--ui` with mutually exclusive `--plain` and streaming `--json` on
+  run/rerun, retaining automatic terminal detection and single-object previews.
+  JSON events are flushed as work proceeds; final summaries preserve scores,
+  policy exit codes, execution errors, cancellation and report-write failures.
+  Disconnected readers stop execution through normal cleanup. Verified with 341
+  ordinary tests (including PTY and live-pipe controls), Rustfmt, Clippy and a
+  two-worker native Rust JSON run plus stronger-test rerun; original inputs and
+  reports remain preserved. See [output contract](docs/output.md).
 - [ ] Multi-project orchestration and multiple same-language targets remain separate
   work. Until then multiple enabled sections require explicit language selection.
 
@@ -854,12 +872,12 @@ it does not imply general Cargo/workspace support.
 ### 3. Default terminal status view — completed
 
 - [x] Introduce shared coordinator state/events for reports and presentation.
-- [x] Choose Ratatui for a live, in-place status view inspired by the Vitest CLI.
-- [x] Integrate Ratatui 0.30.1 with Crossterm 0.29 and an inline viewport.
+- [x] Use Ratatui for the live run view.
+- [x] Use Ratatui 0.30.1 with Crossterm 0.29 in the alternate screen.
 - [x] Add automatic interactive/plain mode selection and an explicit override.
 - [x] Show phase, elapsed time, progress, outcome counts, active workers, and
-  recent results in the minimal interactive view; redraw in place and keep time
-  and activity indicators updating while commands run, not just on completion.
+  a rolling results log that fills the remaining window; keep worker rows fixed
+  and timers updating while commands run, not just on completion.
 - [x] Handle resizing, small terminals, cancellation, and terminal restoration;
   print a final plain summary and report path.
 - [x] Test rendering and terminal lifecycle, including non-interactive use.
@@ -899,8 +917,8 @@ work; their order is not a priority queue and they do not block the Rust milesto
   for the refined live view.
 - [x] Investigate and fix the preceding shell prompt disappearing after the live
   view closes. Distinguish content pushed into scrollback from content erased;
-  audit inline viewport sizing, Ratatui's full-screen clear on horizontal shrink,
-  and exit cleanup so pre-run terminal content is preserved.
+  fix the original inline viewport and cleanup; the alternate-screen design now
+  isolates live frames from pre-run content.
 - [x] Add terminal regression coverage with a pre-existing prompt and output;
   verify preservation through normal completion, cancellation, and resizing,
   including narrow/short terminals and worker views taller than the screen.

@@ -10,52 +10,74 @@ uses the previous CLI and flat config format.
 Running `mutie` alone prints help. It never starts a mutation run.
 
 ```sh
-mutie init /path/to/project
-mutie list /path/to/project
-mutie check /path/to/project
-mutie run /path/to/project
-mutie rerun /path/to/saved/run /path/to/project --missed
-mutie rerun /path/to/saved/run /path/to/project --id 9,11 --dry-run
+cd /path/to/project
+mutie init
+mutie list
+mutie check
+mutie run
+mutie rerun /path/to/saved/run --missed
+mutie rerun /path/to/saved/run --id 9,11 --dry-run
 mutie report /path/to/saved/run
 mutie runs /path/to/project/.mutie
 mutie prune /path/to/project/.mutie --keep-last 5
-mutie dismiss --path /path/to/project list
+mutie dismiss list
 ```
 
-Project paths default to the current directory. `list` discovers mutations without
-running tests or saving reports. `check` validates the project and runs the same
-isolated baseline used by `run`, then stops without mutations or saved reports.
+Commands work in the current directory by default. The global `--path DIR` option
+changes that working directory before any command paths are resolved; it works
+before or after the subcommand, including nested dismissal commands:
+
+```sh
+mutie --path /path/to/project run
+mutie list --path /path/to/project
+mutie --path /path/to/project rerun .mutie/RUN --missed
+mutie dismiss list --path /path/to/project
+```
+
+Project directories are no longer positional arguments. Saved-run and report-root
+arguments still identify command inputs, relative to the selected working directory.
+`list` discovers mutations without running tests or saving reports. `check` validates
+the project and runs the same isolated baseline used by `run`, then stops without
+mutations or saved reports.
 Both commands accept `--json` and use the same configuration as `run`.
 Bun listing does not launch Bun; Python listing audits without importing project
 code. Other runners may need their language tools for discovery.
 
-`run` and `rerun` accept `--jobs N`, `--timeout SECONDS`, `--ui auto|plain|interactive`,
+`run` and `rerun` accept `--jobs N`, `--timeout SECONDS`, `--plain` or `--json`,
 and `--verbose`. `rerun` additionally accepts `--missed`, repeatable/comma-separated
 `--id`, and `--dry-run` to preview its saved selection. Source filters, operators,
 runner settings, output locations and score policies belong in config.
 
 ## Configuration
 
-`mutie init PATH` writes a starting `mutie.toml`. It detects supported tooling
-without running tests or installing dependencies. Existing files are never
-overwritten. Use `--dry-run` to print a proposal or `--non-interactive` for automation.
+`mutie init` writes a starting `mutie.toml`. It detects supported tooling
+without running tests or installing dependencies. Existing configs are preserved
+unless you pass `--force`, which replaces the whole file with generated settings.
+Use `--dry-run` to print a proposal without writing, even with `--force`, or
+`--non-interactive` for automation. Replacement is atomic and refuses symlinks
+or other non-regular files; failed detection leaves the existing config unchanged.
 Ambiguous setup needs an explicit language and, for JS/TS, a runner:
 
 ```sh
-mutie init PATH --lang js --runner vitest --non-interactive
-mutie init PATH --lang python --python .venv/bin/python
+mutie init --lang js --runner vitest --non-interactive
+mutie init --lang python --python .venv/bin/python
+mutie init --force
 ```
 
-Mutie reads `mutie.toml` in the supplied directory; it does not search parents.
-Use `--config FILE` instead of a project path to select an alternate file:
+Mutie reads `./mutie.toml` in the selected working directory; it does not search
+parents. Use `--config FILE` to select an alternate file. A relative config path
+is also resolved from the working directory selected by `--path`:
 
 ```sh
 mutie run --config ci/mutie.toml
+mutie --path /path/to/project run --config ci/mutie.toml
 ```
 
-All configured paths are relative to the config file's directory, including
-language project paths, Python launchers and output directories. Include/exclude
-globs are relative to the selected project path. No shell expansion is performed.
+Within `mutie.toml`, use language sections to select project subdirectories, such
+as `[go].path = "backend"`. All configured paths are relative to the config file's
+directory, including language project paths, Python launchers and output directories.
+Include/exclude globs are relative to the selected project path. No shell expansion
+is performed.
 
 ```toml
 jobs = 4
@@ -160,16 +182,21 @@ inventory or failure-attribution checks.
 
 ## Presentation and CI
 
-Presentation is invocation-only; `ui` and `verbose` are not config keys.
+Presentation is invocation-only; `plain`, `json`, `ui` and `verbose` are not config keys.
 
 ```sh
-mutie run --ui plain
+mutie run --plain
+mutie run --json > events.jsonl
 mutie run --jobs 2 --timeout 30 --verbose
 ```
 
-`auto` uses the live terminal view when appropriate and plain output in CI or
-when redirected. `interactive` requires a terminal. Listing/checking never open
-the live run view. [Reports and review](reports.md) describes the report browser.
+With neither flag, runs use the live view on suitable terminals and plain text in
+CI or when redirected. `--plain` and `--json` are mutually exclusive. JSON runs and
+reruns emit one event per line as work proceeds, followed by a final summary.
+`--verbose` includes captured command output in text or JSON results; live views
+keep it in the saved logs. Listing/checking never open the live run view and retain
+their single-object JSON responses. See [output modes and event fields](output.md)
+and [reports and review](reports.md).
 
 Set CI policies in config:
 
@@ -197,16 +224,19 @@ and do not yield a passing score.
 
 There are no legacy command aliases or flat config compatibility mode.
 
-- `mutie PATH` becomes `mutie run PATH`.
-- `mutie PATH --list` and runner-specific `*-list` become `mutie list PATH`.
-- Runner-specific `*-check` become `mutie check PATH`.
-- `--rerun RUN` becomes `mutie rerun RUN PATH`; `--rerun-missed RUN` becomes
-  `mutie rerun RUN PATH --missed`. Preview with `--dry-run`.
+- `mutie PATH` and `mutie run PATH` become `mutie --path PATH run`, or just
+  `mutie run` from that directory.
+- `mutie PATH --list` and runner-specific `*-list` become `mutie list`
+  (use global `--path PATH` when needed).
+- Runner-specific `*-check` become `mutie check`.
+- `--rerun RUN` becomes `mutie rerun RUN`; `--rerun-missed RUN` becomes
+  `mutie rerun RUN --missed`. Preview with `--dry-run`.
 - Replace `lang = "go"` with `[go]`, and `lang = "node"`/`"bun"`/`"vitest"`
   with `[js]` and its `runner` field.
 - Move `rust_packages` to `[rust].packages`, `rust_build_cache` to
   `[rust].build_cache`, and `python` to `[python].executable`.
-- Remove config `ui`/`verbose`; choose them at invocation time.
+- Remove config `ui`/`verbose`. Replace `--ui plain` with `--plain`; omit the flag
+  for automatic terminal selection. Use `--json` for machine-readable output.
 - Replace source/operator/policy flags and `--clear-*` flags with config edits or
   an alternate `--config FILE`. `mutie init --dry-run` previews the new format.
 - Dismissal project selection uses `--path` and accepts `--config`/`--lang`.
