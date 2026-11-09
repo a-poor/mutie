@@ -1313,7 +1313,8 @@ automatic sequence of work:
   bound candidate growth and avoid duplicate or unchanged replacements.
 - JS/TS now has [bounded quoted-string replacement](benchmarks/javascript-strings.md).
   Python now has [ordinary str-literal acceptance](benchmarks/python-strings.md).
-  Rust/Go strings, templates and broader recipes need separate acceptance.
+  Rust now has [ordinary/raw str-literal acceptance](benchmarks/rust-strings.md).
+  Go strings, templates and broader recipes need separate acceptance.
   Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values.
 - Extend call removal or add carefully scoped statement/block removal to test
@@ -2595,3 +2596,21 @@ All 34 candidates are accounted for across two reports: eight kills, 25 survivor
 and one error, not a full score. Separate-copy public-API tests kill all 19
 implementation survivors; six export/version survivors and the mask error remain
 open. Original inputs, reports and scores stay unchanged.
+
+### Rust string literals
+
+`rust/string.rs` selects one canonical value change for ordinary/raw runtime
+`str` literals: nonempty to `""`, empty to `"x"`. It validates full tokens and
+decoded emptiness without evaluating source. Continuations remove Rust's following
+whitespace; Unicode/NUL escapes and raw contents preserve their value category.
+The existing traversal keeps constants, macros, attributes, types, patterns,
+array lengths and cfg/test/generated code outside discovery. Bytes/C strings and
+characters remain separate. Unicode escapes with underscores retain the pinned
+parser's existing rejection, verified against the compiler.
+
+Saved recipes require exact replacements and Rust source paths; fresh discovery
+validates context and source identity. [Acceptance](benchmarks/rust-strings.md)
+records 64 native pairs, grammar boundaries, fresh/cached review/rerun agreement,
+and unchanged UCD Parse's 112-site audit (48 kills, 64 survivors). Four tests in a
+separate copy kill 24 survivors; 40 remain open. Original inputs, reports and the
+42.86% filtered score stay unchanged; focused 100% is not a full stronger score.

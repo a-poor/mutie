@@ -924,3 +924,17 @@ implementation survivors. Preserve all nine original inputs, 170 report files,
 failed scores and source-identity mappings. Six export/version survivors and the
 mask IndexError remain open; focused 100% is not a full stronger-suite score.
 Rust/Go strings and templates remain separate; remote CI requires a push.
+
+`benchmarks/rust-strings.md` records Rust `string_replace` for ordinary/raw runtime
+str literals: nonempty to empty, empty to "x". Preserve full-token validation,
+decoded continuation/Unicode/NUL behavior, raw delimiters and original spans.
+Constants/statics, macros, attributes, types/patterns, array lengths and cfg/test/
+generated code remain excluded, as do bytes/C strings and characters. The pinned
+parser still rejects Unicode escapes containing underscores; native controls
+verify that compatibility limit. Exact saved recipes and fresh context/source
+matching protect reruns. Sixty-four native pairs, grammar controls, fresh/cached
+review/reruns and timeout/capture boundaries pass. Unchanged UCD Parse has 112
+candidates (48 kills, 64 survivors); four separate-copy public-API tests kill 24
+survivors. Forty remain open. Preserve all 108 input paths, 464 report files and
+the original 42.86% selection score; focused 100% is not a full stronger score.
+Go strings and broader recipes remain separate; remote CI requires a push.

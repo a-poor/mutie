@@ -320,6 +320,7 @@ impl LoadedReport {
                             | crate::cli::Lang::Bun
                             | crate::cli::Lang::Vitest
                             | crate::cli::Lang::Python
+                            | crate::cli::Lang::Rust
                     ),
                 "saved string mutation is outside supported language scope"
             );
@@ -332,6 +333,17 @@ impl LoadedReport {
                         &mutation.replacement
                     ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("go"),
                     "saved Go numeric mutation is outside supported source scope"
+                );
+            }
+            if run.language() == crate::cli::Lang::Rust
+                && mutation.operator == Operator::StringReplace
+            {
+                ensure!(
+                    crate::rust::discovery::valid_string_replacement(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("rs"),
+                    "saved Rust string mutation is outside supported source scope"
                 );
             }
             if run.language() == crate::cli::Lang::Rust

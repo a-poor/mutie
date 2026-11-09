@@ -149,11 +149,13 @@ jobs:
         run: |
           cargo test --locked --bin mutie rust::discovery::assignment_tests::native_ -- --ignored --test-threads=1
           cargo test --locked --test rust_workflow assignments:: -- --ignored --test-threads=1
-      - name: Rust numeric literals and scored reruns
+      - name: Rust numeric and string literals with scored reruns
         if: matrix.adapter == 'Rust'
         run: |
           cargo test --locked --bin mutie rust::discovery::number_tests::native_ -- --ignored --test-threads=1
           cargo test --locked --test rust_workflow numbers:: -- --ignored --test-threads=1
+          cargo test --locked --bin mutie rust::discovery::string_tests::native_ -- --ignored --test-threads=1
+          cargo test --locked --test rust_workflow strings:: -- --ignored --test-threads=1
       - name: Node JS/TS reports, reruns, review and lifecycle failures
         if: matrix.adapter == 'Node'
         run: cargo test --locked --test node_workflow -- --ignored --test-threads=1

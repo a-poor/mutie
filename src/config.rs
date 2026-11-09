@@ -453,9 +453,9 @@ impl RunConfig {
         ensure!(
             matches!(
                 config.lang,
-                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python
+                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python | Lang::Rust
             ) || !config.operators.contains(&Operator::StringReplace),
-            "string_replace is currently supported only for JavaScript/TypeScript and Python"
+            "string_replace is currently supported only for JavaScript/TypeScript, Python and Rust"
         );
         if config.lang == Lang::Rust {
             ensure!(
@@ -477,6 +477,7 @@ impl RunConfig {
                         | Operator::CallRemove
                         | Operator::AssignmentRemove
                         | Operator::NumberReplace
+                        | Operator::StringReplace
                 )),
                 "unsupported Rust operator"
             );
@@ -606,19 +607,15 @@ mod tests {
             "[project]\nname='fixture'\n",
         )?;
         assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
-        for runner in ["go", "rust"] {
-            let root = fixture(&format!("[{runner}]\noperators=['string_replace']\n"));
-            fs::write(
-                root.path().join("pyproject.toml"),
-                "[project]\nname='fixture'\nversion='0.0.0'\n",
-            )?;
-            fs::write(
-                root.path().join("Cargo.toml"),
-                "[package]\nname='fixture'\nversion='0.0.0'\n",
-            )?;
-            let error = resolve(root.path()).unwrap_err().to_string();
-            assert!(error.contains("string_replace"), "{error}");
-        }
+        let root = fixture("[rust]\noperators=['string_replace']\n");
+        fs::write(
+            root.path().join("Cargo.toml"),
+            "[package]\nname='fixture'\nversion='0.0.0'\n",
+        )?;
+        assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
+        let root = fixture("[go]\noperators=['string_replace']\n");
+        let error = resolve(root.path()).unwrap_err().to_string();
+        assert!(error.contains("string_replace"), "{error}");
         Ok(())
     }
     #[test]

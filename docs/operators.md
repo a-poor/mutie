@@ -46,6 +46,20 @@ Saved recipes must match exactly and fresh discovery must admit the original
 context. Setup/lifecycle errors and timeouts stay outside kills. See
 [native controls and unchanged session-key findings](../benchmarks/javascript-strings.md).
 
+Rust `string_replace` changes an ordinary or raw runtime string from nonempty
+to `""` or empty to `"x"`, retaining `&str` semantics. Emptiness follows the
+decoded value: escaped line continuations and their following Rust whitespace
+emit nothing; NUL/Unicode escapes and raw backslashes remain nonempty. Original
+source spans stay exact, including multiline strings and CRLF.
+
+Macros, attributes, constants/statics, inline const blocks, types, patterns,
+array lengths, cfg/test/generated code, characters, byte strings and C strings
+remain excluded. Function bodies, closures, match guards and ordinary method
+receivers are eligible. The pinned parser still rejects Unicode escapes containing
+underscores even when Rust accepts them. Exact saved recipes and fresh discovery
+protect reruns; compiler failures, timeouts and capture errors remain outside
+kills. See [native controls and unchanged UCD findings](../benchmarks/rust-strings.md).
+
 Python `string_replace` uses the same nonempty-to-empty / empty-to-`"x"` rule
 for ordinary `str` literals. Raw, Unicode-prefixed and triple-quoted forms are
 supported; adjacent literals form one candidate using their combined decoded
@@ -317,7 +331,7 @@ timeouts and tool/capture errors remain separate. See
 All twelve Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, `call_remove`,
-`assignment_remove`, and `number_replace`. Python runs `boolean_flip`,
+`assignment_remove`, `number_replace`, and `string_replace`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
 `arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`,
 `call_remove`, `assignment_remove`, `number_replace`, and `string_replace`. Vitest, Node and Bun run

@@ -20,6 +20,9 @@ pub(crate) use assignment::valid_replacement as valid_assignment_replacement;
 #[path = "number.rs"]
 mod number;
 pub(crate) use number::valid_replacement as valid_number_replacement;
+#[path = "string.rs"]
+mod string;
+pub(crate) use string::valid_replacement as valid_string_replacement;
 
 #[derive(Debug)]
 pub struct Discovery {
@@ -248,6 +251,13 @@ impl Walker<'_> {
             "integer_literal" | "float_literal" if in_body && self.scope.matches(&file.path) => {
                 if let Some(replacement) = number::replacement(node, &file.source) {
                     self.push(file, node, Operator::NumberReplace, replacement);
+                }
+            }
+            "string_literal" | "raw_string_literal"
+                if in_body && self.scope.matches(&file.path) =>
+            {
+                if let Some(replacement) = string::replacement(&file.source[node.byte_range()]) {
+                    self.push(file, node, Operator::StringReplace, replacement);
                 }
             }
             "expression_statement" if in_body && self.scope.matches(&file.path) => {
@@ -1132,3 +1142,7 @@ mod assignment_tests;
 #[cfg(test)]
 #[path = "number_tests.rs"]
 mod number_tests;
+
+#[cfg(test)]
+#[path = "string_tests.rs"]
+mod string_tests;

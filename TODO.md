@@ -253,7 +253,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    one error); separate-copy public-API tests kill all 19 implementation survivors.
    Six export/version survivors and the mask error remain open. See
    [acceptance](benchmarks/python-strings.md).
-   Rust/Go strings, templates and broader literal recipes remain open.
+   Rust string slice completed: ordinary/raw `str` values, decoded emptiness,
+   exact recipes, 64 native pairs and fresh/cached review/rerun controls.
+   Unchanged UCD Parse has 112 candidates (48 kills, 64 survivors); four
+   separate-copy public-API tests kill 24 survivors. Forty remain open. See
+   [acceptance](benchmarks/rust-strings.md).
+   Go strings, templates and broader literal recipes remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

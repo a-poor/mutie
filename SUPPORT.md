@@ -886,3 +886,22 @@ survivors. Six export/version survivors and the mixed assertion/IndexError mask
 mutation remain open. All nine original inputs and 170 original report files are
 preserved. The focused 100% does not replace historical scores. This revisits an
 existing project without broadening runtime/dependency/layout support.
+
+### Rust string literals
+
+[String acceptance](benchmarks/rust-strings.md) adds ordinary/raw runtime
+`string_replace`: nonempty to empty, empty to `"x"`, retaining `&str` semantics.
+Decoded escapes/continuations, raw delimiters and exact source spans are checked.
+Constants/statics, macros, attributes, types/patterns, array lengths, cfg/test/
+generated code, byte strings, C strings and characters remain excluded. The
+pinned parser's rejection of Unicode escapes containing underscores remains.
+
+Sixty-four native pairs and grammar controls pass. Scored fixtures establish
+fresh/cached agreement, review/policy behavior, stronger reruns and timeout/capture
+boundaries. All 32 existing Rust workflows pass unchanged.
+Unchanged UCD Parse has 112 selected candidates: 48 kills and 64 survivors, with
+no errors, timeouts or build failures. Four separate-copy public-API tests kill
+24 survivors through label round trips and directory reads. Forty remain open;
+the original 42.86% selection score stays distinct from focused 100%. All 108
+input paths and 464 original report files remain preserved. Full-workspace test
+scope, source identity and manifest/lockfile/toolchain checks remain unchanged.

@@ -46,6 +46,8 @@ mod loops;
 mod numbers;
 #[path = "support/rust_reruns.rs"]
 mod reruns;
+#[path = "support/rust_strings.rs"]
+mod strings;
 #[path = "support/rust_workspace.rs"]
 mod workspace;
 
