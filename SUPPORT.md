@@ -787,4 +787,24 @@ one kill and four survivors. Three separate-copy tests kill all four survivors,
 covering the idle window, exact reset boundary and initial token count. All 63
 tracked inputs and 33 original report files remain unchanged; the original
 20% filtered score remains distinct from the focused stronger-test result.
-Numeric literals in other languages and string literals remain planned.
+Go/Rust numeric literals and string literals remain planned. Python acceptance
+is recorded below.
+
+### Python numeric literals
+
+[Python numeric acceptance](benchmarks/python-numbers.md) adds `number_replace`
+for runtime integer/float literals, preserving type with one zero → one or
+nonzero → zero edit. Direct unary signs, signed zero, bases, separators, large
+integers and float rounding/underflow/overflow have native controls. Booleans,
+imaginary literals, annotations/type parameters, match patterns and tests remain
+excluded. No inference about larger expression types or classifier changes is
+introduced. Saved recipes, fresh AST/source context and execution identity remain
+mandatory; the new recipe requires fresh reports.
+
+All 42 selected Kelly-module candidates in unchanged betting-math-kit are
+accounted for: 20 kills, 20 survivors and two validation errors across three
+runs. This is combined inventory accounting, not a full score. A separate
+201-test copy kills three survivors around documented defaults; 17 remain open.
+All 20 original input files and 287 original report files are preserved, including
+failed/unscored reports. This revisits the existing project without broadening
+Python runtime, dependency or layout support.

@@ -1,5 +1,6 @@
 //! Narrow Python admission. Project code is never imported during discovery.
 mod identity;
+mod number;
 #[cfg(test)]
 mod profile;
 pub(crate) mod project;

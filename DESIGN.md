@@ -1305,7 +1305,8 @@ automatic sequence of work:
   broader Python operators need separate semantic and real-project evidence.
 - JS/TS now has a [bounded numeric-literal slice](benchmarks/javascript-numbers.md):
   one replacement, zero to one or nonzero to zero, preserving Number/BigInt.
-  Other languages and additional numeric recipes need separate acceptance;
+  Python now has [integer/float acceptance](benchmarks/python-numbers.md).
+  Go/Rust and additional numeric recipes need separate acceptance;
   bound candidate growth and avoid duplicate or unchanged replacements.
 - Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values, and targeted string-literal replacement.
@@ -2478,3 +2479,23 @@ workflows keep setup errors/timeouts separate from kills. The
 all five selected candidates and four separate-copy stronger-test kills, preserving
 original inputs/reports and the filtered 20% score. Other languages and string
 literals remain separate slices of the literal milestone.
+
+Python `number_replace` discovers integer/float `ast.Constant` values and direct
+unary signs over those values. It emits one zero → one or nonzero → zero recipe,
+preserving integer/float type and wrapping the replacement in parentheses. AST
+literal values determine zero (including float underflow); an independent Rust
+lexical reader validates the exact source/replacement pair without evaluating
+project code. Radix integers use digit inspection without fixed-width truncation;
+float parsing retains the tested binary64 rounding boundary. Direct signs suppress
+their child site; parenthesized operands keep the outer sign and mutate inside.
+
+Booleans, imaginary literals, annotations/type parameters, match patterns and
+test code are excluded. Ordinary dictionary keys and indexes remain expressions.
+This does not infer the type of larger expressions. Existing source coordinates,
+snapshot checks and fresh operator/context identity reject forged annotation
+sites. The new reader joins Python's execution recipe fingerprint. Native and
+scored controls preserve runtime/setup-error and timeout boundaries. The
+[42-candidate unchanged-project audit](benchmarks/python-numbers.md) accounts
+for all selected sites, preserves failed reports and proves three default-contract
+survivors with separate-copy tests. It does not establish a full-project score or
+close the remaining 17 survivors.

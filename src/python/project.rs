@@ -17,6 +17,9 @@ use crate::{
 
 /// Exact source recipes; AST admission and fresh discovery establish syntax/context.
 pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Operator> {
+    if super::number::replacement(original) == Some(replacement) {
+        return Some(Operator::NumberReplace);
+    }
     // The pinned AST helper admits complete calls or attribute/item stores for
     // this recipe; its context marker distinguishes the operator. As for branch
     // recipes, fresh AST/operator/source matching is required on rerun. This

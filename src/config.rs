@@ -450,9 +450,11 @@ impl RunConfig {
             );
         }
         ensure!(
-            matches!(config.lang, Lang::Node | Lang::Bun | Lang::Vitest)
-                || !config.operators.contains(&Operator::NumberReplace),
-            "number_replace currently supports only JavaScript/TypeScript runners"
+            matches!(
+                config.lang,
+                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python
+            ) || !config.operators.contains(&Operator::NumberReplace),
+            "number_replace currently supports only Python and JavaScript/TypeScript runners"
         );
         if config.lang == Lang::Rust {
             ensure!(
@@ -560,14 +562,9 @@ mod tests {
         RunConfig::resolve_from(invocation(None), root)
     }
     #[test]
-    fn number_replacement_requires_a_javascript_runner() -> Result<()> {
-        for lang in ["go", "rust", "python"] {
-            let python = if lang == "python" {
-                "executable='venv/bin/python'\n"
-            } else {
-                ""
-            };
-            let root = fixture(&format!("[{lang}]\n{python}operators=['number_replace']\n"));
+    fn number_replacement_requires_a_supported_runner() -> Result<()> {
+        for lang in ["go", "rust"] {
+            let root = fixture(&format!("[{lang}]\noperators=['number_replace']\n"));
             fs::write(
                 root.path().join("Cargo.toml"),
                 "[package]\nname='fixture'\nversion='0.1.0'\n",
@@ -586,6 +583,13 @@ mod tests {
             fs::write(root.path().join("package.json"), "{}")?;
             assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
         }
+        let root =
+            fixture("[python]\nexecutable='venv/bin/python'\noperators=['number_replace']\n");
+        fs::write(
+            root.path().join("pyproject.toml"),
+            "[project]\nname='fixture'\n",
+        )?;
+        assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
         Ok(())
     }
     #[test]

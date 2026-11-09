@@ -149,6 +149,32 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
     offsets = [0]
     for line in lines:
         offsets.append(offsets[-1] + len(line.encode("utf-8")))
+    def bounds(node):
+        return (offsets[node.lineno - 1] + node.col_offset,
+                offsets[node.end_lineno - 1] + node.end_col_offset)
+
+    def numeric(node):
+        if isinstance(node, ast.Constant) and type(node.value) in (int, float):
+            return node
+        if (isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub))
+                and isinstance(node.operand, ast.Constant)
+                and type(node.operand.value) in (int, float)):
+            start, end = bounds(node)
+            inner_start, inner_end = bounds(node.operand)
+            # Only a direct sign owns the literal. Parenthesized operands retain
+            # their outer sign and expose the inner literal as an independent site.
+            if end == inner_end and re.fullmatch(
+                    rb"[+-](?:[ \t\f\r\n]|\\\r?\n|\#[^\r\n]*(?:\r?\n))*",
+                    data[start:inner_start]):
+                return node.operand
+        return None
+
+    signed_children = {node.operand for node in ast.walk(tree)
+                       if isinstance(node, ast.UnaryOp) and numeric(node) is not None}
+    # Match patterns have their own literal grammar, not ordinary expressions.
+    patterns = {part for node in ast.walk(tree)
+                if isinstance(node, (ast.pattern, ast.TypeAlias, ast.type_param))
+                for part in ast.walk(node)}
     tokens = []
     for token in tokenize.generate_tokens(io.StringIO(text, newline=None).readline):
         if ((token.type == tokenize.OP and token.string in {"<", "<=", ">", ">=", "==", "!=", "+", "-", "*", "/", "%"})
@@ -170,6 +196,17 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
                          for part in ast.walk(node)}
     for node in ast.walk(tree):
         if node in annotation_nodes:
+            continue
+        literal = numeric(node)
+        if literal is not None and node not in signed_children and node not in patterns:
+            start, end = bounds(node)
+            replacement = "1" if literal.value == 0 else "0"
+            if type(literal.value) is float:
+                replacement += ".0"
+            yield dict(file=relative, start=start, end=end, line=node.lineno,
+                       column=node.col_offset + 1, end_line=node.end_lineno,
+                       end_column=node.end_col_offset + 1, original=data[start:end].decode(),
+                       replacement="(" + replacement + ")")
             continue
         if (node not in constructor_nodes and isinstance(node, ast.Assign) and len(node.targets) == 1
                 and isinstance(node.targets[0], (ast.Attribute, ast.Subscript))):

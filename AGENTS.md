@@ -846,3 +846,18 @@ produce one kill/four survivors; three separate-copy tests kill all four. Preser
 all 63 input files, 33 original report files and the original 20% filtered score.
 This revisits an existing project; broader numeric recipes, other languages and
 string literals need separate acceptance.
+
+`benchmarks/python-numbers.md` records Python `number_replace` for runtime
+integer/float literals. Preserve exact numeric types, direct-sign ownership,
+signed-zero and float rounding/underflow/overflow decisions, and parenthesized
+replacement syntax. Booleans, imaginary literals, annotations/type parameters,
+match patterns and tests are excluded. Parenthesized sign operands retain the
+outer sign; dictionary keys/indexes and f-string expressions remain eligible.
+AST admission and the independent Rust wire reader must agree; fresh discovery
+rejects forged annotation spans. Fingerprint `python/number.rs` in execution
+identity. Keep runtime/lifecycle errors and timeouts separate from kills.
+Unchanged betting-math-kit has 42 selected sites: 20 kills, 20 survivors, two
+errors across three reports. Three separate-copy default-contract tests kill
+three survivors; 17 remain open. Preserve 20 original inputs, 287 report files,
+failed scores and report-local ID matching. Combined accounting is not a full
+score. Go/Rust numeric literals and strings remain separate roadmap slices.

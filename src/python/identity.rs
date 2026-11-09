@@ -77,6 +77,7 @@ fn recipe() -> String {
             include_bytes!("driver.py").as_slice(),
             include_bytes!("protocol.rs").as_slice(),
             include_bytes!("project.rs").as_slice(),
+            include_bytes!("number.rs").as_slice(),
             include_bytes!("../process.rs").as_slice(),
             include_bytes!("../capture.rs").as_slice(),
             include_bytes!("../workspace.rs").as_slice(),

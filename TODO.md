@@ -222,8 +222,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    underflow, overflow, precision and syntax controls pass on pinned Node/Bun;
    all three runners have independent JS/TS scored controls. Three separate-copy
    tests kill four unchanged OpenClaw session-default/reset survivors. See
-   [acceptance](benchmarks/javascript-numbers.md). Numeric literals in Go, Rust
-   and Python, and string literals in every language, remain open.
+   [acceptance](benchmarks/javascript-numbers.md).
+   Python numeric slice completed: type-preserving integer/float literals, native
+   rounding/sign controls, exact recipes, scored review/reruns and error/timeout
+   boundaries. Unchanged betting-math-kit has 42 selected candidates across three
+   runs (20 kills, 20 survivors, two errors); three separate-copy default-contract
+   tests kill three survivors. Seventeen remain open, with no equivalence claims.
+   See [acceptance](benchmarks/python-numbers.md). Numeric literals in Go/Rust and
+   string literals in every language remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

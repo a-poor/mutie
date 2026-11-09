@@ -187,12 +187,12 @@ jobs:
         run: >-
           cargo test --locked --test python_workflow -- --ignored --test-threads=1
           --skip arithmetic_ --skip assignments_ --skip branch --skip calls_ --skip comparison_ --skip inversions_
-          --skip logical_ --skip loop --skip modulo_
+          --skip logical_ --skip loop --skip modulo_ --skip numbers_
       - name: Python operator workflows and native semantics
         if: matrix.suite == 'operators'
         run: >-
           cargo test --locked --test python_workflow -- --ignored --test-threads=1
-          arithmetic_ assignments_ branch calls_ comparison_ inversions_ logical_ loop modulo_
+          arithmetic_ assignments_ branch calls_ comparison_ inversions_ logical_ loop modulo_ numbers_
       - name: Python native lifecycle, capture and descendant cleanup
         if: matrix.suite == 'lifecycle'
         run: cargo test --locked --bin mutie python::tests::native_ -- --ignored --test-threads=1

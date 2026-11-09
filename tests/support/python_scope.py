@@ -916,7 +916,7 @@ def test_data(tmp_path):
         for expression in ('not[1]', 'not{1}', 'not"text"', 'not~1', 'not-1', 'not+1', 'not...', 'not# comment\n 1', 'not\x0c 1', 'not\\\n 1'):
             source = 'def value(): return (' + expression + ')\n'
             self.write('sample/__init__.py', source)
-            site, = scope.inspect(self.root)['mutations']
+            site, = [m for m in scope.inspect(self.root)['mutations'] if m['original'].startswith('not')]
             raw = source.encode()
             changed = raw[:site['start']] + site['replacement'].encode() + raw[site['end']:]
             expected = ast.parse(source)
@@ -953,6 +953,8 @@ def test_data(tmp_path):
             text = source.replace('\n', newline)
             self.write('sample/__init__.py', text)
             sites = scope.inspect(self.root)['mutations']
+            all_sites = sites
+            sites = [m for m in sites if m['original'] in {'+', '-', '*', '/', '%'}]
             self.assertEqual([m['original'] for m in sites], ['+', '*', '/', '-', '-', '%', '+'])
             for site in sites:
                 raw = text.encode()
@@ -973,7 +975,7 @@ def test_data(tmp_path):
                 self.assertEqual(len(matched), 1)
                 self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(expected))
         self.write('tests/test_sample.py', 'def test_math(): assert 1 + 2 == 3\n')
-        self.assertEqual(scope.inspect(self.root)['mutations'], sites)
+        self.assertEqual(scope.inspect(self.root)['mutations'], all_sites)
 
     def test_arithmetic_native_order_dispatch_and_errors(self):
         import math

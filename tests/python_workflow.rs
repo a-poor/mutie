@@ -9,6 +9,8 @@ use std::{fs, path::Path};
 mod assignments;
 #[path = "support/python_calls.rs"]
 mod calls;
+#[path = "support/python_numbers.rs"]
+mod numbers;
 
 fn python() -> String {
     std::env::var("MUTIE_PYTHON").expect("set MUTIE_PYTHON to the pinned venv launcher")
@@ -1054,7 +1056,14 @@ fn independent_random_generator_and_invalid_seed_error() {
     let baseline = run("python-check", root.path(), &[]);
     assert!(baseline.status.success(), "{baseline:?}");
     let reports = tempfile::tempdir().unwrap();
-    let output = scored_with_timeout(root.path(), reports.path(), &[], "15");
+    // This control changes the seed's type through the Boolean branch. Numeric
+    // seed replacements have their own valid assertion kills.
+    let output = scored_with_timeout(
+        root.path(),
+        reports.path(),
+        &["--operator", "boolean_flip"],
+        "15",
+    );
     assert!(!output.status.success(), "{output:?}");
     let (_, run, outcomes) = saved(&output);
     assert_eq!(run["status"], "failed");
