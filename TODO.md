@@ -240,8 +240,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    and full/affected review/rerun coverage. Unchanged godotenv has 40 candidates
    (25 kills, 15 survivors); three separate-copy parser tests kill three survivors.
    Twelve remain open. See [acceptance](benchmarks/go-numbers.md).
-   Bounded numeric literals now have cross-language parity. String literals in
-   every language and broader numeric recipes remain open.
+   Bounded numeric literals now have cross-language parity.
+   JS/TS string slice completed: quoted runtime strings, nonempty → empty and
+   empty → `"x"`, with value-aware escaping, strict context exclusions, exact
+   recipes and six independent runner/syntax workflows. Unchanged OpenClaw's
+   session-key module has 13 candidates (two kills, 11 survivors); five
+   separate-copy public-API tests kill all 11 survivors. See
+   [acceptance](benchmarks/javascript-strings.md).
+   Python/Rust/Go strings, templates and broader literal recipes remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

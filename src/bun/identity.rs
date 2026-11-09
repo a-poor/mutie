@@ -42,6 +42,7 @@ pub(super) fn recipe_fingerprint() -> String {
             include_bytes!("../javascript.rs").as_slice(),
             include_bytes!("../javascript/assignment.rs").as_slice(),
             include_bytes!("../javascript/number.rs").as_slice(),
+            include_bytes!("../javascript/string.rs").as_slice(),
             include_bytes!("../../Cargo.lock").as_slice(),
             include_bytes!("../capture.rs").as_slice(),
             include_bytes!("../command.rs").as_slice(),

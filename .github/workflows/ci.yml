@@ -172,23 +172,25 @@ jobs:
       - name: Vitest native outcomes, lifecycle and cleanup
         if: matrix.adapter == 'Vitest'
         run: cargo test --locked --bin mutie 'vitest::execution::' -- --ignored --test-threads=1 --skip real_feedback_phase_profile
-      - name: JS/TS assignment-removal and numeric workflows
+      - name: JS/TS assignment-removal and literal workflows
         if: matrix.adapter == 'Node' || matrix.adapter == 'Bun' || matrix.adapter == 'Vitest'
         env:
           MUTIE_ADAPTER: ${{ matrix.adapter }}
         run: |
           adapter=$(printf '%s' "$MUTIE_ADAPTER" | tr '[:upper:]' '[:lower:]')
-          cargo test --locked --test javascript_assignments --test javascript_numbers "$adapter" -- --ignored --test-threads=1
-      - name: Native Node assignment-removal and numeric semantics
+          cargo test --locked --test javascript_assignments --test javascript_numbers --test javascript_strings "$adapter" -- --ignored --test-threads=1
+      - name: Native Node assignment-removal and literal semantics
         if: matrix.adapter == 'Node'
         run: |
           cargo test --locked --bin mutie javascript::assignment_tests::native_node_assignments -- --ignored --exact
           cargo test --locked --bin mutie javascript::number_tests::native_node_numbers -- --ignored --exact
-      - name: Native Bun assignment-removal and numeric semantics
+          cargo test --locked --bin mutie javascript::string_tests::native_node_strings -- --ignored --exact
+      - name: Native Bun assignment-removal and literal semantics
         if: matrix.adapter == 'Bun'
         run: |
           cargo test --locked --bin mutie javascript::assignment_tests::native_bun_assignments -- --ignored --exact
           cargo test --locked --bin mutie javascript::number_tests::native_bun_numbers -- --ignored --exact
+          cargo test --locked --bin mutie javascript::string_tests::native_bun_strings -- --ignored --exact
       # These complementary filters partition python_workflow; keep them in sync.
       - name: Python reports, reruns, review and cleanup
         if: matrix.suite == 'workflows'

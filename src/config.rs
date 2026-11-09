@@ -435,6 +435,7 @@ impl RunConfig {
                     || (*op == Operator::CallRemove)
                     || (*op == Operator::AssignmentRemove)
                     || (*op == Operator::NumberReplace)
+                    || (*op == Operator::StringReplace)
                     || matches!(
                         op,
                         Operator::BooleanFlip
@@ -449,6 +450,11 @@ impl RunConfig {
                 "unsupported {runner} operator"
             );
         }
+        ensure!(
+            matches!(config.lang, Lang::Node | Lang::Bun | Lang::Vitest)
+                || !config.operators.contains(&Operator::StringReplace),
+            "string_replace is currently supported only for JavaScript/TypeScript"
+        );
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
@@ -579,6 +585,38 @@ mod tests {
             "[package]\nname='fixture'\nversion='0.1.0'\n",
         )?;
         assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
+        Ok(())
+    }
+
+    #[test]
+    fn string_replacement_is_limited_to_javascript_runners() -> Result<()> {
+        for runner in ["node", "bun", "vitest"] {
+            let root = fixture(&format!(
+                "[js]\nrunner='{runner}'\noperators=['string_replace']\n"
+            ));
+            fs::write(root.path().join("package.json"), "{}")?;
+            assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
+        }
+        for runner in ["go", "rust", "python"] {
+            let executable = if runner == "python" {
+                "executable='venv/bin/python'\n"
+            } else {
+                ""
+            };
+            let root = fixture(&format!(
+                "[{runner}]\n{executable}operators=['string_replace']\n"
+            ));
+            fs::write(
+                root.path().join("pyproject.toml"),
+                "[project]\nname='fixture'\nversion='0.0.0'\n",
+            )?;
+            fs::write(
+                root.path().join("Cargo.toml"),
+                "[package]\nname='fixture'\nversion='0.0.0'\n",
+            )?;
+            let error = resolve(root.path()).unwrap_err().to_string();
+            assert!(error.contains("string_replace"), "{error}");
+        }
         Ok(())
     }
     #[test]

@@ -33,6 +33,7 @@ pub enum Operator {
     CallRemove,
     AssignmentRemove,
     NumberReplace,
+    StringReplace,
     BranchForceTrue,
     BranchForceFalse,
     LoopSkip,

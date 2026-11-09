@@ -23,6 +23,8 @@ and Go 1.27.2. Separate jobs run:
 - Scoped JS/TS assignment removal: independent scored workflows in each runner's
   job and paired native semantics on Node/Bun, including exact saved identities,
   constructor exclusions, stronger-test reruns, policy scores and lifecycle errors.
+- JS/TS numeric and quoted-string literals: six scored runner/syntax workflows
+  per operator, plus paired Node/Bun native value, Unicode and escaping controls.
 - CPython 3.14.7 with pytest 9.0.2: scored workflows and operators (including
   standalone-call and assignment semantics, review/reruns and runtime/cleanup error controls), flat/src/root-test
   layouts, review/policies, unittest/conftest attribution, resource limits and cleanup.

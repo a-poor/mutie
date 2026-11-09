@@ -102,7 +102,7 @@ the [support guide](SUPPORT.md) has the details and [TODO.md](TODO.md) tracks wh
 | Remove a field/item assignment | ✅ | ✅ | ✅ | ✅ |
 | Skip a conditional loop | ✅ | ✅ | ✅ | ✅ |
 | Replace numeric literals | ✅ | ✅ | ✅ | ✅ |
-| Replace string literals | ⬜ | ⬜ | ⬜ | ⬜ |
+| Replace string literals | ⬜ | ⬜ | ⬜ | ✅ |
 | Remove arbitrary statements or blocks | ⬜ | ⬜ | ⬜ | ⬜ |
 
 JS/TS entries apply to all three supported runners. Each operator has syntax and

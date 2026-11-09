@@ -14,6 +14,7 @@ use tree_sitter::Parser;
 
 mod assignment;
 mod number;
+mod string;
 
 pub struct Discovery {
     pub mutations: Vec<Mutation>,
@@ -196,6 +197,9 @@ pub fn valid_replacement(
 ) -> bool {
     if operator == Operator::NumberReplace {
         return number::valid_replacement(original, changed, typescript);
+    }
+    if operator == Operator::StringReplace {
+        return string::valid_replacement(original, changed, typescript);
     }
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
@@ -484,6 +488,18 @@ fn discover_with_ambient(
                 mutations.push(Mutation {
                     file: file.clone(),
                     operator: Operator::NumberReplace,
+                    range: node.byte_range(),
+                    replacement: replacement.into(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    end_line: node.end_position().row + 1,
+                    end_column: node.end_position().column + 1,
+                });
+            }
+            if let Some(replacement) = string::replacement(node, &file.source) {
+                mutations.push(Mutation {
+                    file: file.clone(),
+                    operator: Operator::StringReplace,
                     range: node.byte_range(),
                     replacement: replacement.into(),
                     line: node.start_position().row + 1,
@@ -847,6 +863,7 @@ mod tests {
         assert_eq!(
             edits,
             vec![
+                ("src/a.js", "'false'"),
                 ("src/a.js", "true"),
                 ("src/a.js", "false"),
                 ("src/a.js", "true"),
@@ -858,7 +875,14 @@ mod tests {
             ]
         );
         for m in &found.mutations {
-            assert_eq!(m.operator, Operator::BooleanFlip);
+            assert_eq!(
+                m.operator,
+                if m.original() == "'false'" {
+                    Operator::StringReplace
+                } else {
+                    Operator::BooleanFlip
+                }
+            );
             assert!(m.file.fingerprint.starts_with("sha256:"));
         }
     }
@@ -987,7 +1011,16 @@ mod nul_tests {
             &Cancellation::default(),
         )
         .unwrap();
-        assert_eq!(found.mutations.len(), 2);
+        assert_eq!(found.mutations.len(), 3);
+        assert_eq!(
+            found
+                .mutations
+                .iter()
+                .filter(|m| m.operator == Operator::StringReplace)
+                .map(Mutation::original)
+                .collect::<Vec<_>>(),
+            ["'x\0'"]
+        );
         for mutation in found.mutations {
             assert_eq!(&source[mutation.range.clone()], mutation.original());
         }
@@ -1151,3 +1184,7 @@ mod assignment_tests;
 #[cfg(test)]
 #[path = "javascript/number_tests.rs"]
 mod number_tests;
+
+#[cfg(test)]
+#[path = "javascript/string_tests.rs"]
+mod string_tests;

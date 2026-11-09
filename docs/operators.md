@@ -32,6 +32,20 @@ NaN or a BigInt exception. No numeric type inference or exception reclassificati
 is added. Unary signs, updates, augmented assignments, powers and types remain
 excluded. See [semantic controls and unchanged Bragkit findings](../benchmarks/javascript-arithmetic.md).
 
+JS/TS `string_replace` changes an ordinary quoted runtime string from nonempty
+to empty or empty to `"x"`. The replacement is parenthesized: `'text' → ("")`,
+`'' → ("x")`. Emptiness follows the string value, including line continuations;
+NULs, Unicode escapes and lone UTF-16 surrogates are nonempty. No source is
+evaluated during discovery, and legacy octal/decimal escapes are excluded.
+
+Standalone string statements (including directives), imports/re-export syntax,
+declaration keys (including computed names), types/enums, templates and their
+substitutions, tests and generated files are excluded. Runtime property lookups,
+values, defaults, call arguments, case values and exports remain eligible.
+Saved recipes must match exactly and fresh discovery must admit the original
+context. Setup/lifecycle errors and timeouts stay outside kills. See
+[native controls and unchanged session-key findings](../benchmarks/javascript-strings.md).
+
 JS/TS `number_replace` makes one change per eligible runtime literal: zero becomes
 one, and nonzero becomes zero. Number and BigInt stay distinct (`0 → (1)`,
 `7n → (0n)`). A directly attached unary sign belongs to the same candidate:
@@ -294,7 +308,7 @@ All twelve Go operators run by default; Rust runs `boolean_flip`, `comparison_in
 `call_remove`, `assignment_remove`, and `number_replace`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
-`loop_skip`, `call_remove`, `assignment_remove`, and `number_replace`.
+`loop_skip`, `call_remove`, `assignment_remove`, `number_replace`, and `string_replace`.
 Set `operators` under the language section in `mutie.toml` to select a subset
 for fresh runs, listings and reruns:
 

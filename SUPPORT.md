@@ -787,8 +787,8 @@ one kill and four survivors. Three separate-copy tests kill all four survivors,
 covering the idle window, exact reset boundary and initial token count. All 63
 tracked inputs and 33 original report files remain unchanged; the original
 20% filtered score remains distinct from the focused stronger-test result.
-Python, Rust and Go numeric acceptance is recorded below. String literals
-remain planned.
+Python, Rust and Go numeric acceptance and the JS/TS string slice are recorded
+below. Other languages' strings remain planned.
 
 ### Python numeric literals
 
@@ -847,3 +847,22 @@ survivors, with full/affected agreement and a 62.50% selection score. A separate
 and a literal dollar sign; 12 remain open. All 20 original inputs and 352
 original/affected report files are preserved. This revisits an existing project;
 the focused 20% is not a full stronger-suite score.
+
+### JS/TS quoted-string literals
+
+[String acceptance](benchmarks/javascript-strings.md) adds `string_replace`
+independently across Node/Bun/Vitest × JS/TS. Ordinary nonempty strings become
+empty; empty strings become `"x"`. Native controls distinguish line continuations
+from NULs, Unicode escapes and lone surrogates. Standalone string statements,
+module syntax, declaration/computed keys, types, templates/substitutions, tests
+and generated code remain excluded. Saved recipes and fresh source context must
+agree; Bun execution identity includes the new selector.
+
+All six scored workflows cover review, stronger reruns, source/report
+preservation, setup errors and timeouts. Thirty native cases per syntax/runtime
+pass on Node and Bun. Unchanged OpenClaw's session-key module has 13 candidates:
+two kills and 11 survivors. Five tests in a separate copy kill all 11; its
+67-test baseline passes. All 63 original inputs and 65 original report files
+remain unchanged. The original 15.38% filtered score stays distinct from the
+focused 100%. This revisits an existing project and adds no runtime, dependency
+or layout support. Python/Rust/Go strings and templates remain unimplemented.

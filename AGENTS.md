@@ -892,3 +892,19 @@ survivors; 12 remain open. Preserve all 20 inputs, 176 original and 176 affected
 report files and the original 62.50% selection score. Numeric literal parity is
 bounded; string literals and broader recipes remain separate. Remote Linux CI
 validation requires a push.
+
+`benchmarks/javascript-strings.md` records JS/TS `string_replace` across Node,
+Bun and Vitest. One ordinary quoted literal becomes `("x")` when its value is
+empty and `("")` otherwise. Preserve strict escape validation, line-continuation
+emptiness, NUL/Unicode/lone-surrogate behavior and original-byte identities.
+Do not evaluate source. Exclude standalone string statements/directives, module
+syntax, declaration/computed keys, types, templates/substitutions, tests and
+generated files. Existing export-attribute parse rejection remains. Exact saved
+recipes and fresh source-context discovery reject forged keys; Bun fingerprints
+`javascript/string.rs`. Six independent runner/syntax workflows preserve review,
+setup errors and timeout boundaries; 120 native pairs validate values. Unchanged
+OpenClaw has 13 selected session-key candidates (two kills, 11 survivors), all
+11 survivors killed by five separate-copy tests. Preserve all 63 input files,
+65 original report files and the original 15.38% filtered score. Focused 100%
+is not a full stronger-project score. Other languages' strings, templates and
+broader recipes remain separate; remote Linux CI validation requires a push.

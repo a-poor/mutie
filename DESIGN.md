@@ -1311,8 +1311,10 @@ automatic sequence of work:
   Go now has [constant-kind-preserving acceptance](benchmarks/go-numbers.md).
   Additional numeric recipes need separate acceptance;
   bound candidate growth and avoid duplicate or unchanged replacements.
-- Consider return-value replacement with type-appropriate zero, empty string,
-  empty collection or null values, and targeted string-literal replacement.
+- JS/TS now has [bounded quoted-string replacement](benchmarks/javascript-strings.md).
+  Other languages, templates and broader recipes need separate acceptance.
+  Consider return-value replacement with type-appropriate zero, empty string,
+  empty collection or null values.
 - Extend call removal or add carefully scoped statement/block removal to test
   persistence, notification and cleanup behavior. Measure build-failure noise and
   preserve lifecycle-error classification before broadening eligibility.
@@ -2546,3 +2548,26 @@ reruns. Unchanged godotenv has 40 candidates (25 kills, 15 survivors). Three
 separate-copy tests kill three parser survivors; 12 remain open. Original inputs,
 reports and the 62.50% operator-selection score remain unchanged. Numeric literal
 parity is bounded; string literals and broader numeric recipes remain separate.
+
+### JS/TS quoted-string literals
+
+`javascript/string.rs` implements one `string_replace` recipe per eligible
+ordinary quoted literal: nonempty becomes `("")`, empty becomes `("x")`.
+A strict escape scanner computes emptiness without executing source or forcing
+UTF-16 surrogate values into Rust strings. Only line continuations emit no code
+units. Original bytes remain the identity, including NULs masked only for parsing.
+
+Ancestor checks exclude standalone string statements/directives, module syntax,
+declaration/computed keys, type syntax and all template subtrees. Runtime
+lookups, values, defaults, arguments, case values and exports remain eligible.
+Existing JSX/decorator/ambient and export-attribute parser limits remain.
+Saved readers regenerate the exact recipe and reject unsupported languages;
+fresh discovery establishes source/context eligibility. Bun fingerprints this
+selector with the shared discovery recipe.
+
+[Acceptance](benchmarks/javascript-strings.md) records 120 native pairs across
+Node/Bun × JS/TS, six scored workflows and unchanged OpenClaw findings. The
+selected session-key module has two kills and 11 survivors across 13 candidates.
+Five separate-copy public-API tests kill all 11; original inputs, reports and
+the 15.38% filtered score remain unchanged. Templates, other languages' strings
+and broader replacement sets require separate acceptance.
