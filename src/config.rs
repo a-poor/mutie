@@ -451,9 +451,9 @@ impl RunConfig {
         ensure!(
             matches!(
                 config.lang,
-                Lang::Python | Lang::Node | Lang::Bun | Lang::Vitest
+                Lang::Go | Lang::Python | Lang::Node | Lang::Bun | Lang::Vitest
             ) || !config.operators.contains(&Operator::AssignmentRemove),
-            "assignment_remove currently supports only Python and JS/TS property/item assignments"
+            "assignment_remove currently supports only Go, Python and JS/TS selector/item assignments"
         );
         if config.lang == Lang::Rust {
             ensure!(
@@ -560,20 +560,16 @@ mod tests {
         RunConfig::resolve_from(invocation(None), root)
     }
     #[test]
-    fn assignment_removal_is_scoped_to_python_and_javascript_runners() -> Result<()> {
-        for config in ["[go]\n", "[rust]\n"] {
-            let root = fixture(&(config.to_owned() + "operators=['assignment_remove']\n"));
-            fs::write(
-                root.path().join("Cargo.toml"),
-                "[package]\nname='fixture'\nversion='0.1.0'\n",
-            )?;
-            fs::write(root.path().join("package.json"), "{}")?;
-            let error = resolve(root.path()).unwrap_err().to_string();
-            assert!(
-                error.contains("assignment_remove") || error.contains("unsupported Node operator"),
-                "{error}"
-            );
-        }
+    fn assignment_removal_is_scoped_to_go_python_and_javascript_runners() -> Result<()> {
+        let rust = fixture("[rust]\noperators=['assignment_remove']\n");
+        fs::write(
+            rust.path().join("Cargo.toml"),
+            "[package]\nname='fixture'\nversion='0.1.0'\n",
+        )?;
+        let error = resolve(rust.path()).unwrap_err().to_string();
+        assert!(error.contains("assignment_remove"), "{error}");
+        let go = fixture("[go]\noperators=['assignment_remove']\n");
+        assert_eq!(resolve(go.path())?.operators, [Operator::AssignmentRemove]);
         let root =
             fixture("[python]\nexecutable='venv/bin/python'\noperators=['assignment_remove']\n");
         fs::write(

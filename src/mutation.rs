@@ -15,6 +15,8 @@ use tree_sitter::{Node, Parser};
 
 use crate::cancellation::Cancellation;
 
+pub(crate) mod assignment;
+
 pub const OPERATOR_CATALOG_VERSION: u32 = 1;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Deserialize, Serialize, ValueEnum)]
@@ -225,6 +227,20 @@ pub fn discover_cancellable(
 }
 
 fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
+    if assignment::eligible(node) {
+        let start = node.start_position();
+        let end = node.end_position();
+        mutations.push(Mutation {
+            file: Arc::clone(file),
+            operator: Operator::AssignmentRemove,
+            range: node.byte_range(),
+            replacement: "".into(),
+            line: start.row + 1,
+            column: start.column + 1,
+            end_line: end.row + 1,
+            end_column: end.column + 1,
+        });
+    }
     let (condition, guards): (_, &[(Operator, &str)]) = match node.kind() {
         "if_statement" => (
             node.child_by_field_name("condition"),

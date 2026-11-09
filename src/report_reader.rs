@@ -374,6 +374,18 @@ impl LoadedReport {
                     "saved Rust loop mutation is outside supported source scope"
                 );
             }
+            if run.language() == crate::cli::Lang::Go
+                && mutation.operator == Operator::AssignmentRemove
+            {
+                ensure!(
+                    crate::mutation::assignment::valid_replacement(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("go")
+                        && !mutation.file.to_string_lossy().ends_with("_test.go"),
+                    "saved Go assignment mutation is outside supported source scope"
+                );
+            }
             if run.language() == crate::cli::Lang::Rust && mutation.operator == Operator::CallRemove
             {
                 ensure!(

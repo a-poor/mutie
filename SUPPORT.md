@@ -69,8 +69,9 @@ matrix remain release-qualification gaps.
 - Project/test scope: a root `go.mod`, multiple packages within that module,
   Go 1.24+ on PATH. Full-module tests are the default; affected-package mode keeps
   a full baseline and selects transitive reverse dependencies for mutations.
-- Mutation coverage: ten operators, including arithmetic/comparison changes,
-  boolean flips, logical swaps, call removal, branch forcing and loop skipping.
+- Mutation coverage: eleven operators, including arithmetic/comparison changes,
+  boolean flips, logical swaps, call removal, scoped selector/index assignment
+  removal, branch forcing and loop skipping.
   See [operator behavior](docs/operators.md) for eligibility and limits.
 - Workflow: file/operator filters, live/plain status, saved reports and browser,
   focused reruns, dismissals, scores and CI policies, retention and log budgets.
@@ -78,6 +79,10 @@ matrix remain release-qualification gaps.
   [go-cmp](benchmarks/go-cmp-v0.7.0.md), and
   [fzf](benchmarks/fzf-v0.65.2-loops.md) record real-project findings and comparisons.
   Default regressions and opt-in `tests/go_workflow.rs` cover execution behavior.
+  [Assignment removal](benchmarks/go-assignments.md) accounts for all six
+  godotenv candidates: three build failures and three stream-connection survivors,
+  all killed by a separate-copy stronger test. Full/affected outcomes agree;
+  the 50% invalid-candidate rate is a limit of this small sample.
 - Limits: no general multi-module/workspace claim. Affected selection follows Go
   import dependencies; external test systems and unrepresented runtime dependencies
   need separate validation. Recorded macOS/Linux testing is not universal platform
@@ -613,9 +618,10 @@ binding/suspension subtrees. Tests catch two unchanged Binary Tree Library
 rotation-update survivors in a separate copy. The draft inventory measured
 16 kills, seven survivors, six timeouts and three errors across 32 tree candidates;
 all 16 Route Mini constructor deletions errored and are excluded from the final
-scope. These combined inventories are not full scores. Go/Rust assignment removal
-and general block deletion remain separate scopes; JS/TS assignment support is now
-recorded in [its own acceptance](benchmarks/javascript-assignments.md).
+scope. These combined inventories are not full scores. Rust assignment removal
+and general block deletion remain separate scopes. JS/TS and Go assignment support
+are recorded in [JS/TS acceptance](benchmarks/javascript-assignments.md) and
+[Go acceptance](benchmarks/go-assignments.md).
 
 ### Audited pure-Python dependency
 

@@ -800,5 +800,19 @@ functions or all initialization sites. Fresh source/operator discovery must reje
 forged constructor spans even when the isolated statement recipe parses. Include
 `javascript/assignment.rs` in Bun's execution recipe. Preserve lifecycle errors,
 original filtered scores, and unchanged OpenClaw input/report hashes; separate-copy
-tests kill session-reset persistence and timestamp-refresh survivors. Go/Rust
+tests kill session-reset persistence and timestamp-refresh survivors. Rust
 assignment removal and broader block deletion remain separate goals.
+
+`benchmarks/go-assignments.md` records Go selector/index `assignment_remove`.
+Only standalone single-target `=` statements directly in statement lists qualify;
+exclude names/declarations, multiple targets, compound assignments, updates,
+pointer-only stores, headers, labels and select receive clauses. Use exact empty
+replacement, skip all target/key/RHS/store effects, and retain genuine unused-name
+build failures. Selection is syntactic (including package-qualified variables);
+do not infer constructor or type semantics. Saved snippet validation and fresh
+source/operator matching must reject forged headers and changed recipes. Preserve
+existing Go classification, timeout/capture-error separation, original scores and
+unchanged godotenv input/report hashes. Its three standard-stream survivors are
+killed by one separate-copy public-API test; three other candidates do not compile.
+Full/affected selection agrees. CI runs the native semantic pairs and scored
+workflows; remote validation of these new changes still requires a commit/push.

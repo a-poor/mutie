@@ -124,6 +124,9 @@ jobs:
       - name: Go mutation workflows and affected-package selection
         if: matrix.adapter == 'Go'
         run: cargo test --locked --test go_workflow --test affected_packages -- --ignored --test-threads=1
+      - name: Go assignment-removal semantics
+        if: matrix.adapter == 'Go'
+        run: cargo test --locked --bin mutie mutation::assignment::tests::native_assignment_effects -- --ignored --exact
       - name: Rust package workflow
         if: matrix.adapter == 'Rust'
         run: cargo test --locked --test rust_workflow rust_fixture_runs_lists_filters_and_saves_results_without_touching_inputs -- --ignored --exact

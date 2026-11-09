@@ -200,7 +200,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    statement controls. Two separate-copy tests kill unchanged OpenClaw session
    persistence/timestamp survivors; all three selected candidates are accounted
    for without errors or timeouts. See [acceptance](benchmarks/javascript-assignments.md).
-   Go/Rust assignment removal and broader forms remain separate goals.
+   Go assignment follow-up completed: single-target selector/index stores,
+   native skipped-effect/panic/receive controls, exact saved recipes and scored
+   review/policy/rerun checks. Unchanged godotenv has three build failures and
+   three stream-connection survivors; a separate-copy public-API test kills all
+   three. Full/affected outcomes match. See [acceptance](benchmarks/go-assignments.md).
+   Rust assignment removal and broader forms remain separate goals.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

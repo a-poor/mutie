@@ -701,6 +701,16 @@ future work. Favor understandable findings over generating the largest possible 
 of mutations. See [call-removal validation](benchmarks/godotenv-v1.5.1-call-remove.md)
 for four actionable CLI gaps and four unbuildable removals on `godotenv` v1.5.1.
 
+Go `assignment_remove` now deletes standalone single-target selector/index `=`
+statements directly in statement lists. It leaves bindings, multiple targets,
+compound assignments, headers, labeled statements and pointer-only stores alone.
+The entire receiver/index/RHS/store evaluation is skipped; reference cleanup is
+not synthesized. Saved recipes require a complete eligible Go statement and the
+exact empty replacement; fresh discovery additionally validates original context.
+[Godotenv acceptance](benchmarks/go-assignments.md) records three stream-connection
+survivors killed by a separate stronger test and three honest build failures.
+Full/affected outcomes match, and original sources/reports remain unchanged.
+
 ## Repository configuration
 
 The current schema and precedence are specified in [usage](docs/usage.md).
@@ -2412,8 +2422,9 @@ marks assignment context separately from calls; both share the no-op wire recipe
 but fresh AST/operator/source matching rejects cross-family or local-binding
 forgeries. Constructor deletion produced 16/16 errors in the draft Route Mini
 audit. Two unchanged AVL rotation survivors are killed by separate-copy tests.
-Broader block/return/lifecycle deletion and assignment support in other languages
-remain separate scopes. No classifier or version changes accompany this slice.
+Broader block/return/lifecycle deletion and Rust assignment support remain separate
+scopes. JS/TS and Go assignment acceptance are recorded separately. No classifier
+or version changes accompany this slice.
 
 JS/TS `assignment_remove` replaces a complete standalone property/index `=`
 statement with `;`. The shared parser requires a member/subscript target and

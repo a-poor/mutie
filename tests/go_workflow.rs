@@ -9,6 +9,9 @@ use std::{
     process::Output,
 };
 
+#[path = "support/go_assignments.rs"]
+mod assignments;
+
 fn copy_tree(from: &Path, to: &Path) {
     fs::create_dir_all(to).unwrap();
     for entry in fs::read_dir(from).unwrap() {

@@ -194,7 +194,20 @@ have additional eligibility and evaluation rules described below.
 See [proposed operator expansion](../DESIGN.md#proposed-operator-expansion) for ideas
 that are not yet implemented.
 
-All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
+Go `assignment_remove` deletes a single-target `=` statement whose target is a
+selector or index, such as `state.Value = n`, `items[i] = n` or `values[key] = n`.
+It skips target, index, RHS and store effects. Only statements directly in block
+or case bodies qualify. Plain names, declarations, multi-target assignments,
+compound assignments, updates, pointer-only stores (`*p = n`), labels, headers
+and select receive clauses are excluded. Parenthesized targets are supported.
+Selection is syntactic: selectors can include package variables, and Go has no
+special constructor syntax to exclude. Unused imports/locals left by removal
+remain build failures; no reference repair or unreachable wrapper is added.
+Existing Go test-failure classification stays unchanged, including panic failures;
+timeouts and tool/capture errors remain separate. See
+[semantic controls and standard-stream findings](../benchmarks/go-assignments.md).
+
+All eleven Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
