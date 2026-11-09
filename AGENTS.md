@@ -1,5 +1,20 @@
 # Repository Guidelines
 
+Project Cargo build scripts now run in owned copies/artifacts; see
+`benchmarks/rust-build-scripts.md`. `src/rust/build_script.rs` binds script paths,
+input files/modes, declared environment and generated output identity. Keep
+scripts/generated code outside discovery; clean all local packages before cached
+candidates. Stronger integration tests are allowed only with matching pristine
+build evidence. Preserve error/compile/timeout distinctions and descendant cleanup.
+Inactive release-profile chains and explicit non-host target flags are accepted;
+active dev/test/compiler settings, proc-macro members and external paths remain
+separate scopes. This supersedes historical build-script exclusions below.
+Unchanged ripgrep has 1,209 passing tests and a bounded 16-candidate sample
+(six kills, ten survivors); four separate-copy tests kill seven survivors with
+1,213 tests. Preserve original inputs/scores/reports and the three unresolved
+survivors. `.git` remains absent from copies; do not fabricate Git identity or
+claim arbitrary host-dependent builds are reproducible.
+
 ## Current CLI and configuration
 
 Bare `mutie` prints help. Use `mutie run`, `mutie list`, `mutie check` and
@@ -952,3 +967,17 @@ in both scopes. Fifteen remain open. Preserve all 20 inputs, 172 original and
 172 affected report files and the original 45.71% selection score. Bounded numeric/
 string parity is complete; prioritize routine compatibility and feedback next.
 Templates and broader recipes remain separate; remote CI requires a push.
+
+`benchmarks/compatibility-audit.md` records the first six-runner unchanged-project
+sample after literal parity. SJSON completes init/check/run/review/rerun: 36
+selected candidates yield 23 kills, 11 survivors and two vet/build failures;
+five separate-copy tests kill five survivors. Six remain open. Preserve 1,239
+tracked inputs across all six projects, 160 original SJSON report files and its
+67.65% selection score. Ripgrep, Click, UFO, eslint-node-test and Elysia stop at
+admission; do not report their unattempted mutations as passing. Ripgrep's native
+workspace controls pass 1,209 tests with and without Git metadata; installed Click
+passes 2,622 tests with its original skips/deselection/xfail configuration. Native
+JS suites were not attempted. Prioritize ordinary Cargo build-script support and
+inactive custom release profiles on unchanged ripgrep as the next bounded goal,
+including build inputs/output identity, fresh/cached restoration and stronger-test
+acceptance. This is planned, not implemented; broader compatibility remains open.

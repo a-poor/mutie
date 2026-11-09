@@ -1,5 +1,5 @@
 use std::{
-    collections::BTreeSet,
+    collections::{BTreeMap, BTreeSet},
     fs,
     path::{Path, PathBuf},
 };
@@ -24,6 +24,14 @@ pub struct ExecutionScope {
     pub rustc: Option<String>,
     pub cargo: Option<String>,
     pub discovery_exclusions: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub build_scripts: Vec<super::build_script::Script>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub build_inputs: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub build_outputs: Option<super::build_script::Outputs>,
+    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    pub inactive_target_flags: BTreeMap<String, Vec<String>>,
 }
 
 // Accept the original single-binary report shape without emitting it in new reports.
@@ -44,6 +52,12 @@ struct ScopeRecord {
     rustc: Option<String>,
     cargo: Option<String>,
     discovery_exclusions: Vec<String>,
+    #[serde(default)]
+    build_scripts: Vec<super::build_script::Script>,
+    build_inputs: Option<String>,
+    build_outputs: Option<super::build_script::Outputs>,
+    #[serde(default)]
+    inactive_target_flags: BTreeMap<String, Vec<String>>,
 }
 
 impl TryFrom<ScopeRecord> for ExecutionScope {
@@ -69,7 +83,16 @@ impl TryFrom<ScopeRecord> for ExecutionScope {
         } else {
             validate_targets(&targets)?;
         }
+        super::build_script::validate(
+            &record.build_scripts,
+            record.build_inputs.as_deref(),
+            record.build_outputs.as_ref(),
+        )?;
         Ok(Self {
+            build_scripts: record.build_scripts,
+            build_inputs: record.build_inputs,
+            build_outputs: record.build_outputs,
+            inactive_target_flags: record.inactive_target_flags,
             workspace: record.workspace,
             targets,
             package: record.package,
@@ -139,6 +162,21 @@ pub(super) fn validate_targets(targets: &[ProductionTarget]) -> Result<()> {
 }
 
 impl ExecutionScope {
+    pub fn validate_inactive_targets(&self) -> Result<()> {
+        if self.inactive_target_flags.is_empty() {
+            return Ok(());
+        }
+        let host = self
+            .rustc
+            .as_deref()
+            .and_then(|v| v.lines().find_map(|line| line.strip_prefix("host: ")))
+            .context("Rust toolchain lacks host identity for inactive target configuration")?;
+        ensure!(
+            !self.inactive_target_flags.contains_key(host),
+            "active Cargo target rustflags are not supported: {host}"
+        );
+        Ok(())
+    }
     pub fn package_directories(&self) -> Vec<PathBuf> {
         self.workspace
             .as_ref()
@@ -180,6 +218,12 @@ impl ExecutionScope {
     }
 
     pub fn validate_rerun_record(&self) -> Result<()> {
+        self.validate_inactive_targets()?;
+        ensure!(
+            self.build_scripts.is_empty()
+                || (self.build_inputs.is_some() && self.build_outputs.is_some()),
+            "saved Rust run lacks build-script input/output identity; start a fresh scan"
+        );
         ensure!(
             self.manifest_fingerprint
                 .as_ref()
@@ -216,6 +260,19 @@ impl ExecutionScope {
             (self.profile == current.profile, "profile"),
             (self.rustc == current.rustc, "rustc toolchain"),
             (self.cargo == current.cargo, "Cargo toolchain"),
+            (
+                self.inactive_target_flags == current.inactive_target_flags,
+                "inactive target configuration",
+            ),
+            (self.build_scripts == current.build_scripts, "build scripts"),
+            (
+                self.build_inputs == current.build_inputs,
+                "build-script inputs",
+            ),
+            (
+                current.build_outputs.is_none() || self.build_outputs == current.build_outputs,
+                "build-script outputs",
+            ),
         ] {
             ensure!(
                 matches,
@@ -269,13 +326,7 @@ impl Project {
             workspace_root.is_some() || package.get("workspace").is_none(),
             "enclosing Cargo workspaces are not supported yet"
         );
-        ensure!(
-            package
-                .get("build")
-                .is_none_or(|v| v.as_bool() == Some(false))
-                && !root.join("build.rs").exists(),
-            "project build scripts are not supported yet"
-        );
+        let build_scripts = super::build_script::load(root, package, name)?;
         ensure!(
             manifest.get("patch").is_none() && manifest.get("replace").is_none(),
             "Cargo dependency overrides are not supported yet"
@@ -328,6 +379,7 @@ impl Project {
         let mut excluded = BTreeSet::from([root.join("target")]);
         validate_environment(root, &mut excluded)?;
         let mut configs = BTreeSet::new();
+        let mut inactive_target_flags = BTreeMap::<String, Vec<String>>::new();
         for ancestor in root.ancestors() {
             ensure!(
                 !ancestor.join("rust-toolchain").exists()
@@ -349,6 +401,39 @@ impl Project {
             for (key, value) in config.as_table().context("invalid Cargo config")? {
                 match key.as_str() {
                     "net" | "term" => {}
+                    "target" => {
+                        for (triple, options) in
+                            value.as_table().context("invalid Cargo target config")?
+                        {
+                            ensure!(
+                                triple.contains('-')
+                                    && triple
+                                        .bytes()
+                                        .all(|b| b.is_ascii_alphanumeric()
+                                            || matches!(b, b'-' | b'_')),
+                                "only explicit inactive Cargo target triples are supported"
+                            );
+                            let options =
+                                options.as_table().context("invalid Cargo target options")?;
+                            ensure!(
+                                options.len() == 1 && options.contains_key("rustflags"),
+                                "only inactive target rustflags are supported"
+                            );
+                            let flags = options["rustflags"]
+                                .as_array()
+                                .context("inactive target rustflags must be an array")?;
+                            for flag in flags {
+                                inactive_target_flags
+                                    .entry(triple.clone())
+                                    .or_default()
+                                    .push(
+                                        flag.as_str()
+                                            .context("target rustflag must be a string")?
+                                            .to_owned(),
+                                    );
+                            }
+                        }
+                    }
                     "build" => {
                         for (key, value) in
                             value.as_table().context("invalid Cargo build config")?
@@ -429,6 +514,10 @@ impl Project {
                 rustc: None,
                 cargo: None,
                 discovery_exclusions: Vec::new(),
+                build_scripts,
+                build_inputs: None,
+                build_outputs: None,
+                inactive_target_flags,
             },
             excluded: excluded.into_iter().collect(),
         })
@@ -436,7 +525,12 @@ impl Project {
 
     pub fn validate_metadata(&self, root: &Path, value: &serde_json::Value) -> Result<()> {
         if let Some(workspace) = &self.scope.workspace {
-            return super::workspace::validate_metadata(root, workspace, value);
+            return super::workspace::validate_metadata(
+                root,
+                workspace,
+                &self.scope.build_scripts,
+                value,
+            );
         }
         let members = value["workspace_members"]
             .as_array()
@@ -462,7 +556,13 @@ impl Project {
                 == Some(root.join("Cargo.toml").as_path()),
             "Cargo manifest escaped the snapshot"
         );
-        validate_package_metadata(root, package, &self.scope.targets, &self.excluded)
+        validate_package_metadata(
+            root,
+            package,
+            &self.scope.targets,
+            &self.excluded,
+            self.scope.build_scripts.first(),
+        )
     }
 }
 
@@ -471,8 +571,10 @@ pub(super) fn validate_package_metadata(
     package: &serde_json::Value,
     expected: &[ProductionTarget],
     excluded: &[PathBuf],
+    script: Option<&super::build_script::Script>,
 ) -> Result<()> {
     let mut targets = Vec::new();
+    let mut found_script = false;
     for target in package["targets"]
         .as_array()
         .context("Cargo metadata has no targets")?
@@ -480,6 +582,18 @@ pub(super) fn validate_package_metadata(
         let kind = target["kind"]
             .as_array()
             .context("Cargo target has no kind")?;
+        if kind.len() == 1 && kind[0] == "custom-build" {
+            let expected = script.context("Cargo discovered an unexpected build script")?;
+            ensure!(
+                !found_script
+                    && target["crate_types"] == serde_json::json!(["bin"])
+                    && target["src_path"].as_str().map(Path::new)
+                        == Some(root.join(&expected.path).as_path()),
+                "Cargo build script differs from the selected manifest"
+            );
+            found_script = true;
+            continue;
+        }
         if kind.len() == 1 && matches!(kind[0].as_str(), Some("bench" | "example")) {
             ensure!(
                 target["test"] == false,
@@ -539,6 +653,10 @@ pub(super) fn validate_package_metadata(
         }
     }
     targets.sort();
+    ensure!(
+        found_script == script.is_some(),
+        "Cargo build-script inventory changed"
+    );
     validate_targets(&targets)?;
     ensure!(
         targets == expected,
@@ -715,12 +833,31 @@ pub(super) fn read_manifest(path: &Path) -> Result<toml::Value> {
 
 pub(super) fn validate_profiles(manifest: &toml::Value) -> Result<()> {
     if let Some(profiles) = manifest.get("profile") {
+        let profiles = profiles
+            .as_table()
+            .context("Cargo profiles must be tables")?;
         ensure!(
-            profiles.as_table().is_some_and(|table| table
-                .keys()
-                .all(|name| matches!(name.as_str(), "release" | "bench"))),
+            !profiles.contains_key("dev") && !profiles.contains_key("test"),
             "custom Cargo dev/test profiles are not supported yet"
         );
+        for name in profiles.keys() {
+            let mut next = name.as_str();
+            let mut visited = BTreeSet::new();
+            while !matches!(next, "release" | "bench") {
+                ensure!(visited.insert(next), "cyclic Cargo profile inheritance");
+                next = profiles
+                    .get(next)
+                    .and_then(|p| p.get("inherits"))
+                    .and_then(toml::Value::as_str)
+                    .context(
+                        "custom Cargo profiles must inherit an inactive release/bench profile",
+                    )?;
+                ensure!(
+                    !matches!(next, "dev" | "test"),
+                    "custom Cargo profiles must inherit an inactive release/bench profile"
+                );
+            }
+        }
     }
     Ok(())
 }
@@ -803,6 +940,88 @@ fn validate_environment(root: &Path, excluded: &mut BTreeSet<PathBuf>) -> Result
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn inactive_profile_chains_do_not_enable_custom_test_profiles() -> Result<()> {
+        validate_profiles(&toml::from_str(
+            "[profile.release]\ndebug=1\n[profile.release-lto]\ninherits='release'\nlto='fat'\n[profile.deb]\ninherits='release-lto'\n",
+        )?)?;
+        for text in [
+            "[profile.test]\nopt-level=1",
+            "[profile.dev.package.sha2]\nopt-level=3",
+            "[profile.fast]\ninherits='dev'",
+            "[profile.fast]\ninherits='missing'",
+            "[profile.a]\ninherits='b'\n[profile.b]\ninherits='a'",
+            "[profile.a]\nopt-level=3",
+        ] {
+            assert!(validate_profiles(&toml::from_str(text)?).is_err(), "{text}");
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn target_configuration_requires_an_explicit_inactive_host() -> Result<()> {
+        let temp = fixture("")?;
+        fs::create_dir(temp.path().join(".cargo"))?;
+        let config = temp.path().join(".cargo/config.toml");
+        fs::write(
+            &config,
+            "[target.x86_64-pc-windows-msvc]\nrustflags=['-C','target-feature=+crt-static']\n",
+        )?;
+        let mut scope = Project::load(temp.path())?.scope;
+        assert!(scope.validate_inactive_targets().is_err());
+        scope.rustc = Some("host: aarch64-apple-darwin".into());
+        scope.validate_inactive_targets()?;
+        scope.rustc = Some("host: x86_64-pc-windows-msvc".into());
+        assert!(scope.validate_inactive_targets().is_err());
+        for text in [
+            "[target.'cfg(unix)']\nrustflags=[]",
+            "[target.x86_64-pc-windows-msvc]\nrunner='custom'",
+            "[target.x86_64-pc-windows-msvc]\nrustflags='-C opt-level=3'",
+        ] {
+            fs::write(&config, text)?;
+            assert!(Project::load(temp.path()).is_err());
+        }
+        Ok(())
+    }
+
+    #[test]
+    fn scripts_are_exact_manifest_targets_outside_production_discovery() -> Result<()> {
+        let temp = fixture("")?;
+        fs::write(temp.path().join("build.rs"), "fn main() {}")?;
+        let project = Project::load(temp.path())?;
+        assert_eq!(project.scope.build_scripts.len(), 1);
+        assert_eq!(project.scope.entries(), vec![PathBuf::from("src/main.rs")]);
+        fs::write(temp.path().join("src/main.rs"), "mod helper; fn main() {}")?;
+        fs::write(
+            temp.path().join("src/helper.rs"),
+            "pub fn enabled() -> bool { true }",
+        )?;
+        let found = super::super::discovery::discover_packages(
+            temp.path(),
+            &project.scope.entries(),
+            &[],
+            &[PathBuf::from("src/helper.rs")],
+            &crate::mutation::Scope::new(&[], &[])?,
+            &crate::cancellation::Cancellation::default(),
+        )?;
+        assert!(found.mutations.is_empty());
+        assert!(
+            found
+                .exclusions
+                .iter()
+                .any(|text| text.contains("project build script"))
+        );
+        let manifest = temp.path().join("Cargo.toml");
+        let mut value: toml::Value = toml::from_str(&fs::read_to_string(&manifest)?)?;
+        value["package"]
+            .as_table_mut()
+            .unwrap()
+            .insert("build".into(), false.into());
+        fs::write(&manifest, toml::to_string(&value)?)?;
+        assert!(Project::load(temp.path())?.scope.build_scripts.is_empty());
+        Ok(())
+    }
 
     fn fixture(extra: &str) -> Result<tempfile::TempDir> {
         let temp = tempfile::tempdir_in(std::env::temp_dir().canonicalize()?)?;
@@ -1018,7 +1237,7 @@ mod tests {
     #[test]
     fn rejects_unsupported_layouts_before_building() -> Result<()> {
         for (extra, expected) in [
-            ("build = 'generate.rs'", "build scripts"),
+            ("build = 'generate.rs'", "build script"),
             ("[lib]\nproc-macro = true", "proc macros"),
             ("[workspace]\nmembers = ['sibling']", "matches no package"),
             (

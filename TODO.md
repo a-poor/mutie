@@ -105,8 +105,8 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Completed: [workspace acceptance](benchmarks/rust-workspaces.md), including
    inherited/globbed fixture coverage, full cross-member tests, all-local-package
    cache cleanup, and unchanged UCD Generate findings with three stronger-test kills.
-   Workspace build scripts/proc-macro members, external paths and custom dev/test
-   profiles remain explicit limits.
+   The later [build-script slice](benchmarks/rust-build-scripts.md) extends this
+   scope; proc-macro members, external paths and custom dev/test profiles remain limits.
 4. [x] **Scoped expression-operator parity.** Add missing arithmetic/modulo, comparison
    inversion/boundaries, logical swaps and negation removal by language. Preserve
    evaluation/grouping, short-circuit and overloaded/coercion semantics; retain
@@ -270,6 +270,19 @@ Split implementation goals by language/runner when acceptance becomes too large.
    dependencies/configuration. Address demonstrated onboarding/runtime blockers
    in bounded goals; verify run → inspect → improve tests → rerun and record
    timings/noise. Do not select only projects that fit existing restrictions.
+   First six-runner audit completed: [compatibility matrix](benchmarks/compatibility-audit.md).
+   Unchanged SJSON completes a 36-candidate workflow (23 kills, 11 survivors,
+   two build failures); five separate-copy tests kill five survivors. At that revision, Ripgrep,
+   Click, UFO, eslint-node-test and Elysia stop at admission. Native ripgrep and
+   installed Click controls pass without changing upstream inputs. This sample
+   does not establish broad compatibility or a full independent JS/TS matrix.
+   Completed follow-up: [ordinary Cargo build scripts](benchmarks/rust-build-scripts.md),
+   inactive release profiles and explicit inactive target flags admit unchanged
+   ripgrep. The full 1,209-test workspace baseline passes; a bounded 16-candidate
+   run finds six kills and ten survivors. Four separate-copy tests kill seven of
+   those survivors with the full 1,213-test suite. Generated-output cleanup,
+   identity drift and fresh/cached controls retain conservative boundaries.
+   Other runner/configuration gaps and broader project/platform evidence remain open.
 8. [ ] **Public release qualification and documentation.** Automate a documented
    macOS/Linux test matrix including real adapters and supported versions; verify
    clean installation, cancellation, reports and example CI policies. Collaborate

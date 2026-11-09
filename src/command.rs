@@ -15,6 +15,10 @@ pub struct CommandOutput {
 #[derive(Debug)]
 pub enum OutcomeEvidence {
     ExitStatus(Failure),
+    Cargo {
+        failure: Failure,
+        build_outputs: Option<crate::rust::build_script::Outputs>,
+    },
     Validated(Result<Outcome, String>),
     /// Complete isolated execution with a body exception. Still an error;
     /// adapters must finish all lifetime, inventory and identity checks first.
@@ -83,6 +87,7 @@ pub fn classify(output: &CommandOutput) -> Result<Outcome> {
                 .map_err(|error| anyhow::anyhow!("{error}"));
         }
         OutcomeEvidence::ExitStatus(failure) => failure,
+        OutcomeEvidence::Cargo { failure, .. } => failure,
     };
     if output.status.success() {
         return Ok(Outcome::Missed);

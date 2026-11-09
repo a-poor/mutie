@@ -17,6 +17,8 @@
 Examples run from the project directory; use global `--path DIR` to work elsewhere.
 Discovery and a passing isolated baseline are still required. See the sections
 below for layout, dependency and test-runner restrictions.
+The [real-project compatibility audit](../benchmarks/compatibility-audit.md)
+shows current onboarding and admission results for one new project per runner.
 
 ## Vitest and package managers
 
@@ -394,16 +396,36 @@ macro tokens/expansions, generated files, constants/type-level code and array re
 excluded. The run prints and saves discovery exclusions. Libraries use ordinary
 `lib` or `rlib` crate types; doctests and ignored tests are not run. Proc-macro
 packages, other library crate types, multiple binaries per package, nested workspaces,
-external path/git dependencies, project build scripts, custom dev/test profiles
+external path/git dependencies, custom dev/test profiles
 or harnesses, feature selection, and custom
-compiler/runner settings are outside this scope. Release/bench-only profiles and
+compiler/runner settings are outside this scope. Release/bench-only profiles,
+including custom inheritance chains ending at those profiles, and
 non-test examples/benchmarks are retained; they do not expand the test scope.
-Only artifact-location,
-network and terminal Cargo config sections are accepted; in-project artifact
+Artifact-location, network and terminal Cargo config sections are accepted.
+Explicit target-triple `rustflags` arrays are also accepted when the actual
+`rustc` host differs; active target flags and `cfg(...)` target settings remain
+unsupported. In-project artifact
 directories must be under `target/`. Toolchain override files are rejected;
 an inherited `RUSTUP_TOOLCHAIN` selection is preserved and actual tool versions
 are recorded. See [the original binary contract](../DESIGN.md#initial-rust-support-contract)
 and [library scope](../benchmarks/rust-library-scope.md) for detail.
+
+Ordinary project build scripts run inside the owned copy and write generated
+files to owned Cargo artifacts. Build scripts and generated code are not mutated.
+Worker caches clean every local package, including its generated outputs, before
+each candidate. Saved identity covers script paths/bytes, snapshot input files,
+ordered Cargo directives, declared inputs/environment and generated output hashes.
+Integration tests under each package's `tests/` can change for a focused rerun;
+the new pristine build must produce the same build identity. Other input-file
+changes require a fresh scan. Checks are bounded to 256 MiB and 20,000 files
+per identity pass, and reject missing/external declared inputs and linked outputs.
+
+Cargo still executes trusted code; these checks are not an OS sandbox. `.git`
+is omitted from copies, so scripts requiring Git metadata are outside this slice.
+Undeclared host files, external tools and nondeterministic generation are not
+portable inputs. Environment-sensitive scripts must retain the same output and
+declared environment identity on reruns; environment values are stored as hashes.
+See [build-script acceptance and limits](../benchmarks/rust-build-scripts.md).
 
 The first self-testing sample uses two literals in Mutie's score code:
 

@@ -50,6 +50,14 @@ within explicit tested scopes on macOS/Linux. Expand operator coverage, includin
 numeric/string literals, ordinary Rust workspaces and JS/TS package-manager
 compatibility, alongside usable setup and unchanged-project acceptance.
 
+Bounded expression/statement/literal parity and ordinary workspace/installer
+slices now have acceptance evidence. The [six-project compatibility audit](benchmarks/compatibility-audit.md)
+showed that broader admission was the immediate gap: only SJSON completed the
+workflow at that audit revision. [Owned Cargo build scripts](benchmarks/rust-build-scripts.md)
+now extend the Rust contract to unchanged ripgrep, with input/output identity,
+local generated-artifact cleanup, inactive release profile chains and explicit
+inactive target configuration. Other runners' admission gaps remain open.
+
 `mutie init` now distinguishes language syntax, test runner, package manager
 and runtime version, infers only unambiguous choices, and supports explicit and
 noninteractive configuration. TOML/CLI overrides retain existing precedence.
@@ -72,8 +80,9 @@ inventories. `rust_packages` selects mutation members; execution explicitly test
 all workspace members. Worker caches clean every local package to prevent stale
 internal-dependency results. Root/member manifests, lockfile, selection and toolchain
 bind focused reruns. [Workspace acceptance](benchmarks/rust-workspaces.md) supersedes
-historical workspace exclusions below; build scripts, proc macros, external paths
-and custom dev/test profiles remain outside this scope.
+historical workspace exclusions below. The subsequent build-script slice also
+supersedes historical project-build-script exclusions. Proc macros, external paths
+and custom dev/test profiles remain outside the supported scope.
 
 Linux CI explicitly opts into native runner workflows on pinned toolchains,
 with separate Go, Rust, Node, Bun, Vitest and Python jobs. Installed Vitest/Python

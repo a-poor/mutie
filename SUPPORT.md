@@ -36,12 +36,18 @@ are tracked in the [public release roadmap](TODO.md#public-release-scope-and-goa
 They do not promote the verified support levels below. Version compatibility
 requires adapter evidence, including exact-runner observer checks where used.
 
+The [six-project compatibility audit](benchmarks/compatibility-audit.md) tests
+unchanged projects beyond the earlier acceptance set. SJSON completes the workflow;
+ripgrep, Click, UFO, eslint-node-test and Elysia stop before a Mutie baseline.
+Native ripgrep and installed Click controls pass. These concrete admission gaps
+remain release work even though bounded operator parity is complete.
+
 ## Matrix
 
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 13 operators | Broader project/runtime evidence and feedback-time validation |
-| Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; scoped expression, branch, loop and call mutations | Broader project/platform evidence; build scripts/proc macros and external paths |
+| Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; owned project build scripts, member selection, internal path dependencies, unit/integration tests; scoped mutations | Broader project/platform evidence; proc macros, external paths and broader build environments |
 | TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; expression, branch, loop and call mutations; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial execution of expression, branch, loop and call mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial execution of expression, branch, loop and call mutations; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
@@ -83,6 +89,10 @@ matrix remain release-qualification gaps.
   godotenv candidates: three build failures and three stream-connection survivors,
   all killed by a separate-copy stronger test. Full/affected outcomes agree;
   the 50% invalid-candidate rate is a limit of this small sample.
+  The [SJSON audit](benchmarks/compatibility-audit.md#sjson-run-inspect-improve-rerun)
+  adds a dependency-using module: 36 sampled candidates yield 23 kills, 11 survivors
+  and two build failures. Five separate-copy public-API tests kill five survivors;
+  six remain open, and the original 67.65% selection score stays unchanged.
 - Limits: no general multi-module/workspace claim. Affected selection follows Go
   import dependencies; external test systems and unrepresented runtime dependencies
   need separate validation. Recorded macOS/Linux testing is not universal platform
@@ -140,7 +150,7 @@ matrix remain release-qualification gaps.
   Real-Cargo workflows are opt-in in `tests/rust_workflow.rs`.
 - Limits: no proc macros or library crate types other than `lib`/`rlib`,
   multiple binaries per package, nested workspaces, external path/git dependencies,
-  project build scripts, custom dev/test profiles or harnesses,
+  custom dev/test profiles or harnesses,
   feature selection or cross-compilation. Doctests and ignored tests are outside
   the execution scope. Validation is on macOS; Unix scope is not a claim of equal
   platform evidence. Full-suite feedback time remains a practical constraint.
@@ -160,8 +170,15 @@ matrix remain release-qualification gaps.
   covers virtual/root-package workspaces, full cross-member tests, fresh/cached
   agreement, saved identity and three useful stronger-test kills. Original failed
   exploratory reports and the unresolved survivor remain distinct from filtered scores.
+- Build-script scope: [owned Cargo acceptance](benchmarks/rust-build-scripts.md)
+  covers ordinary scripts, generated outputs, inactive release profile chains and
+  explicit inactive target flags. Inputs and pristine output identity bind reruns;
+  caches remove local generated artifacts. Scripts/generated code are not mutated.
+  Git metadata, undeclared host inputs, linked outputs and nondeterministic builds
+  remain outside the portable scope. Unchanged ripgrep supplies full-workspace
+  baseline and bounded finding/rerun evidence.
 - Next support gains: broader project/platform evidence before Established, and
-  separately scoped build scripts/proc macros or external dependency layouts. The ordinary-library milestone
+  separately scoped proc macros or external dependency layouts. The ordinary-library milestone
   is complete; reassess the next major objective against the planned JS/TS and
   Python targets rather than automatically adding another Rust operator.
 

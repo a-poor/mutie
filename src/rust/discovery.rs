@@ -37,18 +37,20 @@ pub fn discover(
     scope: &Scope,
     cancellation: &Cancellation,
 ) -> Result<Discovery> {
-    discover_packages(root, entries, &[], scope, cancellation)
+    discover_packages(root, entries, &[], &[], scope, cancellation)
 }
 
 pub fn discover_packages(
     root: &Path,
     entries: &[PathBuf],
     packages: &[PathBuf],
+    build_scripts: &[PathBuf],
     scope: &Scope,
     cancellation: &Cancellation,
 ) -> Result<Discovery> {
     let mut walker = Walker {
         packages,
+        build_scripts,
         root,
         scope,
         cancellation,
@@ -88,6 +90,7 @@ pub fn discover_packages(
 
 struct Walker<'a> {
     packages: &'a [PathBuf],
+    build_scripts: &'a [PathBuf],
     root: &'a Path,
     scope: &'a Scope,
     cancellation: &'a Cancellation,
@@ -108,6 +111,13 @@ impl Walker<'_> {
     fn file(&mut self, path: &Path, entry: bool) -> Result<()> {
         self.cancellation.check()?;
         let path = super::project::inside(self.root, &self.root.join(path))?;
+        if self.build_scripts.contains(&path) {
+            self.exclude(
+                &path,
+                "project build script (including shared production imports)",
+            );
+            return Ok(());
+        }
         ensure!(self.visited.len() < 10_000, "too many Rust module files");
         if !self.visited.insert((path.clone(), entry)) {
             return Ok(());

@@ -17,6 +17,7 @@ use crate::{
     process,
 };
 
+pub mod build_script;
 pub mod discovery;
 pub mod project;
 mod workspace;
@@ -151,6 +152,7 @@ pub async fn versions(
         );
         *destination = Some(output.stdout.text()?.trim().to_owned());
     }
+    scope.validate_inactive_targets()?;
     Ok(())
 }
 
@@ -170,6 +172,7 @@ where
     Fut: Future<Output = ()> + Send,
 {
     let started = Instant::now();
+    let build_inputs = build_script::inputs(root, scope, true, cancellation)?;
     // The guard spans compilation and execution, outside the resettable source.
     let fresh = cache
         .is_none()
@@ -264,6 +267,13 @@ where
         }
     };
     let evidence = Evidence::read(&build)?;
+    if !scope.build_scripts.is_empty()
+        && build.group_remaining
+        && !build.timed_out
+        && !build.interrupted
+    {
+        build.capture_error = Some("Cargo build script left running descendants".into());
+    }
     if let Some(clean) = cleaned {
         build = merge(clean, build, "Cargo compilation")?;
     }
@@ -281,6 +291,24 @@ where
             Some("Cargo compilation returned no successful build-finished event".into());
         return prepare(build, log_limit, Failure::Unknown).await;
     }
+    let build_outputs = match (|| -> Result<_> {
+        ensure!(
+            build_inputs == build_script::inputs(root, scope, true, cancellation)?,
+            "build script changed files outside OUT_DIR"
+        );
+        build_script::outputs(&build.stdout, root, artifacts, scope, cancellation)
+    })() {
+        Ok(outputs) => outputs,
+        Err(error) => {
+            if error.is::<Interrupted>() {
+                build.interrupted = true;
+            } else {
+                build.capture_error = Some(format!("build-script evidence: {error:#}"));
+            }
+            build.elapsed = started.elapsed();
+            return prepare(build, log_limit, Failure::Unknown).await;
+        }
+    };
     if cancellation.is_cancelled() {
         build.interrupted = true;
         return prepare(build, log_limit, Failure::Unknown).await;
@@ -319,8 +347,39 @@ where
     };
     let evidence = Evidence::read(&tests)?;
     let failure = evidence.failure(tests.status.code(), true);
+    let script_check = if !tests.interrupted
+        && !tests.timed_out
+        && tests.capture_error.is_none()
+        && evidence.build_finished == Some(true)
+    {
+        build_script::outputs(&tests.stdout, root, artifacts, scope, cancellation).and_then(
+            |outputs| {
+                ensure!(
+                    outputs == build_outputs,
+                    "build-script outputs changed between compilation and tests"
+                );
+                Ok(())
+            },
+        )
+    } else {
+        Ok(())
+    };
     let mut raw = merge(build, tests, "Cargo test execution")?;
     raw.elapsed = started.elapsed();
+    if !scope.build_scripts.is_empty() && raw.group_remaining && !raw.timed_out && !raw.interrupted
+    {
+        raw.capture_error = Some("Cargo tests left running descendants".into());
+    }
+    if started.elapsed() >= limit {
+        raw.timed_out = true;
+    }
+    if let Err(error) = script_check {
+        if error.is::<Interrupted>() {
+            raw.interrupted = true;
+        } else {
+            raw.capture_error = Some(format!("build-script evidence: {error:#}"));
+        }
+    }
     if raw.status.success()
         && !raw.timed_out
         && !raw.interrupted
@@ -335,7 +394,12 @@ where
                 .into(),
         );
     }
-    prepare(raw, log_limit, failure).await
+    let mut output = prepare(raw, log_limit, failure).await?;
+    output.evidence = crate::command::OutcomeEvidence::Cargo {
+        failure,
+        build_outputs,
+    };
+    Ok(output)
 }
 
 // Phase hints are advisory, just like Go's stdout observer. A slow coordinator

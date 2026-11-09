@@ -257,6 +257,8 @@ pub(super) fn load(root: &Path, manifest: toml::Value, selected: &[String]) -> R
         pending.insert(PathBuf::new());
     }
     let mut members = BTreeMap::new();
+    let mut build_scripts = Vec::new();
+    let mut inactive_target_flags = BTreeMap::new();
     let mut seen = BTreeSet::new();
     let mut excluded = BTreeSet::from([root.join("target")]);
     let mut single = None;
@@ -287,6 +289,25 @@ pub(super) fn load(root: &Path, manifest: toml::Value, selected: &[String]) -> R
         pending.extend(local_dependencies(root, &directory, &raw, workspace)?);
         let resolved = inherited_manifest(raw, workspace)?;
         let project = Project::load_manifest(&member_root, &resolved, Some(root))?;
+        for (target, flags) in &project.scope.inactive_target_flags {
+            if let Some(previous) = inactive_target_flags.insert(target.clone(), flags.clone()) {
+                ensure!(
+                    previous == *flags,
+                    "conflicting inactive Cargo target configuration"
+                );
+            }
+        }
+        build_scripts.extend(
+            project
+                .scope
+                .build_scripts
+                .iter()
+                .cloned()
+                .map(|mut script| {
+                    script.path = directory.join(script.path);
+                    script
+                }),
+        );
         excluded.extend(project.excluded.iter().cloned());
         let member = Member {
             name: project.scope.package.clone(),
@@ -320,18 +341,22 @@ pub(super) fn load(root: &Path, manifest: toml::Value, selected: &[String]) -> R
     }
     let lock = project::inside(root, &root.join("Cargo.lock"))
         .context("Rust requires a checked-in usable Cargo.lock")?;
+    build_scripts.sort_by(|a, b| a.package.cmp(&b.package));
     Ok(Project { scope: ExecutionScope {
         package: "workspace".into(), targets: Vec::new(), workspace: Some(scope),
         manifest_fingerprint: Some(format!("sha256:{:x}", Sha256::digest(fs::read(root.join("Cargo.toml"))?))),
         lockfile_fingerprint: format!("sha256:{:x}", Sha256::digest(fs::read(root.join(lock))?)),
         default_features: true, test_scope: "all workspace library/binary unit and integration tests; doctests and ignored tests excluded".into(),
         profile: "test".into(), rustc: None, cargo: None, discovery_exclusions: Vec::new(),
+        build_scripts, build_inputs: None, build_outputs: None,
+        inactive_target_flags,
     }, excluded: excluded.into_iter().collect() })
 }
 
 pub(super) fn validate_metadata(
     root: &Path,
     scope: &WorkspaceScope,
+    scripts: &[super::build_script::Script],
     value: &serde_json::Value,
 ) -> Result<()> {
     ensure!(
@@ -365,11 +390,20 @@ pub(super) fn validate_metadata(
                 && seen.insert(package["id"].as_str().context("Cargo package has no ID")?),
             "invalid Cargo workspace member ID"
         );
+        let script = scripts
+            .iter()
+            .find(|s| s.package == member.name)
+            .cloned()
+            .map(|mut s| {
+                s.path = s.path.strip_prefix(&member.directory).unwrap().to_owned();
+                s
+            });
         project::validate_package_metadata(
             &directory,
             package,
             &member.targets,
             &[directory.join("target")],
+            script.as_ref(),
         )?;
     }
     Ok(())

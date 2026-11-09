@@ -139,6 +139,10 @@ jobs:
       - name: Rust workspace workflow
         if: matrix.adapter == 'Rust'
         run: cargo test --locked --test rust_workflow workspace::full_workspace_tests_catch_selected_member_changes_and_preserve_identity -- --ignored --exact
+      - name: Rust project build scripts and generated artifacts
+        if: matrix.adapter == 'Rust'
+        run: |
+          cargo test --locked --test rust_workflow build_scripts:: -- --ignored --test-threads=1
       - name: Rust cancellation and descendant cleanup
         if: matrix.adapter == 'Rust'
         run: cargo test --locked --test rust_workflow rust_mutation_cancellation_preserves_partial_results_and_cleans_processes -- --ignored --exact

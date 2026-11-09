@@ -1,0 +1,12 @@
+jobs = 1
+timeout = 90
+baseline_timeout = 180
+output_dir = "reports"
+
+[rust]
+enabled = true
+path = "original"
+packages = ["grep-cli"]
+operators = ["number_replace", "string_replace", "boolean_flip"]
+include = ["crates/cli/src/human.rs", "crates/cli/src/process.rs"]
+build_cache = "worker"

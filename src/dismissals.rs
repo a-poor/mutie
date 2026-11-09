@@ -583,6 +583,12 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
                 &source,
                 &project.scope.entries(),
                 &project.scope.package_directories(),
+                &project
+                    .scope
+                    .build_scripts
+                    .iter()
+                    .map(|script| script.path.clone())
+                    .collect::<Vec<_>>(),
                 &scope,
                 &discovery_cancellation,
             )

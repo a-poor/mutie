@@ -479,11 +479,13 @@ async fn execute(
     if rust_project.is_some() {
         // Scope and lockfile identity must describe the captured input, not a
         // manifest that could have changed while the snapshot was being copied.
-        let captured = rust::Project::load_selected(&snapshot.path(), &config.rust_packages)?;
+        let mut captured = rust::Project::load_selected(&snapshot.path(), &config.rust_packages)?;
         ensure!(
             rust_project.as_ref().unwrap().scope == captured.scope,
             "Rust package/workspace identity changed during snapshotting"
         );
+        captured.scope.build_inputs =
+            rust::build_script::inputs(&snapshot.path(), &captured.scope, false, cancellation)?;
         rust_project = Some(captured);
     }
     let vitest_scope = if config.lang == Lang::Vitest {
@@ -619,6 +621,15 @@ async fn execute(
                 command::text(&baseline)?
             );
         }
+        if let Some(project) = &mut rust_project {
+            if let command::OutcomeEvidence::Cargo { build_outputs, .. } = &baseline.evidence {
+                project.scope.build_outputs = build_outputs.clone();
+            }
+            coordinator.emit(RunEvent::RustScope(&project.scope), cancellation)?;
+            if let Some(selection) = &rerun {
+                selection.validate_rust_scope(&project.scope)?;
+            }
+        }
         if config.check {
             if config.json {
                 println!(
@@ -661,12 +672,19 @@ async fn execute(
         let source = snapshot.path();
         let entries = project.scope.entries();
         let packages = project.scope.package_directories();
+        let build_scripts: Vec<_> = project
+            .scope
+            .build_scripts
+            .iter()
+            .map(|script| script.path.clone())
+            .collect();
         let discovery_cancellation = cancellation.clone();
         let found = tokio::task::spawn_blocking(move || {
             rust::discovery::discover_packages(
                 &source,
                 &entries,
                 &packages,
+                &build_scripts,
                 &scope,
                 &discovery_cancellation,
             )

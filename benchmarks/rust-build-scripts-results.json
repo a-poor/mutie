@@ -1,0 +1,2394 @@
+{
+  "upstream": "BurntSushi/ripgrep",
+  "revision": "178cc027e283fd965cb72d0a7395b219eada170c",
+  "unchanged_inputs": {
+    ".cargo/config.toml": "19c86da310db9ee0a4ce6d06a4ae918723e09cb7d6cb189b1cf2cb2ac1ac4e27",
+    ".github/FUNDING.yml": "0c65f392d32a8639ba7986bbb42ca124505b462122382f314c89d84c95dd27f1",
+    ".github/ISSUE_TEMPLATE/bug_report.yml": "f91b8c18b6a85ac767788bb29d163d68ea7af098182104a7ecd412b43d8235ae",
+    ".github/ISSUE_TEMPLATE/config.yml": "696cff05dcd9f57919f652e7aed5ac31434cc0d94b1b8767afaa027dabe5e8ff",
+    ".github/ISSUE_TEMPLATE/feature_request.md": "20967e0bfc8f9f462f75edaa9cee2231cdb6a413e2aa61140a073c4c5bb899de",
+    ".github/workflows/ci.yml": "c030fcb4ec5bc5a3939aacd17312d0fd45483c9e60219ea35ce7275c5db9f6b0",
+    ".github/workflows/release.yml": "e4725d2699337b8f33cda378c9085a8eb83f85b60fd7cb08a412e0a5c1ebe3be",
+    ".gitignore": "8cba392b6fb53d7fb4c62316133f4e71b222624adc67e7e225a68f0fdb367ea2",
+    ".ignore": "4bde544eb920aca1c6112f956a6e4f851a70ca136500c87311715bd7db416a9c",
+    ".nvim.lua": "8f4e7aff028fd65b4caca437d56ea1a77b93fd1cbf82b7d340ff593e7142ce78",
+    "AI_POLICY.md": "b9ff6c7a33185f2331e1e333db35d594edc2f142521d8e2c9c40b0405104a12c",
+    "CHANGELOG.md": "028fe166d7ea9dcf79c1a122cfb3482c047ff499996b32cec0b3488673bad8cf",
+    "CONTRIBUTING.md": "f9be6dd89b3caf37ac2f4e1ee987c3a7e48d8595beeae557c50fafb991a24a16",
+    "COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+    "Cargo.lock": "bf918d72d563dd706beacb4e258106102c14fbc2f85272f1f749a5044e3c3f43",
+    "Cargo.toml": "b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+    "FAQ.md": "f102cfde386650ad51e70f0247792c8c3a7dccc7c12c342bfa03b86f5bcc1c5c",
+    "GUIDE.md": "156337b59d9813beadc8f7489e9e86da9eec2c09e755e6baa31ec2c40c7e77eb",
+    "HomebrewFormula": "2af11692f808a0877529ecb1cdc92af226a8f39289e9fd485a57ca94f0134d31",
+    "LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "README.md": "945622d974f65e4e141ef9726c948c2640eebd222c5b101afb6445728283921e",
+    "RELEASE-CHECKLIST.md": "37218f7669e7a491ed72a38f07219a8640fc3876303726374afa719424c7ffdd",
+    "UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "benchsuite/benchsuite": "2e79c554b9d43f234fe36916cda1744130abc38f1e66eb4d1b741ec900c2e02b",
+    "benchsuite/runs/2016-09-17-ubuntu1604-ec2/README.SETUP": "9dc4e1182f31801d61a23915b88a80bf3b50971122bf5217f244e9401f720d40",
+    "benchsuite/runs/2016-09-17-ubuntu1604-ec2/raw.csv": "0cf6fff0ab0de6b496dc4e61ee079dad2b3b30059a4f33ec01d2689bc33ff406",
+    "benchsuite/runs/2016-09-17-ubuntu1604-ec2/summary": "bf355803c4ef484d5e8034d4839b337c3cb3fb0f531ca40e7d8879832a431139",
+    "benchsuite/runs/2016-09-20-ubuntu1604-ec2/README.SETUP": "11d5f4c3a60660f30b44aa404b3763bc1a0673c7400b1b5927497b217975834e",
+    "benchsuite/runs/2016-09-20-ubuntu1604-ec2/raw.csv": "2d938789c70dad1b430b26b8225e55245b7e6f9bae15066590a1951175836d19",
+    "benchsuite/runs/2016-09-20-ubuntu1604-ec2/summary": "c9637bcbf5300231ca692d3ca70be49eb5501a735cb8692740180a8718847498",
+    "benchsuite/runs/2016-09-22-archlinux-cheetah/raw.csv": "933381ba1a18c6d928d3c71e35e7a006b617fee134cb9ae1a9d29bc34886bf3f",
+    "benchsuite/runs/2016-09-22-archlinux-cheetah/summary": "408820b400abf0a07bb0dd9483bf2baefbc82c97d302536b79eab4d59175423c",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-glibc-jemalloc/raw.csv": "f677d8e91c587e1d1048fe27964698dc6a312ebe80f9653bdb18a3035880ce39",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-glibc-jemalloc/summary": "e6eeb55a4972d637487a60da7448973f2fea60a2bf8e66cd07640a0f9f9ad425",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-glibc-system/raw.csv": "7dfef06a37bec6e1c3d10672cea72f925046d9eeb28927c57f68f8ab066c9774",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-glibc-system/summary": "49ce2217c4c2973b684f14e5f1938b0a776f101dfad6e0baa5c283613698a32b",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-musl-jemalloc/raw.csv": "65e133b1fd55c71e039d5cfcd24d950d7604721122a501703919cfe81914cc71",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-musl-jemalloc/summary": "b06f45322e2b0be74cff640696201dc990ec188be0d4deba92850757445e2a81",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-musl-system/raw.csv": "5790769a8ec77420660b4c664af5ba9689995d7fd3c7a5c7e2cfc91109197e40",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah-musl-system/summary": "b9f012477661c66a9f788be1d018723f47b791fb7f7a7392b94c5a3a0ae1cc2b",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah/raw.csv": "92a1243ae7a1cf4e4ec4934d5ccb0eede6be5babadfd8f4a1499b10dbda67fef",
+    "benchsuite/runs/2016-12-24-archlinux-cheetah/summary": "88e5e5224254003807815ff5cbb57150cb7ea17bd1981b34ac0ff290fee9b9e1",
+    "benchsuite/runs/2016-12-30-archlinux-cheetah/raw.csv": "faa209061090e40cb62e8b04e141eb4320e0a5c9146f213e71d10f146b0aa7e8",
+    "benchsuite/runs/2016-12-30-archlinux-cheetah/summary": "684da72bb400556a846af54d3d564e3b7eee288640d1d1c4726f9b0d5dbe208f",
+    "benchsuite/runs/2018-01-08-archlinux-cheetah/README": "d7baf0293c204666982fc94d3120f5a61245899af47cc07197c53629224378fb",
+    "benchsuite/runs/2018-01-08-archlinux-cheetah/raw.csv": "309738cfedacbace5967306c8f0e88917849f5b7e5def2666908642bf62c885e",
+    "benchsuite/runs/2018-01-08-archlinux-cheetah/summary": "3a3826f2ff46e8a19e636330e76dc9bc004902240c9f5333514a02030b53a581",
+    "benchsuite/runs/2020-10-14-archlinux-frink/README.md": "38225c30b896df7c0c0dc9285783d4cf190bd187c0384c48661de9ca1537cf18",
+    "benchsuite/runs/2020-10-14-archlinux-frink/raw.csv": "3a19a287d887e8513e8fcbe674bb77f41697fda5778deb8329a7ada7343a851b",
+    "benchsuite/runs/2020-10-14-archlinux-frink/summary": "7883940348c2b5b9d46665724cbbc4e90b4ae6561348e30a7a5cc7ae270245bb",
+    "benchsuite/runs/2022-12-16-archlinux-duff/README.md": "d5b951891c7c4fd3ac5869ccc862885fa5d812d5cc18b8c70dfab153995f7ba6",
+    "benchsuite/runs/2022-12-16-archlinux-duff/raw.csv": "fc3ef0ab9b7d0138dcba4436da44fca85bbb81955360b5606e965787d44e1584",
+    "benchsuite/runs/2022-12-16-archlinux-duff/summary": "d043a135be6be8d3e5977e7f50161cd154e2759eee6634df7c36c11b9b72a979",
+    "build.rs": "07d72d8929ecd1cc2277e7d1f16092521c9160c92cca9544a682b275bd53d955",
+    "ci/sha256-releases": "77f61ae7aa9bcfcce1bfaaf83c437746ab55fecbcf49d79869582806f1ee242c",
+    "ci/test-complete": "56f7f0a9c213f00e98b15f0235913378a77ad2ab0c73c16004779e6366c945c6",
+    "ci/ubuntu-install-packages": "f128c6106ffa8dc1cd4b83a4dc0f2cb280712ad3cdb09283b093ae54b6a28b11",
+    "ci/utils.sh": "0a2632e085b2f2a4bca4024320010fb756d9782e26809efd0c243b4265530e1f",
+    "crates/cli/Cargo.toml": "d3b5d786220e1c0a2601aadfdf695798a138ea48548309de3b13f4eddb7da051",
+    "crates/cli/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/cli/README.md": "4e9a7a4b713878587089d2aec3aa147e8fdde74e93a58f17600a05fb2c3c16f1",
+    "crates/cli/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/cli/src/decompress.rs": "eaceb58ab4c650f0f9f62de1181fd6611b9e6b5b162816546760d49514045b37",
+    "crates/cli/src/escape.rs": "b3ac4121dd2d81be59f22f39bb9e4e473775c2631cc33b063715059ba63ed180",
+    "crates/cli/src/hostname.rs": "3c0eebe1182d54d2caedd4c62515c849bf9e1c4384b79d1181ef7e257b302d07",
+    "crates/cli/src/human.rs": "b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+    "crates/cli/src/lib.rs": "b27d0e7de21515df33714d79d4959b17aa3d28c168b1c5233c21c333a8a8c695",
+    "crates/cli/src/pattern.rs": "22b94d38be203aa3c252bf010cce238349f39cb5c494991ac57b52de1dab722f",
+    "crates/cli/src/process.rs": "1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+    "crates/cli/src/wtr.rs": "44d2f5192c2e0c74a838a190fee4c8065747d7c643ddb3f8b4d0985e6eb172a9",
+    "crates/core/README.md": "0d23e23b8b0e54eafc4be79555e90c43c8280fe96e7786f926885705329ef86d",
+    "crates/core/flags/complete/bash.rs": "2eb1185195cc3fa00e72d3e7e08b0b81a8251f2410a04856f33f0ba24610bf7e",
+    "crates/core/flags/complete/encodings.sh": "2f7e59154c52114358dd7c12df046c26a2ba449af98f915180e820a04a681e43",
+    "crates/core/flags/complete/fish.rs": "3f4128d017c70aada8d865383c43122b39e219773d0fd4160f337d4ffb4227af",
+    "crates/core/flags/complete/mod.rs": "f3f0f698353fe778f96fd2d6dcd8b81d40196b0e45a63c26cedb6314afa8ee68",
+    "crates/core/flags/complete/powershell.rs": "cb3de24afe392e3e797df4c796abe037978d22885d317ea88ba5098456c66d22",
+    "crates/core/flags/complete/prelude.fish": "e86f6df05be39a71ffa2239c6f54b736d98c81e13ebedced988656dd59306a9d",
+    "crates/core/flags/complete/rg.zsh": "4791c8019b77878a4440d79fd506b4166c24151c791061ad234ca010701b6cec",
+    "crates/core/flags/complete/zsh.rs": "a1c280d862443f49d34a44861d53e37b7ce023a69f870e310e34025f20aae21b",
+    "crates/core/flags/config.rs": "adb0b126590521b981db9d913091f6d564f0b142b2d024861e84538a225cf23e",
+    "crates/core/flags/defs.rs": "6f63d96fcb519a8d2ea80c43362e5a1e453a383094e2258be4fe8400d54ed63e",
+    "crates/core/flags/doc/help.rs": "3d33bf78a258c1a03bff64c0d5c28fc555c74257c3342080bf1b505b673d1205",
+    "crates/core/flags/doc/man.rs": "e5fbd8b40d3baf5fc74922f19cf79181d1984e6568912e04d9dda0a5d0cff96b",
+    "crates/core/flags/doc/mod.rs": "49de2b86f8efe2e9807705ae87014c2e80561ce430f8501303ad4553dba9c6ed",
+    "crates/core/flags/doc/template.long.help": "a3570b7070175b86b10f6aa274fd0ad21f426f8ad4eb6348f020c0d4112a4860",
+    "crates/core/flags/doc/template.rg.1": "84c831ebf3d34ced89ae8a0cdba8a2c9a5a179ad28ed29b18f3d64f3de3ea8aa",
+    "crates/core/flags/doc/template.short.help": "5960442ae89162bc2416e194361b5081ffd031e2262d6eca542f331472705697",
+    "crates/core/flags/doc/version.rs": "190b63e9c03db51205ead9a80a61655b618961bea111366dbf4fc2adb38bd6ad",
+    "crates/core/flags/hiargs.rs": "1652876799a15ee6467e8b7d89546cefc078d1873c8413bedb21db4bc12d9f2d",
+    "crates/core/flags/lowargs.rs": "89dbf6a28aa96fcccb71fd1957f1c6f7da907d5f8c01dc7ebd4a1bb307bf31b2",
+    "crates/core/flags/mod.rs": "ec1627d2defce72bf5180a28f6e0a50c986cc261624c4927899da0eac7f64b0d",
+    "crates/core/flags/parse.rs": "c2a3375396800a6c8d8e00d98c321d5caf3c91f7938fd90eafb4e82ea95b5ca5",
+    "crates/core/haystack.rs": "8766d52fd5acedf59bf7613d5ed9e77186e97a1ffe77d0b516c6ec807e1a9157",
+    "crates/core/logger.rs": "057c6449256af78acb88c4b267774e51d416fdee878d6f1bdf6600b5d6086119",
+    "crates/core/main.rs": "9c02560a2d6f3ec56386825d5b57573d772bcaf77906f88149da25f7c7801e58",
+    "crates/core/messages.rs": "e239cd545de23c03ba13061e6f16d805b247abbaeedb2ab4f01e41e7d0c5892d",
+    "crates/core/search.rs": "53627fe6d2216552d3919586cd8746da3f392ba44e3bf59ccdc432c7c14e82d1",
+    "crates/globset/COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+    "crates/globset/Cargo.toml": "539f060125c30dab3f60c61c26e89639f70c0fac23a7866f59877e4fe4f310bc",
+    "crates/globset/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/globset/README.md": "f521ea13d4b8622f86998487e6a00ec12663dbe0a59a6c9e13ef44ece0284332",
+    "crates/globset/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/globset/benches/bench.rs": "05a00ec1b35dbd7a202e280e862a784b3a972574b19201ef66ac7980521ce4ac",
+    "crates/globset/src/fnv.rs": "bf67b20b542db2a159f91da8b980fca27d93253a8fafaee7173d6493de985bd8",
+    "crates/globset/src/glob.rs": "a21c13e2f1186c03bae1e0651381323cfe2e846a1a1c577e6a00808625d739bb",
+    "crates/globset/src/lib.rs": "e1c408820495e87d5cc00b9a748f572f9de42d9d4ddaf31f3c9bbd8bf284382c",
+    "crates/globset/src/pathutil.rs": "5780ad5ec2bc89a42201a1532295e06a90f493929583c453f135759b39a70fa5",
+    "crates/globset/src/serde_impl.rs": "4fdc2b4a456fd9ffbe4555d27c760861adaec2ed2524a5f4149ebe827d4779f1",
+    "crates/grep/COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+    "crates/grep/Cargo.toml": "101ccfacc4878367acd1424ec6a3bae4017a37f4d28aad22c8b01df481e72fba",
+    "crates/grep/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/grep/README.md": "c22e4ea508683d0b1572f2a5b64a063e7f48a4e177f764ea08e075faa2c75e59",
+    "crates/grep/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/grep/examples/simplegrep.rs": "ab7011b50f72b2f615685a6cae446d957ac081a05901b515cd210984b8c9e115",
+    "crates/grep/src/lib.rs": "de71633dfaa300e1d4eb518ca76d48dfb38ca80a178e43b6610d4ae3ddb068cc",
+    "crates/ignore/COPYING": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f",
+    "crates/ignore/Cargo.toml": "2570821024a2532e1505ce3aff198e052926c82de1bddaa9ee282d8c9964a51a",
+    "crates/ignore/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/ignore/README.md": "fad351a4d6dad422368750be404b7a419bc9f6ab5acc86934edb3502fba2029d",
+    "crates/ignore/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/ignore/benches/README.md": "2c817c5a1197f5bc8664a1a0b357c29b97ede907c8fa573bbc5e4198ed8cf620",
+    "crates/ignore/benches/workloads.rs": "b16ef9271c510409ff252ee415db005e87faaf0d8f40be9239cd95bc70d91bb9",
+    "crates/ignore/examples/walk.rs": "801b849ef589050878e02cd2367fb856bbe55197cab28e1978acbe8b74539379",
+    "crates/ignore/src/default_types.rs": "7ed94507d800e77a98795fe0c50e1a05a16612d71bacfbb287fc3930bcc10ba9",
+    "crates/ignore/src/dir.rs": "87e3186d70f88ec4016f800b4fbf89a9c3c43eb5cdfa469a1ced6c5799022d8a",
+    "crates/ignore/src/gitignore.rs": "0be841eddbed479e852cd42adf0b56ba988a46152cd2ca6462911917eb8afdbd",
+    "crates/ignore/src/incremental.rs": "3bb42c7cf274e75205cb520758c10a0a4b6b85ea26c458ea90ce4b59414c3f4b",
+    "crates/ignore/src/lib.rs": "89cb2cbdd479ae4a8cf5ea0bbea4cad72b6833a6dfb95008e8f51b185b44aafc",
+    "crates/ignore/src/overrides.rs": "4283fd4dc169476a580ea1e393b1b125a357cda4c1862293800097bd91acb69e",
+    "crates/ignore/src/pathutil.rs": "3b15d019de296e719f7ccac460e5534fcd551f1df2998a375c24c468faf8f1cb",
+    "crates/ignore/src/types.rs": "d058f7a2987e81299b8f0c5dc3a8af0989959fd7aca2cc91b102689b6a7039bf",
+    "crates/ignore/src/walk.rs": "97d6613e3081b4bc7e24e1c8193f64c4e02d830bc7bf50744af0f7ab8b920ad8",
+    "crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.gitignore": "3895c935f76a57928cc12284dfff406693b7666c0ffce9b8676c6c1976debe2d",
+    "crates/ignore/tests/gitignore_matched_path_or_any_parents_tests.rs": "1a38fdb4ba4b555debca6587fd14f69468ef93c37d14992dd90374b2e160232c",
+    "crates/ignore/tests/gitignore_skip_bom.gitignore": "efe6f6479615a9f83b6c080e3fe9c55e4702e9d3c9ad2c49354c4b78fa79e64b",
+    "crates/ignore/tests/gitignore_skip_bom.rs": "93b70f641a87f2c1efb78f93f50b81d69a1c50bdc1b302e8c502f8071a12cb93",
+    "crates/matcher/Cargo.toml": "08a6446ee137b94df4637735a00668c29ddb1e1f3c6c98ab5bc8e68297fdbd26",
+    "crates/matcher/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/matcher/README.md": "c14e2251a0164b86e8e9d232c547651d750c635d7ac8e7b29bae3247e5473e82",
+    "crates/matcher/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/matcher/src/interpolate.rs": "00b130d37cf2ca685e25f10201f37aa332f5d4cdfe04fe59b00df24a3be1e3a4",
+    "crates/matcher/src/lib.rs": "98f194a9cd6a5db50fdd08fe20913f6865bd78b8760236d50395155121ea806e",
+    "crates/matcher/tests/test_matcher.rs": "daaff26c1359e5b18b5df6262c3404ae50cfa50c03ba35a3bb61e498d08b2643",
+    "crates/matcher/tests/tests.rs": "a6a20ad15557f2c485f45bf0f1b4afdb1a5b6c3839a4db44c93ee1470db92670",
+    "crates/matcher/tests/util.rs": "a7dcad0b540de203b1bae0332d2ec46b7bb6df5f69487b74892ef0e470d56fc0",
+    "crates/pcre2/Cargo.toml": "a8fae233550bd4a23d180852bc54a37ec4ca4635ec26fa0e4829ae5097b124ac",
+    "crates/pcre2/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/pcre2/README.md": "9a8e0c090111340c3a39f4f67aa55d3545a774bc1b97a6801ea7c607f5649562",
+    "crates/pcre2/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/pcre2/src/error.rs": "a1d5c41111a55c81a640333b05f8edd41088df9632cc5b20e19fa0eda5ba75b7",
+    "crates/pcre2/src/lib.rs": "e15a9899c2726518e140e7c464f16ab33928a6da111e75432587e15e2dce48bf",
+    "crates/pcre2/src/matcher.rs": "dbcc491d733c9eaceaa86c3cdb0819548c2deeb5c2efa3b5b0d001fb443ea380",
+    "crates/printer/Cargo.toml": "6837179460c665d4549de2b536051839f3fc47287067bf9b4790bc873108e497",
+    "crates/printer/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/printer/README.md": "cea6caa7bb8aff076993d681dcea8e03fecdd6a9b06dafeb6cc6040e92c31403",
+    "crates/printer/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/printer/src/color.rs": "f37f3a667459590e9defc0537246d34401521ec40757aaf787df88086dfa1097",
+    "crates/printer/src/counter.rs": "ea4c5558d8ca442f91c06108dce64aa01c87517213c6731f9cc5a70cf39eca04",
+    "crates/printer/src/hyperlink/aliases.rs": "5512800babddbef9354ab5755f4734d56d68165c31bbbebdcde82139a52a8249",
+    "crates/printer/src/hyperlink/mod.rs": "8887b066987643638d822ec53ebd44f10b9d1a1bab00d9152579a56dfad284fb",
+    "crates/printer/src/json.rs": "310471057be8d646754ff073c75607050ae2f3b355554c59631089ab6223ad74",
+    "crates/printer/src/jsont.rs": "bf5de4c4a28b53cf66b8a2d5f30eb5878abe120b4a72a4465633821d7635379e",
+    "crates/printer/src/lib.rs": "1d81cc139f7aa416b909ebf69baafe2b025bf7d11143f5ddf9f68a923b69c6d8",
+    "crates/printer/src/macros.rs": "fba6a3f245286c63f6f031a3a3d1bee56bf1eab83bd81a258ad2ddd32aadbb67",
+    "crates/printer/src/path.rs": "733d31ce45d34bc521d35fa63494f10b0fc73760496c5181a51a1473b672d234",
+    "crates/printer/src/standard.rs": "8fc94a8cba6add7dbe8394cd2c6f24dffb773b9f85852ee6d4e97747d40e7460",
+    "crates/printer/src/stats.rs": "fa7c96c4dd83892f19d9bc5d9a0e486c6d7b252f6c7f507da3cd090809bb48a1",
+    "crates/printer/src/summary.rs": "76ac78ad878a2a6a45a19563659e710b9080678397fbcffdb68746f5eefe3655",
+    "crates/printer/src/util.rs": "59d984c9b7586592faaa8fc146a67346ece2aed3365f8ccc8a211c12744d9484",
+    "crates/regex/Cargo.toml": "3905ca4c3ef231e4448114b74810d39a88f7d087460198d5cb4b50af5ce5c921",
+    "crates/regex/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/regex/README.md": "ace5a38c993db0a725edd69233d6692761779531c5582c3dc07f5f94f8e03eb0",
+    "crates/regex/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/regex/src/ast.rs": "9e45d49f5a06afc87a492b86845a32055e4a7e448474f98990c8d27fb034a9b8",
+    "crates/regex/src/ban.rs": "9ea2fd822d4e4445df3c54a3081fce35bc2d7b839cc19985aa984e6062d06459",
+    "crates/regex/src/config.rs": "8af11cac22616a5227542beead8d7ee9fb62c208a5cfc9923c07186eae1fd9cb",
+    "crates/regex/src/error.rs": "af7b8bfe1575546a9a31780c009bbf315a81a02f823099da34f106e416743ffd",
+    "crates/regex/src/lib.rs": "1aaa3edac9982c2aea9522c0381a17a6204f826419d58876531fb9de4b13e22a",
+    "crates/regex/src/literal.rs": "f1746f2df93ba9defed55f36ad0f7cd5dada16a7fa881f80193f8d98948c981f",
+    "crates/regex/src/matcher.rs": "a98966ab3326c1ff8121987222f602dc8d861b627fbb4f9fa804667ca643065f",
+    "crates/regex/src/non_matching.rs": "197c6a6e372644a8942f503848d7d1c7749dbbe9694fb6e65073c62cf92a9769",
+    "crates/regex/src/strip.rs": "f799bbc604e6a306070f8acdf612f396c7ae230d755e2fb98efdad61367ee7ac",
+    "crates/searcher/Cargo.toml": "bfdee262fc02864d20ecb23f9349e4ad0b01d600a4bdebe85383414a74ec9d6c",
+    "crates/searcher/LICENSE-MIT": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f",
+    "crates/searcher/README.md": "4f336034cdbcc9ff88e0db69b34813eebf0a13881705b8f63e9ccc3db3f290eb",
+    "crates/searcher/UNLICENSE": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c",
+    "crates/searcher/examples/search-stdin.rs": "1651e1603c3cfb1f02ed6234f231a9a1ed368dbede94d0e0914cd8a0c804d33c",
+    "crates/searcher/src/lib.rs": "7b6c771a3d3e5c40dabe776ea0d8b5af9dbacd84508b9e367bd93ede032f968d",
+    "crates/searcher/src/line_buffer.rs": "b5f96b093387ca9aacaf3660b2b0be8741cbb01a50076162ebeb413395a7fb10",
+    "crates/searcher/src/lines.rs": "37ec6404ed642b0692a726e21313acadae8ca4202da859d6421d5dfd44594bc1",
+    "crates/searcher/src/macros.rs": "8514cf191aef22ad187ffe84d48f2edf1e9e7df04e963d8ad8026f5137ed17c2",
+    "crates/searcher/src/searcher/core.rs": "7f3fd0976fc91e8aca2eaa07b423ab2a6ad919984b261604d35d715fa02ab3ef",
+    "crates/searcher/src/searcher/glue.rs": "c2a6d3055a7a2e69a7208113e837eec247d30a43e0c96029aad307f83632fb02",
+    "crates/searcher/src/searcher/mmap.rs": "403f00eca491e20ef654d0bd6572acccb07c546489054bc514adf528afee8a2c",
+    "crates/searcher/src/searcher/mod.rs": "6ae846df42f0868385bc54ef728db822c86f20f6d6457777d8f8058fc4c67bf0",
+    "crates/searcher/src/sink.rs": "703f25a0f08dac9a39742cabc029a332c7e027d9356980d6ffeec34f68953657",
+    "crates/searcher/src/testutil.rs": "34055e71ee830bdc897686554a3be65499150e1d67a7d4cde45d7bf9aa9e9e2b",
+    "fuzz/.gitignore": "a24ed50fc1f28dcafa5d4f9eac712faf4b1ffd7910177f5ce30289197a7a2484",
+    "fuzz/Cargo.lock": "b6ee1b9ef968066415e092559b86212ea06150535f6463db9a6b0d4c2aa36ced",
+    "fuzz/Cargo.toml": "b8948efb524b815c1311ed06643f72541d5f3366d83bbdad80029ed0dcfcc8ef",
+    "fuzz/README.md": "43a13d44d4df600277b3db5c52aaeaccc7802263a3d52f6864ee06feba509322",
+    "fuzz/fuzz_targets/fuzz_glob.rs": "c57fbc71025d53b7dc5ece7f340f54eadf48e4e9289b16b1db096d14111d722c",
+    "pkg/brew/ripgrep-bin.rb": "97cbd57670a192d1a6effa30063b53bceb3243d95a94df189e912df5ca41b16b",
+    "pkg/windows/Manifest.xml": "774ea49feb1503dceed70d56e24946b4fe5083929fb38252559b00d8b2cc48a0",
+    "pkg/windows/README.md": "61ff8e95faeed8928d22bd2454aadbf17bb0d5dcff8fe1ad9945defe0af3e7f8",
+    "rustfmt.toml": "4b4f1d825a2b14c15a074dc716625bbb5dcd54dc1475b9751bf2b835e66591b5",
+    "scripts/copy-examples": "16adf87d146eadcc68bd2f45aa432599218baa0acabd7125c868794bd9cf42b7",
+    "tests/binary.rs": "683714aaf5bb499c344c0280ab7fc09907a90b51e836dd26859de99e8fc454e9",
+    "tests/data/sherlock-nul.txt": "bb7dbf2cee6e40774bed465384bb2512307b0f63a31013c6812131096d083466",
+    "tests/data/sherlock.Z": "420a3bb385f9299029c53883eb5569a982177408521ac5056746969324f25d75",
+    "tests/data/sherlock.br": "4496548fc4bd17b1afc6611878a7983bfbe903e08e7908a789965d7d548892dd",
+    "tests/data/sherlock.bz2": "a5f16df074eb1e5f8183e7e8ed34fda72f66741f88624cda38142c32f88d4cb4",
+    "tests/data/sherlock.gz": "e2c66fa7c65d183f497ab5023cbb341de5c1f98f587e93e2345702ce362b7fb2",
+    "tests/data/sherlock.lz4": "f93423e576e99c1d5b895c7a0c99a233f2e3428f7cd630e84741c1c5f60836a6",
+    "tests/data/sherlock.lzma": "7d7e6fd9429c64f5e7e0a9bbc80e3333200e49d66ef026e58ad4d0fcb5762ea4",
+    "tests/data/sherlock.xz": "cb3706759fe692dcae67ead3241e5406e83409b9e855bf5d383f2332f21871a3",
+    "tests/data/sherlock.zst": "e98e9a7c720ddd9037420cd6f93e2f49b861e1f3e43d76833eafa3e4eed0ecbb",
+    "tests/feature.rs": "fbc6455c5d2cb73580cde4b390c0a43315107598200a6ca6023c3bfc155d8706",
+    "tests/hay.rs": "ee8d21ddd6f053f2f5427847e2a7bdc80913570cc410ced9508465ff66549684",
+    "tests/json.rs": "9dd91b0dadc9be38d4ac37551af4b7bca6f80da8fe9723009f87b11c750efaaa",
+    "tests/macros.rs": "27d0ee206b162f26f718e526a2f303ad587db76703648ba06c1ee3cb2877d3ee",
+    "tests/misc.rs": "4fe2caae7e791339a154172b65a54905d1660a1d8869a790309076818264f335",
+    "tests/multiline.rs": "2c1b987f0fe60905e9cfe4edc19738f7693b12f79661d4b66252f4295e03d03d",
+    "tests/regression.rs": "77e84eb6c056a968e160c841681d471089ad62c924094fe4c0d769df271c9a78",
+    "tests/tests.rs": "b262a442a4b986f38ef6ddcf3c059a934d770fa07a9a9296545be15aa67cb18f",
+    "tests/util.rs": "6862edaf5adad5eff8b7bf3c50ed28c221c0212fe733b22387d1f4f09909b447"
+  },
+  "stronger_test": {
+    "crates/cli/tests/command_reader_contracts.rs": "d290875ce1a6888b85e01403e68e4cb23370a3c619975ed94ad4cae9c2c5a8f8"
+  },
+  "commands": {
+    "baseline": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "check",
+        "--config",
+        "$ROOT/config.toml"
+      ],
+      "seconds": 18.797,
+      "exit": 0,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "bf0ae6e816568cb6e1e5d477abd81150635581a8b5a5b0bbf670b2e8357697ba"
+    },
+    "final-confirmation": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/stronger",
+        "rerun",
+        "$ROOT/reports/run-1794263122-FeUHAN",
+        "--id",
+        "10",
+        "--config",
+        "$ROOT/stronger.toml",
+        "--plain"
+      ],
+      "seconds": 42.894,
+      "exit": 0,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "4cc50b5d0d55777cdd587bae7ab5703babe60cbac58845ab48435075754c5370"
+    },
+    "fresh-control": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "rerun",
+        "$ROOT/reports/run-1794263122-FeUHAN",
+        "--id",
+        "1,8,10,13",
+        "--config",
+        "$ROOT/fresh.toml",
+        "--plain"
+      ],
+      "seconds": 100.6,
+      "exit": 0,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "bf0ae6e816568cb6e1e5d477abd81150635581a8b5a5b0bbf670b2e8357697ba"
+    },
+    "list-admission": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "list",
+        "--config",
+        "$ROOT/config.toml"
+      ],
+      "seconds": 0.021,
+      "exit": 1,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "ac783a47bf01c033028928d4b8788a0e5ac0860bef115c63b01feb636186ad72"
+    },
+    "list-inventory": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "list",
+        "--config",
+        "$ROOT/config.toml"
+      ],
+      "seconds": 0.021,
+      "exit": 1,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "ac783a47bf01c033028928d4b8788a0e5ac0860bef115c63b01feb636186ad72"
+    },
+    "list-target-config": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "list",
+        "--config",
+        "$ROOT/config.toml"
+      ],
+      "seconds": 0.451,
+      "exit": 0,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "bf0ae6e816568cb6e1e5d477abd81150635581a8b5a5b0bbf670b2e8357697ba"
+    },
+    "list": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "list",
+        "--config",
+        "$ROOT/config.toml",
+        "--plain"
+      ],
+      "seconds": 0.297,
+      "exit": 2,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "ac783a47bf01c033028928d4b8788a0e5ac0860bef115c63b01feb636186ad72"
+    },
+    "sampled-worker": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/original",
+        "run",
+        "--config",
+        "$ROOT/config.toml",
+        "--plain"
+      ],
+      "seconds": 329.843,
+      "exit": 0,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "bf0ae6e816568cb6e1e5d477abd81150635581a8b5a5b0bbf670b2e8357697ba"
+    },
+    "stronger-worker": {
+      "command": [
+        "$ROOT/mutie",
+        "--path",
+        "$ROOT/stronger",
+        "rerun",
+        "$ROOT/reports/run-1794263122-FeUHAN",
+        "--missed",
+        "--config",
+        "$ROOT/stronger.toml",
+        "--plain"
+      ],
+      "seconds": 192.813,
+      "exit": 0,
+      "timed_out": false,
+      "deadline_seconds": 900,
+      "binary_sha256": "bf0ae6e816568cb6e1e5d477abd81150635581a8b5a5b0bbf670b2e8357697ba"
+    }
+  },
+  "reports": {
+    "run-1794263122-FeUHAN": {
+      "status": "completed",
+      "seconds": 329.774185417,
+      "baseline_seconds": 19.010298292,
+      "baseline_harness_totals": [
+        1209,
+        0,
+        1
+      ],
+      "baseline_targets": 14,
+      "score": {
+        "scope": "filtered",
+        "killed": 6,
+        "missed": 10,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 37.5,
+        "unavailable_reason": null
+      },
+      "scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "globset",
+              "directory": "crates/globset",
+              "manifest_fingerprint": "sha256:539f060125c30dab3f60c61c26e89639f70c0fac23a7866f59877e4fe4f310bc",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "globset",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep",
+              "directory": "crates/grep",
+              "manifest_fingerprint": "sha256:101ccfacc4878367acd1424ec6a3bae4017a37f4d28aad22c8b01df481e72fba",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-cli",
+              "directory": "crates/cli",
+              "manifest_fingerprint": "sha256:d3b5d786220e1c0a2601aadfdf695798a138ea48548309de3b13f4eddb7da051",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_cli",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-matcher",
+              "directory": "crates/matcher",
+              "manifest_fingerprint": "sha256:08a6446ee137b94df4637735a00668c29ddb1e1f3c6c98ab5bc8e68297fdbd26",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_matcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-pcre2",
+              "directory": "crates/pcre2",
+              "manifest_fingerprint": "sha256:a8fae233550bd4a23d180852bc54a37ec4ca4635ec26fa0e4829ae5097b124ac",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_pcre2",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-printer",
+              "directory": "crates/printer",
+              "manifest_fingerprint": "sha256:6837179460c665d4549de2b536051839f3fc47287067bf9b4790bc873108e497",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_printer",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-regex",
+              "directory": "crates/regex",
+              "manifest_fingerprint": "sha256:3905ca4c3ef231e4448114b74810d39a88f7d087460198d5cb4b50af5ce5c921",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_regex",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-searcher",
+              "directory": "crates/searcher",
+              "manifest_fingerprint": "sha256:bfdee262fc02864d20ecb23f9349e4ad0b01d600a4bdebe85383414a74ec9d6c",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_searcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ignore",
+              "directory": "crates/ignore",
+              "manifest_fingerprint": "sha256:2570821024a2532e1505ce3aff198e052926c82de1bddaa9ee282d8c9964a51a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ignore",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ripgrep",
+              "directory": "",
+              "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "rg",
+                  "source": "crates/core/main.rs",
+                  "edition": "2024"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "grep-cli"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+        "lockfile_fingerprint": "sha256:bf918d72d563dd706beacb4e258106102c14fbc2f85272f1f749a5044e3c3f43",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "crates/cli/src/decompress.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/escape.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/hostname.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/lib.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/process.rs: branch forcing excludes if-let/let-chain bindings",
+          "crates/cli/src/process.rs: macro tokens/expansions (including include!)"
+        ],
+        "build_scripts": [
+          {
+            "package": "ripgrep",
+            "path": "build.rs",
+            "fingerprint": "sha256:07d72d8929ecd1cc2277e7d1f16092521c9160c92cca9544a682b275bd53d955",
+            "recipe": "owned-cargo-build-inputs-and-outputs-v1"
+          }
+        ],
+        "build_inputs": "sha256:e8be5e39003e096d4a2c94bcaa2f18355d3d8c923f02246cccf2d18c06614b8b",
+        "build_outputs": {
+          "packages": {
+            "ripgrep": "sha256:2e487f86f3973b7585119719e41ff8d69fcb3433304ef1735b168778741148ce"
+          }
+        },
+        "inactive_target_flags": {
+          "i686-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-unknown-linux-musl": [
+            "-C",
+            "target-feature=+crt-static",
+            "-C",
+            "link-self-contained=yes"
+          ]
+        }
+      },
+      "config": {
+        "module_root": "$ROOT/original",
+        "config_file": "$ROOT/config.toml",
+        "lang": "rust",
+        "rust_build_cache": "worker",
+        "rust_packages": [
+          "grep-cli"
+        ],
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [
+          "crates/cli/src/human.rs",
+          "crates/cli/src/process.rs"
+        ],
+        "exclude": [],
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "timeout": 90,
+        "max_log_bytes": null,
+        "max_capture_bytes": null,
+        "baseline_timeout": 180,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "$ROOT/reports",
+        "verbose": false,
+        "list": false,
+        "ui": "plain"
+      },
+      "rerun": null,
+      "report_hashes": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "ff03a3ef82142de035ab03b4817de5c49dfca5b48466b22e3d2904b611ad771f",
+        "diff/000002.diff": "f9a6cecc680a9d39cfbe6247e3b800b7659284b743f32eba97060d94903d78a6",
+        "diff/000003.diff": "bf897758cdaf05daf989e1b193a8a3b55d30d2682a1de3383ac89d35fa8394cf",
+        "diff/000004.diff": "0af8415b334d4cb6089ba233848981e7f67900b30f2f28f2f2e3469a8ada552b",
+        "diff/000005.diff": "3bd76d8eb2c83c1052ec05ff54a1bc0733f20f57f571ff7edc8ce0797fe41cf4",
+        "diff/000006.diff": "1c2c87d203756eab51d47102da3d9b3200b21e302f54de54469505621ce0a3b7",
+        "diff/000007.diff": "8bdaccc2e01f33a0fe0182911bc1d029d2b30d133470959d2f13d377ce1faef0",
+        "diff/000008.diff": "14f805edac71282fc30b570eee717755fc17eb9bda1ad88536b847beba5f98a6",
+        "diff/000009.diff": "55a80a2d3aec62fff5c68e02ee112eb13247d88e38ea6c2b3c55bbb8453efe39",
+        "diff/000010.diff": "606fe03cc7956958463b9d485ff03c8fcaccd78beec516471760ee46b198e9fb",
+        "diff/000011.diff": "3e927a93f50ad1b10013ffbe7e2755d0b037424765cb050c8b8debd9ee86bb15",
+        "diff/000012.diff": "59d1f0796162614f5bc47123b31f4fad4fd6d55813869a9b8784ed7bd78dca4b",
+        "diff/000013.diff": "86f3ca6e492dfdc5c75f0ceabd3a63c457a24572366e69671b8e8e1d59aa676e",
+        "diff/000014.diff": "1b7b83903e4769ba46afefd0de7bea0f5f9108c795d1199140c45354c1810ec3",
+        "diff/000015.diff": "535daef6c1a514d88bd5624619cec11619e75bf77a25be496e7f8f76a279185b",
+        "diff/000016.diff": "d991bcd5709854255f0839027b87fa41dbc640e4410d80f8fe0b93ffde1839f1",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "a17a16850fd35b66bfda5bf7d96e5f12c7600bfd58c67adb6e96c90ccec26462",
+        "logs/000001.log": "81190e221d24373896d63d9e4970dbeab8528cae460462334ecf9c0bda3b10e3",
+        "logs/000001.stderr.log": "4a247610082465c0619a2d88ca47ce76649c0dfa275c34d7e0a988d713cd87a9",
+        "logs/000001.stdout.log": "4f6fb2ff82f49022192c9f346ab4577ef5baa531fe7c068cd7d9289ebbcd0b8a",
+        "logs/000002.log": "33d4100a3176ce5a6c186508de4955b9a47837afa4d9a41f6d991df83bb76c1b",
+        "logs/000002.stderr.log": "9da89eece8d57854dbe4de8b8ba3f364b926aa5dcbac787d7308ab6a02383f95",
+        "logs/000002.stdout.log": "9ce8dad9d7c6f9d0e72374ade643c5828203bb9e0adc8f312b9f6f5105ea09bb",
+        "logs/000003.log": "3269553ad686fcf23e2088f03bff32ee7200439881f613679b67b8c8d3e032ae",
+        "logs/000003.stderr.log": "bbfb5f1307307fc431ba160a0f556360f22367ad4bfd877908c4c1da9ea2e9ae",
+        "logs/000003.stdout.log": "f8ad0000c4e4a8dcd27b9504d6f4f1f6d3777e4a5b4381347d41957229ae2dab",
+        "logs/000004.log": "6b9970115270490b91989cd3028daeed46c1567da6c08db362396ced8911001d",
+        "logs/000004.stderr.log": "1490b25795512b87e10e549f596a0722657453ca829f7184a9ccfddee623bea8",
+        "logs/000004.stdout.log": "bab2578cf9d314ed09ccb074688fd28688f4a87c010e81521bd0deee64ea356c",
+        "logs/000005.log": "79c34fd4481666330497ac5d1ba615bff8380ae90220f80a9eb9bbb0256d9dff",
+        "logs/000005.stderr.log": "093dbb22939f037ec543a55ccb1d72f8dea6f7061e93ce0e656ae85f2e9c8477",
+        "logs/000005.stdout.log": "de3e42fe5d2f90c2e515290b6f4c3cb927dcf48e4595b4b989700589f96c2207",
+        "logs/000006.log": "bc2f1572e79ceec26fd89e456ddeb7b947eaec138dde1e260cd2a7079dbc5a48",
+        "logs/000006.stderr.log": "4cd5dd984da068b27268f3314a41beb16c996d6f7d1416668491ccf6ada6d8b0",
+        "logs/000006.stdout.log": "faf2c5182075bb0d893d1861bcdbd1a46890c60b479b906758fb1ac68d4673fa",
+        "logs/000007.log": "86f0336c81da1468e3fd4aa4484b29a6f969ad38bfaa0ddb4c237595e6479354",
+        "logs/000007.stderr.log": "bab48c408767199b4bcc54bf7d07e3e4edcfe53a0aab4dc72411a1c14d9c345f",
+        "logs/000007.stdout.log": "877849931256ff54d844071a1ea3463339c3de72436147061cc4db48071529ae",
+        "logs/000008.log": "ccf29be5a9c69fde181170da9257a4ed99c8dd76baa6331633e6df75e23e8498",
+        "logs/000008.stderr.log": "f63f8a923f51ec92031008607628cd71da8e54cbf7c01c505ddd50876cd6d1ca",
+        "logs/000008.stdout.log": "7a21a6c9c49fe36442ad6685dbd6d85b45d4f67085c72230fbdc5e681fe165d5",
+        "logs/000009.log": "cf0828bd3fc057b667b08efde8c46079b36cb4475804a9504963d945be97d906",
+        "logs/000009.stderr.log": "1d17199f90d61272c3042f892f2f4da7c67b51c81f72f4c0230eb1207ebe83b4",
+        "logs/000009.stdout.log": "332f965a417981c74cdc1d22a7dcc610c49c57867ffc69792584e242395accef",
+        "logs/000010.log": "b1a11ce255e329d1c15c53c738092cb2f96be3acf064660c56ea73afcb254e80",
+        "logs/000010.stderr.log": "afe503c5a3c4bccbe6b48892b954e1b082fc5a8b111fd7c4b9c4ef5fd7073819",
+        "logs/000010.stdout.log": "782244fa3d025f72f5f134863581d61cee029bb8380037ebc1afac2782bf3061",
+        "logs/000011.log": "aa92b292d293276c5e4b32033913584d0ddbdb54eae618315c58d03e3c1aa504",
+        "logs/000011.stderr.log": "f1bf96c1545381f2424dcef388428601ebcb83d79132cc8545854b4188cda8a0",
+        "logs/000011.stdout.log": "14b9f860278c155f6d09f35b415264dd7d1d860210e77b35a389a7438f187bff",
+        "logs/000012.log": "eadb5c4d62386c5620b0cb07d618cdf7fa53ca2817132e19d6f0e5dd1e13d6f7",
+        "logs/000012.stderr.log": "b14bb258ab9efae5d6a0789fa3a7d65553911f65e22dd50f8d28a3c292a32920",
+        "logs/000012.stdout.log": "1e6016ba7aa909435797f366c70a37a4f583bf54372f24aa4efcec29b3e283fc",
+        "logs/000013.log": "e7d6bc2bcf0718da4f083b6aad1b70ca86d76b8564fb694f822a8b5489076b20",
+        "logs/000013.stderr.log": "46704b07b7960b0653e5831c4156e3bd7129cb3b47ebe4dfd2e122170e67d42b",
+        "logs/000013.stdout.log": "38015223222df69e28434cf0da710c47f4b3b591709c6d849b0b626810d42839",
+        "logs/000014.log": "cbc0a6d4240f6c4d3ae723fe546ba60799ba7d2eaf3853d2f38a2d76c09561f6",
+        "logs/000014.stderr.log": "163f8aaeed3a8b1121827db3fffd5fe576d1ae48ea595ee49e91e071af9696c9",
+        "logs/000014.stdout.log": "0f168bd893bf63f36a31e8c51fafbc39727b2a1277c2d4c60905110ec7427c1c",
+        "logs/000015.log": "b652cb43faa18ddb8b0c6623d6ad527a3dbf8822e3a959849d0aca2e3ed1adfb",
+        "logs/000015.stderr.log": "784fbf4313750e866ed6d30932350330e82c3f93db2a7cc79c064ea21971415f",
+        "logs/000015.stdout.log": "b46d7deab6e4773872b9e4246de3706266f1eaabfa026be2959e8130213a309c",
+        "logs/000016.log": "2875b3f105a2ab6d68d18ca071af527a108eb1de4323158546e9703e06f07422",
+        "logs/000016.stderr.log": "f358df5745ba2731649a27532ff939f55cfd4fbc6114ba4aed9070916ff116d2",
+        "logs/000016.stdout.log": "717e58fb1c1f0577be7a2c5517888f4e9ebe799757adabe6de4804d258590fc0",
+        "logs/baseline.log": "123a224c380e466f94a41670c6d4a6dbd2a64ac9d63f53481332805336d3c7ab",
+        "logs/baseline.stderr.log": "62084339da9edea99a274dd362c27fb7cd53cfcdaa84e1d259d172772022cbff",
+        "logs/baseline.stdout.log": "6e36e01986d9680d07be14cc8fe7739c7cca166ee7648107489ca04c73dd3cfd",
+        "logs/discovery.log": "8b04bba8a4159e9ed7ba5d819de17ed249769c6088462627f360fde64fac4134",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "17a98de8e2720cc24cdaae3d2ca8eac72474d5444c5919427eb5292aa5a4609e",
+        "missed.txt": "92f53bbb3706addfd3742702d296dba2ec9574e7ecf5c4f6f9a8e30bce937425",
+        "mutants.json": "f5be9f94fee0f8ec07c3d9080f0f526e1201e1a0117c6da2dabb689d74125008",
+        "outcomes.json": "50cd971be77accc893b6b7894baf1e69e1cecfc33791499dfce4fe2ac4165ef5",
+        "run.json": "8180cadc4221c5c4dab745b492feb3a3aec51c6906d7228f4c337993f94bd3b3",
+        "summary.txt": "6eb574dcb3dc3b84c44aa52db98b95d30159f9142674a660895e0927adaa307f",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "outcomes": [
+        {
+          "mutation": {
+            "id": 1,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 94,
+            "column": 34,
+            "end_line": 94,
+            "end_column": 35,
+            "byte_start": 2984,
+            "byte_end": 2985,
+            "original": "1",
+            "replacement": "0",
+            "diff": "diff/000001.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 18.059188792
+        },
+        {
+          "mutation": {
+            "id": 2,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 94,
+            "column": 39,
+            "end_line": 94,
+            "end_column": 41,
+            "byte_start": 2989,
+            "byte_end": 2991,
+            "original": "10",
+            "replacement": "0",
+            "diff": "diff/000002.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 14.102844666
+        },
+        {
+          "mutation": {
+            "id": 3,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 95,
+            "column": 34,
+            "end_line": 95,
+            "end_column": 35,
+            "byte_start": 3027,
+            "byte_end": 3028,
+            "original": "1",
+            "replacement": "0",
+            "diff": "diff/000003.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 13.456395041
+        },
+        {
+          "mutation": {
+            "id": 4,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 95,
+            "column": 39,
+            "end_line": 95,
+            "end_column": 41,
+            "byte_start": 3032,
+            "byte_end": 3034,
+            "original": "20",
+            "replacement": "0",
+            "diff": "diff/000004.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 16.106407833
+        },
+        {
+          "mutation": {
+            "id": 5,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 96,
+            "column": 34,
+            "end_line": 96,
+            "end_column": 35,
+            "byte_start": 3070,
+            "byte_end": 3071,
+            "original": "1",
+            "replacement": "0",
+            "diff": "diff/000005.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 16.979110917
+        },
+        {
+          "mutation": {
+            "id": 6,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 96,
+            "column": 39,
+            "end_line": 96,
+            "end_column": 41,
+            "byte_start": 3075,
+            "byte_end": 3077,
+            "original": "30",
+            "replacement": "0",
+            "diff": "diff/000006.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 16.098606416
+        },
+        {
+          "mutation": {
+            "id": 7,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 36,
+            "column": 18,
+            "end_line": 36,
+            "end_column": 23,
+            "byte_start": 1002,
+            "byte_end": 1007,
+            "original": "false",
+            "replacement": "true",
+            "diff": "diff/000007.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 13.487199459
+        },
+        {
+          "mutation": {
+            "id": 8,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 52,
+            "column": 31,
+            "end_line": 52,
+            "end_column": 34,
+            "byte_start": 1526,
+            "byte_end": 1529,
+            "original": "\"-\"",
+            "replacement": "\"\"",
+            "diff": "diff/000008.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 12.863734584
+        },
+        {
+          "mutation": {
+            "id": 9,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 52,
+            "column": 42,
+            "end_line": 52,
+            "end_column": 44,
+            "byte_start": 1537,
+            "byte_end": 1539,
+            "original": "79",
+            "replacement": "0",
+            "diff": "diff/000009.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 13.324472625
+        },
+        {
+          "mutation": {
+            "id": 10,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 117,
+            "column": 48,
+            "end_line": 117,
+            "end_column": 53,
+            "byte_start": 3612,
+            "byte_end": 3617,
+            "original": "false",
+            "replacement": "true",
+            "diff": "diff/000010.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 12.468534041
+        },
+        {
+          "mutation": {
+            "id": 11,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 257,
+            "column": 31,
+            "end_line": 257,
+            "end_column": 32,
+            "byte_start": 9286,
+            "byte_end": 9287,
+            "original": "0",
+            "replacement": "1",
+            "diff": "diff/000011.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 13.137315541
+        },
+        {
+          "mutation": {
+            "id": 12,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 261,
+            "column": 21,
+            "end_line": 261,
+            "end_column": 22,
+            "byte_start": 9404,
+            "byte_end": 9405,
+            "original": "0",
+            "replacement": "1",
+            "diff": "diff/000012.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 21.930040083
+        },
+        {
+          "mutation": {
+            "id": 13,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 262,
+            "column": 24,
+            "end_line": 262,
+            "end_column": 28,
+            "byte_start": 9431,
+            "byte_end": 9435,
+            "original": "true",
+            "replacement": "false",
+            "diff": "diff/000013.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 22.754329375
+        },
+        {
+          "mutation": {
+            "id": 14,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 263,
+            "column": 34,
+            "end_line": 263,
+            "end_column": 35,
+            "byte_start": 9470,
+            "byte_end": 9471,
+            "original": "0",
+            "replacement": "1",
+            "diff": "diff/000014.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 41.699135792
+        },
+        {
+          "mutation": {
+            "id": 15,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 300,
+            "column": 29,
+            "end_line": 300,
+            "end_column": 74,
+            "byte_start": 10624,
+            "byte_end": 10669,
+            "original": "\"read_to_end cannot be called more than once\"",
+            "replacement": "\"\"",
+            "diff": "diff/000015.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 40.07679825
+        },
+        {
+          "mutation": {
+            "id": 16,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 301,
+            "column": 38,
+            "end_line": 301,
+            "end_column": 76,
+            "byte_start": 10709,
+            "byte_end": 10747,
+            "original": "\"stderr reading thread does not panic\"",
+            "replacement": "\"\"",
+            "diff": "diff/000016.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 19.581591125
+        }
+      ]
+    },
+    "run-1794263499-U8RZHS": {
+      "status": "completed",
+      "seconds": 192.700451875,
+      "baseline_seconds": 30.885137666,
+      "baseline_harness_totals": [
+        1213,
+        0,
+        1
+      ],
+      "baseline_targets": 15,
+      "score": {
+        "scope": "rerun",
+        "killed": 7,
+        "missed": 3,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 70.0,
+        "unavailable_reason": null
+      },
+      "scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "globset",
+              "directory": "crates/globset",
+              "manifest_fingerprint": "sha256:539f060125c30dab3f60c61c26e89639f70c0fac23a7866f59877e4fe4f310bc",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "globset",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep",
+              "directory": "crates/grep",
+              "manifest_fingerprint": "sha256:101ccfacc4878367acd1424ec6a3bae4017a37f4d28aad22c8b01df481e72fba",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-cli",
+              "directory": "crates/cli",
+              "manifest_fingerprint": "sha256:d3b5d786220e1c0a2601aadfdf695798a138ea48548309de3b13f4eddb7da051",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_cli",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-matcher",
+              "directory": "crates/matcher",
+              "manifest_fingerprint": "sha256:08a6446ee137b94df4637735a00668c29ddb1e1f3c6c98ab5bc8e68297fdbd26",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_matcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-pcre2",
+              "directory": "crates/pcre2",
+              "manifest_fingerprint": "sha256:a8fae233550bd4a23d180852bc54a37ec4ca4635ec26fa0e4829ae5097b124ac",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_pcre2",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-printer",
+              "directory": "crates/printer",
+              "manifest_fingerprint": "sha256:6837179460c665d4549de2b536051839f3fc47287067bf9b4790bc873108e497",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_printer",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-regex",
+              "directory": "crates/regex",
+              "manifest_fingerprint": "sha256:3905ca4c3ef231e4448114b74810d39a88f7d087460198d5cb4b50af5ce5c921",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_regex",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-searcher",
+              "directory": "crates/searcher",
+              "manifest_fingerprint": "sha256:bfdee262fc02864d20ecb23f9349e4ad0b01d600a4bdebe85383414a74ec9d6c",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_searcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ignore",
+              "directory": "crates/ignore",
+              "manifest_fingerprint": "sha256:2570821024a2532e1505ce3aff198e052926c82de1bddaa9ee282d8c9964a51a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ignore",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ripgrep",
+              "directory": "",
+              "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "rg",
+                  "source": "crates/core/main.rs",
+                  "edition": "2024"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "grep-cli"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+        "lockfile_fingerprint": "sha256:bf918d72d563dd706beacb4e258106102c14fbc2f85272f1f749a5044e3c3f43",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "crates/cli/src/decompress.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/escape.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/hostname.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/lib.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/process.rs: branch forcing excludes if-let/let-chain bindings",
+          "crates/cli/src/process.rs: macro tokens/expansions (including include!)"
+        ],
+        "build_scripts": [
+          {
+            "package": "ripgrep",
+            "path": "build.rs",
+            "fingerprint": "sha256:07d72d8929ecd1cc2277e7d1f16092521c9160c92cca9544a682b275bd53d955",
+            "recipe": "owned-cargo-build-inputs-and-outputs-v1"
+          }
+        ],
+        "build_inputs": "sha256:e8be5e39003e096d4a2c94bcaa2f18355d3d8c923f02246cccf2d18c06614b8b",
+        "build_outputs": {
+          "packages": {
+            "ripgrep": "sha256:2e487f86f3973b7585119719e41ff8d69fcb3433304ef1735b168778741148ce"
+          }
+        },
+        "inactive_target_flags": {
+          "i686-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-unknown-linux-musl": [
+            "-C",
+            "target-feature=+crt-static",
+            "-C",
+            "link-self-contained=yes"
+          ]
+        }
+      },
+      "config": {
+        "module_root": "$ROOT/stronger",
+        "config_file": "$ROOT/stronger.toml",
+        "lang": "rust",
+        "rust_build_cache": "worker",
+        "rust_packages": [
+          "grep-cli"
+        ],
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [
+          "crates/cli/src/human.rs",
+          "crates/cli/src/process.rs"
+        ],
+        "exclude": [],
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "timeout": 90,
+        "max_log_bytes": null,
+        "max_capture_bytes": null,
+        "baseline_timeout": 180,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "$ROOT/reports",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "$ROOT/reports/run-1794263122-FeUHAN",
+          "selection": "missed",
+          "operators": [
+            "boolean_flip",
+            "number_replace",
+            "string_replace"
+          ]
+        },
+        "ui": "plain"
+      },
+      "rerun": {
+        "source_run": "$ROOT/reports/run-1794263122-FeUHAN",
+        "source_checkpoint": 45,
+        "source_status": "completed",
+        "selection": "missed",
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 7
+          },
+          {
+            "id": 2,
+            "source_id": 8
+          },
+          {
+            "id": 3,
+            "source_id": 9
+          },
+          {
+            "id": 4,
+            "source_id": 10
+          },
+          {
+            "id": 5,
+            "source_id": 11
+          },
+          {
+            "id": 6,
+            "source_id": 12
+          },
+          {
+            "id": 7,
+            "source_id": 13
+          },
+          {
+            "id": 8,
+            "source_id": 14
+          },
+          {
+            "id": 9,
+            "source_id": 15
+          },
+          {
+            "id": 10,
+            "source_id": 16
+          }
+        ]
+      },
+      "report_hashes": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "8bdaccc2e01f33a0fe0182911bc1d029d2b30d133470959d2f13d377ce1faef0",
+        "diff/000002.diff": "14f805edac71282fc30b570eee717755fc17eb9bda1ad88536b847beba5f98a6",
+        "diff/000003.diff": "55a80a2d3aec62fff5c68e02ee112eb13247d88e38ea6c2b3c55bbb8453efe39",
+        "diff/000004.diff": "606fe03cc7956958463b9d485ff03c8fcaccd78beec516471760ee46b198e9fb",
+        "diff/000005.diff": "3e927a93f50ad1b10013ffbe7e2755d0b037424765cb050c8b8debd9ee86bb15",
+        "diff/000006.diff": "59d1f0796162614f5bc47123b31f4fad4fd6d55813869a9b8784ed7bd78dca4b",
+        "diff/000007.diff": "86f3ca6e492dfdc5c75f0ceabd3a63c457a24572366e69671b8e8e1d59aa676e",
+        "diff/000008.diff": "1b7b83903e4769ba46afefd0de7bea0f5f9108c795d1199140c45354c1810ec3",
+        "diff/000009.diff": "535daef6c1a514d88bd5624619cec11619e75bf77a25be496e7f8f76a279185b",
+        "diff/000010.diff": "d991bcd5709854255f0839027b87fa41dbc640e4410d80f8fe0b93ffde1839f1",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "6486e3a8ea2321dba6496599a9dc79ca7203efe5af91780577c1bd6e6166e243",
+        "logs/000001.log": "a83e2d515e7ee8416c9199d137b464c1f18664044bd4c968b78d4c37f16603b0",
+        "logs/000001.stderr.log": "54f409547e41b640563719018546d2c55f5408e5191995c0e1c4cc59808cdd6e",
+        "logs/000001.stdout.log": "b99fdab5c2fb8a53a2994c3c9a9740b62868181caed3495ed908e7332792e19e",
+        "logs/000002.log": "c10de083663a9b0ee181b9f08d18c42fce94f9dbb1cbd23ab13b064fba653ecf",
+        "logs/000002.stderr.log": "deec09a4fbb3fe9a18600b58a74db066ebc48da9bc8077c4ddb08225f1686f60",
+        "logs/000002.stdout.log": "7d8a7bc9dd4dfd3d43ccd05b2ee974c628f44d532b15eb1f1f3e4b0543074530",
+        "logs/000003.log": "c060983aeec459600c65d337a3dc6d131b0c4d00258b0b57269f05f4c18436d8",
+        "logs/000003.stderr.log": "254b581abea13c882d78584e7b902aec683c4f569a3f9d82036b71fe1b27e103",
+        "logs/000003.stdout.log": "00712f3bf30b5542a2dbbafb8a0a6c99499e722fd311057a018ab00ab195702d",
+        "logs/000004.log": "2e0d4ea2573e0439457e8ad66213c86f364b057808421533cc871aad54916a2e",
+        "logs/000004.stderr.log": "42f70a202e3c925e7142b22890c86c4881e265d54308598bcf105706b0476c36",
+        "logs/000004.stdout.log": "f8f341f10528d914dbf0239799604175e0208035d5e70397af98263c8131ff92",
+        "logs/000005.log": "c8c3eccb1232cfb0da95654f3ae4ae238a200e218d3dbe98d0d8972513f23f85",
+        "logs/000005.stderr.log": "29f48506175628bcaf0aaff2b3a14d421529c034ef04b1de0a77c4f45fb66a1b",
+        "logs/000005.stdout.log": "24ec02a2f5075cb12572b35e7cc3a59ce17acfec0a299fd8b61b8089d3504596",
+        "logs/000006.log": "89ab6e0b505885b98cca7807663b02c6cd3e8abb66265c37a165842be5a5c62e",
+        "logs/000006.stderr.log": "ac2234d908aa785318c54d1474d9fc2a19d92eca3eb1fc471b1c31ef182c91ed",
+        "logs/000006.stdout.log": "ea6cfe56f5505836792abcc6c6aa33d08355829e9e2ab1103ff8b244b1ae100e",
+        "logs/000007.log": "a7e49a3dae93614cabccc6cd84ba97339d801aaef42fa4d3afc22277a0dee1de",
+        "logs/000007.stderr.log": "0a58254b0ea1c8a593907664d6701583b294ba5154695ef9690614a61542f450",
+        "logs/000007.stdout.log": "82a84bc4f918e82f811efe595cbd60e35a2de666a60b9fe872f0d5527df95e87",
+        "logs/000008.log": "ef8e3cf1ac4eb689d033a6ff0f65741597dd7e248ce926ac5221f101a6021b8c",
+        "logs/000008.stderr.log": "196dfe03334d4adf308c8ed5584f2ff9c07edbaef9ebcdaafd4b0435bec6da95",
+        "logs/000008.stdout.log": "85e266889b2e9d910c3f55b5680cecd69e0704e9ff98f6bb0347c09c8f3f4103",
+        "logs/000009.log": "861128d16f9a80d8c798c5b8db6fbb9b75aa7144a387888d9a39616baccb736d",
+        "logs/000009.stderr.log": "a694f283401ac36b0d779e9bbfcd0ffea6915b7255e7480a1c4f048dd52e1792",
+        "logs/000009.stdout.log": "be6e458a79daffedbc61d31e0c54da142fe9a5eebcc7d2ba3810f7bdaa5aed05",
+        "logs/000010.log": "37ac3966c5fe3a8a41701ed07b7d96b9fffe6beefafe614e9264928fbe8761ad",
+        "logs/000010.stderr.log": "58d50afacbad1b092db4c930aea9dc2fa5f49865ff61c9026fdb958c471cf11b",
+        "logs/000010.stdout.log": "4b33ef404e0275627ddb04702a463e12e40ba44de0453633d4a3269e92ec9cfb",
+        "logs/baseline.log": "1e63a56d259a161bdf405788790209c917577ab6fd7c3e23c0517f72ef87340c",
+        "logs/baseline.stderr.log": "95fd1c6fd2f346c020eabc05832f98965b08063ecc04cc7486ee398ab6de3f1b",
+        "logs/baseline.stdout.log": "f443b3f1147c8163e3c8c3b541a516fa7a055961800672611a35c89b32fa02da",
+        "logs/discovery.log": "fd0b36f6e2872952673458a0c650bcc568713f21b65a8dd40b1166ad6b84af6d",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "57fed97c82465246096ef3c9f586ca32e41e3fc266f85484a171f768fbc79252",
+        "missed.txt": "b200c76c5e95e859b7440ed9efacdc878ece1c9d69fecc29365e0df493c99dd7",
+        "mutants.json": "0cc071cf3a3bc52c887636b7bb7071b4cc4b4375406d55972d958c57f28b2710",
+        "outcomes.json": "16a07809902f3e9390ddeb4a9503918a17d3f962a0755a2989de8995f80cec95",
+        "run.json": "502e9001b2feadb6c23ad847696905c7c5ca9c3cef20ed6295675d794dd33d1a",
+        "summary.txt": "fa6c05945e96ec09d9ae09fef4ac00b99170dc0a506e350ed462c129b2e48595",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "outcomes": [
+        {
+          "mutation": {
+            "id": 1,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 36,
+            "column": 18,
+            "end_line": 36,
+            "end_column": 23,
+            "byte_start": 1002,
+            "byte_end": 1007,
+            "original": "false",
+            "replacement": "true",
+            "diff": "diff/000001.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 26.678322875
+        },
+        {
+          "mutation": {
+            "id": 2,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 52,
+            "column": 31,
+            "end_line": 52,
+            "end_column": 34,
+            "byte_start": 1526,
+            "byte_end": 1529,
+            "original": "\"-\"",
+            "replacement": "\"\"",
+            "diff": "diff/000002.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 16.710754167
+        },
+        {
+          "mutation": {
+            "id": 3,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 52,
+            "column": 42,
+            "end_line": 52,
+            "end_column": 44,
+            "byte_start": 1537,
+            "byte_end": 1539,
+            "original": "79",
+            "replacement": "0",
+            "diff": "diff/000003.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 18.6509245
+        },
+        {
+          "mutation": {
+            "id": 4,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 117,
+            "column": 48,
+            "end_line": 117,
+            "end_column": 53,
+            "byte_start": 3612,
+            "byte_end": 3617,
+            "original": "false",
+            "replacement": "true",
+            "diff": "diff/000004.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 14.396722792
+        },
+        {
+          "mutation": {
+            "id": 5,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 257,
+            "column": 31,
+            "end_line": 257,
+            "end_column": 32,
+            "byte_start": 9286,
+            "byte_end": 9287,
+            "original": "0",
+            "replacement": "1",
+            "diff": "diff/000005.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 17.166115167
+        },
+        {
+          "mutation": {
+            "id": 6,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 261,
+            "column": 21,
+            "end_line": 261,
+            "end_column": 22,
+            "byte_start": 9404,
+            "byte_end": 9405,
+            "original": "0",
+            "replacement": "1",
+            "diff": "diff/000006.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 12.934630209
+        },
+        {
+          "mutation": {
+            "id": 7,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 262,
+            "column": 24,
+            "end_line": 262,
+            "end_column": 28,
+            "byte_start": 9431,
+            "byte_end": 9435,
+            "original": "true",
+            "replacement": "false",
+            "diff": "diff/000007.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 12.21822475
+        },
+        {
+          "mutation": {
+            "id": 8,
+            "file": "crates/cli/src/process.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 263,
+            "column": 34,
+            "end_line": 263,
+            "end_column": 35,
+            "byte_start": 9470,
+            "byte_end": 9471,
+            "original": "0",
+            "replacement": "1",
+            "diff": "diff/000008.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 12.703030583
+        },
+        {
+          "mutation": {
+            "id": 9,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 300,
+            "column": 29,
+            "end_line": 300,
+            "end_column": 74,
+            "byte_start": 10624,
+            "byte_end": 10669,
+            "original": "\"read_to_end cannot be called more than once\"",
+            "replacement": "\"\"",
+            "diff": "diff/000009.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 13.809449375
+        },
+        {
+          "mutation": {
+            "id": 10,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 301,
+            "column": 38,
+            "end_line": 301,
+            "end_column": 76,
+            "byte_start": 10709,
+            "byte_end": 10747,
+            "original": "\"stderr reading thread does not panic\"",
+            "replacement": "\"\"",
+            "diff": "diff/000010.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 13.843990833
+        }
+      ]
+    },
+    "run-1794263724-n1bi0Y": {
+      "status": "completed",
+      "seconds": 100.424923584,
+      "baseline_seconds": 21.920628375,
+      "baseline_harness_totals": [
+        1209,
+        0,
+        1
+      ],
+      "baseline_targets": 14,
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 3,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 25.0,
+        "unavailable_reason": null
+      },
+      "scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "globset",
+              "directory": "crates/globset",
+              "manifest_fingerprint": "sha256:539f060125c30dab3f60c61c26e89639f70c0fac23a7866f59877e4fe4f310bc",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "globset",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep",
+              "directory": "crates/grep",
+              "manifest_fingerprint": "sha256:101ccfacc4878367acd1424ec6a3bae4017a37f4d28aad22c8b01df481e72fba",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-cli",
+              "directory": "crates/cli",
+              "manifest_fingerprint": "sha256:d3b5d786220e1c0a2601aadfdf695798a138ea48548309de3b13f4eddb7da051",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_cli",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-matcher",
+              "directory": "crates/matcher",
+              "manifest_fingerprint": "sha256:08a6446ee137b94df4637735a00668c29ddb1e1f3c6c98ab5bc8e68297fdbd26",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_matcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-pcre2",
+              "directory": "crates/pcre2",
+              "manifest_fingerprint": "sha256:a8fae233550bd4a23d180852bc54a37ec4ca4635ec26fa0e4829ae5097b124ac",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_pcre2",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-printer",
+              "directory": "crates/printer",
+              "manifest_fingerprint": "sha256:6837179460c665d4549de2b536051839f3fc47287067bf9b4790bc873108e497",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_printer",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-regex",
+              "directory": "crates/regex",
+              "manifest_fingerprint": "sha256:3905ca4c3ef231e4448114b74810d39a88f7d087460198d5cb4b50af5ce5c921",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_regex",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-searcher",
+              "directory": "crates/searcher",
+              "manifest_fingerprint": "sha256:bfdee262fc02864d20ecb23f9349e4ad0b01d600a4bdebe85383414a74ec9d6c",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_searcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ignore",
+              "directory": "crates/ignore",
+              "manifest_fingerprint": "sha256:2570821024a2532e1505ce3aff198e052926c82de1bddaa9ee282d8c9964a51a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ignore",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ripgrep",
+              "directory": "",
+              "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "rg",
+                  "source": "crates/core/main.rs",
+                  "edition": "2024"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "grep-cli"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+        "lockfile_fingerprint": "sha256:bf918d72d563dd706beacb4e258106102c14fbc2f85272f1f749a5044e3c3f43",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "crates/cli/src/decompress.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/escape.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/hostname.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/lib.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/process.rs: branch forcing excludes if-let/let-chain bindings",
+          "crates/cli/src/process.rs: macro tokens/expansions (including include!)"
+        ],
+        "build_scripts": [
+          {
+            "package": "ripgrep",
+            "path": "build.rs",
+            "fingerprint": "sha256:07d72d8929ecd1cc2277e7d1f16092521c9160c92cca9544a682b275bd53d955",
+            "recipe": "owned-cargo-build-inputs-and-outputs-v1"
+          }
+        ],
+        "build_inputs": "sha256:e8be5e39003e096d4a2c94bcaa2f18355d3d8c923f02246cccf2d18c06614b8b",
+        "build_outputs": {
+          "packages": {
+            "ripgrep": "sha256:2e487f86f3973b7585119719e41ff8d69fcb3433304ef1735b168778741148ce"
+          }
+        },
+        "inactive_target_flags": {
+          "i686-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-unknown-linux-musl": [
+            "-C",
+            "target-feature=+crt-static",
+            "-C",
+            "link-self-contained=yes"
+          ]
+        }
+      },
+      "config": {
+        "module_root": "$ROOT/original",
+        "config_file": "$ROOT/fresh.toml",
+        "lang": "rust",
+        "rust_build_cache": "fresh",
+        "rust_packages": [
+          "grep-cli"
+        ],
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [
+          "crates/cli/src/human.rs",
+          "crates/cli/src/process.rs"
+        ],
+        "exclude": [],
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "timeout": 90,
+        "max_log_bytes": null,
+        "max_capture_bytes": null,
+        "baseline_timeout": 180,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "$ROOT/reports",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "$ROOT/reports/run-1794263122-FeUHAN",
+          "selection": "all",
+          "source_ids": [
+            1,
+            8,
+            10,
+            13
+          ],
+          "operators": [
+            "boolean_flip",
+            "number_replace",
+            "string_replace"
+          ]
+        },
+        "ui": "plain"
+      },
+      "rerun": {
+        "source_run": "$ROOT/reports/run-1794263122-FeUHAN",
+        "source_checkpoint": 45,
+        "source_status": "completed",
+        "selection": "all",
+        "source_ids": [
+          1,
+          8,
+          10,
+          13
+        ],
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 1
+          },
+          {
+            "id": 2,
+            "source_id": 8
+          },
+          {
+            "id": 3,
+            "source_id": 10
+          },
+          {
+            "id": 4,
+            "source_id": 13
+          }
+        ]
+      },
+      "report_hashes": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "ff03a3ef82142de035ab03b4817de5c49dfca5b48466b22e3d2904b611ad771f",
+        "diff/000002.diff": "14f805edac71282fc30b570eee717755fc17eb9bda1ad88536b847beba5f98a6",
+        "diff/000003.diff": "606fe03cc7956958463b9d485ff03c8fcaccd78beec516471760ee46b198e9fb",
+        "diff/000004.diff": "86f3ca6e492dfdc5c75f0ceabd3a63c457a24572366e69671b8e8e1d59aa676e",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "c6d6d0de210c836cde4fa045431042832317c3a4f6c906312710fe72b37ed921",
+        "logs/000001.log": "324dcbafc8297b04a08aa9c1edaa8835597c551c45c5f4910d863f984c7590a5",
+        "logs/000001.stderr.log": "bd0e81ca5c9a89abcb6dd887dca317668be7731f07249b43e6457d33dfea228d",
+        "logs/000001.stdout.log": "1be81a9a10cff9922880046316b9aa058fefa94f93d9d386d8fbec0a5e1ac0ce",
+        "logs/000002.log": "7e15ed0050fd41ff0a4783d65800f7fb92cc99a479d1e8188ef5d3e9e346f9aa",
+        "logs/000002.stderr.log": "b9d271f4ee8429704688bf38401aaed3baa388dfeefca1ef626d02b801b802cf",
+        "logs/000002.stdout.log": "eba1661f1b9c64a54120ba33c0246e13e2ae3d9fc36fbe51eeb18874ffb311d2",
+        "logs/000003.log": "1c36c7600489d5cbe23b8817f2100a0b0292ff33b816b497fe863c4a5e6b10f7",
+        "logs/000003.stderr.log": "ae824386133868b54fe8ffbc95c5fd859d2aa19f5bbf61260c38d88db5244cf4",
+        "logs/000003.stdout.log": "c02a057de625b55f5b39c44a841815cc364fb1b0e1d91299c52b21ed82fc7caf",
+        "logs/000004.log": "c93a2eafd7f95e24cc38ec0a578b18b3aaf65c5a234038e9f51eefff9bc949a7",
+        "logs/000004.stderr.log": "f36aea1d4489dfe69674564d05f6721fe0dd144012820b4a4541f1d1d754ac00",
+        "logs/000004.stdout.log": "fb75e1f70968ee0be4a7f233894b58ca519cb1bd1f057b6b05a278881afa5ed3",
+        "logs/baseline.log": "32896469aa5a38cec05325d44fe4c2dc11577dc122305a5170af23e5246376da",
+        "logs/baseline.stderr.log": "7001bc40e53cca5a23e4811a3da528e18f56025f9be55dfefb2a9c6e88c3a05b",
+        "logs/baseline.stdout.log": "cefdc2d1a57c127030c16adcd865418b61a71aa9e48cea103f771fddefd960d6",
+        "logs/discovery.log": "9052152224281ef1a17596a33ac6667aa77d653f9fbb7a59ef083477d6d26d86",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "534c935f6af91c35ccd0c6804b3acde993276e2adc94c3698c5ce97fe7749d75",
+        "missed.txt": "68a7f73511469dbc33c4280cfca6bfd5f704c261eabcb4ef3568fa276b989b3a",
+        "mutants.json": "896611857e2becbcff455e47d2e621c0a25c379ccba5ba4f5ef6cb98ed1ffb79",
+        "outcomes.json": "f451119f49baef60a875d3d87c6649930b8904ac4a16d061e5f99cca96dfb09e",
+        "run.json": "ec3e13d109f837de3ec6805caab0b48263f23ca9e0d27cf826bb76900be70455",
+        "summary.txt": "64beff614f723b03530993acf9af6150d68a774284708ff60471c62c8737c495",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "outcomes": [
+        {
+          "mutation": {
+            "id": 1,
+            "file": "crates/cli/src/human.rs",
+            "operator": "number_replace",
+            "source_fingerprint": "sha256:b85f1391a01ccdfed20951cdf07bd641bf190256c48caccfe83f8ec14e2b1636",
+            "line": 94,
+            "column": 34,
+            "end_line": 94,
+            "end_column": 35,
+            "byte_start": 2984,
+            "byte_end": 2985,
+            "original": "1",
+            "replacement": "0",
+            "diff": "diff/000001.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 21.239922792
+        },
+        {
+          "mutation": {
+            "id": 2,
+            "file": "crates/cli/src/process.rs",
+            "operator": "string_replace",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 52,
+            "column": 31,
+            "end_line": 52,
+            "end_column": 34,
+            "byte_start": 1526,
+            "byte_end": 1529,
+            "original": "\"-\"",
+            "replacement": "\"\"",
+            "diff": "diff/000002.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 18.393890042
+        },
+        {
+          "mutation": {
+            "id": 3,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 117,
+            "column": 48,
+            "end_line": 117,
+            "end_column": 53,
+            "byte_start": 3612,
+            "byte_end": 3617,
+            "original": "false",
+            "replacement": "true",
+            "diff": "diff/000003.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 17.553676959
+        },
+        {
+          "mutation": {
+            "id": 4,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 262,
+            "column": 24,
+            "end_line": 262,
+            "end_column": 28,
+            "byte_start": 9431,
+            "byte_end": 9435,
+            "original": "true",
+            "replacement": "false",
+            "diff": "diff/000004.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "missed",
+          "seconds": 19.165869292
+        }
+      ]
+    },
+    "run-1794263951-3VzVQg": {
+      "status": "completed",
+      "seconds": 42.633090125,
+      "baseline_seconds": 21.450935375,
+      "baseline_harness_totals": [
+        1213,
+        0,
+        1
+      ],
+      "baseline_targets": 15,
+      "score": {
+        "scope": "rerun",
+        "killed": 1,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "scope": {
+        "package": "workspace",
+        "workspace": {
+          "members": [
+            {
+              "name": "globset",
+              "directory": "crates/globset",
+              "manifest_fingerprint": "sha256:539f060125c30dab3f60c61c26e89639f70c0fac23a7866f59877e4fe4f310bc",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "globset",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep",
+              "directory": "crates/grep",
+              "manifest_fingerprint": "sha256:101ccfacc4878367acd1424ec6a3bae4017a37f4d28aad22c8b01df481e72fba",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-cli",
+              "directory": "crates/cli",
+              "manifest_fingerprint": "sha256:d3b5d786220e1c0a2601aadfdf695798a138ea48548309de3b13f4eddb7da051",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_cli",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-matcher",
+              "directory": "crates/matcher",
+              "manifest_fingerprint": "sha256:08a6446ee137b94df4637735a00668c29ddb1e1f3c6c98ab5bc8e68297fdbd26",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_matcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-pcre2",
+              "directory": "crates/pcre2",
+              "manifest_fingerprint": "sha256:a8fae233550bd4a23d180852bc54a37ec4ca4635ec26fa0e4829ae5097b124ac",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_pcre2",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-printer",
+              "directory": "crates/printer",
+              "manifest_fingerprint": "sha256:6837179460c665d4549de2b536051839f3fc47287067bf9b4790bc873108e497",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_printer",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-regex",
+              "directory": "crates/regex",
+              "manifest_fingerprint": "sha256:3905ca4c3ef231e4448114b74810d39a88f7d087460198d5cb4b50af5ce5c921",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_regex",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "grep-searcher",
+              "directory": "crates/searcher",
+              "manifest_fingerprint": "sha256:bfdee262fc02864d20ecb23f9349e4ad0b01d600a4bdebe85383414a74ec9d6c",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "grep_searcher",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ignore",
+              "directory": "crates/ignore",
+              "manifest_fingerprint": "sha256:2570821024a2532e1505ce3aff198e052926c82de1bddaa9ee282d8c9964a51a",
+              "targets": [
+                {
+                  "kind": "lib",
+                  "name": "ignore",
+                  "source": "src/lib.rs",
+                  "edition": "2024"
+                }
+              ]
+            },
+            {
+              "name": "ripgrep",
+              "directory": "",
+              "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+              "targets": [
+                {
+                  "kind": "bin",
+                  "name": "rg",
+                  "source": "crates/core/main.rs",
+                  "edition": "2024"
+                }
+              ]
+            }
+          ],
+          "selected": [
+            "grep-cli"
+          ]
+        },
+        "targets": [],
+        "manifest_fingerprint": "sha256:b47eda568db69ec2b299c24a588a4ee5ecf3fb6ebf7ba9b4623ff47f83ba07f7",
+        "lockfile_fingerprint": "sha256:bf918d72d563dd706beacb4e258106102c14fbc2f85272f1f749a5044e3c3f43",
+        "default_features": true,
+        "test_scope": "all workspace library/binary unit and integration tests; doctests and ignored tests excluded",
+        "profile": "test",
+        "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: aarch64-apple-darwin\nrelease: 1.99.1\nLLVM version: 23.1.1",
+        "cargo": "cargo 1.99.1 (5f94df478 2026-08-27)",
+        "discovery_exclusions": [
+          "crates/cli/src/decompress.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/escape.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/hostname.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/human.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/lib.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: conditional, test-only, or remapped source",
+          "crates/cli/src/pattern.rs: macro tokens/expansions (including include!)",
+          "crates/cli/src/process.rs: branch forcing excludes if-let/let-chain bindings",
+          "crates/cli/src/process.rs: macro tokens/expansions (including include!)"
+        ],
+        "build_scripts": [
+          {
+            "package": "ripgrep",
+            "path": "build.rs",
+            "fingerprint": "sha256:07d72d8929ecd1cc2277e7d1f16092521c9160c92cca9544a682b275bd53d955",
+            "recipe": "owned-cargo-build-inputs-and-outputs-v1"
+          }
+        ],
+        "build_inputs": "sha256:e8be5e39003e096d4a2c94bcaa2f18355d3d8c923f02246cccf2d18c06614b8b",
+        "build_outputs": {
+          "packages": {
+            "ripgrep": "sha256:2e487f86f3973b7585119719e41ff8d69fcb3433304ef1735b168778741148ce"
+          }
+        },
+        "inactive_target_flags": {
+          "i686-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-pc-windows-msvc": [
+            "-C",
+            "target-feature=+crt-static"
+          ],
+          "x86_64-unknown-linux-musl": [
+            "-C",
+            "target-feature=+crt-static",
+            "-C",
+            "link-self-contained=yes"
+          ]
+        }
+      },
+      "config": {
+        "module_root": "$ROOT/stronger",
+        "config_file": "$ROOT/stronger.toml",
+        "lang": "rust",
+        "rust_build_cache": "worker",
+        "rust_packages": [
+          "grep-cli"
+        ],
+        "jobs": 1,
+        "test_scope": "full",
+        "include": [
+          "crates/cli/src/human.rs",
+          "crates/cli/src/process.rs"
+        ],
+        "exclude": [],
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "timeout": 90,
+        "max_log_bytes": null,
+        "max_capture_bytes": null,
+        "baseline_timeout": 180,
+        "fail_on_missed": false,
+        "min_score": null,
+        "output_dir": "$ROOT/reports",
+        "verbose": false,
+        "list": false,
+        "rerun": {
+          "source_run": "$ROOT/reports/run-1794263122-FeUHAN",
+          "selection": "all",
+          "source_ids": [
+            10
+          ],
+          "operators": [
+            "boolean_flip",
+            "number_replace",
+            "string_replace"
+          ]
+        },
+        "ui": "plain"
+      },
+      "rerun": {
+        "source_run": "$ROOT/reports/run-1794263122-FeUHAN",
+        "source_checkpoint": 45,
+        "source_status": "completed",
+        "selection": "all",
+        "source_ids": [
+          10
+        ],
+        "operators": [
+          "boolean_flip",
+          "number_replace",
+          "string_replace"
+        ],
+        "mutations": [
+          {
+            "id": 1,
+            "source_id": 10
+          }
+        ]
+      },
+      "report_hashes": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "606fe03cc7956958463b9d485ff03c8fcaccd78beec516471760ee46b198e9fb",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "3117ded450bf8da0cd67c6a7a5786c7a7fc065e7463b47205cf0db1120cfed98",
+        "logs/000001.log": "579474c6b75c39ed1f27b676a913aa9a7be4d3a7658b91e7b970a579dda88a35",
+        "logs/000001.stderr.log": "c064e7544de8c67d4b46668e30424694323f37fa08c8cc141b9fb21e028681ae",
+        "logs/000001.stdout.log": "0ce2a2e935f49b575460e6dd748ea240bbc7d59e38a63a7ea6d293556765dcf7",
+        "logs/baseline.log": "78d41641034a9b8dbcc3c079a5c7ea79c01782549ce3d557f00e128448b1efca",
+        "logs/baseline.stderr.log": "d2b218a5e6cd617a7d56db1dab03eca35899bbc7259a8c735c2742c6149bc2f1",
+        "logs/baseline.stdout.log": "147dc19078e669adf5b4cb5a2cbb171ae758c5387a30ec9c8360094c20f85b72",
+        "logs/discovery.log": "cf39c452e4bc19f52f9bffc74d53e020a367d3a7244030bce027d55574d4ec50",
+        "logs/discovery.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "logs/discovery.stdout.log": "a94ecd543176a0203230e475ccd405d400b9e8fb2766384f4e8f9370664de65c",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "f50c326d780829186f67647189c5cb9a5aba17a59c6c06e41e322ce5daada4e7",
+        "outcomes.json": "5a648eabb485686981e4ac250c5858b93e25d85db641c07fb921242cf5ca0a81",
+        "run.json": "58ca7e61edf3d447e454a1f9b7e6801bc95a16b277f17cea738dd7bfd0648e16",
+        "summary.txt": "9cc2649ae6b75088d6b251134bec065dbeb45b6dc289542c18a114146ed07ad9",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "outcomes": [
+        {
+          "mutation": {
+            "id": 1,
+            "file": "crates/cli/src/process.rs",
+            "operator": "boolean_flip",
+            "source_fingerprint": "sha256:1452fb92570a07c3c5135dc9efc293a30edd3322580cc93d0b342107c2593e3f",
+            "line": 117,
+            "column": 48,
+            "end_line": 117,
+            "end_column": 53,
+            "byte_start": 3612,
+            "byte_end": 3617,
+            "original": "false",
+            "replacement": "true",
+            "diff": "diff/000001.diff",
+            "test_packages": [
+              "--tests"
+            ]
+          },
+          "outcome": "killed",
+          "seconds": 20.061873417
+        }
+      ]
+    }
+  }
+}
