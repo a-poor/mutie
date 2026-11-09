@@ -41,7 +41,7 @@ requires adapter evidence, including exact-runner observer checks where used.
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
 | Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
-| Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; scoped expression, branch and loop mutations | Broader project/platform evidence; build scripts/proc macros and external paths |
+| Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; scoped expression, branch, loop and call mutations | Broader project/platform evidence; build scripts/proc macros and external paths |
 | TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; expression, branch, loop and call mutations; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial execution of expression, branch, loop and call mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial execution of expression, branch, loop and call mutations; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
@@ -108,6 +108,12 @@ matrix remain release-qualification gaps.
   [Inversion/negation acceptance](benchmarks/rust-inversions.md) records native
   controls, type-change build failures and unchanged UCD Parse formatting findings
   killed in a separate copy. Rust's expression rows are now covered within scope.
+- Standalone-call removal is validated for semicolon-terminated ordinary Rust
+  calls. [Call-removal acceptance](benchmarks/rust-calls.md) records native
+  receiver/argument/ownership/drop controls, build-failure separation, matching
+  fresh/cached fixture runs and two unchanged UCD Parse collection findings killed
+  by separate-copy tests. Calls with macros, suspension, error propagation or
+  explicit control transfers remain excluded; this is not arbitrary statement removal.
 - Workflow: shared status/report/browser, focused reruns, dismissals, scores and
   policies are validated. Fresh artifacts are the default; dependency reuse is
   opt-in and worker-local, with local package targets rebuilt every time.

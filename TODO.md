@@ -173,7 +173,12 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Seventh slice completed: scoped JS/TS standalone-call removal across Vitest,
    Node and Bun, skipped receiver/argument controls and separate-copy stronger
    tests killing two unchanged OpenClaw message-chunk-loss survivors.
-   See [acceptance](benchmarks/javascript-calls.md). Rust/Python call removal remains.
+   See [acceptance](benchmarks/javascript-calls.md).
+   Eighth slice completed: Rust standalone-call removal with exact statement
+   recipes, native receiver/argument/ownership/drop controls, fresh/cached agreement
+   and build-failure separation. Separate-copy tests kill two unchanged UCD Parse
+   row/map collection survivors. See [acceptance](benchmarks/rust-calls.md).
+   Python call removal and evaluation of broader statement/block removal remain.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

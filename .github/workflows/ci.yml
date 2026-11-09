@@ -130,6 +130,11 @@ jobs:
       - name: Rust workspace workflow
         if: matrix.adapter == 'Rust'
         run: cargo test --locked --test rust_workflow workspace::full_workspace_tests_catch_selected_member_changes_and_preserve_identity -- --ignored --exact
+      - name: Rust call-removal semantics and scored reruns
+        if: matrix.adapter == 'Rust'
+        run: |
+          cargo test --locked --bin mutie rust::discovery::call_tests::native_ -- --ignored --test-threads=1
+          cargo test --locked --test rust_workflow calls:: -- --ignored --test-threads=1
       - name: Node JS/TS reports, reruns, review and lifecycle failures
         if: matrix.adapter == 'Node'
         run: cargo test --locked --test node_workflow -- --ignored --test-threads=1

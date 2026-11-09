@@ -26,6 +26,8 @@ mod boundaries;
 mod branches;
 #[path = "support/rust_cache.rs"]
 mod cache;
+#[path = "support/rust_calls.rs"]
+mod calls;
 #[path = "support/rust_compilation.rs"]
 mod compilation;
 #[path = "support/rust_dismissals.rs"]

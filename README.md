@@ -98,7 +98,7 @@ the [support guide](SUPPORT.md) has the details and [TODO.md](TODO.md) tracks wh
 | Flip Boolean literals | ✅ | ✅ | ✅ | ✅ |
 | Remove negation: `!x → x`, `not x → x` | ✅ | ✅ | ✅ | ✅ |
 | Force an `if` condition true or false | ✅ | ✅ | ✅ | ✅ |
-| Remove a standalone function call | ✅ | ⬜ | ⬜ | ✅ |
+| Remove a standalone function call | ✅ | ✅ | ⬜ | ✅ |
 | Skip a conditional loop | ✅ | ✅ | ✅ | ✅ |
 | Replace numeric or string literals | ⬜ | ⬜ | ⬜ | ⬜ |
 | Remove arbitrary statements or blocks | ⬜ | ⬜ | ⬜ | ⬜ |

@@ -2367,3 +2367,19 @@ spans and fresh source identity; Bun recipe changes require fresh reports.
 Unchanged OpenClaw has six selected survivors; separate-copy chunk-content tests
 kill IDs 1/2, with four other survivors open. Preserve original inputs/reports and
 filtered scores; focused evidence is not a full stronger-project score.
+
+
+`benchmarks/rust-calls.md` records Rust `call_remove`. Replace a complete
+semicolon-terminated ordinary call statement with `{}` to avoid introducing
+redundant-semicolon warnings. Skip receiver/argument/invocation effects entirely;
+retain native ownership, drop timing and compiler checks. Losing a type constraint
+or required initialization remains a build failure. Free, associated, method,
+function-pointer and closure calls are eligible; no type inference is attempted.
+Exclude value-used calls, semicolon-free tails, macros and call subtrees with
+attributes, await, try (`?`), yield, return, break or continue. Existing
+cfg/test/generated/constant/type exclusions remain. Saved readers reparse the
+complete original statement and require the exact no-op recipe plus fresh source
+identity. Shared execution/classification/report versions are unchanged.
+The UCD Parse full-workspace run finds two collection-population survivors;
+separate-copy tests kill both. Preserve original inputs, reports and filtered
+scores. Broader statement removal remains separate work.

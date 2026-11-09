@@ -374,6 +374,16 @@ impl LoadedReport {
                     "saved Rust loop mutation is outside supported source scope"
                 );
             }
+            if run.language() == crate::cli::Lang::Rust && mutation.operator == Operator::CallRemove
+            {
+                ensure!(
+                    crate::rust::discovery::valid_call_replacement(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("rs"),
+                    "saved Rust call mutation is outside supported source scope"
+                );
+            }
             if run.language() == crate::cli::Lang::Python {
                 ensure!(
                     crate::python::project::mutation_operator(

@@ -742,3 +742,15 @@ spans and fresh source identity; Bun recipe changes require fresh reports.
 Unchanged OpenClaw has six selected survivors; separate-copy chunk-content tests
 kill IDs 1/2, with four other survivors open. Preserve original inputs/reports and
 filtered scores; focused evidence is not a full stronger-project score.
+
+
+`benchmarks/rust-calls.md` records scoped Rust standalone-call removal. Preserve
+whole semicolon-terminated statement spans and the exact `{}` replacement; no-op
+blocks avoid redundant-semicolon warnings without retaining receiver/argument
+side effects. Native ownership/drop timing and type checks remain authoritative.
+Calls used as values, semicolon-free tails and subtrees with macros, attributes,
+await/try/yield or explicit return/break/continue are excluded. Saved readers must
+reparse the recipe and reruns must match source identity. Separate-copy tests kill
+two unchanged UCD Parse collection survivors; preserve original 60% filtered score
+and input/report hashes. Native semantic and scored fixture tests remain opt-in
+and are included in the Rust Linux CI job.

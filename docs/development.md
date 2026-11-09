@@ -10,7 +10,9 @@ and Go 1.27.2. Separate jobs run:
 
 - Rustfmt, Clippy with warnings denied, the normal test suite and crate packaging.
 - Real Go mutation workflows, including affected-package selection and stronger-test reruns.
-- Selected real Rust package and workspace workflows, including reports, source preservation and reruns.
+- Selected real Rust package and workspace workflows, including reports, source
+  preservation and reruns. The Rust job also runs native call-removal semantics
+  and its serial/cached scored workflow with a stronger-test rerun.
 - Node 24.22.0 JavaScript and native TypeScript workflows, review/policies,
   lifecycle failures, default discovery, timeout/cancellation and capture limits.
 - Bun 1.3.11 JavaScript and TypeScript workflows, review/policies, native outcomes,

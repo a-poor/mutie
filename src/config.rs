@@ -469,8 +469,9 @@ impl RunConfig {
                         | Operator::BranchForceTrue
                         | Operator::BranchForceFalse
                         | Operator::LoopSkip
+                        | Operator::CallRemove
                 )),
-                "Rust currently supports only boolean_flip, comparison_invert, comparison_boundary, logical_swap, negation_remove, arithmetic_replace, branch_force_true, branch_force_false, and loop_skip"
+                "unsupported Rust operator"
             );
         }
         for (name, timeout) in [
@@ -730,7 +731,7 @@ mod tests {
             root.path().join("mutie.toml"),
             "[rust]\noperators=['call_remove']\n",
         )?;
-        assert!(resolve(root.path()).is_err());
+        assert_eq!(resolve(root.path())?.operators, [Operator::CallRemove]);
         fs::write(
             root.path().join("mutie.toml"),
             "[rust]\ntest_scope='affected'\n",

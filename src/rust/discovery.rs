@@ -235,6 +235,13 @@ impl Walker<'_> {
                     self.push(file, node, Operator::NegationRemove, replacement);
                 }
             }
+            "expression_statement" if in_body && self.scope.matches(&file.path) => {
+                if removable_call(node) {
+                    // An empty block is a no-op statement without introducing
+                    // redundant-semicolon warnings or retaining argument effects.
+                    self.push(file, node, Operator::CallRemove, "{}");
+                }
+            }
             "if_expression" if in_body && self.scope.matches(&file.path) => {
                 if let Some(condition) = node.child_by_field_name("condition") {
                     if matches!(
@@ -391,6 +398,75 @@ fn unwrapped_condition(mut node: Node<'_>) -> Node<'_> {
         }
     }
     node
+}
+
+fn removable_call(statement: Node<'_>) -> bool {
+    if statement.kind() != "expression_statement"
+        || statement
+            .child(statement.child_count().saturating_sub(1))
+            .is_none_or(|n| n.kind() != ";")
+    {
+        return false;
+    }
+    let Some(expression) = statement
+        .named_children(&mut statement.walk())
+        .find(|n| !n.is_extra())
+    else {
+        return false;
+    };
+    if unwrapped_condition(expression).kind() != "call_expression" {
+        return false;
+    }
+    // No expansion/type inference: require the whole call subtree to be visible
+    // and free of suspension/error-propagation or explicit control transfers.
+    let mut pending = vec![expression];
+    while let Some(node) = pending.pop() {
+        if matches!(
+            node.kind(),
+            "await_expression"
+                | "try_expression"
+                | "yield_expression"
+                | "return_expression"
+                | "break_expression"
+                | "continue_expression"
+                | "macro_invocation"
+                | "attribute_item"
+                | "inner_attribute_item"
+        ) {
+            return false;
+        }
+        pending.extend(node.named_children(&mut node.walk()));
+    }
+    true
+}
+
+pub fn valid_call_replacement(original: &str, replacement: &str) -> bool {
+    if replacement != "{}" {
+        return false;
+    }
+    let prefix = "fn __mutie() { ";
+    let source = format!("{prefix}{original} }}");
+    let mut parser = Parser::new();
+    if parser
+        .set_language(&tree_sitter_rust::LANGUAGE.into())
+        .is_err()
+    {
+        return false;
+    }
+    let Some(tree) = parser.parse(&source, None) else {
+        return false;
+    };
+    if tree.root_node().has_error() {
+        return false;
+    }
+    tree.root_node()
+        .named_child(0)
+        .and_then(|f| f.child_by_field_name("body"))
+        .and_then(|b| b.named_child(0))
+        .is_some_and(|statement| {
+            statement.byte_range() == (prefix.len()..prefix.len() + original.len())
+                && removable_call(statement)
+        })
 }
 
 fn branch_replacement(operator: Operator, condition: Node<'_>, source: &str) -> Option<String> {
@@ -1009,3 +1085,7 @@ mod branch_tests;
 #[cfg(test)]
 #[path = "loop_tests.rs"]
 mod loop_tests;
+
+#[cfg(test)]
+#[path = "call_tests.rs"]
+mod call_tests;
