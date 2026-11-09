@@ -17,6 +17,9 @@ use crate::{
 #[path = "assignment.rs"]
 mod assignment;
 pub(crate) use assignment::valid_replacement as valid_assignment_replacement;
+#[path = "number.rs"]
+mod number;
+pub(crate) use number::valid_replacement as valid_number_replacement;
 
 #[derive(Debug)]
 pub struct Discovery {
@@ -235,8 +238,16 @@ impl Walker<'_> {
                 );
             }
             "unary_expression" if in_body && self.scope.matches(&file.path) => {
+                if let Some(replacement) = number::replacement(node, &file.source) {
+                    self.push(file, node, Operator::NumberReplace, replacement);
+                }
                 if let Some(replacement) = negation_replacement(node, &file.source) {
                     self.push(file, node, Operator::NegationRemove, replacement);
+                }
+            }
+            "integer_literal" | "float_literal" if in_body && self.scope.matches(&file.path) => {
+                if let Some(replacement) = number::replacement(node, &file.source) {
+                    self.push(file, node, Operator::NumberReplace, replacement);
                 }
             }
             "expression_statement" if in_body && self.scope.matches(&file.path) => {
@@ -750,12 +761,29 @@ mod tests {
     }
 
     #[test]
-    fn fixture_discovers_only_the_three_production_literals() -> Result<()> {
+    fn fixture_discovers_production_boolean_and_numeric_literals() -> Result<()> {
         let root = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("tests/fixtures/rust")
             .canonicalize()?;
-        let found = scan(&root, &[])?;
-        assert_eq!(found.mutations.len(), 3, "{:?}", found.mutations);
+        let mut found = scan(&root, &[])?;
+        assert_eq!(found.mutations.len(), 5, "{:?}", found.mutations);
+        let numeric = found
+            .mutations
+            .iter()
+            .filter(|m| m.operator == Operator::NumberReplace)
+            .collect::<Vec<_>>();
+        assert_eq!(
+            numeric.iter().map(|m| m.original()).collect::<Vec<_>>(),
+            ["1", "2"]
+        );
+        assert!(
+            numeric
+                .iter()
+                .all(|m| m.file.path == Path::new("src/main.rs") && m.replacement == "0")
+        );
+        found
+            .mutations
+            .retain(|m| m.operator == Operator::BooleanFlip);
         assert!(found.mutations.iter().all(
             |m| m.file.path == Path::new("src/flags.rs") && m.operator == Operator::BooleanFlip
         ));
@@ -779,7 +807,7 @@ mod tests {
                 .iter()
                 .any(|reason| reason.contains("macro tokens"))
         );
-        assert_eq!(scan(&root, &["src/main.rs".into()])?.mutations.len(), 0);
+        assert_eq!(scan(&root, &["src/main.rs".into()])?.mutations.len(), 2);
         assert_eq!(scan(&root, &["src/flags.rs".into()])?.mutations.len(), 3);
         Ok(())
     }
@@ -1100,3 +1128,7 @@ mod call_tests;
 #[cfg(test)]
 #[path = "assignment_tests.rs"]
 mod assignment_tests;
+
+#[cfg(test)]
+#[path = "number_tests.rs"]
+mod number_tests;

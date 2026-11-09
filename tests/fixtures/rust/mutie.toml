@@ -1,0 +1,3 @@
+# Keep this original execution fixture focused on its three Boolean sites.
+[rust]
+operators = ["boolean_flip"]

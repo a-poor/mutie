@@ -860,4 +860,18 @@ Unchanged betting-math-kit has 42 selected sites: 20 kills, 20 survivors, two
 errors across three reports. Three separate-copy default-contract tests kill
 three survivors; 17 remain open. Preserve 20 original inputs, 287 report files,
 failed scores and report-local ID matching. Combined accounting is not a full
-score. Go/Rust numeric literals and strings remain separate roadmap slices.
+score. Go numeric literals and strings remain separate roadmap slices.
+
+
+`benchmarks/rust-numbers.md` records Rust `number_replace` for runtime integers/
+floats. Preserve literal category, explicit suffixes, direct negative ownership
+and signed-zero handling. Skip unsuffixed floats whose f32/f64 zero decisions
+differ. Tests/cfg/generated/macros, constants/types/patterns, array lengths and
+tuple selectors remain excluded. Saved recipes and fresh source discovery must
+agree; compiler failures remain non-kills. 41 native pairs and fresh/cached scored
+fixtures cover boundaries, review and stronger reruns. Unchanged UCD Parse has
+39 candidates (26 kills, 12 survivors, one timeout); four separate-copy tests kill
+six selected survivors. The EOF mutation still hangs in existing library tests
+before the new integration assertion; six other survivors remain open. Preserve
+108 original paths, 172 report files and the original 68.42% selection score.
+Go numeric literals and string literals remain separate roadmap slices.

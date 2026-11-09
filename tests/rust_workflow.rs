@@ -42,6 +42,8 @@ mod library;
 mod logical;
 #[path = "support/rust_loops.rs"]
 mod loops;
+#[path = "support/rust_numbers.rs"]
+mod numbers;
 #[path = "support/rust_reruns.rs"]
 mod reruns;
 #[path = "support/rust_workspace.rs"]

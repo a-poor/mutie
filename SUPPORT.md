@@ -787,7 +787,7 @@ one kill and four survivors. Three separate-copy tests kill all four survivors,
 covering the idle window, exact reset boundary and initial token count. All 63
 tracked inputs and 33 original report files remain unchanged; the original
 20% filtered score remains distinct from the focused stronger-test result.
-Go/Rust numeric literals and string literals remain planned. Python acceptance
+Go numeric literals and string literals remain planned. Python acceptance
 is recorded below.
 
 ### Python numeric literals
@@ -808,3 +808,23 @@ runs. This is combined inventory accounting, not a full score. A separate
 All 20 original input files and 287 original report files are preserved, including
 failed/unscored reports. This revisits the existing project without broadening
 Python runtime, dependency or layout support.
+
+### Rust numeric literals
+
+[Numeric acceptance](benchmarks/rust-numbers.md) adds bounded `number_replace`
+for runtime integers/floats, preserving suffixes and literal category. Direct
+negative literals form one site; signed zero becomes positive one. Unsuffixed
+floats whose f32/f64 zero decisions differ are excluded. Existing test/cfg,
+macro, constant/type, pattern and array-length exclusions remain; tuple selectors
+are not values. Compiler failures stay outside kills. Exact saved recipes and
+fresh context discovery protect focused reruns.
+
+41 paired native cases and scored fresh/cached fixtures cover values/types,
+review, stronger tests, compiler errors, timeout and capture boundaries. The
+unchanged UCD workspace's 140-test baseline and 39 candidates produce 26 kills,
+12 survivors and one timeout. Four tests in a separate copy kill six selected
+survivors; the EOF timeout persists before Cargo reaches the new integration
+assertion. Six other survivors remain open. All 108 original paths and 172
+original report files are preserved; focused scores do not replace the original
+68.42% selection score. This revisits an existing project and does not establish
+broader platform/project support.

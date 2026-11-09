@@ -228,8 +228,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    boundaries. Unchanged betting-math-kit has 42 selected candidates across three
    runs (20 kills, 20 survivors, two errors); three separate-copy default-contract
    tests kill three survivors. Seventeen remain open, with no equivalence claims.
-   See [acceptance](benchmarks/python-numbers.md). Numeric literals in Go/Rust and
-   string literals in every language remain open.
+   See [acceptance](benchmarks/python-numbers.md).
+   Rust numeric slice completed: suffix/category-preserving literals, inferred
+   float-width exclusions, 41 native value/sign controls, exact saved recipes and
+   fresh/cached review/rerun coverage. Unchanged UCD Parse has 39 candidates
+   (26 kills, 12 survivors, one timeout); four separate-copy tests kill six
+   selected survivors. Six survivors and the timeout remain open. See
+   [acceptance](benchmarks/rust-numbers.md). Go numeric literals and string literals
+   in every language remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

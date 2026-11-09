@@ -97,8 +97,13 @@ fn rust_dismissals_preserve_outcomes_scores_reports_and_focused_reruns() {
     let original_report = files(&source);
     let flags = fs::read(fixture.root.join("src/flags.rs")).unwrap();
     let config = fixture.root.join("mutie.toml");
+    let original_config = fs::read(&config).unwrap();
     let metadata = fixture.root.join("mutie.dismissals.toml");
     fs::write(&config, "[broken").unwrap();
+    // Grouped config resolves project paths even for metadata-only commands.
+    failure(dismiss(&fixture, &["list"]), "parsing configuration");
+    failure(dismiss(&fixture, &["check"]), "parsing configuration");
+    fs::write(&config, &original_config).unwrap();
     assert!(add(&fixture, &source, "3").contains("Added dismissal 1"));
     assert!(add(&fixture, &source, "1").contains("Added dismissal 2"));
     let before = fs::read(&metadata).unwrap();
@@ -123,17 +128,21 @@ fn rust_dismissals_preserve_outcomes_scores_reports_and_focused_reruns() {
     ));
     let listed = success(dismiss(&fixture, &["list"]));
     assert!(listed.contains("reviewed gap") && listed.contains("Language: Rust"));
-    failure(dismiss(&fixture, &["check"]), "parsing configuration");
+    success(dismiss(&fixture, &["check"]));
     assert!(!fixture.root.join(".mutie.dismissals.lock").exists());
 
     fs::write(fixture.root.join("go.mod"), "module example.com/mixed\n").unwrap();
-    failure(dismiss(&fixture, &["list"]), "both go.mod and Cargo.toml");
+    // The explicit Rust group resolves a mixed repository without guessing.
+    success(dismiss(&fixture, &["list"]));
     success(dismiss(&fixture, &["--lang", "rust", "list"]));
     let before = fs::read(&metadata).unwrap();
+    fs::write(&config, [original_config.as_slice(), b"\n[go]\n"].concat()).unwrap();
     failure(
-        dismiss(
-            &fixture,
-            &[
+        std::process::Command::new(env!("CARGO_BIN_EXE_mutie"))
+            .arg("--path")
+            .arg(&fixture.root)
+            .args([
+                "dismiss",
                 "--lang",
                 "go",
                 "add",
@@ -142,15 +151,18 @@ fn rust_dismissals_preserve_outcomes_scores_reports_and_focused_reruns() {
                 "3",
                 "--reason",
                 "wrong language",
-            ],
-        ),
+            ])
+            .env("PATH", "")
+            .output()
+            .unwrap(),
         "does not match project language",
     );
     assert_eq!(fs::read(&metadata).unwrap(), before);
+    fs::write(&config, &original_config).unwrap();
     fs::remove_file(fixture.root.join("go.mod")).unwrap();
     fs::write(
         &config,
-        "lang = 'rust'\nmax_capture_bytes = 1048576\nmax_log_bytes = 1\nbaseline_timeout = 60\n",
+        "lang = 'rust'\noperators = ['boolean_flip']\nmax_capture_bytes = 1048576\nmax_log_bytes = 1\nbaseline_timeout = 60\n",
     )
     .unwrap();
     assert!(success(dismiss(&fixture, &["check"])).contains("2 matched; 0 require review"));

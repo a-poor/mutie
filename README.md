@@ -101,7 +101,7 @@ the [support guide](SUPPORT.md) has the details and [TODO.md](TODO.md) tracks wh
 | Remove a standalone function call | ✅ | ✅ | ✅ | ✅ |
 | Remove a field/item assignment | ✅ | ✅ | ✅ | ✅ |
 | Skip a conditional loop | ✅ | ✅ | ✅ | ✅ |
-| Replace numeric literals | ⬜ | ⬜ | ✅ | ✅ |
+| Replace numeric literals | ⬜ | ✅ | ✅ | ✅ |
 | Replace string literals | ⬜ | ⬜ | ⬜ | ⬜ |
 | Remove arbitrary statements or blocks | ⬜ | ⬜ | ⬜ | ⬜ |
 

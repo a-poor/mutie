@@ -452,9 +452,9 @@ impl RunConfig {
         ensure!(
             matches!(
                 config.lang,
-                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python
+                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python | Lang::Rust
             ) || !config.operators.contains(&Operator::NumberReplace),
-            "number_replace currently supports only Python and JavaScript/TypeScript runners"
+            "number_replace is not yet supported for Go"
         );
         if config.lang == Lang::Rust {
             ensure!(
@@ -475,6 +475,7 @@ impl RunConfig {
                         | Operator::LoopSkip
                         | Operator::CallRemove
                         | Operator::AssignmentRemove
+                        | Operator::NumberReplace
                 )),
                 "unsupported Rust operator"
             );
@@ -563,19 +564,9 @@ mod tests {
     }
     #[test]
     fn number_replacement_requires_a_supported_runner() -> Result<()> {
-        for lang in ["go", "rust"] {
-            let root = fixture(&format!("[{lang}]\noperators=['number_replace']\n"));
-            fs::write(
-                root.path().join("Cargo.toml"),
-                "[package]\nname='fixture'\nversion='0.1.0'\n",
-            )?;
-            fs::write(
-                root.path().join("pyproject.toml"),
-                "[project]\nname='fixture'\n",
-            )?;
-            let error = resolve(root.path()).unwrap_err().to_string();
-            assert!(error.contains("number_replace"), "{error}");
-        }
+        let root = fixture("[go]\noperators=['number_replace']\n");
+        let error = resolve(root.path()).unwrap_err().to_string();
+        assert!(error.contains("number_replace"), "{error}");
         for runner in ["node", "bun", "vitest"] {
             let root = fixture(&format!(
                 "[js]\nrunner='{runner}'\noperators=['number_replace']\n"
@@ -588,6 +579,12 @@ mod tests {
         fs::write(
             root.path().join("pyproject.toml"),
             "[project]\nname='fixture'\n",
+        )?;
+        assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
+        let root = fixture("[rust]\noperators=['number_replace']\n");
+        fs::write(
+            root.path().join("Cargo.toml"),
+            "[package]\nname='fixture'\nversion='0.1.0'\n",
         )?;
         assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
         Ok(())

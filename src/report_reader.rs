@@ -313,6 +313,17 @@ impl LoadedReport {
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
             if run.language() == crate::cli::Lang::Rust
+                && mutation.operator == Operator::NumberReplace
+            {
+                ensure!(
+                    crate::rust::discovery::valid_number_replacement(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("rs"),
+                    "saved Rust numeric mutation is outside supported source scope"
+                );
+            }
+            if run.language() == crate::cli::Lang::Rust
                 && matches!(
                     mutation.operator,
                     Operator::ComparisonInvert | Operator::NegationRemove

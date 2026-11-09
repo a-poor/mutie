@@ -48,6 +48,21 @@ This does not infer variable values, enforce TypeScript types, or change failure
 classification. Saved reruns require the exact recipe and fresh source/context
 matching. See [numeric controls and unchanged session-default findings](../benchmarks/javascript-numbers.md).
 
+Rust `number_replace` changes eligible runtime integers/floats from zero to one
+or nonzero to zero, preserving explicit suffixes and the literal category
+(`7u8 → 0u8`, `0.0f32 → 1.0f32`). Direct negative literals form one site;
+negative zero becomes positive one. With a parenthesized operand, the inner
+literal changes and the outer sign stays. Radix digits and separators are
+accepted. Explicit `f32`/`f64` suffixes determine float rounding; unsuffixed
+floats are excluded when the two widths disagree about whether the value is
+zero. Discovery does not infer surrounding types or repair compiler errors.
+
+Tests, cfg-gated/generated code, macros, constants/statics, type arguments,
+patterns, array repeat lengths and tuple field selectors remain excluded.
+Runtime indexes, array elements, match guards and closures are eligible. Saved
+recipes and fresh source discovery must agree. See [native controls and unchanged
+UCD findings](../benchmarks/rust-numbers.md).
+
 Python `number_replace` changes eligible integer/float literals from zero to one
 or nonzero to zero, preserving their type (`0 → (1)`, `7.0 → (0.0)`). A direct
 unary sign belongs to the same candidate; signed zero becomes positive one.
@@ -257,7 +272,8 @@ timeouts and tool/capture errors remain separate. See
 
 All eleven Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
-`branch_force_true`, `branch_force_false`, `loop_skip`, `call_remove`, and `assignment_remove`. Python runs `boolean_flip`,
+`branch_force_true`, `branch_force_false`, `loop_skip`, `call_remove`,
+`assignment_remove`, and `number_replace`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
 `arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`,
 `call_remove`, `assignment_remove`, and `number_replace`. Vitest, Node and Bun run

@@ -306,7 +306,8 @@ sources are outside the initial discovery contract and must be surfaced as
 excluded/unsupported scope. Constants/statics, type-level expressions, array
 repeat lengths and constant patterns are deferred. Match guards are executable
 expressions, even though Tree-sitter nests them under the pattern field; only their condition is
-visited. These rules yield the original fixture's three literals and the separate
+visited. These rules yield the original fixture's three Boolean literals plus two numeric
+literals, and the separate
 `rust-boundaries` fixture's five comparisons. The boundary fixture covers all
 four replacements, signed/unsigned integers, borrowed generic operands, floats
 including NaN/signed zero, and operand side effects. Its missing equality case
@@ -1306,7 +1307,8 @@ automatic sequence of work:
 - JS/TS now has a [bounded numeric-literal slice](benchmarks/javascript-numbers.md):
   one replacement, zero to one or nonzero to zero, preserving Number/BigInt.
   Python now has [integer/float acceptance](benchmarks/python-numbers.md).
-  Go/Rust and additional numeric recipes need separate acceptance;
+  Rust now has [suffix-preserving integer/float acceptance](benchmarks/rust-numbers.md).
+  Go and additional numeric recipes need separate acceptance;
   bound candidate growth and avoid duplicate or unchanged replacements.
 - Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values, and targeted string-literal replacement.
@@ -2499,3 +2501,24 @@ scored controls preserve runtime/setup-error and timeout boundaries. The
 for all selected sites, preserves failed reports and proves three default-contract
 survivors with separate-copy tests. It does not establish a full-project score or
 close the remaining 17 survivors.
+
+
+### Rust numeric literals
+
+`rust/number.rs` implements the bounded `number_replace` recipe for runtime
+integer/float nodes and directly attached negative signs. It preserves explicit
+integer/f32/f64 suffixes and literal category, choosing one for zero and zero for
+nonzero. Integer digit inspection avoids truncation; f32/f64 parsing handles
+rounding. Unsuffixed floats are eligible only when both widths agree on zero.
+Parenthesized operands retain their outer sign. Atomic replacement literals
+preserve method access without extra-parenthesis lint noise.
+
+Traversal retains test/cfg/generated/macro/constant/type/pattern and array-repeat
+length exclusions; numeric tuple selectors and field keys are excluded separately.
+Saved readers regenerate the exact snippet recipe; reruns rediscover its original
+context. No execution/classifier/schema change or type repair is added. See
+[native/fixture and unchanged UCD acceptance](benchmarks/rust-numbers.md): 39
+candidates, 26 kills, 12 survivors, one timeout; four separate-copy tests kill six
+selected survivors. The original EOF timeout remains because existing library
+tests hang before the added integration assertion. Preserve all original
+inputs/reports/scores and distinguish the focused result from a full score.

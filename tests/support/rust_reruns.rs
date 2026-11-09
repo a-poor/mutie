@@ -141,8 +141,13 @@ fn rust_reruns_validate_scope_source_partial_runs_and_moved_checkouts() {
         fixture.preserved();
     }
     fs::write(fixture.root.join("go.mod"), "module example.com/other\n").unwrap();
-    let mismatch = fixture
-        .command(&["--lang", "go", "--rerun", source])
+    let config = fixture.root.join("mutie.toml");
+    let original_config = fs::read(&config).unwrap();
+    fs::write(&config, [original_config.as_slice(), b"\n[go]\n"].concat()).unwrap();
+    let mismatch = std::process::Command::new(env!("CARGO_BIN_EXE_mutie"))
+        .arg("--path")
+        .arg(&fixture.root)
+        .args(["rerun", source, "--lang", "go"])
         .env("PATH", "")
         .output()
         .unwrap();
@@ -150,6 +155,7 @@ fn rust_reruns_validate_scope_source_partial_runs_and_moved_checkouts() {
         String::from_utf8_lossy(&mismatch.stderr).contains("does not match"),
         "{mismatch:?}"
     );
+    fs::write(&config, original_config).unwrap();
     fs::remove_file(fixture.root.join("go.mod")).unwrap();
 
     // Simulate a finalized partial report. General selection retries unfinished

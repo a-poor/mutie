@@ -189,7 +189,7 @@ fn cargo_faults_stop_discovery_and_baseline_without_mutations() {
             "malformed-build",
             "no successful build-finished event",
         ),
-        ("tests", "signal", "baseline tests failed"),
+        ("tests", "signal", "baseline evidence invalid"),
         ("build", "overflow-mixed", "--max-capture-bytes"),
         ("tests", "overflow-err", "--max-capture-bytes"),
     ] {
@@ -224,6 +224,15 @@ fn cargo_faults_stop_discovery_and_baseline_without_mutations() {
             "baseline"
         }];
         check_logs(&directory, &command["logs"]);
+        if fault == "signal" {
+            assert!(command["exit_code"].is_null());
+            assert!(
+                run["error"]
+                    .as_str()
+                    .unwrap()
+                    .contains("without a test or build failure")
+            );
+        }
         if fault.starts_with("overflow") {
             assert_eq!(command["outcome"], "failed");
             assert!(

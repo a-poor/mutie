@@ -6,14 +6,16 @@ unit tests, and integration tests that launch `CARGO_BIN_EXE_<name>`.
 Mutie now runs this package end to end:
 
 ```sh
-cargo run -- list tests/fixtures/rust
-cargo run -- run tests/fixtures/rust --jobs 2 --timeout 30
+cargo run -- --path tests/fixtures/rust list
+cargo run -- --path tests/fixtures/rust run --plain
 ```
 
-The inventory has three mutations: two killed and one missed. The opt-in
+The fixture config selects `boolean_flip`: two killed and one missed. Without
+that filter, discovery also includes two numeric literals in `src/main.rs`.
+The opt-in
 `cargo test --test rust_workflow -- --ignored --test-threads=1` regression checks
 the complete workflow, a stronger-test focused rerun, and preservation. After
-adding the assertion below in a temporary copy, `--rerun-missed RUN_DIR` selects
+adding the assertion below in a temporary copy, `mutie rerun RUN_DIR --missed` selects
 the saved survivor (source ID 3), assigns it new ID 1, and kills it. ID/operator
 filters, previews, partial/empty runs, moved checkouts, stale source and Cargo
 scope validation are covered too.
