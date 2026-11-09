@@ -1308,7 +1308,8 @@ automatic sequence of work:
   one replacement, zero to one or nonzero to zero, preserving Number/BigInt.
   Python now has [integer/float acceptance](benchmarks/python-numbers.md).
   Rust now has [suffix-preserving integer/float acceptance](benchmarks/rust-numbers.md).
-  Go and additional numeric recipes need separate acceptance;
+  Go now has [constant-kind-preserving acceptance](benchmarks/go-numbers.md).
+  Additional numeric recipes need separate acceptance;
   bound candidate growth and avoid duplicate or unchanged replacements.
 - Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values, and targeted string-literal replacement.
@@ -2522,3 +2523,26 @@ candidates, 26 kills, 12 survivors, one timeout; four separate-copy tests kill s
 selected survivors. The original EOF timeout remains because existing library
 tests hang before the added integration assertion. Preserve all original
 inputs/reports/scores and distinguish the focused result from a full score.
+
+### Go numeric literals
+
+`mutation/number.rs` implements `number_replace` in the Go Tree-sitter visitor.
+One eligible literal/direct sign produces one zero-to-one or nonzero-to-zero
+candidate, preserving integer/float constant kinds. Parenthesized operands retain
+outer signs. Exact mantissa digits determine zero; conservative f32 underflow
+checks exclude nonzero floats that could round away. Hexadecimal floats compare
+an exact leading-bit exponent and the half-subnormal tie. There is no inferred
+contextual type, compiler repair or rounded-zero recipe for exact nonzero values.
+
+Ancestor checks exclude named constants, types/array lengths, keyed composite
+keys and expression-switch case values. Runtime variable initializers, indexes,
+composite values, switch bodies and closures remain eligible. Existing selected
+Go file/test/generated rules are unchanged. The saved reader regenerates exact
+recipes; fresh discovery rejects excluded-context forgeries and stale sources.
+
+[Acceptance](benchmarks/go-numbers.md) records 33 native value pairs, exact
+constant and compiler controls, full/affected agreement, review and focused
+reruns. Unchanged godotenv has 40 candidates (25 kills, 15 survivors). Three
+separate-copy tests kill three parser survivors; 12 remain open. Original inputs,
+reports and the 62.50% operator-selection score remain unchanged. Numeric literal
+parity is bounded; string literals and broader numeric recipes remain separate.

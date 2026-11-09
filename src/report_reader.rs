@@ -312,6 +312,17 @@ impl LoadedReport {
         }
         let mut mutations = BTreeMap::new();
         for mutation in inventory.mutations {
+            if run.language() == crate::cli::Lang::Go
+                && mutation.operator == Operator::NumberReplace
+            {
+                ensure!(
+                    crate::mutation::number::valid_replacement(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("go"),
+                    "saved Go numeric mutation is outside supported source scope"
+                );
+            }
             if run.language() == crate::cli::Lang::Rust
                 && mutation.operator == Operator::NumberReplace
             {

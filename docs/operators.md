@@ -48,6 +48,21 @@ This does not infer variable values, enforce TypeScript types, or change failure
 classification. Saved reruns require the exact recipe and fresh source/context
 matching. See [numeric controls and unchanged session-default findings](../benchmarks/javascript-numbers.md).
 
+Go `number_replace` changes eligible integer/float literals from zero to one
+or nonzero to zero, retaining the constant kind (`7 → 0`, `0.0 → 1.0`).
+Direct unary signs belong to the literal's single candidate; parenthesized
+operands retain their outer sign. Radices, separators and hexadecimal floats
+are supported. Go constants are exact and have no negative zero. Nonzero floats
+that would round to zero as `float32` are conservatively excluded without
+inferring the surrounding type.
+
+Named constant declarations, types/array lengths, keyed composite-literal keys,
+switch case values, rune/imaginary literals, tests and generated files are
+excluded. Package variable initializers, runtime indexes, composite values,
+switch bodies and closures are eligible. Exact saved recipes and fresh source
+discovery protect reruns; compiler failures remain outside kills. See
+[native controls and unchanged godotenv findings](../benchmarks/go-numbers.md).
+
 Rust `number_replace` changes eligible runtime integers/floats from zero to one
 or nonzero to zero, preserving explicit suffixes and the literal category
 (`7u8 → 0u8`, `0.0f32 → 1.0f32`). Direct negative literals form one site;
@@ -270,7 +285,7 @@ Existing Go test-failure classification stays unchanged, including panic failure
 timeouts and tool/capture errors remain separate. See
 [semantic controls and standard-stream findings](../benchmarks/go-assignments.md).
 
-All eleven Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
+All twelve Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, `call_remove`,
 `assignment_remove`, and `number_replace`. Python runs `boolean_flip`,

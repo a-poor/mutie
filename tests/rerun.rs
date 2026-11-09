@@ -197,7 +197,11 @@ fn operator_id_and_missed_filters_intersect_and_empty_selections_are_explicit() 
     let fixture = Fixture::with_operators();
     let original = fixture.first_run();
     for (mode, filters, files) in [
-        ("--rerun", vec![], vec!["a.go", "b.go", "c.go"]),
+        (
+            "--rerun",
+            vec![],
+            vec!["a.go", "b.go", "c.go", "c.go", "c.go"],
+        ),
         (
             "--rerun",
             vec!["--operator", "boolean_flip"],
@@ -206,6 +210,16 @@ fn operator_id_and_missed_filters_intersect_and_empty_selections_are_explicit() 
         (
             "--rerun",
             vec!["--operator", "arithmetic_replace"],
+            vec!["c.go"],
+        ),
+        (
+            "--rerun-missed",
+            vec!["--operator", "number_replace"],
+            vec!["c.go", "c.go"],
+        ),
+        (
+            "--rerun-missed",
+            vec!["--id", "4", "--operator", "number_replace"],
             vec!["c.go"],
         ),
         (

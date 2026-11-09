@@ -234,8 +234,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    fresh/cached review/rerun coverage. Unchanged UCD Parse has 39 candidates
    (26 kills, 12 survivors, one timeout); four separate-copy tests kill six
    selected survivors. Six survivors and the timeout remain open. See
-   [acceptance](benchmarks/rust-numbers.md). Go numeric literals and string literals
-   in every language remain open.
+   [acceptance](benchmarks/rust-numbers.md).
+   Go numeric slice completed: integer/float constant kinds, exact-zero decisions,
+   conservative underflow exclusions, direct signs, native value/compiler controls
+   and full/affected review/rerun coverage. Unchanged godotenv has 40 candidates
+   (25 kills, 15 survivors); three separate-copy parser tests kill three survivors.
+   Twelve remain open. See [acceptance](benchmarks/go-numbers.md).
+   Bounded numeric literals now have cross-language parity. String literals in
+   every language and broader numeric recipes remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

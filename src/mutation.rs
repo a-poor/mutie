@@ -16,6 +16,7 @@ use tree_sitter::{Node, Parser};
 use crate::cancellation::Cancellation;
 
 pub(crate) mod assignment;
+pub(crate) mod number;
 
 pub const OPERATOR_CATALOG_VERSION: u32 = 1;
 
@@ -228,6 +229,20 @@ pub fn discover_cancellable(
 }
 
 fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
+    if let Some(replacement) = number::replacement(node, &file.source) {
+        let start = node.start_position();
+        let end = node.end_position();
+        mutations.push(Mutation {
+            file: Arc::clone(file),
+            operator: Operator::NumberReplace,
+            range: node.byte_range(),
+            replacement: replacement.into(),
+            line: start.row + 1,
+            column: start.column + 1,
+            end_line: end.row + 1,
+            end_column: end.column + 1,
+        });
+    }
     if assignment::eligible(node) {
         let start = node.start_position();
         let end = node.end_position();

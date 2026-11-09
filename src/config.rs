@@ -449,13 +449,6 @@ impl RunConfig {
                 "unsupported {runner} operator"
             );
         }
-        ensure!(
-            matches!(
-                config.lang,
-                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python | Lang::Rust
-            ) || !config.operators.contains(&Operator::NumberReplace),
-            "number_replace is not yet supported for Go"
-        );
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
@@ -565,8 +558,7 @@ mod tests {
     #[test]
     fn number_replacement_requires_a_supported_runner() -> Result<()> {
         let root = fixture("[go]\noperators=['number_replace']\n");
-        let error = resolve(root.path()).unwrap_err().to_string();
-        assert!(error.contains("number_replace"), "{error}");
+        assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
         for runner in ["node", "bun", "vitest"] {
             let root = fixture(&format!(
                 "[js]\nrunner='{runner}'\noperators=['number_replace']\n"

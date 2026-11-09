@@ -40,7 +40,7 @@ requires adapter evidence, including exact-runner observer checks where used.
 
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
-| Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 11 operators | Broader project/runtime evidence and useful operator expansion |
+| Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 12 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; scoped expression, branch, loop and call mutations | Broader project/platform evidence; build scripts/proc macros and external paths |
 | TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; expression, branch, loop and call mutations; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial execution of expression, branch, loop and call mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
@@ -69,9 +69,9 @@ matrix remain release-qualification gaps.
 - Project/test scope: a root `go.mod`, multiple packages within that module,
   Go 1.24+ on PATH. Full-module tests are the default; affected-package mode keeps
   a full baseline and selects transitive reverse dependencies for mutations.
-- Mutation coverage: eleven operators, including arithmetic/comparison changes,
+- Mutation coverage: twelve operators, including arithmetic/comparison changes,
   boolean flips, logical swaps, call removal, scoped selector/index assignment
-  removal, branch forcing and loop skipping.
+  removal, numeric literals, branch forcing and loop skipping.
   See [operator behavior](docs/operators.md) for eligibility and limits.
 - Workflow: file/operator filters, live/plain status, saved reports and browser,
   focused reruns, dismissals, scores and CI policies, retention and log budgets.
@@ -787,8 +787,8 @@ one kill and four survivors. Three separate-copy tests kill all four survivors,
 covering the idle window, exact reset boundary and initial token count. All 63
 tracked inputs and 33 original report files remain unchanged; the original
 20% filtered score remains distinct from the focused stronger-test result.
-Go numeric literals and string literals remain planned. Python acceptance
-is recorded below.
+Python, Rust and Go numeric acceptance is recorded below. String literals
+remain planned.
 
 ### Python numeric literals
 
@@ -828,3 +828,22 @@ assertion. Six other survivors remain open. All 108 original paths and 172
 original report files are preserved; focused scores do not replace the original
 68.42% selection score. This revisits an existing project and does not establish
 broader platform/project support.
+
+### Go numeric literals
+
+[Numeric acceptance](benchmarks/go-numbers.md) adds `number_replace` for
+integer/float literals while retaining their constant kind. Direct signs belong
+to one candidate; exact zero becomes one, nonzero becomes zero. Nonzero floats
+that round to zero as f32 are excluded. Named constants, types/array lengths,
+composite keys, switch case values, rune/imaginary literals, tests and generated
+files remain excluded. Compiler failures stay outside kills. Saved recipes and
+fresh source/context matching protect reruns.
+
+33 paired native value/type cases, exact-constant/compiler controls and scored
+full/affected fixtures cover review, reruns, timeouts and capture errors.
+Unchanged godotenv has a 43-test baseline and 40 candidates: 25 kills and 15
+survivors, with full/affected agreement and a 62.50% selection score. A separate
+46-test copy kills three survivors around CRLF normalization, EOF diagnostics
+and a literal dollar sign; 12 remain open. All 20 original inputs and 352
+original/affected report files are preserved. This revisits an existing project;
+the focused 20% is not a full stronger-suite score.

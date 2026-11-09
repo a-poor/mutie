@@ -860,7 +860,7 @@ Unchanged betting-math-kit has 42 selected sites: 20 kills, 20 survivors, two
 errors across three reports. Three separate-copy default-contract tests kill
 three survivors; 17 remain open. Preserve 20 original inputs, 287 report files,
 failed scores and report-local ID matching. Combined accounting is not a full
-score. Go numeric literals and strings remain separate roadmap slices.
+score. String literals remain a separate roadmap slice; Go numeric acceptance is recorded below.
 
 
 `benchmarks/rust-numbers.md` records Rust `number_replace` for runtime integers/
@@ -874,4 +874,21 @@ fixtures cover boundaries, review and stronger reruns. Unchanged UCD Parse has
 six selected survivors. The EOF mutation still hangs in existing library tests
 before the new integration assertion; six other survivors remain open. Preserve
 108 original paths, 172 report files and the original 68.42% selection score.
-Go numeric literals and string literals remain separate roadmap slices.
+Go numeric acceptance is recorded below; string literals remain separate.
+
+
+`benchmarks/go-numbers.md` records Go `number_replace`: one eligible literal or
+its direct sign, exact zero to one/nonzero to zero, preserving integer/float
+constant kinds. Go constants have no negative zero; keep exact mantissa checks
+and conservative exclusions for nonzero floats that round to zero at f32.
+Named constants, types/array lengths, keyed composite keys, switch case values,
+rune/imaginary literals, tests and generated files remain excluded. Preserve
+compiler failures, exact saved recipes and fresh source/context matching.
+33 native pairs, exact-constant/compiler controls and full/affected scored
+workflows cover review/reruns and timeout/capture boundaries. Unchanged godotenv
+has 40 candidates (25 kills, 15 survivors), with full/affected agreement. Three
+separate-copy tests kill CRLF normalization, EOF diagnostic and literal-dollar
+survivors; 12 remain open. Preserve all 20 inputs, 176 original and 176 affected
+report files and the original 62.50% selection score. Numeric literal parity is
+bounded; string literals and broader recipes remain separate. Remote Linux CI
+validation requires a push.
