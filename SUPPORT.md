@@ -605,6 +605,17 @@ survivors and two errors. Three separate-copy tests kill the exception-message
 and two telemetry survivors. The sleep survivor remains open; the original run
 remains failed/unscored. This adds no arbitrary statement/block removal.
 
+[The statement-removal assessment](benchmarks/statement-removal-audit.md) adds
+Python `assignment_remove` for single-target attribute/item stores outside
+constructor subtrees. It skips the complete RHS/target/store effects while
+excluding local bindings, unpacking, annotations, augmented assignments and
+binding/suspension subtrees. Tests catch two unchanged Binary Tree Library
+rotation-update survivors in a separate copy. The draft inventory measured
+16 kills, seven survivors, six timeouts and three errors across 32 tree candidates;
+all 16 Route Mini constructor deletions errored and are excluded from the final
+scope. These combined inventories are not full scores. Other languages and
+general block deletion remain unsupported for this new operator.
+
 ### Audited pure-Python dependency
 
 [Dependency acceptance](benchmarks/python-dependencies-tinycss2.md) validates

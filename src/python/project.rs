@@ -17,9 +17,10 @@ use crate::{
 
 /// Exact source recipes; AST admission and fresh discovery establish syntax/context.
 pub(crate) fn mutation_operator(original: &str, replacement: &str) -> Option<Operator> {
-    // The pinned AST helper admits only complete Expr(Call) spans. As for
-    // branch recipes, fresh AST/operator/source matching is required on rerun;
-    // this wire-format check is not a second Python parser.
+    // The pinned AST helper admits complete calls or attribute/item stores for
+    // this recipe; its context marker distinguishes the operator. As for branch
+    // recipes, fresh AST/operator/source matching is required on rerun. This
+    // wire-format check is not a second Python parser.
     if replacement == "pass" && !original.trim().is_empty() && original != "pass" {
         return Some(Operator::CallRemove);
     }
@@ -72,6 +73,8 @@ struct Site {
     replacement: String,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     loop_skip: bool,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    assignment_remove: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -207,6 +210,13 @@ impl Project {
                 );
                 operator = Operator::LoopSkip;
             }
+            if site.assignment_remove {
+                ensure!(
+                    operator == Operator::CallRemove,
+                    "invalid Python assignment recipe"
+                );
+                operator = Operator::AssignmentRemove;
+            }
             ensure!(
                 source.source.get(range.clone()) == Some(site.original.as_str()),
                 "invalid Python mutation span"
@@ -322,6 +332,44 @@ mod tests {
         value["loop_skip"] = true.into();
         let site: Site = serde_json::from_value(value.clone())?;
         assert_eq!(serde_json::to_value(site)?, value);
+        value.as_object_mut().unwrap().remove("loop_skip");
+        value["assignment_remove"] = true.into();
+        let site: Site = serde_json::from_value(value.clone())?;
+        assert_eq!(serde_json::to_value(site)?, value);
+        Ok(())
+    }
+
+    #[test]
+    fn assignment_sites_require_pass_and_preserve_source_identity() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::create_dir(root.path().join("sample"))?;
+        let source = "item.key = 1\n";
+        fs::write(root.path().join("sample/__init__.py"), source)?;
+        let document = serde_json::from_value(json!({
+            "package":"sample", "files":{"sample/__init__.py":format!("sha256:{:x}",Sha256::digest(source.as_bytes()))},
+            "sources":["sample/__init__.py"], "tests":["tests/test_sample.py"], "conftests":[],
+            "mutations":[{"file":"sample/__init__.py","start":0,"end":12,
+                "line":1,"column":1,"end_line":1,"end_column":13,
+                "original":"item.key = 1","replacement":"pass", "assignment_remove":true}]
+        }))?;
+        let mut project = Project {
+            root: root.path().to_owned(),
+            document,
+        };
+        let scope = Scope::new(&[], &[])?;
+        let mutations = project.discover(&scope)?;
+        assert_eq!(mutations[0].operator, Operator::AssignmentRemove);
+        assert_eq!(mutations[0].original(), "item.key = 1");
+        for replacement in ["None", "pass;", "(False and (item.key = 1))"] {
+            project.document.mutations[0].replacement = replacement.into();
+            assert!(project.discover(&scope).is_err());
+        }
+        project.document.mutations[0].replacement = "pass".into();
+        project.document.mutations[0].loop_skip = true;
+        assert!(project.discover(&scope).is_err());
+        project.document.mutations[0].loop_skip = false;
+        fs::write(root.path().join("sample/__init__.py"), "item.key = 2\n")?;
+        assert!(project.discover(&scope).is_err());
         Ok(())
     }
 

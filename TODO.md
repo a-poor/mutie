@@ -31,6 +31,11 @@ checklist as work lands, checking items off after appropriate verification.
   reports remain preserved. See [output contract](docs/output.md).
 - [ ] Multi-project orchestration and multiple same-language targets remain separate
   work. Until then multiple enabled sections require explicit language selection.
+- [ ] Investigate the intermittent Ctrl-C report-classification failure observed
+  during the statement-removal audit: one SIGINT worker was saved as an error
+  rather than interrupted. Isolated and final two-thread rechecks passed; no fix
+  is claimed. This is separate from the deferred pre-main startup investigation.
+  See [evidence](benchmarks/statement-removal-audit.md#validation-and-remaining-reliability-finding).
 
 ## Public release scope and goal sequence (2026-10-22)
 
@@ -142,7 +147,7 @@ Split implementation goals by language/runner when acceptance becomes too large.
    survivor killed through its public API in a separate 199-test copy. See
    [acceptance](benchmarks/python-modulo.md). All expression rows now have scoped
    support; documented exclusions (including flat Python logical chains) remain.
-5. [ ] **Control-flow and removal parity.** Add scoped branch forcing, conditional
+5. [x] **Control-flow/call-removal parity and statement-removal assessment.** Add scoped branch forcing, conditional
    loop skipping and standalone-call removal across languages. Audit binding
    conditions, empty blocks and side effects; evaluate broader statement/block
    removal and record concrete exclusions. Measure invalid-candidate noise.
@@ -182,8 +187,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    skipped-effects/binding/generator controls, strict runtime/lifecycle errors,
    review and reruns. Separate-copy tests kill three unchanged Route Mini
    exception/telemetry survivors. See [acceptance](benchmarks/python-calls.md).
-   Evaluate broader statement/block removal separately; no arbitrary removal is
-   implemented by these call operators.
+   Assessment completed: [statement/block audit](benchmarks/statement-removal-audit.md).
+   A first Python `assignment_remove` slice covers attribute/item stores, with
+   native effects/binding controls and two unchanged tree-rotation survivors
+   killed by stronger tests. A 48-candidate audit separates error/timeout noise
+   from scores; constructor stores are excluded after 16/16 errors in Route Mini.
+   Follow-up goals remain for assignment-removal parity in Go/Rust/JS/TS and
+   independently justified broader forms. Arbitrary statement/block deletion is
+   not implemented; this milestone closes the assessment, not that entire family.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

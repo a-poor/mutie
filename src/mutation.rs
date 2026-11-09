@@ -28,6 +28,7 @@ pub enum Operator {
     BooleanFlip,
     NegationRemove,
     CallRemove,
+    AssignmentRemove,
     BranchForceTrue,
     BranchForceFalse,
     LoopSkip,

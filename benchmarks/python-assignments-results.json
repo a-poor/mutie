@@ -1,0 +1,3495 @@
+{
+  "scope": "Python single-target attribute/item Assign; exclude constructor subtrees",
+  "recipe": "sha256:8c1cc674ebc3d73ab8f0ab293e345796ef4eee1e42a28917143419d7d9bb1909",
+  "draft_recipe": "sha256:bf664002acd1c82326cf965da09b490f1abc2622fdba264714ec96220e0fda38",
+  "draft_scope_sha256": "de2240387feccafd981d9f210a55b935f76a4c77ea31645a2c93c3d2fe0078aa",
+  "python": "3.14.7",
+  "pytest": "9.0.2",
+  "platform": "macOS",
+  "timeout_seconds": 10,
+  "baseline_timeout_seconds": 120,
+  "jobs_per_run": 1,
+  "max_concurrent_audit_runs": 2,
+  "records": {
+    "tree": {
+      "commit": "68d688fb4fe9c867c77a9d54f4fdb46a58dea34e",
+      "inputs": {
+        ".flake8": "6e70a1b4ced48c922bdef80ad69e808df79589f776622b49a19ea7beef1bb4fd",
+        ".github/workflows/linting.yml": "ec36f4651dc045a18ddd80a336ed1cbe0567a51fbbbeca5d01ff7acaffd67128",
+        ".github/workflows/testing.yml": "dec7e4591f0c715bb8c2328b8a156f8a6a822a662337efce4a07fa01c676ad08",
+        ".gitignore": "623b4492747a17b9d5b4881b62cfbcd6c1ce80f35ac4bec546b4ee48faf7abb4",
+        ".mypy.ini": "cfb08d4e2574f2c939183fb60b77c334b50eb1e8b1a1f5d6bde147d5a080250c",
+        ".pydocstyle": "10095abae4fd298522ab9665aed55d6b71859d3f07b642fa80cbd8866197694c",
+        ".readthedocs.yaml": "58e00448f3c564d3fbe045772edfe1ad5f6f94f6d5dda330046801587721f2c2",
+        "LICENSE": "23f82be2ab88fda96efc1d11000338278f5901fd83bba36fdb25db348039723e",
+        "README.rst": "06f5c03b6cf4e31dbdaf82da51abed745e98c055336168eafb971034f802b7e8",
+        "docs/Makefile": "e33bf74d59130029ba24168a813112dd923d7044d780ce942db6645d93f56acf",
+        "docs/make.bat": "2f82394fbb835088f01b231127ecbd1684fad6cc48c82b9a62e2722edf1cfa70",
+        "docs/requirements.txt": "ea1ef6bd3f3506be79dd2ce2626e0b7b7e0a6fa17c9c196d560221a7dc092c62",
+        "docs/source/avl_tree.rst": "e08f54741427ad521c878e9591f73a7debf06016c0e3d290b38519e52c5ba209",
+        "docs/source/binary_search_tree.rst": "60badcc7dc24d0526deaf97490b2cb98ab82622861a49ba21168c337a10b5b1c",
+        "docs/source/conf.py": "de6fd521ebee66ca133e60dea111a90c6ee10de510c90c3d21940bee09a3c0a4",
+        "docs/source/index.rst": "91b67fe8acb7b972d82b43d1f8ce7f7b4e9f53eff41f6a42af66e5bcec1524dc",
+        "docs/source/readme.rst": "ffcbdf9ebf3eeca021b86a2e5a7b40ddaed3651a0125588002e9e9d3d971889a",
+        "docs/source/traversal.rst": "0f60be81f1c5a4570c5ce0677081416d801533904880b402d3f9897ac61b79cd",
+        "docs/source/trees.rst": "8433b0400805e4c84c8337bedcdc59b94afd81ef1602795f6f13589651ac775c",
+        "pyproject.toml": "21b0a880ef4b9065527fdff38ef2f09bc29f0718a01dd975fa9b6413aa1a5550",
+        "pytest.ini": "e5bbbb1e15542b41acd2dae2e95387b48f943e82d3eda9cc042b896dcf2e9583",
+        "requirements.txt": "b6ed97d5c653565ea7e0e6d4de9532f180b5fab9041d805cf2d7d3ae6f0cccc2",
+        "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "tests/conftest.py": "b40c276e51938fcb8c184ffaefadd677e6498e55bc4dc1c8f158d254ed448801",
+        "tests/test_avl_tree.py": "269aa81687a1b0d0eb6d3f139a5ce5decc6295034b686a795721b867c7b7e9fa",
+        "tests/test_binary_search_tree.py": "1c11cad8c4ad37dc7451b6469f7a1410022c9e445e0b0ffee152b01ddad13699",
+        "tests/test_traversal.py": "be610417e2e28207bab2bc5c2ee44539b2ecbd681c1d9f104f3d014c9ede4979",
+        "trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trees/binary_trees/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "trees/binary_trees/avl_tree.py": "2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+        "trees/binary_trees/binary_search_tree.py": "ef9b5445dd03bebd9eb80f5caba61a4e3de29985702624103eb7a5801f9424a2",
+        "trees/binary_trees/traversal.py": "5c029e5e98aee10ca2976cc748f40590b520f3c4804e8316e6b0f21f1ea4f962",
+        "trees/tree_exceptions.py": "70a23fbe4c547b10c61dec95949cc6314ac71c9c59e5053870be19938250d8e1"
+      },
+      "draft_inventory": [
+        {
+          "id": 1,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 130,
+          "column": 9,
+          "end_line": 130,
+          "end_column": 33,
+          "byte_start": 3462,
+          "byte_end": 3486,
+          "original": "new_node.parent = parent",
+          "replacement": "pass",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 133,
+          "column": 13,
+          "end_line": 133,
+          "end_column": 33,
+          "byte_start": 3591,
+          "byte_end": 3611,
+          "original": "self.root = new_node",
+          "replacement": "pass",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 136,
+          "column": 17,
+          "end_line": 136,
+          "end_column": 39,
+          "byte_start": 3684,
+          "byte_end": 3706,
+          "original": "parent.left = new_node",
+          "replacement": "pass",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 138,
+          "column": 17,
+          "end_line": 138,
+          "end_column": 40,
+          "byte_start": 3741,
+          "byte_end": 3764,
+          "original": "parent.right = new_node",
+          "replacement": "pass",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 171,
+          "column": 17,
+          "end_line": 171,
+          "end_column": 55,
+          "byte_start": 5059,
+          "byte_end": 5097,
+          "original": "deleting_node.key = replacing_node.key",
+          "replacement": "pass",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 172,
+          "column": 17,
+          "end_line": 172,
+          "end_column": 57,
+          "byte_start": 5114,
+          "byte_end": 5154,
+          "original": "deleting_node.data = replacing_node.data",
+          "replacement": "pass",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 230,
+          "column": 13,
+          "end_line": 230,
+          "end_column": 39,
+          "byte_start": 6906,
+          "byte_end": 6932,
+          "original": "node_x.right = node_y.left",
+          "replacement": "pass",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 232,
+          "column": 17,
+          "end_line": 232,
+          "end_column": 44,
+          "byte_start": 6977,
+          "byte_end": 7004,
+          "original": "node_y.left.parent = node_x",
+          "replacement": "pass",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 233,
+          "column": 13,
+          "end_line": 233,
+          "end_column": 42,
+          "byte_start": 7017,
+          "byte_end": 7046,
+          "original": "node_y.parent = node_x.parent",
+          "replacement": "pass",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 237,
+          "column": 17,
+          "end_line": 237,
+          "end_column": 35,
+          "byte_start": 7173,
+          "byte_end": 7191,
+          "original": "self.root = node_y",
+          "replacement": "pass",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 240,
+          "column": 17,
+          "end_line": 240,
+          "end_column": 44,
+          "byte_start": 7304,
+          "byte_end": 7331,
+          "original": "node_x.parent.left = node_y",
+          "replacement": "pass",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 242,
+          "column": 17,
+          "end_line": 242,
+          "end_column": 45,
+          "byte_start": 7366,
+          "byte_end": 7394,
+          "original": "node_x.parent.right = node_y",
+          "replacement": "pass",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 244,
+          "column": 13,
+          "end_line": 244,
+          "end_column": 33,
+          "byte_start": 7408,
+          "byte_end": 7428,
+          "original": "node_y.left = node_x",
+          "replacement": "pass",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 245,
+          "column": 13,
+          "end_line": 245,
+          "end_column": 35,
+          "byte_start": 7441,
+          "byte_end": 7463,
+          "original": "node_x.parent = node_y",
+          "replacement": "pass",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 247,
+          "column": 13,
+          "end_line": 249,
+          "end_column": 14,
+          "byte_start": 7477,
+          "byte_end": 7591,
+          "original": "node_x.height = 1 + max(\n                self.get_height(node_x.left), self.get_height(node_x.right)\n            )",
+          "replacement": "pass",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 250,
+          "column": 13,
+          "end_line": 252,
+          "end_column": 14,
+          "byte_start": 7604,
+          "byte_end": 7718,
+          "original": "node_y.height = 1 + max(\n                self.get_height(node_y.left), self.get_height(node_y.right)\n            )",
+          "replacement": "pass",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        },
+        {
+          "id": 17,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 258,
+          "column": 13,
+          "end_line": 258,
+          "end_column": 39,
+          "byte_start": 7898,
+          "byte_end": 7924,
+          "original": "node_x.left = node_y.right",
+          "replacement": "pass",
+          "diff": "diff/000017.diff",
+          "test_packages": []
+        },
+        {
+          "id": 18,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 260,
+          "column": 17,
+          "end_line": 260,
+          "end_column": 45,
+          "byte_start": 7970,
+          "byte_end": 7998,
+          "original": "node_y.right.parent = node_x",
+          "replacement": "pass",
+          "diff": "diff/000018.diff",
+          "test_packages": []
+        },
+        {
+          "id": 19,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 261,
+          "column": 13,
+          "end_line": 261,
+          "end_column": 42,
+          "byte_start": 8011,
+          "byte_end": 8040,
+          "original": "node_y.parent = node_x.parent",
+          "replacement": "pass",
+          "diff": "diff/000019.diff",
+          "test_packages": []
+        },
+        {
+          "id": 20,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 265,
+          "column": 17,
+          "end_line": 265,
+          "end_column": 35,
+          "byte_start": 8167,
+          "byte_end": 8185,
+          "original": "self.root = node_y",
+          "replacement": "pass",
+          "diff": "diff/000020.diff",
+          "test_packages": []
+        },
+        {
+          "id": 21,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 268,
+          "column": 17,
+          "end_line": 268,
+          "end_column": 45,
+          "byte_start": 8299,
+          "byte_end": 8327,
+          "original": "node_x.parent.right = node_y",
+          "replacement": "pass",
+          "diff": "diff/000021.diff",
+          "test_packages": []
+        },
+        {
+          "id": 22,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 270,
+          "column": 17,
+          "end_line": 270,
+          "end_column": 44,
+          "byte_start": 8362,
+          "byte_end": 8389,
+          "original": "node_x.parent.left = node_y",
+          "replacement": "pass",
+          "diff": "diff/000022.diff",
+          "test_packages": []
+        },
+        {
+          "id": 23,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 272,
+          "column": 13,
+          "end_line": 272,
+          "end_column": 34,
+          "byte_start": 8403,
+          "byte_end": 8424,
+          "original": "node_y.right = node_x",
+          "replacement": "pass",
+          "diff": "diff/000023.diff",
+          "test_packages": []
+        },
+        {
+          "id": 24,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 273,
+          "column": 13,
+          "end_line": 273,
+          "end_column": 35,
+          "byte_start": 8437,
+          "byte_end": 8459,
+          "original": "node_x.parent = node_y",
+          "replacement": "pass",
+          "diff": "diff/000024.diff",
+          "test_packages": []
+        },
+        {
+          "id": 25,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 275,
+          "column": 13,
+          "end_line": 277,
+          "end_column": 14,
+          "byte_start": 8473,
+          "byte_end": 8587,
+          "original": "node_x.height = 1 + max(\n                self.get_height(node_x.left), self.get_height(node_x.right)\n            )",
+          "replacement": "pass",
+          "diff": "diff/000025.diff",
+          "test_packages": []
+        },
+        {
+          "id": 26,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 278,
+          "column": 13,
+          "end_line": 280,
+          "end_column": 14,
+          "byte_start": 8600,
+          "byte_end": 8714,
+          "original": "node_y.height = 1 + max(\n                self.get_height(node_y.left), self.get_height(node_y.right)\n            )",
+          "replacement": "pass",
+          "diff": "diff/000026.diff",
+          "test_packages": []
+        },
+        {
+          "id": 27,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 286,
+          "column": 13,
+          "end_line": 288,
+          "end_column": 14,
+          "byte_start": 8840,
+          "byte_end": 8954,
+          "original": "parent.height = 1 + max(\n                self.get_height(parent.left), self.get_height(parent.right)\n            )",
+          "replacement": "pass",
+          "diff": "diff/000027.diff",
+          "test_packages": []
+        },
+        {
+          "id": 28,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 336,
+          "column": 13,
+          "end_line": 336,
+          "end_column": 39,
+          "byte_start": 11104,
+          "byte_end": 11130,
+          "original": "self.root = replacing_node",
+          "replacement": "pass",
+          "diff": "diff/000028.diff",
+          "test_packages": []
+        },
+        {
+          "id": 29,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 338,
+          "column": 13,
+          "end_line": 338,
+          "end_column": 55,
+          "byte_start": 11200,
+          "byte_end": 11242,
+          "original": "deleting_node.parent.left = replacing_node",
+          "replacement": "pass",
+          "diff": "diff/000029.diff",
+          "test_packages": []
+        },
+        {
+          "id": 30,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 340,
+          "column": 13,
+          "end_line": 340,
+          "end_column": 56,
+          "byte_start": 11269,
+          "byte_end": 11312,
+          "original": "deleting_node.parent.right = replacing_node",
+          "replacement": "pass",
+          "diff": "diff/000030.diff",
+          "test_packages": []
+        },
+        {
+          "id": 31,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 343,
+          "column": 13,
+          "end_line": 343,
+          "end_column": 57,
+          "byte_start": 11353,
+          "byte_end": 11397,
+          "original": "replacing_node.parent = deleting_node.parent",
+          "replacement": "pass",
+          "diff": "diff/000031.diff",
+          "test_packages": []
+        },
+        {
+          "id": 32,
+          "file": "trees/binary_trees/avl_tree.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+          "line": 347,
+          "column": 13,
+          "end_line": 349,
+          "end_column": 14,
+          "byte_start": 11497,
+          "byte_end": 11626,
+          "original": "fixing_node.height = 1 + max(\n                self.get_height(fixing_node.left), self.get_height(fixing_node.right)\n            )",
+          "replacement": "pass",
+          "diff": "diff/000032.diff",
+          "test_packages": []
+        }
+      ],
+      "draft_combined_counts": {
+        "killed": 16,
+        "missed": 7,
+        "timeout": 6,
+        "error": 3
+      },
+      "draft_results": {
+        "1": "killed",
+        "2": "error",
+        "3": "error",
+        "4": "error",
+        "5": "killed",
+        "6": "killed",
+        "7": "timeout",
+        "8": "missed",
+        "9": "timeout",
+        "10": "missed",
+        "12": "killed",
+        "11": "killed",
+        "13": "killed",
+        "14": "killed",
+        "15": "timeout",
+        "16": "missed",
+        "17": "timeout",
+        "18": "killed",
+        "19": "timeout",
+        "20": "missed",
+        "21": "killed",
+        "22": "killed",
+        "23": "killed",
+        "24": "killed",
+        "25": "timeout",
+        "26": "missed",
+        "28": "missed",
+        "27": "killed",
+        "29": "killed",
+        "30": "killed",
+        "32": "missed",
+        "31": "killed"
+      },
+      "draft_reports": [
+        {
+          "directory": "run-1794235844-2ym04U",
+          "status": "failed",
+          "baseline_tests": 7,
+          "duration_seconds": 14.284791333,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.4408045839999999
+            },
+            {
+              "id": 2,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.380607125
+            },
+            {
+              "id": 3,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 4,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 5,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 6,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 7,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 8,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 9,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 10,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 11,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 12,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 13,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 14,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 15,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 16,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 17,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 18,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 19,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 20,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 21,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 22,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 23,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 24,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 25,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 26,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 27,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 28,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 29,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 30,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 31,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 32,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            }
+          ],
+          "mapping": [],
+          "file_count": 54,
+          "report_digest": "40664b3a75d62cf708725618fdbab502046b70dc27157e1c04f59450934386e5"
+        },
+        {
+          "directory": "run-1794235938-2z44Bp",
+          "status": "failed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.053171459,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.430684417
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 3
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "f58d8b5360cc63ed13612fb88e4ee704c79a86786e9228023c67ed805946c5d4"
+        },
+        {
+          "directory": "run-1794235938-WXUhWP",
+          "status": "failed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.063592375,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.433247667
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 4
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "40f6041490a0dd678ddf3ae192767ee01a5c32ad433b10361f042e3775a97d74"
+        },
+        {
+          "directory": "run-1794235949-YlbZF6",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.12717325,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.429543708
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 5
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "9bba4d9feda991f2e8f7152e6a78a0c4fda1c12a99fc56a92d81df541a521c8d"
+        },
+        {
+          "directory": "run-1794235949-wdOhkU",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.103713208,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.434407
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 6
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "201d2388b43b59c235c99813a211bd78935c1c5134b374f84eb34d93aa13a1ee"
+        },
+        {
+          "directory": "run-1794235961-OA8lH0",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 19.427264458,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 1,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "timeout",
+              "duration_seconds": 10.697106333
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 7
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "121ef74729e82f12917390a3645e7d3a2b2c3a18a4e1cc17fb7c3202ddb20337"
+        },
+        {
+          "directory": "run-1794235961-guk7oa",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.882506625,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.39767825
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 8
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "7cf1ccba737fde43f8b34e88471a95e2f865de194c9a06e74740c17588251f5b"
+        },
+        {
+          "directory": "run-1794235972-tZqpar",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 18.812797958,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 1,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "timeout",
+              "duration_seconds": 10.658372708
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 9
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "3b9bbff1fe16f1452a1a629e722276d0f1bf98c9af367ee7b9e51d77f3acb3bb"
+        },
+        {
+          "directory": "run-1794235980-eymrbc",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.236442959,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.267643292
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 10
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "2309358bd0526e46bb9809cb4797a35df6f082cca3e193a06b01b3546c7b1726"
+        },
+        {
+          "directory": "run-1794235990-1jqdBf",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 12.1969735,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.5218177910000001
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 12
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "165d41a34362681c960f1757e1b04faa06a26002453fae8bc7d5ac29e3151b0b"
+        },
+        {
+          "directory": "run-1794235990-uZrnsX",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 12.1978085,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.5245317919999999
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 11
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "72df41d679511e8cdcbec3740fed2744a5621299cbe7530f0b9f8052592aa2c0"
+        },
+        {
+          "directory": "run-1794236003-Xg7Zib",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.1558695,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.402820042
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 13
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "d888be776b68b178f849e1986ad97fc82e7d836ae2646b4d32ebaafdfd70e43c"
+        },
+        {
+          "directory": "run-1794236003-bcouWj",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.13825525,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.401453957
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 14
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "dc59addf9ca5329c61adb20180bd82dd762838a6932216fb245e9f151efbcccc"
+        },
+        {
+          "directory": "run-1794236014-cZBUjk",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 19.384581875,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 1,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "timeout",
+              "duration_seconds": 10.681913501
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 15
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "e07d6f20850d9f3fa52aeb8324b5108ddcd2566ac47df17bc81ba94bf527c7e5"
+        },
+        {
+          "directory": "run-1794236014-mHKWm2",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.806986541,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.379655834
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 16
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "99283280b95fb123ed77df14f8ebef50ed2da98dfa765f575eec964f46c04efb"
+        },
+        {
+          "directory": "run-1794236025-uyBHsK",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 18.954937417,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 1,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "timeout",
+              "duration_seconds": 10.649586333
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 17
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "f327ec86d9e966129cc7b579669eadf4382cc71246686c6f0c9e78a12b80b9db"
+        },
+        {
+          "directory": "run-1794236033-DY5IPY",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.357313917,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.347879041
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 18
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "115051d3fe9e91ab8e8dd07efda81cd19928bc60ba17858b03690538ab73eaaf"
+        },
+        {
+          "directory": "run-1794236044-NcNnCr",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 19.399119166,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 1,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "timeout",
+              "duration_seconds": 10.681582458
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 19
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "6e68513ec5a52ca2c509b3ada35a7a165b1da17bba4dece26e146bf37e049031"
+        },
+        {
+          "directory": "run-1794236044-sGcZ6S",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.833829792,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.376064625
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 20
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "c9237513a1a26c8f299f491ea32527d45ca7630c6e5ff7f7cc4c27b1d4833c10"
+        },
+        {
+          "directory": "run-1794236055-3N4w0G",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.444398416,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.444951125
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 21
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "435999ead05e045092fa6cef2c385b64f13d66a2f8dd55d6129b672c40f2e4f2"
+        },
+        {
+          "directory": "run-1794236063-9iCpg5",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.64364275,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.402814667
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 22
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "811b68ddc7638a991b9273a84d7a4afb3ff34c5ed65d96490fb33a6a1f4b97e7"
+        },
+        {
+          "directory": "run-1794236065-njDq1Z",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.607160125,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.39202025
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 23
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "0ad11b99fdde5a8aa08398380f7940a0eb0d935257f03b90aca0507dd7886c70"
+        },
+        {
+          "directory": "run-1794236074-a2UPzg",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.54632075,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.3844145829999999
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 24
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "e05671abe182fc74c4739f80db64ae0279f99fa234f18e8904e94a29b5ff6cae"
+        },
+        {
+          "directory": "run-1794236076-lFRKrG",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 19.059050875,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 1,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "timeout",
+              "duration_seconds": 10.759566417
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 25
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "011c6b633ceca1bbedf1604663e3a4c7cca898a22ab9cd3867dac58a423f76b0"
+        },
+        {
+          "directory": "run-1794236084-tzO7Hh",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.281252083,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.299781167
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 26
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "2e9d5e68515f6b1b494ca170389d2879fcc379fb14c3db794bee8ca895d441e3"
+        },
+        {
+          "directory": "run-1794236095-nC5gkU",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.594790083,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.3726650409999999
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 28
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "046d04face05ab434ade1326e7ec0ea3ca426b490a640c0183066cee1282d428"
+        },
+        {
+          "directory": "run-1794236095-pAylXz",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 10.620396458,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.393179833
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 27
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "7e03e772dec28c4c0d3f0bb920486f9356b0cdd33cdf85c805c157746fca74a7"
+        },
+        {
+          "directory": "run-1794236105-zpBeH5",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.257030125,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.599232875
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 29
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "f9f52eb6c39aff32015e32fc70f675b25ffcfe293a8b7255c9878643dd128ff1"
+        },
+        {
+          "directory": "run-1794236106-90soC8",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.314796917,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.645714875
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 30
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "13045c60006ae8edb290a9453a4b83bb1cf2fd4cf266433ceb47737f6df4b57b"
+        },
+        {
+          "directory": "run-1794236117-0tL3PH",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.24180025,
+          "summary": {
+            "killed": 0,
+            "missed": 1,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "missed",
+              "duration_seconds": 1.374635834
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 32
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "f184fcf6a80b32c0843822322d300c2611e002597c8d07d240ed6aad449cf615"
+        },
+        {
+          "directory": "run-1794236117-ceLMRn",
+          "status": "completed",
+          "baseline_tests": 7,
+          "duration_seconds": 11.416885666,
+          "summary": {
+            "killed": 1,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 0
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "killed",
+              "duration_seconds": 1.387144958
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 31
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "b973f23cad6e7edd0cae6d5d469d17f6b9cb44d0d6b080cf3cd42c16410ecc17"
+        }
+      ],
+      "final_original": {
+        "directory": "run-1794236301-Skwh0d",
+        "status": "failed",
+        "score": {
+          "scope": "filtered",
+          "killed": 1,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 1,
+          "unfinished": 30,
+          "dismissed_in_score": 0,
+          "percentage": null,
+          "unavailable_reason": "incomplete_run"
+        },
+        "baseline_tests": 7,
+        "duration_seconds": 15.472683125,
+        "summary": {
+          "killed": 1,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 1
+        },
+        "inventory": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 130,
+            "column": 9,
+            "end_line": 130,
+            "end_column": 33,
+            "byte_start": 3462,
+            "byte_end": 3486,
+            "original": "new_node.parent = parent",
+            "replacement": "pass",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 133,
+            "column": 13,
+            "end_line": 133,
+            "end_column": 33,
+            "byte_start": 3591,
+            "byte_end": 3611,
+            "original": "self.root = new_node",
+            "replacement": "pass",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          },
+          {
+            "id": 3,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 136,
+            "column": 17,
+            "end_line": 136,
+            "end_column": 39,
+            "byte_start": 3684,
+            "byte_end": 3706,
+            "original": "parent.left = new_node",
+            "replacement": "pass",
+            "diff": "diff/000003.diff",
+            "test_packages": []
+          },
+          {
+            "id": 4,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 138,
+            "column": 17,
+            "end_line": 138,
+            "end_column": 40,
+            "byte_start": 3741,
+            "byte_end": 3764,
+            "original": "parent.right = new_node",
+            "replacement": "pass",
+            "diff": "diff/000004.diff",
+            "test_packages": []
+          },
+          {
+            "id": 5,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 171,
+            "column": 17,
+            "end_line": 171,
+            "end_column": 55,
+            "byte_start": 5059,
+            "byte_end": 5097,
+            "original": "deleting_node.key = replacing_node.key",
+            "replacement": "pass",
+            "diff": "diff/000005.diff",
+            "test_packages": []
+          },
+          {
+            "id": 6,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 172,
+            "column": 17,
+            "end_line": 172,
+            "end_column": 57,
+            "byte_start": 5114,
+            "byte_end": 5154,
+            "original": "deleting_node.data = replacing_node.data",
+            "replacement": "pass",
+            "diff": "diff/000006.diff",
+            "test_packages": []
+          },
+          {
+            "id": 7,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 230,
+            "column": 13,
+            "end_line": 230,
+            "end_column": 39,
+            "byte_start": 6906,
+            "byte_end": 6932,
+            "original": "node_x.right = node_y.left",
+            "replacement": "pass",
+            "diff": "diff/000007.diff",
+            "test_packages": []
+          },
+          {
+            "id": 8,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 232,
+            "column": 17,
+            "end_line": 232,
+            "end_column": 44,
+            "byte_start": 6977,
+            "byte_end": 7004,
+            "original": "node_y.left.parent = node_x",
+            "replacement": "pass",
+            "diff": "diff/000008.diff",
+            "test_packages": []
+          },
+          {
+            "id": 9,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 233,
+            "column": 13,
+            "end_line": 233,
+            "end_column": 42,
+            "byte_start": 7017,
+            "byte_end": 7046,
+            "original": "node_y.parent = node_x.parent",
+            "replacement": "pass",
+            "diff": "diff/000009.diff",
+            "test_packages": []
+          },
+          {
+            "id": 10,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 237,
+            "column": 17,
+            "end_line": 237,
+            "end_column": 35,
+            "byte_start": 7173,
+            "byte_end": 7191,
+            "original": "self.root = node_y",
+            "replacement": "pass",
+            "diff": "diff/000010.diff",
+            "test_packages": []
+          },
+          {
+            "id": 11,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 240,
+            "column": 17,
+            "end_line": 240,
+            "end_column": 44,
+            "byte_start": 7304,
+            "byte_end": 7331,
+            "original": "node_x.parent.left = node_y",
+            "replacement": "pass",
+            "diff": "diff/000011.diff",
+            "test_packages": []
+          },
+          {
+            "id": 12,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 242,
+            "column": 17,
+            "end_line": 242,
+            "end_column": 45,
+            "byte_start": 7366,
+            "byte_end": 7394,
+            "original": "node_x.parent.right = node_y",
+            "replacement": "pass",
+            "diff": "diff/000012.diff",
+            "test_packages": []
+          },
+          {
+            "id": 13,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 244,
+            "column": 13,
+            "end_line": 244,
+            "end_column": 33,
+            "byte_start": 7408,
+            "byte_end": 7428,
+            "original": "node_y.left = node_x",
+            "replacement": "pass",
+            "diff": "diff/000013.diff",
+            "test_packages": []
+          },
+          {
+            "id": 14,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 245,
+            "column": 13,
+            "end_line": 245,
+            "end_column": 35,
+            "byte_start": 7441,
+            "byte_end": 7463,
+            "original": "node_x.parent = node_y",
+            "replacement": "pass",
+            "diff": "diff/000014.diff",
+            "test_packages": []
+          },
+          {
+            "id": 15,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 247,
+            "column": 13,
+            "end_line": 249,
+            "end_column": 14,
+            "byte_start": 7477,
+            "byte_end": 7591,
+            "original": "node_x.height = 1 + max(\n                self.get_height(node_x.left), self.get_height(node_x.right)\n            )",
+            "replacement": "pass",
+            "diff": "diff/000015.diff",
+            "test_packages": []
+          },
+          {
+            "id": 16,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 250,
+            "column": 13,
+            "end_line": 252,
+            "end_column": 14,
+            "byte_start": 7604,
+            "byte_end": 7718,
+            "original": "node_y.height = 1 + max(\n                self.get_height(node_y.left), self.get_height(node_y.right)\n            )",
+            "replacement": "pass",
+            "diff": "diff/000016.diff",
+            "test_packages": []
+          },
+          {
+            "id": 17,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 258,
+            "column": 13,
+            "end_line": 258,
+            "end_column": 39,
+            "byte_start": 7898,
+            "byte_end": 7924,
+            "original": "node_x.left = node_y.right",
+            "replacement": "pass",
+            "diff": "diff/000017.diff",
+            "test_packages": []
+          },
+          {
+            "id": 18,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 260,
+            "column": 17,
+            "end_line": 260,
+            "end_column": 45,
+            "byte_start": 7970,
+            "byte_end": 7998,
+            "original": "node_y.right.parent = node_x",
+            "replacement": "pass",
+            "diff": "diff/000018.diff",
+            "test_packages": []
+          },
+          {
+            "id": 19,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 261,
+            "column": 13,
+            "end_line": 261,
+            "end_column": 42,
+            "byte_start": 8011,
+            "byte_end": 8040,
+            "original": "node_y.parent = node_x.parent",
+            "replacement": "pass",
+            "diff": "diff/000019.diff",
+            "test_packages": []
+          },
+          {
+            "id": 20,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 265,
+            "column": 17,
+            "end_line": 265,
+            "end_column": 35,
+            "byte_start": 8167,
+            "byte_end": 8185,
+            "original": "self.root = node_y",
+            "replacement": "pass",
+            "diff": "diff/000020.diff",
+            "test_packages": []
+          },
+          {
+            "id": 21,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 268,
+            "column": 17,
+            "end_line": 268,
+            "end_column": 45,
+            "byte_start": 8299,
+            "byte_end": 8327,
+            "original": "node_x.parent.right = node_y",
+            "replacement": "pass",
+            "diff": "diff/000021.diff",
+            "test_packages": []
+          },
+          {
+            "id": 22,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 270,
+            "column": 17,
+            "end_line": 270,
+            "end_column": 44,
+            "byte_start": 8362,
+            "byte_end": 8389,
+            "original": "node_x.parent.left = node_y",
+            "replacement": "pass",
+            "diff": "diff/000022.diff",
+            "test_packages": []
+          },
+          {
+            "id": 23,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 272,
+            "column": 13,
+            "end_line": 272,
+            "end_column": 34,
+            "byte_start": 8403,
+            "byte_end": 8424,
+            "original": "node_y.right = node_x",
+            "replacement": "pass",
+            "diff": "diff/000023.diff",
+            "test_packages": []
+          },
+          {
+            "id": 24,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 273,
+            "column": 13,
+            "end_line": 273,
+            "end_column": 35,
+            "byte_start": 8437,
+            "byte_end": 8459,
+            "original": "node_x.parent = node_y",
+            "replacement": "pass",
+            "diff": "diff/000024.diff",
+            "test_packages": []
+          },
+          {
+            "id": 25,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 275,
+            "column": 13,
+            "end_line": 277,
+            "end_column": 14,
+            "byte_start": 8473,
+            "byte_end": 8587,
+            "original": "node_x.height = 1 + max(\n                self.get_height(node_x.left), self.get_height(node_x.right)\n            )",
+            "replacement": "pass",
+            "diff": "diff/000025.diff",
+            "test_packages": []
+          },
+          {
+            "id": 26,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 278,
+            "column": 13,
+            "end_line": 280,
+            "end_column": 14,
+            "byte_start": 8600,
+            "byte_end": 8714,
+            "original": "node_y.height = 1 + max(\n                self.get_height(node_y.left), self.get_height(node_y.right)\n            )",
+            "replacement": "pass",
+            "diff": "diff/000026.diff",
+            "test_packages": []
+          },
+          {
+            "id": 27,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 286,
+            "column": 13,
+            "end_line": 288,
+            "end_column": 14,
+            "byte_start": 8840,
+            "byte_end": 8954,
+            "original": "parent.height = 1 + max(\n                self.get_height(parent.left), self.get_height(parent.right)\n            )",
+            "replacement": "pass",
+            "diff": "diff/000027.diff",
+            "test_packages": []
+          },
+          {
+            "id": 28,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 336,
+            "column": 13,
+            "end_line": 336,
+            "end_column": 39,
+            "byte_start": 11104,
+            "byte_end": 11130,
+            "original": "self.root = replacing_node",
+            "replacement": "pass",
+            "diff": "diff/000028.diff",
+            "test_packages": []
+          },
+          {
+            "id": 29,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 338,
+            "column": 13,
+            "end_line": 338,
+            "end_column": 55,
+            "byte_start": 11200,
+            "byte_end": 11242,
+            "original": "deleting_node.parent.left = replacing_node",
+            "replacement": "pass",
+            "diff": "diff/000029.diff",
+            "test_packages": []
+          },
+          {
+            "id": 30,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 340,
+            "column": 13,
+            "end_line": 340,
+            "end_column": 56,
+            "byte_start": 11269,
+            "byte_end": 11312,
+            "original": "deleting_node.parent.right = replacing_node",
+            "replacement": "pass",
+            "diff": "diff/000030.diff",
+            "test_packages": []
+          },
+          {
+            "id": 31,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 343,
+            "column": 13,
+            "end_line": 343,
+            "end_column": 57,
+            "byte_start": 11353,
+            "byte_end": 11397,
+            "original": "replacing_node.parent = deleting_node.parent",
+            "replacement": "pass",
+            "diff": "diff/000031.diff",
+            "test_packages": []
+          },
+          {
+            "id": 32,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 347,
+            "column": 13,
+            "end_line": 349,
+            "end_column": 14,
+            "byte_start": 11497,
+            "byte_end": 11626,
+            "original": "fixing_node.height = 1 + max(\n                self.get_height(fixing_node.left), self.get_height(fixing_node.right)\n            )",
+            "replacement": "pass",
+            "diff": "diff/000032.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          {
+            "id": 1,
+            "state": "completed",
+            "outcome": "killed",
+            "duration_seconds": 1.492741084
+          },
+          {
+            "id": 2,
+            "state": "completed",
+            "outcome": "error",
+            "duration_seconds": 1.5053365410000001
+          },
+          {
+            "id": 3,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 4,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 5,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 6,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 7,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 8,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 9,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 10,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 11,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 12,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 13,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 14,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 15,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 16,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 17,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 18,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 19,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 20,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 21,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 22,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 23,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 24,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 25,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 26,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 27,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 28,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 29,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 30,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 31,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          },
+          {
+            "id": 32,
+            "state": "pending",
+            "outcome": null,
+            "duration_seconds": null
+          }
+        ],
+        "mapping": [],
+        "file_count": 54,
+        "report_digest": "a8b8b880b5186b4927977b6bfcb90c5c035f239116e7e51d186326a6c1828470"
+      },
+      "preserved_report_files": {
+        "draft-report-hashes.json": 678,
+        "final-original-report-hashes.json": 78
+      },
+      "final-survivors": {
+        "directory": "run-1794236325-Dt32nY",
+        "status": "completed",
+        "score": {
+          "scope": "rerun",
+          "killed": 0,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 0.0,
+          "unavailable_reason": null
+        },
+        "baseline_tests": 7,
+        "duration_seconds": 16.353367209,
+        "summary": {
+          "killed": 0,
+          "missed": 2,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "inventory": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 232,
+            "column": 17,
+            "end_line": 232,
+            "end_column": 44,
+            "byte_start": 6977,
+            "byte_end": 7004,
+            "original": "node_y.left.parent = node_x",
+            "replacement": "pass",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 237,
+            "column": 17,
+            "end_line": 237,
+            "end_column": 35,
+            "byte_start": 7173,
+            "byte_end": 7191,
+            "original": "self.root = node_y",
+            "replacement": "pass",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          {
+            "id": 1,
+            "state": "completed",
+            "outcome": "missed",
+            "duration_seconds": 1.582678375
+          },
+          {
+            "id": 2,
+            "state": "completed",
+            "outcome": "missed",
+            "duration_seconds": 1.487354959
+          }
+        ],
+        "mapping": [
+          {
+            "id": 1,
+            "source_id": 8
+          },
+          {
+            "id": 2,
+            "source_id": 10
+          }
+        ],
+        "file_count": 24,
+        "report_digest": "f71d35fb9fe45121505e7474f034fc3b0bc95ce220f0017ce26a64b921157b72"
+      },
+      "final-stronger": {
+        "directory": "run-1794236341-3eZF1d",
+        "status": "completed",
+        "score": {
+          "scope": "rerun",
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": 100.0,
+          "unavailable_reason": null
+        },
+        "baseline_tests": 9,
+        "duration_seconds": 14.675493292,
+        "summary": {
+          "killed": 2,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "inventory": [
+          {
+            "id": 1,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 232,
+            "column": 17,
+            "end_line": 232,
+            "end_column": 44,
+            "byte_start": 6977,
+            "byte_end": 7004,
+            "original": "node_y.left.parent = node_x",
+            "replacement": "pass",
+            "diff": "diff/000001.diff",
+            "test_packages": []
+          },
+          {
+            "id": 2,
+            "file": "trees/binary_trees/avl_tree.py",
+            "operator": "assignment_remove",
+            "source_fingerprint": "sha256:2531ecce50ee4f91fc2c196b6d61415ea8781cbb8bac7f6b0e6b7c05f8872291",
+            "line": 237,
+            "column": 17,
+            "end_line": 237,
+            "end_column": 35,
+            "byte_start": 7173,
+            "byte_end": 7191,
+            "original": "self.root = node_y",
+            "replacement": "pass",
+            "diff": "diff/000002.diff",
+            "test_packages": []
+          }
+        ],
+        "outcomes": [
+          {
+            "id": 1,
+            "state": "completed",
+            "outcome": "killed",
+            "duration_seconds": 1.471360709
+          },
+          {
+            "id": 2,
+            "state": "completed",
+            "outcome": "killed",
+            "duration_seconds": 1.455478833
+          }
+        ],
+        "mapping": [
+          {
+            "id": 1,
+            "source_id": 8
+          },
+          {
+            "id": 2,
+            "source_id": 10
+          }
+        ],
+        "file_count": 24,
+        "report_digest": "f73799b7ccbf67418bc08e619530b8ee2a0563f412472894323d2c9f1de832d6"
+      }
+    },
+    "route": {
+      "commit": "35a3db157731ba0073d66f432b69b997ce2e9f01",
+      "inputs": {
+        ".github/workflows/ci.yml": "7e07c2592ee7b0492a58ec4c39c41bd808717019f1a9dd09068847e425e8dbce",
+        ".github/workflows/exact-head-acceptance.yml": "9c55935b427d445f4b5d8d6f9f1b011a01659c9cb711e2058b0c51a5fba8cc89",
+        ".gitignore": "e5fc237384c471f2959ca4f7965c9f4c22df1b582a7223f698c9c59cddbe81d2",
+        "LICENSE": "326be807b40cea3c84b8587616d3574c3274fc99adedbf4f88eb070d4b0c4a19",
+        "README.md": "d07b1bca146d587d7a1b506bfa2335c5ae90a69872aa389c548c91d6c2576fde",
+        "docs/FALLBACK.md": "b0588c81fd8d0242c9ec62aeb45ade66289a7a5dd2b1ac6e4df4dda6eb02b630",
+        "docs/POLICIES.md": "68ffe86da203e46d099c15204ea20dd1dc9c52d5e00eb7c0f1677e2c1ff5050d",
+        "docs/USAGE.md": "d1572d3e2e68239ddad424a37f9f56c4e1f03a1e5396256928abf7295ff87dec",
+        "docs/exact-head-acceptance.md": "f798a5f8cdcebead54e3184a4ff6b57be9b1922585cf7038bdfbf49a3df4b437",
+        "examples/opus_down_demo.py": "55a65b844dc68c45c113e314d04209071099b5548a582dc025ef2d7f9b8b1bd3",
+        "pyproject.toml": "7b7dcd5f438230dfa59e165bc479916b4fa179c38154e68e049329ec400c9533",
+        "src/route_mini/__init__.py": "7bbeb85d38db03c95a375b83a55cbdb2ef96f2b00417f04feb26263298a700f8",
+        "src/route_mini/decision.py": "e4d626bcd8116458843064c79eca53bd42e1d3329f54fb5f3d8f79777eb758a0",
+        "src/route_mini/fallback.py": "1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+        "src/route_mini/policy.py": "8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+        "src/route_mini/providers.py": "eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+        "src/route_mini/router.py": "7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+        "src/route_mini/telemetry.py": "8bf0affc8064a2707a7a3beae4422298a2110dbfef37bb23fd75d6f1d5623dd9",
+        "src/route_mini/types.py": "a6c09dab72d3d2222ac79698754f5734d977b1623b85f45a33f4978c44a52af2",
+        "tests/__init__.py": "c69b0cb7b51c653dff310f948e09b6593afeb655022de58ab6389e40227f96dd",
+        "tests/conftest.py": "e7dc4b0a8100cb5cf2f2a6a2bdef2b14a58804f9a267fd8a49ed977f96a97bfe",
+        "tests/test_fallback.py": "47f7925b586b3e70bfc1fbd633d21ed67bf1cdb5d0b9a0e9e702c218b34b6d80",
+        "tests/test_policy.py": "439a08b76646eceb9f7ef50f8833b0e44ae542516ea3d2caf7ddcd5dd65b9394",
+        "tests/test_router.py": "1c85ad92b63d32e1785faf210d4ab4e3ad016399d0fdd7783847fe79383fc334",
+        "tests/test_telemetry_decision_provider.py": "32a4009df7544495e2437a8d152954a3228e026392a58cf2ac62046dee0c5d9b"
+      },
+      "draft_inventory": [
+        {
+          "id": 1,
+          "file": "src/route_mini/fallback.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+          "line": 43,
+          "column": 9,
+          "end_line": 43,
+          "end_column": 39,
+          "byte_start": 1010,
+          "byte_end": 1040,
+          "original": "self.max_retries = max_retries",
+          "replacement": "pass",
+          "diff": "diff/000001.diff",
+          "test_packages": []
+        },
+        {
+          "id": 2,
+          "file": "src/route_mini/fallback.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+          "line": 44,
+          "column": 9,
+          "end_line": 44,
+          "end_column": 59,
+          "byte_start": 1049,
+          "byte_end": 1099,
+          "original": "self.rate_limit_backoff_ms = rate_limit_backoff_ms",
+          "replacement": "pass",
+          "diff": "diff/000002.diff",
+          "test_packages": []
+        },
+        {
+          "id": 3,
+          "file": "src/route_mini/fallback.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:1f6028c82e59e87abd9bc78d07451600944185bcf10c69ea1e3eb37bed6836da",
+          "line": 45,
+          "column": 9,
+          "end_line": 45,
+          "end_column": 53,
+          "byte_start": 1108,
+          "byte_end": 1152,
+          "original": "self.network_backoff_ms = network_backoff_ms",
+          "replacement": "pass",
+          "diff": "diff/000003.diff",
+          "test_packages": []
+        },
+        {
+          "id": 4,
+          "file": "src/route_mini/policy.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+          "line": 22,
+          "column": 9,
+          "end_line": 22,
+          "end_column": 33,
+          "byte_start": 564,
+          "byte_end": 588,
+          "original": "self.policies = policies",
+          "replacement": "pass",
+          "diff": "diff/000004.diff",
+          "test_packages": []
+        },
+        {
+          "id": 5,
+          "file": "src/route_mini/policy.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+          "line": 51,
+          "column": 9,
+          "end_line": 51,
+          "end_column": 35,
+          "byte_start": 1498,
+          "byte_end": 1524,
+          "original": "self.preferred = preferred",
+          "replacement": "pass",
+          "diff": "diff/000005.diff",
+          "test_packages": []
+        },
+        {
+          "id": 6,
+          "file": "src/route_mini/policy.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+          "line": 71,
+          "column": 9,
+          "end_line": 71,
+          "end_column": 33,
+          "byte_start": 2131,
+          "byte_end": 2155,
+          "original": "self.max_cost = max_cost",
+          "replacement": "pass",
+          "diff": "diff/000006.diff",
+          "test_packages": []
+        },
+        {
+          "id": 7,
+          "file": "src/route_mini/policy.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:8de6645a1ed5618d84f9e17e11a2d90837465ae32a987b23d23d9694337ca2a8",
+          "line": 85,
+          "column": 9,
+          "end_line": 85,
+          "end_column": 37,
+          "byte_start": 2534,
+          "byte_end": 2562,
+          "original": "self.max_p50_ms = max_p50_ms",
+          "replacement": "pass",
+          "diff": "diff/000007.diff",
+          "test_packages": []
+        },
+        {
+          "id": 8,
+          "file": "src/route_mini/providers.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+          "line": 53,
+          "column": 9,
+          "end_line": 53,
+          "end_column": 25,
+          "byte_start": 1345,
+          "byte_end": 1361,
+          "original": "self.name = name",
+          "replacement": "pass",
+          "diff": "diff/000008.diff",
+          "test_packages": []
+        },
+        {
+          "id": 9,
+          "file": "src/route_mini/providers.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:eebadcff57ce9f3b3a8a659abf1ae3dbe4ac6dd41282ba6f3297b3eeb8de677f",
+          "line": 54,
+          "column": 9,
+          "end_line": 54,
+          "end_column": 49,
+          "byte_start": 1370,
+          "byte_end": 1410,
+          "original": "self._capabilities = tuple(capabilities)",
+          "replacement": "pass",
+          "diff": "diff/000009.diff",
+          "test_packages": []
+        },
+        {
+          "id": 10,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 17,
+          "column": 9,
+          "end_line": 17,
+          "end_column": 33,
+          "byte_start": 564,
+          "byte_end": 588,
+          "original": "self.decision = decision",
+          "replacement": "pass",
+          "diff": "diff/000010.diff",
+          "test_packages": []
+        },
+        {
+          "id": 11,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 29,
+          "column": 9,
+          "end_line": 29,
+          "end_column": 77,
+          "byte_start": 851,
+          "byte_end": 919,
+          "original": "self.providers = {provider.name: provider for provider in providers}",
+          "replacement": "pass",
+          "diff": "diff/000011.diff",
+          "test_packages": []
+        },
+        {
+          "id": 12,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 30,
+          "column": 9,
+          "end_line": 30,
+          "end_column": 29,
+          "byte_start": 928,
+          "byte_end": 948,
+          "original": "self.policy = policy",
+          "replacement": "pass",
+          "diff": "diff/000012.diff",
+          "test_packages": []
+        },
+        {
+          "id": 13,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 31,
+          "column": 9,
+          "end_line": 31,
+          "end_column": 52,
+          "byte_start": 957,
+          "byte_end": 1000,
+          "original": "self.fallback = fallback or FallbackChain()",
+          "replacement": "pass",
+          "diff": "diff/000013.diff",
+          "test_packages": []
+        },
+        {
+          "id": 14,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 32,
+          "column": 9,
+          "end_line": 32,
+          "end_column": 50,
+          "byte_start": 1009,
+          "byte_end": 1050,
+          "original": "self.telemetry = telemetry or Telemetry()",
+          "replacement": "pass",
+          "diff": "diff/000014.diff",
+          "test_packages": []
+        },
+        {
+          "id": 15,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 33,
+          "column": 9,
+          "end_line": 33,
+          "end_column": 57,
+          "byte_start": 1059,
+          "byte_end": 1107,
+          "original": "self.sleep_seconds_per_ms = sleep_seconds_per_ms",
+          "replacement": "pass",
+          "diff": "diff/000015.diff",
+          "test_packages": []
+        },
+        {
+          "id": 16,
+          "file": "src/route_mini/router.py",
+          "operator": "assignment_remove",
+          "source_fingerprint": "sha256:7e53d6bfe794caba4f4f8044a094139c5f2927f904e5de67f5315de986325709",
+          "line": 34,
+          "column": 9,
+          "end_line": 34,
+          "end_column": 29,
+          "byte_start": 1116,
+          "byte_end": 1136,
+          "original": "self._ids = count(1)",
+          "replacement": "pass",
+          "diff": "diff/000016.diff",
+          "test_packages": []
+        }
+      ],
+      "draft_combined_counts": {
+        "error": 16
+      },
+      "draft_results": {
+        "1": "error",
+        "3": "error",
+        "2": "error",
+        "4": "error",
+        "5": "error",
+        "7": "error",
+        "6": "error",
+        "8": "error",
+        "9": "error",
+        "11": "error",
+        "10": "error",
+        "12": "error",
+        "13": "error",
+        "14": "error",
+        "15": "error",
+        "16": "error"
+      },
+      "draft_reports": [
+        {
+          "directory": "run-1794235845-lSjA2I",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.598213625,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.521082874
+            },
+            {
+              "id": 2,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 3,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 4,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 5,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 6,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 7,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 8,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 9,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 10,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 11,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 12,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 13,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 14,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 15,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            },
+            {
+              "id": 16,
+              "state": "pending",
+              "outcome": null,
+              "duration_seconds": null
+            }
+          ],
+          "mapping": [],
+          "file_count": 35,
+          "report_digest": "fda02c2620d26ab1f22d8c3402ecc50802e0bc7118e3f71f19bb7fd6132ad1ab"
+        },
+        {
+          "directory": "run-1794236128-2e6W11",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.222204458,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.552004292
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 3
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "26da273b3ef0cc36c3310cb7f8f049fcc0519b2f148f3b93fef35450fe9fd483"
+        },
+        {
+          "directory": "run-1794236128-HX4nG6",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.204538458,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.550178042
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 2
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "6121e3b1abcfe7d2f9c16f9b2f022a16219483fbc6da687aaf35f6f2cfdd68f1"
+        },
+        {
+          "directory": "run-1794236138-EoySj2",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 9.968453875,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.508920541
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 4
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "3df0b983b6ce49f19a842a460c49cd120bd91d954bd7ac77c78228751774e5c6"
+        },
+        {
+          "directory": "run-1794236139-bgfZ7y",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 9.939404875,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.5249990420000001
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 5
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "0c41e0f21d6a633fb72be9b36dcf09a5d69e5a323a51b583e7bcc1f89c3b4d32"
+        },
+        {
+          "directory": "run-1794236149-bgIBak",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.183726042,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.5999782919999999
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 7
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "ee47ffc6f8e13519d7a663fee15abdd6f20a0682b93fb6b81a30282a4f0393ec"
+        },
+        {
+          "directory": "run-1794236149-npS2IC",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.18247525,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.60101825
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 6
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "4e9afc0d9c39d6bbef175115f79ec3a372c67cdec4f7e3eaca4784dc935e89b2"
+        },
+        {
+          "directory": "run-1794236159-oZ5TH2",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.255775792,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.703774792
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 8
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "dbc6b925b705a7a7cba8d98afc124f957a78de552c3b389232956599ecd9ac96"
+        },
+        {
+          "directory": "run-1794236159-pyfW9w",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.335441958,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.7568126240000002
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 9
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "8fb62cdf9818787950ebfd894110905ecb7841ee2a783082192ce552628021a4"
+        },
+        {
+          "directory": "run-1794236169-G6o7jg",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.290084167,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.625538167
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 11
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "17cdff8f9d2a2c965d58ef0c49a4985d8bc22d651d22a1d77ef1c2129f08ec60"
+        },
+        {
+          "directory": "run-1794236169-Pbv0Wv",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.312548458,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.552191042
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 10
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "c53a5c584cc9eb527664312150e82de9a69236422e74c83174a4cc984bf01511"
+        },
+        {
+          "directory": "run-1794236179-Zwmv0u",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.534408834,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.6450412079999999
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 12
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "c1d48357ef1ca1edd95167ef87cfaee459a5de98b477d9df72dcad060f8bad70"
+        },
+        {
+          "directory": "run-1794236180-NcFHLH",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.390529792,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.618034083
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 13
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "d3494b96d4620c783253a13a93521556f9001bcfb0df8c71ba9e33db5809e53a"
+        },
+        {
+          "directory": "run-1794236190-LW9pyB",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.312189625,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.546118125
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 14
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "5c115573aa797f0df04fe93a105d2619e85f1fc78874c07c6ac71ab61e205e43"
+        },
+        {
+          "directory": "run-1794236190-sLpghE",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 10.194766917,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.479582292
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 15
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "63a8857b704ccd4642f7d7fce3c3f945a73e7542520d632fc3d4d5acd5b16953"
+        },
+        {
+          "directory": "run-1794236200-WNAA4D",
+          "status": "failed",
+          "baseline_tests": 68,
+          "duration_seconds": 9.176616334,
+          "summary": {
+            "killed": 0,
+            "missed": 0,
+            "timeout": 0,
+            "build_failed": 0,
+            "errors": 1
+          },
+          "outcomes": [
+            {
+              "id": 1,
+              "state": "completed",
+              "outcome": "error",
+              "duration_seconds": 1.428678957
+            }
+          ],
+          "mapping": [
+            {
+              "id": 1,
+              "source_id": 16
+            }
+          ],
+          "file_count": 20,
+          "report_digest": "2ac96ba2428407a9eac14b7fc8e0d81a09d5a7bc13e2230e94dc252e3820a85d"
+        }
+      ],
+      "final_original": {
+        "directory": "run-1794236317-9uCudm",
+        "status": "completed",
+        "score": {
+          "scope": "filtered",
+          "killed": 0,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0,
+          "unfinished": 0,
+          "dismissed_in_score": 0,
+          "percentage": null,
+          "unavailable_reason": "no_scored_mutations"
+        },
+        "baseline_tests": 68,
+        "duration_seconds": 7.640354333,
+        "summary": {
+          "killed": 0,
+          "missed": 0,
+          "timeout": 0,
+          "build_failed": 0,
+          "errors": 0
+        },
+        "inventory": [],
+        "outcomes": [],
+        "mapping": [],
+        "file_count": 16,
+        "report_digest": "4c885f9d2dde90268312e300e667b88a2877843eb4f441be4ddd90582fb5f8b3"
+      },
+      "preserved_report_files": {
+        "draft-report-hashes.json": 335,
+        "final-original-report-hashes.json": 16
+      }
+    }
+  },
+  "stronger_test_sha256": "c1e56d9a12d5108d94ec12e5c065316776645aefe746887ea66c5112f9e8bd10",
+  "preservation_verified": true
+}

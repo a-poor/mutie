@@ -27,7 +27,94 @@ class ScopeTests(unittest.TestCase):
 
     def call_sites(self, source):
         self.write('sample/__init__.py', source)
-        return [m for m in scope.inspect(self.root)['mutations'] if m['replacement'] == 'pass']
+        return [m for m in scope.inspect(self.root)['mutations']
+                if m['replacement'] == 'pass' and not m.get('assignment_remove')]
+
+    def assignment_sites(self, source):
+        self.write('sample/__init__.py', source)
+        return [m for m in scope.inspect(self.root)['mutations'] if m.get('assignment_remove')]
+
+    def test_assignment_inventory_excludes_bindings_annotations_and_tests(self):
+        source = ('obj.field = 1\nitems[key] = value\nitems[1:3] = values\n'
+                  'def f(obj, items):\n obj.field = value\n'
+                  ' local = value\n first = obj.field = value\n'
+                  ' first, obj.field = values\n obj.field += 1\n'
+                  ' obj.field: int = value\n obj.field: annotation()\n'
+                  ' return obj.field\n')
+        sites = self.assignment_sites(source)
+        self.assertEqual([m['original'] for m in sites], [
+            'obj.field = 1', 'items[key] = value', 'items[1:3] = values', 'obj.field = value'])
+        self.write('tests/test_sample.py', 'def test_store(obj):\n obj.field = 1\n')
+        self.assertEqual(self.assignment_sites(source), sites)
+        for expr in ['obj.field = (local := 1)', '(local := obj).field = 1',
+                     'obj.field = (yield 1)', 'obj.field = (yield from values)',
+                     'obj.field = lambda: (yield 1)']:
+            self.assertEqual(self.assignment_sites('def f(obj, values):\n '+expr+'\n'), [])
+
+    def test_assignment_coordinates_match_native_pass(self):
+        import ast
+        source = ('label="π"\ndef f(obj, items):\n'
+                  ' (obj.field) = ( # inside\n "π"\n ) # outside\n'
+                  ' if label: items[0] = 2; items[1:3] = [4]\n')
+        for newline in ['\n', '\r\n']:
+            raw = source.replace('\n', newline).encode()
+            sites = self.assignment_sites(raw.decode())
+            self.assertEqual(len(sites), 3)
+            for site in sites:
+                self.assertEqual(raw[site['start']:site['end']].decode(), site['original'])
+                changed = raw[:site['start']] + b'pass' + raw[site['end']:]
+                class Replace(ast.NodeTransformer):
+                    def visit_Assign(self, node):
+                        if (node.lineno, node.col_offset+1) == (site['line'], site['column']):
+                            return ast.Pass()
+                        return self.generic_visit(node)
+                self.assertEqual(ast.dump(ast.parse(changed)), ast.dump(Replace().visit(ast.parse(raw))))
+                self.assertIn(b'# outside', changed)
+
+    def test_assignment_excludes_constructor_subtrees_but_keeps_other_updates(self):
+        source = ('class Item:\n'
+                  ' def __init__(self):\n  self.value = 1\n'
+                  '  def nested(): self.value = 2\n'
+                  ' def __new__(cls):\n  cls.value = 3\n'
+                  ' def update(self):\n  self.value = 4\n')
+        self.assertEqual([m['original'] for m in self.assignment_sites(source)], ['self.value = 4'])
+
+    def test_assignment_skips_rhs_receiver_key_and_descriptor_setters(self):
+        trace = []
+        class Target:
+            @property
+            def field(self): raise AssertionError('no getter on simple assignment')
+            @field.setter
+            def field(self, value): trace.append(('setattr', value))
+            def __setitem__(self, key, value): trace.append(('setitem', key, value))
+        def rhs(): trace.append('rhs'); return 7
+        def receiver(): trace.append('receiver'); return Target()
+        def key(): trace.append('key'); return 2
+        for target, expected in [('receiver().field', ['rhs','receiver',('setattr',7)]),
+                                 ('receiver()[key()]', ['rhs','receiver','key',('setitem',2,7)])]:
+            source = 'def f(receiver, key, rhs):\n '+target+' = rhs()\n'
+            site, = self.assignment_sites(source)
+            namespace = {}; exec(source, namespace)
+            trace.clear(); namespace['f'](receiver, key, rhs)
+            self.assertEqual(trace, expected)
+            raw = source.encode(); changed = raw[:site['start']]+b'pass'+raw[site['end']:]
+            exec(compile(changed,'<store-control>','exec'), namespace)
+            trace.clear(); namespace['f'](None, None, None)
+            self.assertEqual(trace, [])
+
+    def test_assignment_preserves_local_binding_generator_and_docstring_structure(self):
+        import inspect
+        source = 'def f(obj):\n obj.field = 1\n "not a docstring"\n yield 7\n'
+        site, = self.assignment_sites(source)
+        raw=source.encode(); changed=raw[:site['start']]+b'pass'+raw[site['end']:]
+        namespace={}; exec(compile(changed,'<store-control>','exec'),namespace)
+        self.assertTrue(inspect.isgeneratorfunction(namespace['f']))
+        self.assertIsNone(namespace['f'].__doc__)
+        self.assertEqual(list(namespace['f'](None)), [7])
+        # Deleting an ordinary local store can change symbol resolution and
+        # silently read a global instead. Such assignments are not candidates.
+        source='value = 9\ndef f():\n value = 1\n return value\n'
+        self.assertEqual(self.assignment_sites(source), [])
 
     def test_call_inventory_excludes_value_uses_annotations_and_tests(self):
         source = ('module_call()\n'

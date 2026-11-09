@@ -20,7 +20,7 @@ and Go 1.27.2. Separate jobs run:
 - Vitest 4.1.9 JavaScript and TypeScript workflows, review/policies, lifecycle
   attribution and cleanup, using Node 24.22.0 and the frozen pnpm 11.10.0 fixture.
 - CPython 3.14.7 with pytest 9.0.2: scored workflows and operators (including
-  standalone-call semantics, review/reruns and runtime/cleanup error controls), flat/src/root-test
+  standalone-call and assignment semantics, review/reruns and runtime/cleanup error controls), flat/src/root-test
   layouts, review/policies, unittest/conftest attribution, resource limits and cleanup.
 
 The normal suite runs with two test threads; adapter tests run serially in separate

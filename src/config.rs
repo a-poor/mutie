@@ -433,6 +433,7 @@ impl RunConfig {
             ensure!(
                 config.operators.iter().all(|op| (*op == Operator::LoopSkip)
                     || (*op == Operator::CallRemove)
+                    || (config.lang == Lang::Python && *op == Operator::AssignmentRemove)
                     || matches!(
                         op,
                         Operator::BooleanFlip
@@ -447,6 +448,10 @@ impl RunConfig {
                 "unsupported {runner} operator"
             );
         }
+        ensure!(
+            config.lang == Lang::Python || !config.operators.contains(&Operator::AssignmentRemove),
+            "assignment_remove currently supports only Python attribute/item assignments"
+        );
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
@@ -550,6 +555,33 @@ mod tests {
     }
     fn resolve(root: &Path) -> Result<RunConfig> {
         RunConfig::resolve_from(invocation(None), root)
+    }
+    #[test]
+    fn assignment_removal_is_python_only() -> Result<()> {
+        for config in ["[go]\n", "[rust]\n", "[js]\nrunner='node'\n"] {
+            let root = fixture(&(config.to_owned() + "operators=['assignment_remove']\n"));
+            fs::write(
+                root.path().join("Cargo.toml"),
+                "[package]\nname='fixture'\nversion='0.1.0'\n",
+            )?;
+            fs::write(root.path().join("package.json"), "{}")?;
+            let error = resolve(root.path()).unwrap_err().to_string();
+            assert!(
+                error.contains("assignment_remove") || error.contains("unsupported Node operator"),
+                "{error}"
+            );
+        }
+        let root =
+            fixture("[python]\nexecutable='venv/bin/python'\noperators=['assignment_remove']\n");
+        fs::write(
+            root.path().join("pyproject.toml"),
+            "[project]\nname='fixture'\n",
+        )?;
+        assert_eq!(
+            resolve(root.path())?.operators,
+            [Operator::AssignmentRemove]
+        );
+        Ok(())
     }
     #[test]
     fn defaults_language_settings_and_invocation_overrides_are_distinct() -> Result<()> {

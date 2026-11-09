@@ -5,6 +5,8 @@ use invocation::{Child, Command};
 
 use std::{fs, path::Path};
 
+#[path = "support/python_assignments.rs"]
+mod assignments;
 #[path = "support/python_calls.rs"]
 mod calls;
 

@@ -85,6 +85,18 @@ errors. Saved recipes require exact `pass`; focused reruns also require fresh
 AST/source/operator identity. See
 [native controls and unchanged Route Mini findings](../benchmarks/python-calls.md).
 
+Python `assignment_remove` replaces a single-target attribute/item assignment
+with `pass`: for example, `node.parent = parent` or `items[key] = value`.
+The complete RHS, target lookup, index/slice and store effects are skipped.
+Local-name bindings, unpacking/chained targets, annotated and augmented
+assignments, tests and annotation subtrees are excluded, along with constructor
+(`__init__`/`__new__`) subtrees and assignments containing `:=`, `yield`,
+`yield from` or `await`. Constructors were excluded after an unchanged-project
+audit produced 16 errors from 16 deletions. Other methods can still initialize
+state; missing initialization, setter errors and lifecycle failures remain errors.
+This is a scoped assignment operator, not arbitrary statement/block deletion.
+See the [assessment and stronger-test findings](../benchmarks/statement-removal-audit.md).
+
 Python `loop_skip` wraps an ordinary `while` condition as
 `(False and (original))`, skipping all condition effects, truthiness and body
 execution. Native zero-iteration semantics apply: `while…else` still runs.
@@ -173,7 +185,8 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
-`arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`. Vitest, Node and Bun run
+`arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`,
+`call_remove`, and `assignment_remove`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
 `loop_skip`, and `call_remove`.

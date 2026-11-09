@@ -1,0 +1,5 @@
+[project]
+name='mutie-python-assignments'
+dependencies=[]
+[tool.pytest.ini_options]
+testpaths=['tests']

@@ -768,3 +768,18 @@ telemetry survivors. Preserve the original failed/unscored report, its two error
 the unresolved sleep survivor and all input/report hashes. Python operator CI
 includes the new scored workflows; arbitrary statement/block removal remains out
 of scope.
+
+`benchmarks/statement-removal-audit.md` records Python `assignment_remove` for
+single-target attribute/item Assign statements replaced by exact `pass`.
+Preserve skipped RHS/target/index/store effects and independent fresh AST/operator
+identity; the assignment context marker distinguishes its wire recipe from calls.
+Exclude name bindings, unpacking/chained targets, annotations, augmented stores,
+constructor (__init__/__new__) subtrees and binding/suspension subtrees. Constructor
+deletions were 16/16 errors on unchanged Route Mini; do not infer other methods
+cannot initialize state. Preserve all runtime/setup/cleanup errors and timeouts.
+Two separate-copy tests kill Binary Tree Library rotation root/parent-link
+survivors. Draft combined counts are not a full score, and final original reports
+stay failed where applicable. Other languages and broader blocks remain separate.
+The audit also records an unresolved intermittent PTY Ctrl-C classification
+failure; its isolated and final two-thread suite rechecks passed. This is distinct
+from the deferred pre-main startup investigation; no deadline or assertion changed.

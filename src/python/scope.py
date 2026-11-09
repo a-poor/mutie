@@ -161,8 +161,31 @@ def operator_sites(tree, text, data, annotation_nodes, relative):
     inversions = {"==": "!=", "!=": "==", "<": ">=", "<=": ">", ">": "<=", ">=": "<"}
     operators = {ast.And: "and", ast.Or: "or", ast.Eq: "==", ast.NotEq: "!=", ast.Lt: "<", ast.LtE: "<=", ast.Gt: ">", ast.GtE: ">=",
                  ast.Add: "+", ast.Sub: "-", ast.Mult: "*", ast.Div: "/", ast.Mod: "%"}
+    # Constructor-store deletion was entirely error noise in the unchanged
+    # Route Mini audit. Keep this syntactic exclusion explicit, including nested
+    # closures; it is not a proof that other methods cannot initialize state.
+    constructor_nodes = {part for node in ast.walk(tree)
+                         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                         and node.name in {"__init__", "__new__"}
+                         for part in ast.walk(node)}
     for node in ast.walk(tree):
         if node in annotation_nodes:
+            continue
+        if (node not in constructor_nodes and isinstance(node, ast.Assign) and len(node.targets) == 1
+                and isinstance(node.targets[0], (ast.Attribute, ast.Subscript))):
+            # Do not remove local bindings, unpacking/chained stores, annotations
+            # or suspension. Ordinary attribute/item stores skip RHS and target
+            # effects together; missing initialization remains a runtime error.
+            if any(isinstance(part, (ast.NamedExpr, ast.Yield, ast.YieldFrom, ast.Await))
+                   for part in ast.walk(node)):
+                continue
+            start = offsets[node.lineno - 1] + node.col_offset
+            end = offsets[node.end_lineno - 1] + node.end_col_offset
+            yield dict(file=relative, start=start, end=end, line=node.lineno,
+                       column=node.col_offset + 1, end_line=node.end_lineno,
+                       end_column=node.end_col_offset + 1,
+                       original=data[start:end].decode(), replacement="pass",
+                       assignment_remove=True)
             continue
         if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call):
             # Removing bindings can alter symbol-table scope; removing yield can

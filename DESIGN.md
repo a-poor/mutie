@@ -2396,3 +2396,15 @@ so reserialization cannot misreport an unchanged branch-containing project as
 changed. [Acceptance](benchmarks/python-calls.md) records three useful Route Mini
 findings killed by separate-copy tests, with the original failed report, errors
 and remaining sleep survivor preserved.
+
+The [statement/block-removal audit](benchmarks/statement-removal-audit.md) closes
+the initial assessment with a narrow Python `assignment_remove` implementation.
+Only single-target attribute/item `Assign` statements become `pass`; no local
+bindings, chained/unpacking/annotated/augmented stores, constructor subtrees,
+tests, annotations or binding/suspension subtrees are admitted. Native discovery
+marks assignment context separately from calls; both share the no-op wire recipe,
+but fresh AST/operator/source matching rejects cross-family or local-binding
+forgeries. Constructor deletion produced 16/16 errors in the draft Route Mini
+audit. Two unchanged AVL rotation survivors are killed by separate-copy tests.
+Broader block/return/lifecycle deletion and assignment support in other languages
+remain separate scopes. No classifier or version changes accompany this slice.

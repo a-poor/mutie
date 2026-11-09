@@ -391,6 +391,8 @@ impl LoadedReport {
                         &mutation.replacement
                     ) == Some(if mutation.operator == Operator::LoopSkip {
                         Operator::BranchForceFalse
+                    } else if mutation.operator == Operator::AssignmentRemove {
+                        Operator::CallRemove
                     } else {
                         mutation.operator
                     }) && mutation.file.extension().and_then(|s| s.to_str()) == Some("py")
