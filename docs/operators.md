@@ -32,6 +32,22 @@ NaN or a BigInt exception. No numeric type inference or exception reclassificati
 is added. Unary signs, updates, augmented assignments, powers and types remain
 excluded. See [semantic controls and unchanged Bragkit findings](../benchmarks/javascript-arithmetic.md).
 
+JS/TS `number_replace` makes one change per eligible runtime literal: zero becomes
+one, and nonzero becomes zero. Number and BigInt stay distinct (`0 → (1)`,
+`7n → (0n)`). A directly attached unary sign belongs to the same candidate:
+`-0 → (1)`, `-7 → (0)`. Decimal underflow to zero uses the zero recipe; overflow
+to Infinity uses the nonzero recipe. Parentheses preserve member-access syntax
+and grouping. Bases, separators and arbitrarily large BigInts are supported.
+
+Type-only syntax, enum declarations, property declaration names (including computed
+names), module syntax and tests are excluded. Runtime subscript indexes and property
+values are eligible. Direct unary `+BigInt` is excluded because it throws before
+producing a value. Numeric text inside strings, template text and regexes is not
+a literal site; runtime expressions inside template substitutions remain eligible.
+This does not infer variable values, enforce TypeScript types, or change failure
+classification. Saved reruns require the exact recipe and fresh source/context
+matching. See [numeric controls and unchanged session-default findings](../benchmarks/javascript-numbers.md).
+
 Python comparison inversion replaces `== ↔ !=`, `< ↔ >=`, and `<= ↔ >` tokens
 in single comparisons. Native rich-comparison/reflected dispatch and raw results
 are preserved; ordering inversions need not complement NaN results. `not` removal
@@ -232,7 +248,7 @@ All eleven Go operators run by default; Rust runs `boolean_flip`, `comparison_in
 `call_remove`, and `assignment_remove`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
-`loop_skip`, `call_remove`, and `assignment_remove`.
+`loop_skip`, `call_remove`, `assignment_remove`, and `number_replace`.
 Set `operators` under the language section in `mutie.toml` to select a subset
 for fresh runs, listings and reruns:
 

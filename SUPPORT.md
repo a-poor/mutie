@@ -40,7 +40,7 @@ requires adapter evidence, including exact-runner observer checks where used.
 
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
-| Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 10 operators | Broader project/runtime evidence and useful operator expansion |
+| Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 11 operators | Broader project/runtime evidence and useful operator expansion |
 | Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; scoped expression, branch, loop and call mutations | Broader project/platform evidence; build scripts/proc macros and external paths |
 | TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; expression, branch, loop and call mutations; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial execution of expression, branch, loop and call mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
@@ -769,3 +769,22 @@ statement/directive boundaries. Unchanged OpenClaw has three selected candidates
 (one kill, two survivors); two separate-copy tests kill both session-metadata
 survivors. The original 33.33% filtered score and all inputs/reports remain intact.
 This does not broaden runner layouts, runtime versions or arbitrary block removal.
+
+### JS/TS numeric literals
+
+[Numeric-literal acceptance](benchmarks/javascript-numbers.md) covers
+`number_replace` across Node, Bun and Vitest, independently for JS and TS.
+Each eligible runtime literal has one replacement: zero becomes one, nonzero
+becomes zero, retaining Number/BigInt. Native controls check bases, separators,
+direct unary signs, signed zero, rounding, underflow, overflow and member syntax.
+Types, enums, declaration keys and direct unary plus on BigInt are excluded.
+Scored controls preserve exact rerun recipes, source context, review decisions,
+minimum-score policies and the distinction between kills, lifecycle errors and
+timeouts. This adds no runtime versions, layouts or dependencies to runner scope.
+
+Unchanged OpenClaw has five selected numeric candidates in its session manager:
+one kill and four survivors. Three separate-copy tests kill all four survivors,
+covering the idle window, exact reset boundary and initial token count. All 63
+tracked inputs and 33 original report files remain unchanged; the original
+20% filtered score remains distinct from the focused stronger-test result.
+Numeric literals in other languages and string literals remain planned.

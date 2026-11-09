@@ -31,6 +31,7 @@ pub enum Operator {
     NegationRemove,
     CallRemove,
     AssignmentRemove,
+    NumberReplace,
     BranchForceTrue,
     BranchForceFalse,
     LoopSkip,

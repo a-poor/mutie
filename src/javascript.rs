@@ -13,6 +13,7 @@ use std::{
 use tree_sitter::Parser;
 
 mod assignment;
+mod number;
 
 pub struct Discovery {
     pub mutations: Vec<Mutation>,
@@ -193,6 +194,9 @@ pub fn valid_replacement(
     changed: &str,
     typescript: bool,
 ) -> bool {
+    if operator == Operator::NumberReplace {
+        return number::valid_replacement(original, changed, typescript);
+    }
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
     }
@@ -475,6 +479,18 @@ fn discover_with_ambient(
             }
             if type_only(kind) {
                 continue;
+            }
+            if let Some(replacement) = number::replacement(node, &file.source) {
+                mutations.push(Mutation {
+                    file: file.clone(),
+                    operator: Operator::NumberReplace,
+                    range: node.byte_range(),
+                    replacement: replacement.into(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    end_line: node.end_position().row + 1,
+                    end_column: node.end_position().column + 1,
+                });
             }
             if matches!(kind, "true" | "false") {
                 let start = node.start_position();
@@ -778,13 +794,29 @@ mod tests {
     fn comparisons_exclude_type_syntax_text_and_noncomparison_operators() -> Result<()> {
         let source = "type F<T> = T extends string ? true : false; interface X<T> { f: F<T> } const text = '< ==='; const re = /<=/; function f<T>(a: T, b: T) { return (a as T) < b; } const value = f<number>(1, 2); const x = 1 << 2; const y = 2 >> 1; const obj = { '<': 1 };";
         let dir = fixture(&[("src/code.ts", source)]);
-        let found = find(dir.path())?;
+        let mut found = find(dir.path())?;
+        found.mutations.retain(|m| {
+            matches!(
+                m.operator,
+                Operator::ComparisonInvert | Operator::ComparisonBoundary
+            )
+        });
         assert_eq!(found.mutations.len(), 2);
         assert!(found.mutations.iter().all(|m| m.original() == "<"));
         // Nested comparisons remain separate native binary expressions; each
         // mutation preserves JavaScript's existing left-associative grouping.
         fs::write(dir.path().join("src/code.ts"), "const x = 1 < 2 < 3;")?;
-        assert_eq!(find(dir.path())?.mutations.len(), 4);
+        assert_eq!(
+            find(dir.path())?
+                .mutations
+                .iter()
+                .filter(|m| matches!(
+                    m.operator,
+                    Operator::ComparisonInvert | Operator::ComparisonBoundary
+                ))
+                .count(),
+            4
+        );
         for (op, original, changed) in [
             (Operator::ComparisonInvert, "===", "!="),
             (Operator::ComparisonBoundary, "==", "!="),
@@ -1115,3 +1147,7 @@ mod call_tests;
 #[cfg(test)]
 #[path = "javascript/assignment_tests.rs"]
 mod assignment_tests;
+
+#[cfg(test)]
+#[path = "javascript/number_tests.rs"]
+mod number_tests;

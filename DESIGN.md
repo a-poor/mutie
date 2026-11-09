@@ -1303,9 +1303,10 @@ automatic sequence of work:
 - Rust now has [scoped arithmetic replacement](benchmarks/rust-arithmetic.md) for formulas, counters and indexing.
   Python now has a [validated scoped binary slice](benchmarks/python-arithmetic.md);
   broader Python operators need separate semantic and real-project evidence.
-- Consider a small numeric-literal replacement set (`0`, `1`, `-1`, or adjacent
-  values) for defaults, limits and retry counts. Bound candidate growth and avoid
-  duplicate or unchanged replacements.
+- JS/TS now has a [bounded numeric-literal slice](benchmarks/javascript-numbers.md):
+  one replacement, zero to one or nonzero to zero, preserving Number/BigInt.
+  Other languages and additional numeric recipes need separate acceptance;
+  bound candidate growth and avoid duplicate or unchanged replacements.
 - Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values, and targeted string-literal replacement.
 - Extend call removal or add carefully scoped statement/block removal to test
@@ -2458,3 +2459,22 @@ reference repair. Saved readers require the exact parsed statement and `{}` reci
 fresh discovery rejects forged test-only contexts. [Acceptance](benchmarks/rust-assignments.md)
 records four separate-copy stronger-test kills among ten unchanged UCD Parse
 candidates, preserving original inputs, reports and the filtered 60% score.
+
+JS/TS `number_replace` emits one candidate per eligible runtime Number/BigInt
+literal: zero becomes one, nonzero becomes zero. Direct unary signs own their
+literal; suppress the child candidate and skip direct unary plus on BigInt.
+Replacements are parenthesized to preserve grouping and member syntax. Decimal
+Number parsing distinguishes underflow to zero from the smallest subnormal;
+overflow remains nonzero. Radix and BigInt zero detection examines digits without
+truncating integers. The original bytes remain the source identity and edit span.
+
+Types/enums, property declaration names (including computed names), module syntax,
+tests and legacy leading-zero forms remain excluded. Runtime indexes and property
+values are eligible. Saved readers regenerate the exact numeric recipe; fresh
+discovery establishes enclosing context and rejects forged property-key spans.
+Bun fingerprints the selector module. Native JS/TS controls and six scored
+workflows keep setup errors/timeouts separate from kills. The
+[unchanged OpenClaw acceptance](benchmarks/javascript-numbers.md) accounts for
+all five selected candidates and four separate-copy stronger-test kills, preserving
+original inputs/reports and the filtered 20% score. Other languages and string
+literals remain separate slices of the literal milestone.

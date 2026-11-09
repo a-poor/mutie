@@ -832,3 +832,17 @@ filtered scores. Unchanged UCD Parse has ten eligible candidates (six kills, fou
 survivors); separate-copy tests kill all four, with legacy ISO comment preservation
 identified as a compatibility boundary. All 108 original paths, 56 original report
 files and the unchanged-copy focused control remain preserved.
+
+`benchmarks/javascript-numbers.md` records the first `number_replace` slice:
+JS/TS runtime Number/BigInt only, zero → one and nonzero → zero. Keep one
+candidate per literal/direct sign, Number/BigInt category, parenthesized member
+syntax, decimal underflow/overflow decisions and exact saved recipes. Exclude
+types/enums, property declaration names (including computed names), module
+syntax and direct unary plus on BigInt. Fresh source/context discovery must
+reject forged property-key spans. Include `javascript/number.rs` in Bun's recipe
+fingerprint. Six independent runner/syntax workflows preserve scores, review,
+setup-error and timeout boundaries. Unchanged OpenClaw's five selected candidates
+produce one kill/four survivors; three separate-copy tests kill all four. Preserve
+all 63 input files, 33 original report files and the original 20% filtered score.
+This revisits an existing project; broader numeric recipes, other languages and
+string literals need separate acceptance.

@@ -434,6 +434,7 @@ impl RunConfig {
                 config.operators.iter().all(|op| (*op == Operator::LoopSkip)
                     || (*op == Operator::CallRemove)
                     || (*op == Operator::AssignmentRemove)
+                    || (*op == Operator::NumberReplace)
                     || matches!(
                         op,
                         Operator::BooleanFlip
@@ -448,6 +449,11 @@ impl RunConfig {
                 "unsupported {runner} operator"
             );
         }
+        ensure!(
+            matches!(config.lang, Lang::Node | Lang::Bun | Lang::Vitest)
+                || !config.operators.contains(&Operator::NumberReplace),
+            "number_replace currently supports only JavaScript/TypeScript runners"
+        );
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
@@ -552,6 +558,35 @@ mod tests {
     }
     fn resolve(root: &Path) -> Result<RunConfig> {
         RunConfig::resolve_from(invocation(None), root)
+    }
+    #[test]
+    fn number_replacement_requires_a_javascript_runner() -> Result<()> {
+        for lang in ["go", "rust", "python"] {
+            let python = if lang == "python" {
+                "executable='venv/bin/python'\n"
+            } else {
+                ""
+            };
+            let root = fixture(&format!("[{lang}]\n{python}operators=['number_replace']\n"));
+            fs::write(
+                root.path().join("Cargo.toml"),
+                "[package]\nname='fixture'\nversion='0.1.0'\n",
+            )?;
+            fs::write(
+                root.path().join("pyproject.toml"),
+                "[project]\nname='fixture'\n",
+            )?;
+            let error = resolve(root.path()).unwrap_err().to_string();
+            assert!(error.contains("number_replace"), "{error}");
+        }
+        for runner in ["node", "bun", "vitest"] {
+            let root = fixture(&format!(
+                "[js]\nrunner='{runner}'\noperators=['number_replace']\n"
+            ));
+            fs::write(root.path().join("package.json"), "{}")?;
+            assert_eq!(resolve(root.path())?.operators, [Operator::NumberReplace]);
+        }
+        Ok(())
     }
     #[test]
     fn assignment_removal_is_supported_by_each_runner() -> Result<()> {

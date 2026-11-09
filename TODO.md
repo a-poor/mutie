@@ -217,6 +217,13 @@ Split implementation goals by language/runner when acceptance becomes too large.
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.
    Discuss significant blockers rather than requiring unbounded transformations.
+   JS/TS numeric slice completed: one `number_replace` candidate per runtime
+   Number/BigInt literal, with zero → one and nonzero → zero. Signed-zero,
+   underflow, overflow, precision and syntax controls pass on pinned Node/Bun;
+   all three runners have independent JS/TS scored controls. Three separate-copy
+   tests kill four unchanged OpenClaw session-default/reset survivors. See
+   [acceptance](benchmarks/javascript-numbers.md). Numeric literals in Go, Rust
+   and Python, and string literals in every language, remain open.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers

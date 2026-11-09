@@ -80,9 +80,13 @@ fn previews_js_ts_and_filters_without_a_runtime_or_writes() {
         assert_eq!(
             operators,
             [
+                "number_replace",
                 "comparison_invert",
+                "number_replace",
+                "number_replace",
                 "comparison_invert",
-                "comparison_boundary"
+                "comparison_boundary",
+                "number_replace"
             ]
         );
         fs::write(&source, &before).unwrap();
