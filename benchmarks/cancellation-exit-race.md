@@ -73,9 +73,10 @@ The native Cargo check initially failed to compile its generated test because a
 `std::process::Command` import was missing. Restoring that fixture import made the
 unchanged cleanup assertions executable; the native check then passed in 21.19
 seconds. It is now included in the Rust Linux CI job. The new controlled
-regressions are ordinary tests in the existing CI check job. This work has not yet
-been pushed or verified on Linux; repeated local passes are not a guarantee of
-every scheduling interleaving.
+regressions are ordinary tests in the existing CI check job. After pushing
+`5384542`, all nine [Linux CI jobs](https://github.com/a-poor/mutie/actions/runs/42648367150)
+passed, including the new controlled regressions and native Cargo cleanup check.
+Repeated passes are not a guarantee of every scheduling interleaving.
 
 Temporary logs are under `/tmp/mutie-cancel-*`, including
 `mutie-cancel-race-regression-before.log`, `mutie-cancel-full.log`,

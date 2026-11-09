@@ -193,9 +193,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    native effects/binding controls and two unchanged tree-rotation survivors
    killed by stronger tests. A 48-candidate audit separates error/timeout noise
    from scores; constructor stores are excluded after 16/16 errors in Route Mini.
-   Follow-up goals remain for assignment-removal parity in Go/Rust/JS/TS and
-   independently justified broader forms. Arbitrary statement/block deletion is
-   not implemented; this milestone closes the assessment, not that entire family.
+   Arbitrary statement/block deletion is not implemented; this milestone closes
+   the assessment, not that entire family.
+   JS/TS assignment follow-up completed: scoped standalone property/index writes
+   across Node, Bun and Vitest, independent JS/TS workflows and native effects/
+   statement controls. Two separate-copy tests kill unchanged OpenClaw session
+   persistence/timestamp survivors; all three selected candidates are accounted
+   for without errors or timeouts. See [acceptance](benchmarks/javascript-assignments.md).
+   Go/Rust assignment removal and broader forms remain separate goals.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

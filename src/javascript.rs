@@ -12,6 +12,8 @@ use std::{
 };
 use tree_sitter::Parser;
 
+mod assignment;
+
 pub struct Discovery {
     pub mutations: Vec<Mutation>,
     pub exclusions: Vec<String>,
@@ -194,7 +196,7 @@ pub fn valid_replacement(
     if let Some(expected) = replacement(operator, original) {
         return expected == changed;
     }
-    if operator == Operator::CallRemove {
+    if matches!(operator, Operator::CallRemove | Operator::AssignmentRemove) {
         if changed != ";" {
             return false;
         }
@@ -214,7 +216,11 @@ pub fn valid_replacement(
         let children: Vec<_> = tree.root_node().named_children(&mut cursor).collect();
         return children.len() == 1
             && children[0].byte_range() == (0..original.len())
-            && removable_call(children[0]);
+            && if operator == Operator::CallRemove {
+                removable_call(children[0])
+            } else {
+                assignment::removable(children[0], original)
+            };
     }
     if operator == Operator::LoopSkip {
         let prefix = "for (;";
@@ -511,6 +517,18 @@ fn discover_with_ambient(
                 mutations.push(Mutation {
                     file: file.clone(),
                     operator: Operator::CallRemove,
+                    range: node.byte_range(),
+                    replacement: ";".into(),
+                    line: node.start_position().row + 1,
+                    column: node.start_position().column + 1,
+                    end_line: node.end_position().row + 1,
+                    end_column: node.end_position().column + 1,
+                });
+            }
+            if assignment::removable(node, &file.source) {
+                mutations.push(Mutation {
+                    file: file.clone(),
+                    operator: Operator::AssignmentRemove,
                     range: node.byte_range(),
                     replacement: ";".into(),
                     line: node.start_position().row + 1,
@@ -1093,3 +1111,7 @@ mod loop_tests;
 #[cfg(test)]
 #[path = "javascript/call_tests.rs"]
 mod call_tests;
+
+#[cfg(test)]
+#[path = "javascript/assignment_tests.rs"]
+mod assignment_tests;

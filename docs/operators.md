@@ -58,6 +58,19 @@ or `yield` are excluded. Unawaited ordinary calls may return promises: no static
 return-type inference is attempted, and lifecycle failures remain errors. See
 [controls and unchanged-project finding](../benchmarks/javascript-calls.md).
 
+JS/TS `assignment_remove` replaces a standalone property/index `=` statement
+with `;`, such as `state.value = value` or `items[key] = value`. It skips the
+receiver, key, RHS and store effects, preserving branches, labels, ASI and
+directive boundaries. Parenthesized statements and native erasable TS expressions
+are supported. Bindings, destructuring, compound/chained assignments, updates,
+value-used assignments, optional targets, `super`, private fields, and subtrees
+containing another assignment, update, `await` or `yield` are excluded.
+Class constructor, field-initializer and static-block subtrees are excluded,
+including nested callbacks; escaped method names are conservatively excluded too.
+This does not infer whether an ordinary function is used as a constructor or
+whether other methods initialize state. Existing runner failure attribution is
+unchanged. See [semantic controls and session-persistence findings](../benchmarks/javascript-assignments.md).
+
 Rust `call_remove` replaces a whole semicolon-terminated call statement with
 `{}`. Free, associated, method, function-pointer and closure calls are eligible,
 including parenthesized calls. Receiver, argument and invocation effects are
@@ -189,7 +202,7 @@ All ten Go operators run by default; Rust runs `boolean_flip`, `comparison_inver
 `call_remove`, and `assignment_remove`. Vitest, Node and Bun run
 `boolean_flip`, `comparison_invert`, `comparison_boundary`, `logical_swap`,
 `negation_remove`, `arithmetic_replace`, `branch_force_true`, `branch_force_false`,
-`loop_skip`, and `call_remove`.
+`loop_skip`, `call_remove`, and `assignment_remove`.
 Set `operators` under the language section in `mutie.toml` to select a subset
 for fresh runs, listings and reruns:
 

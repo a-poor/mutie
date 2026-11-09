@@ -3,8 +3,10 @@
 The existing branch, conditional-loop and call operators now have scoped parity.
 This assessment adds one useful form beyond them: Python `assignment_remove`
 for single-target attribute/item writes. Arbitrary statement or block deletion
-is not implemented. Assignment removal in Go, Rust and JS/TS remains a separate
-follow-up; their semantics were reviewed here, not validated through scored runs.
+is not implemented. Go and Rust assignment removal remain separate follow-ups.
+JS/TS support was subsequently validated in its own
+[assignment-removal acceptance](javascript-assignments.md); this assessment's
+scored evidence remains specific to Python.
 
 ## What is worth removing?
 
@@ -135,7 +137,8 @@ draft evidence is not relabeled as execution under the final recipe.
 - The pushed call-removal commits passed all nine
   [Linux CI jobs](https://github.com/a-poor/mutie/actions/runs/42637937662).
   The new assignment tests are wired into the Python operator partition locally;
-  this new slice has not yet run on remote Linux CI.
+  after pushing this slice with the cancellation fix, all nine
+  [Linux CI jobs](https://github.com/a-poor/mutie/actions/runs/42648367150) passed.
 
 An earlier unrestricted-concurrency local suite failed the existing PTY Ctrl-C
 test: one worker's SIGINT exit was saved as an error while another was interrupted,

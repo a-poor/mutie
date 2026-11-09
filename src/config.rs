@@ -433,7 +433,7 @@ impl RunConfig {
             ensure!(
                 config.operators.iter().all(|op| (*op == Operator::LoopSkip)
                     || (*op == Operator::CallRemove)
-                    || (config.lang == Lang::Python && *op == Operator::AssignmentRemove)
+                    || (*op == Operator::AssignmentRemove)
                     || matches!(
                         op,
                         Operator::BooleanFlip
@@ -449,8 +449,11 @@ impl RunConfig {
             );
         }
         ensure!(
-            config.lang == Lang::Python || !config.operators.contains(&Operator::AssignmentRemove),
-            "assignment_remove currently supports only Python attribute/item assignments"
+            matches!(
+                config.lang,
+                Lang::Python | Lang::Node | Lang::Bun | Lang::Vitest
+            ) || !config.operators.contains(&Operator::AssignmentRemove),
+            "assignment_remove currently supports only Python and JS/TS property/item assignments"
         );
         if config.lang == Lang::Rust {
             ensure!(
@@ -557,8 +560,8 @@ mod tests {
         RunConfig::resolve_from(invocation(None), root)
     }
     #[test]
-    fn assignment_removal_is_python_only() -> Result<()> {
-        for config in ["[go]\n", "[rust]\n", "[js]\nrunner='node'\n"] {
+    fn assignment_removal_is_scoped_to_python_and_javascript_runners() -> Result<()> {
+        for config in ["[go]\n", "[rust]\n"] {
             let root = fixture(&(config.to_owned() + "operators=['assignment_remove']\n"));
             fs::write(
                 root.path().join("Cargo.toml"),
@@ -581,6 +584,16 @@ mod tests {
             resolve(root.path())?.operators,
             [Operator::AssignmentRemove]
         );
+        for runner in ["node", "bun", "vitest"] {
+            let root = fixture(&format!(
+                "[js]\nrunner='{runner}'\noperators=['assignment_remove']\n"
+            ));
+            fs::write(root.path().join("package.json"), "{}")?;
+            assert_eq!(
+                resolve(root.path())?.operators,
+                [Operator::AssignmentRemove]
+            );
+        }
         Ok(())
     }
     #[test]

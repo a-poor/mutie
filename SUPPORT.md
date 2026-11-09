@@ -9,7 +9,7 @@ This redesign does not expand runner scopes or add mixed-language execution.
 
 This is the support ledger for Mutie's language and test-runner targets. It tracks
 verified behavior, scope limits, evidence and the work needed to advance each
-target. Last reviewed: 2026-11-06. [README.md](README.md) documents usage;
+target. Last reviewed: 2026-11-09. [README.md](README.md) documents usage;
 [TODO.md](TODO.md) sets implementation priorities. A planned target is not available
 through the CLI, and this table does not set implementation order.
 
@@ -613,8 +613,9 @@ binding/suspension subtrees. Tests catch two unchanged Binary Tree Library
 rotation-update survivors in a separate copy. The draft inventory measured
 16 kills, seven survivors, six timeouts and three errors across 32 tree candidates;
 all 16 Route Mini constructor deletions errored and are excluded from the final
-scope. These combined inventories are not full scores. Other languages and
-general block deletion remain unsupported for this new operator.
+scope. These combined inventories are not full scores. Go/Rust assignment removal
+and general block deletion remain separate scopes; JS/TS assignment support is now
+recorded in [its own acceptance](benchmarks/javascript-assignments.md).
 
 ### Audited pure-Python dependency
 
@@ -743,3 +744,15 @@ spans and fresh source identity; Bun recipe changes require fresh reports.
 Unchanged OpenClaw has six selected survivors; separate-copy chunk-content tests
 kill IDs 1/2, with four other survivors open. Preserve original inputs/reports and
 filtered scores; focused evidence is not a full stronger-project score.
+
+### JS/TS property and item assignment removal
+
+[Assignment-removal acceptance](benchmarks/javascript-assignments.md) covers
+standalone property/index `=` statements replaced with `;` on Node, Bun and
+Vitest, independently for JS and TS. Exact recipes, fresh source/operator identity,
+constructor exclusions and lifecycle-error classification have scored controls.
+Paired native tests verify skipped receiver/key/RHS/store effects and retained
+statement/directive boundaries. Unchanged OpenClaw has three selected candidates
+(one kill, two survivors); two separate-copy tests kill both session-metadata
+survivors. The original 33.33% filtered score and all inputs/reports remain intact.
+This does not broaden runner layouts, runtime versions or arbitrary block removal.

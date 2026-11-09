@@ -788,3 +788,17 @@ exits, unrelated signals and capture failures must not become interruptions.
 Keep the stopped-parent/completed-child regression, plain/JSON report checks and
 native Cargo cleanup coverage. This is distinct from the deferred pre-main startup
 investigation; no deadline or assertion was relaxed.
+
+`benchmarks/javascript-assignments.md` records JS/TS `assignment_remove` across
+Node, Bun and Vitest. Replace whole standalone property/index `=` statements with
+exact `;`; skip receiver/key/RHS/store effects while retaining statement/directive
+boundaries. Exclude bindings/destructuring, value uses, compound/chained/nested
+assignments, updates, suspension, optional targets, super/private access and class
+constructor/field/static-initialization ancestors (including nested callbacks).
+Escaped method names are conservative exclusions; do not infer all constructor
+functions or all initialization sites. Fresh source/operator discovery must reject
+forged constructor spans even when the isolated statement recipe parses. Include
+`javascript/assignment.rs` in Bun's execution recipe. Preserve lifecycle errors,
+original filtered scores, and unchanged OpenClaw input/report hashes; separate-copy
+tests kill session-reset persistence and timestamp-refresh survivors. Go/Rust
+assignment removal and broader block deletion remain separate goals.

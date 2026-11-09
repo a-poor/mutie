@@ -2414,3 +2414,19 @@ forgeries. Constructor deletion produced 16/16 errors in the draft Route Mini
 audit. Two unchanged AVL rotation survivors are killed by separate-copy tests.
 Broader block/return/lifecycle deletion and assignment support in other languages
 remain separate scopes. No classifier or version changes accompany this slice.
+
+JS/TS `assignment_remove` replaces a complete standalone property/index `=`
+statement with `;`. The shared parser requires a member/subscript target and
+excludes value uses, bindings, destructuring, compound/chained stores, updates,
+optional targets, super/private access and suspension subtrees. Class constructor,
+field-initializer and static-block ancestors exclude the candidate without
+suppressing other operator families; nested callbacks inherit that exclusion.
+Escaped method names are conservatively excluded. Ordinary functions used with
+`new` are not inferred as constructors. Empty statements retain ASI, labels,
+unbraced branches and directive boundaries. No operand/store evaluation remains.
+Saved readers reparse the exact statement/operator recipe; fresh discovery rejects
+forged constructor spans that isolated recipe parsing cannot contextualize.
+Bun's execution fingerprint includes the new assignment selector module.
+[Acceptance](benchmarks/javascript-assignments.md) records independent JS/TS
+scored workflows for all three runners and two unchanged OpenClaw session-state
+findings killed by separate-copy tests. Classifiers and versions are unchanged.

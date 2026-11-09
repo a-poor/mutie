@@ -156,6 +156,19 @@ jobs:
       - name: Vitest native outcomes, lifecycle and cleanup
         if: matrix.adapter == 'Vitest'
         run: cargo test --locked --bin mutie 'vitest::execution::' -- --ignored --test-threads=1 --skip real_feedback_phase_profile
+      - name: JS/TS assignment-removal workflows
+        if: matrix.adapter == 'Node' || matrix.adapter == 'Bun' || matrix.adapter == 'Vitest'
+        env:
+          MUTIE_ADAPTER: ${{ matrix.adapter }}
+        run: |
+          adapter=$(printf '%s' "$MUTIE_ADAPTER" | tr '[:upper:]' '[:lower:]')
+          cargo test --locked --test javascript_assignments "$adapter" -- --ignored --test-threads=1
+      - name: Native Node assignment-removal semantics
+        if: matrix.adapter == 'Node'
+        run: cargo test --locked --bin mutie javascript::assignment_tests::native_node_assignments -- --ignored --exact
+      - name: Native Bun assignment-removal semantics
+        if: matrix.adapter == 'Bun'
+        run: cargo test --locked --bin mutie javascript::assignment_tests::native_bun_assignments -- --ignored --exact
       # These complementary filters partition python_workflow; keep them in sync.
       - name: Python reports, reruns, review and cleanup
         if: matrix.suite == 'workflows'
