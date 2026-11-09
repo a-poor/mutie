@@ -104,6 +104,12 @@ matrix remain release-qualification gaps.
   Discovery follows supported source modules and excludes test-only, generated,
   macro-token and other unsupported contexts described in the
   [scope contract](DESIGN.md#initial-rust-support-contract).
+- [Assignment removal](benchmarks/rust-assignments.md) covers standalone
+  semicolon-terminated field/index writes with native ownership/drop checks,
+  build-failure separation, reports/review/policies and fresh/cached reruns.
+  All ten eligible UCD Parse candidates are accounted for (six kills, four
+  survivors, no invalid candidates). Separate-copy tests kill all four, including
+  one accepted legacy-field compatibility case; original scores remain unchanged.
 - Arithmetic edits preserve native grouping, ownership and trait dispatch.
   Unary/compound assignments and existing constant/macro/test exclusions remain.
   [Arithmetic acceptance](benchmarks/rust-arithmetic.md) records semantic controls,
@@ -618,9 +624,10 @@ binding/suspension subtrees. Tests catch two unchanged Binary Tree Library
 rotation-update survivors in a separate copy. The draft inventory measured
 16 kills, seven survivors, six timeouts and three errors across 32 tree candidates;
 all 16 Route Mini constructor deletions errored and are excluded from the final
-scope. These combined inventories are not full scores. Rust assignment removal
-and general block deletion remain separate scopes. JS/TS and Go assignment support
-are recorded in [JS/TS acceptance](benchmarks/javascript-assignments.md) and
+scope. These combined inventories are not full scores. General block deletion
+remains separate. Rust, JS/TS and Go assignment support
+are recorded in [Rust acceptance](benchmarks/rust-assignments.md),
+[JS/TS acceptance](benchmarks/javascript-assignments.md) and
 [Go acceptance](benchmarks/go-assignments.md).
 
 ### Audited pure-Python dependency

@@ -448,13 +448,6 @@ impl RunConfig {
                 "unsupported {runner} operator"
             );
         }
-        ensure!(
-            matches!(
-                config.lang,
-                Lang::Go | Lang::Python | Lang::Node | Lang::Bun | Lang::Vitest
-            ) || !config.operators.contains(&Operator::AssignmentRemove),
-            "assignment_remove currently supports only Go, Python and JS/TS selector/item assignments"
-        );
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
@@ -473,6 +466,7 @@ impl RunConfig {
                         | Operator::BranchForceFalse
                         | Operator::LoopSkip
                         | Operator::CallRemove
+                        | Operator::AssignmentRemove
                 )),
                 "unsupported Rust operator"
             );
@@ -560,14 +554,16 @@ mod tests {
         RunConfig::resolve_from(invocation(None), root)
     }
     #[test]
-    fn assignment_removal_is_scoped_to_go_python_and_javascript_runners() -> Result<()> {
+    fn assignment_removal_is_supported_by_each_runner() -> Result<()> {
         let rust = fixture("[rust]\noperators=['assignment_remove']\n");
         fs::write(
             rust.path().join("Cargo.toml"),
             "[package]\nname='fixture'\nversion='0.1.0'\n",
         )?;
-        let error = resolve(rust.path()).unwrap_err().to_string();
-        assert!(error.contains("assignment_remove"), "{error}");
+        assert_eq!(
+            resolve(rust.path())?.operators,
+            [Operator::AssignmentRemove]
+        );
         let go = fixture("[go]\noperators=['assignment_remove']\n");
         assert_eq!(resolve(go.path())?.operators, [Operator::AssignmentRemove]);
         let root =

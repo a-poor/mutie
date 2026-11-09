@@ -87,6 +87,23 @@ removes call statements only, not arbitrary statements or blocks. Saved reports
 require the exact parsed statement and `{}` recipe. See
 [native controls and unchanged UCD findings](../benchmarks/rust-calls.md).
 
+Rust `assignment_remove` replaces a whole semicolon-terminated field/index `=`
+statement with `{}`. Named/tuple fields, indexing and parenthesized targets are
+supported. RHS, place/index/trait evaluation, overwriting and destruction of the
+old value are skipped. A value no longer moved by the assignment follows the
+remaining scope's drop rules. Plain bindings, destructuring, pointer-only stores,
+compound/nested assignments and value-used or semicolon-free assignments are
+excluded. The whole candidate subtree must be free of macros, attributes,
+`await`, `?`, `yield`, `return`, `break` and `continue`, including inside closures.
+Eligible nested statements remain separate candidates. Existing cfg/test,
+constant/type and generated-source exclusions still apply.
+
+The compiler remains authoritative: partial moves, lost type constraints and
+warnings promoted to errors stay build failures. No binding repair, warning
+suppression or type/constructor inference is added. Saved recipes and fresh
+source/operator matching reject forged test-only spans and changed replacements.
+See [native controls and UCD findings](../benchmarks/rust-assignments.md).
+
 Python `call_remove` replaces a complete ordinary call statement with `pass`,
 including outer parentheses. It skips receiver/property lookup, argument and
 unpacking effects, and invocation. `pass` preserves empty suites, semicolon
@@ -209,7 +226,7 @@ timeouts and tool/capture errors remain separate. See
 
 All eleven Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
-`branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`. Python runs `boolean_flip`,
+`branch_force_true`, `branch_force_false`, `loop_skip`, `call_remove`, and `assignment_remove`. Python runs `boolean_flip`,
 `comparison_invert`, `comparison_boundary`, `logical_swap`, `negation_remove`,
 `arithmetic_replace`, `branch_force_true`, `branch_force_false`, `loop_skip`,
 `call_remove`, and `assignment_remove`. Vitest, Node and Bun run

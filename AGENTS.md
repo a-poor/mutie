@@ -800,8 +800,8 @@ functions or all initialization sites. Fresh source/operator discovery must reje
 forged constructor spans even when the isolated statement recipe parses. Include
 `javascript/assignment.rs` in Bun's execution recipe. Preserve lifecycle errors,
 original filtered scores, and unchanged OpenClaw input/report hashes; separate-copy
-tests kill session-reset persistence and timestamp-refresh survivors. Rust
-assignment removal and broader block deletion remain separate goals.
+tests kill session-reset persistence and timestamp-refresh survivors. Broader
+block deletion remains separate.
 
 `benchmarks/go-assignments.md` records Go selector/index `assignment_remove`.
 Only standalone single-target `=` statements directly in statement lists qualify;
@@ -815,4 +815,20 @@ existing Go classification, timeout/capture-error separation, original scores an
 unchanged godotenv input/report hashes. Its three standard-stream survivors are
 killed by one separate-copy public-API test; three other candidates do not compile.
 Full/affected selection agrees. CI runs the native semantic pairs and scored
-workflows; remote validation of these new changes still requires a commit/push.
+workflows; remote validation of the Go commit still requires a push.
+
+`benchmarks/rust-assignments.md` records scoped Rust field/index assignment
+removal with exact `{}` replacement. Require a complete semicolon-terminated
+statement directly in a block; exclude bindings/destructuring, pointer-only
+stores, compound/nested assignments, value uses and tails. Whole subtrees exclude
+macros, attributes, await/try/yield and explicit return/break/continue, including
+closures. Preserve existing cfg/test/constant/type/generated exclusions and
+independent discovery of eligible nested statements. Native controls require
+skipping RHS/place/index/deref/store effects and old-value destruction; remaining
+values follow native drop rules. Partial moves, inference loss and denied warnings
+remain build failures. Exact recipes plus fresh source/operator matching reject
+forged test-only spans. Preserve genuine timeout/capture errors and original
+filtered scores. Unchanged UCD Parse has ten eligible candidates (six kills, four
+survivors); separate-copy tests kill all four, with legacy ISO comment preservation
+identified as a compatibility boundary. All 108 original paths, 56 original report
+files and the unchanged-copy focused control remain preserved.

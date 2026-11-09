@@ -205,7 +205,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    review/policy/rerun checks. Unchanged godotenv has three build failures and
    three stream-connection survivors; a separate-copy public-API test kills all
    three. Full/affected outcomes match. See [acceptance](benchmarks/go-assignments.md).
-   Rust assignment removal and broader forms remain separate goals.
+   Rust assignment follow-up completed: semicolon-terminated field/index stores,
+   native RHS/place/trait/drop controls and exact saved recipes. Partial moves,
+   inference loss and denied warnings remain build failures. Fresh/cached fixtures
+   agree; separate-copy tests kill all four unchanged UCD Parse survivors across
+   ten eligible candidates. See [acceptance](benchmarks/rust-assignments.md).
+   Scoped assignment removal now has cross-language parity. Broader block,
+   binding and lifecycle deletion remain separate; next is the bounded literal
+   mutation milestone below.
 6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.

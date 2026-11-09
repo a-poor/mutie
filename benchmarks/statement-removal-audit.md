@@ -3,8 +3,8 @@
 The existing branch, conditional-loop and call operators now have scoped parity.
 This assessment adds one useful form beyond them: Python `assignment_remove`
 for single-target attribute/item writes. Arbitrary statement or block deletion
-is not implemented. Go assignment removal is subsequently validated in
-[its own record](go-assignments.md); Rust remains a separate follow-up.
+is not implemented. Go and Rust assignment removal are subsequently validated in
+[Go acceptance](go-assignments.md) and [Rust acceptance](rust-assignments.md).
 JS/TS support was subsequently validated in its own
 [assignment-removal acceptance](javascript-assignments.md); this assessment's
 scored evidence remains specific to Python.

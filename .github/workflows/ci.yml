@@ -141,6 +141,11 @@ jobs:
         run: |
           cargo test --locked --bin mutie rust::discovery::call_tests::native_ -- --ignored --test-threads=1
           cargo test --locked --test rust_workflow calls:: -- --ignored --test-threads=1
+      - name: Rust assignment-removal semantics and scored reruns
+        if: matrix.adapter == 'Rust'
+        run: |
+          cargo test --locked --bin mutie rust::discovery::assignment_tests::native_ -- --ignored --test-threads=1
+          cargo test --locked --test rust_workflow assignments:: -- --ignored --test-threads=1
       - name: Node JS/TS reports, reruns, review and lifecycle failures
         if: matrix.adapter == 'Node'
         run: cargo test --locked --test node_workflow -- --ignored --test-threads=1

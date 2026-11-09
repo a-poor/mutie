@@ -14,6 +14,10 @@ use crate::{
     mutation::{Mutation, Operator, Scope, SourceFile},
 };
 
+#[path = "assignment.rs"]
+mod assignment;
+pub(crate) use assignment::valid_replacement as valid_assignment_replacement;
+
 #[derive(Debug)]
 pub struct Discovery {
     pub mutations: Vec<Mutation>,
@@ -240,6 +244,9 @@ impl Walker<'_> {
                     // An empty block is a no-op statement without introducing
                     // redundant-semicolon warnings or retaining argument effects.
                     self.push(file, node, Operator::CallRemove, "{}");
+                }
+                if assignment::eligible(node) {
+                    self.push(file, node, Operator::AssignmentRemove, "{}");
                 }
             }
             "if_expression" if in_body && self.scope.matches(&file.path) => {
@@ -1089,3 +1096,7 @@ mod loop_tests;
 #[cfg(test)]
 #[path = "call_tests.rs"]
 mod call_tests;
+
+#[cfg(test)]
+#[path = "assignment_tests.rs"]
+mod assignment_tests;

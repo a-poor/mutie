@@ -2422,8 +2422,8 @@ marks assignment context separately from calls; both share the no-op wire recipe
 but fresh AST/operator/source matching rejects cross-family or local-binding
 forgeries. Constructor deletion produced 16/16 errors in the draft Route Mini
 audit. Two unchanged AVL rotation survivors are killed by separate-copy tests.
-Broader block/return/lifecycle deletion and Rust assignment support remain separate
-scopes. JS/TS and Go assignment acceptance are recorded separately. No classifier
+Broader block/return/lifecycle deletion remains separate. Rust, JS/TS and Go
+assignment acceptance are recorded separately. No classifier
 or version changes accompany this slice.
 
 JS/TS `assignment_remove` replaces a complete standalone property/index `=`
@@ -2441,3 +2441,20 @@ Bun's execution fingerprint includes the new assignment selector module.
 [Acceptance](benchmarks/javascript-assignments.md) records independent JS/TS
 scored workflows for all three runners and two unchanged OpenClaw session-state
 findings killed by separate-copy tests. Classifiers and versions are unchanged.
+
+Rust `assignment_remove` replaces a whole semicolon-terminated field/index `=`
+statement directly in a block with `{}`. Named/tuple fields, indexing and
+parenthesized forms qualify; bindings, destructuring, pointer-only stores,
+compound/nested stores, value uses and tails do not. The whole candidate subtree
+excludes macros, attributes, suspension, propagation and explicit control transfers,
+including nested closures. Existing cfg/test/constant/type/generated exclusions
+remain. Eligible inner statements are still discovered independently.
+
+Removing a Rust store skips RHS and place evaluation, overloaded index/deref calls,
+the overwrite and the old value's destructor. Values no longer moved follow their
+remaining scope/drop behavior. Native controls cover ordering, panic cleanup and
+partial-move/type-inference/denied-warning build failures without synthesized
+reference repair. Saved readers require the exact parsed statement and `{}` recipe;
+fresh discovery rejects forged test-only contexts. [Acceptance](benchmarks/rust-assignments.md)
+records four separate-copy stronger-test kills among ten unchanged UCD Parse
+candidates, preserving original inputs, reports and the filtered 60% score.
