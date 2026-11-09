@@ -623,7 +623,7 @@ fn rust_mutation_cancellation_preserves_partial_results_and_cleans_processes() {
         .unwrap();
         fs::write(
             fixture.root.join("tests/cli.rs"),
-            r##"use std::{fs, path::PathBuf, };
+            r##"use std::{fs, path::PathBuf, process::Command};
 
 unsafe extern "C" { fn getpgrp() -> i32; }
 

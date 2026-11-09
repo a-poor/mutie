@@ -35,6 +35,8 @@ serde_yaml_ng = "0.10.0"
 
 [target.'cfg(unix)'.dependencies]
 libc = "0.2.189"
+# Already used by the terminal backend; record signals before async dispatch.
+signal-hook = "0.3.18"
 
 [dev-dependencies]
 vt100 = "0.16.2"

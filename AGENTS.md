@@ -780,6 +780,11 @@ cannot initialize state. Preserve all runtime/setup/cleanup errors and timeouts.
 Two separate-copy tests kill Binary Tree Library rotation root/parent-link
 survivors. Draft combined counts are not a full score, and final original reports
 stay failed where applicable. Other languages and broader blocks remain separate.
-The audit also records an unresolved intermittent PTY Ctrl-C classification
-failure; its isolated and final two-thread suite rechecks passed. This is distinct
-from the deferred pre-main startup investigation; no deadline or assertion changed.
+The audit also records an intermittent PTY Ctrl-C classification failure.
+`benchmarks/cancellation-exit-race.md` records its controlled reproduction and
+fix: retain synchronous receipt of each user signal and reconcile only matching
+raw child signal exits after capture/cleanup. Internal peer cancellation, numeric
+exits, unrelated signals and capture failures must not become interruptions.
+Keep the stopped-parent/completed-child regression, plain/JSON report checks and
+native Cargo cleanup coverage. This is distinct from the deferred pre-main startup
+investigation; no deadline or assertion was relaxed.

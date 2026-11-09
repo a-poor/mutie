@@ -94,6 +94,14 @@ hang() {
     (sleep 30; touch "$MUTIE_TEST_STATE/leaked") &
     printf '%s\n' "$!" > "$MUTIE_TEST_STATE/$label.child.pid"
     touch "$MUTIE_TEST_STATE/$label.ready"
+    if [ "$MUTIE_TEST_MODE" = exit_race ] || [ "$MUTIE_TEST_MODE" = exit_capture ]; then
+        if [ "$MUTIE_TEST_MODE" = exit_capture ] && [ "$label" = b ]; then
+            while [ ! -f "$MUTIE_TEST_STATE/fail" ]; do sleep 0.01; done
+            i=0
+            while [ "$i" -lt 300 ]; do printf 'overflow diagnostic\n'; i=$((i + 1)); done
+        fi
+        exec /bin/sleep 30
+    fi
     if [ "$MUTIE_TEST_MODE" = isolation ] && [ "$label" = b ]; then
         while [ ! -f "$MUTIE_TEST_STATE/release-b" ]; do sleep 0.01; done
         exit 0
@@ -606,6 +614,190 @@ fn tool_error_drains_parallel_workers_and_preserves_the_failure_reason() {
             metadata["workspace_metrics"]["worker_reset"]["completed"],
             1
         );
+        fixture.assert_cleanup();
+    }
+}
+
+fn wait_for_process_state(pid: u32, state: char) {
+    let deadline = Instant::now() + Duration::from_secs(5);
+    loop {
+        let output = std::process::Command::new("ps")
+            .args(["-o", "stat=", "-p", &pid.to_string()])
+            .output()
+            .unwrap();
+        if String::from_utf8_lossy(&output.stdout)
+            .trim_start()
+            .starts_with(state)
+        {
+            return;
+        }
+        assert!(
+            Instant::now() < deadline,
+            "process {pid} did not reach {state}: {output:?}"
+        );
+        thread::sleep(Duration::from_millis(10));
+    }
+}
+
+// Stop the CLI while its owned worker terminates, then queue the user's signal
+// before resuming. This makes child completion and cancellation ready together
+// without depending on a narrow terminal/spawn scheduling window.
+fn pause_active_run(fixture: &Fixture, child: &mut Running) {
+    fixture.ready("b", child);
+    fixture.ready("c", child);
+    child.signal(libc::SIGSTOP);
+    wait_for_process_state(child.child.id(), 'T');
+}
+
+fn worker_pid(fixture: &Fixture, name: &str) -> i32 {
+    fs::read_to_string(fixture.state.join(format!("{name}.pid")))
+        .unwrap()
+        .trim()
+        .parse()
+        .unwrap()
+}
+
+fn complete_worker_with_signal(fixture: &Fixture, signal: i32) {
+    let worker = worker_pid(fixture, "b");
+    wait_until(|| {
+        let output = std::process::Command::new("ps")
+            .args(["-o", "comm=", "-p", &worker.to_string()])
+            .output()
+            .unwrap();
+        String::from_utf8_lossy(&output.stdout)
+            .trim()
+            .ends_with("sleep")
+    });
+    // SAFETY: signal only the worker whose PID was reported by this fixture.
+    assert_eq!(unsafe { libc::kill(worker, signal) }, 0);
+    wait_for_process_state(worker as u32, 'Z');
+}
+
+#[test]
+fn user_interrupt_and_completed_signal_exit_are_reported_as_interrupted() {
+    for (signal, mode) in [
+        (libc::SIGINT, "--plain"),
+        (libc::SIGTERM, "--plain"),
+        (libc::SIGINT, "--json"),
+        (libc::SIGTERM, "--json"),
+    ] {
+        let fixture = Fixture::new();
+        let mut child = fixture.start_with_args(
+            "exit_race",
+            &[
+                "--jobs",
+                "2",
+                "--timeout",
+                "60",
+                "--fail-on-missed",
+                "--min-score",
+                "100",
+                mode,
+            ],
+        );
+        pause_active_run(&fixture, &mut child);
+        complete_worker_with_signal(&fixture, signal);
+        child.signal(signal);
+        child.signal(libc::SIGCONT);
+        let output = child.finish();
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        let directory = fixture.report();
+        let outcomes = read(&directory, "outcomes.json");
+        assert_eq!(outcomes["status"], "interrupted", "{outcomes}");
+        assert_eq!(outcomes["summary"]["errors"], 0);
+        assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
+        assert_eq!(outcomes["mutations"][1]["state"], "interrupted");
+        assert_eq!(outcomes["mutations"][2]["state"], "interrupted");
+        assert_eq!(outcomes["mutations"][3]["state"], "pending");
+        let metadata = read(&directory, "run.json");
+        assert_eq!(metadata["status"], "interrupted");
+        assert_eq!(metadata["policy"]["status"], "not_evaluated");
+        assert_eq!(metadata["score_policy"]["status"], "not_evaluated");
+        assert!(metadata["score"]["percentage"].is_null());
+        if mode == "--json" {
+            let events: Vec<Value> = String::from_utf8(output.stdout)
+                .unwrap()
+                .lines()
+                .map(|line| serde_json::from_str(line).unwrap())
+                .collect();
+            let summary = events.last().unwrap();
+            assert_eq!(summary["event"], "summary");
+            assert_eq!(summary["status"], "interrupted");
+            assert_eq!(summary["exit_code"], 1);
+            assert_eq!(summary["report_finalized"], true);
+            assert_eq!(summary["outcomes"], outcomes["summary"]);
+            assert_eq!(summary["interrupted"], 2);
+            assert_eq!(summary["pending"], 1);
+            assert!(summary["score"]["percentage"].is_null());
+            let interrupted: Vec<_> = events
+                .iter()
+                .filter(|event| {
+                    event["event"] == "mutation_finished" && event["state"] == "interrupted"
+                })
+                .collect();
+            assert_eq!(interrupted.len(), 2);
+            assert!(
+                interrupted
+                    .iter()
+                    .all(|event| event["outcome"].is_null() && event["error"].is_null())
+            );
+        } else {
+            assert!(String::from_utf8_lossy(&output.stderr).contains("interrupted"));
+        }
+        fixture.assert_cleanup();
+    }
+}
+
+#[test]
+fn unrelated_signal_exits_and_completed_errors_are_not_hidden_by_cancellation() {
+    for (mode, worker_signal, user_signal) in [
+        ("exit_race", Some(libc::SIGINT), None),
+        ("exit_race", Some(libc::SIGTERM), None),
+        ("exit_race", Some(libc::SIGINT), Some(libc::SIGTERM)),
+        ("exit_race", Some(libc::SIGTERM), Some(libc::SIGINT)),
+        ("exit_race", Some(libc::SIGKILL), Some(libc::SIGINT)),
+        ("tool_error", None, Some(libc::SIGINT)),
+        ("exit_capture", Some(libc::SIGINT), Some(libc::SIGINT)),
+    ] {
+        let fixture = Fixture::new();
+        let mut child = fixture.start(mode);
+        pause_active_run(&fixture, &mut child);
+        fs::write(fixture.state.join("fail"), "").unwrap();
+        let failed = if let Some(signal) = worker_signal {
+            complete_worker_with_signal(&fixture, signal);
+            1
+        } else {
+            wait_for_process_state(worker_pid(&fixture, "c") as u32, 'Z');
+            2
+        };
+        if let Some(signal) = user_signal {
+            child.signal(signal);
+        }
+        child.signal(libc::SIGCONT);
+        let output = child.finish();
+        assert_eq!(output.status.code(), Some(1), "{output:?}");
+        let directory = fixture.report();
+        let outcomes = read(&directory, "outcomes.json");
+        assert_eq!(outcomes["status"], "failed", "{mode}: {outcomes}");
+        assert_eq!(outcomes["summary"]["errors"], 1);
+        assert_eq!(outcomes["mutations"][0]["outcome"], "missed");
+        assert_eq!(outcomes["mutations"][failed]["outcome"], "error");
+        assert_eq!(outcomes["mutations"][3 - failed]["state"], "interrupted");
+        assert_eq!(outcomes["mutations"][3]["state"], "pending");
+        let diagnostic = outcomes["mutations"][failed]["error"].as_str().unwrap();
+        assert!(
+            diagnostic.contains(match mode {
+                "exit_capture" => "--max-capture-bytes",
+                "tool_error" => "exit status: 2",
+                _ => "signal:",
+            }),
+            "{diagnostic}"
+        );
+        let metadata = read(&directory, "run.json");
+        assert_eq!(metadata["status"], "failed");
+        assert_eq!(metadata["policy"]["status"], "not_evaluated");
+        assert_eq!(metadata["score_policy"]["status"], "not_evaluated");
+        assert!(metadata["score"]["percentage"].is_null());
         fixture.assert_cleanup();
     }
 }

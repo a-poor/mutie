@@ -627,6 +627,7 @@ dependencies = [
  "serde_json",
  "serde_yaml_ng",
  "sha2",
+ "signal-hook",
  "tempfile",
  "tokio",
  "toml",

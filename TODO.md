@@ -31,11 +31,12 @@ checklist as work lands, checking items off after appropriate verification.
   reports remain preserved. See [output contract](docs/output.md).
 - [ ] Multi-project orchestration and multiple same-language targets remain separate
   work. Until then multiple enabled sections require explicit language selection.
-- [ ] Investigate the intermittent Ctrl-C report-classification failure observed
-  during the statement-removal audit: one SIGINT worker was saved as an error
-  rather than interrupted. Isolated and final two-thread rechecks passed; no fix
-  is claimed. This is separate from the deferred pre-main startup investigation.
-  See [evidence](benchmarks/statement-removal-audit.md#validation-and-remaining-reliability-finding).
+- [x] Reproduce and fix the Ctrl-C child-exit/report-classification race observed
+  during the statement-removal audit. Matching user signals are recorded before
+  async dispatch; unrelated signal exits, numeric tool failures and capture errors
+  remain errors. Verify plain/JSON reports, terminal restoration and descendant
+  cleanup. See [evidence](benchmarks/cancellation-exit-race.md). The deferred
+  pre-main startup investigation remains separate and unresolved.
 
 ## Public release scope and goal sequence (2026-10-22)
 

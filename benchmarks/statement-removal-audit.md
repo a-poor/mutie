@@ -140,8 +140,13 @@ draft evidence is not relabeled as execution under the final recipe.
 An earlier unrestricted-concurrency local suite failed the existing PTY Ctrl-C
 test: one worker's SIGINT exit was saved as an error while another was interrupted,
 making the report `failed` instead of `interrupted`. The isolated recheck and final
-two-thread suite passed unchanged. This remains an unresolved timing-sensitive
-classification observation, distinct from the deferred pre-main loader issue.
-No cancellation deadline/assertion or production process code changed. Local logs
+two-thread suite passed unchanged. At that point this remained an unresolved
+timing-sensitive classification observation, distinct from the deferred pre-main
+loader issue. No cancellation deadline/assertion or production process code changed
+in the assignment-removal slice. Local logs
 are `/tmp/mutie-assignments-full.log`, `mutie-assignments-cancellation-recheck.log`
 and `mutie-assignments-full-final.log`.
+
+The subsequent [cancellation investigation](cancellation-exit-race.md) reproduces
+the child-exit race and fixes it without relaxing deadlines or hiding genuine
+errors. That later validation does not replace this audit's original results.

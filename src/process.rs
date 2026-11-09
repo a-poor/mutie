@@ -347,6 +347,12 @@ where
         }
         status
     };
+    // A terminal signal can win the child-exit branch before the async listener
+    // wakes cancellation. Reconcile only matching signals actually received by
+    // this run; preserve numeric exits, timeouts and capture/infrastructure errors.
+    if !timed_out && capture_error.is_none() && cancellation.interrupted_exit(status) {
+        interrupted = true;
+    }
     let elapsed = started.elapsed();
     Ok(CommandOutput {
         pid,

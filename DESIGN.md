@@ -545,7 +545,13 @@ copying and discovery check a shared stop request, and workspace copying and
 source parsing run on blocking threads. Workers are drained rather than aborted so
 command output can be returned and saved. Ctrl-C and Unix SIGTERM use this path.
 Tool failures also stop peers but retain a failed run status and the original
-error. Terminal restoration will be added with the interactive view. An abrupt
+error. Unix signal receipt is recorded atomically as well as waking the async
+stop task. After child/group cleanup and capture draining, a raw SIGINT/SIGTERM
+exit matching a signal received by this run is interrupted even if child exit
+wins the async wait. Internal peer cancellation, numeric exits, unrelated signals,
+timeouts and capture failures retain their classification. Handler registrations
+belong to the run's signal guard. See [race regression](benchmarks/cancellation-exit-race.md).
+The live view restores the terminal before the final summary. An abrupt
 process kill can leave the last checkpoint incomplete; it must never be presented
 as a successful completed run.
 
