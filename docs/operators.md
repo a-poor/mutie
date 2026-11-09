@@ -46,6 +46,18 @@ Saved recipes must match exactly and fresh discovery must admit the original
 context. Setup/lifecycle errors and timeouts stay outside kills. See
 [native controls and unchanged session-key findings](../benchmarks/javascript-strings.md).
 
+Go `string_replace` changes an interpreted or raw runtime string from nonempty
+to `""` or empty to `"x"`. Emptiness follows the value: raw literals discard CRs,
+while escaped NULs, Unicode and arbitrary byte values remain nonempty. Original
+bytes and spans are preserved; discovery does not evaluate source.
+
+Imports, struct tags, named constants, types/array lengths, keyed composite keys,
+switch case values, rune literals, tests and generated files are excluded.
+Variable initializers, arguments, returns, composite values and runtime lookups
+remain eligible. Saved recipes and fresh source-context matching protect reruns.
+Compiler/vet failures, timeouts and capture errors stay outside kills. See
+[native controls and unchanged godotenv findings](../benchmarks/go-strings.md).
+
 Rust `string_replace` changes an ordinary or raw runtime string from nonempty
 to `""` or empty to `"x"`, retaining `&str` semantics. Emptiness follows the
 decoded value: escaped line continuations and their following Rust whitespace
@@ -328,7 +340,7 @@ Existing Go test-failure classification stays unchanged, including panic failure
 timeouts and tool/capture errors remain separate. See
 [semantic controls and standard-stream findings](../benchmarks/go-assignments.md).
 
-All twelve Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
+All thirteen Go operators run by default; Rust runs `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, `call_remove`,
 `assignment_remove`, `number_replace`, and `string_replace`. Python runs `boolean_flip`,

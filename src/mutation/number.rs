@@ -11,33 +11,6 @@ fn signed_literal(node: Node<'_>) -> Option<Node<'_>> {
     matches!(operand.kind(), "int_literal" | "float_literal").then_some(operand)
 }
 
-fn value_context(mut node: Node<'_>) -> bool {
-    while let Some(parent) = node.parent() {
-        if matches!(
-            parent.kind(),
-            "const_declaration"
-                | "const_spec"
-                | "type_spec"
-                | "type_alias"
-                | "type_arguments"
-                | "type_elem"
-        ) || parent.kind().ends_with("_type")
-            || (parent.kind() == "keyed_element"
-                && parent
-                    .child_by_field_name("key")
-                    .is_some_and(|key| key.id() == node.id()))
-            || (parent.kind() == "expression_case"
-                && parent
-                    .child_by_field_name("value")
-                    .is_some_and(|value| value.id() == node.id()))
-        {
-            return false;
-        }
-        node = parent;
-    }
-    true
-}
-
 pub(super) fn replacement(node: Node<'_>, source: &str) -> Option<&'static str> {
     let literal = if matches!(node.kind(), "int_literal" | "float_literal") {
         if node.parent().and_then(signed_literal).is_some() {
@@ -47,7 +20,7 @@ pub(super) fn replacement(node: Node<'_>, source: &str) -> Option<&'static str> 
     } else {
         signed_literal(node)?
     };
-    if !value_context(node) {
+    if !super::literal::value_context(node) {
         return None;
     }
     let token = source[literal.byte_range()].replace('_', "");

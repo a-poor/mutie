@@ -1314,7 +1314,8 @@ automatic sequence of work:
 - JS/TS now has [bounded quoted-string replacement](benchmarks/javascript-strings.md).
   Python now has [ordinary str-literal acceptance](benchmarks/python-strings.md).
   Rust now has [ordinary/raw str-literal acceptance](benchmarks/rust-strings.md).
-  Go strings, templates and broader recipes need separate acceptance.
+  Go now has [interpreted/raw string acceptance](benchmarks/go-strings.md),
+  completing bounded numeric/string parity. Templates and broader recipes remain separate.
   Consider return-value replacement with type-appropriate zero, empty string,
   empty collection or null values.
 - Extend call removal or add carefully scoped statement/block removal to test
@@ -2614,3 +2615,22 @@ records 64 native pairs, grammar boundaries, fresh/cached review/rerun agreement
 and unchanged UCD Parse's 112-site audit (48 kills, 64 survivors). Four tests in a
 separate copy kill 24 survivors; 40 remain open. Original inputs, reports and the
 42.86% filtered score stay unchanged; focused 100% is not a full stronger score.
+
+### Go string literals
+
+`mutation/string.rs` validates interpreted/raw tokens and selects one canonical
+empty-to-`"x"` or nonempty-to-`""` replacement without evaluating source. Raw
+literals discard CRs when deciding emptiness. Interpreted escapes retain Go's
+byte/Unicode rules; invalid source NUL/BOM and malformed escapes are rejected.
+Original bytes, spans and fingerprints remain exact. Shared `mutation/literal.rs`
+keeps numeric/string discovery outside imports, tags, named constants, types,
+composite keys and case labels; ordinary runtime values remain eligible.
+
+Saved Go string recipes require `.go` paths and exact replacements. Fresh source
+discovery verifies context; no compiler/vet checks or outcome boundaries are
+relaxed. [Acceptance](benchmarks/go-strings.md) records 64 native pairs, compiler
+boundaries, full/affected review/rerun controls and unchanged godotenv's 39-site
+audit (16 kills, 19 survivors, four build failures). Four separate-copy tests kill
+four survivors in both test scopes; 15 remain open. Original reports, inputs and
+the 45.71% filtered score stay unchanged. This completes bounded numeric/string
+parity; templates and broader recipes remain separate from compatibility work.

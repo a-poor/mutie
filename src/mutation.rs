@@ -16,7 +16,9 @@ use tree_sitter::{Node, Parser};
 use crate::cancellation::Cancellation;
 
 pub(crate) mod assignment;
+mod literal;
 pub(crate) mod number;
+pub(crate) mod string;
 
 pub const OPERATOR_CATALOG_VERSION: u32 = 1;
 
@@ -230,6 +232,20 @@ pub fn discover_cancellable(
 }
 
 fn visit(node: Node<'_>, file: &Arc<SourceFile>, mutations: &mut Vec<Mutation>) {
+    if let Some(replacement) = string::replacement(node, &file.source) {
+        let start = node.start_position();
+        let end = node.end_position();
+        mutations.push(Mutation {
+            file: Arc::clone(file),
+            operator: Operator::StringReplace,
+            range: node.byte_range(),
+            replacement: replacement.into(),
+            line: start.row + 1,
+            column: start.column + 1,
+            end_line: end.row + 1,
+            end_column: end.column + 1,
+        });
+    }
     if let Some(replacement) = number::replacement(node, &file.source) {
         let start = node.start_position();
         let end = node.end_position();
@@ -737,8 +753,11 @@ label: labeled()
         let source = "package p\r\nfunc f() {\r\n\t// before\r\n\tprintln(\r\n\t\t\"é\", // inside\r\n\t) // after\r\n}";
         fs::write(root.path().join("code.go"), source)?;
         let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
-        assert_eq!(mutations.len(), 1);
-        let m = &mutations[0];
+        assert_eq!(mutations.len(), 2);
+        let m = mutations
+            .iter()
+            .find(|m| m.operator == Operator::CallRemove)
+            .unwrap();
         assert_eq!((m.line, m.column, m.end_line, m.end_column), (4, 2, 6, 3));
         assert_eq!(
             m.diff(),
@@ -812,11 +831,14 @@ label: labeled()
         let source = "package p\n// true + false\nvar text = \"é true + false\"\nfunc f(a, b int) bool { return a < b && !false }\n";
         fs::write(root.path().join("code.go"), source)?;
         let mutations = discover(root.path(), vec!["code.go".into()], &Scope::new(&[], &[])?)?;
-        assert_eq!(mutations.len(), 5);
-        assert!(mutations.iter().all(|m| m.line == 4));
+        assert_eq!(mutations.len(), 6);
+        assert_eq!(mutations[0].original(), "\"é true + false\"");
+        assert_eq!(mutations[0].line, 3);
+        assert!(mutations[1..].iter().all(|m| m.line == 4));
         assert_eq!(
             mutations.iter().map(|m| m.operator).collect::<Vec<_>>(),
             vec![
+                Operator::StringReplace,
                 Operator::LogicalSwap,
                 Operator::ComparisonInvert,
                 Operator::ComparisonBoundary,
@@ -831,7 +853,7 @@ label: labeled()
                 mutation.original().len()
             );
         }
-        mutations[0].apply(root.path())?;
+        mutations[1].apply(root.path())?;
         assert_eq!(
             fs::read_to_string(root.path().join("code.go"))?,
             source.replace("&&", "||")

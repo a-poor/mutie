@@ -938,3 +938,17 @@ candidates (48 kills, 64 survivors); four separate-copy public-API tests kill 24
 survivors. Forty remain open. Preserve all 108 input paths, 464 report files and
 the original 42.86% selection score; focused 100% is not a full stronger score.
 Go strings and broader recipes remain separate; remote CI requires a push.
+
+`benchmarks/go-strings.md` records Go `string_replace`: interpreted/raw runtime
+strings, nonempty to empty and empty to "x". Preserve full-token escape validation,
+byte/Unicode values, raw CR removal and original source spans. Shared Go literal
+contexts exclude imports, tags, named constants, types/array lengths, composite
+keys and switch case values; runes/tests/generated files remain excluded. Exact
+saved recipes and fresh source/context checks protect reruns. Compile/vet failures,
+timeouts and capture errors stay outside kills. Sixty-four native pairs and
+full/affected scored controls pass. Unchanged godotenv has 39 candidates (16 kills,
+19 survivors, four build failures); four separate-copy tests kill four survivors
+in both scopes. Fifteen remain open. Preserve all 20 inputs, 172 original and
+172 affected report files and the original 45.71% selection score. Bounded numeric/
+string parity is complete; prioritize routine compatibility and feedback next.
+Templates and broader recipes remain separate; remote CI requires a push.

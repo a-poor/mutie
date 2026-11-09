@@ -872,7 +872,7 @@ fn multiline_calls_keep_identity_and_dismissals_across_operator_selection_and_re
     let original = fixture.report();
     let original_bytes = fs::read(original.join("mutants.json")).unwrap();
     let inventory = json(&original, "mutants.json");
-    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 3);
+    assert_eq!(inventory["mutations"].as_array().unwrap().len(), 4);
     let call = &inventory["mutations"][2];
     assert_eq!(call["operator"], "call_remove");
     assert_eq!(call["line"], 4);
@@ -934,7 +934,7 @@ fn multiline_calls_keep_identity_and_dismissals_across_operator_selection_and_re
         "--clear-operators",
         "--list",
     ]);
-    assert!(success(&cleared).contains("Selected 3 mutations"));
+    assert!(success(&cleared).contains("Selected 4 mutations"));
     assert_eq!(
         fs::read(original.join("mutants.json")).unwrap(),
         original_bytes

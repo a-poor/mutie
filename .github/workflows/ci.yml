@@ -130,6 +130,9 @@ jobs:
       - name: Go numeric literal semantics
         if: matrix.adapter == 'Go'
         run: cargo test --locked --bin mutie mutation::number::tests::native_ -- --ignored --test-threads=1
+      - name: Go string literal semantics
+        if: matrix.adapter == 'Go'
+        run: cargo test --locked --bin mutie mutation::string::tests::native_ -- --ignored --test-threads=1
       - name: Rust package workflow
         if: matrix.adapter == 'Rust'
         run: cargo test --locked --test rust_workflow rust_fixture_runs_lists_filters_and_saves_results_without_touching_inputs -- --ignored --exact

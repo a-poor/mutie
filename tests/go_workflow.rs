@@ -13,6 +13,8 @@ use std::{
 mod assignments;
 #[path = "support/go_numbers.rs"]
 mod numbers;
+#[path = "support/go_strings.rs"]
+mod strings;
 
 fn copy_tree(from: &Path, to: &Path) {
     fs::create_dir_all(to).unwrap();
@@ -111,7 +113,7 @@ fn go_workflow() {
     );
 
     let listing = stdout(&run(&root, &["--list"]));
-    assert!(listing.contains("Found 4 mutations"), "{listing}");
+    assert!(listing.contains("Found 5 mutations"), "{listing}");
     assert!(!listing.contains("Running baseline"));
     assert!(!listing.contains("disabled.go:"));
     assert!(!listing.contains("generated.go:"));
@@ -122,7 +124,7 @@ fn go_workflow() {
     let output = run(&root, &["--jobs", "2", "--timeout", "5"]);
     let results = stdout(&output);
     assert!(
-        results.contains("4 mutations: 1 killed, 1 missed, 1 timed out, 1 failed to compile"),
+        results.contains("5 mutations: 2 killed, 1 missed, 1 timed out, 1 failed to compile"),
         "{results}"
     );
     let (first_directory, metadata, inventory, report) = saved_report(&output);
@@ -130,13 +132,13 @@ fn go_workflow() {
     assert_eq!(metadata["checkpoint"], report["checkpoint"]);
     assert_eq!(inventory["complete"], true);
     assert_eq!(report["status"], "completed");
-    assert_eq!(metadata["planned_mutations"], 4);
-    assert_eq!(report["summary"]["killed"], 1);
+    assert_eq!(metadata["planned_mutations"], 5);
+    assert_eq!(report["summary"]["killed"], 2);
     assert_eq!(report["summary"]["missed"], 1);
     assert_eq!(report["summary"]["timeout"], 1);
     assert_eq!(report["summary"]["build_failed"], 1);
     assert_eq!(report["summary"]["errors"], 0);
-    assert_eq!(metadata["score"]["percentage"], 50.0);
+    assert_eq!(metadata["score"]["percentage"], 100.0 * 2.0 / 3.0);
     assert_eq!(metadata["score"]["timeout"], 1);
     assert_eq!(metadata["score"]["build_failed"], 1);
     assert_eq!(report["baseline"]["outcome"], "passed");
@@ -151,7 +153,7 @@ fn go_workflow() {
             "affected",
             "--fail-on-missed",
             "--min-score",
-            "50.01",
+            "66.67",
             "--max-log-bytes",
             "128",
         ],
@@ -165,7 +167,7 @@ fn go_workflow() {
     assert_eq!(affected_metadata["score_policy"]["status"], "failed");
     assert_eq!(affected_metadata["score"], metadata["score"]);
     assert_eq!(affected_outcomes["summary"], report["summary"]);
-    assert_eq!(affected_inventory["mutations"].as_array().unwrap().len(), 4);
+    assert_eq!(affected_inventory["mutations"].as_array().unwrap().len(), 5);
     for mutation in affected_inventory["mutations"].as_array().unwrap() {
         assert_eq!(
             mutation["test_packages"],
@@ -177,7 +179,7 @@ fn go_workflow() {
         ("baseline_setup", 1),
         ("discovery_reset", 1),
         ("worker_setup", 2),
-        ("worker_reset", 2),
+        ("worker_reset", 3),
     ] {
         let measured = &metadata["workspace_metrics"][phase];
         assert_eq!(measured["operations"], operations);
@@ -230,7 +232,7 @@ fn go_workflow() {
             "add",
             first_directory.to_str().unwrap(),
             "--id",
-            "3",
+            "4",
             "--reason",
             "accepted test gap",
             "--note",
@@ -248,7 +250,7 @@ fn go_workflow() {
             "--rerun",
             first_directory.to_str().unwrap(),
             "--id",
-            "3,1",
+            "4,1",
             "--operator",
             "arithmetic_replace",
             "--jobs",
@@ -275,7 +277,7 @@ fn go_workflow() {
     assert_eq!(
         focused_metadata["rerun"]["mutations"],
         serde_json::json!([
-            {"id": 1, "source_id": 1}, {"id": 2, "source_id": 3}
+            {"id": 1, "source_id": 1}, {"id": 2, "source_id": 4}
         ])
     );
     let preview = stdout(&run(
@@ -288,7 +290,7 @@ fn go_workflow() {
             "--list",
         ],
     ));
-    assert!(preview.contains("Found 1 mutations") && preview.contains("(source [000003])"));
+    assert!(preview.contains("Found 1 mutations") && preview.contains("(source [000004])"));
 
     // Multiple mutations on one worker also prove that test side effects reset.
     let custom = root.join("artifacts/reports");
@@ -299,13 +301,13 @@ fn go_workflow() {
     let scoped_output = run(&root, &[]);
     let scoped = stdout(&scoped_output);
     assert!(
-        scoped.contains("3 mutations: 1 killed, 1 missed, 0 timed out, 1 failed to compile"),
+        scoped.contains("4 mutations: 2 killed, 1 missed, 0 timed out, 1 failed to compile"),
         "{scoped}"
     );
     let (custom_directory, custom_metadata, _, custom_report) = saved_report(&scoped_output);
     assert!(custom_directory.starts_with(&custom));
     assert_eq!(custom_report["status"], "completed");
-    assert_eq!(custom_report["mutations"].as_array().unwrap().len(), 3);
+    assert_eq!(custom_report["mutations"].as_array().unwrap().len(), 4);
     assert_eq!(
         custom_metadata["effective_config"]["exclude"],
         serde_json::json!(["ready.go"])
@@ -369,7 +371,7 @@ fn go_workflow() {
     assert_eq!(rerun_outcomes["mutations"].as_array().unwrap().len(), 1);
     assert_eq!(
         rerun_metadata["rerun"]["mutations"],
-        serde_json::json!([{"id": 1, "source_id": 3}])
+        serde_json::json!([{"id": 1, "source_id": 4}])
     );
     assert!(
         fs::read_to_string(rerun_directory.join("logs/000001.log"))

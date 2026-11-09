@@ -9,7 +9,8 @@ to `main`, pull requests and manual dispatches. It uses Ubuntu 24.04, Rust 1.99.
 and Go 1.27.2. Separate jobs run:
 
 - Rustfmt, Clippy with warnings denied, the normal test suite and crate packaging.
-- Real Go mutation workflows, including affected-package selection and stronger-test reruns.
+- Real Go mutation workflows, including affected-package selection, numeric/string
+  native semantics, compiler boundaries and stronger-test reruns.
 - Selected real Rust package and workspace workflows, including reports, source
   preservation and reruns. The Rust job also runs native call/assignment removal
   and numeric-literal controls, serial/cached scored workflows and stronger-test reruns, plus native

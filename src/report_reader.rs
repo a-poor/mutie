@@ -317,6 +317,7 @@ impl LoadedReport {
                     || matches!(
                         run.language(),
                         crate::cli::Lang::Node
+                            | crate::cli::Lang::Go
                             | crate::cli::Lang::Bun
                             | crate::cli::Lang::Vitest
                             | crate::cli::Lang::Python
@@ -324,6 +325,17 @@ impl LoadedReport {
                     ),
                 "saved string mutation is outside supported language scope"
             );
+            if run.language() == crate::cli::Lang::Go
+                && mutation.operator == Operator::StringReplace
+            {
+                ensure!(
+                    crate::mutation::string::valid_replacement(
+                        &mutation.original,
+                        &mutation.replacement
+                    ) && mutation.file.extension().and_then(|s| s.to_str()) == Some("go"),
+                    "saved Go string mutation is outside supported source scope"
+                );
+            }
             if run.language() == crate::cli::Lang::Go
                 && mutation.operator == Operator::NumberReplace
             {

@@ -40,7 +40,7 @@ requires adapter evidence, including exact-runner observer checks where used.
 
 | Language | Test runner | Level | Verified scope | Main gap or next gate |
 | --- | --- | --- | --- | --- |
-| Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 12 operators | Broader project/runtime evidence and useful operator expansion |
+| Go | `go test` | Established | One Go module, multiple packages; full or affected-package tests; 13 operators | Broader project/runtime evidence and feedback-time validation |
 | Rust | Cargo / standard Rust test harness | Validated | Ordinary packages/workspaces on Unix; member selection, internal path dependencies, unit/integration tests; scoped expression, branch, loop and call mutations | Broader project/platform evidence; build scripts/proc macros and external paths |
 | TypeScript | Vitest | Validated | One pinned ESM package with an audited installation; expression, branch, loop and call mutations; serial full-suite runs, reports, reruns and review/policies; Pathe findings and stronger tests | Broader project/config/runtime evidence; parallel workers |
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial execution of expression, branch, loop and call mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
@@ -69,9 +69,9 @@ matrix remain release-qualification gaps.
 - Project/test scope: a root `go.mod`, multiple packages within that module,
   Go 1.24+ on PATH. Full-module tests are the default; affected-package mode keeps
   a full baseline and selects transitive reverse dependencies for mutations.
-- Mutation coverage: twelve operators, including arithmetic/comparison changes,
+- Mutation coverage: thirteen operators, including arithmetic/comparison changes,
   boolean flips, logical swaps, call removal, scoped selector/index assignment
-  removal, numeric literals, branch forcing and loop skipping.
+  removal, numeric/string literals, branch forcing and loop skipping.
   See [operator behavior](docs/operators.md) for eligibility and limits.
 - Workflow: file/operator filters, live/plain status, saved reports and browser,
   focused reruns, dismissals, scores and CI policies, retention and log budgets.
@@ -865,7 +865,7 @@ two kills and 11 survivors. Five tests in a separate copy kill all 11; its
 67-test baseline passes. All 63 original inputs and 65 original report files
 remain unchanged. The original 15.38% filtered score stays distinct from the
 focused 100%. This revisits an existing project and adds no runtime, dependency
-or layout support. Rust/Go strings and templates remain unimplemented; Python's
+or layout support. Templates remain separate; Python's
 ordinary string scope is recorded below.
 
 ### Python string literals
@@ -905,3 +905,21 @@ no errors, timeouts or build failures. Four separate-copy public-API tests kill
 the original 42.86% selection score stays distinct from focused 100%. All 108
 input paths and 464 original report files remain preserved. Full-workspace test
 scope, source identity and manifest/lockfile/toolchain checks remain unchanged.
+
+### Go string literals
+
+[String acceptance](benchmarks/go-strings.md) adds interpreted/raw runtime
+`string_replace`: nonempty to empty, empty to `"x"`. Full-token validation accounts
+for escapes, Unicode/byte values and raw CR removal. Imports, tags, named constants,
+types/array lengths, keyed composite keys, switch case values, runes, tests and
+generated files remain excluded. Exact recipes and fresh source discovery protect
+reruns; compile/vet failures, timeouts and capture errors stay outside kills.
+
+Sixty-four native pairs and compiler controls pass. Scored fixtures cover
+full/affected agreement, dependent-package tests, review, policies and stronger
+reruns. Unchanged godotenv v1.5.1 has 39 candidates: 16 kills, 19 survivors and
+four build failures. Four public-API tests in a separate complete copy kill four
+survivors; full/affected outcomes agree before and after. Fifteen remain open.
+All 20 tracked inputs and both 172-file original reports remain unchanged, as
+does the original 45.71% selection score. Bounded numeric/string parity is complete;
+broader recipes and routine project compatibility remain separate work.

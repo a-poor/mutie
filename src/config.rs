@@ -450,13 +450,6 @@ impl RunConfig {
                 "unsupported {runner} operator"
             );
         }
-        ensure!(
-            matches!(
-                config.lang,
-                Lang::Node | Lang::Bun | Lang::Vitest | Lang::Python | Lang::Rust
-            ) || !config.operators.contains(&Operator::StringReplace),
-            "string_replace is currently supported only for JavaScript/TypeScript, Python and Rust"
-        );
         if config.lang == Lang::Rust {
             ensure!(
                 config.test_scope == TestScope::Full,
@@ -592,7 +585,7 @@ mod tests {
     }
 
     #[test]
-    fn string_replacement_requires_a_supported_runner() -> Result<()> {
+    fn string_replacement_is_supported_by_each_runner() -> Result<()> {
         for runner in ["node", "bun", "vitest"] {
             let root = fixture(&format!(
                 "[js]\nrunner='{runner}'\noperators=['string_replace']\n"
@@ -614,8 +607,7 @@ mod tests {
         )?;
         assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
         let root = fixture("[go]\noperators=['string_replace']\n");
-        let error = resolve(root.path()).unwrap_err().to_string();
-        assert!(error.contains("string_replace"), "{error}");
+        assert_eq!(resolve(root.path())?.operators, [Operator::StringReplace]);
         Ok(())
     }
     #[test]

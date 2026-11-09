@@ -213,7 +213,7 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Scoped assignment removal now has cross-language parity. Broader block,
    binding and lifecycle deletion remain separate; next is the bounded literal
    mutation milestone below.
-6. [ ] **Numeric/string literal mutations.** Define bounded useful replacement
+6. [x] **Numeric/string literal mutations.** Define bounded useful replacement
    sets per language, avoid duplicate/no-op and type-only candidates, and validate
    escaping, numeric edge cases, source identity and real-project usefulness.
    Discuss significant blockers rather than requiring unbounded transformations.
@@ -258,7 +258,13 @@ Split implementation goals by language/runner when acceptance becomes too large.
    Unchanged UCD Parse has 112 candidates (48 kills, 64 survivors); four
    separate-copy public-API tests kill 24 survivors. Forty remain open. See
    [acceptance](benchmarks/rust-strings.md).
-   Go strings, templates and broader literal recipes remain open.
+   Go string slice completed: interpreted/raw runtime strings, decoded emptiness,
+   raw CR removal, exact recipes, 64 native pairs and full/affected scored controls.
+   Unchanged godotenv has 39 candidates (16 kills, 19 survivors, four build
+   failures); four separate-copy public-API tests kill four survivors in both
+   test scopes. Fifteen remain open. See [acceptance](benchmarks/go-strings.md).
+   Bounded numeric and string literals now have cross-language parity. Templates
+   and broader recipes remain separate; routine compatibility and feedback is next.
 7. [ ] **Routine project compatibility and feedback.** Maintain representative
    unchanged public projects for every language/runner, including realistic
    dependencies/configuration. Address demonstrated onboarding/runtime blockers
