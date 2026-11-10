@@ -1819,6 +1819,18 @@ dependencies and loaders remain separate scope decisions.
 
 ## Scoped Bun runner: attributed scoring
 
+The [runtime extension](benchmarks/bun-runtime-compatibility.md) accepts exact
+1.3.11+af24e281e and 1.4.4+38afee6c8 pairs. The selected runtime is passed from
+private probes into execution identity and the evidence reader. Every observer
+initialization must match that same pair. The newer JUnit format preserves
+exception names; a nonempty label is eligible only with the existing complete
+body/checkpoint and independent hook/process evidence. A body-thrown `TimeoutError`
+is distinct from a native timeout with no completed failure checkpoint. The
+observer, budgets and cleanup rules remain unchanged. Runtime/recipe drift
+requires a fresh run, and text summaries use the actual saved runtime version.
+Elysia's passing native 1.4.4 baseline does not extend the project scope described
+below; its build, dependencies, skips and configuration need separate acceptance.
+
 The [initial audit](benchmarks/bun-initial-scope.md) selects pinned Bun
 1.3.11+af24e281e, separate dependency-free JS/TS fixtures and GramIO Composer as
 an unchanged real TS project. JUnit and native inspector reports cannot alone

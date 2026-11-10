@@ -23,7 +23,9 @@ and Go 1.27.2. Separate jobs run:
   in the [external-project evidence](../benchmarks/node-eslint.md). These new
   groups are configured locally and await a push for remote Linux validation.
 - Bun 1.3.11 JavaScript and TypeScript workflows, review/policies, native outcomes,
-  resource limits and descendant cleanup.
+  resource limits and descendant cleanup. A second matrix entry now configures
+  the same checks for Bun 1.4.4; its remote validation awaits a push. Both pass
+  local native/workflow controls; see the [runtime audit](../benchmarks/bun-runtime-compatibility.md).
 - Vitest 4.1.9 JavaScript and TypeScript workflows, review/policies, lifecycle
   attribution and cleanup, using Node 24.22.0 and the frozen pnpm 11.10.0 fixture.
 - A separate Vitest compatibility job is configured for 4.1.5 / Vite 8.0.10 /

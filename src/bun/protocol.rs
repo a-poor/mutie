@@ -6,14 +6,13 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use super::runtime::Runtime;
 use anyhow::{Context, Result, bail, ensure};
 use roxmltree::{Document, Node, ParsingOptions};
 use serde::Deserialize;
 
 const MAX_EVIDENCE_BYTES: usize = 8 * 1024 * 1024;
 const MAX_EVENTS: usize = 100_000;
-const VERSION: &str = "1.3.11";
-const REVISION: &str = "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f";
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Completion {
@@ -24,6 +23,7 @@ pub enum Completion {
 
 /// Evidence bytes must be complete, never the retained head/tail of a capture.
 pub struct Evidence<'a> {
+    pub runtime: Runtime,
     pub exit_code: Option<i32>,
     pub outer_timeout: bool,
     pub stderr: &'a [u8],
@@ -149,7 +149,8 @@ pub fn classify(evidence: Evidence<'_>) -> Result<Completion> {
         if index == 0 {
             match record.event {
                 Event::Init { version, revision } => ensure!(
-                    version == VERSION && revision == REVISION,
+                    version == evidence.runtime.version()
+                        && revision == evidence.runtime.revision(),
                     "wrong runtime identity"
                 ),
                 _ => bail!("missing observer initialization"),
@@ -263,7 +264,11 @@ pub fn classify(evidence: Evidence<'_>) -> Result<Completion> {
         ensure!(body.name == case.name, "body/report name mismatch");
         match (case.failure.as_deref(), body.terminal) {
             (None, Some(Terminal::Return)) => (),
-            (Some("AssertionError"), Some(Terminal::Failure(_))) => failed = true,
+            (Some(name), Some(Terminal::Failure(_)))
+                if evidence.runtime.body_failure_type(name) =>
+            {
+                failed = true
+            }
             (Some("TimeoutError"), None) if body.caught.is_none() => timed_out = true,
             _ => bail!("failure lacks positive body evidence or result is incomplete"),
         }

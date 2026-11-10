@@ -109,7 +109,7 @@ fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
     let runtime = match lang {
         Lang::Python => "CPython 3.14.7 / pytest 9.0.2 in an explicitly supplied venv",
         Lang::Node => "Node 24.22.0",
-        Lang::Bun => "Bun 1.3.11+af24e281e",
+        Lang::Bun => "Bun 1.3.11+af24e281e or 1.4.4+38afee6c8",
         Lang::Vitest => {
             "Node 24.22.0 / an audited Vitest-Vite version pair / an audited package-manager installation"
         }

@@ -1,5 +1,5 @@
 //! Identity for diagnostic evidence; scored reports/reruns are not connected yet.
-use super::{EVIDENCE_LIMIT, fingerprint, project::Project};
+use super::{EVIDENCE_LIMIT, fingerprint, project::Project, runtime::Runtime};
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use std::{
@@ -13,7 +13,7 @@ use std::{
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(crate) struct ExecutionIdentity {
-    runtime_version: String,
+    pub(crate) runtime_version: String,
     runtime_revision: String,
     pub(super) executable: PathBuf,
     executable_fingerprint: String,
@@ -35,6 +35,7 @@ pub(super) fn recipe_fingerprint() -> String {
             include_bytes!("identity.rs").as_slice(),
             include_bytes!("observer.mjs").as_slice(),
             include_bytes!("protocol.rs").as_slice(),
+            include_bytes!("runtime.rs").as_slice(),
             include_bytes!("project.rs").as_slice(),
             include_bytes!("config.rs").as_slice(),
             include_bytes!("../process.rs").as_slice(),
@@ -53,10 +54,9 @@ pub(super) fn recipe_fingerprint() -> String {
 
 impl ExecutionIdentity {
     pub(crate) fn validate_record(&self) -> Result<()> {
+        Runtime::from_parts(&self.runtime_version, &self.runtime_revision)?;
         anyhow::ensure!(
-            self.runtime_version == "1.3.11"
-                && self.runtime_revision == "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f"
-                && self.executable.is_absolute(),
+            self.executable.is_absolute(),
             "unsupported saved Bun runtime"
         );
         let valid = |s: &str| {
@@ -118,12 +118,13 @@ impl ExecutionIdentity {
     pub(super) fn capture(
         project: &Project,
         executable: &Path,
+        runtime: Runtime,
         timeout: Duration,
         capture_limit: NonZeroUsize,
     ) -> Result<Self> {
         Ok(Self {
-            runtime_version: "1.3.11".into(),
-            runtime_revision: "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f".into(),
+            runtime_version: runtime.version().into(),
+            runtime_revision: runtime.revision().into(),
             executable: executable.to_owned(),
             executable_fingerprint: fingerprint(&fs::read(executable)?),
             manifest_fingerprint: project
@@ -163,9 +164,26 @@ mod tests {
         };
         let limit = NonZeroUsize::new(4096).unwrap();
         let capture = |project: &Project| {
-            ExecutionIdentity::capture(project, &executable, Duration::from_secs(5), limit)
+            ExecutionIdentity::capture(
+                project,
+                &executable,
+                Runtime::Bun1311,
+                Duration::from_secs(5),
+                limit,
+            )
         };
         let original = capture(&project)?;
+        let upgraded = ExecutionIdentity::capture(
+            &project,
+            &executable,
+            Runtime::Bun144,
+            Duration::from_secs(5),
+            limit,
+        )?;
+        original.validate_record()?;
+        upgraded.validate_record()?;
+        assert!(original.validate_rerun(&upgraded).is_err());
+        assert!(upgraded.validate_rerun(&original).is_err());
         let encoded = serde_json::to_value(&original)?;
         assert_eq!(
             serde_json::from_value::<ExecutionIdentity>(encoded.clone())?,
@@ -184,13 +202,20 @@ mod tests {
         assert_ne!(capture(&project)?, original);
         project.tests.pop();
         assert_ne!(
-            ExecutionIdentity::capture(&project, &executable, Duration::from_secs(6), limit)?,
+            ExecutionIdentity::capture(
+                &project,
+                &executable,
+                Runtime::Bun1311,
+                Duration::from_secs(6),
+                limit
+            )?,
             original
         );
         assert_ne!(
             ExecutionIdentity::capture(
                 &project,
                 &executable,
+                Runtime::Bun1311,
                 Duration::from_secs(5),
                 NonZeroUsize::new(8192).unwrap()
             )?,

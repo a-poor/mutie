@@ -54,13 +54,14 @@ broader compatibility remains release work.
 | JavaScript | Vitest | Validated | One pinned ESM package with an audited installation; serial execution of expression, branch, loop and call mutations; Hyparquet full-inventory attempts, stronger-test reruns and review/policies | Broader project/config/runtime evidence; unresolved policy/redundant cases and timeout |
 | JavaScript | Node.js test runner | Validated | One dependency-free ESM package on Node 24.22.0; serial execution of expression, branch, loop and call mutations; reports, reruns and review/policies | Broader package/runtime scope; remaining scheduling/delivery findings |
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
-| JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial execution of expression, branch, loop and call mutations, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
+| JavaScript | Bun test runner | Validated | Audited 1.3.11 and 1.4.4, dependency-free ESM; serial execution of expression, branch, loop and call mutations, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
 | Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison inversion/boundaries, binary logical swaps, `not` removal and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit, Tomli-W and installed Click evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
-silently promote TypeScript, JSX or TSX support. Bun pins 1.3.11+af24e281e;
+silently promote TypeScript, JSX or TSX support. Bun accepts exact
+1.3.11+af24e281e and 1.4.4+38afee6c8 runtimes;
 Python pins CPython 3.14.7 / pytest 9.0.2 within its documented scope.
 
 [Linux CI](docs/development.md#linux-ci) exercises native Go, Rust, Node, Bun,
@@ -417,6 +418,15 @@ Broader layouts and dependencies are not implied.
 ## JavaScript / TypeScript — Bun test runner
 
 **Levels: JavaScript and TypeScript independently Validated within the pinned scope.**
+
+The [runtime compatibility extension](benchmarks/bun-runtime-compatibility.md)
+adds exact Bun 1.4.4 alongside 1.3.11. Each passes 124 native JS/TS evidence cases,
+scored workflows and cleanup controls. Fresh pp-is and Composer runs on 1.4.4
+retain useful stronger-test kills and reject cross-runtime reruns. The newer JUnit
+exception names never replace independent body/hook/process evidence. Existing
+project restrictions remain unchanged. [Elysia's native baseline](benchmarks/bun-elysia-baseline.md)
+passes on 1.4.4 with two upstream skips, but its composed/build/dependency scope
+is not yet supported by Mutie. New Linux matrix coverage awaits a push.
 
 The [selected initial audit](benchmarks/bun-initial-scope.md) pins Bun 1.3.11,
 retains 24 JUnit/inspector cases per syntax, and establishes an unchanged 272-test

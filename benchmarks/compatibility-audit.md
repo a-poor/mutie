@@ -15,6 +15,11 @@ and [Node composed tests](node-eslint.md). The Node follow-up preserves upstream
 inputs but needs an explicitly approved addition of missing type declarations.
 The table below remains the original audit result.
 
+[Elysia's later native baseline](bun-elysia-baseline.md) identifies a Bun runtime
+gap: 1.4.4 passes its complete package test command with two upstream skips.
+The [runtime audit](bun-runtime-compatibility.md) adds that exact runtime for
+Mutie's existing Bun scope; Elysia's broader project admission remains open.
+
 ## Compatibility matrix
 
 Upstream source, tests, manifests and locks were left unchanged. `init` wrote only

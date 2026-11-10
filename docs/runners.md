@@ -10,7 +10,7 @@
 | Rust / Cargo | Rust/Cargo; see the [validated scope](../SUPPORT.md#rust--cargo) | Ordinary packages and workspaces with standard tests. |
 | JS/TS / Vitest | Node 24.22.0; audited Vitest/Vite pairs below | One ESM package, or the audited TypeScript layout; installed dependencies. |
 | JS/TS / Node | Node 24.22.0 | One ESM package; the composed JavaScript scope below also admits owned dependencies. |
-| JS/TS / Bun | Bun 1.3.11+af24e281e | One package without runtime dependencies. |
+| JS/TS / Bun | Bun 1.3.11+af24e281e or 1.4.4+38afee6c8 | One package without runtime dependencies. |
 | Python / pytest | CPython 3.14.7, pytest 9.0.2 | One flat or src package; narrowly audited dependencies and fixtures. |
 
 `mutie init` can identify supported tooling and write an initial configuration.
@@ -201,7 +201,10 @@ The Bun runner’s [initial audit](../benchmarks/bun-initial-scope.md)
 records JS/TS fixtures and real-project probes. A
 [bounded observer prototype](../benchmarks/bun-body-attribution.md) now distinguishes
 body failures from unsafe outcomes in paired probes. `mutie check` with `[js].runner = "bun"` now
-checks a baseline in a fresh copy using pinned Bun 1.3.11+af24e281e. This diagnostic
+checks a baseline in a fresh copy using exact Bun 1.3.11+af24e281e or
+1.4.4+38afee6c8. The [runtime audit](../benchmarks/bun-runtime-compatibility.md)
+validates both versions independently; changing runtimes requires a fresh run.
+This diagnostic
 accepts dependency-free ESM packages with `scripts.test: "bun test"`, `.js`/`.ts`
 source under `src/`, and `.test.js`/`.test.ts` tests under `test/` or `tests/`.
 A narrow plain-JSON NodeNext/ES2022 tsconfig is accepted; aliases, inherited config,

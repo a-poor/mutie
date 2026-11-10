@@ -2,6 +2,8 @@
 //! These controls exercise the reader independently of the isolated executor.
 #[path = "../src/bun/protocol.rs"]
 mod protocol;
+#[path = "../src/bun/runtime.rs"]
+mod runtime;
 
 use protocol::{Completion, Evidence};
 use serde_json::{Value, json};
@@ -33,7 +35,16 @@ fn observer(row: &Value) -> String {
 }
 
 fn classify(row: &Value, files: &[&str]) -> anyhow::Result<Completion> {
+    classify_runtime(row, files, runtime::Runtime::Bun1311)
+}
+
+fn classify_runtime(
+    row: &Value,
+    files: &[&str],
+    runtime: runtime::Runtime,
+) -> anyhow::Result<Completion> {
     protocol::classify(Evidence {
+        runtime,
         exit_code: row["run"]["exit_code"].as_i64().map(|n| n as i32),
         outer_timeout: row["run"]["outer_timeout"].as_bool().unwrap_or(false),
         stderr: row["run"]["stderr"].as_str().unwrap().as_bytes(),
@@ -41,6 +52,88 @@ fn classify(row: &Value, files: &[&str]) -> anyhow::Result<Completion> {
         observer: &observer(row),
         expected_files: files,
     })
+}
+
+fn runtime_records() -> [(runtime::Runtime, Value); 2] {
+    [
+        (
+            runtime::Runtime::Bun1311,
+            include_str!("../benchmarks/fixtures/bun-runtime/bun-1.3.11.json"),
+        ),
+        (
+            runtime::Runtime::Bun144,
+            include_str!("../benchmarks/fixtures/bun-runtime/bun-1.4.4.json"),
+        ),
+    ]
+    .map(|(runtime, text)| (runtime, serde_json::from_str(text).unwrap()))
+}
+
+#[test]
+fn replays_both_runtime_audits_including_arbitrary_exception_names() {
+    for (runtime, record) in runtime_records() {
+        let rows = record["results"].as_array().unwrap();
+        assert_eq!(rows.len(), 124);
+        let mut counts = [0; 4];
+        for row in rows {
+            let file = format!("case.test.{}", row["syntax"].as_str().unwrap());
+            let (actual, index) = match classify_runtime(row, &[&file], runtime) {
+                Ok(Completion::Passed) => ("passed", 0),
+                Ok(Completion::BodyFailure) => ("body_failure", 1),
+                Ok(Completion::Timeout) => ("timeout", 2),
+                Err(_) => ("error", 3),
+            };
+            assert_eq!(
+                actual, row["expected"],
+                "{runtime:?}: {} {}",
+                row["syntax"], row["scenario"]
+            );
+            assert_eq!(row["control"]["exit_code"], row["run"]["exit_code"]);
+            counts[index] += 1;
+        }
+        assert_eq!(counts, [16, 30, 2, 76]);
+    }
+}
+
+#[test]
+fn runtime_labels_never_replace_independent_body_and_lifetime_evidence() {
+    for (runtime, record) in runtime_records() {
+        let other = if runtime == runtime::Runtime::Bun1311 {
+            runtime::Runtime::Bun144
+        } else {
+            runtime::Runtime::Bun1311
+        };
+        for syntax in ["js", "ts"] {
+            let row = record["results"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|row| row["syntax"] == syntax && row["scenario"] == "named_timeout_error")
+                .unwrap();
+            let file = format!("case.test.{syntax}");
+            assert_eq!(
+                classify_runtime(row, &[&file], runtime).unwrap(),
+                Completion::BodyFailure
+            );
+            assert!(classify_runtime(row, &[&file], other).is_err());
+            for field in ["version", "revision"] {
+                let mut wrong = row.clone();
+                wrong["observer"][0][field] = json!("unknown");
+                assert!(classify_runtime(&wrong, &[&file], runtime).is_err());
+            }
+            let mut wrong = row.clone();
+            wrong["observer"].as_array_mut().unwrap().pop();
+            assert!(classify_runtime(&wrong, &[&file], runtime).is_err());
+            let mut wrong = row.clone();
+            wrong["observer"][3]["kind"] = json!("reject");
+            assert!(classify_runtime(&wrong, &[&file], runtime).is_err());
+            let mut wrong = row.clone();
+            wrong["observer"][4]["event"] = json!("return");
+            assert!(classify_runtime(&wrong, &[&file], runtime).is_err());
+            let mut wrong = row.clone();
+            wrong["run"]["stderr"] = json!("Unhandled error between tests");
+            assert!(classify_runtime(&wrong, &[&file], runtime).is_err());
+        }
+    }
 }
 
 #[test]
@@ -203,6 +296,7 @@ fn rejects_xml_entities_namespaces_hidden_results_and_oversized_or_truncated_evi
     ] {
         assert!(
             protocol::classify(Evidence {
+                runtime: runtime::Runtime::Bun1311,
                 exit_code: Some(1),
                 outer_timeout: false,
                 stderr: b"",

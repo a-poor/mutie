@@ -1034,3 +1034,18 @@ is not unchanged-installation acceptance. Separate stronger tests kill the publi
 identical-`this` diagnostic survivor and three internal promise-union survivors; do not
 claim the latter are public-rule failures. Preserve failed lint reports, pending
 work and original 0% selection scores. New Node CI controls remain unpushed.
+
+`benchmarks/bun-runtime-compatibility.md` adds exact Bun 1.4.4+38afee6c8 alongside
+1.3.11+af24e281e. Preserve selected runtime/revision matching from private probes
+through saved identity and observer evidence. Newer JUnit exception names require
+the same completed body/checkpoint and independent hook/process evidence; a named
+TimeoutError thrown by a body is not a native timeout. Both runtimes pass 124
+native JS/TS cases, scored workflow/review/cleanup controls. Fresh pp-is has
+12 kills/10 survivors and seven stronger-test kills; the two-site Composer sample
+has one kill/one survivor, then a stronger middleware-renaming kill. Preserve all
+original reports and reject cross-runtime reruns before baseline/mutations.
+`benchmarks/bun-elysia-baseline.md` records 296 preserved inputs: four native
+failures on 1.3.11, then 1,709 passes/two original skips on 1.4.4 with the complete
+package test command. Elysia remains unsupported by Mutie. Prioritize complete
+build/command attribution, rebuilt artifacts, owned dependencies/nested packages,
+configuration, assets and skip identity before scoring it. New CI remains unpushed.

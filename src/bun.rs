@@ -5,6 +5,7 @@ mod identity;
 mod profile;
 pub(crate) mod project;
 mod protocol;
+mod runtime;
 
 use crate::{
     cancellation::Cancellation,
@@ -140,17 +141,13 @@ pub async fn execution_scope(
         "could not identify Bun"
     );
     let value: serde_json::Value = serde_json::from_str(&output.stdout.text()?)?;
-    ensure!(
-        value["version"] == "1.3.11"
-            && value["revision"] == "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
-        "Bun requires pinned 1.3.11+af24e281e"
-    );
+    let runtime = runtime::Runtime::from_probe(&value)?;
     let executable = Path::new(
         value["executable"]
             .as_str()
             .context("missing Bun executable")?,
     );
-    let scope = ExecutionScope::capture(&project, executable, timeout, capture_limit)?;
+    let scope = ExecutionScope::capture(&project, executable, runtime, timeout, capture_limit)?;
     scope.validate_record()?;
     Ok(scope)
 }
@@ -262,11 +259,7 @@ async fn execute_expected(
         "could not identify Bun runtime"
     );
     let identity: serde_json::Value = serde_json::from_str(&identity.stdout.text()?)?;
-    ensure!(
-        identity["version"] == "1.3.11"
-            && identity["revision"] == "af24e281ebacd6ac77c0f14b4206599cf4ae1c9f",
-        "Bun requires pinned 1.3.11+af24e281e"
-    );
+    let runtime = runtime::Runtime::from_probe(&identity)?;
     let executable = Path::new(
         identity["executable"]
             .as_str()
@@ -275,8 +268,13 @@ async fn execute_expected(
     ensure!(executable.is_absolute(), "Bun executable must be absolute");
     #[cfg(test)]
     timings.finish("runtime_identity_process");
-    let execution_identity =
-        identity::ExecutionIdentity::capture(&project, executable, timeout, capture_limit)?;
+    let execution_identity = identity::ExecutionIdentity::capture(
+        &project,
+        executable,
+        runtime,
+        timeout,
+        capture_limit,
+    )?;
     if let Some(expected) = expected {
         expected.validate_rerun(&execution_identity)?;
         ensure!(
@@ -329,6 +327,7 @@ async fn execute_expected(
                 == identity::ExecutionIdentity::capture(
                     &project,
                     executable,
+                    runtime,
                     timeout,
                     capture_limit
                 )?,
@@ -344,6 +343,7 @@ async fn execute_expected(
         raw.stderr.reader()?.read_to_end(&mut stderr)?;
         let tests: Vec<_> = project.tests.iter().map(String::as_str).collect();
         let completion = protocol::classify(protocol::Evidence {
+            runtime,
             exit_code: raw.status.code(),
             outer_timeout: raw.timed_out,
             stderr: &stderr,
@@ -441,7 +441,7 @@ mod tests {
     }
 
     #[tokio::test]
-    #[ignore = "requires pinned Bun 1.3.11 on PATH; runs isolated JS/TS outcome matrix"]
+    #[ignore = "requires audited Bun on PATH; runs isolated JS/TS outcome matrix"]
     async fn real_isolated_outcomes_and_input_preservation() -> Result<()> {
         for syntax in ["js", "ts"] {
             let root = fixture(syntax);

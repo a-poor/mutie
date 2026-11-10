@@ -306,6 +306,16 @@ Split implementation goals by language/runner when acceptance becomes too large.
    prevent helper ambiguity or dependency loading failures from supplying kills.
    New Node regression controls await remote CI after commit/push. This is not
    unchanged-installation acceptance or a full-project score.
+   Bun follow-up: [Elysia's complete native package command](benchmarks/bun-elysia-baseline.md)
+   exposes four failures on 1.3.11 and passes on 1.4.4 with two original skips.
+   [Exact runtime support](benchmarks/bun-runtime-compatibility.md) now admits both
+   versions with separate evidence matching, exception-name controls, independent
+   JS/TS workflows and pp-is/Composer stronger-test findings. Original scores are
+   preserved; cross-runtime reruns fail before tests. Elysia still needs complete
+   build/command attribution, fresh generated artifacts, owned dependencies and
+   nested packages, audited configuration, inert assets and original skip identity.
+   Do not claim Elysia mutation support from its native baseline. The new Bun
+   matrix entry awaits remote CI after push.
    Other runner/configuration gaps and broader project/platform evidence remain open.
 8. [ ] **Public release qualification and documentation.** Automate a documented
    macOS/Linux test matrix including real adapters and supported versions; verify

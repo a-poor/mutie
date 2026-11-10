@@ -119,8 +119,17 @@ fn excluded_report_directories_cannot_hide_bun_tests() {
 }
 
 #[test]
-#[ignore = "requires pinned Bun 1.3.11 on PATH; real JS/TS scored runs and focused stronger-test reruns"]
+#[ignore = "requires audited Bun on PATH; real JS/TS scored runs and focused stronger-test reruns"]
 fn scored_js_ts_reports_reruns_and_preservation() {
+    let runtime = Command::new("bun")
+        .args([
+            "-e",
+            "console.log(JSON.stringify({version:Bun.version,revision:Bun.revision}))",
+        ])
+        .output()
+        .unwrap();
+    assert!(runtime.status.success());
+    let runtime: Value = serde_json::from_slice(&runtime.stdout).unwrap();
     for syntax in ["js", "ts"] {
         let (temp, root) = fixture(syntax);
         let reports = temp.path().join("reports");
@@ -134,7 +143,16 @@ fn scored_js_ts_reports_reruns_and_preservation() {
         assert_eq!(output.status.code(), Some(3), "{output:?}");
         let (directory, saved, inventory, outcomes) = report(&output);
         assert_eq!(saved["status"], "completed");
-        assert_eq!(saved["bun_scope"]["runtime_version"], "1.3.11");
+        assert_eq!(saved["bun_scope"]["runtime_version"], runtime["version"]);
+        assert_eq!(saved["bun_scope"]["runtime_revision"], runtime["revision"]);
+        assert!(
+            fs::read_to_string(directory.join("summary.txt"))
+                .unwrap()
+                .contains(&format!(
+                    "Runner: Bun {} test runner",
+                    runtime["version"].as_str().unwrap()
+                ))
+        );
         assert_eq!(saved["score"]["killed"], 1);
         assert_eq!(saved["score"]["missed"], 1);
         assert_eq!(inventory["mutations"].as_array().unwrap().len(), 2);

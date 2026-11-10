@@ -682,7 +682,12 @@ impl SavedReport {
         if self.run.effective_config.lang == crate::cli::Lang::Python {
             text.push_str("Runner: CPython 3.14.7 / pytest 9.0.2\nFull suite; serial; pristine test inventory; owned workspaces\n");
         } else if self.run.effective_config.lang == crate::cli::Lang::Bun {
-            text.push_str("Runner: Bun 1.3.11 test runner (JavaScript/TypeScript)\nFull suite; serial; fresh owned command copies; bounded evidence\n");
+            let version = self
+                .run
+                .bun_scope
+                .as_ref()
+                .map_or("unidentified", |scope| scope.runtime_version.as_str());
+            text.push_str(&format!("Runner: Bun {version} test runner (JavaScript/TypeScript)\nFull suite; serial; fresh owned command copies; bounded evidence\n"));
         } else if self.run.effective_config.lang == crate::cli::Lang::Node {
             let typescript = self
                 .run
