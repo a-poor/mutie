@@ -1340,7 +1340,7 @@ fn candidate_error_continuation_stops_on_unsafe_failures() {
         ),
         (
             "file",
-            "        (tmp_path / 'large').write_bytes(b'x' * (5 * 1024 * 1024))\n",
+            "        (tmp_path / 'large').write_bytes(b'x' * (17 * 1024 * 1024))\n",
             false,
         ),
     ] {
