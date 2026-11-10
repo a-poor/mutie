@@ -1,6 +1,6 @@
-// Loaded only by the pinned Vitest 4.1.9 adapter. Constants are prepended by Rust.
+// Loaded only by the audited Vitest adapters. Constants are prepended by Rust.
 import { writeFileSync } from 'node:fs';
-import { relative } from 'node:path';
+import { relative, resolve } from 'node:path';
 
 const text = (value) => typeof value === 'string' ? value.slice(0, 2048) : '';
 const error = (value) => ({ name: text(value?.name), code: text(value?.code),
@@ -12,12 +12,17 @@ export default class MutieReporter {
   started = false;
   ended = false;
   scheduled = [];
+  scheduledTypechecks = [];
+  context;
+  onInit(context) { this.context = context; }
   hooksSeen = false;
   activeHooks = 0;
   onTestRunStart(specifications) {
     if (this.started) throw new Error('Mutie requires exactly one test run');
     this.started = true;
     this.scheduled = specifications.map(spec => relative(MUTIE_ROOT, spec.moduleId));
+    this.scheduledTypechecks = specifications.filter(spec => spec.pool === 'typescript' || spec.pool === 'typecheck')
+      .map(spec => relative(MUTIE_ROOT, spec.moduleId));
   }
   onUserConsoleLog(log) {
     (log.type === 'stderr' ? process.stderr : process.stdout).write(log.content);
@@ -29,9 +34,11 @@ export default class MutieReporter {
     this.ended = true;
     const records = modules.map(module => ({
       path: relative(MUTIE_ROOT, module.moduleId), state: module.state(),
+      typecheck: module.meta().typecheck === true,
       errors: module.errors().map(error),
       suiteErrors: [...module.children.allSuites()].flatMap(suite => suite.errors().map(error)),
       tests: [...module.children.allTests()].map(test => ({
+        typecheck: test.meta().typecheck === true,
         lifecycleEvidence: test.meta().mutieLifecycleEvidence === true,
         bodyFailed: test.meta().mutieBodyFailed === true,
         lifecycleFailed: test.meta().mutieLifecycleFailed === true,
@@ -44,7 +51,20 @@ export default class MutieReporter {
         errors: (test.result().errors || []).map(error),
       })),
     }));
+    let typecheck = null;
+    if (MUTIE_TYPECHECK) {
+      const projects = this.context.projects;
+      if (projects.length !== 1) throw new Error('Mutie requires one typecheck project');
+      const checker = projects[0].typechecker;
+      const compiled = new Set((checker?.getOutput() || '').split(/\r?\n/));
+      typecheck = { exit: checker?.process?.exitCode ?? null,
+        signal: checker?.process?.signalCode ?? null,
+        files: (checker?.getResult()?.files || []).map(file => relative(MUTIE_ROOT, file.filepath)),
+        compiled: this.scheduledTypechecks.filter(file => compiled.has(resolve(MUTIE_ROOT, file))),
+        sourceErrors: checker?.getResult()?.sourceErrors?.length ?? null };
+    }
     const report = JSON.stringify({ completed: true, scheduled: this.scheduled,
+      scheduledTypechecks: this.scheduledTypechecks, typecheck,
       reason, hooksSeen: this.hooksSeen, activeHooks: this.activeHooks,
       unhandledErrors: unhandledErrors.map(error), modules: records });
     if (Buffer.byteLength(report) > MUTIE_EVIDENCE_LIMIT)

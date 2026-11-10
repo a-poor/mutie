@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | Go / go test | Go 1.24+ | One module; multiple packages are supported. |
 | Rust / Cargo | Rust/Cargo; see the [validated scope](../SUPPORT.md#rust--cargo) | Ordinary packages and workspaces with standard tests. |
-| JS/TS / Vitest | Node 24.22.0, Vitest 4.1.9, Vite 8.1.3 | One ESM package; audited package-manager installation. |
+| JS/TS / Vitest | Node 24.22.0; audited Vitest/Vite pairs below | One ESM package, or the audited TypeScript layout; installed dependencies. |
 | JS/TS / Node | Node 24.22.0 | One ESM package without runtime dependencies. |
 | JS/TS / Bun | Bun 1.3.11+af24e281e | One package without runtime dependencies. |
 | Python / pytest | CPython 3.14.7, pytest 9.0.2 | One flat or src package; narrowly audited dependencies and fixtures. |
@@ -23,15 +23,34 @@ shows current onboarding and admission results for one new project per runner.
 ## Vitest and package managers
 
 Package installation and test-runner selection are separate. Vitest accepts
-`packageManager` selectors `pnpm@11.10.0` (isolated local store), `npm@11.19.1`
+`packageManager` selectors `pnpm@11.10.0` or `pnpm@10.33.2` (isolated local store), `npm@11.19.1`
 (lock v3), `yarn@4.18.1` (node-modules/classic), and `bun@1.3.11` (hoisted text
-lock), with the audited Vitest 4.1.9 and Node 24.22.0 runtime. Install dependencies
+lock). Audited runner pairs are Vitest 4.1.9 with Vite 8.1.3 or 8.3.4, and
+Vitest 4.1.5 with Vite 8.0.10; both use Node 24.22.0. Install dependencies
 before running Mutie; Mutie does not install packages or execute package-manager
 scripts. Node/Bun tests still use their own pinned runtime regardless of installer.
 PnP, external dependency links, workspaces, Yarn's pnpm linker and Bun's isolated
 linker are outside this acceptance. Vite+ may manage installation, but `vp test`
 uses a different bundled runner and is explicitly unsupported. See the
 [package-manager audit and validation](../benchmarks/package-managers.md).
+
+The [UFO extension](../benchmarks/vitest-ufo.md) accepts a TypeScript package
+without `type: module` when it has no `.js`, `.cjs`, `.cts`, JSX or TSX inputs;
+tooling uses explicit `.mjs` files. It also recognizes `vitest run --typecheck`
+and `pnpm lint && vitest run --typecheck` on Vitest 4.1.5 / TypeScript 6.0.3.
+The latter requires `lint = "eslint . && prettier -c src test"`, ESLint 10.2.1,
+eslint-config-unjs 0.6.2, Prettier 3.8.3 and the audited static configuration.
+These commands run directly in the isolated copy; arbitrary shell scripts remain
+unsupported. Lint and type failures are errors, never mutation kills. A mutation
+that violates formatting can therefore stop a run even if it parses correctly.
+
+Type tests must use `.test-d.ts` or `.spec-d.ts`. Mutie adds them to an owned
+compiler configuration that preserves the original source checks and compiler
+options. It verifies that the compiler actually includes every selected type test;
+Vitest's passing labels alone are insufficient when `tsconfig.include` omits tests.
+Compiler output has a separate 1 MiB bound, and its build-info cache is always fresh.
+The whole composed command shares one timeout and external output budget.
+Configuration and installed tool bytes remain bound to saved reruns.
 
 Configure `[js]` with `runner = "vitest"`, then run `mutie run --plain` against a prepared, pinned ESM
 package to discover supported expression mutations, run the full suite in isolated copies, and save

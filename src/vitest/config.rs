@@ -65,7 +65,7 @@ pub fn validate(source: &str) -> Result<()> {
     Ok(())
 }
 
-fn collect(
+pub(super) fn collect(
     node: tree_sitter::Node<'_>,
     source: &str,
     depth: usize,

@@ -5,6 +5,9 @@ use sha2::{Digest, Sha256};
 use std::{fs, path::Path};
 
 const RUNNER_SHA256: &str = "c10a7a80fca65fb42e27eabf7655c5ce5ecf36e8aaeb1811499efd063df62556";
+// 4.1.5 differs only in concurrent scheduling. The failure and fixture dispatch
+// sites below are identical; both versions must pass the native lifecycle suite.
+const RUNNER_415_SHA256: &str = "da3f73e5ec0b717015581d52727b49c67cbbe9cc64ebe34bfa0dc0ded1d133e7";
 
 // Each replacement is checked against the exact audited source and expected count.
 const REPLACEMENTS: &[(&str, &str, usize)] = &[
@@ -77,7 +80,8 @@ pub fn instrument(root: &Path) -> Result<()> {
 
 fn patch(source: &[u8]) -> Result<String> {
     ensure!(
-        format!("{:x}", Sha256::digest(source)) == RUNNER_SHA256,
+        [RUNNER_SHA256, RUNNER_415_SHA256]
+            .contains(&format!("{:x}", Sha256::digest(source)).as_str()),
         "unsupported Vitest worker runner bytes; lifecycle evidence cannot be established"
     );
     let mut source = String::from_utf8(source.to_vec())?;

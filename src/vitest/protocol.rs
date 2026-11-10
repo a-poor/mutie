@@ -21,6 +21,19 @@ pub struct Evidence {
     active_hooks: i64,
     unhandled_errors: Vec<Error>,
     modules: Vec<Module>,
+    #[serde(default)]
+    scheduled_typechecks: Vec<String>,
+    #[serde(default)]
+    typecheck: Option<Typecheck>,
+}
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields, rename_all = "camelCase")]
+struct Typecheck {
+    exit: Option<i32>,
+    signal: Option<String>,
+    files: Vec<String>,
+    compiled: Vec<String>,
+    source_errors: Option<usize>,
 }
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
@@ -30,6 +43,8 @@ struct Module {
     errors: Vec<Error>,
     suite_errors: Vec<Error>,
     tests: Vec<Test>,
+    #[serde(default)]
+    typecheck: bool,
 }
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
@@ -42,6 +57,8 @@ struct Test {
     name: String,
     state: String,
     errors: Vec<Error>,
+    #[serde(default)]
+    typecheck: bool,
 }
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields, rename_all = "camelCase")]
@@ -88,6 +105,44 @@ impl Error {
 }
 
 impl Evidence {
+    pub fn validate_typecheck(&self, expected: bool) -> Result<()> {
+        ensure!(
+            self.typecheck.is_some() == expected,
+            "missing or unexpected Vitest typecheck completion"
+        );
+        let scheduled: BTreeSet<_> = self.scheduled_typechecks.iter().collect();
+        let actual: BTreeSet<_> = self
+            .modules
+            .iter()
+            .filter(|m| m.typecheck)
+            .map(|m| &m.path)
+            .collect();
+        ensure!(
+            scheduled.len() == self.scheduled_typechecks.len() && scheduled == actual,
+            "incomplete Vitest typecheck module evidence"
+        );
+        if let Some(checker) = &self.typecheck {
+            let checked: BTreeSet<_> = checker.files.iter().collect();
+            let compiled: BTreeSet<_> = checker.compiled.iter().collect();
+            ensure!(
+                !scheduled.is_empty()
+                    && checked == scheduled
+                    && checked.len() == checker.files.len()
+                    && compiled == scheduled
+                    && compiled.len() == checker.compiled.len(),
+                "typechecker did not complete the scheduled type-test inventory"
+            );
+            ensure!(
+                checker.exit == Some(0)
+                    && checker.signal.is_none()
+                    && checker.source_errors == Some(0),
+                "Vitest typechecking failed or did not exit cleanly; not counted as a mutation kill"
+            );
+        } else {
+            ensure!(scheduled.is_empty(), "unexpected type-test inventory");
+        }
+        Ok(())
+    }
     pub fn counts(&self) -> (usize, usize, usize) {
         let mut counts = (0, 0, 0);
         for test in self.modules.iter().flat_map(|m| &m.tests) {
@@ -101,6 +156,7 @@ impl Evidence {
         counts
     }
     pub fn classify(&self, exit: Option<i32>) -> Result<Outcome> {
+        self.validate_typecheck(self.typecheck.is_some())?;
         ensure!(
             self.completed && matches!(self.reason.as_str(), "passed" | "failed"),
             "Vitest did not complete normally"
@@ -126,6 +182,11 @@ impl Evidence {
         let mut ids = BTreeSet::new();
         let mut module_errors = Vec::new();
         for module in &self.modules {
+            ensure!(
+                module.typecheck
+                    == (module.path.ends_with(".test-d.ts") || module.path.ends_with(".spec-d.ts")),
+                "unsupported or misattributed Vitest type-test module"
+            );
             let path = Path::new(&module.path);
             ensure!(
                 path.components().all(|c| matches!(c, Component::Normal(_)))
@@ -157,7 +218,11 @@ impl Evidence {
             );
             module_errors.extend(&module.errors);
             for test in &module.tests {
-                if test.state == "passed" || test.state == "failed" {
+                ensure!(
+                    test.typecheck == module.typecheck,
+                    "Vitest test pool differs from module pool"
+                );
+                if !test.typecheck && (test.state == "passed" || test.state == "failed") {
                     ensure!(
                         test.lifecycle_evidence,
                         "Vitest test is missing worker lifecycle evidence"
@@ -165,7 +230,7 @@ impl Evidence {
                 }
                 if test.state == "failed" {
                     ensure!(
-                        test.body_failed && !test.lifecycle_failed,
+                        !test.typecheck && test.body_failed && !test.lifecycle_failed,
                         "Vitest failure is not exclusively attributed to the test body; not counted as a kill"
                     );
                 }
@@ -255,6 +320,62 @@ mod tests {
     }
     fn classify(value: Value, exit: Option<i32>) -> Result<Outcome> {
         serde_json::from_value::<Evidence>(value)?.classify(exit)
+    }
+    #[test]
+    fn type_tests_require_complete_compiler_exit_and_never_supply_body_kills() {
+        let mut value = passed();
+        let mut typed = value["modules"][0].clone();
+        typed["path"] = json!("test/types.test-d.ts");
+        typed["typecheck"] = json!(true);
+        typed["tests"][0]["id"] = json!("type-one");
+        typed["tests"][0]["typecheck"] = json!(true);
+        typed["tests"][0]["lifecycleEvidence"] = json!(false);
+        value["modules"].as_array_mut().unwrap().push(typed);
+        value["scheduled"]
+            .as_array_mut()
+            .unwrap()
+            .push(json!("test/types.test-d.ts"));
+        value["scheduledTypechecks"] = json!(["test/types.test-d.ts"]);
+        value["typecheck"] = json!({"exit":0,"signal":null,"files":["test/types.test-d.ts"],"compiled":["test/types.test-d.ts"],"sourceErrors":0});
+        assert_eq!(classify(value.clone(), Some(0)).unwrap(), Outcome::Missed);
+        for (key, bad) in [
+            ("exit", json!(null)),
+            ("exit", json!(1)),
+            ("signal", json!("SIGTERM")),
+            ("files", json!([])),
+            ("compiled", json!([])),
+            (
+                "files",
+                json!(["test/types.test-d.ts", "test/types.test-d.ts"]),
+            ),
+            ("sourceErrors", json!(null)),
+            ("sourceErrors", json!(1)),
+        ] {
+            let mut invalid = value.clone();
+            invalid["typecheck"][key] = bad;
+            assert!(classify(invalid, Some(0)).is_err(), "{key}");
+        }
+        let evidence: Evidence = serde_json::from_value(value.clone()).unwrap();
+        evidence.validate_typecheck(true).unwrap();
+        assert!(evidence.validate_typecheck(false).is_err());
+        assert!(
+            serde_json::from_value::<Evidence>(passed())
+                .unwrap()
+                .validate_typecheck(true)
+                .is_err()
+        );
+        let mut missing = value.clone();
+        missing["scheduledTypechecks"] = json!([]);
+        assert!(classify(missing, Some(0)).is_err());
+        let mut spoofed = value.clone();
+        spoofed["modules"][0]["typecheck"] = json!(true);
+        assert!(classify(spoofed, Some(0)).is_err());
+        value["reason"] = json!("failed");
+        value["modules"][1]["state"] = json!("failed");
+        value["modules"][1]["tests"][0]["state"] = json!("failed");
+        value["modules"][1]["tests"][0]["bodyFailed"] = json!(true);
+        value["modules"][1]["tests"][0]["errors"] = json!([error("")]);
+        assert!(classify(value, Some(1)).is_err());
     }
     #[test]
     fn only_complete_consistent_nonempty_evidence_can_pass() {

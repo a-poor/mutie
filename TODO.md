@@ -289,6 +289,14 @@ Split implementation goals by language/runner when acceptance becomes too large.
    separate-copy tests kill four survivors; original scores and inputs remain
    unchanged. Owned wheel/runtime identity, thread lifetime and filesystem
    controls are covered; broader backends/dependencies remain separate work.
+   Completed Vitest follow-up: [unchanged UFO](benchmarks/vitest-ufo.md) retains
+   pnpm 10.33.2, Vitest 4.1.5 / Vite 8.0.10 and its lint/typecheck recipe.
+   Actual type-file compilation is required, closing a demonstrated false-pass
+   configuration gap. Four boolean flips are killed; 17 punycode boundaries yield
+   eight kills and nine survivors. Two separate-copy tests kill both surrogate
+   boundary findings. Preserve the original 47.06% selection score, failed query
+   report, all inputs and open survivors. The preceding nine-job Linux CI is green;
+   the new Vitest compatibility job still needs its first remote validation.
    Other runner/configuration gaps and broader project/platform evidence remain open.
 8. [ ] **Public release qualification and documentation.** Automate a documented
    macOS/Linux test matrix including real adapters and supported versions; verify

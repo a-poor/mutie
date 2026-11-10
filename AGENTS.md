@@ -1001,3 +1001,20 @@ accounting and a focused 100% are not full scores. Other backends/dependencies,
 async suites and general plugins remain unsupported. Linux CI is configured but
 remote validation requires a push. Reassess the remaining compatibility-audit
 blockers instead of automatically adding another Python feature or operator.
+
+`benchmarks/vitest-ufo.md` records unchanged UFO acceptance with pnpm 10.33.2,
+Vitest 4.1.5 / Vite 8.0.10 and an audited implicit TypeScript layout. Exact worker
+hashes and native lifecycle controls remain required. Recognized lint/typecheck
+recipes run in owned copies with pinned ESLint/Prettier/TypeScript tools and shared
+command budgets. Preserve the supplemental compiler config and actual compiled
+type-file ledger: upstream's source-only tsconfig falsely labels uncompiled type
+tests as passing. Type/lint errors and mixed failures never become body kills.
+The owned compiler launcher avoids copied pnpm paths, bounds internal compiler
+output and uses fresh build information. Lint configuration joins execution identity.
+Four boolean flips are killed; 17 punycode boundaries yield eight kills and nine
+survivors. Two separate-copy public-API tests kill both surrogate-boundary findings.
+The query selection stops at a source type error (two kills, one survivor, five
+pending); preserve its failed score, all 39 inputs and historical report hashes.
+Seven punycode survivors remain open. The prior nine-job Linux CI is green after
+the 17 MiB Python continuation control correction; the new compatibility job still
+needs its first remote validation. Broader scripts, configurations and runtime versions remain separate.

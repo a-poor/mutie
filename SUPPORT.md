@@ -40,7 +40,8 @@ The [six-project compatibility audit](benchmarks/compatibility-audit.md) tests
 unchanged projects beyond the earlier acceptance set. Initially only SJSON
 completed the workflow. Subsequent [Cargo build-script](benchmarks/rust-build-scripts.md)
 and [installed Python](benchmarks/python-click-installed.md) work admits unchanged
-ripgrep and Click. UFO, eslint-node-test and Elysia retain their audit blockers;
+ripgrep and Click. The [Vitest recipe extension](benchmarks/vitest-ufo.md) addresses
+UFO's pinned tools, TypeScript layout, lint and type tests. eslint-node-test and Elysia retain their audit blockers;
 broader compatibility remains release work.
 
 ## Matrix
@@ -245,6 +246,15 @@ and the original pnpm 11.10.0 isolated store. Exact runner instrumentation is
 unchanged. See [installation acceptance and limits](benchmarks/package-managers.md).
 PnP, external links, alternative linkers and workspaces need separate validation.
 Vite+ installation delegation does not establish support for its bundled `vp test` runner.
+
+[UFO acceptance](benchmarks/vitest-ufo.md) adds pnpm 10.33.2, the exact
+Vitest 4.1.5 / Vite 8.0.10 pair, and TypeScript without a package `type` field
+when runtime JavaScript/CommonJS inputs are absent. Its original lint/typecheck
+recipe is retained with pinned ESLint, Prettier and TypeScript tools. An owned
+supplemental compiler config includes the type tests omitted by upstream's
+source-only tsconfig, and actual compiler-file evidence is required. Type errors,
+lint failures and lifecycle/body mixtures remain errors. This does not broaden
+arbitrary scripts, plugins, loaders or runtime versions.
 
 The mixed-syntax fixture passes four direct Vitest tests; separate JS/TS probes
 show survivors killed by stronger tests. Pathe is selected for real TypeScript

@@ -575,10 +575,13 @@ pub(super) fn validate_pnpm_installation(
     validate_tree(&modules, &modules, cancellation, &mut 0)?;
     let layout = yaml(&modules.join(".modules.yaml"))?;
     ensure!(
-        layout["packageManager"].as_str() == Some("pnpm@11.10.0")
+        matches!(
+            manifest["packageManager"].as_str(),
+            Some("pnpm@11.10.0" | "pnpm@10.33.2")
+        ) && layout["packageManager"].as_str() == manifest["packageManager"].as_str()
             && layout["nodeLinker"].as_str() == Some("isolated")
             && layout["virtualStoreDir"].as_str() == Some(".pnpm"),
-        "installed dependencies require pnpm 11.10.0 with a local isolated virtual store"
+        "installed dependencies require the manifest's audited pnpm version with a local isolated virtual store"
     );
     for group in ["dependencies", "devDependencies", "optionalDependencies"] {
         if let Some(deps) = importer[group].as_mapping() {

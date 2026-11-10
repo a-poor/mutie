@@ -115,7 +115,10 @@ fn scored_runs_saved_evidence_stronger_tests_and_zero_exit_failure() {
     assert!((saved["score"]["percentage"].as_f64().unwrap() - 200.0 / 3.0).abs() < 0.01);
     assert_eq!(saved["effective_config"]["lang"], "vitest");
     assert_eq!(saved["vitest_scope"]["node"], "24.22.0");
-    assert_eq!(saved["vitest_scope"]["vitest"], "4.1.9");
+    let runner: serde_json::Value =
+        serde_json::from_slice(&fs::read(root.join("node_modules/vitest/package.json")).unwrap())
+            .unwrap();
+    assert_eq!(saved["vitest_scope"]["vitest"], runner["version"]);
     assert_eq!(saved["vitest_scope"]["config"]["test"]["retry"], 0);
     assert!(
         saved["vitest_scope"]["reporter_fingerprint"]

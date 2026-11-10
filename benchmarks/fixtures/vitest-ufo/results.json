@@ -1,0 +1,956 @@
+{
+  "upstream": {
+    "repository": "https://github.com/unjs/ufo",
+    "revision": "f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6",
+    "tracked_inputs": 39,
+    "input_hashes": {
+      ".editorconfig": {
+        "mode": "100644",
+        "sha256": "b7e66239e90c0d75c06bc7042dbc8192106de56b6d83c444324c68020381f31d"
+      },
+      ".github/banner.svg": {
+        "mode": "100644",
+        "sha256": "e40640bb1c74285d824b670ab8a6bcd775f0dfc3fd931ad4e4058a8a3f1399fa"
+      },
+      ".github/workflows/autofix.yml": {
+        "mode": "100644",
+        "sha256": "5028801c4c4f90199154fcb3fe9ce649058f7e6bf0f38557f7518ca0dec6dc23"
+      },
+      ".github/workflows/ci.yml": {
+        "mode": "100644",
+        "sha256": "9baa69ddfbaa500cac2b30ea3a9293b26095ced7369088e33caa7057631c63ae"
+      },
+      ".gitignore": {
+        "mode": "100644",
+        "sha256": "d8ff5318157a0d309e319a8943e1d5743f6caff7c5e6adc08d812985a3ff659d"
+      },
+      ".prettierrc": {
+        "mode": "100644",
+        "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      "CHANGELOG.md": {
+        "mode": "100644",
+        "sha256": "a5c27b379f36fac3572663ec65770e24a5110c5f2f795cec5ac08a16d846bf84"
+      },
+      "LICENSE": {
+        "mode": "100644",
+        "sha256": "46231df5a7733c3f52f11b71f3df61813007745b62b09031acfb45fb42d75082"
+      },
+      "README.md": {
+        "mode": "100644",
+        "sha256": "e1e73226d840b47332b904542d1066eae4b6f89839b6a455945b102baf65b4dc"
+      },
+      "SECURITY.md": {
+        "mode": "100644",
+        "sha256": "37a94aa47ed4e8d0027dc65ff42ff515c37a1bddf15daaab4d87c93d62266ab6"
+      },
+      "eslint.config.mjs": {
+        "mode": "100644",
+        "sha256": "b7cc14e83d2435e8bf7e868525827add678ceebc27eac141857bdf15f6cced43"
+      },
+      "package.json": {
+        "mode": "100644",
+        "sha256": "4ef029b2bde70c3007f3520d3d4ba14b754e4e8c4defa8d58a8e53434ebdf028"
+      },
+      "pnpm-lock.yaml": {
+        "mode": "100644",
+        "sha256": "330cbc5239289059a81a6e514c847207450c590e7f3e9ac29847657f5dd7f9b6"
+      },
+      "renovate.json": {
+        "mode": "100644",
+        "sha256": "3d856e8cb2b6391882a8f299239a27b45c84620c1fdb79a7f7cadef833265f76"
+      },
+      "src/encoding.ts": {
+        "mode": "100644",
+        "sha256": "8700a80814edd5ecfa19bc19d61b8ad0be0dfc60dfde5ddd86ab399fda5503dc"
+      },
+      "src/index.ts": {
+        "mode": "100644",
+        "sha256": "42486fac22b82f8b6be79c8941e3b1827dde1a8103e9772f6ccddf2d7fdd50d3"
+      },
+      "src/parse.ts": {
+        "mode": "100644",
+        "sha256": "c8b4224297787a599669cc7e41242113a927c1f5fd9b2d1c835440f247d716ea"
+      },
+      "src/punycode.ts": {
+        "mode": "100644",
+        "sha256": "e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b"
+      },
+      "src/query.ts": {
+        "mode": "100644",
+        "sha256": "be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49"
+      },
+      "src/url.ts": {
+        "mode": "100644",
+        "sha256": "ddf9f468f1f1c169ea6fd6bc72b746c9fc4d928ee59bb08968f894452e64feca"
+      },
+      "src/utils.ts": {
+        "mode": "100644",
+        "sha256": "bced262a057669ad04a2f4f6cb47439dbe3851f7c9db0f9b965ac7a004047933"
+      },
+      "test/base.test.ts": {
+        "mode": "100644",
+        "sha256": "1711d7a71c2a51b8caf744f53cd23fc4620a62b6f62573981efce8d807ad4716"
+      },
+      "test/double-slash.test.ts": {
+        "mode": "100644",
+        "sha256": "0d74a005885353f2f7c495e8038a547be8b23e4e17b23c7fac37e9d87ea7cd91"
+      },
+      "test/encoding.test.ts": {
+        "mode": "100644",
+        "sha256": "4466ea91db001d790acd41601b0d9f8bed9398a3a0af6763315e8cef5769bb37"
+      },
+      "test/fixture/README.md": {
+        "mode": "100644",
+        "sha256": "6e61a898b8a07074a0ce5b42fff358ce4527baf7720f0b5012d06c05f633ae59"
+      },
+      "test/fixture/toascii.json": {
+        "mode": "100644",
+        "sha256": "b34ef529ba37f1d9e2d17f824036c3d72e69f8fbc400a8643108f5a6f13b3228"
+      },
+      "test/fixture/urltestdata.json": {
+        "mode": "100644",
+        "sha256": "90f21981c78ba66b13d50ce10d4281a10e2a5f45cfff3dbe511c8cb18e6cd710"
+      },
+      "test/is-same.test.ts": {
+        "mode": "100644",
+        "sha256": "d2521317f27eb5262027aad0e0d9c7bee60e78b88f10ae0cea8de13d9e1552fa"
+      },
+      "test/join.test.ts": {
+        "mode": "100644",
+        "sha256": "e7ee8f97e478bffe238118341010a783a571f0407a4c4b3d277187d046ad843c"
+      },
+      "test/normalize.test.ts": {
+        "mode": "100644",
+        "sha256": "435455abd729f4c1392ac560d32e4aed179af2c359019ddfba32073fcb6ff5a4"
+      },
+      "test/parse.test.ts": {
+        "mode": "100644",
+        "sha256": "8f3f48909dea5c04524029acb07657b46451970ced70e40dab368c111577cb8b"
+      },
+      "test/punycode.test.ts": {
+        "mode": "100644",
+        "sha256": "f235b4b0b5351026e677a3e9ca74898043098b18f2f9a828b37163d978b2fe5e"
+      },
+      "test/query.test.ts": {
+        "mode": "100644",
+        "sha256": "11d753759a4f2613f3d1b76d49929e00bac84f548e4566ebca06d7766ba101a0"
+      },
+      "test/resolve.test.ts": {
+        "mode": "100644",
+        "sha256": "c956a716ca301e1f6ac16114f5764387e433ba1a55aa5985e55d6a8666bab7a3"
+      },
+      "test/trailing-slash.test.ts": {
+        "mode": "100644",
+        "sha256": "536c5d4ecd12afd0018d044abaf9acea22187c918ef4f588333555444ea1dc46"
+      },
+      "test/types.test-d.ts": {
+        "mode": "100644",
+        "sha256": "5a78ae712f6bc87a38c31fb03d33ef3dc6f70e0291bc514e5f9e7915072aa3f2"
+      },
+      "test/url.test.ts": {
+        "mode": "100644",
+        "sha256": "a0268089fbda2b524b2b1dc0bf1156aaad27f10d310560bb9203a6043ac671a7"
+      },
+      "test/utilities.test.ts": {
+        "mode": "100644",
+        "sha256": "0d7f595f6caa7a76ca2acde2f272b1af2161cd97d3360a7e82b52ab6cc079500"
+      },
+      "tsconfig.json": {
+        "mode": "100644",
+        "sha256": "51e23340e47b98a0cc4c48560e48f546d6f3c41235538317fb244145a22e6755"
+      }
+    }
+  },
+  "tools": {
+    "node": "24.22.0",
+    "pnpm": "10.33.2",
+    "vitest": "4.1.5",
+    "vite": "8.0.10",
+    "typescript": "6.0.3",
+    "eslint": "10.2.1",
+    "eslint_config_unjs": "0.6.2",
+    "prettier": "3.8.3"
+  },
+  "native": {
+    "original_tests": 491,
+    "stronger_tests": 493,
+    "type_tests": 2,
+    "original_seconds": 5.798,
+    "stronger_seconds": 5.667,
+    "false_type_assertion_native_exit": 0,
+    "false_type_assertion_guarded_exit": 1
+  },
+  "preservation": {
+    "all_original_inputs_match": true,
+    "prior_original_report_files_unchanged": 254,
+    "all_original_report_files": 288
+  },
+  "runs": {
+    "final-boolean": {
+      "report_id": "run-1794271490-0gJui4",
+      "status": "completed",
+      "seconds": 119.774873792,
+      "total": 4,
+      "completed": 4,
+      "pending": 0,
+      "outcomes": {
+        "build_failed": 0,
+        "errors": 0,
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0
+      },
+      "score": {
+        "build_failed": 0,
+        "dismissed_in_score": 0,
+        "errors": 0,
+        "killed": 4,
+        "missed": 0,
+        "percentage": 100.0,
+        "scope": "filtered",
+        "timeout": 0,
+        "unavailable_reason": null,
+        "unfinished": 0
+      },
+      "execution_fingerprint": "sha256:6389af3df14072138b38a2b076c001a3273de19a83246b3bc3d7d92cb94a70ed",
+      "installation_fingerprint": "sha256:40660437eb5f1e64fc7e1bd73412c38dbafa12ab50e89c18307ebb0df3fe791c",
+      "baseline_seconds": 6.734952835,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/parse.ts",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:c8b4224297787a599669cc7e41242113a927c1f5fd9b2d1c835440f247d716ea",
+          "line": 68,
+          "column": 45,
+          "byte_start": 1837,
+          "byte_end": 1841,
+          "original": "true",
+          "replacement": "false",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 2,
+          "file": "src/utils.ts",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:bced262a057669ad04a2f4f6cb47439dbe3851f7c9db0f9b965ac7a004047933",
+          "line": 83,
+          "column": 72,
+          "byte_start": 2076,
+          "byte_end": 2081,
+          "original": "false",
+          "replacement": "true",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 3,
+          "file": "src/utils.ts",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:bced262a057669ad04a2f4f6cb47439dbe3851f7c9db0f9b965ac7a004047933",
+          "line": 159,
+          "column": 32,
+          "byte_start": 3795,
+          "byte_end": 3799,
+          "original": "true",
+          "replacement": "false",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 4,
+          "file": "src/utils.ts",
+          "operator": "boolean_flip",
+          "source_fingerprint": "sha256:bced262a057669ad04a2f4f6cb47439dbe3851f7c9db0f9b965ac7a004047933",
+          "line": 198,
+          "column": 31,
+          "byte_start": 4827,
+          "byte_end": 4831,
+          "original": "true",
+          "replacement": "false",
+          "state": "completed",
+          "outcome": "killed"
+        }
+      ],
+      "report_files": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "89f842b52d3f0db7b3be133c8c2ab988342bf01e5c41bc8717b16bf5d0bed6ff",
+        "diff/000002.diff": "59106a417ddc16aaef7cded598f68f937bca70893cf0c63e94bc0dfb047ed2cd",
+        "diff/000003.diff": "0645e9396d1a94122007b7f6f346324b06c9396e136c52f850e53358f63af4ee",
+        "diff/000004.diff": "2f53b0f67e9345ddf0c4228050f4a64ca33ce7c7fbdebc1ea50738522bc1b8cd",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "5049e4ed28d110c532c8674226f6b6c46a3fb5c04a6a1485994144393d5e067b",
+        "logs/000001.log": "572285d1b46693c61080b4822707a4a3d69221d2dbe3e06fe963fcb7b3bcbd19",
+        "logs/000001.stderr.log": "140db629e872042e2c8f743410577f09303b3b9ad9398cea8e9c3b74983c3f59",
+        "logs/000001.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000002.log": "e2ccb264c87db727b5a6c2b334a770b7c63a81f135b8927b28079d69cd38ff37",
+        "logs/000002.stderr.log": "e1421d5abad021c35c69257ff0c18403953a505d55675c5b0b94238322a903e2",
+        "logs/000002.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000003.log": "c26feab1589450f18920bfa9e064ccc09700cd63c35d44926ad5ed786b92a96c",
+        "logs/000003.stderr.log": "84db41d21bcbca30d0324b2c8d5f224976196ea5de8283d76f62d4fcde89d4ea",
+        "logs/000003.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000004.log": "d8fbb135e1627b1096cf18b775373ba11b9c79e6c46b766aa49f1a427ae3dd98",
+        "logs/000004.stderr.log": "e472bc410e01180c561a74635dd51be6a85e3e5bbe3282b853fba44d50b85d48",
+        "logs/000004.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/baseline.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/baseline.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/baseline.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "0e19aac2487741cd0f0dd1eb026797a47a81eebe54877066ff634252102c6581",
+        "outcomes.json": "b5c905fa88e9999ce51239da392a7693349a5f0e3c196130120f8287934f4e00",
+        "run.json": "391a1d6bdd6bdca8dd2bc1cc9b5885ff7b77bae3d7b77b079d07577c7c9bbc80",
+        "summary.txt": "4867f39741dde0415fc524165ea3a74a5c9cb7fcdc57403edb24c0568b4ca0fc",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "final-punycode": {
+      "report_id": "run-1794271489-YTy1zC",
+      "status": "completed",
+      "seconds": 336.377745917,
+      "total": 17,
+      "completed": 17,
+      "pending": 0,
+      "outcomes": {
+        "build_failed": 0,
+        "errors": 0,
+        "killed": 8,
+        "missed": 9,
+        "timeout": 0
+      },
+      "score": {
+        "build_failed": 0,
+        "dismissed_in_score": 0,
+        "errors": 0,
+        "killed": 8,
+        "missed": 9,
+        "percentage": 47.05882352941177,
+        "scope": "filtered",
+        "timeout": 0,
+        "unavailable_reason": null,
+        "unfinished": 0
+      },
+      "execution_fingerprint": "sha256:6389af3df14072138b38a2b076c001a3273de19a83246b3bc3d7d92cb94a70ed",
+      "installation_fingerprint": "sha256:40660437eb5f1e64fc7e1bd73412c38dbafa12ab50e89c18307ebb0df3fe791c",
+      "baseline_seconds": 7.111555666,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 17,
+          "column": 27,
+          "byte_start": 443,
+          "byte_end": 444,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 2,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 21,
+          "column": 54,
+          "byte_start": 568,
+          "byte_end": 569,
+          "original": ">",
+          "replacement": ">=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 3,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 30,
+          "column": 14,
+          "byte_start": 763,
+          "byte_end": 764,
+          "original": ">",
+          "replacement": ">=",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 4,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 49,
+          "column": 24,
+          "byte_start": 1290,
+          "byte_end": 1291,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 5,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 51,
+          "column": 23,
+          "byte_start": 1366,
+          "byte_end": 1368,
+          "original": ">=",
+          "replacement": ">",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 6,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 51,
+          "column": 37,
+          "byte_start": 1380,
+          "byte_end": 1382,
+          "original": "<=",
+          "replacement": "<",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 7,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 51,
+          "column": 51,
+          "byte_start": 1394,
+          "byte_end": 1395,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 8,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 66,
+          "column": 17,
+          "byte_start": 1857,
+          "byte_end": 1858,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 9,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 70,
+          "column": 38,
+          "byte_start": 1986,
+          "byte_end": 1987,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 10,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 73,
+          "column": 19,
+          "byte_start": 2082,
+          "byte_end": 2084,
+          "original": ">=",
+          "replacement": ">",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 11,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 73,
+          "column": 29,
+          "byte_start": 2092,
+          "byte_end": 2093,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 12,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 76,
+          "column": 22,
+          "byte_start": 2176,
+          "byte_end": 2177,
+          "original": ">",
+          "replacement": ">=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 13,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 80,
+          "column": 24,
+          "byte_start": 2340,
+          "byte_end": 2341,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 14,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 80,
+          "column": 35,
+          "byte_start": 2351,
+          "byte_end": 2352,
+          "original": ">",
+          "replacement": ">=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 15,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 83,
+          "column": 33,
+          "byte_start": 2502,
+          "byte_end": 2504,
+          "original": "<=",
+          "replacement": "<",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 16,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 83,
+          "column": 46,
+          "byte_start": 2515,
+          "byte_end": 2517,
+          "original": ">=",
+          "replacement": ">",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 17,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 84,
+          "column": 27,
+          "byte_start": 2565,
+          "byte_end": 2566,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "killed"
+        }
+      ],
+      "report_files": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "eef97dcd3efb5442b3a61dd15db7d7665a7e2e12bf4fa6fa0b3e4f47042dc173",
+        "diff/000002.diff": "cb99a6ba29b7605d3acc2f2bb29ab1f0686f1c4635c6a023c746f4e8d1038cee",
+        "diff/000003.diff": "d6283b848e69a0700cf1aa4ae9072895346790d78583cf097d2ec1dd7c5a6adf",
+        "diff/000004.diff": "03c111b4393136842242c5b1093e7c8a69c39146cd61cb2c8300288e50263f55",
+        "diff/000005.diff": "9ed1222a54eee07ee7f39914ec19a76e51cd7d0404ff269cce2691c3b1931f0d",
+        "diff/000006.diff": "3b9ecce33cee1e2d5f3519e9dc392ed46df9320354ad75ff72cc198b0aff88df",
+        "diff/000007.diff": "f927e5eb3234e6d25feb3e09066a4e8dda18360edad1ed88d323334cf0829ef3",
+        "diff/000008.diff": "d65c924bdb5fed818dcbf028dd8b29c94d39c944bd91e7ef4398754aee698eaf",
+        "diff/000009.diff": "62918706b0cc5b7be73d3b6cc182ab1b5b7f9fb2e64880174bb7f6ab315c323c",
+        "diff/000010.diff": "b08058e8e52ce12c919b8bf040e57f663e625b054c1e447abe0b7aa04b95d148",
+        "diff/000011.diff": "130d06b7d0b3a101828b495c348578a7cd0ebbfa013e89c1758a1fe69021737c",
+        "diff/000012.diff": "a64ec9abe717acbc9542c3666a092e69c374c2ea65e14c6d1ba80fd89711dfec",
+        "diff/000013.diff": "dc7a233f6637cdec4ef5cc4f8593f92cb2cdaf6619db05c18ce49ab81f60284a",
+        "diff/000014.diff": "32601a7993aaa9a17e9e3994756b97f9308da56faef9b6933591a78cb9f6fb24",
+        "diff/000015.diff": "78ee7da233566c16563c3ed5f24d0ab347e3e8efb7d1b1fe3fb025a9527a6ceb",
+        "diff/000016.diff": "8e0a79166a1723c69f43ef13032ac280eef233ab35aa8e91ba8fffd9abfdfeb5",
+        "diff/000017.diff": "48aba002b0c17377bf6fb9a9117079df9179f7ae0ebc4aa90ee144f420f484cb",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "86007a24ae1e98cded1802dc85fb5a460a5360ae5b2ee6372bebc014b7114a27",
+        "logs/000001.log": "7f55036f4aeab0be0cedf139dd843e911c494d4fa13adcc8f68c46d066865025",
+        "logs/000001.stderr.log": "e4d893c170edc1463d7f4a6e32f03c9e07f5573e2b9618cd19a3ee5efa8f1ead",
+        "logs/000001.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000002.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000002.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000002.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000003.log": "6003eda9f936f18098884b72482e7cb43b2fa45604c3b9ade9f29493e7d2f1e5",
+        "logs/000003.stderr.log": "e24c0df51e25266812021f3863d456c69699283b1cff283d5893a9211d7876b9",
+        "logs/000003.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000004.log": "872b4307d2feccedf3bbfe2dffe3b42ad5cdc6c35b970e3074cdddb8a2026c5a",
+        "logs/000004.stderr.log": "238ef006fa81ee5005932c206334f3e66f2a726972681da995a405537978f3d1",
+        "logs/000004.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000005.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000005.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000005.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000006.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000006.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000006.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000007.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000007.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000007.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000008.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000008.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000008.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000009.log": "872b4307d2feccedf3bbfe2dffe3b42ad5cdc6c35b970e3074cdddb8a2026c5a",
+        "logs/000009.stderr.log": "238ef006fa81ee5005932c206334f3e66f2a726972681da995a405537978f3d1",
+        "logs/000009.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000010.log": "60a23738604a591d24f6c787b9bf25df3109d76a39dd07f34253c71a021ac9b0",
+        "logs/000010.stderr.log": "b430a931b2bc7ab4ec7f8fb7ce154d47d7cda0899598e4ca2ebb8a2b201a890c",
+        "logs/000010.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000011.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000011.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000011.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000012.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000012.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000012.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000013.log": "7e4e0654c41d4c129bee9345c4e2a7cbbdcd0f4c86b19e45e842d51f8d0d45ef",
+        "logs/000013.stderr.log": "ca66fda2290d780e1ea1c4ce34d56db0a82697002a82c59238327ff65bc5031d",
+        "logs/000013.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000014.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000014.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000014.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000015.log": "a2c7953203e282be5d9d527e3eb95c58bb554940389c683aaf35d691aac237da",
+        "logs/000015.stderr.log": "778a13e0a633132805324cd89ae60cca50eaa82ceedbfe19d1c68bee5cf546a9",
+        "logs/000015.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000016.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000016.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000016.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000017.log": "efd20f53afe14de1e7c43a64b876188969fc43a5a5f8b96163988957196e0294",
+        "logs/000017.stderr.log": "d02b6ed62ab2a069594eddd394dc3675fafe8f4a8ed98946772157b61a12854b",
+        "logs/000017.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/baseline.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/baseline.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/baseline.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "missed.txt": "57de19644817cbff94e0f515391e10cb0543521ef5c09cc4e3330ddc089ef772",
+        "mutants.json": "61a74a4a1f15659a96e8de04c02b2711cd4b4a7438ae28393fd2f9d06f0cdd14",
+        "outcomes.json": "8bae81c938a4898f4003c5cbae2733fa150ddc79d243ce5c05bb89f9d7a87c65",
+        "run.json": "5cdec8b29f40ec43dfef0d4561c929d693888fab332d03d840dd4756f68b3b0e",
+        "summary.txt": "d9a4d8e267cb9921deeddd33256dab91d5b86485b2a65ced32cd16e6d3824683",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "final-query": {
+      "report_id": "run-1794274650-4faU7h",
+      "status": "failed",
+      "seconds": 80.582626625,
+      "total": 9,
+      "completed": 4,
+      "pending": 5,
+      "outcomes": {
+        "build_failed": 0,
+        "errors": 1,
+        "killed": 2,
+        "missed": 1,
+        "timeout": 0
+      },
+      "score": {
+        "build_failed": 0,
+        "dismissed_in_score": 0,
+        "errors": 1,
+        "killed": 2,
+        "missed": 1,
+        "percentage": null,
+        "scope": "filtered",
+        "timeout": 0,
+        "unavailable_reason": "incomplete_run",
+        "unfinished": 5
+      },
+      "execution_fingerprint": "sha256:6389af3df14072138b38a2b076c001a3273de19a83246b3bc3d7d92cb94a70ed",
+      "installation_fingerprint": "sha256:40660437eb5f1e64fc7e1bd73412c38dbafa12ab50e89c18307ebb0df3fe791c",
+      "baseline_seconds": 4.902051582,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 53,
+          "column": 27,
+          "byte_start": 1325,
+          "byte_end": 1328,
+          "original": "===",
+          "replacement": "!==",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 2,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 58,
+          "column": 18,
+          "byte_start": 1518,
+          "byte_end": 1519,
+          "original": "<",
+          "replacement": ">=",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 3,
+          "file": "src/query.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 58,
+          "column": 18,
+          "byte_start": 1518,
+          "byte_end": 1519,
+          "original": "<",
+          "replacement": "<=",
+          "state": "completed",
+          "outcome": "missed"
+        },
+        {
+          "id": 4,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 62,
+          "column": 13,
+          "byte_start": 1597,
+          "byte_end": 1600,
+          "original": "===",
+          "replacement": "!==",
+          "state": "completed",
+          "outcome": "error"
+        },
+        {
+          "id": 5,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 62,
+          "column": 36,
+          "byte_start": 1620,
+          "byte_end": 1623,
+          "original": "===",
+          "replacement": "!==",
+          "state": "pending",
+          "outcome": null
+        },
+        {
+          "id": 6,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 66,
+          "column": 21,
+          "byte_start": 1731,
+          "byte_end": 1734,
+          "original": "===",
+          "replacement": "!==",
+          "state": "pending",
+          "outcome": null
+        },
+        {
+          "id": 7,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 98,
+          "column": 20,
+          "byte_start": 2486,
+          "byte_end": 2489,
+          "original": "===",
+          "replacement": "!==",
+          "state": "pending",
+          "outcome": null
+        },
+        {
+          "id": 8,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 98,
+          "column": 49,
+          "byte_start": 2515,
+          "byte_end": 2518,
+          "original": "===",
+          "replacement": "!==",
+          "state": "pending",
+          "outcome": null
+        },
+        {
+          "id": 9,
+          "file": "src/query.ts",
+          "operator": "comparison_invert",
+          "source_fingerprint": "sha256:be4106f9d10b9ac90da3893c0046956375d7c67ff1430ddc8a77de899e19db49",
+          "line": 134,
+          "column": 29,
+          "byte_start": 3252,
+          "byte_end": 3255,
+          "original": "!==",
+          "replacement": "===",
+          "state": "pending",
+          "outcome": null
+        }
+      ],
+      "report_files": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "157693d2ee43600ba0d8cca44d38f830ede4b5f038fca72a69f5fb4da16dd300",
+        "diff/000002.diff": "490b3afad46c4413fc46f21ee27102cd3d995071a24a9f4f14407bec4fcb4c23",
+        "diff/000003.diff": "b580505ce590c248598d9e733c010d981cfe19cbd08dda0988e5588ce08d3862",
+        "diff/000004.diff": "21f5ff6741894f1585f520f612a47aaea3077c2a83cba44b0b34314b9e3dd423",
+        "diff/000005.diff": "a371692a9a8b97267ff74f558a11d387d99cb4d23cf882d7a6e6d26516a8ca17",
+        "diff/000006.diff": "b54deb7fabf11a28a73e8b674f10edc93772ca361a9adb71e555e9d7d7f64a99",
+        "diff/000007.diff": "8a3581b68b1f9160e5a2a987a5dbb4bbc21ac3abf6e7e7e007c30392aa8aa78b",
+        "diff/000008.diff": "c3d23a394798d4f1dbff080392fc12a7e87d922299f0a23a4b8b2bbafe101c4e",
+        "diff/000009.diff": "f33caafd70c8c1b179b632c2bced6b2b2460c473e9ffa6e50333607c39c40af3",
+        "errors.txt": "e9f1760369a0d290ea7eb211e98dd46871d21846ef39ee002ac82a9baa97a045",
+        "killed.txt": "45dde2283908f0380b7e3f0c60d8c3d0c3d40154a34b84a6f449ff4feabc13f2",
+        "logs/000001.log": "e1c1f6ab1c6dfdf319c8ecef1f40e115f34872a1bc3626bcb9518fdbdeb7c008",
+        "logs/000001.stderr.log": "cf5bc9b28a23290e00a30c9176ebdcfcb826d3b72c5343cd5bf39f7f365ff4ec",
+        "logs/000001.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000002.log": "ee8b42aafbd876d9f9f84acc5fb3c2fa327994a7209cb58b679bc7601a6360f4",
+        "logs/000002.stderr.log": "adffd86ab7f517994b7b0f627bb6de628a787cccf30235ceaf189955f445c644",
+        "logs/000002.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000003.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/000003.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/000003.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000004.log": "b48f70347346f7197f5b3e00c19f1cde498f096385375729fc2907ec47d2e55e",
+        "logs/000004.stderr.log": "ec0fca071d09c9638f4b3d217acedbcc8eadccd7f8dcf0ff0ca9cf2d8bc7dc94",
+        "logs/000004.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/baseline.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/baseline.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/baseline.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "missed.txt": "8afffe7d65bc0a657956909824f5bd83ef5585ace650a984fa751a26ea8eca39",
+        "mutants.json": "bdfc9c6910b0cd51f252fcc8be4be556a530fb0bd82df88f29ee2816f9b48d1f",
+        "outcomes.json": "076da3aed747ac04b90c7d11313c89d9d821a5ffab1cfb1596051d908af1a18a",
+        "run.json": "ea2dbdc2f7d5b5c0bc989e5e0a4dd2e341e1beac69a6d5a1c7803eca862763b6",
+        "summary.txt": "5eff440af02bfca0807dcc0ae56a2985e6e057befd89fb79f7bfb3fad301477b",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "stronger-focused": {
+      "report_id": "run-1794274322-XXmqW7",
+      "status": "completed",
+      "seconds": 69.105298417,
+      "total": 2,
+      "completed": 2,
+      "pending": 0,
+      "outcomes": {
+        "build_failed": 0,
+        "errors": 0,
+        "killed": 2,
+        "missed": 0,
+        "timeout": 0
+      },
+      "score": {
+        "build_failed": 0,
+        "dismissed_in_score": 0,
+        "errors": 0,
+        "killed": 2,
+        "missed": 0,
+        "percentage": 100.0,
+        "scope": "rerun",
+        "timeout": 0,
+        "unavailable_reason": null,
+        "unfinished": 0
+      },
+      "execution_fingerprint": "sha256:6389af3df14072138b38a2b076c001a3273de19a83246b3bc3d7d92cb94a70ed",
+      "installation_fingerprint": "sha256:40660437eb5f1e64fc7e1bd73412c38dbafa12ab50e89c18307ebb0df3fe791c",
+      "baseline_seconds": 5.278568333,
+      "mutations": [
+        {
+          "id": 1,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 51,
+          "column": 23,
+          "byte_start": 1366,
+          "byte_end": 1368,
+          "original": ">=",
+          "replacement": ">",
+          "state": "completed",
+          "outcome": "killed"
+        },
+        {
+          "id": 2,
+          "file": "src/punycode.ts",
+          "operator": "comparison_boundary",
+          "source_fingerprint": "sha256:e389c56c10d46e33804ca595f0ece4adce3f4f16526c1f7556aeecdb53509c7b",
+          "line": 51,
+          "column": 37,
+          "byte_start": 1380,
+          "byte_end": 1382,
+          "original": "<=",
+          "replacement": "<",
+          "state": "completed",
+          "outcome": "killed"
+        }
+      ],
+      "report_files": {
+        ".mutie.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "build_failed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "diff/000001.diff": "9ed1222a54eee07ee7f39914ec19a76e51cd7d0404ff269cce2691c3b1931f0d",
+        "diff/000002.diff": "3b9ecce33cee1e2d5f3519e9dc392ed46df9320354ad75ff72cc198b0aff88df",
+        "errors.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "killed.txt": "f0594e8482d201544abbf56487ddd1d6bda39e845cecc949e734dc275e9132c0",
+        "logs/000001.log": "a8a8d823c7b2249d42eefcefecdf38b5d6ecfa30d5eac62321c48fe17144dbfe",
+        "logs/000001.stderr.log": "a7aa728879cb34d3a66dbd62ffb671d7c06b231ca7e3011880f16c4e20b18490",
+        "logs/000001.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/000002.log": "70a3a48647915930b952331b0defc7c1b4800396898042932e07085a752e3062",
+        "logs/000002.stderr.log": "e91a240511158dab5ecf82fb6d36c24e95e58679aa227c6a59b0b526b34fd9db",
+        "logs/000002.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "logs/baseline.log": "38b34eca87b31189d5cb402b3578e5723bbb236a0892672339a178f801b55546",
+        "logs/baseline.stderr.log": "371fe791443c178811c6f801fa5088fb37337011c4caf9ce08d8e0e7999f31db",
+        "logs/baseline.stdout.log": "17aa973d3f004560237d9a95171210b0671deff23d61628eecf7322ff5938f20",
+        "missed.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mutants.json": "8fb6b9e3e432668796415e0561f85e0bb1a8c543794723ecc33451ffa728741a",
+        "outcomes.json": "1ba4f055b743bdefbfd776a01375470125771137e2684298bb69377b257f1d71",
+        "run.json": "45ae2c09bacf7c5256eaa35379a0a82fd63ae3039d43c0122fa880c759a92f7b",
+        "summary.txt": "140095099fc698aaf767c5c21d17bd5a49ed8b70df72a59a68d925957465fe11",
+        "timeout.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "ci": {
+    "commit": "afb59d65e0ad852e69b1f7c422f67cc76febc8f2",
+    "run": "https://github.com/a-poor/mutie/actions/runs/42729147740",
+    "conclusion": "success",
+    "jobs": 9,
+    "new_compatibility_job": "configured; first remote run is outside this local acceptance record"
+  },
+  "verification": {
+    "ordinary_tests_passed": 380,
+    "vitest_415_lifecycle_groups": 2,
+    "vitest_415_native_outcomes_groups": 1,
+    "vitest_415_cleanup_groups": 1,
+    "vitest_415_workflows": 5,
+    "vitest_419_native_groups": 4,
+    "recipe_control_groups": 3
+  }
+}

@@ -5,6 +5,9 @@ pub mod execution;
 mod lifecycle;
 pub mod project;
 mod protocol;
+mod recipe;
+#[cfg(test)]
+mod recipe_tests;
 
 use crate::{cancellation::Cancellation, mutation::Scope, process};
 use anyhow::{Context, Result, ensure};
@@ -135,6 +138,8 @@ pub struct ExecutionScope {
     pub manifest_fingerprint: String,
     pub lockfile_fingerprint: String,
     pub config: serde_json::Value,
+    #[serde(default, skip_serializing_if = "recipe::Recipe::is_runtime")]
+    pub recipe: recipe::Recipe,
     pub project_config_fingerprints: std::collections::BTreeMap<String, String>,
     pub reporter_fingerprint: String,
     pub syntax: Vec<String>,
@@ -172,10 +177,12 @@ async fn execution_scope_with_node(
         vite: project.vite,
         manifest_fingerprint: project.manifest_fingerprint,
         lockfile_fingerprint: project.lockfile_fingerprint,
-        config: execution::settings(
+        recipe: project.recipe,
+        config: execution::settings_for(
             Path::new("<project>"),
             Path::new("<private-cache>"),
             Path::new("<private-reporter>"),
+            project.recipe,
         ),
         reporter_fingerprint: format!(
             "sha256:{:x}",
@@ -185,6 +192,10 @@ async fn execution_scope_with_node(
                     include_bytes!("vitest/lifecycle.rs").as_slice(),
                     include_bytes!("vitest/project.rs").as_slice(),
                     include_bytes!("vitest/installation.rs").as_slice(),
+                    include_bytes!("vitest/recipe.rs").as_slice(),
+                    include_bytes!("vitest/execution.rs").as_slice(),
+                    include_bytes!("vitest/protocol.rs").as_slice(),
+                    include_bytes!("vitest/typechecker.mjs").as_slice(),
                     include_bytes!("dependency_tree.rs").as_slice()
                 ]
                 .concat()
@@ -247,10 +258,9 @@ impl ExecutionScope {
                     || (self.pnpm.is_empty()
                         && matches!(
                             self.package_manager.as_deref(),
-                            Some("npm@11.19.1" | "yarn@4.18.1" | "bun@1.3.11")
+                            Some("pnpm@10.33.2" | "npm@11.19.1" | "yarn@4.18.1" | "bun@1.3.11")
                         )))
-                && self.vitest == "4.1.9"
-                && matches!(self.vite.as_str(), "8.1.3" | "8.3.4"),
+                && project::supported_runner(&self.vitest, &self.vite),
             "unsupported saved Vitest tool identity"
         );
         ensure!(
@@ -258,9 +268,35 @@ impl ExecutionScope {
             "package-manager identity requires installed dependency fingerprint"
         );
         ensure!(
+            !self.recipe.typecheck() || self.vitest == "4.1.5",
+            "unsupported saved Vitest typecheck version"
+        );
+        if self.recipe.typecheck() {
+            ensure!(
+                self.installation_fingerprint.is_some()
+                    && self
+                        .project_config_fingerprints
+                        .contains_key("tsconfig.json"),
+                "saved typecheck recipe requires compiler installation and configuration identity"
+            );
+        }
+        if self.recipe == recipe::Recipe::LintTypecheck {
+            ensure!(
+                ["eslint.config.mjs", ".prettierrc", ".editorconfig"]
+                    .iter()
+                    .all(|name| self.project_config_fingerprints.contains_key(*name)),
+                "saved lint recipe is missing configuration identity"
+            );
+        }
+        ensure!(
             self.project_config_fingerprints.keys().all(|name| matches!(
                 name.as_str(),
-                "tsconfig.json" | "pnpm-workspace.yaml" | ".yarnrc.yml"
+                "tsconfig.json"
+                    | "pnpm-workspace.yaml"
+                    | ".yarnrc.yml"
+                    | "eslint.config.mjs"
+                    | ".prettierrc"
+                    | ".editorconfig"
             ) || config::FILES
                 .contains(&name.as_str())),
             "unsupported saved Vitest project configuration"
@@ -288,10 +324,11 @@ impl ExecutionScope {
         );
         ensure!(
             self.config
-                == execution::settings(
+                == execution::settings_for(
                     Path::new("<project>"),
                     Path::new("<private-cache>"),
-                    Path::new("<private-reporter>")
+                    Path::new("<private-reporter>"),
+                    self.recipe,
                 ),
             "unsupported saved Vitest runner settings"
         );
@@ -317,6 +354,7 @@ pub(crate) fn fixture_scope() -> ExecutionScope {
             Path::new("<private-cache>"),
             Path::new("<private-reporter>"),
         ),
+        recipe: recipe::Recipe::Runtime,
         project_config_fingerprints: Default::default(),
         reporter_fingerprint: format!("sha256:{}", "c".repeat(64)),
         syntax: vec!["javascript".into(), "typescript".into()],

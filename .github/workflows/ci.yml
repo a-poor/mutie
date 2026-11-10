@@ -62,6 +62,8 @@ jobs:
           - adapter: Node
           - adapter: Bun
           - adapter: Vitest
+          - adapter: Vitest
+            suite: compatibility
           - adapter: Python
             suite: workflows
           - adapter: Python
@@ -107,13 +109,34 @@ jobs:
         with:
           python-version: 3.14.7
       - name: Prepare isolated Vitest fixture
-        if: matrix.adapter == 'Vitest'
+        if: matrix.adapter == 'Vitest' && matrix.suite != 'compatibility'
         run: |
           npm install --global --prefix "$RUNNER_TEMP/mutie-tools" --ignore-scripts --no-audit --no-fund pnpm@11.10.0
           export PATH="$RUNNER_TEMP/mutie-tools/bin:$PATH"
           echo "$RUNNER_TEMP/mutie-tools/bin" >> "$GITHUB_PATH"
           cp -R tests/fixtures/vitest "$RUNNER_TEMP/mutie-vitest"
           pnpm --dir "$RUNNER_TEMP/mutie-vitest" install --frozen-lockfile --ignore-scripts
+          echo "MUTIE_VITEST_FIXTURE=$RUNNER_TEMP/mutie-vitest" >> "$GITHUB_ENV"
+      - name: Prepare Vitest typecheck and older-runner fixtures
+        if: matrix.adapter == 'Vitest' && matrix.suite == 'compatibility'
+        run: |
+          npm install --global --prefix "$RUNNER_TEMP/mutie-tools" --ignore-scripts --no-audit --no-fund pnpm@10.33.2
+          export PATH="$RUNNER_TEMP/mutie-tools/bin:$PATH"
+          echo "$RUNNER_TEMP/mutie-tools/bin" >> "$GITHUB_PATH"
+          cp -R tests/fixtures/vitest-typecheck "$RUNNER_TEMP/mutie-vitest-typecheck"
+          pnpm --dir "$RUNNER_TEMP/mutie-vitest-typecheck" install --frozen-lockfile --ignore-scripts
+          echo "MUTIE_VITEST_RECIPE_FIXTURE=$RUNNER_TEMP/mutie-vitest-typecheck" >> "$GITHUB_ENV"
+          cp -R tests/fixtures/vitest "$RUNNER_TEMP/mutie-vitest"
+          cp -R "$RUNNER_TEMP/mutie-vitest-typecheck/node_modules" "$RUNNER_TEMP/mutie-vitest/node_modules"
+          cp "$RUNNER_TEMP/mutie-vitest-typecheck/pnpm-lock.yaml" "$RUNNER_TEMP/mutie-vitest/pnpm-lock.yaml"
+          node --input-type=module <<'JS'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const root = process.env.RUNNER_TEMP;
+          const manifest = JSON.parse(readFileSync(`${root}/mutie-vitest-typecheck/package.json`, 'utf8'));
+          manifest.type = 'module';
+          manifest.scripts = { test: 'vitest run' };
+          writeFileSync(`${root}/mutie-vitest/package.json`, JSON.stringify(manifest));
+          JS
           echo "MUTIE_VITEST_FIXTURE=$RUNNER_TEMP/mutie-vitest" >> "$GITHUB_ENV"
       - name: Prepare isolated pytest environment
         if: matrix.adapter == 'Python'
@@ -187,8 +210,11 @@ jobs:
       - name: Vitest native outcomes, lifecycle and cleanup
         if: matrix.adapter == 'Vitest'
         run: cargo test --locked --bin mutie 'vitest::execution::' -- --ignored --test-threads=1 --skip real_feedback_phase_profile
+      - name: Vitest typechecker, lint prerequisites and execution identity
+        if: matrix.adapter == 'Vitest' && matrix.suite == 'compatibility'
+        run: cargo test --locked --bin mutie 'vitest::recipe_tests::' -- --ignored --test-threads=1
       - name: JS/TS assignment-removal and literal workflows
-        if: matrix.adapter == 'Node' || matrix.adapter == 'Bun' || matrix.adapter == 'Vitest'
+        if: matrix.adapter == 'Node' || matrix.adapter == 'Bun' || (matrix.adapter == 'Vitest' && matrix.suite != 'compatibility')
         env:
           MUTIE_ADAPTER: ${{ matrix.adapter }}
         run: |

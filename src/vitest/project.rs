@@ -18,7 +18,20 @@ use std::{
     path::{Path, PathBuf},
 };
 
-pub const PACKAGE_MANAGERS: &[&str] = &["pnpm@11.10.0", "npm@11.19.1", "yarn@4.18.1", "bun@1.3.11"];
+pub const PACKAGE_MANAGERS: &[&str] = &[
+    "pnpm@11.10.0",
+    "pnpm@10.33.2",
+    "npm@11.19.1",
+    "yarn@4.18.1",
+    "bun@1.3.11",
+];
+
+pub(super) fn supported_runner(vitest: &str, vite: &str) -> bool {
+    matches!(
+        (vitest, vite),
+        ("4.1.9", "8.1.3" | "8.3.4") | ("4.1.5", "8.0.10")
+    )
+}
 
 #[derive(Debug)]
 pub struct Project {
@@ -31,6 +44,7 @@ pub struct Project {
     pub vite: String,
     pub manifest_fingerprint: String,
     pub lockfile_fingerprint: String,
+    pub recipe: super::recipe::Recipe,
 }
 
 fn read(path: &Path) -> Result<String> {
@@ -61,10 +75,14 @@ impl Project {
         let manifest_text = read(&root.join("package.json"))?;
         let manifest: Json =
             serde_json::from_str(&manifest_text).context("parsing package.json")?;
-        ensure!(
-            manifest["type"] == "module",
-            "Vitest preview requires package.json type: module"
-        );
+        if manifest.get("type").is_none() {
+            super::recipe::validate_implicit_typescript(&root, cancellation)?;
+        } else {
+            ensure!(
+                manifest["type"] == "module",
+                "Vitest requires ESM or an audited implicit TypeScript package"
+            );
+        }
         let name = manifest["name"]
             .as_str()
             .filter(|s| !s.trim().is_empty())
@@ -109,6 +127,12 @@ impl Project {
             }
         }
         let mut project_config_fingerprints = BTreeMap::new();
+        let recipe = super::recipe::load(
+            &root,
+            &manifest,
+            &mut project_config_fingerprints,
+            cancellation,
+        )?;
         let mut runner_config_seen = false;
         for entry in fs::read_dir(&root)? {
             let entry = entry?;
@@ -198,24 +222,31 @@ impl Project {
             .canonicalize()
             .context("missing installed Vitest")?;
         let vitest = json(&vitest_root.join("package.json"))?;
+        let vitest_version = vitest["version"]
+            .as_str()
+            .context("Vitest version missing")?;
         ensure!(
-            vitest["name"] == "vitest" && vitest["version"] == "4.1.9",
-            "Vitest preview requires installed Vitest 4.1.9"
+            vitest["name"] == "vitest" && matches!(vitest_version, "4.1.9" | "4.1.5"),
+            "Vitest requires installed Vitest 4.1.9 or 4.1.5"
         );
         ensure!(
             vitest_root.join("vitest.mjs").is_file(),
             "installed Vitest CLI is missing"
         );
         ensure!(
-            locked_vitest == "4.1.9" || locked_vitest.starts_with("4.1.9("),
-            "locked Vitest must match installed 4.1.9"
+            locked_vitest.split('(').next() == Some(vitest_version),
+            "locked Vitest must match the installed version"
         );
         let vite_root = resolve_dependency(&root, &vitest_root, "vite")?;
         let vite = json(&vite_root.join("package.json"))?;
         let vite_version = vite["version"].as_str().context("Vite version missing")?;
         ensure!(
-            vite["name"] == "vite" && matches!(vite_version, "8.1.3" | "8.3.4"),
-            "Vitest preview requires verified Vite 8.1.3 or 8.3.4"
+            !recipe.typecheck() || vitest_version == "4.1.5",
+            "typecheck recipes are audited with Vitest 4.1.5 only"
+        );
+        ensure!(
+            vite["name"] == "vite" && supported_runner(vitest_version, vite_version),
+            "unsupported Vitest/Vite version pair"
         );
         ensure!(
             packages.contains(&format!("vite@{vite_version}")),
@@ -231,10 +262,11 @@ impl Project {
             package_manager,
             root,
             name,
-            vitest: "4.1.9".into(),
+            vitest: vitest_version.into(),
             vite: vite_version.into(),
             manifest_fingerprint: fingerprint(&manifest_text),
             lockfile_fingerprint: fingerprint(&lock_text),
+            recipe,
         })
     }
 }
@@ -498,6 +530,48 @@ mod tests {
             load(dir.path()).unwrap().manifest_fingerprint,
             a.manifest_fingerprint
         );
+    }
+    #[test]
+    fn older_runner_keeps_exact_manager_lock_and_vite_pair_checks() {
+        let dir = fixture();
+        let root = dir.path();
+        for name in [
+            "package.json",
+            "pnpm-lock.yaml",
+            "node_modules/.pnpm/lock.yaml",
+            "node_modules/.modules.yaml",
+            "node_modules/vitest/package.json",
+            "node_modules/vite/package.json",
+        ] {
+            let text = fs::read_to_string(root.join(name))
+                .unwrap()
+                .replace("11.10.0", "10.33.2")
+                .replace("4.1.9", "4.1.5")
+                .replace("8.3.4", "8.0.10");
+            write(root, name, &text);
+        }
+        let mut manifest: Json =
+            serde_json::from_str(&fs::read_to_string(root.join("package.json")).unwrap()).unwrap();
+        manifest["scripts"] = serde_json::json!({"test":"vitest run"});
+        write(root, "package.json", &manifest.to_string());
+        assert_eq!(load(root).unwrap().vitest, "4.1.5");
+        write(
+            root,
+            "node_modules/vite/package.json",
+            r#"{"name":"vite","version":"8.3.4"}"#,
+        );
+        assert!(load(root).is_err());
+        write(
+            root,
+            "node_modules/vite/package.json",
+            r#"{"name":"vite","version":"8.0.10"}"#,
+        );
+        write(
+            root,
+            "node_modules/.modules.yaml",
+            "packageManager: pnpm@11.10.0\nnodeLinker: isolated\nvirtualStoreDir: .pnpm\n",
+        );
+        assert!(load(root).is_err());
     }
     #[test]
     fn coverage_only_configs_are_fingerprinted_and_ambiguity_is_rejected() {

@@ -107,7 +107,9 @@ fn tooling_notes(root: &Path, lang: Lang) -> Result<()> {
         Lang::Python => "CPython 3.14.7 / pytest 9.0.2 in an explicitly supplied venv",
         Lang::Node => "Node 24.22.0",
         Lang::Bun => "Bun 1.3.11+af24e281e",
-        Lang::Vitest => "Node 24.22.0 / Vitest 4.1.9 / an audited package-manager installation",
+        Lang::Vitest => {
+            "Node 24.22.0 / an audited Vitest-Vite version pair / an audited package-manager installation"
+        }
         Lang::Rust => {
             "host Cargo toolchain; ordinary packages/workspaces; [rust].packages selects mutation members, tests cover the full workspace"
         }

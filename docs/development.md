@@ -21,6 +21,13 @@ and Go 1.27.2. Separate jobs run:
   resource limits and descendant cleanup.
 - Vitest 4.1.9 JavaScript and TypeScript workflows, review/policies, lifecycle
   attribution and cleanup, using Node 24.22.0 and the frozen pnpm 11.10.0 fixture.
+- A separate Vitest compatibility job is configured for 4.1.5 / Vite 8.0.10 /
+  pnpm 10.33.2, including the same runtime evidence controls plus lint/typecheck
+  completion and failure controls. Its frozen tools live in
+  `tests/fixtures/vitest-typecheck`; set `MUTIE_VITEST_RECIPE_FIXTURE` to an
+  installed temporary copy to run `vitest::recipe_tests::` with `--ignored`.
+  The [local acceptance record](../benchmarks/vitest-ufo.md) predates this job's
+  first remote run.
 - Scoped JS/TS assignment removal: independent scored workflows in each runner's
   job and paired native semantics on Node/Bun, including exact saved identities,
   constructor exclusions, stronger-test reruns, policy scores and lifecycle errors.

@@ -121,31 +121,102 @@ pub(super) async fn run(
     let temp = owned_path.join("tmp");
     fs::create_dir(&temp)?;
     let constants = format!(
-        "const MUTIE_ROOT={};\nconst MUTIE_EVIDENCE={};\nconst MUTIE_EVIDENCE_LIMIT={};\n",
+        "const MUTIE_ROOT={};\nconst MUTIE_EVIDENCE={};\nconst MUTIE_EVIDENCE_LIMIT={};\nconst MUTIE_TYPECHECK={};\n",
         serde_json::to_string(&root)?,
         serde_json::to_string(&evidence)?,
-        protocol::EVIDENCE_LIMIT
+        protocol::EVIDENCE_LIMIT,
+        project.recipe.typecheck(),
     );
     fs::write(&reporter, constants + include_str!("reporter.mjs"))?;
-    let settings = settings(&root, &owned_path.join("cache"), &reporter);
+    let mut settings = settings_for(&root, &owned_path.join("cache"), &reporter, project.recipe);
+    if project.recipe.typecheck() {
+        // Package-manager .bin scripts can retain absolute NODE_PATH entries
+        // pointing back to the original installation. Never run those copies.
+        let checker = owned_path.join("tsc");
+        prepare_typechecker(
+            &checker,
+            &node.executable,
+            &super::recipe::tool(&root, "typescript", "6.0.3", "bin/tsc")?,
+        )?;
+        settings["test"]["typecheck"]["checker"] = serde_json::to_value(&checker)?;
+        // Native Vitest otherwise marks collected type tests passed even when
+        // tsconfig.include omits them. Preserve original source checks and add
+        // every type test without changing upstream configuration bytes.
+        let typeconfig = owned_path.join("tsconfig.json");
+        fs::write(
+            &typeconfig,
+            serde_json::to_vec(&serde_json::json!({
+                "extends": root.join("tsconfig.json"),
+                "files": super::recipe::type_files(&root, cancellation)?,
+            }))?,
+        )?;
+        settings["test"]["typecheck"]["tsconfig"] = serde_json::to_value(typeconfig)?;
+    }
     fs::write(
         &config,
         format!("export default {};\n", serde_json::to_string(&settings)?),
     )?;
     let cli = root.join("node_modules/vitest/vitest.mjs");
-    let args = [
-        utf8(&cli)?,
-        "run",
-        "--config",
-        utf8(&config)?,
-        "--configLoader",
-        "native",
+    let mut commands = Vec::new();
+    if project.recipe == super::recipe::Recipe::LintTypecheck {
+        commands.push((
+            "ESLint prerequisite",
+            vec![
+                utf8(&super::recipe::tool(
+                    &root,
+                    "eslint",
+                    "10.2.1",
+                    "bin/eslint.js",
+                )?)?
+                .to_owned(),
+                ".".into(),
+            ],
+        ));
+        commands.push((
+            "Prettier prerequisite",
+            vec![
+                utf8(&super::recipe::tool(
+                    &root,
+                    "prettier",
+                    "3.8.3",
+                    "bin/prettier.cjs",
+                )?)?
+                .to_owned(),
+                "-c".into(),
+                "src".into(),
+                "test".into(),
+            ],
+        ));
+    }
+    commands.push((
+        "Vitest",
+        vec![
+            utf8(&cli)?.into(),
+            "run".into(),
+            "--config".into(),
+            utf8(&config)?.into(),
+            "--configLoader".into(),
+            "native".into(),
+        ],
+    ));
+    // Vitest's typechecker spawns tsc by name. Prefer only the pinned Node and
+    // this isolated installation over inherited launchers.
+    let mut paths = vec![
+        node.executable
+            .parent()
+            .context("Node has no parent")?
+            .to_path_buf(),
+        root.join("node_modules/.bin"),
     ];
+    paths.extend(std::env::split_paths(
+        &std::env::var_os("PATH").unwrap_or_default(),
+    ));
+    let path = std::env::join_paths(paths)?;
     #[cfg(test)]
     timings.finish("instrumentation_and_command_setup");
-    let raw = process::run_with_env(
+    let (raw, prerequisite_error) = run_commands(
         utf8(&node.executable)?,
-        &args,
+        &commands,
         &root,
         limit,
         capture_limit,
@@ -153,6 +224,7 @@ pub(super) async fn run(
         &[
             ("NODE_OPTIONS", "".as_ref()),
             ("NODE_PATH", "".as_ref()),
+            ("PATH", path.as_os_str()),
             ("CI", "true".as_ref()),
             ("TMPDIR", temp.as_os_str()),
             ("TMP", temp.as_os_str()),
@@ -164,7 +236,14 @@ pub(super) async fn run(
     timings.finish("process_runner");
     // Read before cleanup, independently of diagnostic truncation. A killed or
     // timed-out child can leave no evidence; classification gives process facts priority.
-    let evidence = protocol::read(&evidence);
+    let evidence = if let Some(error) = prerequisite_error {
+        Err(anyhow::anyhow!(error))
+    } else {
+        protocol::read(&evidence).and_then(|evidence| {
+            evidence.validate_typecheck(project.recipe.typecheck())?;
+            Ok(evidence)
+        })
+    };
     let mut rendered = tempfile::NamedTempFile::new()?;
     crate::command::write_lossy(&mut raw.stdout.reader()?, &mut rendered)?;
     writeln!(rendered)?;
@@ -186,9 +265,104 @@ pub(super) async fn run(
         timings: timings.values,
     })
 }
+
+/// A composed recipe has one time/output budget. Retain all prerequisite output
+/// and stop on any failure; exit codes from linters are never test-body evidence.
+#[allow(clippy::too_many_arguments)]
+async fn run_commands(
+    program: &str,
+    commands: &[(&str, Vec<String>)],
+    root: &Path,
+    limit: Duration,
+    capture_limit: Option<NonZeroUsize>,
+    cancellation: &Cancellation,
+    environment: &[(&str, &std::ffi::OsStr)],
+) -> Result<(process::CommandOutput, Option<String>)> {
+    let start = std::time::Instant::now();
+    let mut stdout = tempfile::NamedTempFile::new()?;
+    let mut stderr = tempfile::NamedTempFile::new()?;
+    let mut bytes = 0u64;
+    let mut elapsed = Duration::ZERO;
+    for (index, (name, args)) in commands.iter().enumerate() {
+        let remaining = limit.saturating_sub(start.elapsed());
+        let budget = capture_limit.map(|limit| {
+            NonZeroUsize::new(limit.get().saturating_sub(bytes as usize))
+                .unwrap_or(NonZeroUsize::MIN)
+        });
+        let mut raw = process::run_with_env(
+            program,
+            &args.iter().map(String::as_str).collect::<Vec<_>>(),
+            root,
+            remaining,
+            budget,
+            cancellation,
+            environment,
+        )
+        .await?;
+        elapsed += raw.elapsed;
+        bytes += std::io::copy(&mut raw.stdout.reader()?, &mut stdout)?;
+        bytes += std::io::copy(&mut raw.stderr.reader()?, &mut stderr)?;
+        if capture_limit.is_some_and(|limit| bytes > limit.get() as u64) {
+            raw.capture_error = Some("composed Vitest recipe exceeded its output budget".into());
+        }
+        let failed = !raw.status.success()
+            || raw.timed_out
+            || raw.interrupted
+            || raw.capture_error.is_some()
+            || raw.group_remaining;
+        let final_command = index + 1 == commands.len();
+        if failed || final_command {
+            raw.elapsed = elapsed;
+            raw.stdout = Capture::new(stdout)?;
+            raw.stderr = Capture::new(stderr)?;
+            return Ok((
+                raw,
+                (!final_command).then(|| {
+                    format!(
+                        "{name} failed or did not finish cleanly; not counted as a mutation kill"
+                    )
+                }),
+            ));
+        }
+    }
+    anyhow::bail!("empty Vitest execution recipe")
+}
 fn utf8(path: &Path) -> Result<&str> {
     path.to_str()
         .context("Vitest requires UTF-8 tool and temporary paths")
+}
+
+fn prepare_typechecker(path: &Path, node: &Path, tsc: &Path) -> Result<()> {
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        let quote = |path: &Path| -> Result<String> {
+            Ok(format!("'{}'", utf8(path)?.replace('\'', "'\\''")))
+        };
+        let script = path.with_extension("mjs");
+        fs::write(
+            &script,
+            format!(
+                "const TSC={};\nconst BUILD_INFO={};\nconst OUTPUT_LIMIT={};\n{}",
+                serde_json::to_string(tsc)?,
+                serde_json::to_string(&path.with_extension("tsbuildinfo"))?,
+                protocol::EVIDENCE_LIMIT,
+                include_str!("typechecker.mjs")
+            ),
+        )?;
+        fs::write(
+            path,
+            format!(
+                "#!/bin/sh\nexec {} {} \"$@\"\n",
+                quote(node)?,
+                quote(&script)?
+            ),
+        )?;
+        fs::set_permissions(path, fs::Permissions::from_mode(0o700))?;
+        Ok(())
+    }
+    #[cfg(not(unix))]
+    anyhow::bail!("Vitest typechecking requires Unix")
 }
 
 #[cfg(test)]
@@ -847,4 +1021,17 @@ pub(super) fn settings(root: &Path, cache: &Path, reporter: &Path) -> serde_json
             "passWithNoTests":false, "allowOnly":false, "retry":0, "bail":0,
             "coverage":{"enabled":false}, "update":false, "testTimeout":0, "hookTimeout":0}
     })
+}
+
+pub(super) fn settings_for(
+    root: &Path,
+    cache: &Path,
+    reporter: &Path,
+    recipe: super::recipe::Recipe,
+) -> serde_json::Value {
+    let mut config = settings(root, cache, reporter);
+    if recipe.typecheck() {
+        config["test"]["typecheck"] = serde_json::json!({"enabled":true,"checker":"<private-typechecker>","ignoreSourceErrors":false,"tsconfig":"<private-typeconfig>"});
+    }
+    config
 }
