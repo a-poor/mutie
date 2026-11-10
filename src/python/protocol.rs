@@ -2,7 +2,29 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use crate::report::Outcome;
 use anyhow::{Context, Result, ensure};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Selection {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deselected: Option<Deselected>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub dispositions: BTreeMap<String, String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Deselected {
+    pub count: usize,
+    pub fingerprint: String,
+    pub files: Vec<String>,
+}
+
+pub(super) struct Inputs<'a> {
+    pub conftests: &'a [String],
+    pub installation: Option<&'a super::installation::Receipt>,
+}
 
 #[derive(Debug, Deserialize)]
 struct Record {
@@ -26,6 +48,8 @@ enum Event {
         nodes: Vec<String>,
         unittest: Vec<String>,
         conftests: Vec<String>,
+        #[serde(default)]
+        deselected: Option<Deselected>,
     },
     Phase {
         node: String,
@@ -38,6 +62,10 @@ enum Event {
         xfail: bool,
         #[serde(default)]
         expected_failure: bool,
+        #[serde(default)]
+        skip: bool,
+        #[serde(default)]
+        marked_xfail: bool,
         #[serde(deserialize_with = "Option::deserialize")]
         unittest: Option<UnitEvidence>,
     },
@@ -48,9 +76,15 @@ enum Event {
         token: usize,
         stage: String,
     },
+    Thread {
+        token: usize,
+        stage: String,
+    },
     Returned {
         status: i32,
         imports: BTreeMap<String, String>,
+        #[serde(default)]
+        installed_imports: BTreeMap<String, String>,
     },
     Checkpoint {
         stage: String,
@@ -180,6 +214,7 @@ pub(super) fn inspect(
     Ok((nodes, outcome))
 }
 
+#[cfg(test)]
 pub(super) fn inspect_expected_failures(
     bytes: &[u8],
     pid: u32,
@@ -189,12 +224,46 @@ pub(super) fn inspect_expected_failures(
     code: i32,
     expected_conftests: &[String],
 ) -> Result<(Vec<String>, CandidateOutcome, Vec<String>)> {
+    let (nodes, outcome, failures, selection) = inspect_selection(
+        bytes,
+        pid,
+        nonce,
+        root,
+        collect_only,
+        code,
+        Inputs {
+            conftests: expected_conftests,
+            installation: None,
+        },
+    )?;
+    ensure!(
+        selection.dispositions.is_empty() && selection.deselected.is_none(),
+        "Python special test selection requires a pristine identity"
+    );
+    Ok((nodes, outcome, failures))
+}
+
+pub(super) fn inspect_selection(
+    bytes: &[u8],
+    pid: u32,
+    nonce: &str,
+    root: &str,
+    collect_only: bool,
+    code: i32,
+    inputs: Inputs<'_>,
+) -> Result<(Vec<String>, CandidateOutcome, Vec<String>, Selection)> {
+    let Inputs {
+        conftests: expected_conftests,
+        installation,
+    } = inputs;
     ensure!(
         matches!(code, 0 | 1) && (!collect_only || code == 0),
         "unsupported Python exit status"
     );
     ensure!(
-        !bytes.is_empty() && bytes.len() <= 4 * 1024 * 1024 && bytes.ends_with(b"\n"),
+        !bytes.is_empty()
+            && bytes.len() <= super::EVIDENCE_BYTES as usize
+            && bytes.ends_with(b"\n"),
         "missing, oversized or incomplete Python evidence"
     );
     let records: Vec<Record> = bytes[..bytes.len() - 1]
@@ -222,6 +291,7 @@ pub(super) fn inspect_expected_failures(
         nodes,
         unittest,
         conftests,
+        deselected,
     } = &records[2].event
     else {
         anyhow::bail!("missing Python collection");
@@ -252,12 +322,12 @@ pub(super) fn inspect_expected_failures(
         "Python session exit status mismatch"
     );
     ensure!(
-        matches!(&records[tail + 1].event, Event::Returned { status, imports }
+        matches!(&records[tail + 1].event, Event::Returned { status, imports, installed_imports }
         if *status == code && imports.values().all(|p| {
             let path = std::path::Path::new(p);
             path.is_absolute() && path.starts_with(root)
                 && !path.components().any(|c| matches!(c, std::path::Component::ParentDir))
-        })),
+        }) && installed_imports.iter().all(|(name, path)| installation.is_some_and(|receipt| receipt.admits_import(name, path)))),
         "Python return status or imports mismatch"
     );
     for (offset, expected) in [(2, "returned"), (3, "atexit")] {
@@ -270,10 +340,47 @@ pub(super) fn inspect_expected_failures(
     }
     let mut phases = BTreeMap::<&str, usize>::new();
     let mut fixtures = Vec::<usize>::new();
+    let mut threads = Vec::<usize>::new();
     let mut failed = false;
     let mut body_error = false;
     let mut expected_failures = Vec::new();
+    let mut selection = Selection {
+        deselected: deselected.clone(),
+        ..Selection::default()
+    };
+    if let Some(excluded) = deselected {
+        ensure!(
+            excluded.count > 0
+                && excluded.fingerprint.len() == 71
+                && excluded.fingerprint.starts_with("sha256:")
+                && excluded.fingerprint[7..]
+                    .bytes()
+                    .all(|b| b.is_ascii_hexdigit())
+                && !excluded.files.is_empty()
+                && excluded.files.windows(2).all(|w| w[0] < w[1])
+                && excluded
+                    .files
+                    .iter()
+                    .all(|file| super::identity::is_test_file(file)),
+            "invalid Python deselection evidence"
+        );
+    }
     for record in &records[3..tail] {
+        if let Event::Thread { token, stage } = &record.event {
+            ensure!(!collect_only, "Python collection started a thread");
+            if stage == "requested" {
+                ensure!(*token == threads.len(), "Python thread identity mismatch");
+                threads.push(1);
+            } else {
+                let state = threads.get_mut(*token).context("unknown Python thread")?;
+                *state = match (*state, stage.as_str()) {
+                    (1, "running") => 2,
+                    (2, "finished") | (1, "start_failed") => 3,
+                    _ => anyhow::bail!("Python thread lifecycle mismatch"),
+                };
+            }
+            continue;
+        }
         if let Event::Fixture { token, stage } = &record.event {
             ensure!(!collect_only, "Python collection executed a fixture");
             if stage == "started" {
@@ -298,6 +405,8 @@ pub(super) fn inspect_expected_failures(
             candidate_exception,
             xfail,
             expected_failure,
+            skip,
+            marked_xfail,
             unittest,
         } = &record.event
         else {
@@ -326,17 +435,55 @@ pub(super) fn inspect_expected_failures(
             && !assertion
             && !candidate_exception
             && !unit_nodes.contains(node);
+        let ordinary_skip = *skip
+            && !xfail
+            && !expected_failure
+            && !marked_xfail
+            && matches!(when.as_str(), "setup" | "call")
+            && outcome == "skipped"
+            && exception.as_deref() == Some("Skipped")
+            && !assertion
+            && !candidate_exception
+            && !unit_nodes.contains(node);
+        let expected_mark = *marked_xfail
+            && *xfail
+            && !skip
+            && !expected_failure
+            && when == "call"
+            && outcome == "skipped"
+            && exception.as_ref().is_some_and(|kind| !kind.is_empty())
+            && !unit_nodes.contains(node);
         ensure!(
             !collect_only
                 && unique.contains(node)
-                && (expected_skip
+                && (ordinary_skip
+                    || expected_mark
+                    || (expected_skip && !skip && !marked_xfail)
                     || (!xfail
                         && !expected_failure
+                        && !skip
+                        && !marked_xfail
                         && (passed || body_failure || runtime_failure))),
             "Python run contains an unsupported phase failure"
         );
-        failed |= body_failure || runtime_failure;
-        body_error |= runtime_failure;
+        failed |= !expected_mark && (body_failure || runtime_failure);
+        body_error |= !expected_mark && runtime_failure;
+        if ordinary_skip || expected_mark {
+            ensure!(
+                selection
+                    .dispositions
+                    .insert(
+                        node.clone(),
+                        format!(
+                            "{when}/{}/{}",
+                            if ordinary_skip { "skip" } else { "xfail" },
+                            exception.as_deref().unwrap_or("")
+                        )
+                    )
+                    .is_none(),
+                "duplicate Python skipped phase"
+            );
+        }
         if expected_skip {
             expected_failures.push(node.clone());
         }
@@ -357,10 +504,17 @@ pub(super) fn inspect_expected_failures(
             "Python phase ordering mismatch"
         );
         *index += 1;
+        if ordinary_skip && when == "setup" {
+            *index += 1;
+        }
     }
     ensure!(
         fixtures.iter().all(|state| *state == 3),
         "Python fixture finalization incomplete"
+    );
+    ensure!(
+        threads.iter().all(|state| *state == 3),
+        "Python thread completion incomplete"
     );
     ensure!(
         collect_only || (phases.len() == nodes.len() && phases.values().all(|n| *n == 3)),
@@ -380,6 +534,7 @@ pub(super) fn inspect_expected_failures(
             CandidateOutcome::Scored(Outcome::Missed)
         },
         expected_failures,
+        selection,
     ))
 }
 
@@ -387,6 +542,102 @@ pub(super) fn inspect_expected_failures(
 mod tests {
     use super::*;
     use serde_json::json;
+
+    fn serialize(mut records: Vec<serde_json::Value>) -> Vec<u8> {
+        for (seq, value) in records.iter_mut().enumerate() {
+            value["seq"] = json!(seq);
+            value["pid"] = json!(17);
+            value["nonce"] = json!("token");
+        }
+        records
+            .into_iter()
+            .flat_map(|v| format!("{v}\n").into_bytes())
+            .collect()
+    }
+
+    #[test]
+    fn threads_require_complete_ordered_lifetimes() {
+        let base: Vec<serde_json::Value> = String::from_utf8(evidence())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        for (stages, valid) in [
+            (vec!["requested", "running", "finished"], true),
+            (vec!["requested", "start_failed"], true),
+            (vec!["running", "finished"], false),
+            (vec!["requested", "running"], false),
+            (vec!["requested", "finished"], false),
+            (vec!["requested", "running", "start_failed"], false),
+            (vec!["requested", "running", "finished", "finished"], false),
+        ] {
+            let mut records = base.clone();
+            records.splice(
+                4..4,
+                stages
+                    .iter()
+                    .map(|stage| json!({"event":"thread","token":0,"stage":stage})),
+            );
+            assert_eq!(
+                classify(&serialize(records), 17, "token", "/repo", false, 0, &[]).is_ok(),
+                valid,
+                "{stages:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn skips_and_marked_xfails_require_positive_phase_evidence() {
+        let base: Vec<serde_json::Value> = String::from_utf8(evidence())
+            .unwrap()
+            .lines()
+            .map(|line| serde_json::from_str(line).unwrap())
+            .collect();
+        let mut setup_skip = base.clone();
+        setup_skip[3]["outcome"] = json!("skipped");
+        setup_skip[3]["exception"] = json!("Skipped");
+        setup_skip[3]["skip"] = json!(true);
+        setup_skip.remove(4);
+        let check = |records: Vec<serde_json::Value>| {
+            inspect_selection(
+                &serialize(records),
+                17,
+                "token",
+                "/repo",
+                false,
+                0,
+                Inputs {
+                    conftests: &[],
+                    installation: None,
+                },
+            )
+        };
+        let selection = check(setup_skip.clone()).unwrap().3;
+        assert_eq!(
+            selection.dispositions["tests/test_a.py::test_a"],
+            "setup/skip/Skipped"
+        );
+        setup_skip[3]["skip"] = json!(false);
+        assert!(check(setup_skip).is_err());
+        let mut expected = base.clone();
+        expected[4]["outcome"] = json!("skipped");
+        expected[4]["exception"] = json!("RuntimeError");
+        expected[4]["xfail"] = json!(true);
+        expected[4]["marked_xfail"] = json!(true);
+        assert_eq!(
+            check(expected.clone()).unwrap().3.dispositions["tests/test_a.py::test_a"],
+            "call/xfail/RuntimeError"
+        );
+        expected[5]["outcome"] = json!("failed");
+        expected[5]["exception"] = json!("AssertionError");
+        expected[5]["assertion"] = json!(true);
+        assert!(check(expected).is_err());
+        let mut skipped_cleanup = base;
+        skipped_cleanup[5]["outcome"] = json!("skipped");
+        skipped_cleanup[5]["exception"] = json!("Skipped");
+        skipped_cleanup[5]["skip"] = json!(true);
+        assert!(check(skipped_cleanup).is_err());
+    }
 
     fn evidence() -> Vec<u8> {
         [

@@ -121,6 +121,12 @@ jobs:
           python -m venv "$RUNNER_TEMP/mutie-python"
           "$RUNNER_TEMP/mutie-python/bin/python" -m pip install --disable-pip-version-check --only-binary=:all: -r benchmarks/fixtures/pytest-audit/requirements.txt
           echo "MUTIE_PYTHON=$RUNNER_TEMP/mutie-python/bin/python" >> "$GITHUB_ENV"
+      - name: Prepare pinned Python wheel backend
+        if: matrix.suite == 'workflows'
+        run: '"$MUTIE_PYTHON" -m pip install --disable-pip-version-check --only-binary=:all: -r benchmarks/fixtures/python-click/requirements.txt'
+      - name: Python static project scope controls
+        if: matrix.suite == 'workflows'
+        run: '"$MUTIE_PYTHON" -I -S -B tests/support/python_scope.py'
       - name: Go mutation workflows and affected-package selection
         if: matrix.adapter == 'Go'
         run: cargo test --locked --test go_workflow --test affected_packages -- --ignored --test-threads=1

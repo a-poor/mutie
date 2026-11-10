@@ -981,3 +981,23 @@ JS suites were not attempted. Prioritize ordinary Cargo build-script support and
 inactive custom release profiles on unchanged ripgrep as the next bounded goal,
 including build inputs/output identity, fresh/cached restoration and stronger-test
 acceptance. This is planned, not implemented; broader compatibility remains open.
+
+The subsequent Cargo build-script milestone is complete; see
+`benchmarks/rust-build-scripts.md`. `benchmarks/python-click-installed.md` closes
+unchanged Click admission within an additional installed Python scope: explicit
+Flit module metadata, static dependency-free packaging, pinned Flit Core 3.12.0,
+owned wheel/venv and exact package/runtime verification. Preserve selected node
+IDs, ordered upstream deselection identity and pristine skip/xfail dispositions.
+Joined threads have independent body/lifetime evidence; raw starts, fixture
+failures and late cleanup remain errors. The I/O guard must retain `dir_fd` for
+`os.open`, which its native audit event omits. Do not relax external/source-write
+checks or treat this as an OS sandbox. The evidence/per-file limit is 16 MiB;
+historical 4 MiB reports remain readable, with old recipes rejected for reruns.
+The unchanged baseline has 2,622 passes, 25 skips, one xfail and 31,000 original
+stress deselections. Three failed reports account for 16 candidates: five kills,
+eight survivors, three errors. Four separate-copy tests kill four survivors.
+Preserve all 179 original inputs and failed report scores; combined inventory
+accounting and a focused 100% are not full scores. Other backends/dependencies,
+async suites and general plugins remain unsupported. Linux CI is configured but
+remote validation requires a push. Reassess the remaining compatibility-audit
+blockers instead of automatically adding another Python feature or operator.

@@ -37,10 +37,11 @@ They do not promote the verified support levels below. Version compatibility
 requires adapter evidence, including exact-runner observer checks where used.
 
 The [six-project compatibility audit](benchmarks/compatibility-audit.md) tests
-unchanged projects beyond the earlier acceptance set. SJSON completes the workflow;
-ripgrep, Click, UFO, eslint-node-test and Elysia stop before a Mutie baseline.
-Native ripgrep and installed Click controls pass. These concrete admission gaps
-remain release work even though bounded operator parity is complete.
+unchanged projects beyond the earlier acceptance set. Initially only SJSON
+completed the workflow. Subsequent [Cargo build-script](benchmarks/rust-build-scripts.md)
+and [installed Python](benchmarks/python-click-installed.md) work admits unchanged
+ripgrep and Click. UFO, eslint-node-test and Elysia retain their audit blockers;
+broader compatibility remains release work.
 
 ## Matrix
 
@@ -54,7 +55,7 @@ remain release work even though bounded operator parity is complete.
 | TypeScript | Node.js test runner | Validated | Native erasable `.ts` on Node 24.22.0; serial full-suite runs, reports, reruns and review/policies; unchanged Bragkit findings and stronger tests | Broader layouts/dependencies/runtime evidence |
 | JavaScript | Bun test runner | Validated | Pinned 1.3.11, dependency-free ESM; serial execution of expression, branch, loop and call mutations, reports/reruns/review; unchanged pp-is real-project findings | Broader project/runtime evidence; remaining pp-is findings |
 | TypeScript | Bun test runner | Validated | Pinned serial dependency-free scope with audited TS/NodeNext config; Composer findings, reports, reruns, review/policies and cleanup | Broader project/runtime evidence |
-| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison inversion/boundaries, binary logical swaps, `not` removal and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit and Tomli-W evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
+| Python | pytest | Validated | CPython 3.14.7 / pytest 9.0.2; one flat or src package, dependency-free or using audited webencodings 0.5.1, root/tests-directory suites, serial boolean flips, single-comparison inversion/boundaries, binary logical swaps, `not` removal and scoped binary arithmetic, reports/reruns/review; unchanged Scrubify, Cycler, Pluralizer, Route Mini, betting-math-kit, Tomli-W and installed Click evidence | Broader layouts, dependencies and runtime evidence; remaining doseq survivor |
 
 JavaScript and TypeScript are desired for each listed runner. Acceptance must
 record evidence for each syntax separately; JavaScript validation must not
@@ -520,10 +521,22 @@ Chained comparisons and annotation subtrees remain excluded.
 
 Only completed assertion/pytest.fail body failures count as kills. Other runtime
 exceptions, hooks, warnings, late cleanup and ambiguous failures remain errors.
-Application dependencies, general conftest hooks/user plugins, thread-starting and
+Application dependencies, general conftest hooks/user plugins, unsupported thread dispatch and
 async suites, editable installs, namespace/multiple packages, parallel workers
 and affected selection remain unsupported. Unix file limits are not aggregate
 disk quotas. Broader project and platform claims require separate evidence.
+
+[Unchanged Click](benchmarks/python-click-installed.md) validates an additional
+installed scope: one dependency-free package with explicit static Flit metadata,
+Flit Core 3.12.0, an owned wheel/environment and complete package-byte verification.
+The unchanged baseline has 2,622 passing tests, 25 skips, one xfail and 31,000
+upstream-selected stress exclusions. Skip/xfail dispositions and deselection
+identity remain bound to the pristine run. Joined threads, CLI child processes,
+temporary files and directory descriptors have independent lifetime/I/O controls.
+Across three failed reports, all 16 shell-completion candidates yield five kills,
+eight survivors and three errors; combined accounting is not a score. Four
+separate-copy tests kill four survivors in a full-suite focused rerun. Remaining
+survivors/errors, other backends, dependencies and broader runtimes stay open.
 
 ## Updating this ledger
 

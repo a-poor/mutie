@@ -56,7 +56,13 @@ showed that broader admission was the immediate gap: only SJSON completed the
 workflow at that audit revision. [Owned Cargo build scripts](benchmarks/rust-build-scripts.md)
 now extend the Rust contract to unchanged ripgrep, with input/output identity,
 local generated-artifact cleanup, inactive release profile chains and explicit
-inactive target configuration. Other runners' admission gaps remain open.
+inactive target configuration. [Installed Python packages](benchmarks/python-click-installed.md)
+extend the contract to unchanged Click: an audited Flit wheel and copied runtime
+live in an owned environment, including child Python commands. Pristine test
+selection binds skips, xfails and upstream marker deselection; thread, fixture and
+process-lifetime evidence remain independent of body assertions. Four stronger
+tests kill sampled survivors without changing the original failed reports.
+Other runners' admission gaps remain open.
 
 `mutie init` now distinguishes language syntax, test runner, package manager
 and runtime version, infers only unambiguous choices, and supports explicit and

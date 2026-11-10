@@ -32,6 +32,8 @@ pub(crate) struct ExecutionScope {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     source_root: String,
     manifest_fingerprint: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    installation: Option<Installation>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     conftest_fingerprints: BTreeMap<String, String>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
@@ -47,9 +49,19 @@ pub(crate) struct ExecutionScope {
     test_nodes: Vec<String>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     expected_failure_nodes: Vec<String>,
+    #[serde(default)]
+    selection: super::protocol::Selection,
     timeout_millis: u128,
     capture_bytes: usize,
     evidence_file_bytes: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Installation {
+    pub backend: String,
+    pub version: String,
+    pub ancillary: Vec<String>,
 }
 
 fn fingerprint(bytes: &[u8]) -> String {
@@ -73,6 +85,9 @@ fn recipe() -> String {
             include_bytes!("../python.rs").as_slice(),
             include_bytes!("identity.rs").as_slice(),
             include_bytes!("scope.py").as_slice(),
+            include_bytes!("installed_scope.py").as_slice(),
+            include_bytes!("install.py").as_slice(),
+            include_bytes!("installation.rs").as_slice(),
             include_bytes!("runtime.py").as_slice(),
             include_bytes!("driver.py").as_slice(),
             include_bytes!("protocol.rs").as_slice(),
@@ -103,11 +118,14 @@ impl ExecutionScope {
     pub(crate) fn validate_ready(&self) -> Result<()> {
         self.validate_record()?;
         let unique: BTreeSet<_> = self.test_nodes.iter().collect();
-        let files: BTreeSet<_> = self
+        let mut files: BTreeSet<_> = self
             .test_nodes
             .iter()
             .filter_map(|node| node.split_once("::").map(|(file, _)| file))
             .collect();
+        if let Some(excluded) = &self.selection.deselected {
+            files.extend(excluded.files.iter().map(String::as_str));
+        }
         ensure!(
             !unique.is_empty()
                 && unique.len() == self.test_nodes.len()
@@ -117,6 +135,23 @@ impl ExecutionScope {
                     .all(|node| node.contains("::") && !node.contains('\0'))
                 && files == self.test_files.iter().map(String::as_str).collect(),
             "Python identity lacks a complete pristine test inventory"
+        );
+        Ok(())
+    }
+
+    pub(super) fn bind_selection(&mut self, selection: super::protocol::Selection) {
+        self.selection = selection;
+    }
+
+    pub(super) fn validate_selection(
+        &self,
+        selection: &super::protocol::Selection,
+        collect_only: bool,
+    ) -> Result<()> {
+        ensure!(
+            self.selection.deselected == selection.deselected
+                && (collect_only || self.selection.dispositions == selection.dispositions),
+            "Python skip/xfail or deselection differs from pristine baseline"
         );
         Ok(())
     }
@@ -154,7 +189,7 @@ impl ExecutionScope {
         timeout: Duration,
         capture: NonZeroUsize,
     ) -> Result<Self> {
-        let result = Self {
+        let mut result = Self {
             runtime: serde_json::from_value(runtime).context("invalid Python runtime identity")?,
             package: project["package"]
                 .as_str()
@@ -170,6 +205,11 @@ impl ExecutionScope {
                 .as_str()
                 .context("missing Python manifest identity")?
                 .into(),
+            installation: project
+                .get("installation")
+                .cloned()
+                .map(serde_json::from_value)
+                .transpose()?,
             support_fingerprints: ["pytest.ini", "tests/__init__.py"]
                 .into_iter()
                 .filter_map(|path| project["files"].get(path).map(|hash| (path, hash)))
@@ -225,8 +265,20 @@ impl ExecutionScope {
             expected_failure_nodes: Vec::new(),
             timeout_millis: timeout.as_millis(),
             capture_bytes: capture.get(),
-            evidence_file_bytes: 4 * 1024 * 1024,
+            selection: super::protocol::Selection::default(),
+            evidence_file_bytes: super::EVIDENCE_BYTES,
         };
+        if let Some(installation) = &result.installation {
+            for path in &installation.ancillary {
+                result.support_fingerprints.insert(
+                    path.clone(),
+                    project["files"][path]
+                        .as_str()
+                        .context("missing installed Python ancillary identity")?
+                        .to_owned(),
+                );
+            }
+        }
         result.validate_record()?;
         Ok(result)
     }
@@ -253,9 +305,27 @@ impl ExecutionScope {
                 .is_some_and(|v| v == version))
                 && self.runtime.versions.keys().all(|name| name == "pip"
                     || name == "webencodings"
+                    || (name == "flit-core" && self.runtime.versions[name] == "3.12.0")
                     || pinned.iter().any(|(p, _)| p == name)),
             "unsupported saved Python dependencies"
         );
+        if let Some(installation) = &self.installation {
+            ensure!(
+                installation.backend == "flit-core"
+                    && installation.version == "3.12.0"
+                    && self
+                        .runtime
+                        .versions
+                        .get("flit-core")
+                        .is_some_and(|v| v == "3.12.0")
+                    && installation.ancillary.windows(2).all(|w| w[0] < w[1])
+                    && installation.ancillary.iter().all(|p| !p.is_empty()
+                        && Path::new(p)
+                            .components()
+                            .all(|c| matches!(c, Component::Normal(_)))),
+                "invalid installed Python identity/backend"
+            );
+        }
         ensure!(
             self.application_dependencies
                 .iter()
@@ -287,7 +357,11 @@ impl ExecutionScope {
             self.support_fingerprints
                 .iter()
                 .all(
-                    |(path, hash)| matches!(path.as_str(), "pytest.ini" | "tests/__init__.py")
+                    |(path, hash)| (matches!(path.as_str(), "pytest.ini" | "tests/__init__.py")
+                        || self
+                            .installation
+                            .as_ref()
+                            .is_some_and(|i| i.ancillary.contains(path)))
                         && valid(hash)
                 ),
             "invalid saved Python support identity"
@@ -337,6 +411,35 @@ impl ExecutionScope {
         let unique: BTreeSet<_> = self.test_files.iter().collect();
         let expected: BTreeSet<_> = self.expected_failure_nodes.iter().collect();
         ensure!(
+            self.selection
+                .dispositions
+                .iter()
+                .all(|(node, disposition)| self.test_nodes.contains(node)
+                    && (matches!(
+                        disposition.as_str(),
+                        "setup/skip/Skipped" | "call/skip/Skipped"
+                    ) || disposition
+                        .strip_prefix("call/xfail/")
+                        .is_some_and(|kind| !kind.is_empty()
+                            && kind.chars().all(|c| c.is_alphanumeric() || c == '_'))))
+                && (self.test_nodes.is_empty()
+                    || self.selection.dispositions.len() + expected.len() < self.test_nodes.len()),
+            "invalid saved Python skip/xfail inventory"
+        );
+        if let Some(excluded) = &self.selection.deselected {
+            ensure!(
+                excluded.count > 0
+                    && valid(&excluded.fingerprint)
+                    && !excluded.files.is_empty()
+                    && excluded.files.windows(2).all(|w| w[0] < w[1])
+                    && excluded
+                        .files
+                        .iter()
+                        .all(|file| self.test_files.contains(file)),
+                "invalid saved Python deselection identity"
+            );
+        }
+        ensure!(
             expected.len() == self.expected_failure_nodes.len()
                 && expected.iter().all(|node| self.test_nodes.contains(node))
                 && (expected.is_empty() || expected.len() < self.test_nodes.len()),
@@ -351,7 +454,10 @@ impl ExecutionScope {
         ensure!(
             self.timeout_millis > 0
                 && self.capture_bytes > 0
-                && self.evidence_file_bytes == 4 * 1024 * 1024,
+                // Historical reports retain their original bounded limit.
+                // Recipe identity still prevents rerunning an older observer.
+                && (self.evidence_file_bytes == super::EVIDENCE_BYTES
+                    || self.evidence_file_bytes == 4 * 1024 * 1024),
             "invalid saved Python limits"
         );
         Ok(())
@@ -366,6 +472,7 @@ impl ExecutionScope {
             self.runtime == current.runtime
                 && self.package == current.package
                 && self.source_root == current.source_root
+                && self.installation == current.installation
                 && self.manifest_fingerprint == current.manifest_fingerprint
                 && self.conftest_fingerprints == current.conftest_fingerprints
                 && self.support_fingerprints == current.support_fingerprints
@@ -416,6 +523,11 @@ mod tests {
             Duration::from_secs(5),
             NonZeroUsize::new(4096).unwrap(),
         )?;
+        let mut historical = original.clone();
+        historical.evidence_file_bytes = 4 * 1024 * 1024;
+        historical.recipe_fingerprint = fingerprint(b"historical observer");
+        historical.validate_record()?;
+        assert!(historical.validate_rerun(&original).is_err());
         let mut declared = original.clone();
         declared
             .application_dependencies

@@ -16,6 +16,7 @@ PINNED = {
 # Application imports are separately constrained by scope.py; this is not a
 # resolver or permission to load arbitrary installed dependencies.
 WEBENCODINGS = "sha256:c1e7f05855fc3004d21de68f4a04d7e9d88ba13544f02f705f9af26a1cb48026"
+FLIT_CORE = "sha256:98f91abe3134fd30b43b15a8839e116d0db7c40ae142502e520a112540502b9e"
 
 
 def require(condition, message):
@@ -93,9 +94,13 @@ def identify():
         versions[name] = distribution.version
         if name == "webencodings":
             validate_application_dependency(site, distribution)
+        if name == "flit-core":
+            require(distribution.version == "3.12.0" and not distribution.requires
+                    and fingerprint_tree(site / "flit_core", site=True) == FLIT_CORE,
+                    "Python requires the audited flit-core 3.12.0 backend")
     require(all(versions.get(k) == v for k, v in PINNED.items()),
             "Python requires the pinned pytest environment from the fixture requirements")
-    require(set(versions) <= set(PINNED) | {"pip", "webencodings"}, "Python extra installed packages unsupported")
+    require(set(versions) <= set(PINNED) | {"pip", "webencodings", "flit-core"}, "Python extra installed packages unsupported")
     stdlib = Path(sysconfig.get_path("stdlib"))
     executable = Path(sys.executable)
     library_root = (sysconfig.get_config_var("PYTHONFRAMEWORKPREFIX")

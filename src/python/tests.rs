@@ -122,7 +122,12 @@ async fn native_project_file_access_boundaries() -> Result<()> {
         ("external_read", format!("with pytest.raises(PermissionError): Path({outside_path}).read_bytes()"), false),
         ("external_write", format!("with pytest.raises(PermissionError): Path({outside_path}).write_bytes(b'changed')"), false),
         ("external_scan", format!("with pytest.raises(PermissionError): list(Path({outside_dir}).iterdir())"), false),
-        ("descriptor", "with pytest.raises(PermissionError): open(1, 'wb', closefd=False)".to_owned(), false),
+        ("descriptor", "with open(1, 'wb', closefd=False) as stream: stream.write(b'ok')".to_owned(), true),
+        ("owned_directory_descriptor", "import os\n descriptor = os.open(tmp_path, os.O_RDONLY)\n try:\n  assert list(os.scandir(descriptor)) == []\n  os.mkdir('nested', dir_fd=descriptor)\n  os.rmdir('nested', dir_fd=descriptor)\n finally: os.close(descriptor)".to_owned(), true),
+        ("relative_symlink", "import os\n (tmp_path / 'value').write_text('ok')\n os.symlink('value', tmp_path / 'link')\n assert (tmp_path / 'link').read_text() == 'ok'".to_owned(), true),
+        ("changed_home", format!("import os\n os.environ['HOME'] = {outside_dir}\n with pytest.raises(PermissionError): Path({outside_path}).read_bytes()"), false),
+        ("openat_owned", "import os\n directory = os.open(tmp_path, os.O_RDONLY)\n try:\n  descriptor = os.open('created', os.O_WRONLY | os.O_CREAT, dir_fd=directory)\n  os.write(descriptor, b'ok')\n  os.close(descriptor)\n  assert (tmp_path / 'created').read_bytes() == b'ok'\n finally: os.close(directory)".to_owned(), true),
+        ("openat_source_write", "import os\n directory = os.open(Path(__file__).parent, os.O_RDONLY)\n os.chdir(tmp_path)\n try:\n  with pytest.raises(PermissionError):\n   descriptor = os.open('test_probe.py', os.O_WRONLY, dir_fd=directory)\n   os.close(descriptor)\n finally: os.close(directory)".to_owned(), false),
         ("symlink_escape", format!("with pytest.raises(PermissionError): (tmp_path / 'link').symlink_to({outside_path})"), false),
     ] {
         let source = format!("from pathlib import Path\nimport pytest\ndef test_body(tmp_path):\n {body}\n");
@@ -134,6 +139,77 @@ async fn native_project_file_access_boundaries() -> Result<()> {
         }
         assert_eq!(fs::read_to_string(owned.path().join("repo/tests/test_probe.py"))?, source, "{name}");
         assert_eq!(fs::read(&sentinel)?, b"unchanged", "{name}");
+    }
+    Ok(())
+}
+
+#[tokio::test]
+#[ignore = "requires MUTIE_PYTHON; independent thread and unraisable attribution"]
+async fn native_thread_lifetime_attribution() -> Result<()> {
+    for (name, source, expected) in [
+        (
+            "joined",
+            "def test_body():\n t=threading.Thread(target=lambda: None)\n t.start()\n t.join()",
+            Some(Outcome::Missed),
+        ),
+        (
+            "joined_body_failure",
+            "def test_body():\n t=threading.Thread(target=lambda: None)\n t.start()\n t.join()\n assert False",
+            Some(Outcome::Killed),
+        ),
+        (
+            "start_twice",
+            "def test_body():\n t=threading.Thread(target=lambda: None)\n t.start()\n t.join()\n with pytest.raises(RuntimeError): t.start()",
+            Some(Outcome::Missed),
+        ),
+        (
+            "thread_assertion",
+            "def test_body():\n def fail(): assert False\n t=threading.Thread(target=fail)\n t.start()\n t.join()",
+            None,
+        ),
+        (
+            "suppressed_thread",
+            "def test_body():\n previous=threading.excepthook\n threading.excepthook=lambda args: None\n try:\n  def fail(): assert False\n  t=threading.Thread(target=fail)\n  t.start()\n  t.join()\n finally: threading.excepthook=previous",
+            None,
+        ),
+        (
+            "mixed",
+            "def test_body():\n def fail(): raise ValueError('thread failure')\n t=threading.Thread(target=fail)\n t.start()\n t.join()\n assert False",
+            None,
+        ),
+        (
+            "late_thread",
+            "def test_body():\n threading.Thread(target=lambda: time.sleep(1), daemon=True).start()",
+            None,
+        ),
+        (
+            "raw_thread",
+            "def test_body():\n import _thread\n _thread.start_new_thread(lambda: None, ())\n time.sleep(.02)",
+            None,
+        ),
+        (
+            "suppressed_destructor",
+            "def test_body():\n previous=sys.unraisablehook\n sys.unraisablehook=lambda args: None\n try:\n  class Broken:\n   def __del__(self): raise ValueError('cleanup')\n  Broken()\n finally: sys.unraisablehook=previous",
+            None,
+        ),
+        (
+            "finalizer_thread",
+            "@pytest.fixture\ndef cleanup():\n yield\n def fail(): assert False\n t=threading.Thread(target=fail)\n t.start()\n t.join()\ndef test_body(cleanup): assert False",
+            None,
+        ),
+    ] {
+        let source = format!("import pytest, threading, time, sys\n{source}\n");
+        let (_, outcome, _) = probe(
+            &source,
+            Duration::from_secs(15),
+            4194304,
+            &Cancellation::default(),
+        )
+        .await?;
+        match expected {
+            Some(expected) => assert_eq!(outcome?, expected, "{name}"),
+            None => assert!(outcome.is_err(), "{name}"),
+        }
     }
     Ok(())
 }
@@ -665,8 +741,9 @@ async fn probe_with_temporary(
         } else {
             vec![]
         },
+        None,
     )
-    .and_then(|(_, outcome, _)| match outcome {
+    .and_then(|(_, outcome, _, _)| match outcome {
         protocol::CandidateOutcome::Scored(outcome) => Ok(outcome),
         protocol::CandidateOutcome::BodyError => {
             anyhow::bail!("Python run contains an unsupported phase failure")
@@ -732,7 +809,7 @@ async fn native_body_and_lifetime_attribution() -> Result<()> {
         (
             "thread",
             "import threading\ndef test_body():\n t=threading.Thread(target=lambda: None)\n t.start()\n t.join()\n",
-            None,
+            Some(Outcome::Missed),
         ),
         (
             "escaped_application_import",
@@ -937,6 +1014,7 @@ async fn native_continuation_exception_types() -> Result<()> {
             root.to_str().unwrap(),
             false,
             &[],
+            None,
         );
         match expected {
             Some(expected) => assert_eq!(actual?.1, expected, "{source}"),

@@ -102,6 +102,8 @@ struct Document {
     directories: Vec<String>,
     #[serde(default)]
     application_dependencies: std::collections::BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    installation: Option<super::identity::Installation>,
 }
 
 pub(crate) struct Project {
@@ -113,6 +115,7 @@ impl Project {
     pub(crate) fn validate_snapshot(&self, copied: &Self) -> Result<()> {
         ensure!(
             self.document.package == copied.document.package
+                && self.document.installation == copied.document.installation
                 && self.document.source_root == copied.document.source_root
                 && self.document.sources == copied.document.sources
                 && self.document.tests == copied.document.tests

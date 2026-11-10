@@ -7,6 +7,7 @@ import unittest
 SOURCE = Path(__file__).resolve().parents[2] / "src/python/scope.py"
 spec = importlib.util.spec_from_file_location("scope", SOURCE)
 scope = importlib.util.module_from_spec(spec)
+exec(compile(SOURCE.with_name("installed_scope.py").read_bytes(), "installed_scope.py", "exec"), scope.__dict__)
 spec.loader.exec_module(scope)
 
 
@@ -24,6 +25,66 @@ class ScopeTests(unittest.TestCase):
         path = self.root / path
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content)
+
+    def installed_manifest(self, extra=""):
+        self.write("pyproject.toml", '[project]\nname="sample"\nversion="1.0"\ndescription="Sample"\n'
+                   '[build-system]\nrequires=["flit_core>=3.11,<4"]\nbuild-backend="flit_core.buildapi"\n'
+                   '[tool.flit.module]\nname="sample"\n' + extra)
+
+    def test_installed_metadata_selection_and_original_inventory(self):
+        self.installed_manifest('[tool.pytest.ini_options]\ntestpaths=["tests"]\nfilterwarnings=["error"]\n'
+                                'markers=["stress: slow tests"]\naddopts="-m \'not stress\'"\n'
+                                '[dependency-groups]\ntests=["pytest"]\n'
+                                '[tool.tox]\ncommands=[["do-not-execute"]]\n')
+        self.write("tests/nested/test_other.py", "def test_other(): assert True\n")
+        result = scope.inspect(self.root)
+        self.assertEqual(result['tests'], ['tests/nested/test_other.py', 'tests/test_sample.py'])
+        self.assertEqual(result['installation']['backend'], 'flit-core')
+        self.assertTrue(result['expected_failure_calls'])
+        for extra in [
+            '[tool.pytest.ini_options]\naddopts="-k some_test"\n',
+            '[tool.pytest.ini_options]\naddopts="-p plugin"\n',
+            '[tool.pytest.ini_options]\ntestpaths=["tests/nested"]\n',
+            '[tool.pytest.ini_options]\naddopts="-m \'not undeclared\'"\n',
+        ]:
+            self.installed_manifest(extra)
+            with self.assertRaises(ValueError): scope.inspect(self.root)
+
+    def test_installed_source_discovery_and_rejected_execution(self):
+        self.installed_manifest()
+        self.write('sample/__init__.py', 'import os\nimport threading\nvalue=True\n')
+        self.assertTrue(any(m['original'] == 'True' for m in scope.inspect(self.root)['mutations']))
+        for source in ['import requests', 'import socket', 'exec("pass")', 'eval("1")',
+                       'import importlib\nimportlib.import_module("other")',
+                       'import sys\nsys.modules["observer"]', 'import sys\nsys.unraisablehook=lambda x: None',
+                       'pytest_plugins=["plugin"]', 'async def f(): pass']:
+            self.write('sample/__init__.py', source)
+            with self.assertRaises(ValueError, msg=source): scope.inspect(self.root)
+
+    def test_installed_metadata_cannot_read_outside_inputs(self):
+        for field in ['readme="../outside.md"', 'license-files=["../LICENSE"]',
+                      'license={file="../LICENSE"}', 'dependencies=["requests"]',
+                      'dynamic=["version"]']:
+            self.installed_manifest()
+            manifest = self.root / 'pyproject.toml'
+            manifest.write_text(manifest.read_text().replace('[build-system]', field + '\n[build-system]'))
+            with self.assertRaises(ValueError, msg=field): scope.inspect(self.root)
+
+    def test_installed_distribution_cannot_shadow_pinned_runtime(self):
+        for name in ['pytest', 'flit-core', 'packaging']:
+            self.installed_manifest()
+            manifest = self.root / 'pyproject.toml'
+            manifest.write_text(manifest.read_text().replace('name="sample"', f'name="{name}"', 1))
+            with self.assertRaises(ValueError, msg=name): scope.inspect(self.root)
+
+    def test_installed_ancillary_files_cannot_hide_native_tests(self):
+        self.installed_manifest('[tool.mypy]\nfiles=["src", "tests/typing"]\n')
+        self.write('examples/example.py', 'print("never execute")\n')
+        self.write('tests/typing/typing_sample.py', 'def test_type(): pass\n')
+        self.assertEqual(scope.inspect(self.root)['installation']['ancillary'],
+                         ['examples/example.py', 'tests/typing/typing_sample.py'])
+        self.write('examples/test_hidden.py', 'def test_hidden(): assert False\n')
+        with self.assertRaises(ValueError): scope.inspect(self.root)
 
     def call_sites(self, source):
         self.write('sample/__init__.py', source)

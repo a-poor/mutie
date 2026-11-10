@@ -1,5 +1,6 @@
 """Pinned pytest observer. Parent must read evidence after process-group shutdown."""
 import atexit
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -59,11 +60,47 @@ def install_lifetime(emit):
     threads.excepthook = thread_error
     system.excepthook = exception
 
+    thread_sequence = 0
+    start_lock = threading.RLock()
+    starting = threading.local()
+
+    def lifetime_audit(event, args):
+        # Pytest temporarily replaces these hooks. The audit event remains
+        # independent of that replacement, including late teardown callbacks.
+        if event in {"sys.unraisablehook", "sys.excepthook"}:
+            emit("lifetime_error", kind=event)
+        elif event in {"_thread.start_new_thread", "_thread.start_joinable_thread"}:
+            if not getattr(starting, "active", False):
+                emit("unsupported", kind="unobserved_thread_start")
+
+    sys.addaudithook(lifetime_audit)
+
     def start(thread, *args, **kwargs):
-        # Pytest can retain a thread's exception after its last warning drain.
-        # Until that attribution is audited, every started thread is unsupported.
-        emit("unsupported", kind="thread_start")
-        return original_start(thread, *args, **kwargs)
+        nonlocal thread_sequence
+        with start_lock:
+            token = thread_sequence
+            thread_sequence += 1
+            emit("thread", token=token, stage="requested")
+        original_run = thread.run
+        def run():
+            emit("thread", token=token, stage="running")
+            try:
+                return original_run()
+            except BaseException:
+                emit("lifetime_error", kind="thread_body")
+                raise
+            finally:
+                emit("thread", token=token, stage="finished")
+        thread.run = run
+        try:
+            starting.active = True
+            return original_start(thread, *args, **kwargs)
+        except BaseException:
+            thread.run = original_run
+            emit("thread", token=token, stage="start_failed")
+            raise
+        finally:
+            starting.active = False
 
     threads.Thread.start = start
 
@@ -81,7 +118,7 @@ def install_lifetime(emit):
     return checkpoint
 
 
-def install_project_io_guard(root, temporary, emit):
+def install_project_io_guard(root, temporary, emit, installed_root=None):
     """Constrain I/O originating in audited project frames, including callees.
 
     This complements static admission and post-run hashes; it is not a general
@@ -90,6 +127,10 @@ def install_project_io_guard(root, temporary, emit):
     """
     root = os.path.realpath(root)
     temporary = os.path.realpath(temporary)
+    home = os.path.realpath(os.environ["HOME"])
+    installed_root = os.path.realpath(installed_root) if installed_root else None
+    import stat
+    import fcntl
     # Imports may probe the runner's fresh bytecode prefix even with -B. This
     # prefix is owned by the command and never reused; writing remains forbidden.
     runtime = tuple(os.path.realpath(p) for p in
@@ -104,7 +145,7 @@ def install_project_io_guard(root, temporary, emit):
         current = frame()
         while current is not None:
             filename = current.f_code.co_filename
-            if filename.startswith(root + os.sep):
+            if filename.startswith(root + os.sep) or (installed_root and filename.startswith(installed_root + os.sep)):
                 return True
             current = current.f_back
         return False
@@ -114,21 +155,49 @@ def install_project_io_guard(root, temporary, emit):
         emit("unsupported", kind="project_file_access")
         raise PermissionError("Python project file access escaped audited inputs/temporary output")
 
-    def check(path, write=False):
+    def descriptor_path(fd):
+        if sys.platform == "darwin":
+            return os.fsdecode(fcntl.fcntl(fd, 50, bytes(1024)).split(b"\0", 1)[0])
+        return os.readlink(f"/proc/self/fd/{fd}").removesuffix(" (deleted)")
+
+    def check(path, write=False, directory=-1):
         if isinstance(path, int):
-            reject()
+            if stat.S_ISFIFO(os.fstat(path).st_mode):
+                return
+            try:
+                path = descriptor_path(path)
+            except OSError:
+                reject()
+        elif directory not in (-1, None) and not os.path.isabs(path):
+            path = os.path.join(descriptor_path(directory), path)
         path = realpath(fspath(path))
         if isinstance(path, bytes):
             reject()
-        if inside(path, root):
+        if inside(path, root) or (installed_root and inside(path, installed_root)):
             if write:
                 reject()
             return
-        if inside(path, temporary):
+        if inside(path, temporary) or inside(path, home):
             return
         if not write and any(inside(path, p) for p in runtime):
             return
         reject()
+
+    # CPython's open audit event omits dir_fd. Preserve the native call while
+    # carrying that argument to the hook, so a relative open cannot be checked
+    # against cwd and then written through a different directory descriptor.
+    original_open = os.open
+    opening = threading.local()
+
+    def guarded_open(path, flags, mode=0o777, *, dir_fd=None):
+        previous = getattr(opening, "directory", None)
+        opening.directory = dir_fd
+        try:
+            return original_open(path, flags, mode, dir_fd=dir_fd)
+        finally:
+            opening.directory = previous
+
+    os.open = guarded_open
 
     def audit(event, args):
         if event not in {"open", "os.listdir", "os.scandir", "os.remove", "os.rmdir",
@@ -141,16 +210,31 @@ def install_project_io_guard(root, temporary, emit):
             # This exception applies to opening only, never filesystem mutation.
             if isinstance(path, str) and realpath(path) == os.devnull:
                 return
-            check(path, bool(flags & write_flags))
+            check(path, bool(flags & write_flags), getattr(opening, "directory", None))
         elif event in {"os.listdir", "os.scandir"}:
             check(args[0])
-        elif event in {"os.rename", "os.link", "os.symlink"}:
-            check(args[0], True)
-            check(args[1], True)
+        elif event == "os.symlink":
+            target, destination, directory = args
+            if directory not in (-1, None) and not os.path.isabs(destination):
+                destination = os.path.join(descriptor_path(directory), destination)
+            if not os.path.isabs(target):
+                target = os.path.join(os.path.dirname(os.path.abspath(destination)), target)
+            check(target)
+            check(destination, True)
+        elif event in {"os.rename", "os.link"}:
+            check(args[0], True, args[2])
+            check(args[1], True, args[3])
+        elif event in {"os.remove", "os.rmdir"}:
+            check(args[0], True, args[1])
+        elif event in {"os.mkdir", "os.chmod"}:
+            check(args[0], True, args[2])
+        elif event in {"os.chown", "os.utime"}:
+            check(args[0], True, args[3])
         else:
             check(args[0], True)
 
     sys.addaudithook(audit)
+    return lambda: os.open is guarded_open
 
 
 root, evidence, config, nonce, source_root, package, *selection = sys.argv[1:]
@@ -160,6 +244,41 @@ os.environ["PROFILER_ITERATIONS"] = "1"
 if source_root not in ("", "src") or not package.isidentifier():
     raise RuntimeError("invalid audited Python package root")
 import_root = root / source_root
+receipt_path = os.environ.get("MUTIE_PYTHON_INSTALLATION", "")
+receipt_bytes = Path(receipt_path).read_bytes() if receipt_path else None
+receipt = json.loads(receipt_bytes) if receipt_bytes else None
+scope_path = os.environ.get("MUTIE_PYTHON_SCOPE", "")
+scope_bytes = Path(scope_path).read_bytes() if scope_path else None
+scope = json.loads(scope_bytes) if scope_bytes else None
+if receipt:
+    import_root = Path(receipt["site"]).resolve(strict=True)
+    if receipt["package"] != package or scope["package"] != package:
+        raise RuntimeError("installed Python package identity mismatch")
+    if not sys.pycache_prefix:
+        raise RuntimeError("installed Python requires a fresh bytecode prefix")
+    for name in ("PYTHONPATH", "PYTHONHOME", "PYTHONSTARTUP", "PYTHONUSERBASE"):
+        os.environ.pop(name, None)
+    os.environ["PYTHONNOUSERSITE"] = "1"
+    os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
+    os.environ["PYTHONPYCACHEPREFIX"] = sys.pycache_prefix
+
+
+def validate_installation():
+    if not receipt:
+        return
+    if Path(receipt_path).read_bytes() != receipt_bytes or Path(scope_path).read_bytes() != scope_bytes:
+        raise RuntimeError("Python installation receipt changed")
+    observed = {}
+    for path in import_root.rglob("*"):
+        if path.is_symlink():
+            raise RuntimeError("installed Python symlink")
+        if path.is_file():
+            observed[path.relative_to(import_root).as_posix()] = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+    if observed != receipt["files"]:
+        raise RuntimeError("installed Python package changed")
+
+
+validate_installation()
 package_root = import_root / package
 if not (package_root / "__init__.py").is_file():
     raise RuntimeError("missing audited Python package")
@@ -170,7 +289,25 @@ emit("lifetime_start")
 
 import pytest  # noqa: E402: lifecycle observation precedes third-party imports.
 
-install_project_io_guard(root, os.environ["TMPDIR"], emit)
+io_intact = install_project_io_guard(root, os.environ["TMPDIR"], emit, import_root if receipt else None)
+
+if receipt:
+    allowed_executables = {str(root / path) for path in scope["tests"] + scope["conftests"]}
+    allowed_executables.update(str(root / path) for path in scope["installation"]["ancillary"]
+                               if Path(path).name == "__init__.py" and path.startswith("tests/"))
+    allowed_executables.update(str(import_root / path) for path in receipt["files"] if path.endswith(".py"))
+
+    def installed_audit(event, args):
+        if event == "import" and args[0].split(".")[0] in {"ctypes", "msvcrt", "typing_extensions", "_typeshed"}:
+            emit("unsupported", kind="inactive_dependency_import")
+            raise ImportError("inactive dependency cannot execute")
+        if event == "exec":
+            filename = args[0].co_filename
+            if (filename.startswith(str(root) + os.sep) or filename.startswith(str(import_root) + os.sep)) and filename not in allowed_executables:
+                emit("unsupported", kind="unaudited_project_execution")
+                raise ImportError("project execution escaped installed source/tests")
+
+    sys.addaudithook(installed_audit)
 
 if sys.version_info[:3] != (3, 14, 7) or pytest.__version__ != "9.0.2":
     raise RuntimeError("runner requires CPython 3.14.7 / pytest 9.0.2")
@@ -270,6 +407,12 @@ def case_intact(cls, instance=None):
 
 
 class Observer:
+    def __init__(self):
+        self.deselected = []
+
+    def pytest_deselected(self, items):
+        self.deselected.extend(item.nodeid for item in items)
+
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_fixture_setup(self, fixturedef, request):
         global fixture_sequence
@@ -299,8 +442,19 @@ class Observer:
                 emit("fixture_error", stage="external_conftest")
             else:
                 loaded.append(path.relative_to(root).as_posix())
+        deselected = None
+        if self.deselected:
+            if len(set(self.deselected)) != len(self.deselected):
+                emit("unsupported", kind="duplicate_deselected_test")
+            digest = hashlib.sha256()
+            for node in self.deselected:
+                value = node.encode()
+                digest.update(len(value).to_bytes(8, "big"))
+                digest.update(value)
+            deselected = dict(count=len(self.deselected), fingerprint="sha256:" + digest.hexdigest(),
+                              files=sorted({node.split("::", 1)[0] for node in self.deselected}))
         emit("collection", nodes=[item.nodeid for item in session.items], unittest=sorted(unit_nodes),
-             conftests=sorted(loaded))
+             conftests=sorted(loaded), deselected=deselected)
 
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
     def pytest_runtest_call(self, item):
@@ -349,7 +503,13 @@ class Observer:
              outcome=report.outcome,
              exception=call.excinfo.typename if call.excinfo else None,
              assertion=assertion, candidate_exception=candidate_exception,
-             xfail=hasattr(report, "wasxfail"), expected_failure=expected_failure, unittest=unit)
+             xfail=hasattr(report, "wasxfail"), expected_failure=expected_failure, unittest=unit,
+             skip=bool(call.excinfo and type(call.excinfo.value) is pytest.skip.Exception),
+             marked_xfail=bool(call.when == "call" and call.excinfo
+                               and not expected_failure and hasattr(report, "wasxfail")
+                               and report.skipped and item.get_closest_marker("xfail") is not None
+                               and not isinstance(call.excinfo.value,
+                                   (OSError, MemoryError, SystemError, RecursionError))))
 
     def pytest_warning_recorded(self, warning_message, when, nodeid, location):
         emit("warning", category=warning_message.category.__name__, node=nodeid)
@@ -358,6 +518,8 @@ class Observer:
         emit("internal_error")
 
     def pytest_sessionfinish(self, session, exitstatus):
+        if not io_intact():
+            emit("unsupported", kind="project_io_guard_changed")
         if fixtures or FixtureDef.finish is not finish_fixture:
             emit("fixture_error", stage="incomplete")
         emit("finish", status=int(exitstatus))
@@ -365,11 +527,12 @@ class Observer:
 
 emit("start", python=sys.version, pytest=pytest.__version__, root=str(root))
 status = pytest.main(
-    ["-q", "-c", config, "--rootdir", str(root), "--import-mode=importlib",
+    ["-q", "-c", config, "--rootdir", str(root), "--import-mode=" + ("prepend" if receipt else "importlib"),
      "--confcutdir", str(root), "-p", "no:cacheprovider", *selection],
     plugins=[Observer()],
 )
 imports = {}
+installed_imports = {}
 for name, module in list(sys.modules.items()):
     filename = getattr(module, "__file__", None)
     if name == package or name.startswith(package + "."):
@@ -380,7 +543,12 @@ for name, module in list(sys.modules.items()):
             raise RuntimeError("Python application import escaped audited package: " + name)
     if filename and Path(filename).resolve().is_relative_to(root):
         imports[name] = str(Path(filename).resolve())
-emit("returned", status=int(status), imports=imports)
+    if receipt and filename and Path(filename).resolve().is_relative_to(import_root):
+        # Relative installed names bind to the verified receipt, while project
+        # imports retain their actual original-root locations.
+        installed_imports[name] = Path(filename).resolve().relative_to(import_root).as_posix()
+validate_installation()
+emit("returned", status=int(status), imports=imports, installed_imports=installed_imports)
 checkpoint("returned")
 # Keep the raw evidence descriptor alive through interpreter teardown.
 raise SystemExit(status)

@@ -354,6 +354,8 @@ def inspect(root):
     require("pyproject.toml" in files, "Python requires pyproject.toml")
     config = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
     require(set(config) <= {"project", "build-system", "tool", "dependency-groups"}, "unsupported Python project table")
+    if config.get("tool", {}).get("flit", {}).get("module") is not None:
+        return installed_scope(root, files, directories, config)
     groups = config.get("dependency-groups", {})
     dev_tools = {"commitizen", "coverage", "editorconfig-checker", "pyright", "ruff",
                  "setuptools", "twine", "wheel"}

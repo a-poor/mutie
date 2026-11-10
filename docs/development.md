@@ -29,6 +29,8 @@ and Go 1.27.2. Separate jobs run:
 - CPython 3.14.7 with pytest 9.0.2: scored workflows and operators (including
   standalone-call and assignment semantics, review/reruns and runtime/cleanup error controls), flat/src/root-test
   layouts, review/policies, unittest/conftest attribution, resource limits and cleanup.
+  The workflow job also installs Flit Core 3.12.0 for owned-wheel metadata,
+  child-interpreter, skip/xfail selection and stronger-test rerun controls.
 
 The normal suite runs with two test threads; adapter tests run serially in separate
 jobs. Python splits its workflow, operator and native lifecycle tests across three

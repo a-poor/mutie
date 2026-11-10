@@ -1,5 +1,6 @@
 //! Narrow Python admission. Project code is never imported during discovery.
 mod identity;
+mod installation;
 mod number;
 #[cfg(test)]
 mod profile;
@@ -22,9 +23,16 @@ use serde_json::Value;
 
 use crate::{cancellation::Cancellation, process};
 
+const EVIDENCE_BYTES: u64 = 16 * 1024 * 1024;
+
 const RUNTIME: &str = include_str!("python/runtime.py");
-const SCOPE: &str = include_str!("python/scope.py");
+const SCOPE: &str = concat!(
+    include_str!("python/installed_scope.py"),
+    "\n",
+    include_str!("python/scope.py")
+);
 const DRIVER: &str = include_str!("python/driver.py");
+const INSTALL: &str = include_str!("python/install.py");
 
 fn read_evidence(
     output: &process::CommandOutput,
@@ -33,7 +41,13 @@ fn read_evidence(
     root: &str,
     collect_only: bool,
     conftests: &[String],
-) -> Result<(Vec<String>, protocol::CandidateOutcome, Vec<String>)> {
+    installation: Option<&installation::Receipt>,
+) -> Result<(
+    Vec<String>,
+    protocol::CandidateOutcome,
+    Vec<String>,
+    protocol::Selection,
+)> {
     ensure!(
         !output.interrupted && !output.timed_out && output.capture_error.is_none(),
         "Python process did not complete cleanly"
@@ -52,10 +66,10 @@ fn read_evidence(
     );
     let mut bytes = Vec::new();
     std::fs::File::open(path)?
-        .take(4 * 1024 * 1024 + 1)
+        .take(EVIDENCE_BYTES + 1)
         .read_to_end(&mut bytes)
         .context("reading bounded Python evidence")?;
-    protocol::inspect_expected_failures(
+    protocol::inspect_selection(
         &bytes,
         output.pid,
         nonce,
@@ -65,7 +79,10 @@ fn read_evidence(
             .status
             .code()
             .context("Python terminated without an exit code")?,
-        conftests,
+        protocol::Inputs {
+            conftests,
+            installation,
+        },
     )
 }
 
@@ -328,13 +345,50 @@ async fn execute_mode(
     let owned = tempfile::tempdir().context("creating Python command workspace")?;
     let directory = owned.path().canonicalize()?;
     let driver = directory.join("driver.py");
-    let config = directory.join("pytest.ini");
+    let installed = original.get("installation").is_some();
+    let config = if installed {
+        copied.join("pyproject.toml")
+    } else {
+        directory.join("pytest.ini")
+    };
     let home = directory.join("home");
     let tmp = directory.join("tmp");
     std::fs::write(&driver, DRIVER)?;
-    std::fs::write(&config, "[pytest]\n")?;
+    if !installed {
+        std::fs::write(&config, "[pytest]\n")?;
+    }
+    let config_bytes = std::fs::read(&config)?;
     std::fs::create_dir(&home)?;
     std::fs::create_dir(&tmp)?;
+    let installation = directory.join("installation");
+    let receipt_path = installation.join("receipt.json");
+    let scope_path = directory.join("scope.json");
+    let mut command_executable = executable.clone();
+    let mut installed_receipt: Option<installation::Receipt> = None;
+    if installed {
+        let receipt = helper(
+            &executable,
+            INSTALL,
+            &[
+                copied_text,
+                installation
+                    .to_str()
+                    .context("Python installation path is not UTF-8")?,
+                original["package"].as_str().context("missing package")?,
+                original["source_root"]
+                    .as_str()
+                    .context("missing source root")?,
+            ],
+            cancellation,
+        )
+        .await?;
+        command_executable = receipt["executable"]
+            .as_str()
+            .context("missing installed interpreter")?
+            .into();
+        installed_receipt = Some(serde_json::from_value(receipt)?);
+        std::fs::write(&scope_path, serde_json::to_vec(&original)?)?;
+    }
     #[cfg(test)]
     timings.finish("private_environment");
     let mut inventory = None;
@@ -380,7 +434,12 @@ async fn execute_mode(
             .as_array()
             .context("Python scope omitted test files")?
         {
-            args.push(file.as_str().context("invalid Python test file")?);
+            if !installed {
+                args.push(file.as_str().context("invalid Python test file")?);
+            }
+        }
+        if installed {
+            args.push("tests");
         }
         if collect_only {
             args.push("--collect-only");
@@ -393,9 +452,28 @@ async fn execute_mode(
             ("PYTEST_DISABLE_PLUGIN_AUTOLOAD", std::ffi::OsStr::new("1")),
             ("PYTEST_ADDOPTS", std::ffi::OsStr::new("")),
             ("PYTEST_PLUGINS", std::ffi::OsStr::new("")),
+            (
+                "MUTIE_PYTHON_INSTALLATION",
+                if installed {
+                    receipt_path.as_os_str()
+                } else {
+                    std::ffi::OsStr::new("")
+                },
+            ),
+            (
+                "MUTIE_PYTHON_SCOPE",
+                if installed {
+                    scope_path.as_os_str()
+                } else {
+                    std::ffi::OsStr::new("")
+                },
+            ),
         ];
+        if let Some(receipt) = &installed_receipt {
+            receipt.validate(&installation, &executable)?;
+        }
         let mut output = Box::pin(process::run_with_file_limit(
-            executable
+            command_executable
                 .to_str()
                 .context("Python executable is not UTF-8")?,
             &args,
@@ -404,31 +482,39 @@ async fn execute_mode(
             capture_limit,
             cancellation,
             &environment,
-            4 * 1024 * 1024,
+            EVIDENCE_BYTES,
         ))
         .await?;
         elapsed += output.elapsed;
         #[cfg(test)]
         timings.finish("pytest_process");
         let validated = async {
-            let (nodes, outcome, expected_failures) = read_evidence(
+            if let Some(receipt) = &installed_receipt {
+                receipt.validate(&installation, &executable)?;
+            }
+            let (nodes, outcome, expected_failures, selection) = read_evidence(
                 &output,
                 &evidence,
                 nonce,
                 copied_text,
                 collect_only,
                 &serde_json::from_value::<Vec<String>>(original["conftests"].clone())?,
+                installed_receipt.as_ref(),
             )?;
             if let Some(expected) = expected {
                 expected.validate_inventory(&nodes)?;
+                expected.validate_selection(&selection, collect_only)?;
                 if !collect_only {
                     expected.validate_expected_failures(&expected_failures)?;
                 }
             }
-            let collected_files: std::collections::BTreeSet<_> = nodes
+            let mut collected_files: std::collections::BTreeSet<_> = nodes
                 .iter()
                 .filter_map(|node| node.split_once("::").map(|(file, _)| file))
                 .collect();
+            if let Some(excluded) = &selection.deselected {
+                collected_files.extend(excluded.files.iter().map(String::as_str));
+            }
             let expected_files: std::collections::BTreeSet<_> = original["tests"]
                 .as_array()
                 .context("Python scope omitted test files")?
@@ -441,13 +527,13 @@ async fn execute_mode(
             );
             if let Some(expected) = &inventory {
                 ensure!(
-                    expected == &nodes,
+                    expected == &(nodes.clone(), selection.deselected.clone()),
                     "Python collection changed between discovery and execution"
                 );
             }
             ensure!(
                 std::fs::read(&driver)? == DRIVER.as_bytes()
-                    && std::fs::read(&config)? == b"[pytest]\n",
+                    && std::fs::read(&config)? == config_bytes,
                 "Python observer/config changed during execution"
             );
             ensure!(
@@ -471,7 +557,7 @@ async fn execute_mode(
             );
             #[cfg(test)]
             timings.finish("scope_original_after");
-            Ok::<_, anyhow::Error>((nodes, outcome, expected_failures))
+            Ok::<_, anyhow::Error>((nodes, outcome, expected_failures, selection))
         }
         .await;
         if collect_only
@@ -480,28 +566,32 @@ async fn execute_mode(
                 nodes,
                 protocol::CandidateOutcome::Scored(crate::report::Outcome::Missed),
                 _,
+                selection,
             )) = &validated
         {
-            inventory = Some(nodes.clone());
+            inventory = Some((nodes.clone(), selection.deselected.clone()));
             continue;
         }
         let nodes = validated
             .as_ref()
-            .map(|(nodes, _, _)| nodes.clone())
+            .map(|(nodes, _, _, _)| nodes.clone())
             .unwrap_or_default();
         if !nodes.is_empty() {
+            if let Ok((_, _, _, selection)) = &validated {
+                execution_identity.bind_selection(selection.clone());
+            }
             execution_identity.bind(nodes.clone())?;
-            if let Ok((_, _, expected_failures)) = &validated {
+            if let Ok((_, _, expected_failures, _)) = &validated {
                 execution_identity.bind_expected_failures(expected_failures.clone())?;
             }
         }
         let evidence = match validated {
-            Ok((_, protocol::CandidateOutcome::BodyError, _)) => {
+            Ok((_, protocol::CandidateOutcome::BodyError, _, _)) => {
                 crate::command::OutcomeEvidence::IsolatedCandidateError(
                     "Python run contains an unsupported phase failure".into(),
                 )
             }
-            Ok((_, protocol::CandidateOutcome::Scored(outcome), _)) => {
+            Ok((_, protocol::CandidateOutcome::Scored(outcome), _, _)) => {
                 crate::command::OutcomeEvidence::Validated(Ok(outcome))
             }
             Err(error) => crate::command::OutcomeEvidence::Validated(Err(format!("{error:#}"))),

@@ -245,11 +245,20 @@ fixture-based acceptance, audited conftest helpers/imports and inert example/too
 metadata. All 38 mutations are accounted for across four runs; three selected
 survivors are killed by stronger tests. Mixed errors/timeouts remain unscored.
 
+[Unchanged Click acceptance](../benchmarks/python-click-installed.md) adds one
+dependency-free package with explicit Flit module metadata and a pinned Flit Core
+3.12.0 backend. Mutie builds and verifies its wheel in an owned virtual environment;
+child Python commands see the same installation. Original marker selection,
+skips and xfails are bound to the pristine suite. Joined threads and ordinary CLI
+filesystem fixtures are supported in this installed scope, with independent
+thread/fixture/cleanup evidence. The 16 MiB evidence and per-file limits remain
+bounded; they are not a total disk quota.
+
 The runtime is CPython 3.14.7 / pytest 9.0.2 with the audited dependency set.
 Boolean flips, binary arithmetic, single-comparison inversion/boundaries, binary
 `and`/`or` swaps and `not` removal are supported, with full tests and one worker. Chained comparisons and annotations
 are excluded. See [comparison semantics and validation](../benchmarks/python-comparison-boundaries.md). Other application
-dependencies, general conftest hooks/user plugins, async/thread-starting suites and
+dependencies, general conftest hooks/user plugins, async suites and
 multi-package layouts remain excluded. Completed assertion bodies can be kills;
 runtime exceptions and ambiguous/lifecycle failures remain errors. See
 [support limits](../SUPPORT.md#python--pytest) before using an existing project.
@@ -259,7 +268,8 @@ Create a dedicated environment with CPython **3.14.7**, install only the pinned
 pass that environment's launcher without resolving its symlink. For a project
 that declares the supported `webencodings` requirement, use a separate environment
 with the additional [hash-pinned wheel](../benchmarks/fixtures/python-dependency/requirements.txt).
-Mutie never resolves or installs dependencies; undeclared additions are rejected:
+For the installed Flit scope, use the [pytest plus backend requirements](../benchmarks/fixtures/python-click/requirements.txt).
+Mutie never resolves or downloads dependencies; undeclared additions are rejected:
 
 ```sh
 mutie init --lang python --python /path/to/venv/bin/python

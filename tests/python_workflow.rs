@@ -9,6 +9,8 @@ use std::{fs, path::Path};
 mod assignments;
 #[path = "support/python_calls.rs"]
 mod calls;
+#[path = "support/python_installed.rs"]
+mod installed;
 #[path = "support/python_numbers.rs"]
 mod numbers;
 #[path = "support/python_strings.rs"]
@@ -743,7 +745,7 @@ fn scored_resource_limits_preserve_score_boundaries() {
         ),
         (
             "file",
-            "        (tmp_path / 'large').write_bytes(b'x' * (5 * 1024 * 1024))\n",
+            "        (tmp_path / 'large').write_bytes(b'x' * (17 * 1024 * 1024))\n",
         ),
     ] {
         let root = fixture();

@@ -282,6 +282,13 @@ Split implementation goals by language/runner when acceptance becomes too large.
    run finds six kills and ten survivors. Four separate-copy tests kill seven of
    those survivors with the full 1,213-test suite. Generated-output cleanup,
    identity drift and fresh/cached controls retain conservative boundaries.
+   Completed Python follow-up: [unchanged Click](benchmarks/python-click-installed.md)
+   passes its installed 2,622-test baseline with original skips, xfail and stress
+   selection. All 16 sampled shell-completion candidates are accounted for across
+   three failed reports (five kills, eight survivors, three errors). Four
+   separate-copy tests kill four survivors; original scores and inputs remain
+   unchanged. Owned wheel/runtime identity, thread lifetime and filesystem
+   controls are covered; broader backends/dependencies remain separate work.
    Other runner/configuration gaps and broader project/platform evidence remain open.
 8. [ ] **Public release qualification and documentation.** Automate a documented
    macOS/Linux test matrix including real adapters and supported versions; verify

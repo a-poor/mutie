@@ -1,0 +1,552 @@
+{
+  "project": "pallets/click",
+  "revision": "8abb77a8432e03ed14a95f972b44f905279415a7",
+  "runtime": {
+    "python": "3.14.7",
+    "pytest": "9.0.2",
+    "flit-core": "3.12.0"
+  },
+  "original_input_files_preserved": 179,
+  "input_manifest_sha256": "9bf1b6bdbcf33102f8b4647abea10e6692c134ae093a8cf0b1f2153a988f5d37",
+  "original_report_files_preserved": 119,
+  "baseline": {
+    "passed": 2622,
+    "skipped": 25,
+    "xfailed": 1,
+    "deselected": 31000
+  },
+  "stronger_baseline": {
+    "passed": 2626,
+    "skipped": 25,
+    "xfailed": 1,
+    "deselected": 31000
+  },
+  "final_baseline_check": {
+    "kind": "baseline-check",
+    "language": "python",
+    "passed": true,
+    "seconds": 9.427281041
+  },
+  "final_binary_sha256": "bd1c6b0af1f66293b6c292d9019c0a5aed8b0ac1aac2b2fdd7687583153a2aa3",
+  "runs": [
+    {
+      "run": "run-1794268024-L4Vezo",
+      "role": "original",
+      "status": "failed",
+      "summary": {
+        "killed": 5,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "score": {
+        "scope": "filtered",
+        "killed": 5,
+        "missed": 6,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 4,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "wall_seconds": 248.325436875,
+      "recipe": "sha256:ccfce1c0dfc36784f74b5c8b6e45682ae8021feb8b16ed2bcc430f8b988f1530",
+      "selected_tests": 2648,
+      "selection": {
+        "deselected": {
+          "count": 31000,
+          "fingerprint": "sha256:1a633c09dd24ef6e970e0d8e2a71e20f3503a8863471bf4b0dbe4da9292a8a44",
+          "files": [
+            "tests/test_stream_lifecycle.py",
+            "tests/test_utils/test_echo_via_pager.py"
+          ]
+        },
+        "dispositions": {
+          "tests/test_chain.py::test_group_chaining": "call/xfail/RuntimeError",
+          "tests/test_termui.py::test_editor_windows_path_normalization[plain notepad]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_editor_windows_path_normalization[quoted path with flag]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-a]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-b]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\xe0-c]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x03-KeyboardInterrupt]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x1a-EOFError]": "setup/skip/Skipped",
+          "tests/test_testing.py::test_capture_fd_windows_error": "setup/skip/Skipped",
+          "tests/test_types/test_Path.py::test_path_surrogates": "setup/skip/Skipped"
+        }
+      },
+      "report_files_preserved": 68,
+      "report_manifest_sha256": "51392b3f454b0a0d8a63603e8c367a2ec8676cbde2fa836028dea9d05e4189f9",
+      "results": [
+        {
+          "id": 1,
+          "line": 48,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 8.457202
+        },
+        {
+          "id": 2,
+          "line": 62,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 9.22031275
+        },
+        {
+          "id": 3,
+          "line": 64,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 8.550337959
+        },
+        {
+          "id": 4,
+          "line": 419,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 8.566376084
+        },
+        {
+          "id": 5,
+          "line": 424,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 8.41455475
+        },
+        {
+          "id": 6,
+          "line": 618,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.731959708
+        },
+        {
+          "id": 7,
+          "line": 619,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 8.551288667
+        },
+        {
+          "id": 8,
+          "line": 643,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.477604291
+        },
+        {
+          "id": 9,
+          "line": 660,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.637775876
+        },
+        {
+          "id": 10,
+          "line": 673,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.546602666
+        },
+        {
+          "id": 11,
+          "line": 676,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.615478833
+        },
+        {
+          "id": 12,
+          "line": 705,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "error",
+          "state": "completed",
+          "seconds": 10.167033542
+        },
+        {
+          "id": 13,
+          "line": 720,
+          "original": "True",
+          "replacement": "False",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        },
+        {
+          "id": 14,
+          "line": 737,
+          "original": "True",
+          "replacement": "False",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        },
+        {
+          "id": 15,
+          "line": 738,
+          "original": "False",
+          "replacement": "True",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        },
+        {
+          "id": 16,
+          "line": 739,
+          "original": "True",
+          "replacement": "False",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        }
+      ]
+    },
+    {
+      "run": "run-1794268372-Z5CXQt",
+      "role": "original",
+      "status": "failed",
+      "summary": {
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 0,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 3,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "wall_seconds": 67.909149417,
+      "recipe": "sha256:ccfce1c0dfc36784f74b5c8b6e45682ae8021feb8b16ed2bcc430f8b988f1530",
+      "selected_tests": 2648,
+      "selection": {
+        "deselected": {
+          "count": 31000,
+          "fingerprint": "sha256:1a633c09dd24ef6e970e0d8e2a71e20f3503a8863471bf4b0dbe4da9292a8a44",
+          "files": [
+            "tests/test_stream_lifecycle.py",
+            "tests/test_utils/test_echo_via_pager.py"
+          ]
+        },
+        "dispositions": {
+          "tests/test_chain.py::test_group_chaining": "call/xfail/RuntimeError",
+          "tests/test_termui.py::test_editor_windows_path_normalization[plain notepad]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_editor_windows_path_normalization[quoted path with flag]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-a]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-b]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\xe0-c]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x03-KeyboardInterrupt]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x1a-EOFError]": "setup/skip/Skipped",
+          "tests/test_testing.py::test_capture_fd_windows_error": "setup/skip/Skipped",
+          "tests/test_types/test_Path.py::test_path_surrogates": "setup/skip/Skipped"
+        }
+      },
+      "report_files_preserved": 23,
+      "report_manifest_sha256": "f1d6068ccd860b4bad59fd6460b14f8e74264dde69362e336ed756c81360ce70",
+      "results": [
+        {
+          "id": 1,
+          "line": 720,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "error",
+          "state": "completed",
+          "seconds": 10.590302375
+        },
+        {
+          "id": 2,
+          "line": 737,
+          "original": "True",
+          "replacement": "False",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        },
+        {
+          "id": 3,
+          "line": 738,
+          "original": "False",
+          "replacement": "True",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        },
+        {
+          "id": 4,
+          "line": 739,
+          "original": "True",
+          "replacement": "False",
+          "outcome": null,
+          "state": "pending",
+          "seconds": null
+        }
+      ]
+    },
+    {
+      "run": "run-1794268505-83oiWe",
+      "role": "original",
+      "status": "failed",
+      "summary": {
+        "killed": 0,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 0,
+        "missed": 2,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 1,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": null,
+        "unavailable_reason": "incomplete_run"
+      },
+      "wall_seconds": 95.946683708,
+      "recipe": "sha256:ccfce1c0dfc36784f74b5c8b6e45682ae8021feb8b16ed2bcc430f8b988f1530",
+      "selected_tests": 2648,
+      "selection": {
+        "deselected": {
+          "count": 31000,
+          "fingerprint": "sha256:1a633c09dd24ef6e970e0d8e2a71e20f3503a8863471bf4b0dbe4da9292a8a44",
+          "files": [
+            "tests/test_stream_lifecycle.py",
+            "tests/test_utils/test_echo_via_pager.py"
+          ]
+        },
+        "dispositions": {
+          "tests/test_chain.py::test_group_chaining": "call/xfail/RuntimeError",
+          "tests/test_termui.py::test_editor_windows_path_normalization[plain notepad]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_editor_windows_path_normalization[quoted path with flag]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-a]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-b]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\xe0-c]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x03-KeyboardInterrupt]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x1a-EOFError]": "setup/skip/Skipped",
+          "tests/test_testing.py::test_capture_fd_windows_error": "setup/skip/Skipped",
+          "tests/test_types/test_Path.py::test_path_surrogates": "setup/skip/Skipped"
+        }
+      },
+      "report_files_preserved": 28,
+      "report_manifest_sha256": "9e8a28763bb262592574bab9fff17bb52c0dd67fd05845cf4b0992450cb442fd",
+      "results": [
+        {
+          "id": 1,
+          "line": 737,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 9.158919209
+        },
+        {
+          "id": 2,
+          "line": 738,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "missed",
+          "state": "completed",
+          "seconds": 9.112958584
+        },
+        {
+          "id": 3,
+          "line": 739,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "error",
+          "state": "completed",
+          "seconds": 9.15720275
+        }
+      ]
+    },
+    {
+      "run": "run-1794268434-7sTU1O",
+      "role": "stronger",
+      "status": "completed",
+      "summary": {
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0
+      },
+      "score": {
+        "scope": "rerun",
+        "killed": 4,
+        "missed": 0,
+        "timeout": 0,
+        "build_failed": 0,
+        "errors": 0,
+        "unfinished": 0,
+        "dismissed_in_score": 0,
+        "percentage": 100.0,
+        "unavailable_reason": null
+      },
+      "wall_seconds": 114.529221042,
+      "recipe": "sha256:ccfce1c0dfc36784f74b5c8b6e45682ae8021feb8b16ed2bcc430f8b988f1530",
+      "selected_tests": 2652,
+      "selection": {
+        "deselected": {
+          "count": 31000,
+          "fingerprint": "sha256:1a633c09dd24ef6e970e0d8e2a71e20f3503a8863471bf4b0dbe4da9292a8a44",
+          "files": [
+            "tests/test_stream_lifecycle.py",
+            "tests/test_utils/test_echo_via_pager.py"
+          ]
+        },
+        "dispositions": {
+          "tests/test_chain.py::test_group_chaining": "call/xfail/RuntimeError",
+          "tests/test_termui.py::test_editor_windows_path_normalization[plain notepad]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_editor_windows_path_normalization[quoted path with flag]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-a]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\x00-b]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_special_key_windows[\\xe0-c]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[False-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True- ]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\u5b57]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xc0]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0H]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe0R]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-\\xe9]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows[True-h]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x03-KeyboardInterrupt]": "setup/skip/Skipped",
+          "tests/test_termui.py::test_getchar_windows_exceptions[\\x1a-EOFError]": "setup/skip/Skipped",
+          "tests/test_testing.py::test_capture_fd_windows_error": "setup/skip/Skipped",
+          "tests/test_types/test_Path.py::test_path_surrogates": "setup/skip/Skipped"
+        }
+      },
+      "report_files_preserved": 32,
+      "report_manifest_sha256": "fa2be2c6843f4525b42ee763db2f29b604a0218db27f3c5f8bfb471587e76e0b",
+      "results": [
+        {
+          "id": 1,
+          "line": 48,
+          "original": "False",
+          "replacement": "True",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.777921001
+        },
+        {
+          "id": 2,
+          "line": 419,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 8.971477
+        },
+        {
+          "id": 3,
+          "line": 424,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 10.484755
+        },
+        {
+          "id": 4,
+          "line": 619,
+          "original": "True",
+          "replacement": "False",
+          "outcome": "killed",
+          "state": "completed",
+          "seconds": 9.874291
+        }
+      ]
+    }
+  ]
+}
