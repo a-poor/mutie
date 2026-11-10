@@ -326,14 +326,34 @@ TypeScript milestone; neither promotes JSX or TSX support.
 
 Declared Node/Bun development installations may now be present and are retained
 in isolated copies. Manager metadata and installed bytes join rerun identity;
-runtime dependency imports remain unsupported. The cross-manager JS/TS fixture
+runtime dependency imports remain unsupported in the original `src/` recipes.
+The additional composed JavaScript recipe below has its own dependency scope.
+The cross-manager JS/TS fixture
 matrix is recorded in the [package-manager audit](benchmarks/package-managers.md).
 
 Explicit `--lang node` supports one dependency-free ESM package with `.js` files
-under `src/` and `test/`, exact `node --test` or `node --test test/*.test.js` script, no installed
-dependencies, and audited Node 24.22.0. Static literal relative and `node:` imports only;
+under `src/` and `test/`, exact `node --test` or `node --test test/*.test.js` script,
+and audited Node 24.22.0. Static literal relative and `node:` imports only;
 no runtime package dependencies, CommonJS, workspaces, loaders or
 parallel workers. Test files run serially in isolated processes and fresh copies.
+
+The [composed JavaScript extension](benchmarks/node-eslint.md) adds the audited
+`npm-run-all` lint/test recipe, root `index.js` / `rules/` layout, owned runtime
+and development dependencies, package JSON imports, and module-level literal
+`createRequire` loads. Its five lint tasks and runtime suite share time/output
+budgets; ordinary prerequisite failures do not skip later tasks and cannot count
+as kills. Source filters never reduce the test inventory. Imported helper
+failures require explicit worker ownership and exact exception/body-ID evidence.
+Pinned CJS/ESM loader traces independently reject loading failures and unfinished
+imports. Config/tooling bytes and the complete installation bind focused reruns.
+This does not extend the native TypeScript recipe or accept arbitrary shell
+commands. The real-project installation requires an explicit additional
+`@types/node` dependency; its original 491 tracked inputs are preserved.
+The complete baseline passes 5,989 tests; four new tests kill one public diagnostic
+survivor and three internal helper survivors in focused reruns. Two sampled lint
+errors retain unavailable scores; this is bounded JavaScript recipe evidence,
+not full-project or unchanged-installation acceptance. New Node CI controls are
+configured but await remote validation.
 
 Boolean discovery shares the concrete JS/TS parser with Vitest. The CLI supports
 saved reports, focused source-identity reruns, browser exports, dismissal CRUD/check

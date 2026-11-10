@@ -9,6 +9,12 @@ estimate: one new public project per runner, with real configuration, dependenci
 assets or workspace structure. JavaScript and TypeScript were not independently
 sampled for every runner in this pass.
 
+Subsequent bounded work is recorded separately: [Cargo build scripts](rust-build-scripts.md),
+[installed Click](python-click-installed.md), [UFO lint/type tests](vitest-ufo.md),
+and [Node composed tests](node-eslint.md). The Node follow-up preserves upstream
+inputs but needs an explicitly approved addition of missing type declarations.
+The table below remains the original audit result.
+
 ## Compatibility matrix
 
 Upstream source, tests, manifests and locks were left unchanged. `init` wrote only

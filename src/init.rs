@@ -38,7 +38,10 @@ fn detect(root: &Path) -> Result<Vec<Lang>> {
         let script = value["scripts"]["test"].as_str().unwrap_or("");
         reject_vite_plus_test(&value)?;
         // Recognize exact command prefixes, never execute scripts or infer Bun from a lockfile.
-        if script == "node --test" || script.starts_with("node --test ") {
+        if script == "node --test"
+            || script.starts_with("node --test ")
+            || crate::node::recipe::recognizes(&value)
+        {
             choices.push(Lang::Node);
         }
         if script == "bun test" || script.starts_with("bun test ") {
@@ -324,6 +327,23 @@ pub fn run(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn detects_the_recognized_composed_node_recipe_without_running_it() -> Result<()> {
+        let root = tempfile::tempdir()?;
+        fs::write(
+            root.path().join("package.json"),
+            serde_json::to_vec(&serde_json::json!({
+                "scripts":{"test":crate::node::recipe::TEST_SCRIPT}
+            }))?,
+        )?;
+        assert_eq!(detect(root.path())?, vec![Lang::Node]);
+        fs::write(
+            root.path().join("package.json"),
+            r#"{"scripts":{"test":"npm-run-all lint test:custom"}}"#,
+        )?;
+        assert!(detect(root.path())?.is_empty());
+        Ok(())
+    }
     #[test]
     fn lockfile_does_not_choose_runner_and_multiple_runners_are_ambiguous() -> Result<()> {
         let root = tempfile::tempdir()?;

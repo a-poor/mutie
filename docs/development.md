@@ -17,6 +17,11 @@ and Go 1.27.2. Separate jobs run:
   serial/parallel cancellation and descendant cleanup.
 - Node 24.22.0 JavaScript and native TypeScript workflows, review/policies,
   lifecycle failures, default discovery, timeout/cancellation and capture limits.
+  The new `node::recipe_tests::` groups add composed prerequisite/budget controls,
+  imported-helper ownership and deferred dependency-loading errors. They use real
+  Node with deterministic prerequisite programs; actual lint tools are exercised
+  in the [external-project evidence](../benchmarks/node-eslint.md). These new
+  groups are configured locally and await a push for remote Linux validation.
 - Bun 1.3.11 JavaScript and TypeScript workflows, review/policies, native outcomes,
   resource limits and descendant cleanup.
 - Vitest 4.1.9 JavaScript and TypeScript workflows, review/policies, lifecycle
@@ -26,8 +31,9 @@ and Go 1.27.2. Separate jobs run:
   completion and failure controls. Its frozen tools live in
   `tests/fixtures/vitest-typecheck`; set `MUTIE_VITEST_RECIPE_FIXTURE` to an
   installed temporary copy to run `vitest::recipe_tests::` with `--ignored`.
-  The [local acceptance record](../benchmarks/vitest-ufo.md) predates this job's
-  first remote run.
+  All ten jobs, including this compatibility job, passed in the
+  [first Linux run](https://github.com/a-poor/mutie/actions/runs/42740310729)
+  for `0d461c3`; see the [acceptance record](../benchmarks/vitest-ufo.md).
 - Scoped JS/TS assignment removal: independent scored workflows in each runner's
   job and paired native semantics on Node/Bun, including exact saved identities,
   constructor exclusions, stronger-test reruns, policy scores and lifecycle errors.

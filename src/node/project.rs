@@ -15,6 +15,8 @@ pub struct Project {
     pub typescript: Option<TypeScriptScope>,
     pub default_discovery: bool,
     pub development_fingerprints: std::collections::BTreeMap<String, String>,
+    pub recipe: Option<super::recipe::Scope>,
+    pub sources: Vec<PathBuf>,
 }
 impl Project {
     pub fn load(root: &Path, cancellation: &Cancellation) -> Result<Self> {
@@ -27,6 +29,9 @@ impl Project {
         );
         let text = fs::read_to_string(root.join("package.json"))?;
         let manifest: serde_json::Value = serde_json::from_str(&text)?;
+        if super::recipe::recognizes(&manifest) {
+            return super::package::load(root, &manifest, &text, cancellation);
+        }
         ensure!(
             manifest["type"] == "module",
             "Node runner requires an ESM package (type: module)"
@@ -111,6 +116,8 @@ impl Project {
             typescript,
             default_discovery,
             development_fingerprints,
+            recipe: None,
+            sources: vec![PathBuf::from("src")],
         })
     }
 }

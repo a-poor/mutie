@@ -632,7 +632,7 @@ pub async fn check(config: &RunConfig, cancellation: &Cancellation) -> Result<()
                 return crate::javascript::discover_bun(&source, &scope, &discovery_cancellation);
             }
             if language == Lang::Node {
-                crate::node::project::Project::load(&source, &discovery_cancellation)?;
+                return crate::node::discover(&source, &scope, &discovery_cancellation);
             } else {
                 crate::vitest::project::Project::load(&source, &discovery_cancellation)?;
             }

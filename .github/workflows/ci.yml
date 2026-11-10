@@ -198,6 +198,9 @@ jobs:
       - name: Node timeout, cancellation, capture and isolation
         if: matrix.adapter == 'Node'
         run: cargo test --locked --bin mutie 'node::tests::' -- --ignored --test-threads=1
+      - name: Node composed prerequisites and evidence controls
+        if: matrix.adapter == 'Node'
+        run: cargo test --locked --bin mutie 'node::recipe_tests::' -- --ignored --test-threads=1
       - name: Bun JS/TS reports, reruns, review and cleanup
         if: matrix.adapter == 'Bun'
         run: cargo test --locked --test bun_workflow -- --ignored --test-threads=1

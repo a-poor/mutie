@@ -24,6 +24,8 @@ struct Summary {
 #[serde(deny_unknown_fields)]
 struct Failure {
     file: Option<String>,
+    #[serde(default)]
+    owner: Option<String>,
     id: Option<u64>,
     name: String,
     #[serde(rename = "type")]
@@ -42,6 +44,16 @@ struct Hook {
     bodies: Vec<u64>,
     process_errors: u64,
 }
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Modules {
+    file: String,
+    started: u64,
+    completed: u64,
+    errors: u64,
+    overflow: bool,
+    samples: Vec<String>,
+}
 fn read<T: serde::de::DeserializeOwned>(path: &Path) -> Result<T> {
     let meta = fs::symlink_metadata(path)
         .with_context(|| format!("missing Node completion evidence: {}", path.display()))?;
@@ -57,6 +69,27 @@ pub fn classify(
     root: &Path,
     tests: &[String],
     code: Option<i32>,
+) -> Result<Outcome> {
+    classify_with_helpers(path, owned, root, tests, code, false)
+}
+
+pub fn classify_package(
+    path: &Path,
+    owned: &Path,
+    root: &Path,
+    tests: &[String],
+    code: Option<i32>,
+) -> Result<Outcome> {
+    classify_with_helpers(path, owned, root, tests, code, true)
+}
+
+fn classify_with_helpers(
+    path: &Path,
+    owned: &Path,
+    root: &Path,
+    tests: &[String],
+    code: Option<i32>,
+    helpers: bool,
 ) -> Result<Outcome> {
     let e: Evidence = read(path)?;
     ensure!(
@@ -148,18 +181,72 @@ pub fn classify(
         );
     }
     ensure!(hooks == expected, "missing Node worker lifecycle evidence");
+    if helpers {
+        let mut modules = BTreeSet::new();
+        for entry in fs::read_dir(owned)? {
+            let entry = entry?;
+            if !entry.file_name().to_string_lossy().starts_with("modules-") {
+                continue;
+            }
+            let evidence: Modules = read(&entry.path())?;
+            ensure!(
+                expected.contains(&evidence.file) && modules.insert(evidence.file),
+                "unexpected or duplicate Node loader evidence"
+            );
+            ensure!(
+                !evidence.overflow
+                    && evidence.started > 0
+                    && evidence.started == evidence.completed
+                    && evidence.errors == 0
+                    && evidence.samples.is_empty(),
+                "Node module loading failed or did not complete: {}",
+                evidence.samples.join("; ")
+            );
+        }
+        ensure!(
+            modules == expected,
+            "missing Node worker module-loading evidence"
+        );
+    }
     let mut body_failures = 0;
     for f in &e.failures {
+        let owner = if helpers {
+            let owner = f
+                .owner
+                .as_ref()
+                .context("missing Node worker owner for helper failure")?;
+            let declaration = f
+                .file
+                .as_ref()
+                .context("missing Node failure declaration location")?;
+            let declaration = Path::new(declaration)
+                .canonicalize()
+                .context("invalid Node failure declaration location")?;
+            let relative = declaration
+                .strip_prefix(root)
+                .context("Node failure declaration escapes owned project")?;
+            ensure!(
+                (relative.starts_with("test") || relative.starts_with("scripts"))
+                    && relative.extension().is_some_and(|e| e == "js"),
+                "Node failure declaration is outside audited test helpers"
+            );
+            owner
+        } else {
+            ensure!(
+                f.owner.is_none(),
+                "worker ownership requires the composed Node recipe"
+            );
+            f.file.as_ref().context("missing Node failure file")?
+        };
         ensure!(
-            !f.todo && f.file.as_ref().is_some_and(|p| expected.contains(p)),
+            !f.todo && expected.contains(owner),
             "unsupported Node failure: {}",
             f.name
         );
         match f.failure.as_deref() {
             Some("testCodeFailure")
                 if f.kind.as_deref() == Some("test")
-                    && f.id
-                        .is_some_and(|id| bodies.remove(&(f.file.clone().unwrap(), id))) =>
+                    && f.id.is_some_and(|id| bodies.remove(&(owner.clone(), id))) =>
             {
                 body_failures += 1
             }
@@ -191,6 +278,85 @@ pub fn classify(
 mod tests {
     use super::*;
     use serde_json::{Value, json};
+    #[test]
+    fn helper_failures_require_the_exact_completed_worker_and_body_id() -> Result<()> {
+        let owned = tempfile::tempdir()?;
+        let root = owned.path().canonicalize()?.join("project");
+        fs::create_dir_all(root.join("test/helpers"))?;
+        let helper = root.join("test/helpers/shared.js");
+        fs::write(&helper, "")?;
+        let first = root.join("test/a.js");
+        let second = root.join("test/b.js");
+        let counts = |failed| json!({"tests":1,"failed":failed,"passed":1-failed,"cancelled":0,"skipped":0,"todo":0,"topLevel":1,"suites":0});
+        let evidence = json!({"ended":true,"interrupted":false,"summaries":[
+            {"file":first,"success":false,"counts":counts(1)},
+            {"file":second,"success":true,"counts":counts(0)},
+            {"success":false,"counts":{"tests":2,"failed":1,"passed":1,"cancelled":0,"skipped":0,"todo":0,"topLevel":2,"suites":0}}
+        ],"failures":[{"file":helper,"owner":first,"id":1,"name":"same name","type":"test","failure":"testCodeFailure","todo":false,"message":"assertion"}]});
+        for (name, file, bodies) in [("a", &first, vec![1]), ("b", &second, vec![])] {
+            fs::write(
+                owned.path().join(format!("hook-{name}.json")),
+                serde_json::to_vec(
+                    &json!({"file":file,"started":0,"completed":0,"failed":0,"bodies":bodies,"process_errors":0}),
+                )?,
+            )?;
+            fs::write(
+                owned.path().join(format!("modules-{name}.json")),
+                serde_json::to_vec(
+                    &json!({"file":file,"started":1,"completed":1,"errors":0,"overflow":false,"samples":[]}),
+                )?,
+            )?;
+        }
+        let path = owned.path().join("completion.json");
+        let tests = vec!["test/a.js".into(), "test/b.js".into()];
+        fs::write(&path, serde_json::to_vec(&evidence)?)?;
+        assert_eq!(
+            classify_package(&path, owned.path(), &root, &tests, Some(1))?,
+            Outcome::Killed
+        );
+        assert!(classify(&path, owned.path(), &root, &tests, Some(1)).is_err());
+        for (field, value) in [
+            ("owner", json!(second)),
+            ("owner", Value::Null),
+            ("id", json!(2)),
+            ("file", json!(root.join("node_modules/helper.js"))),
+        ] {
+            let mut wrong = evidence.clone();
+            wrong["failures"][0][field] = value;
+            fs::write(&path, serde_json::to_vec(&wrong)?)?;
+            assert!(
+                classify_package(&path, owned.path(), &root, &tests, Some(1)).is_err(),
+                "{field}"
+            );
+        }
+        fs::write(&path, serde_json::to_vec(&evidence)?)?;
+        let module_path = owned.path().join("modules-a.json");
+        let good_modules: Value = serde_json::from_slice(&fs::read(&module_path)?)?;
+        for (field, value) in [
+            ("started", json!(0)),
+            ("completed", json!(2)),
+            ("errors", json!(1)),
+            ("overflow", json!(true)),
+            ("samples", json!(["caught error"])),
+        ] {
+            let mut changed = good_modules.clone();
+            changed[field] = value;
+            fs::write(&module_path, serde_json::to_vec(&changed)?)?;
+            assert!(
+                classify_package(&path, owned.path(), &root, &tests, Some(1)).is_err(),
+                "loader {field}"
+            );
+        }
+        fs::remove_file(&module_path)?;
+        assert!(classify_package(&path, owned.path(), &root, &tests, Some(1)).is_err());
+        fs::write(&module_path, serde_json::to_vec(&good_modules)?)?;
+        fs::write(
+            owned.path().join("modules-duplicate.json"),
+            serde_json::to_vec(&good_modules)?,
+        )?;
+        assert!(classify_package(&path, owned.path(), &root, &tests, Some(1)).is_err());
+        Ok(())
+    }
     #[test]
     fn rejects_incomplete_conflicting_and_hidden_failure_evidence() {
         let owned = tempfile::tempdir().unwrap();

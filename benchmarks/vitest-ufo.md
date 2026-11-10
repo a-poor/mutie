@@ -140,5 +140,7 @@ Pushing the preceding work exposed one stale Python CI control: it wrote 5 MiB
 after the production file limit had become 16 MiB. Commit `afb59d6` changes that
 control to 17 MiB; its local regression and all nine jobs in
 [Linux CI](https://github.com/a-poor/mutie/actions/runs/42729147740) pass.
-This local acceptance record predates the new Vitest compatibility job's first
-remote run. No project, schema or catalog versions were changed.
+The subsequent [Linux CI run](https://github.com/a-poor/mutie/actions/runs/42740310729)
+for `0d461c3` passes all ten jobs, including the new Vitest compatibility job
+and the existing Vitest runtime controls. No CI correction was needed for that
+commit. No project, schema or catalog versions were changed.

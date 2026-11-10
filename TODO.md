@@ -295,8 +295,17 @@ Split implementation goals by language/runner when acceptance becomes too large.
    configuration gap. Four boolean flips are killed; 17 punycode boundaries yield
    eight kills and nine survivors. Two separate-copy tests kill both surrogate
    boundary findings. Preserve the original 47.06% selection score, failed query
-   report, all inputs and open survivors. The preceding nine-job Linux CI is green;
-   the new Vitest compatibility job still needs its first remote validation.
+   report, all inputs and open survivors. All ten Linux CI jobs for `0d461c3`
+   pass, including the new Vitest compatibility job.
+   Completed follow-up: [Node dependencies and composed tests](benchmarks/node-eslint.md).
+   eslint-node-test retains all 491 source/test/config inputs, with an explicitly
+   approved separate addition of missing Node type declarations. Its full native
+   baseline passes 5,989 tests. The bounded sample preserves two lint errors and
+   incomplete scores; separate stronger tests kill one public diagnostic survivor
+   and three internal helper survivors. Exact worker/body ownership and loader ledgers
+   prevent helper ambiguity or dependency loading failures from supplying kills.
+   New Node regression controls await remote CI after commit/push. This is not
+   unchanged-installation acceptance or a full-project score.
    Other runner/configuration gaps and broader project/platform evidence remain open.
 8. [ ] **Public release qualification and documentation.** Automate a documented
    macOS/Linux test matrix including real adapters and supported versions; verify

@@ -1,7 +1,11 @@
 //! Pinned, dependency-free ESM JavaScript / native TypeScript node:test adapter.
 mod discovery;
+mod package;
 pub mod project;
 mod protocol;
+pub mod recipe;
+#[cfg(test)]
+mod recipe_tests;
 mod typescript;
 use crate::{cancellation::Cancellation, command, process, workspace::Workspace};
 use anyhow::{Context, Result, ensure};
@@ -13,6 +17,20 @@ use std::{
     time::Duration,
 };
 const HOOK_HASH: &str = "6329a64a8825bf217d60526f7a53fd89af6fc5107ad9f15d41b825b19a587fa2";
+const LOADER_IMPLEMENTATIONS: [(&str, &str); 3] = [
+    (
+        "internal/modules/cjs/loader",
+        "a3e3ee095d409597bf224522411607aa7d2f4747cf42b5329179bf3b4b5528ed",
+    ),
+    (
+        "internal/modules/esm/loader",
+        "9887e4673ca2d78be60c9270704f83077fc9e9890da5d4391b045f0802e1f13b",
+    ),
+    (
+        "diagnostics_channel",
+        "661a7f5b475ca6401af2dd421e7108b93e23b7faccdc8cc2394deb4a2baf585b",
+    ),
+];
 pub fn fingerprint(bytes: &[u8]) -> String {
     format!("sha256:{:x}", Sha256::digest(bytes))
 }
@@ -35,6 +53,35 @@ pub struct ExecutionScope {
     pub default_discovery: bool,
     #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
     pub development_fingerprints: std::collections::BTreeMap<String, String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub composed_recipe: Option<recipe::Scope>,
+}
+
+pub fn discover(
+    root: &Path,
+    scope: &crate::mutation::Scope,
+    cancellation: &Cancellation,
+) -> Result<crate::javascript::Discovery> {
+    let project = project::Project::load(root, cancellation)?;
+    crate::javascript::discover_roots(root, &project.sources, scope, cancellation, false)
+}
+
+fn composed_fingerprint() -> String {
+    fingerprint(
+        &[
+            include_bytes!("node.rs").as_slice(),
+            include_bytes!("node/project.rs").as_slice(),
+            include_bytes!("node/package.rs").as_slice(),
+            include_bytes!("node/recipe.rs").as_slice(),
+            include_bytes!("node/protocol.rs").as_slice(),
+            include_bytes!("node/observer.mjs").as_slice(),
+            include_bytes!("node/reporter.mjs").as_slice(),
+            include_bytes!("node/package-reporter.mjs").as_slice(),
+            include_bytes!("node/modules.mjs").as_slice(),
+            discovery::HASHES[0].as_bytes(),
+        ]
+        .concat(),
+    )
 }
 fn recipe(typescript: bool, default_discovery: bool) -> String {
     if default_discovery {
@@ -74,9 +121,23 @@ impl ExecutionScope {
             "invalid saved Node identity"
         );
         ensure!(
-            self.recipe_fingerprint == recipe(self.typescript.is_some(), self.default_discovery),
+            self.recipe_fingerprint
+                == if self.composed_recipe.is_some() {
+                    composed_fingerprint()
+                } else {
+                    recipe(self.typescript.is_some(), self.default_discovery)
+                },
             "unsupported saved Node runner recipe"
         );
+        if let Some(scope) = &self.composed_recipe {
+            scope.validate_record()?;
+            ensure!(
+                self.typescript.is_none()
+                    && !self.default_discovery
+                    && self.development_fingerprints.contains_key("node_modules"),
+                "invalid composed Node scope"
+            );
+        }
         ensure!(
             valid_fingerprint(&self.manifest_fingerprint),
             "invalid saved Node manifest fingerprint"
@@ -98,6 +159,9 @@ impl ExecutionScope {
         Ok(())
     }
     pub fn test_command(&self) -> Vec<&'static str> {
+        if self.composed_recipe.is_some() {
+            return vec!["npm", "test"];
+        }
         if self.default_discovery {
             return vec!["node", "--test", "--test-concurrency=1"];
         }
@@ -132,6 +196,10 @@ async fn scope_with(
         "const files=undefined,discoveryHashes=undefined;".into()
     };
     expression.push_str("console.log(JSON.stringify({files,discoveryHashes,version:process.version,executable:process.execPath,hash:require('node:crypto').createHash('sha256').update(process.binding('natives')['internal/test_runner/test']).digest('hex')}))");
+    if project.recipe.is_some() {
+        let names = serde_json::to_string(&LOADER_IMPLEMENTATIONS.map(|(name, _)| name))?;
+        expression = expression.replace("{files,discoveryHashes,version:", &format!("{{loaderHashes:{names}.map(name=>require('node:crypto').createHash('sha256').update(process.binding('natives')[name]).digest('hex')),runnerHash:require('node:crypto').createHash('sha256').update(process.binding('natives')['internal/test_runner/runner']).digest('hex'),files,discoveryHashes,version:"));
+    }
     let out = process::run_with_env(
         program,
         &["--eval", &expression],
@@ -159,6 +227,14 @@ async fn scope_with(
     if project.default_discovery {
         discovery::validate_native(&value, &project.tests)?;
     }
+    if project.recipe.is_some() {
+        ensure!(
+            value["runnerHash"] == discovery::HASHES[0]
+                && value["loaderHashes"]
+                    == serde_json::json!(LOADER_IMPLEMENTATIONS.map(|(_, hash)| hash)),
+            "composed Node evidence requires the audited serial file runner and module loaders"
+        );
+    }
     let scope = ExecutionScope {
         package: project.name,
         node: "24.22.0".into(),
@@ -167,10 +243,15 @@ async fn scope_with(
             .context("missing Node executable")?
             .into(),
         manifest_fingerprint: project.manifest,
-        recipe_fingerprint: recipe(project.typescript.is_some(), project.default_discovery),
+        recipe_fingerprint: if project.recipe.is_some() {
+            composed_fingerprint()
+        } else {
+            recipe(project.typescript.is_some(), project.default_discovery)
+        },
         default_discovery: project.default_discovery,
         typescript: project.typescript,
         development_fingerprints: project.development_fingerprints,
+        composed_recipe: project.recipe,
     };
     scope.validate_record()?;
     Ok(scope)
@@ -212,6 +293,7 @@ pub async fn test(
         project.manifest == expected.manifest_fingerprint
             && project.typescript == expected.typescript
             && project.default_discovery == expected.default_discovery
+            && project.recipe == expected.composed_recipe
             && project.development_fingerprints == expected.development_fingerprints,
         "Node manifest or native TypeScript configuration changed during snapshotting"
     );
@@ -243,9 +325,20 @@ pub async fn test(
     fs::write(
         &reporter,
         format!(
-            "const MUTIE_EVIDENCE={};\n{}",
+            "const MUTIE_EVIDENCE={};\nconst MUTIE_FILES={};\n{}",
             serde_json::to_string(&evidence)?,
-            include_str!("node/reporter.mjs")
+            serde_json::to_string(
+                &project
+                    .tests
+                    .iter()
+                    .map(|file| root.join(file))
+                    .collect::<Vec<_>>()
+            )?,
+            if project.recipe.is_some() {
+                include_str!("node/package-reporter.mjs")
+            } else {
+                include_str!("node/reporter.mjs")
+            }
         ),
     )?;
     fs::write(
@@ -264,33 +357,92 @@ pub async fn test(
         "--test-concurrency=1".into(),
         format!("--test-reporter={}", reporter.display()),
     ];
+    if project.recipe.is_some() {
+        let modules = owned_path.join("modules.mjs");
+        fs::write(
+            &modules,
+            format!(
+                "const MUTIE_OWNED={};\n{}",
+                serde_json::to_string(&owned_path)?,
+                include_str!("node/modules.mjs")
+            ),
+        )?;
+        args.splice(
+            2..2,
+            ["--import".into(), modules.to_string_lossy().into_owned()],
+        );
+    }
     if !project.default_discovery {
         args.extend(project.tests.iter().cloned());
     }
-    let raw = process::run_with_env(
-        expected.node_executable.to_str().unwrap(),
-        &args.iter().map(String::as_str).collect::<Vec<_>>(),
-        &root,
-        limit,
-        capture_limit,
-        cancellation,
-        &[
-            ("NODE_OPTIONS", "".as_ref()),
-            ("NODE_PATH", "".as_ref()),
-            ("TMPDIR", temp.as_os_str()),
-            ("TMP", temp.as_os_str()),
-            ("TEMP", temp.as_os_str()),
-        ],
-    )
-    .await?;
-    let result = protocol::classify(
-        &evidence,
-        &owned_path,
-        &root,
-        &project.tests,
-        raw.status.code(),
-    )
-    .map_err(|e| format!("{e:#}"));
+    let mut environment = vec![
+        ("NODE_OPTIONS", "".as_ref()),
+        ("NODE_PATH", "".as_ref()),
+        ("TMPDIR", temp.as_os_str()),
+        ("TMP", temp.as_os_str()),
+        ("TEMP", temp.as_os_str()),
+    ];
+    let owned_path_environment;
+    if project.recipe.is_some() {
+        let mut paths = vec![
+            expected
+                .node_executable
+                .parent()
+                .context("Node executable has no parent")?
+                .to_owned(),
+            root.join("node_modules/.bin"),
+        ];
+        if let Some(inherited) = std::env::var_os("PATH") {
+            paths.extend(std::env::split_paths(&inherited));
+        }
+        owned_path_environment = std::env::join_paths(paths)?;
+        environment.push(("PATH", owned_path_environment.as_os_str()));
+    }
+    let (raw, prerequisite_error) = if project.recipe.is_some() {
+        let mut commands = recipe::commands(&root)?;
+        commands.push(args);
+        Box::pin(recipe::run_commands(
+            expected.node_executable.to_str().unwrap(),
+            &commands,
+            &root,
+            limit,
+            capture_limit,
+            cancellation,
+            &environment,
+        ))
+        .await?
+    } else {
+        (
+            process::run_with_env(
+                expected.node_executable.to_str().unwrap(),
+                &args.iter().map(String::as_str).collect::<Vec<_>>(),
+                &root,
+                limit,
+                capture_limit,
+                cancellation,
+                &environment,
+            )
+            .await?,
+            None,
+        )
+    };
+    let result = if let Some(error) = prerequisite_error {
+        Err(error)
+    } else {
+        let classify = if project.recipe.is_some() {
+            protocol::classify_package
+        } else {
+            protocol::classify
+        };
+        classify(
+            &evidence,
+            &owned_path,
+            &root,
+            &project.tests,
+            raw.status.code(),
+        )
+        .map_err(|e| format!("{e:#}"))
+    };
     let mut rendered = tempfile::NamedTempFile::new()?;
     command::write_lossy(&mut raw.stdout.reader()?, &mut rendered)?;
     command::write_lossy(&mut raw.stderr.reader()?, &mut rendered)?;

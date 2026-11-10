@@ -1717,6 +1717,34 @@ native TypeScript or runtime versions. Seven other `openclaw-cc` survivors and t
 SRI limits remain explicit; no combined improved whole-project score is inferred.
 
 
+## Composed Node package recipe
+
+The [eslint-node-test acceptance](benchmarks/node-eslint.md) adds one recognized
+JavaScript recipe: five complete lint prerequisites followed by the original two
+native test globs, with root `index.js` / `rules/` sources and owned declared
+dependencies. `node/package.rs` audits the static application/test/tooling graph;
+`node/recipe.rs` validates exact scripts and tool versions, fingerprints configs
+and scripts, and runs direct commands serially under a cumulative timeout/output
+budget. Ordinary lint failures retain later tasks but override body kills.
+Nested command futures are boxed to fit ordinary Tokio worker stacks.
+
+The composed reporter distinguishes a failure's helper declaration from its
+worker entry. Ordered native file summaries bind the exact worker; body evidence
+must match that worker and test ID, independently of hooks/process errors. The
+runner's implementation hash is required. A separate loader observer records
+started/completed `module.require` and `module.import` operations from pinned
+tracing channels. Caught/evaluation errors, pending imports and late exit failures
+remain errors. Missing/duplicate/overflowed ledgers cannot supply kills. Loader
+functions are not replaced, and ordinary dependency body failures remain eligible
+only with complete lifecycle evidence.
+
+The optional composed scope binds implementation/reporter/observer bytes, owned
+installation, scripts and configuration to reruns. Original JS/TS recipes retain
+their serialized identities and source restrictions. This does not add arbitrary
+scripts, workspaces or general dynamic project imports. The real target required
+an explicitly approved separate `@types/node` addition: unchanged source/tests/
+config do not establish unchanged-installation acceptance.
+
 ## Initial native TypeScript on Node
 
 The following describes the first explicit-glob slice; the default-discovery

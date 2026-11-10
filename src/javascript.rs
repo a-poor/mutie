@@ -361,31 +361,34 @@ pub fn parse(parser: &mut Parser, source: &str) -> Result<tree_sitter::Tree> {
 }
 
 pub fn discover(root: &Path, scope: &Scope, cancellation: &Cancellation) -> Result<Discovery> {
-    discover_with_ambient(root, scope, cancellation, false)
+    discover_roots(root, &[PathBuf::from("src")], scope, cancellation, false)
 }
 
 /// Bun's native TS transpiler erases ambient declarations. Keep this acceptance
 /// separate from the independently validated Node and Vitest discovery scopes.
 pub fn discover_bun(root: &Path, scope: &Scope, cancellation: &Cancellation) -> Result<Discovery> {
-    discover_with_ambient(root, scope, cancellation, true)
+    discover_roots(root, &[PathBuf::from("src")], scope, cancellation, true)
 }
 
-fn discover_with_ambient(
+pub(crate) fn discover_roots(
     root: &Path,
+    roots: &[PathBuf],
     scope: &Scope,
     cancellation: &Cancellation,
     allow_ambient: bool,
 ) -> Result<Discovery> {
     let mut files = Vec::new();
     let mut exclusions = BTreeSet::new();
-    collect(
-        root,
-        Path::new("src"),
-        scope,
-        cancellation,
-        &mut files,
-        &mut exclusions,
-    )?;
+    for relative in roots {
+        collect(
+            root,
+            relative,
+            scope,
+            cancellation,
+            &mut files,
+            &mut exclusions,
+        )?;
+    }
     files.sort();
     let mut mutations = Vec::new();
     for path in files {

@@ -1016,5 +1016,21 @@ survivors. Two separate-copy public-API tests kill both surrogate-boundary findi
 The query selection stops at a source type error (two kills, one survivor, five
 pending); preserve its failed score, all 39 inputs and historical report hashes.
 Seven punycode survivors remain open. The prior nine-job Linux CI is green after
-the 17 MiB Python continuation control correction; the new compatibility job still
-needs its first remote validation. Broader scripts, configurations and runtime versions remain separate.
+the 17 MiB Python continuation control correction. All ten jobs for `0d461c3`
+now pass, including the new Vitest compatibility job (run `42740310729`).
+Broader scripts, configurations and runtime versions remain separate.
+
+`benchmarks/node-eslint.md` adds the exact composed Node JavaScript recipe with
+owned dependencies, root `index.js` / `rules/` sources, package JSON imports and
+five pinned lint prerequisites plus the full native test inventory. Preserve
+complete task execution after ordinary lint failures and cumulative budgets;
+lint failures never become body kills. Imported helper declarations require exact
+serial worker ownership and body IDs. The pinned loader/tracing ledger rejects
+loading/evaluation errors, caught errors, pending imports and late exit failures;
+keep independent hook/process evidence. Original JS/TS identities remain compatible.
+The native baseline needs a documented, explicitly approved separate `@types/node`
+addition, then passes 5,989 tests. All 491 original inputs remain unchanged; this
+is not unchanged-installation acceptance. Separate stronger tests kill the public
+identical-`this` diagnostic survivor and three internal promise-union survivors; do not
+claim the latter are public-rule failures. Preserve failed lint reports, pending
+work and original 0% selection scores. New Node CI controls remain unpushed.

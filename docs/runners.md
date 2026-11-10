@@ -9,7 +9,7 @@
 | Go / go test | Go 1.24+ | One module; multiple packages are supported. |
 | Rust / Cargo | Rust/Cargo; see the [validated scope](../SUPPORT.md#rust--cargo) | Ordinary packages and workspaces with standard tests. |
 | JS/TS / Vitest | Node 24.22.0; audited Vitest/Vite pairs below | One ESM package, or the audited TypeScript layout; installed dependencies. |
-| JS/TS / Node | Node 24.22.0 | One ESM package without runtime dependencies. |
+| JS/TS / Node | Node 24.22.0 | One ESM package; the composed JavaScript scope below also admits owned dependencies. |
 | JS/TS / Bun | Bun 1.3.11+af24e281e | One package without runtime dependencies. |
 | Python / pytest | CPython 3.14.7, pytest 9.0.2 | One flat or src package; narrowly audited dependencies and fixtures. |
 
@@ -104,6 +104,43 @@ unsupported. The supported operators are `boolean_flip`, `comparison_invert`,
 `comparison_boundary`, `logical_swap`, `negation_remove`, `arithmetic_replace`,
 `branch_force_true`, `branch_force_false`, `loop_skip`, and `call_remove`, with `--jobs 1`
 and full-suite testing.
+
+An additional JavaScript scope recognizes this complete recipe:
+
+```json
+{
+  "test": "npm-run-all --node-run --continue-on-error lint \"test:*\"",
+  "test:js": "node --test test/*.js test/unit/*.js",
+  "lint": "run-p --continue-on-error \"lint:*\"",
+  "lint:dogfooding": "eslint --config=./eslint.dogfooding.config.js",
+  "lint:eslint-docs": "npm run fix:eslint-docs -- --check",
+  "lint:js": "eslint",
+  "lint:markdown": "markdownlint \"**/*.md\"",
+  "lint:package-json": "npmPkgJsonLint .",
+  "fix:eslint-docs": "eslint-doc-generator"
+}
+```
+
+It requires the five audited lint tasks and pinned tools documented in the
+[eslint-node-test evidence](../benchmarks/node-eslint.md). Mutie runs every task
+directly and serially in an owned copy, with one time/output budget. Ordinary
+lint failures are retained while runtime tests still run; lint and mixed failures
+are errors. Extra wildcard tasks and npm lifecycle scripts are rejected.
+
+This scope discovers application mutations in `index.js` and `rules/`, audits
+the complete imported test/helper graph, and keeps the original two test globs.
+Declared package imports resolve within the copied installation. A static
+`package.json` JSON import and narrowly constrained, module-level `createRequire`
+calls are supported. Tooling/configuration bytes and all installed dependencies
+join rerun identity; new tests may be added for focused reruns. The original
+`src/` recipes retain their dependency restrictions.
+
+Worker completion binds imported test-body locations to exact body IDs. Separate
+module-loader evidence rejects failed, caught, or unfinished dependency loads,
+including late cleanup failures. Project dynamic imports, general CommonJS,
+other command graphs, workspaces and parallel mutation workers require separate
+support. The validation installation adds the upstream suite's missing Node type
+declarations; original source, tests and configuration remain unchanged.
 
 The validated native TypeScript extension also accepts erasable `.ts` files
 under `src/` and `test/`, using `node --test` or exactly `node --test test/*.test.ts`.

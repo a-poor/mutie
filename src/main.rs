@@ -369,7 +369,7 @@ async fn execute(
         .await?,
     );
     if let Some(original) = &node_project
-        && original.default_discovery
+        && (original.default_discovery || original.recipe.is_some())
     {
         let copied = node::project::Project::load(&snapshot.path(), cancellation)?;
         anyhow::ensure!(
@@ -713,6 +713,8 @@ async fn execute(
         drop(baseline_workspace);
         let found = if config.lang == Lang::Bun {
             javascript::discover_bun(&snapshot.path(), &scope, cancellation)?
+        } else if config.lang == Lang::Node {
+            node::discover(&snapshot.path(), &scope, cancellation)?
         } else {
             javascript::discover(&snapshot.path(), &scope, cancellation)?
         };
